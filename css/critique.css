@@ -1,0 +1,1604 @@
+/* ============================================================
+   APED AGENCE — CSS CRITIQUE
+   Les composants peints au PREMIER ECRAN.
+   FABRIQUE PAR `node tools/css-critique.mjs` a partir de
+   `css/app.css`, qui reste la seule source. Ne pas modifier a la
+   main : editer `app.css` puis relancer l'outil, et verifier avec
+   `node tools/cascade-check.mjs`.
+   ============================================================ */
+
+/* ============================================================
+   APED AGENCE - Direction ATELIER
+   Mise en page, composants, sections.
+   ============================================================ */
+/* ============================================================
+   1. GRILLE
+   Les filets verticaux ne sont jamais decoratifs : un filet borde
+   toujours une colonne qui contient du contenu.
+   ============================================================ */
+.wrap {
+  width: min(100% - (var(--pad) * 2), var(--maxw));
+  margin-inline: auto;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+}
+.band { padding-block: var(--band); }
+.band-tight { padding-block: var(--band-tight); }
+.band-loose { padding-block: var(--band-loose); }
+/* La respiration d'une jonction appartient a la section qui ARRIVE, jamais
+   aux deux. Les deux cotes cumulaient : mesure au 2026-07-25, six jonctions
+   sur douze depassaient 250 px de vide non peint, jusqu'a 323 px entre
+   Comparatif et Processus. C'est la vraie cause de la « bande morte » de
+   l'audit initial, que la phase 3 avait deplacee sans la fermer.
+   Le vide se lit maintenant a un seul endroit, et sa taille reste celle que
+   la section entrante a choisie : le rythme reste inegal, il n'est plus troue. */
+main.shell > section > .band:last-child,
+main.shell > section > .band-tight:last-child,
+main.shell > section > .band-loose:last-child { padding-bottom: 0; }
+/* ------------------------------------------------------------
+   LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.
+
+   Apres le decoupage du CSS, la tache d'avant peinture plafonnait a
+   ~60 ms quoi qu'on retire du document : retirer le `<template>`
+   des secteurs, les six modales ou le jeu d'icones ne rendait que
+   7 ms chacun. Le cout n'etait donc plus l'analyse, c'etait la MISE
+   EN PAGE de deux mille elements dont neuf dixiemes sont a des
+   milliers de pixels sous le pli.
+
+   `content-visibility: auto` dit au navigateur de sauter la mise en
+   page et le trace d'une section tant qu'elle n'approche pas de
+   l'ecran. `contain-intrinsic-size` lui donne la hauteur a reserver
+   en attendant, sans quoi la barre de defilement sauterait a chaque
+   section qui se materialise.
+
+   CE QUI EST VOLONTAIREMENT EXCLU :
+   · `#services`, dont la scene est epinglee — ScrollTrigger mesure
+     sa hauteur au chargement, une hauteur estimee la fausserait ;
+   · `#realisations`, dont les cadres calculent leur course sur la
+     hauteur reelle des captures ;
+   · `#demos`, dont l'apercu est collant.
+   Les hauteurs ci-dessous sont RELEVEES a 1440x900, pas devinees.
+   ------------------------------------------------------------ */
+#visite, #calculateur, #comparatif, #processus,
+#apropos, #reference, #faq, #contact, .footer {
+  content-visibility: auto;
+}
+#visite { contain-intrinsic-size: auto 1180px; }
+#calculateur { contain-intrinsic-size: auto 1465px; }
+#comparatif { contain-intrinsic-size: auto 1600px; }
+#processus { contain-intrinsic-size: auto 2183px; }
+#apropos { contain-intrinsic-size: auto 1996px; }
+#reference { contain-intrinsic-size: auto 1585px; }
+#faq { contain-intrinsic-size: auto 1057px; }
+#contact { contain-intrinsic-size: auto 2347px; }
+.rule-top { border-top: var(--rule-w) solid var(--rule); }
+.rule-bottom { border-bottom: var(--rule-w) solid var(--rule); }
+.rule-left { border-left: var(--rule-w) solid var(--rule); }
+/* DÉCLINAISON DE LA SIGNATURE (N1 + N2).
+   Le filet qui annonce la bande ne se trace plus d'un trait : il
+   s'assemble en grains, de la gauche vers la droite, puis se
+   RESSOUDE en trait plein une fois pose. C'est la limaille qui
+   s'aligne sous le champ, a l'echelle d'un filet.
+   N1 parce que ce filet dit aussi ou commence une section, et son
+   passage a l'accent dit laquelle est active. */
+.section-rule {
+  height: var(--rule-w);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--rule-strong) 0 2px,
+    transparent 2px 4px
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  transform-origin: left center;
+  transition: background-image var(--t-3) var(--e-snap);
+}
+/* ============================================================
+   2. EN-TETE DE SECTION
+   Empilement vertical strict. Jamais de paragraphe flottant a droite.
+   ============================================================ */
+.head { display: grid; gap: var(--s-3); margin-bottom: var(--s-6); }
+/* Les titres de section imposent sans manger l'ecran. L'enorme est
+   reserve au hero et aux deux moments signature : a 52 px chaque
+   titre reclamait l'attention d'un hero, donc plus rien ne
+   hierarchisait. Mesure : 52 px -> 38 px a 1440. */
+.head h2 {
+  max-width: 22ch;
+  font-size: clamp(1.5rem, 0.9rem + 1.9vw, 2.375rem);
+}
+.head p { color: var(--ink-muted); font-size: var(--fs-5); max-width: 58ch; }
+/* LE DECALAGE LATERAL NE DOIT PAS ETENDRE LA PAGE.
+   Mesure du 2026-07-25 : l'etat de depart de la reprise (`x: ±26`)
+   poussait les cellules de la bande de specification et les valeurs
+   6 px au-dela du bord sur TOUTE largeur de telephone, donc
+   `scrollWidth` 396 pour 390. `body { overflow-x: hidden }` le
+   cachait sans le supprimer. Le rognage est pose sur le PARENT, ou
+   il a en plus un sens : les blocs arrivent de derriere le bord au
+   lieu d'apparaitre a cote de lui. */
+[data-settle],
+.parc-corps {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+.head-index {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-muted);
+  font-variation-settings: "wdth" 100;
+}
+/* ============================================================
+   3. NAVIGATION
+   Barre pleine largeur, arete franche, 56 px. Aucune pilule.
+   ============================================================ */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: var(--z-nav);
+  height: calc(var(--nav-h) + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  padding-inline: var(--pad);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--s-5);
+  background: var(--surface-0);
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.02em;
+  font-variation-settings: "wdth" var(--wdth-wide);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+.wordmark span {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 400;
+  color: var(--ink-muted);
+  letter-spacing: var(--tracking-label);
+}
+/* Le monogramme, inline pour heriter de `currentColor` : une balise
+   <img> ne pourrait ni suivre le theme ni porter l'accent. */
+.wordmark-mark {
+  width: auto;
+  height: 1.05em;
+  align-self: center;
+  flex: none;
+  color: var(--ink);
+}
+/* Impact ROI dans la nav. Sur petit ecran c'est la seule presence
+   du chiffre : une ligne, pas une bande. */
+.nav-impact {
+  justify-self: center;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.nav-impact b {
+  color: var(--accent-text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: var(--s-5);
+}
+.nav-links a {
+  font-size: var(--fs-7);
+  color: var(--ink-muted);
+  padding-block: var(--s-2);
+  position: relative;
+  transition: color var(--t-2) var(--e-snap);
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--rule-w);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--t-2) var(--e-snap);
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-right { display: flex; align-items: center; gap: var(--s-3); }
+/* Sous 64em le CTA de la barre disparait : il ne rentre pas a cote du
+   montant et du menu, et il est deja dans le menu plein ecran.
+   Selecteur double pour passer devant `.btn`, declare plus bas. */
+.nav .btn.nav-cta { display: none; }
+/* Les liens de section n'apparaissent qu'a 72em, pas 64 : a 1024 px ils
+   cohabitaient avec les deux CTA et le CTA primaire sortait de 38 px a
+   droite. Mesure du 2026-07-25 : bord droit a 1062 pour une fenetre de
+   1024. */
+@media (min-width: 64em) {
+.nav .btn.nav-cta { display: inline-flex; }
+}
+@media (max-width: 26em) {
+.wordmark span { display: none; }
+}
+/* LE MONTANT VIVANT NE TIENT PAS DANS LA BARRE SOUS 64em.
+   Il etait pose en colonne centrale d'une grille `auto 1fr auto` et
+   chevauchait ses deux voisins sur TOUTE largeur de telephone : mesure
+   du 2026-07-25 a 390 px, wordmark ∩ montant = 63 x 17 px, montant ∩
+   bascule = 36 x 17 px, montant ∩ reference = 16 x 17 px. A 320 px la
+   page debordait de 30 px. Le montant sort de la barre : il reste lisible
+   dans le calculateur, qui est sa vraie place. */
+@media (max-width: 63.99em) {
+.nav { grid-template-columns: auto 1fr auto; }
+.nav-impact { display: none; }
+}
+/* Reference : deuxieme CTA de la barre. Hierarchie tenue par le
+   traitement, pas par la taille — le primaire est en aplat minium,
+   celui-ci est en filet. Le chiffre porte l'accent parce que c'est
+   lui l'argument. */
+.nav .btn.nav-refer {
+  gap: var(--s-3);
+  padding-inline: 0.875rem;
+}
+.nav-refer-num {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 700;
+  color: var(--accent-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Sur telephone, le libelle complet ne rentre pas a cote du bourgeon
+   et du montant. La premiere version mettait `font-size: 0` sur le
+   bouton, donc il ne restait qu'un « 5 000 $ » nu, sans dire ce que
+   c'est : un chiffre sans verbe n'est pas un benefice, c'est une
+   enigme. On garde le verbe, on coupe le reste. */
+@media (max-width: 47.99em) {
+.nav .btn.nav-refer { font-size: 0; padding-inline: 0.5rem; gap: var(--s-2); }
+.nav .btn.nav-refer::before {
+    content: "Référez";
+    font-family: var(--font-text);
+    font-size: var(--fs-8);
+    font-weight: 600;
+    color: var(--ink);
+  }
+.nav-refer-num { font-size: var(--fs-8); }
+}
+@media (max-width: 24em) {
+.nav .btn.nav-refer::before { content: none; }
+}
+/* ============================================================
+   4. BOUTONS
+   Micro-interaction unique et repetee sur toute la page : un filet
+   d'accent se trace depuis la gauche au survol.
+   ============================================================ */
+.btn {
+  --btn-rule: var(--rule-strong);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  padding: 0.8125rem 1.125rem;
+  border: var(--rule-w) solid var(--btn-rule);
+  border-radius: var(--radius);
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: var(--fs-7);
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ink);
+  background: transparent;
+  transition:
+    background-color var(--t-2) var(--e-snap),
+    border-color var(--t-2) var(--e-snap),
+    color var(--t-2) var(--e-snap),
+    transform var(--t-1) var(--e-snap);
+}
+.btn .icon { width: 1.125em; height: 1.125em; }
+/* DÉCLINAISON DE LA SIGNATURE (N2).
+   Le filet d'accent ne glisse pas d'un bloc : il s'assemble par
+   grains. Un dégradé repetitif dur, sans interpolation entre les
+   arrets, donne une rangee de grains carres ; la revelation se fait
+   en agrandissant la taille de la trame, donc les grains
+   apparaissent de la gauche vers la droite comme de la limaille
+   qu'on aligne. Meme idee que le hero, autre echelle. */
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: var(--focus-w);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--accent) 0 2px,
+    transparent 2px 4px
+  );
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size var(--t-2) var(--e-snap);
+}
+.btn:hover::after,
+.btn:focus-visible::after { background-size: 100% 100%; }
+.btn:active { transform: translateY(1px); }
+.btn--primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+.btn--primary::after { background: var(--ink); }
+.btn--primary:hover { background: var(--accent-text); border-color: var(--accent-text); }
+.btn--ghost:hover { border-color: var(--ink); }
+.btn--lg { padding: 1.0625rem 1.375rem; font-size: var(--fs-5); }
+.btn--block { width: 100%; }
+/* Sous 26em, « Estimation en 60 secondes » mesure 307 px sur une
+   ligne pour un cadre de 280 : mesure du 2026-07-25, le bouton
+   poussait la page a 330 px de large. `nowrap` reste le bon defaut
+   — un libelle coupe en deux se lit mal — mais il ne vaut pas un
+   debordement. La regle est posee APRES `.btn`, sinon la cascade la
+   perd a specificite egale. */
+@media (max-width: 26em) {
+.btn { white-space: normal; gap: var(--s-3); }
+.btn--lg { padding-inline: 1rem; }
+}
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn[disabled]::after { transform: scaleX(0); }
+@keyframes btn-load {
+  0% { transform: scaleX(0); transform-origin: left center; }
+  50% { transform: scaleX(1); transform-origin: left center; }
+  51% { transform: scaleX(1); transform-origin: right center; }
+  100% { transform: scaleX(0); transform-origin: right center; }
+}
+/* Bouton icone seul : nav, fermeture, calendrier. */
+.btn-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: var(--rule-w) solid var(--rule-strong);
+  color: var(--ink);
+  font-size: 1.125rem;
+  transition:
+    background-color var(--t-1) var(--e-snap),
+    border-color var(--t-1) var(--e-snap),
+    transform var(--t-1) var(--e-snap);
+}
+.btn-icon:hover { background: var(--surface-1); border-color: var(--ink); }
+.btn-icon:active { transform: translateY(1px); }
+.btn-icon[disabled] { opacity: 0.35; cursor: not-allowed; }
+/* Bourgeon de menu : deux filets, pas d'icone.
+   Les deux filets sont superposes au meme point. En grille ils tombaient
+   dans deux rangees distinctes, donc ils pivotaient autour de deux centres
+   decales de 2 px : la croix ouverte ressemblait a un chevron. */
+.burger {
+  position: relative;
+  display: block;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: var(--rule-w) solid var(--rule-strong);
+}
+.burger i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1rem;
+  height: var(--rule-w);
+  margin-left: -0.5rem;
+  background: var(--ink);
+  transition: transform var(--t-2) var(--e-snap);
+}
+.burger i:first-child { transform: translateY(-3px); }
+.burger i:last-child { transform: translateY(3px); }
+.burger[aria-expanded="true"] i:first-child { transform: rotate(45deg); }
+.burger[aria-expanded="true"] i:last-child { transform: rotate(-45deg); }
+/* Les cibles se laissent attirer. `transform` seulement, donc
+   composite, et remis a zero des que la pointe s'eloigne. */
+.btn, .btn-icon, .cell, .sector-pills button, .rail-list a, .nav-links a {
+  transition-property: background-color, border-color, color, transform, padding-left, background-size;
+  transition-duration: var(--t-2);
+  transition-timing-function: var(--e-snap);
+}
+/* ============================================================
+   5. INDEX COLLANT
+   Numerote parce qu'il est cliquable : les numeros sont la
+   navigation, pas de la decoration.
+   ============================================================ */
+.rail {
+  display: none;
+  position: fixed;
+  left: var(--pad);
+  top: calc(var(--nav-h) + var(--s-7));
+  z-index: var(--z-rail);
+  width: var(--rail-w);
+  max-height: calc(100dvh - var(--nav-h) - var(--s-9));
+  grid-template-rows: 1fr auto;
+  gap: var(--s-5);
+}
+.rail-list { display: grid; align-content: start; gap: 1px; overflow: hidden; }
+.rail-list a {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  align-items: baseline;
+  gap: var(--s-2);
+  padding: 0.3125rem 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  border-left: var(--rule-w) solid transparent;
+  padding-left: var(--s-3);
+  transition: color var(--t-2) var(--e-snap), border-color var(--t-2) var(--e-snap);
+}
+.rail-list a:hover { color: var(--ink); border-left-color: var(--rule-strong); }
+.rail-list a[aria-current="true"] {
+  color: var(--accent-text);
+  border-left-color: var(--rule-accent);
+}
+.rail-list em { font-style: normal; opacity: 0.55; }
+/* N1 · progression DANS la section courante. Le filet de gauche de
+   l'entree active se remplit au fur et a mesure : on sait ou on en
+   est dans la section, pas seulement dans laquelle on est. */
+.rail-list a[aria-current="true"] {
+  background-image: linear-gradient(var(--rule-accent) 0 100%);
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-size: var(--rule-w) var(--sec-progress, 0%);
+  border-left-color: var(--rule);
+}
+.rail-left {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  color: var(--ink-muted);
+  padding-top: var(--s-3);
+  border-top: var(--rule-w) solid var(--rule);
+}
+.rail-left .num { color: var(--ink); font-weight: 700; }
+/* N1 · progression de lecture. Trame de grains, comme le filet de
+   section : meme matiere, autre echelle. */
+.read-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: calc(var(--z-nav) + 1);
+  height: 2px;
+  background: transparent;
+  pointer-events: none;
+}
+.read-progress i {
+  display: block;
+  height: 100%;
+  width: var(--read, 0%);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--accent) 0 2px,
+    transparent 2px 4px
+  );
+}
+/* Impact ROI persistant. Il porte le seul accent du rail. */
+.rail-impact {
+  border-top: var(--rule-w) solid var(--rule-strong);
+  padding-top: var(--s-3);
+  display: grid;
+  gap: var(--s-1);
+}
+.rail-impact .label { font-size: var(--fs-8); }
+.rail-impact b {
+  font-family: var(--font-data);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--accent-text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  font-variation-settings: "wdth" 87.5;
+}
+.rail-impact small {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  color: var(--ink-muted);
+  line-height: 1.4;
+}
+/* ============================================================
+   6. MENU PLEIN ECRAN
+   ============================================================ */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  background: var(--surface-0);
+  padding: calc(var(--nav-h) + var(--s-7)) var(--pad) var(--s-7);
+  display: grid;
+  align-content: space-between;
+  gap: var(--s-7);
+  overscroll-behavior: contain;
+  overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--t-3) var(--e-snap), visibility 0s linear var(--t-3);
+}
+/* `display: grid` ci-dessus ecrasait l'attribut hidden : le menu ferme
+   restait dans l'arbre rendu et ses liens repondaient au focus. */
+.menu[hidden] { display: none; }
+.menu-list { display: grid; gap: 1px; }
+.menu-list a {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  align-items: baseline;
+  padding: var(--s-4) 0;
+  border-top: var(--rule-w) solid var(--rule);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-3);
+  font-variation-settings: "wdth" var(--wdth-wide);
+  letter-spacing: var(--tracking-display);
+}
+.menu-list em {
+  font-family: var(--font-data);
+  font-style: normal;
+  font-size: var(--fs-8);
+  font-weight: 400;
+  color: var(--ink-muted);
+  letter-spacing: var(--tracking-label);
+}
+.menu-actions { display: grid; gap: var(--s-3); }
+.menu-foot {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  color: var(--ink-muted);
+}
+.plate--flush { background: var(--surface-1); }
+.plate--inverse {
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  border-color: transparent;
+}
+.plate--inverse .label,
+.plate--inverse p { color: color-mix(in srgb, var(--ink-inverse) 66%, transparent); }
+/* ============================================================
+   9. CURSEURS
+   Piste = un filet. Poignee = un carre franc. Aucun rayon.
+   ============================================================ */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 1.5rem;
+  background: transparent;
+  cursor: ew-resize;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: var(--rule-w);
+  background: var(--rule-strong);
+}
+input[type="range"]::-moz-range-track {
+  height: var(--rule-w);
+  background: var(--rule-strong);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 0.875rem;
+  height: 1.25rem;
+  margin-top: -0.625rem;
+  background: var(--ink);
+  border: 0;
+  border-radius: var(--radius);
+  transition: background-color var(--t-1) var(--e-snap), transform var(--t-1) var(--e-snap);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 0.875rem;
+  height: 1.25rem;
+  background: var(--ink);
+  border: 0;
+  border-radius: var(--radius);
+}
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent); }
+input[type="range"]:active::-webkit-slider-thumb { transform: scaleY(1.15); }
+input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
+/* ============================================================
+   11b. SEQUENCE D'ENTREE
+   Le rideau est rendu UNIQUEMENT quand `html.entree-on` est pose,
+   et cette classe est posee par le script de tete, avant le premier
+   rendu. Sans elle, `display: none` : zero cout, zero clignotement.
+
+   Le retrait est une ANIMATION CSS a `forwards`, pas un script :
+   si `main.js` ne se charge jamais, le rideau se retire quand meme.
+   `pointer-events: none` en permanence : il ne bloque aucun clic,
+   meme a la premiere image.
+   ============================================================ */
+/* LE SCENARIO, EN QUATRE TEMPS ET 1 420 ms.
+
+   t 40 – 430   LE CADRE SE POSE. Quatre equerres s'encliquettent,
+                une par coin. Elles reservent le format avant que la
+                piece arrive : c'est un banc d'atelier, pas un ecran
+                d'attente.
+   t 60 – 620   LA PIECE SE POSE, LA JAUGE MONTE A 80, LE COMPTEUR
+                ROULE PAR CRANS DE DIX. Le monogramme s'encliquette
+                du haut vers le bas ; la jauge pleine largeur se
+                remplit de la meme trame de grains que les filets du
+                site, et le compteur roule avec elle, cran par cran.
+   t 620 – 800  LA JAUGE FINIT — MAIS SEULEMENT SI LE SITE EST PRET.
+                C'est la charniere de toute la sequence : voir plus
+                bas `html.entree-attend`.
+   t 620 – 920  LA PLAQUE SE REND A SA PLACE. Elle glisse vers le
+                cadre du hero, retrecit, puis s'efface pendant que
+                les grains, eux, sont deja en course.
+   t 700 – 1168 LE RIDEAU S'OUVRE EN QUINZE FILETS, DEPUIS LE CENTRE,
+                en alternance gauche / droite. Quinze parce que
+                `seedPositions()` fait partir les grains du hero de
+                quinze filets : le rideau part en la matiere meme
+                dont le hero se compose.
+   t 700 – 1500 LES GRAINS COMPOSENT APED, declenches par le
+                `animationstart` de la bande du milieu, donc cales
+                sur le rideau reel et pas sur une horloge parallele.
+   Total nominal : 1,50 s, dans la fenetre de 1,2 a 1,8 s du brief.
+
+   L'ALLONGEMENT, ET C'EST LA VRAIE FONCTION DE LA SEQUENCE.
+   Tout ce qui vient APRES la jauge — sa derniere tranche, la remise
+   de la plaque, l'ouverture du rideau — porte
+   `animation-play-state: paused` tant que `html.entree-attend` est
+   pose. `main.js` pose cette classe des qu'il s'execute et ne la
+   retire que quand les polices sont posees ET que la limaille du
+   hero est composee, ou au plus tard a 2,5 s depuis la navigation.
+   Consequence : quand le chargement traine, la sequence s'ALLONGE
+   au lieu de sauter — la jauge s'arrete a 80, le compteur s'arrete
+   au meme cran, et rien ne ment. Quand tout est deja pret, la classe
+   est retiree avant meme que la pause soit visible et la sequence
+   joue a sa duree nominale.
+
+   CE QUI EST GARANTI SANS JAVASCRIPT : tout le retrait est en
+   animation CSS `forwards`, et la pause EXIGE une classe que seul le
+   script pose. Si aucun script ne s'execute, rien n'est jamais mis
+   en pause : le rideau s'ouvre quand meme et la page est lisible.
+   `pointer-events: none` en permanence : il ne bloque aucun clic,
+   meme a la premiere image. AUCUN element de CONTENU n'est mis a
+   `opacity: 0` : le candidat LCP reste peint sous le rideau des le
+   premier rendu. */
+.entree { display: none; }
+/* LA PAUSE. Elle nomme exactement ce qui a le droit d'attendre.
+   La POSE du monogramme et la PREMIERE tranche de jauge n'y sont
+   pas : ce qu'on s'est accorde joue toujours, sinon la sequence se
+   lit comme un gel.
+   La jauge et le compteur portent DEUX animations chacun ;
+   `animation-play-state` est une liste, donc on met la premiere en
+   marche et la seconde en pause. C'est la seule facon de retenir la
+   derniere tranche sans retenir tout le reste. */
+html.entree-attend .entree-bandes i,
+html.entree-attend .entree-plaque,
+html.entree-attend .entree-cadre { animation-play-state: paused; }
+html.entree-attend .entree-jauge,
+html.entree-attend .entree-rouleau { animation-play-state: running, paused; }
+html.entree-on .entree {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-skip) + 10);
+  pointer-events: none;
+}
+/* LES QUINZE BANDES.
+   Elles se deplacent en `translate3d`, donc elles restent sur le
+   compositeur. C'est la raison de ne PAS avoir pris le masque SVG a
+   lamelles de Codrops (2026-03-11), qui anime `width` et `height` de
+   `<rect>` : joli, mais chaque image repasse par le paint. Ici le
+   meme motif de lamelles coute zero paint.
+   La couture d'un pixel entre deux bandes est fermee par le `+1px`
+   de hauteur — meme correction que celle du tutoriel, autre moyen. */
+.entree-bandes { position: absolute; inset: 0; }
+.entree-bandes i {
+  --d: -1;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: calc(100% / 15 + 1px);
+  top: calc(var(--i) * 100% / 15);
+  background: var(--surface-0);
+  will-change: transform;
+  animation: entree-bande 300ms var(--e-drive) calc(700ms + var(--k) * 24ms) forwards;
+}
+.entree-bandes i:nth-child(even) { --d: 1; }
+@keyframes entree-bande {
+  to { transform: translate3d(calc(var(--d) * 101%), 0, 0); }
+}
+/* LA JAUGE. Pleine largeur, en haut, exactement la ou la barre de
+   lecture vivra pendant toute la visite : le premier objet vu est
+   deja le vocabulaire du site.
+   DEUX ANIMATIONS, pas une : `entree-filet-a` monte a 80 % sans
+   condition, `entree-filet-b` finit les 20 derniers pour cent et
+   c'est ELLE qu'on met en pause quand le chargement traine. Le
+   rideau s'ouvre a l'instant ou elle touche le bord droit. */
+.entree-jauge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 4px;
+  /* UNE PISTE SOUS LA TRAME. Sans elle on ne voit que ce qui est
+     deja fait, donc on ne voit pas une PROGRESSION : on voit un
+     filet qui pousse dans le vide. La piste dit la course totale. */
+  background-color: var(--rule);
+  background-image: repeating-linear-gradient(
+    90deg, var(--accent) 0 2px, transparent 2px 4px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  animation:
+    entree-filet-a 620ms linear 0ms forwards,
+    entree-filet-b 180ms linear 620ms forwards;
+}
+@keyframes entree-filet-a { to { background-size: 80% 100%; } }
+@keyframes entree-filet-b { from { background-size: 80% 100%; } to { background-size: 100% 100%; } }
+/* LE CADRE D'ATELIER. Quatre equerres qui reservent le format avant
+   que la piece arrive. Elles s'encliquettent depuis leur propre
+   coin, donc chacune se lit comme un repere qu'on pose, pas comme
+   une boite qui grandit. */
+.entree-cadre {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(58rem, 74vw);
+  aspect-ratio: 16 / 7;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  /* Le cadre part AVANT que le rideau s'ouvre : c'est le banc qu'on
+     retire, pas un decor qui traine sur la page en dessous. Sans
+     cette ligne les quatre equerres restaient visibles par-dessus le
+     hero pendant toute l'ouverture. */
+  animation: entree-efface 140ms linear 640ms forwards;
+}
+.entree-cadre i {
+  position: absolute;
+  width: clamp(1.75rem, 3.4vw, 3rem);
+  height: clamp(1.75rem, 3.4vw, 3rem);
+  border: 0 solid var(--rule-strong);
+  transform: scale(0);
+  animation: entree-repere 240ms var(--e-snap) forwards;
+}
+.entree-cadre i:nth-child(1) { top: 0; left: 0; border-top-width: var(--rule-w); border-left-width: var(--rule-w); transform-origin: top left; animation-delay: 40ms; }
+.entree-cadre i:nth-child(2) { top: 0; right: 0; border-top-width: var(--rule-w); border-right-width: var(--rule-w); transform-origin: top right; animation-delay: 90ms; }
+.entree-cadre i:nth-child(3) { bottom: 0; right: 0; border-bottom-width: var(--rule-w); border-right-width: var(--rule-w); transform-origin: bottom right; animation-delay: 140ms; }
+.entree-cadre i:nth-child(4) { bottom: 0; left: 0; border-bottom-width: var(--rule-w); border-left-width: var(--rule-w); transform-origin: bottom left; animation-delay: 190ms; }
+@keyframes entree-repere { to { transform: scale(1); } }
+.entree-plaque {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  transform: translate(-50%, -50%);
+  /* Les valeurs de repli servent quand le script n'a pas eu le temps
+     de mesurer le cadre du hero : la plaque monte un peu et
+     retrecit, ce qui reste un geste juste, seulement moins precis. */
+  animation:
+    entree-remise 300ms var(--e-drive) 620ms forwards,
+    entree-efface 160ms linear 800ms forwards;
+}
+@keyframes entree-remise {
+  to {
+    transform: translate(-50%, -50%)
+      translate3d(var(--entree-dx, 0px), var(--entree-dy, -60px), 0)
+      scale(var(--entree-k, 0.78));
+  }
+}
+@keyframes entree-efface { to { opacity: 0; } }
+/* Le monogramme est GRAND. A 6 rem il flottait au milieu d'un champ
+   vide et se lisait comme un indicateur d'attente, pas comme une
+   marque qui arrive. */
+.entree-mark {
+  width: auto;
+  height: clamp(5.5rem, 15vw, 12rem);
+  color: var(--ink);
+  /* Il n'apparait pas en fondu : ses moities se posent, comme une
+     piece qu'on encliquette sur le banc. */
+  clip-path: inset(0 0 100% 0);
+  animation: entree-pose 320ms var(--e-snap) 60ms forwards;
+}
+@keyframes entree-pose {
+  to { clip-path: inset(0 0 0 0); }
+}
+.entree-mot {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  margin-top: var(--s-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-4);
+  letter-spacing: 0.08em;
+  font-variation-settings: "wdth" var(--wdth-wide);
+  opacity: 0;
+  animation: entree-mot 200ms var(--e-snap) 300ms forwards;
+}
+.entree-mot span {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 400;
+  color: var(--ink-muted);
+  letter-spacing: var(--tracking-label);
+}
+@keyframes entree-mot { to { opacity: 1; } }
+/* ------------------------------------------------------------
+   LE COMPTEUR — V4 · CRAN, et il est en bas de l'ecran, sous la
+   jauge du haut : les deux bornes de la sequence tiennent les deux
+   bords, la piece est au milieu.
+
+   IL NE S'INTERPOLE PAS. Onze valeurs empilees dans une boite d'une
+   ligne de haut, translatees en `steps()`. Un `steps(8)` sur 620 ms
+   donne un cran toutes les 77 ms : on VOIT chaque cran tomber, ce
+   qui est exactement la difference entre un odometre et un fondu.
+   Aucun script n'est necessaire pour qu'il roule.
+   ------------------------------------------------------------ */
+/* LA LIGNE D'ETAT PREND LA LARGEUR DU CADRE, pas celle du texte.
+   Libelle a gauche, valeur a droite, aux deux montants du banc :
+   c'est le cadre deja dessine qui tient la lecture, donc il n'y a
+   aucun filet a ajouter. Meme largeur et meme centre que
+   `.entree-cadre` ; la moitie de sa hauteur vaut largeur x 7/32,
+   puisqu'il est en 16/7. */
+.entree-etat {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + (min(58rem, 74vw) * 7 / 32) + var(--s-5));
+  width: min(58rem, 74vw);
+  /* La mesure de lecture posee sur tous les `p` du site rognait
+     cette ligne a 478 px : le libelle et la valeur se retrouvaient
+     au milieu au lieu de tenir les deux montants du banc. */
+  max-width: none;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  opacity: 0;
+  animation: entree-mot 200ms var(--e-snap) 260ms forwards;
+}
+.entree-lib { line-height: 1; padding-bottom: 0.18em; }
+/* LA FENETRE. Elle rogne, elle ne bouge pas. */
+.entree-cran {
+  display: block;
+  overflow: hidden;
+  /* `line-height` DOIT valoir la hauteur de boite, sinon chaque
+     chiffre deborde de son cran et on lit deux valeurs a la fois.
+     C'est la seule contrainte de tout le compteur, et elle est
+     invisible tant qu'on ne la casse pas. */
+  height: 1em;
+  line-height: 1;
+  font-family: var(--font-display);
+  font-size: var(--fs-4);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  /* Les chiffres ne doivent pas changer de largeur en roulant, sinon
+     le compteur respire au lieu de rouler. */
+  font-variant-numeric: tabular-nums;
+}
+/* LA BANDE. Elle defile, elle ne rogne pas. */
+.entree-rouleau {
+  display: block;
+  font-style: normal;
+  animation:
+    entree-cran-a 620ms steps(8) 0ms forwards,
+    entree-cran-b 180ms steps(2) 620ms forwards;
+}
+.entree-cran b { display: block; height: 1em; line-height: 1; font-weight: inherit; }
+@keyframes entree-cran-a { to { transform: translateY(-8em); } }
+@keyframes entree-cran-b { from { transform: translateY(-8em); } to { transform: translateY(-10em); } }
+/* La sortie, ecrite. Elle arrive en dernier, quand l'attente
+   commence a compter — pas a la premiere image, ou elle
+   proposerait de partir avant d'avoir montre quoi que ce soit. */
+.entree-saut-mot {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(0.75rem, 3vh, 1.75rem);
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-9, var(--fs-8));
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-faint, var(--ink-muted));
+  opacity: 0;
+  animation: entree-mot 200ms linear 760ms forwards;
+}
+/* ------------------------------------------------------------
+   LE SAUT. N'importe quel clic, n'importe quelle touche. Ce n'est
+   PAS une coupure : les memes animations se terminent, en 160 ms,
+   depuis l'etat ou elles sont. Une coupure franche donnerait
+   l'impression d'un plantage ; un degagement rapide se lit comme
+   « d'accord, on y va ». C'est le meme verbe, plus vite.
+   ------------------------------------------------------------ */
+html.entree-saut .entree-bandes i {
+  animation: entree-bande 160ms var(--e-drive) calc(var(--k) * 6ms) forwards !important;
+}
+html.entree-saut .entree-jauge {
+  animation: entree-filet-b 120ms linear 0ms forwards !important;
+}
+html.entree-saut .entree-etat,
+html.entree-saut .entree-cadre,
+html.entree-saut .entree-saut-mot { animation: entree-efface 100ms linear forwards !important; }
+html.entree-saut .entree-plaque {
+  animation: entree-efface 120ms linear forwards !important;
+}
+/* ------------------------------------------------------------
+   MOUVEMENT REDUIT : LE LOGO, BREF, PUIS LE SITE.
+   L'ancienne version posait `display: none` — le visiteur qui
+   demande moins de mouvement n'avait donc AUCUN premier contact,
+   ce qui n'etait pas la meme page pour lui. Il en a un maintenant,
+   il ne bouge pas : le monogramme est pose, net, 520 ms, puis le
+   rideau disparait d'un seul cran. Aucune interpolation nulle part.
+   Le retrait est une animation CSS `step-end` : il se produit meme
+   si aucun script ne s'execute.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+html.entree-on .entree { animation: entree-part 1ms step-end 520ms forwards; }
+html.entree-on .entree-bandes i,
+  html.entree-on .entree-jauge,
+  html.entree-on .entree-mark { animation: none; }
+/* Les equerres sont a `scale(0)` au repos : couper leur animation
+     sans leur rendre leur echelle les rendrait invisibles. */
+html.entree-on .entree-cadre i { animation: none; transform: scale(1); }
+html.entree-on .entree-cadre,
+  html.entree-on .entree-plaque,
+  html.entree-on .entree-mot,
+  html.entree-on .entree-etat { animation: none; opacity: 1; }
+html.entree-on .entree-mark { clip-path: none; }
+html.entree-on .entree-jauge { background-size: 100% 100%; }
+html.entree-on .entree-rouleau { animation: none; transform: translateY(-10em); }
+html.entree-on .entree-saut-mot { display: none; }
+}
+@keyframes entree-part { to { visibility: hidden; } }
+@keyframes cadeau-degage {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes cadeau-voile { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cadeau-recoupe {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(0 0 100% 0); }
+}
+@keyframes cadeau-aligne-g { from { transform: translate3d(-22px, 0, 0); } to { transform: none; } }
+@keyframes cadeau-aligne-d { from { transform: translate3d(22px, 0, 0); } to { transform: none; } }
+@keyframes cadeau-soude {
+  to { background-size: 100% var(--rule-w); }
+}
+/* ============================================================
+   12. HERO - plaque typographique
+   ============================================================ */
+.hero {
+  padding-top: calc(var(--nav-h) + var(--s-5));
+  padding-bottom: var(--s-7);
+  min-height: 100dvh;
+  display: grid;
+  /* `minmax(0, 1fr)` et non `auto` : une colonne de grille en `auto`
+     prend pour minimum le CONTENU MINIMAL de ses enfants. Le bouton
+     « Estimation en 60 secondes » est en `white-space: nowrap` et
+     mesure 307 px : a 320 px de fenetre il elargissait la colonne
+     entiere a 307 et poussait le hero 27 px au-dela du cadre.
+     Mesure du 2026-07-25 : `scrollWidth` 330 pour 320. */
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  gap: var(--s-4);
+}
+.hero-eyebrow { margin-bottom: var(--s-2); }
+/* ------------------------------------------------------------
+   LA PLAQUE DE LIMAILLE
+   L'espace est reserve par `aspect-ratio` : le canvas ne fait
+   jamais bouger la mise en page, donc le CLS reste a 0.
+   ------------------------------------------------------------ */
+/* MESURE DU 2026-07-25 : a 1000/292 le bloc des deux mots occupait
+   296,6 px de haut A PLAT dans un cadre de 305 px. Une fois incline
+   de 2,2°, son emprise reelle montait a 333,8 px : AGENCE etait
+   ampute par le bas de 14 px de chaque cote. Le cadre reserve
+   maintenant la place que la rotation reclame, et `hero.js`
+   RECALCULE la composition si elle ne rentre toujours pas. Deux
+   verrous plutot qu'un. */
+.hero-plate {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1000 / 310;
+  max-height: 40dvh;
+  margin-block: var(--s-2) var(--s-4);
+  touch-action: pan-y;      /* le tactile ne piege jamais le defilement */
+}
+.hero-plate canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+/* Le texte reel. Visible tant que la matiere n'est pas prete, et
+   definitivement si le canvas est indisponible : la page ne depend
+   jamais du canvas pour dire son nom. */
+.plate-text {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: grid;
+  align-content: center;
+  justify-items: stretch;
+  transform: rotate(-2.2deg);
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.035em;
+  text-wrap: nowrap;
+  color: var(--accent);
+}
+.plate-big {
+  display: block;
+  font-size: clamp(3.5rem, 21.5vw, 15.5rem);
+  font-variation-settings: "wdth" 125;
+}
+/* Le canvas trace AGENCE en capitales. Le repli textuel doit dire
+   exactement la meme chose, sinon les deux versions de la page ne
+   sont pas la meme page. Le `<h1>` garde « Agence » pour le lecteur
+   d'ecran, la capitalisation est un fait visuel. */
+.plate-small {
+  display: block;
+  font-size: clamp(0.86rem, 5.3vw, 3.85rem);
+  font-variation-settings: "wdth" 125;
+  color: var(--ink);
+  letter-spacing: 0.34em;
+  margin-top: 0.12em;
+  text-transform: uppercase;
+}
+.hero-claim {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-3);
+  line-height: 1.06;
+  letter-spacing: var(--tracking-display);
+  font-variation-settings: "wdth" var(--wdth-wide);
+  max-width: 24ch;
+  text-wrap: balance;
+}
+.hero-sub {
+  font-size: var(--fs-5);
+  color: var(--ink-muted);
+  max-width: 46ch;
+}
+.hero-cta { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-4); }
+/* ------------------------------------------------------------
+   FICHE TECHNIQUE — la colonne droite du hero.
+   Elle repond a la seule question qu'un patron de PME se pose au
+   premier ecran et a laquelle rien ne repondait avant la section
+   Services, 1 100 px plus bas : combien.
+   Aucun aplat, aucune ombre : quatre rangees separees par des
+   filets qui s'assemblent en grains. Le meme objet que le reste.
+   ------------------------------------------------------------ */
+.hero-fiche { display: none; align-content: start; gap: var(--s-3); }
+.fiche-rows { display: grid; }
+.hero-fiche .fiche-rule { display: block; }
+.hero-fiche a {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  transition: padding-left var(--t-2) var(--e-snap), color var(--t-2) var(--e-snap);
+}
+.hero-fiche a:hover { padding-left: var(--s-2); color: var(--accent-text); }
+.hero-fiche em {
+  font-family: var(--font-data);
+  font-style: normal;
+  font-size: var(--fs-8);
+  color: var(--ink-muted);
+  letter-spacing: var(--tracking-label);
+}
+.hero-fiche span { font-size: var(--fs-7); }
+.hero-fiche b {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 700;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.fiche-foot {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-3);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.6;
+  color: var(--ink-muted);
+  max-width: none;
+}
+.fiche-foot .fiche-rule { order: -1; }
+/* Sur ecran etroit le bloc a besoin de plus de hauteur relative :
+   les deux mots empiles occupent proportionnellement plus de place
+   quand la largeur se resserre. A 1000/340 le petit mot etait
+   coupe net. */
+@media (max-width: 47.99em) {
+/* 1000/520 reservait 57 px de vide sous le bloc : le cadre etait
+     plus haut que ce que la composition pouvait remplir, puisque la
+     taille des mots est fixee par la LARGEUR. */
+.hero-plate { aspect-ratio: 1000 / 360; max-height: 34dvh; }
+.plate-small { letter-spacing: 0.28em; }
+}
+/* La fiche n'apparait qu'a partir de 64em : sous cette largeur la
+   colonne de droite n'existe pas, et la meme grille de prix arrive
+   400 px plus bas dans Services. Rien n'est perdu, seul l'ordre
+   change. */
+@media (min-width: 64em) {
+.hero { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
+.hero-eyebrow,
+  .hero-plate { grid-column: 1 / -1; }
+.hero-claim { grid-column: 1 / span 7; }
+.hero-sub { grid-column: 1 / span 6; }
+.hero-cta { grid-column: 1 / span 7; }
+.hero-fiche { display: grid; grid-column: 9 / span 4; grid-row: 3 / span 3; }
+}
+/* ============================================================
+   13. BANDE DE SPECIFICATION
+   Remplace l'ancien bandeau de confiance et l'ancienne section
+   de statistiques, qui disaient la meme chose deux fois.
+   ============================================================ */
+.spec {
+  border-block: var(--rule-w) solid var(--rule-strong);
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.spec-cell {
+  padding: var(--s-6) var(--s-5);
+  display: grid;
+  gap: var(--s-2);
+  border-top: var(--rule-w) solid var(--rule);
+}
+.spec-cell:first-child { border-top: 0; }
+.spec-cell b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variation-settings: "wdth" var(--wdth-wide);
+  font-variant-numeric: tabular-nums;
+}
+.spec-cell span { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); line-height: 1.5; }
+@keyframes ecr-scan {
+  0%, 8% { transform: translateY(0); }
+  30% { transform: translateY(16px); }
+  55% { transform: translateY(32px); }
+  80%, 100% { transform: translateY(48px); }
+}
+@keyframes ecr-jeton {
+  0%   { transform: translate(30%, 8%); opacity: 0; }
+  6%   { transform: translate(30%, 8%); opacity: 1; }
+  16%  { transform: translate(32.5%, 8%); }
+  32%  { transform: translate(32.5%, 40%); }
+  42%  { transform: translate(35%, 40%); }
+  52%  { transform: translate(65%, 40%); }
+  62%  { transform: translate(67.5%, 40%); }
+  74%  { transform: translate(67.5%, 8%); }
+  86%  { transform: translate(70%, 8%); opacity: 1; }
+  94%, 100% { transform: translate(70%, 8%); opacity: 0; }
+}
+@keyframes ecr-ligne { 0%, 4% { opacity: 0.15; } 12%, 92% { opacity: 1; } 100% { opacity: 0.15; } }
+@keyframes ecr-zone { 0%, 6% { transform: scale(0.2); } 46%, 100% { transform: scale(1); } }
+@keyframes ecr-broche { 0%, 40% { transform: scale(0.6); } 52% { transform: scale(1.35); } 66%, 100% { transform: scale(1); } }
+@keyframes ecr-barre { 0%, 4% { transform: scaleY(0); } 24%, 100% { transform: scaleY(1); } }
+@keyframes ecr-trow {
+  0%, 10% { transform: translateX(-10px); opacity: 0.15; }
+  26%, 100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes shot-bat { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.45); } }
+.fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
+/* ============================================================
+   26. POINTS DE RUPTURE
+   Chaque mise en page multi-colonnes declare ici son repli.
+   Le mobile n'herite pas : il decide.
+   ============================================================ */
+/* --- 640 px : la bande de specification passe en deux colonnes --- */
+@media (min-width: 40em) {
+.spec { grid-template-columns: repeat(2, 1fr); }
+.spec-cell { border-top: 0; border-left: var(--rule-w) solid var(--rule); }
+.spec-cell:nth-child(-n + 2) { border-top: 0; }
+.spec-cell:nth-child(2n + 1) { border-left: 0; }
+.spec-cell:nth-child(n + 3) { border-top: var(--rule-w) solid var(--rule); }
+}
+/* --- 768 px : compositions asymetriques --- */
+@media (min-width: 48em) {
+.hero-sub { max-width: 44ch; }
+.spec { grid-template-columns: repeat(4, 1fr); }
+.spec-cell { border-top: 0 !important; border-left: var(--rule-w) solid var(--rule); }
+.spec-cell:first-child { border-left: 0; }
+}
+/* --- 1024 px : la navigation deploie ses liens --- */
+@media (min-width: 64em) {
+.nav-impact { display: none; }
+.burger { display: none; }
+}
+/* --- 1152 px : les liens de section rentrent enfin --- */
+@media (min-width: 72em) {
+.nav-links { display: flex; }
+}
+/* --- 1280 px : l'index collant apparait --- */
+@media (min-width: 80em) {
+.rail { display: grid; }
+.shell { padding-left: calc(var(--rail-w) + var(--s-7)); }
+.nav { padding-left: var(--pad); }
+}
+/* L'APLAT QUI MONTE. `transform: scaleY` depuis le bas, pas une
+   hauteur qui grandit : une transformation ne redessine rien de la
+   mise en page et reste sur le fil du compositeur.
+   `overflow: hidden` sert a la fleche, plus bas : elle doit sortir
+   du cadre sans deborder sur le voisin. */
+/* ============================================================
+   LA DUREE DU BALAYAGE EST UNE VARIABLE, ET ELLE N'EST PAS LA
+   MEME PARTOUT.
+
+   Premiere version : 230 ms pour tous les boutons. Sur
+   « Démarrer votre projet », vingt et une lettres, ca fait 11 ms
+   par lettre — en dessous du seuil ou l'oeil lit une CASCADE
+   plutot qu'un changement d'un bloc. Autrement dit l'effet etait
+   invisible precisement sur les quatre boutons qui comptent.
+
+   `--cran` porte donc la duree du balayage, et TOUT en derive : la
+   course de l'aplat, le decalage de chaque lettre, le depart de la
+   fleche. Un seul nombre a changer, aucun risque de
+   desynchronisation — et c'est cette synchronisation qui garantit
+   le contraste (voir `tools/contraste-survol.mjs`).
+
+   DEUX VALEURS, ET LE PARTAGE SUIT L'IMPORTANCE :
+   · 230 ms — le defaut. Liens, boutons secondaires, boutons
+     d'icone, boutons de formulaire. Ils accusent reception, ils ne
+     racontent rien ;
+   · 520 ms — les CTA qui portent le chiffre d'affaires :
+     « Démarrer votre projet », « Référez, gagnez », « Réserver un
+     appel », et les deux telechargements du popup. Sur vingt et
+     une lettres, ca fait 25 ms par lettre : la cascade se LIT.
+
+   POURQUOI PAS PLUS. 520 ms depasse deja les 300 ms qu'Emil
+   Kowalski donne comme limite d'une micro-interaction. La
+   difference est qu'ici rien n'est retarde : le bouton est
+   cliquable et son libelle lisible de la premiere a la derniere
+   image. Ce qui dure n'est pas une attente, c'est une lecture.
+   ============================================================ */
+.btn { --cran: 230ms; }
+.btn[data-modal-open="modal-start"],
+.btn[data-modal-open="modal-refer"],
+.btn[data-modal-open="modal-booking"],
+.btn[data-modal-switch="modal-booking"],
+.cadeau .btn { --cran: 520ms; }
+.btn { overflow: hidden; }
+/* L'APLAT N'EXISTE QUE SUR UN BOUTON DEJA DECOUPE.
+   Le decoupage est paresseux : il a lieu dans le gestionnaire de
+   `pointerenter`, donc avant que le navigateur peigne l'etat de
+   survol. Mais si le script n'est jamais arrive — vague 2 bloquee,
+   JavaScript coupe — un bouton non decoupe verrait son libelle
+   entier passer sous l'encre sans jamais basculer. Le selecteur
+   d'attribut fait de la degradation une garantie plutot qu'un
+   pari : sans script, le bouton garde exactement le survol qu'il
+   avait avant la phase 8. */
+.btn[data-lettres]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--cran) linear;
+  pointer-events: none;
+}
+.btn[data-lettres]:hover::before,
+.btn[data-lettres]:focus-visible::before { transform: scaleX(1); }
+/* L'icone passe AU-DESSUS de l'aplat, comme les lettres. */
+.btn .icon {
+  position: relative;
+  z-index: 1;
+  /* L'icone porte le meme `--p` que les lettres : elle bascule
+     quand l'arete passe SUR ELLE, pas a la fin arbitraire de la
+     course. */
+  transition: color 0s linear calc((1 - var(--p, 1)) * var(--cran));
+}
+.btn[data-lettres]:hover .icon,
+.btn[data-lettres]:focus-visible .icon {
+  color: var(--ink-inverse);
+  transition-delay: calc(var(--p, 1) * var(--cran));
+}
+/* Le CADRE suit l'aplat. La couleur du bouton lui-meme ne bascule
+   PAS : c'est chaque lettre qui bascule, une par une, et un
+   basculement d'ensemble par-dessus reintroduirait exactement la
+   fenetre illisible qu'on vient de supprimer. */
+.btn[data-lettres]:hover,
+.btn[data-lettres]:focus-visible { border-color: var(--ink); }
+/* LE FILET AU REPOS reste ce qu'il etait : la TRACE du
+   remplissage, en trame de grains minium. C'est le seul minium qui
+   subsiste sur un bouton secondaire, et il ne subsiste que la ou
+   on peut agir. Il passe au-dessus de l'aplat. */
+.btn::after { inset: auto 0 0 0; z-index: 2; }
+/* LA FLECHE QUI SORT DU CADRE ET REVIENT — V4.
+   Elle ne glisse pas de quelques pixels : elle sort par la droite
+   et rentre par la gauche, d'un cran. Le cadre la coupe net grace
+   a `overflow: hidden` pose plus haut. */
+@keyframes fleche-cran {
+  0%   { transform: translateX(0); }
+  46%  { transform: translateX(220%); }
+  47%  { transform: translateX(-220%); }
+  100% { transform: translateX(0); }
+}
+/* LA FLECHE PART QUAND L'APLAT A FINI SA COURSE, et c'est une
+   correction mesuree. Sans le delai, l'icone traverse le bouton
+   pendant que l'arete le traverse aussi : elle se retrouve du
+   mauvais cote de la frontiere, encre sur encre. Mesure du
+   2026-07-26 par `tools/contraste-survol.mjs` : 1,00:1 a 199 ms
+   sur le bouton fantome du hero. Un cran apres l'autre, jamais
+   deux crans en meme temps — c'est aussi la regle « un seul foyer
+   d'attention ». */
+.btn[data-lettres]:hover .icon,
+.btn[data-lettres]:focus-visible .icon { animation: fleche-cran 300ms var(--e-snap) var(--cran); }
+/* Le bouton primaire n'a plus besoin de changer de fond au survol :
+   l'aplat d'encre le fait. Deux signaux pour un evenement se
+   contredisent des que l'un des deux est en retard d'une image. */
+.btn--primary:hover { background: var(--accent); }
+.btn--primary[data-lettres]:hover { border-color: var(--ink); }
+/* Un bouton desactive ne bascule pas : il n'y a rien a faire. */
+.btn[disabled][data-lettres]::before,
+.btn[aria-disabled="true"][data-lettres]::before { transform: scaleX(0); }
+.btn[disabled]:hover,
+.btn[aria-disabled="true"]:hover { color: var(--ink); border-color: var(--btn-rule); }
+/* ============================================================
+   N1 · LE CURSEUR DU RAIL.
+   Un seul objet glisse le long de l'index et porte les DEUX
+   informations que l'index doit donner : sa POSITION dit dans
+   quelle section on est, son REMPLISSAGE minium dit ou on en est
+   dedans. L'ancienne marque — un degrade pose sur le bord gauche
+   de l'entree active — disparaissait ici et reparaissait la : on
+   ne voyait pas qu'on avait avance d'un cran, on voyait deux etats
+   sans lien.
+   ============================================================ */
+.rail-list { position: relative; }
+.rail-curseur {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--focus-w);
+  height: var(--h, 0px);
+  background: var(--rule-strong);
+  transform: translateY(var(--y, 0px));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 320ms var(--e-drive),
+    height 320ms var(--e-drive),
+    opacity var(--t-2) var(--e-snap);
+}
+.rail-curseur b {
+  display: block;
+  width: 100%;
+  height: var(--sec-progress, 0%);
+  background: var(--rule-accent);
+}
+/* L'ancienne marque cede la place. L'entree active garde sa
+   couleur — c'est elle qui porte le nom — mais plus son filet :
+   deux filets pour une meme information se contredisent des que
+   l'un des deux est en retard d'une image. */
+.rail-list a[aria-current="true"] {
+  background-image: none;
+  border-left-color: transparent;
+}
+/* ============================================================
+   V3 · SOUDER — les separateurs de listes.
+   Le filet d'une rangee ne s'affiche pas : il s'assemble en grains
+   de gauche a droite, puis se ressoude en trait plein. C'est le
+   filet de section a l'echelle d'une ligne de fiche.
+   ============================================================ */
+/* LA SOUDURE EST UNE TRANSITION CSS, PLUS UNE VARIABLE ANIMEE, ET
+   C'EST UNE CORRECTION DE PERFORMANCE MESUREE.
+
+   Premiere version : GSAP animait `--soudure`, une propriete
+   personnalisee enregistree par `@property` avec `inherits: true`,
+   et le pseudo-element lisait sa valeur. Deux couts se cumulaient
+   a chaque image, pour quinze filets a la fois :
+   · un `setProperty` depuis JavaScript, donc un aller-retour dans
+     le moteur de style ;
+   · surtout, une propriete personnalisee HERITEE qui change
+     invalide le style de tout le sous-arbre. Sur une rangee de
+     fiche de projet, ca veut dire recalculer `dt`, `dd` et leurs
+     enfants soixante fois par seconde pour dessiner un trait de
+     1 px.
+
+   Le navigateur sait faire exactement ca tout seul, avec une
+   transition. JavaScript ne pose plus qu'une classe, une fois, et
+   la retire a la fin. Zero image de travail JavaScript, zero
+   invalidation heritee, meme rendu au pixel.
+   Releve du 2026-07-26 par `tools/tache-traversee.mjs`. */
+[data-souder] > * { position: relative; }
+[data-souder] > *::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--rule-w) * -1) 0 auto 0;
+  height: var(--rule-w);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--rule-strong) 0 2px,
+    transparent 2px 4px
+  );
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: background-size 380ms var(--e-snap);
+}
+/* ============================================================
+   V3 · LES LIENS — le soulignement se trace, puis se RETRACE.
+   Il ne revient pas en arriere a la sortie : il continue vers la
+   droite et sort. Un trait qui rebrousse chemin dit « annule » ;
+   un trait qui poursuit dit « suivant ». C'est la meme difference
+   qu'entre un ressort et un cran.
+   ============================================================ */
+.nav-links a::after { transform-origin: right center; }
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after {
+  transform-origin: left center;
+  transform: scaleX(1);
+}
+.footer-nav a,
+.menu-foot a { position: relative; }
+.footer-nav a::after,
+.menu-foot a::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0.25rem 0;
+  height: var(--rule-w);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--t-2) var(--e-snap);
+}
+.footer-nav a:hover::after,
+.footer-nav a:focus-visible::after,
+.menu-foot a:hover::after,
+.menu-foot a:focus-visible::after {
+  transform-origin: left center;
+  transform: scaleX(1);
+}
+/* Le menu plein ecran : le filet superieur de chaque entree se
+   double d'un filet minium qui se trace au survol. Meme geste,
+   autre echelle. */
+.menu-list a { position: relative; }
+.menu-list a::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0 auto 0;
+  height: var(--focus-w);
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--t-2) var(--e-snap);
+}
+.menu-list a:hover::before,
+.menu-list a:focus-visible::before {
+  transform-origin: left center;
+  transform: scaleX(1);
+}
+/* ============================================================
+   V4 · LA BASCULE DE THEME.
+   Le soleil sort par le haut pendant que la lune entre par le bas.
+   Deux crans opposes, pas un fondu croise.
+   ============================================================ */
+.theme-toggle { overflow: hidden; }
+.theme-toggle .icon { transition: transform var(--t-2) var(--e-drive); }
+/* ============================================================
+   MOUVEMENT REDUIT — ce que le bloc global de `base.css` ne
+   couvre pas.
+   Une duree ramenee a 0,01 ms suffit pour une transition, mais pas
+   pour une animation qui DEPLACE une chose hors du cadre : la
+   fleche sortirait et rentrerait en une seule image, ce qui se lit
+   comme un scintillement. On la retire entierement.
+   Rien d'autre ne disparait : la cascade des lettres devient
+   simultanee, l'aplat bascule d'un coup, l'odometre ecrit son
+   chiffre. Aucune information perdue, aucun sens inverse.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+.btn:hover .icon,
+  .btn:focus-visible .icon { animation: none; }
+.btn[data-lettres]:hover .icon,
+  .btn[data-lettres]:focus-visible .icon { transition-delay: 0s; }
+.rail-curseur { transition: none; }
+}
+/* ============================================================
+   PHASE 8 — SUITE : LES MICRO-ETATS.
+
+   Ce sont ceux qu'on oublie, et ce sont ceux qu'on rencontre le
+   plus souvent. Chacun recoit l'un des quatre verbes ; aucun ne
+   recoit une idee neuve.
+   ============================================================ */
+/* ------------------------------------------------------------
+   V4 · LE BOURGEON, EN DEUX CRANS.
+   Il pivotait d'un coup : les deux barres tournaient en meme temps
+   qu'elles se rejoignaient, ce qui donne une bouillie de 240 ms au
+   milieu ou l'objet n'est ni un menu ni une croix.
+   Deux crans, donc : les barres se REJOIGNENT d'abord, puis elles
+   PIVOTENT. Chaque temps est lisible, et la croix arrive nette.
+   ------------------------------------------------------------ */
+.burger i {
+  transition:
+    transform var(--t-1) var(--e-snap),
+    width var(--t-1) var(--e-snap);
+}
+.burger[aria-expanded="true"] i:first-child,
+.burger[aria-expanded="true"] i:last-child {
+  transition-delay: 0s, 0s;
+}
+.burger[aria-expanded="true"] i:first-child { transform: translateY(0) rotate(45deg); }
+.burger[aria-expanded="true"] i:last-child { transform: translateY(0) rotate(-45deg); }
+/* Le retour se fait dans l'ordre inverse : on depivote, puis on
+   ecarte. Une fermeture qui rejoue l'ouverture a l'envers est la
+   seule qui se lit comme une fermeture. */
+.burger[aria-expanded="false"] i { transition-delay: 0s; }
+/* ------------------------------------------------------------
+   V1 · LE POPUP DES CADEAUX.
+   Il apparaissait. Il se DEGAGE maintenant du haut, arete franche,
+   comme les modales — c'en est une. La toile de fond reste
+   instantanee : c'est elle qui dit « le reste est inerte », et le
+   dire progressivement serait le dire mal.
+   Animation CSS pure et `forwards` : elle se joue meme si aucun
+   script ne s'execute apres l'ouverture.
+   ------------------------------------------------------------ */
+@keyframes cadeau-degage {
+  from { clip-path: inset(0 0 100% 0); transform: translateY(-8px); }
+  to   { clip-path: inset(0 0 0% 0);   transform: translateY(0); }
+}
+@keyframes soudure-etat {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+/* ============================================================
+   LE BUDGET DE DEGRADATION — la moitie CSS.
+
+   `js/langue.js` pose `data-palier` sur `<html>` : 0 plein,
+   1 allege, 2 minimal. Il gere ce qui se decide en JavaScript —
+   ne pas creer une animation, ne pas decouper un paragraphe. Ce
+   bloc-ci gere ce qui se decide en CSS, c'est-a-dire tout ce qui
+   n'a jamais eu besoin de JavaScript pour exister.
+
+   L'ordre de chute et son argumentaire complet sont dans l'en-tete
+   de `js/langue.js` et dans `CLAUDE.md`. Regle unique :
+   ce qui tombe en premier est ce qui coute le plus pour ce qu'il
+   apporte le moins. L'orientation ne tombe jamais — elle vit dans
+   `main.js` et ne lit pas ce fichier.
+   ============================================================ */
+/* ------------------------------------------------------------
+   PALIER 1 — ALLEGE.
+   Declencheur statique : largeur < 64em, pointeur grossier,
+   4 coeurs ou moins, 4 Go ou moins.
+   ------------------------------------------------------------ */
+/* 4 · La fleche qui sort du cadre. 300 ms d'animation sur un SVG a
+   chaque survol, pour du N3 pur. Elle est aussi la seule animation
+   du site qui deplace un objet hors de son cadre, donc la seule qui
+   force le navigateur a rogner a chaque image. */
+:root[data-palier="1"] .btn[data-lettres]:hover .icon,
+:root[data-palier="1"] .btn[data-lettres]:focus-visible .icon,
+:root[data-palier="2"] .btn[data-lettres]:hover .icon,
+:root[data-palier="2"] .btn[data-lettres]:focus-visible .icon { animation: none; }
+/* ------------------------------------------------------------
+   PALIER 2 — MINIMAL.
+   Declencheur MESURE : frequence d'images mediane sous 50 i/s sur
+   90 images d'un defilement reel.
+   ------------------------------------------------------------ */
+/* 7 · La cascade par lettre. UN SEUL NOMBRE la supprime, et c'est
+   la recompense d'avoir tout fait deriver de `--cran` : a 0 ms,
+   l'aplat couvre le bouton d'un coup et les lettres basculent
+   ensemble. Ce n'est pas une cascade degradee, c'est une inversion
+   franche — soit exactement ce que la direction demande par
+   ailleurs. Le contraste reste garanti : les deux etats sont a
+   13,89:1 et il n'y a plus d'entre-deux du tout. */
+:root[data-palier="2"] .btn { --cran: 0ms; }

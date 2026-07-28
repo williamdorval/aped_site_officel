@@ -1,0 +1,3251 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>APED Agence | Sites web, automatisation et logiciels sur mesure</title>
+  <meta name="description" content="APED Agence code des sites web, des boutiques en ligne, des automatisations et des logiciels internes pour les entreprises du Québec. Le code vous appartient. Calculez vos économies en 60 secondes." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_CA" />
+  <meta property="og:title" content="APED Agence" />
+  <meta property="og:description" content="Site web, boutique en ligne, automatisations, logiciel interne. Écrit à la main au Québec, et le code est à vous." />
+  <meta property="og:image" content="images/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Une seule balise, sans `media`. Les deux precedentes etaient
+       pilotees par prefers-color-scheme : la barre du navigateur restait
+       claire quand on basculait en sombre a la main. Le script ci-dessous
+       la met a la vraie valeur avant le premier rendu, et la bascule la
+       met a jour ensuite. -->
+  <meta name="theme-color" id="metaThemeColor" content="#dcdedb" />
+
+  <link rel="icon" href="images/logo-mark.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+
+  <link rel="preload" href="fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/chivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/martian-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+  <!-- TROIS FEUILLES SUR LE CHEMIN CRITIQUE, PAS QUATRE.
+
+       Mesure du 2026-07-26, par retrait d'un poste a la fois en vol
+       (`node tools/tache-longue.mjs`) : la tache d'avant peinture
+       vaut ~126 ms, et **74 ms viennent de `app.css`**. Le HTML n'y
+       est pour rien : vider le `<template>` des secteurs ou les six
+       modales ne change rien de mesurable.
+
+       `critique.css` ne contient que les regles qui ont une cible
+       REELLEMENT visible sans defiler. Ce n'est pas un tri a la
+       main : `tools/css-critique.mjs` le demande au navigateur, page
+       chargee, et regenere les deux fichiers. Le reste — 69 Ko —
+       part apres la premiere peinture, avec `tour360.css` que rien
+       ne rend visible avant la cinquieme section.
+
+       Le decoupage change l'ORDRE de cascade entre deux regles de
+       meme specificite qui etaient interleavees. C'est le vrai
+       risque, et il est verifie plutot que suppose :
+       `tools/cascade-check.mjs` compare 40 proprietes calculees sur
+       tous les elements de la page, feuille decoupee contre feuille
+       entiere. -->
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/critique.css" />
+
+  <!-- Le prechargement d'image du hero de Services a saute avec les
+       quatre `service-*.webp` : les ecrans de la section sont
+       desormais construits en markup. Zero octet d'image, zero
+       requete, et la matiere suit le theme. -->
+
+  <script>
+    // Pose le theme avant le premier rendu : aucun clignotement.
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      var saved = null;
+      try { saved = localStorage.getItem("aped-theme"); } catch (e) {}
+      var sys = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      var theme = saved || sys;
+      d.setAttribute("data-theme", theme);
+      var m = document.getElementById("metaThemeColor");
+      if (m) m.setAttribute("content", theme === "dark" ? "#101211" : "#dcdedb");
+      var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduit) d.classList.add("reduced-motion");
+
+      /* SEQUENCE D'ENTREE — la decision se prend AVANT le premier
+         rendu, sinon la page s'affiche puis se fait recouvrir, ce qui
+         est pire que pas de sequence du tout.
+         Ce n'est PAS un preloader : le contenu est deja dans le
+         document et deja peint dessous, la sequence ne retarde aucune
+         ressource et le rideau se retire par une animation CSS pure —
+         si le reste du JavaScript ne se charge jamais, la page se
+         decouvre quand meme.
+
+         CE QUI LA DECLENCHE, ET POURQUOI CE N'EST PLUS UN SIMPLE
+         DRAPEAU DE SESSION.
+         La premiere version posait `aped-entree` des le premier
+         chargement et lisait ce drapeau ensuite : un rechargement
+         dans la meme session ne rejouait donc RIEN, et c'est la
+         raison pour laquelle personne ne l'a jamais vue. Or un
+         rechargement est un ARRIVEE, pas une navigation interne.
+
+         On lit maintenant le TYPE DE NAVIGATION, qui dit exactement
+         ce qui s'est passe :
+           · `navigate` — on arrive sur le site  -> elle joue ;
+           · `reload`   — on rafraichit          -> elle rejoue ;
+           · `back_forward` — retour arriere, ou page restauree du
+             cache de retour -> elle NE joue PAS. C'est la seule
+             « navigation interne » possible sur un site d'une seule
+             page, et la rejouer la serait une punition.
+         Le drapeau de session ne sert plus qu'a une chose : si le
+         visiteur l'a SAUTEE, on ne la lui remet pas au prochain
+         rechargement. Sauter, c'est dire non. */
+      var saute = false;
+      try { saute = sessionStorage.getItem("aped-entree-saut") === "1"; } catch (e) { saute = true; }
+      var type = "navigate";
+      try {
+        var n = performance.getEntriesByType("navigation")[0];
+        if (n && n.type) type = n.type;
+        else if (performance.navigation && performance.navigation.type === 2) type = "back_forward";
+      } catch (e) {}
+      if (!saute && type !== "back_forward") d.classList.add("entree-on");
+    })();
+  </script>
+</head>
+<body>
+
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+
+<!-- ===================== SEQUENCE D'ENTREE =====================
+     N2 · SIGNATURE. Le rideau porte le monogramme, ses quatre filets
+     se posent, puis il se retire vers le haut et la limaille du hero
+     compose APED dans la foulee : c'est la MEME matiere qui arrive.
+     Contraintes tenues :
+     · aucune ressource supplementaire, le monogramme est deja inline ;
+     · `pointer-events: none` en permanence, elle ne bloque jamais un
+       clic, meme pendant qu'elle joue ;
+     · retrait par animation CSS a `forwards`, donc elle se retire
+       meme si aucun script ne s'execute apres ;
+     · absente du document rendu si `prefers-reduced-motion` ou si la
+       session l'a deja vue ;
+     · `aria-hidden`, hors de l'ordre de tabulation, muette. -->
+<div class="entree" id="entree" aria-hidden="true">
+  <!-- LE RIDEAU EST FAIT DE QUINZE FILETS, et le nombre n'est pas
+       arbitraire : `seedPositions()` dans `js/limaille.js` fait
+       partir les grains du hero de QUINZE filets horizontaux. Le
+       rideau s'ouvre donc en la matiere exacte dont le hero se
+       compose. C'est la meme idee, pas deux idees qui se suivent. -->
+  <!-- Les bandes s'ouvrent DEPUIS LE CENTRE : `--k` est la distance
+       au filet du milieu, et c'est elle qui porte le decalage. Une
+       ouverture de haut en bas se lit comme un store qui coince ;
+       une ouverture depuis le centre se lit comme une matiere qu'on
+       ecarte, ce qui est exactement le motif du site. -->
+  <div class="entree-bandes" aria-hidden="true">
+    <i style="--i:0;--k:7" data-entree-fin></i><i style="--i:1;--k:6"></i><i style="--i:2;--k:5"></i>
+    <i style="--i:3;--k:4"></i><i style="--i:4;--k:3"></i><i style="--i:5;--k:2"></i><i style="--i:6;--k:1"></i>
+    <i style="--i:7;--k:0" data-entree-debut></i>
+    <i style="--i:8;--k:1"></i><i style="--i:9;--k:2"></i><i style="--i:10;--k:3"></i><i style="--i:11;--k:4"></i>
+    <i style="--i:12;--k:5"></i><i style="--i:13;--k:6"></i><i style="--i:14;--k:7"></i>
+  </div>
+
+  <!-- LA JAUGE. C'est la sequence de chargement, et elle ne compte
+       pas un pourcentage invente : elle se remplit de la meme trame
+       de grains que tous les filets du site, sur toute la largeur,
+       exactement la ou la barre de lecture vivra ensuite. Le premier
+       objet que le visiteur voit est donc deja le vocabulaire du
+       site.
+
+       ELLE SE REMPLIT EN DEUX TEMPS, ET LA COUPURE EST LE POINT DE
+       TOUTE LA SEQUENCE :
+       · 0 -> 620 ms  : 0 a 80 %, sans condition. C'est le temps
+         qu'on s'accorde, il joue toujours ;
+       · 80 -> 100 %  : 180 ms, mais SEULEMENT quand les polices sont
+         posees et que la limaille du hero est composee. Tant que ce
+         n'est pas vrai, `html.entree-attend` met cette seconde
+         moitie en pause — la jauge s'arrete a 80, le compteur
+         s'arrete au meme cran, et le rideau attend avec elle.
+       La sequence sert donc de COUVERTURE AU CHARGEMENT REEL au lieu
+       de faire semblant : ce qui est montre est ce qui se passe. Le
+       garde-fou de 2,5 s leve la pause quoi qu'il arrive. -->
+  <i class="entree-jauge" aria-hidden="true"></i>
+
+  <!-- LE COMPTEUR — V4 · CRAN. Il ne s'interpole pas : il ROULE,
+       par crans de dix, sur une bande de onze valeurs translatee en
+       `steps()`. Aucun script n'est necessaire pour qu'il roule ; le
+       script ne fait que le mettre en pause avec la jauge, au meme
+       cran, quand le chargement traine.
+
+       DEUX ELEMENTS, ET IL EN FAUT DEUX : `.entree-cran` est la
+       FENETRE qui rogne, `.entree-rouleau` est la BANDE qui defile.
+       Animer la fenetre elle-meme la deplacerait avec son propre
+       rognage, donc rien ne defilerait — c'est exactement le defaut
+       qu'on a mesure : la jauge etait a 62 % et le compteur affichait
+       encore 000, cent pixels plus haut. -->
+  <p class="entree-etat" translate="no">
+    <span class="entree-lib">Mise en place</span>
+    <span class="entree-cran" aria-hidden="true"><i class="entree-rouleau"><b>000</b><b>010</b><b>020</b><b>030</b><b>040</b><b>050</b><b>060</b><b>070</b><b>080</b><b>090</b><b>100</b></i></span>
+  </p>
+
+  <!-- Le cadre d'atelier : quatre equerres qui s'encliquettent et
+       reservent le format. Elles disent « on pose une piece sur un
+       banc » avant meme que la piece arrive. -->
+  <div class="entree-cadre" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <div class="entree-plaque">
+    <svg class="entree-mark" viewBox="0 0 685 501" aria-hidden="true"><path fill="currentColor" d="M227.2 0 454.3 487 179.1 487 202.9 436 373.5 436 227.2 122.2 57.1 487 .1 487Z"/><path fill="currentColor" opacity=".47" d="M289.7 4H519.5a131.5 131.5 0 0 1 0 263H402.7L378 214H519.5a78.5 78.5 0 0 0 0-157H314.4Z"/><path fill="var(--accent)" d="M424.9 322H571.5V373H448.6ZM478 436H571.5V487H501.8Z"/><path fill="currentColor" opacity=".47" d="M605 302.5a101.5 101.5 0 0 1 0 198V448.9a52.5 52.5 0 0 0 0-94.8Z"/></svg>
+    <p class="entree-mot" translate="no">APED<span>Agence</span></p>
+  </div>
+
+  <!-- LA SORTIE. Elle est ecrite, discrete, et elle ne sert pas
+       qu'a informer : un visiteur qui sait qu'il peut partir attend
+       plus volontiers. N'importe quel clic ou n'importe quelle
+       touche coupe. -->
+  <p class="entree-saut-mot" aria-hidden="true">Cliquez pour entrer</p>
+</div>
+
+<!-- Jeu d’icônes local. Aucune requête tierce, aucun tracé écrit à la main. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M17 7l-10 10" /><path d="M8 7l9 0l0 9" /></symbol><symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></symbol><symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></symbol><symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M15 6l-6 6l6 6" /></symbol><symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l5 5l10 -10" /></symbol><symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5l0 14" /><path d="M5 12l14 0" /></symbol><symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l14 0" /></symbol><symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></symbol><symbol id="i-cloud-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1" /><path d="M9 15l3 -3l3 3" /><path d="M12 12l0 9" /></symbol><symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M10 14l11 -11" /><path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" /></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008" /></symbol><symbol id="i-calendar-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v6" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-alert-triangle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" /><path d="M12 16h.01" /></symbol></svg>
+
+<!-- ===================== NAVIGATION ===================== -->
+<!-- N1 · ORIENTATION. Progression de lecture. Discrete, mais jamais
+     sacrifiee : c'est elle qui repond a « combien il en reste ».
+     Elle emprunte la trame de grains de la signature. -->
+<div class="read-progress" aria-hidden="true"><i id="readBar"></i></div>
+
+<header class="nav">
+  <a class="wordmark" href="#top" translate="no"><svg class="wordmark-mark" viewBox="0 0 685 501" aria-hidden="true"><path fill="currentColor" d="M227.2 0 454.3 487 179.1 487 202.9 436 373.5 436 227.2 122.2 57.1 487 .1 487Z"/><path fill="currentColor" opacity=".47" d="M289.7 4H519.5a131.5 131.5 0 0 1 0 263H402.7L378 214H519.5a78.5 78.5 0 0 0 0-157H314.4Z"/><path fill="var(--accent)" d="M424.9 322H571.5V373H448.6ZM478 436H571.5V487H501.8Z"/><path fill="currentColor" opacity=".47" d="M605 302.5a101.5 101.5 0 0 1 0 198V448.9a52.5 52.5 0 0 0 0-94.8Z"/></svg>APED<span>Agence</span></a>
+
+  <p class="nav-impact" id="navImpact">Impact annuel <b class="num" id="navImpactValue">0 $</b></p>
+
+  <nav class="nav-links" aria-label="Sections du site">
+    <a href="#services">Services</a>
+    <a href="#realisations">Projets</a>
+    <a href="#demos">Secteurs</a>
+    <a href="#calculateur">Calculateur</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="nav-right">
+    <button class="btn-icon theme-toggle" id="themeToggle" type="button" aria-label="Basculer en thème sombre">
+      <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun" /></svg>
+      <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon" /></svg>
+    </button>
+    <!-- Le programme de reference est un levier de revenu : il ne
+         peut plus etre enterre en bas de page. Le libelle dit le
+         BENEFICE, pas le nom du programme. Secondaire mais visible,
+         et atteignable sur telephone sans ouvrir le menu. -->
+    <button class="btn btn--ghost nav-refer" type="button" data-modal-open="modal-refer">
+      Référez, gagnez
+      <b class="nav-refer-num">5 000 $</b>
+    </button>
+    <button class="btn btn--primary nav-cta" type="button" data-modal-open="modal-start">
+      Démarrer votre projet
+      <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+    </button>
+    <button class="burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu">
+      <i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<!-- ===================== MENU PLEIN ÉCRAN ===================== -->
+<div class="menu" id="menu" hidden>
+  <nav class="menu-list" aria-label="Menu principal">
+    <a href="#services"><em>01</em>Services</a>
+    <a href="#realisations"><em>02</em>Projets</a>
+    <a href="#demos"><em>03</em>Secteurs</a>
+    <a href="#visite"><em>04</em>Visite 360</a>
+    <a href="#calculateur"><em>05</em>Calculateur</a>
+    <a href="#processus"><em>06</em>Processus</a>
+    <a href="#apropos"><em>07</em>Agence</a>
+    <a href="#faq"><em>08</em>Questions</a>
+    <a href="#contact"><em>09</em>Contact</a>
+  </nav>
+  <div class="menu-actions">
+    <button class="btn btn--primary btn--block" type="button" data-modal-open="modal-start">
+      Démarrer votre projet
+      <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+    </button>
+    <button class="btn btn--ghost btn--block" type="button" data-modal-open="modal-refer">
+      Encaissez jusqu’à 5 000 $
+      <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+    </button>
+  </div>
+  <p class="menu-foot"><a href="mailto:dorvalwilliam11@gmail.com">dorvalwilliam11@gmail.com</a></p>
+</div>
+
+<!-- ===================== INDEX COLLANT ===================== -->
+<!-- Les numéros sont cliquables : ils sont la navigation, pas un décor. -->
+<aside class="rail" id="rail">
+  <nav class="rail-list" id="railList" aria-label="Index des sections">
+    <a href="#top" data-rail="top"><em>01</em>Accueil</a>
+    <a href="#services" data-rail="services"><em>02</em>Services</a>
+    <a href="#realisations" data-rail="realisations"><em>03</em>Projets</a>
+    <a href="#demos" data-rail="demos"><em>04</em>Secteurs</a>
+    <a href="#visite" data-rail="visite"><em>05</em>Visite 360</a>
+    <a href="#calculateur" data-rail="calculateur"><em>06</em>Calculateur</a>
+    <a href="#comparatif" data-rail="comparatif"><em>07</em>Comparatif</a>
+    <a href="#processus" data-rail="processus"><em>08</em>Processus</a>
+    <a href="#apropos" data-rail="apropos"><em>09</em>Agence</a>
+    <a href="#reference" data-rail="reference"><em>10</em>Référence</a>
+    <a href="#faq" data-rail="faq"><em>11</em>Questions</a>
+    <a href="#contact" data-rail="contact"><em>12</em>Contact</a>
+  </nav>
+  <!-- N1 · combien il en reste. La question que se pose un patron de
+       PME qui defile, et a laquelle rien ne repondait. -->
+  <p class="rail-left" id="railLeft"><span class="num" id="railLeftNum">12</span> sections restantes</p>
+
+  <p class="rail-impact">
+    <span class="label">Impact annuel estimé</span>
+    <b class="num" id="railImpactValue">0 $</b>
+    <small>Réglez le calculateur, le montant suit.</small>
+  </p>
+</aside>
+
+<main class="shell" id="contenu">
+
+  <!-- ===================== 01 · HERO ===================== -->
+  <section class="hero wrap" id="top">
+    <p class="label hero-eyebrow">Agence numérique · Québec</p>
+
+    <!-- LA PLAQUE DE LIMAILLE.
+         Le <h1> porte le texte reel : c'est lui que lit un lecteur
+         d'ecran, et c'est lui qui s'affiche si le canvas est
+         indisponible. Le canvas n'est que la matiere. -->
+    <div class="hero-plate" id="heroPlate" data-accent="masse">
+      <h1 class="plate-text" translate="no"><span class="plate-big">APED</span> <span class="plate-small">Agence</span></h1>
+      <canvas id="heroCanvas" aria-hidden="true"></canvas>
+    </div>
+
+    <p class="hero-claim">On code ce qui fait rouler votre entreprise.</p>
+    <p class="hero-sub">Site web, boutique en ligne, automatisations, logiciel interne. Rien de gabarit. Le code est à vous.</p>
+    <div class="hero-cta rise">
+      <button class="btn btn--primary btn--lg" type="button" data-modal-open="modal-start">
+        Démarrer votre projet
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+      </button>
+      <button class="btn btn--ghost btn--lg" type="button" data-modal-open="modal-estimate">
+        Estimation en 60 secondes
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+      </button>
+    </div>
+
+    <!-- LA COLONNE DROITE DU HERO.
+         Elle portait quatre prix de depart. Ils sont retires : nos
+         tarifs ne sont plus publics.
+         Ce qui les remplace n'est pas du vide, c'est l'autre chiffre
+         qu'un patron de PME cherche au premier ecran — le DELAI. Il
+         est aussi verifiable qu'un prix, il nous engage autant, et il
+         reste un facteur de credibilite au sens du Nielsen Norman
+         Group (divulgation prealable) : on repond a « c'est long ? »
+         avant qu'on la pose, et la ligne de pied repond a « c'est
+         combien ? » sans publier la grille.
+         Chaque filet de rangee s'assemble en grains puis se ressoude :
+         c'est la limaille a l'echelle d'une ligne de fiche (N2).
+         Masquee sous 64em : Services arrive 400 px plus bas sur
+         telephone et repete la meme grille. -->
+    <aside class="hero-fiche" aria-label="Chantiers et délais typiques">
+      <p class="label">Fiche technique · 2026</p>
+      <ol class="fiche-rows">
+        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a href="#services"><em>01</em><span>Site ou boutique</span><b class="num">2 à 4 semaines</b></a></li>
+        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a href="#services"><em>02</em><span>Automatisation et IA</span><b class="num">1 à 3 semaines</b></a></li>
+        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a href="#services"><em>03</em><span>Visibilité locale</span><b class="num">1 semaine</b></a></li>
+        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a href="#services"><em>04</em><span>Logiciel sur mesure</span><b class="num">1 à 3 mois</b></a></li>
+      </ol>
+      <p class="fiche-foot"><i class="section-rule draw fiche-rule" data-section-rule></i>Le prix est dit au premier appel. Réponse en 24 h.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== BANDE DE SPÉCIFICATION ===================== -->
+  <div class="wrap">
+    <div class="spec" data-settle>
+      <div class="spec-cell">
+        <b class="num">24 h</b>
+        <span>Le temps qu’on prend pour vous répondre. Souvent moins.</span>
+      </div>
+      <div class="spec-cell">
+        <b class="num" data-count="12" data-suffix="+">0</b>
+        <span>Industries déjà servies, du garage à la clinique.</span>
+      </div>
+      <div class="spec-cell">
+        <b class="num" data-count="100" data-suffix=" %">0</b>
+        <span>Du code vous appartient, vos données comprises.</span>
+      </div>
+      <div class="spec-cell">
+        <b class="num">0</b>
+        <span>Gabarit acheté. On repart de la page blanche chaque fois, au Québec.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== 02 · SERVICES ===================== -->
+  <!-- DEFILEMENT HORIZONTAL, ET LE CHOIX EST ARBITRE.
+
+       Le brief demandait d'essayer aussi une mecanique ROTATIVE, les
+       services qui tournent en cercle pendant le defilement. Les deux
+       ont ete construites et capturees (`tools/proto-rotatif.html`,
+       captures dans `refonte-captures/services-proto/`). La roue
+       perd sur deux points qui ne se rattrapent pas :
+       · sur un cercle il n'y a ni debut ni fin, donc plus aucune
+         reponse honnete a « combien il en reste » — c'est du N1
+         sacrifie pour du N3 ;
+       · pour rester lisible, une carte posee sur un cercle doit etre
+         redressee, donc elle glisse le long d'une courbe sans jamais
+         s'y aligner : ca flotte, et rien ne doit flotter ici.
+       L'horizontal garde un debut, une fin, une barre qui ne peut
+       pas mentir, et des cartes qui restent d'aplomb.
+
+       LES SIX GARDE-FOUS, chacun issu d'une mesure :
+       1. UNE SEULE timeline pilote le rail ET la barre. Deux
+          ScrollTrigger separes, c'est le defaut le plus courant du
+          scroll horizontal : la barre atteint 100 % avant la
+          derniere carte et le visiteur croit que c'est fini.
+       2. Le compteur est GROS. L'eye-tracking du Nielsen Norman
+          Group montre que les fleches de carrousel ne sont
+          litteralement jamais regardees : l'orientation doit passer
+          par un chiffre, pas par une puce de 8 px.
+       3. La carte suivante est COUPEE par le bord droit. Etude NN/g
+          sur Maple.com : 6 utilisateurs sur 8 n'ont pas decouvert le
+          contenu au-dela du visible quand tout tombait pile dans le
+          cadre. Un bord franc qui coupe est la seule affordance qui
+          se voit.
+       4. Le rail est FOCALISABLE (`tabindex="0"`, `role="group"`,
+          nom accessible) et double par deux boutons toujours
+          visibles. Sans ca, une zone a debordement echoue WCAG 2.1.1
+          et 2.1.3, niveau A.
+       5. AUCUNE rotation automatique, nulle part.
+       6. Sous 64em, PLUS AUCUN epinglage : defilement natif avec
+          accrochage. NN/g est explicite sur le detournement de
+          defilement au telephone, et un doigt sait deja glisser. -->
+  <section id="services">
+      <!-- ===== FRONTIERE 02 · 01 vers 02 =====
+           G4 : volet (bas). On quitte la matiere brute pour l'offre : seule bascule de fond du haut de page.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="01" data-vers="02" data-dress="encre" data-verbe="volet" data-sens="bas">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>01</span><span>02</span></span></b><span class="seuil-nom">Services</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+      <div class="head" style="margin-top: var(--s-6);">
+        <h2>Ce qu’on livre.</h2>
+        <p>Quatre chantiers. Si votre besoin tombe entre deux, on vous le dit au premier appel, avec le prix.</p>
+      </div>
+    </div>
+
+    <div class="svc" id="svc">
+      <div class="svc-bar">
+        <p class="svc-count"><b class="num" id="svcNum">01</b><span class="num">/ 04</span></p>
+        <p class="svc-now" id="svcNow">Sites web et boutiques</p>
+        <div class="svc-jauge" aria-hidden="true"><i id="svcJauge"></i></div>
+        <div class="svc-nav">
+          <button class="btn-icon" type="button" data-svc="-1" aria-label="Service précédent">
+            <svg class="icon" aria-hidden="true"><use href="#i-chevron-left" /></svg>
+          </button>
+          <button class="btn-icon" type="button" data-svc="1" aria-label="Service suivant">
+            <svg class="icon" aria-hidden="true"><use href="#i-chevron-right" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="svc-piste" id="svcPiste" tabindex="0" role="group"
+           aria-label="Nos quatre chantiers, défilement horizontal. Utilisez les flèches gauche et droite.">
+        <div class="svc-rail" id="svcRail">
+
+          <!-- ---------------- 01 ---------------- -->
+          <article class="svc-carte is-on" data-svc-carte="Sites web et boutiques">
+            <div class="svc-texte">
+              <p class="label"><em class="num">01</em>Sites web et boutiques</p>
+              <h3>Un site qui travaille pendant que vous dormez.</h3>
+              <p class="svc-lead">Vitrine, catalogue, page de vente. Il se charge avant que la page d’à côté ait fini de clignoter, il se trouve sur Google, et vous le modifiez vous-même.</p>
+              <ul class="svc-specs">
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Design fait pour vous, pas acheté</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement Google monté au départ, jamais vendu en option</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Testé sur téléphone avant l’écran d’ordinateur</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Réservation et paiement en ligne quand ça s’applique</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Hébergement et mise en ligne inclus</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Une heure de formation pour que vous soyez autonome</li>
+              </ul>
+              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>2 à 4 semaines</b><span>Et le code vous appartient, adresse web comprise.</span></p>
+              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                Démarrer ce chantier
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+              </button>
+            </div>
+
+            <!-- L'ECRAN. Ce n'est pas une photo de portable pose sur un
+                 bureau : c'est l'interface elle-meme, construite, avec
+                 de vrais mots et de vrais nombres. Un gabarit gris ne
+                 vend rien parce qu'il ne montre rien. -->
+            <figure class="svc-ecran ecr ecr--site" aria-hidden="true">
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>cendre.ca</span></div>
+              <div class="ecr-page">
+                <div class="ecr-nav"><b>CENDRE</b><span>Menu</span><span>Réserver</span><span>Nous joindre</span></div>
+                <div class="ecr-hero">
+                  <div class="ecr-plaque"></div>
+                  <div class="ecr-hero-txt">
+                    <p class="ecr-kicker">Table du marché · Québec</p>
+                    <p class="ecr-titre">Le menu change<br>chaque semaine.</p>
+                    <span class="ecr-btn">Réserver une table</span>
+                  </div>
+                </div>
+                <div class="ecr-menu">
+                  <p class="ecr-sh">Cette semaine</p>
+                  <div class="ecr-mrow"><b>Tartare de cerf, cassis</b><em>24</em></div>
+                  <div class="ecr-mrow"><b>Flétan, beurre blanc au sapin</b><em>38</em></div>
+                  <div class="ecr-mrow"><b>Onglet vieilli, os à moelle</b><em>41</em></div>
+                  <div class="ecr-mrow"><b>Tarte au sucre, crème crue</b><em>14</em></div>
+                  <i class="ecr-scan"></i>
+                </div>
+              </div>
+            </figure>
+          </article>
+
+          <!-- ---------------- 02 ---------------- -->
+          <article class="svc-carte" data-svc-carte="Automatisation et IA">
+            <div class="svc-texte">
+              <p class="label"><em class="num">02</em>Automatisation et IA</p>
+              <h3>Les tâches que personne n’aime faire se font toutes seules.</h3>
+              <p class="svc-lead">Vos outils se parlent enfin. La soumission arrive, la fiche client se crée, la facture part, le rappel part. Vous récupérez vos soirées.</p>
+              <ul class="svc-specs">
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Diagnostic de vos processus, offert et sans engagement</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Factures, rappels et suivis qui partent sans vous</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Vos outils reliés entre eux : CRM, courriels, comptabilité, rapports</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un agent IA entraîné sur vos vraies réponses, pas sur un modèle générique</li>
+              </ul>
+              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 à 3 semaines</b><span>Le calculateur plus bas vous dit ce que ça vaut chez vous.</span></p>
+              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                Démarrer ce chantier
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+              </button>
+            </div>
+
+            <figure class="svc-ecran ecr ecr--flux" aria-hidden="true">
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>Atelier · Flux « Soumission »</span></div>
+              <div class="ecr-page">
+                <div class="ecr-flux">
+                  <div class="ecr-noeud" style="--x:0;--y:0"><b>Formulaire</b><span>site web</span></div>
+                  <div class="ecr-noeud" style="--x:0;--y:1"><b>Courriel</b><span>boîte info@</span></div>
+                  <div class="ecr-noeud ecr-noeud--ia" style="--x:1;--y:0.5"><b>Tri par IA</b><span>urgence, secteur</span></div>
+                  <div class="ecr-noeud" style="--x:2;--y:0"><b>Fiche CRM</b><span>créée</span></div>
+                  <div class="ecr-noeud" style="--x:2;--y:1"><b>Facture</b><span>envoyée</span></div>
+                  <!-- Huit fils a angles droits. Un cablage se lit
+                       parce que les fils TOUCHENT les boites : quatre
+                       segments flottants se lisaient comme un bogue. -->
+                  <i class="ecr-fil f-a"></i><i class="ecr-fil f-b"></i><i class="ecr-fil f-c"></i><i class="ecr-fil f-d"></i>
+                  <i class="ecr-fil f-e"></i><i class="ecr-fil f-f"></i><i class="ecr-fil f-g"></i><i class="ecr-fil f-h"></i>
+                  <!-- Le jeton est porte par une enveloppe de la
+                       taille du cadre : ses `translate` en pourcentage
+                       se resolvent donc sur le cadre, et le trajet
+                       reste juste a toutes les largeurs. -->
+                  <i class="ecr-jeton"><s></s></i>
+                </div>
+                <div class="ecr-journal">
+                  <p class="ecr-sh">Journal · aujourd’hui</p>
+                  <div class="ecr-ligne"><em>09:04</em><b>Soumission #1042 reçue</b></div>
+                  <div class="ecr-ligne"><em>09:04</em><b>Fiche client créée</b></div>
+                  <div class="ecr-ligne"><em>09:05</em><b>Accusé de réception envoyé</b></div>
+                  <div class="ecr-ligne"><em>11:00</em><b>Rappel SMS livré</b></div>
+                  <div class="ecr-ligne ecr-ligne--somme"><em>—</em><b>3 h 40 non travaillées</b></div>
+                </div>
+              </div>
+            </figure>
+          </article>
+
+          <!-- ---------------- 03 ---------------- -->
+          <article class="svc-carte" data-svc-carte="Immobilier et visibilité locale">
+            <div class="svc-texte">
+              <p class="label"><em class="num">03</em>Immobilier et visibilité locale</p>
+              <h3>Quand quelqu’un cherche dans votre coin, c’est vous qui sortez.</h3>
+              <p class="svc-lead">Fiche Google tenue à jour, carte de zone, visites virtuelles, avis gérés. On vise le quartier, pas la province.</p>
+              <ul class="svc-specs">
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Fiche Google Business montée et tenue à jour</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Carte et zone de service sur votre site</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Fiches de propriétés et visites virtuelles</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Avis clients gérés, pas subis</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement dans votre quartier, pas juste au Québec</li>
+              </ul>
+              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 semaine</b><span>La visite 360 de la section suivante est faite comme ça.</span></p>
+              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                Démarrer ce chantier
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+              </button>
+            </div>
+
+            <figure class="svc-ecran ecr ecr--carte" aria-hidden="true">
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>Recherche · « déneigement près de moi »</span></div>
+              <div class="ecr-page ecr-page--deux">
+                <div class="ecr-rang">
+                  <p class="ecr-sh">Résultats locaux</p>
+                  <div class="ecr-rrow"><em>1</em><b>MV Déneigement</b><i class="ecr-etoiles"></i></div>
+                  <div class="ecr-rrow"><em>2</em><b>Déneigement Portneuf</b><i class="ecr-etoiles"></i></div>
+                  <div class="ecr-rrow"><em>3</em><b>Les Frères Nadeau</b><i class="ecr-etoiles"></i></div>
+                  <div class="ecr-fiche">
+                    <b>MV Déneigement</b>
+                    <span>Ouvert · Ferme à 21 h</span>
+                    <span class="ecr-avis">4,9 · 128 avis</span>
+                    <span class="ecr-btn ecr-btn--mini">Itinéraire</span>
+                  </div>
+                </div>
+                <div class="ecr-plan">
+                  <i class="ecr-rue ecr-rue--h1"></i><i class="ecr-rue ecr-rue--h2"></i><i class="ecr-rue ecr-rue--h3"></i>
+                  <i class="ecr-rue ecr-rue--v1"></i><i class="ecr-rue ecr-rue--v2"></i>
+                  <i class="ecr-zone"></i>
+                  <i class="ecr-broche"></i>
+                </div>
+              </div>
+            </figure>
+          </article>
+
+          <!-- ---------------- 04 ---------------- -->
+          <article class="svc-carte" data-svc-carte="Logiciels et applications">
+            <div class="svc-texte">
+              <p class="label"><em class="num">04</em>Logiciels et applications</p>
+              <h3>Quand aucun logiciel du commerce ne fait la job.</h3>
+              <p class="svc-lead">Inventaire, horaires, suivi de chantier, portail client, espace membre. Bâti sur votre façon de travailler, pas l’inverse.</p>
+              <ul class="svc-specs">
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Application web ou mobile, portail client, espace membre</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Outils internes : inventaire, horaires, suivi de chantier</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Branché sur ce que vous utilisez déjà, et le code reste à vous</li>
+              </ul>
+              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 à 3 mois</b><span>Un autre développeur peut reprendre le projet demain matin.</span></p>
+              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                Démarrer ce chantier
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+              </button>
+            </div>
+
+            <figure class="svc-ecran ecr ecr--tableau" aria-hidden="true">
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>Portail interne · Chantiers</span></div>
+              <div class="ecr-page ecr-page--app">
+                <div class="ecr-flanc">
+                  <b>ATELIER</b>
+                  <span class="is-on">Chantiers</span><span>Inventaire</span><span>Horaires</span><span>Clients</span><span>Rapports</span>
+                </div>
+                <div class="ecr-corps">
+                  <div class="ecr-kpis">
+                    <div class="ecr-kpi"><em>Chantiers actifs</em><b>7</b></div>
+                    <div class="ecr-kpi"><em>Heures cette semaine</em><b>312</b></div>
+                    <div class="ecr-kpi ecr-kpi--accent"><em>Retards</em><b>0</b></div>
+                  </div>
+                  <div class="ecr-graphe">
+                    <i style="--h:42%"></i><i style="--h:68%"></i><i style="--h:54%"></i><i style="--h:88%"></i>
+                    <i style="--h:73%"></i><i style="--h:96%"></i><i style="--h:61%"></i><i style="--h:80%"></i>
+                  </div>
+                  <div class="ecr-table">
+                    <div class="ecr-trow ecr-trow--tete"><span>Chantier</span><span>Étape</span><span>Livraison</span></div>
+                    <div class="ecr-trow"><span>Rue Saint-Vallier</span><span>Finition</span><span>12 nov.</span></div>
+                    <div class="ecr-trow"><span>Boulevard Hamel</span><span>Structure</span><span>03 déc.</span></div>
+                    <div class="ecr-trow"><span>Chemin Sainte-Foy</span><span>Devis</span><span>18 déc.</span></div>
+                  </div>
+                </div>
+              </div>
+            </figure>
+          </article>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- POINT DE CAPTURE 2. Une cinquieme carte sur le rail
+         casserait le compteur « 04 / 04 », qui est du N1 : l'appat
+         vit donc SOUS la scene epinglee, une fois les quatre
+         chantiers traverses.
+         IL EST DEHORS, ET C'EST OBLIGATOIRE : place a l'interieur de
+         `.svc`, il devenait une troisieme rangee d'une grille dont
+         la hauteur est imposee a un ecran, donc il ecrasait la piste
+         et coupait les quatre cartes de 17 a 85 px selon la
+         largeur. Mesure du 2026-07-26. -->
+    <div class="appat svc-appat">
+      <p><b>Vous hésitez entre deux chantiers ?</b> Nos deux documents couvrent les treize domaines qu’on sert, tâche par tâche, avec le temps et l’argent que chacune coûte. 91 pages, gratuites, sans courriel.</p>
+      <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
+        Voir ce qui s’automatise dans votre métier
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== 03 · PROJETS LIVRÉS ===================== -->
+  <!-- LE CADRE NE DEFILE PLUS TOUT SEUL.
+
+       Avant, la capture du site client defilait dans son cadre au
+       rythme de la page : le visiteur ne l'avait pas demande, il ne
+       pouvait ni l'arreter ni la reprendre, et le haut du site —
+       c'est-a-dire ce qui se juge — n'etait net qu'une fraction de
+       seconde. Un mouvement qu'on subit n'est pas une demonstration,
+       c'est du bruit.
+
+       Maintenant le cadre est INERTE au repos : on voit le haut du
+       site, immobile et net. Il ne se parcourt que sur une intention
+       explicite du visiteur, et il en accepte trois :
+       · un survol PROLONGE, 520 ms, assez long pour qu'un pointeur
+         qui traverse le cadre ne declenche rien ;
+       · un clic, ou Entree et Espace au clavier ;
+       · un defilement a l'interieur du cadre.
+
+       CE QUI PORTE LE MOUVEMENT EST `scrollTop`, PAS UN `transform`.
+       Une seule source de verite : la molette, le doigt, les
+       touches, la barre de defilement et la lecture automatique
+       ecrivent tous dans la meme valeur. Le defilement natif
+       s'enchaine de lui-meme vers la page quand la capture est au
+       bout, donc le cadre ne peut jamais retenir le visiteur — c'est
+       la difference entre une zone qu'on parcourt et un piege. -->
+  <section id="realisations">
+      <!-- ===== FRONTIERE 03 · 02 vers 03 =====
+           G4 : relais-compteur (droite). Les services promettent, les projets prouvent : le meme compteur change de sujet.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="02" data-vers="03" data-dress="clair" data-verbe="degager" data-sens="bas" data-cible=".project:first-of-type .shot">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>02</span><span>03</span></span></b><span class="seuil-nom">Projets</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+      <div class="head" style="margin-top: var(--s-6);">
+        <h2>Des sites en ligne, pas des maquettes.</h2>
+        <p>Cinq projets livrés. Chaque cadre contient la vraie page d’accueil, au complet. Elle ne bouge pas toute seule : survolez le cadre, ou cliquez dedans, et vous la parcourez à votre rythme.</p>
+      </div>
+    </div>
+
+    <div class="wrap">
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>01</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Cendre. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-restaurant.webp" width="900" height="9195" alt="Page d’accueil complète du site du restaurant Cendre" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">01</p>
+          <h3>Cendre</h3>
+          <p>Le menu change chaque semaine. Le personnel le modifie sans nous appeler.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Restauration</dd></div>
+            <div><dt>Livrable</dt><dd>Site vitrine et réservation</dd></div>
+            <div><dt>Ce qui a changé</dt><dd>Le menu se met à jour depuis le téléphone du chef, en salle.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>02</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Pneus Mécanique. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-pneus.webp" width="900" height="6141" alt="Page d’accueil complète de la boutique Pneus Mécanique" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">02</p>
+          <h3>Pneus Mécanique</h3>
+          <p>Recherche par véhicule, panier, paiement. Le catalogue vit dans leur inventaire.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Commerce en ligne</dd></div>
+            <div><dt>Livrable</dt><dd>Boutique et recherche par véhicule</dd></div>
+            <div><dt>Ce qui a changé</dt><dd>Plus personne ne cherche une référence de pneu au téléphone.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>03</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Atelier Méridien. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-carrosserie.webp" width="900" height="8861" alt="Page d’accueil complète du site Atelier Méridien" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">03</p>
+          <h3>Atelier Méridien</h3>
+          <p>Les soumissions arrivent avec les photos du dommage.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Carrosserie</dd></div>
+            <div><dt>Livrable</dt><dd>Vitrine et demande de soumission</dd></div>
+            <div><dt>Ce qui a changé</dt><dd>Le chiffrage se fait sur photo, avant que le véhicule entre.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>04</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site MV Déneigement. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-neige.webp" width="900" height="5486" alt="Page d’accueil complète du site MV Déneigement" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">04</p>
+          <h3>MV Déneigement</h3>
+          <p>Le client entre son adresse, voit si le territoire est couvert, et s’inscrit.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Déneigement</dd></div>
+            <div><dt>Livrable</dt><dd>Site de service et inscription</dd></div>
+            <div><dt>Ce qui a changé</dt><dd>Les appels hors territoire ont cessé : la carte répond avant nous.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>05</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Studio Norden. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-interieur.webp" width="900" height="8593" alt="Page d’accueil complète du site Studio Norden" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">05</p>
+          <h3>Studio Norden</h3>
+          <p>Un portfolio qui laisse les photos respirer.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Design intérieur</dd></div>
+            <div><dt>Livrable</dt><dd>Portfolio et prise de contact</dd></div>
+            <div><dt>Ce qui a changé</dt><dd>Une nouvelle réalisation se publie en deux minutes, sans nous.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== 04 · SECTEURS ===================== -->
+  <section id="demos">
+      <!-- ===== FRONTIERE 04 · 03 vers 04 =====
+           G4 : aligner (droite). On passe d'un exemple a treize : les groupes arrivent decales et se reprennent.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="03" data-vers="04" data-dress="clair" data-verbe="aligner" data-sens="droite" data-cible=".sector-group">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>03</span><span>04</span></span></b><span class="seuil-nom">Secteurs</span></p>
+        </div>
+      </div>
+    <div class="wrap band-loose">
+      <div class="head" style="margin-top: var(--s-6);">
+        <h2>Le style change selon le métier.</h2>
+        <p>Treize secteurs, treize aperçus. Chacun montre la fonction qui fait la différence dans ce métier-là. Survolez ou tabulez pour voir, cliquez si c’est le bon.</p>
+      </div>
+
+      <div class="sectors-grid">
+        <div class="sectors-list">
+
+          <div class="sector-group">
+            <h3>Commerce et service au public</h3>
+            <div class="sector-pills">
+              <button type="button" data-sector="restaurant" data-caption="Restauration · Menu en ligne, réservations, commande" data-modal-open="modal-start">Restauration</button>
+              <button type="button" data-sector="boutique" data-caption="Boutique en ligne · Paiements, inventaire, livraison" data-modal-open="modal-start">Boutique en ligne</button>
+              <button type="button" data-sector="coiffure" data-caption="Coiffure et esthétique · Réservation, galerie" data-modal-open="modal-start">Coiffure et esthétique</button>
+              <button type="button" data-sector="gym" data-caption="Gym et entraînement · Abonnements, horaires" data-modal-open="modal-start">Gym et entraînement</button>
+              <button type="button" data-sector="hotel" data-caption="Hébergement et tourisme · Réservation, calendrier" data-modal-open="modal-start">Hébergement et tourisme</button>
+            </div>
+          </div>
+
+          <div class="sector-group">
+            <h3>Métiers et chantier</h3>
+            <div class="sector-pills">
+              <button type="button" data-sector="garage" data-caption="Garage et mécanique · Soumissions, boutique de pneus" data-modal-open="modal-start">Garage et mécanique</button>
+              <button type="button" data-sector="construction" data-caption="Construction et rénovation · Portfolio de chantiers, devis" data-modal-open="modal-start">Construction et rénovation</button>
+              <button type="button" data-sector="paysagement" data-caption="Paysagement et déneigement · Territoires, contrats" data-modal-open="modal-start">Paysagement et déneigement</button>
+            </div>
+          </div>
+
+          <div class="sector-group">
+            <h3>Santé et professions</h3>
+            <div class="sector-pills">
+              <button type="button" data-sector="clinique" data-caption="Clinique et santé · Prise de rendez-vous, dossiers" data-modal-open="modal-start">Clinique et santé</button>
+              <button type="button" data-sector="immobilier" data-caption="Immobilier · Visite 360, fiches de propriétés" data-modal-open="modal-start">Immobilier</button>
+              <button type="button" data-sector="juridique" data-caption="Services juridiques · Consultation, confiance" data-modal-open="modal-start">Services juridiques</button>
+              <button type="button" data-sector="photo" data-caption="Photographe et créatif · Portfolio, galerie plein écran" data-modal-open="modal-start">Photographe et créatif</button>
+              <button type="button" data-sector="atelier" data-caption="Votre industrie · La matière avant la forme. On part de votre métier, pas d’un gabarit" data-modal-open="modal-start">Votre industrie ici</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LES TREIZE APERÇUS.
+             Ce ne sont plus des captures : ce sont des maquettes
+             construites en HTML et CSS. Trois raisons, dans l'ordre
+             d'importance.
+             1. Les douze images precedentes etaient des visuels de
+                banque, reduits 4 a 5 fois et recadres par
+                `object-fit: cover` : on n'y lisait rien et le
+                treizieme secteur n'avait rien du tout.
+             2. Une maquette construite est VRAIE : c'est du vrai
+                markup, mis en page pour de vrai, et elle bouge pour
+                de vrai. Elle ne peut pas se deformer.
+             3. Treize archetypes de mise en page differents dans une
+                seule langue visuelle demontrent exactement ce que la
+                section affirme : le style change selon le metier.
+             Chaque maquette montre LA fonction qui compte dans ce
+             metier-la. L'animation ne tourne que sur la maquette
+             active, et jamais sous `prefers-reduced-motion`.
+             Elles sont decoratives : la legende porte la description,
+             elle est en region polie et s'annonce au focus. -->
+        <figure class="sector-preview" id="sectorPreview">
+          <div class="mock-stage" id="mockStage" aria-hidden="true"></div>
+          <!-- LES TREIZE MAQUETTES VIVENT DANS UN `<template>`.
+               Leur markup pese 9 Ko et 240 elements. Dans le
+               document, il coutait une passe de style et de mise en
+               page au chargement pour n'en montrer qu'une seule :
+               mesure du 2026-07-25, la tache d'analyse du document
+               passait de 122 a 141 ms rien qu'a cause d'elles. Le
+               contenu d'un `<template>` est analyse mais jamais
+               rendu ni style : le cout tombe a zero, et le markup
+               reste ecrit ici, relisible, plutot que fabrique en
+               chaines de caracteres dans un script.
+               Sans JavaScript il n'y a donc pas d'apercu — mais la
+               legende, qui porte la description de ce qu'on
+               construit pour chaque secteur, elle, reste. -->
+          <template id="tplSecteurs">
+
+  <!-- 01 · RESTAURATION — la carte imprimee et l'heure de table -->
+  <div class="mock mock--carte is-on" data-mock="restaurant">
+    <div class="sec-chrome"><i></i><i></i><span>bistro-nordet.ca</span><em>Ouvert · 17 h 30</em></div>
+    <div class="sec-page sec-page--carte">
+      <div class="sec-carte-tete">
+        <b class="sec-ens">NORDET</b>
+        <span>Bistro de marché — Limoilou, Québec</span>
+        <em class="sec-btn">Réserver une table</em>
+      </div>
+      <div class="sec-bande">
+        <i><img class="sec-photo" src="images/secteurs/restaurant-hero.webp" width="720" height="405" alt="" decoding="async" /></i>
+        <div class="sec-vign sec-vign--serre">
+          <img class="" src="images/secteurs/restaurant-1.webp" width="240" height="240" alt="" decoding="async" />
+          <img class="" src="images/secteurs/restaurant-2.webp" width="240" height="240" alt="" decoding="async" />
+          <img class="" src="images/secteurs/restaurant-3.webp" width="240" height="240" alt="" decoding="async" />
+        </div>
+      </div>
+      <div class="sec-carte">
+        <div class="sec-crow"><b>Tartare de cerf, câpres de sureau</b><em>24 $</em></div>
+        <div class="sec-crow"><b>Pétoncles de Gaspé, beurre noisette</b><em>29 $</em></div>
+        <div class="sec-crow"><b>Flanc de porc de Charlevoix, chou brûlé</b><em>32 $</em></div>
+        <div class="sec-crow"><b>Omble chevalier, cresson des Éboulements</b><em>34 $</em></div>
+        <div class="sec-crow"><b>Tarte au sirop, crème du 3<sup>e</sup> rang</b><em>12 $</em></div>
+      </div>
+      <div class="sec-resa">
+        <span class="sec-sh">Table pour 2 — jeudi 8 octobre</span>
+        <div class="sec-chips">
+          <i>17 h 30</i><i>18 h 15</i><i>19 h 00</i><i>20 h 30</i>
+          <s class="sec-sel"></s>
+        </div>
+      </div>
+      <div class="sec-pied-inv">
+        <span>MER — DIM</span><span>17 h 30 à 22 h</span><span>418 555-0173</span><b>3 tables libres ce soir</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 · BOUTIQUE — la grille de produits et le tiroir de panier -->
+  <div class="mock mock--vitrine" data-mock="boutique">
+    <div class="sec-chrome"><i></i><i></i><span>mailleetlin.ca</span><em>Panier · 3</em></div>
+    <div class="sec-page sec-page--shop">
+      <div class="sec-shop-main">
+        <div class="sec-fil"><b>Tricots</b><span>/</span><span>Mérinos du Bas-Saint-Laurent</span><span>/</span><span>18 modèles</span></div>
+        <div class="sec-grille3">
+          <div class="sec-tuile"><i><span class="sec-plaque sec-plaque--a"></span></i><b>Chandail Malbaie</b><em>168 $ — 4 tailles</em></div>
+          <div class="sec-tuile"><i><span class="sec-plaque sec-plaque--f"></span></i><b>Tuque Rimouski</b><em>46 $ — 6 coloris</em></div>
+          <div class="sec-tuile"><i><span class="sec-plaque sec-plaque--b"></span><s class="sec-ajout">Ajouté au panier</s></i><b>Mitaines feutrées</b><em>38 $ — 2 tailles</em></div>
+          <div class="sec-tuile"><i><span class="sec-plaque sec-plaque--e"></span></i><b>Écharpe Portneuf</b><em>92 $ — 3 coloris</em></div>
+          <div class="sec-tuile"><i><span class="sec-plaque sec-plaque--c"></span></i><b>Cardigan Témis</b><em>214 $ — 5 tailles</em></div>
+          <div class="sec-tuile"><i><span class="sec-plaque sec-plaque--d"></span></i><b>Bas de laine</b><em>28 $ — 4 tailles</em></div>
+        </div>
+      </div>
+      <aside class="sec-panier">
+        <b>PANIER</b>
+        <div class="sec-prow"><span>Chandail Malbaie</span><em>168</em></div>
+        <div class="sec-prow"><span>Tuque Rimouski</span><em>46</em></div>
+        <div class="sec-prow"><span>Mitaines feutrées</span><em>38</em></div>
+        <div class="sec-ptot"><span>Total</span><em>252 $</em></div>
+        <span class="sec-livr">Livraison gratuite dès 150 $ — expédié de Rimouski en 2 jours</span>
+        <i class="sec-btn sec-btn--full">Passer à la caisse</i>
+      </aside>
+    </div>
+  </div>
+
+  <!-- 03 · COIFFURE — la journee en creneaux -->
+  <div class="mock mock--agenda" data-mock="coiffure">
+    <div class="sec-chrome"><i></i><i></i><span>salon-verchere.ca</span><em>Rendez-vous en ligne</em></div>
+    <div class="sec-page sec-page--agenda">
+      <div class="sec-ag-tete">
+        <b class="sec-ens">VERCHÈRE</b>
+        <span class="sec-sh">Mardi 14 octobre</span>
+        <em class="sec-sh">3 stylistes</em>
+      </div>
+      <div class="sec-ag">
+        <div class="sec-heure">9 h 00</div>
+        <div class="sec-slot"><b>Coupe et brushing</b><span>Maude L.</span><em>65 $</em><i>COMPLET</i></div>
+        <div class="sec-heure">10 h 30</div>
+        <div class="sec-slot"><b>Coloration racines</b><span>Ariane P.</span><em>120 $</em><i>COMPLET</i></div>
+        <div class="sec-heure">12 h 15</div>
+        <div class="sec-slot"><b>Balayage complet</b><span>Maude L.</span><em>185 $</em><i>COMPLET</i></div>
+        <div class="sec-heure">14 h 30</div>
+        <div class="sec-slot is-libre"><b>Coupe homme</b><span>Félix T.</span><em>38 $</em><i>LIBRE</i></div>
+        <div class="sec-heure">15 h 45</div>
+        <div class="sec-slot is-libre"><b>Mise en plis</b><span>Ariane P.</span><em>55 $</em><i>LIBRE</i></div>
+        <div class="sec-heure">17 h 00</div>
+        <div class="sec-slot"><b>Coupe et barbe</b><span>Félix T.</span><em>52 $</em><i>COMPLET</i></div>
+        <s class="sec-curseur"></s>
+      </div>
+      <div class="sec-ag-pied">
+        <span>450, 3e Avenue, Verchères</span><span>450 555-0198</span><b>2 places encore libres aujourd’hui</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 · GYM — l'horaire de la semaine et les places qui restent -->
+  <div class="mock mock--horaire" data-mock="gym">
+    <div class="sec-chrome"><i></i><i></i><span>atelier-force.ca</span><em>Horaire</em></div>
+    <div class="sec-page sec-page--gym">
+      <div class="sec-gym-tete">
+        <b class="sec-ens">ATELIER FORCE</b>
+        <span class="sec-sh">Semaine du 12 octobre</span>
+      </div>
+      <div class="sec-semaine">
+        <div class="sec-jtete">LUN</div><div class="sec-jtete">MAR</div><div class="sec-jtete">MER</div>
+        <div class="sec-jtete">JEU</div><div class="sec-jtete">VEN</div><div class="sec-jtete">SAM</div>
+        <div class="sec-jtete">DIM</div>
+        <div class="sec-cell"><b>6 h 00</b><span>Haltéro</span><em>Julie R.</em></div>
+        <div class="sec-cell"><b>6 h 00</b><span>Métabolique</span><em>Karl B.</em></div>
+        <div class="sec-cell sec-cell--vide"></div>
+        <div class="sec-cell"><b>6 h 00</b><span>Haltéro</span><em>Julie R.</em></div>
+        <div class="sec-cell"><b>6 h 00</b><span>Métabolique</span><em>Karl B.</em></div>
+        <div class="sec-cell"><b>8 h 30</b><span>Sortie longue</span><em>Karl B.</em></div>
+        <div class="sec-cell sec-cell--vide"></div>
+        <div class="sec-cell"><b>18 h 30</b><span>Mobilité</span><em>Ines T.</em></div>
+        <div class="sec-cell"><b>18 h 30</b><span>Force</span><em>Julie R.</em></div>
+        <div class="sec-cell"><b>18 h 30</b><span>Mobilité</span><em>Ines T.</em></div>
+        <div class="sec-cell sec-cell--vide"></div>
+        <div class="sec-cell"><b>17 h 00</b><span>Plateau libre</span><em>sans réserv.</em></div>
+        <div class="sec-cell sec-cell--vide"></div>
+        <div class="sec-cell"><b>10 h 00</b><span>Plateau libre</span><em>sans réserv.</em></div>
+      </div>
+      <div class="sec-cap">
+        <div class="sec-caprow"><span>Haltérophilie — 6 h 00</span><i style="--f:90%"></i><em>18 / 20</em></div>
+        <div class="sec-caprow is-plein"><span>Métabolique — 6 h 00</span><i style="--f:100%"></i><em>COMPLET</em></div>
+        <div class="sec-caprow"><span>Mobilité — 18 h 30</span><i style="--f:46%"></i><em>11 / 24</em></div>
+        <div class="sec-caprow"><span>Force — 18 h 30</span><i style="--f:91%"></i><em>20 / 22</em></div>
+        <div class="sec-caprow"><span>Sortie longue — 8 h 30</span><i style="--f:47%"></i><em>7 / 15</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 · HEBERGEMENT — le calendrier et le total de sejour -->
+  <div class="mock mock--sejour" data-mock="hotel">
+    <div class="sec-chrome"><i></i><i></i><span>auberge-capbrule.ca</span><em>Réservation directe</em></div>
+    <div class="sec-page sec-page--hotel">
+      <div class="sec-hcol sec-hcol--visu">
+        <i><span class="sec-plaque sec-plaque--b"></span></i>
+        <b class="sec-titre">Chambre Vue-Fleuve</b>
+        <span class="sec-sh">Lit très grand · foyer · 32 m²</span>
+        <div class="sec-hspecs">
+          <span>Déjeuner inclus, servi de 7 h à 10 h</span>
+          <span>Départ 11 h — annulation gratuite 48 h</span>
+          <span>207 $ la nuit, taxes en sus</span>
+        </div>
+      </div>
+      <div class="sec-hcol sec-hcol--cal">
+        <div class="sec-cal-tete"><b>OCTOBRE 2026</b><span>2 adultes</span></div>
+        <div class="sec-cal-jours"><i>D</i><i>L</i><i>M</i><i>M</i><i>J</i><i>V</i><i>S</i></div>
+        <div class="sec-cal">
+          <i class="is-hors">27</i><i class="is-hors">28</i><i class="is-hors">29</i><i class="is-hors">30</i><i>1</i><i>2</i><i>3</i>
+          <i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>10</i>
+          <i>11</i><i>12</i><i>13</i><i>14</i><i>15</i><i>16</i><i>17</i>
+          <i>18</i><i>19</i><i>20</i><i>21</i><i>22</i><i>23</i><i>24</i>
+          <i>25</i><i>26</i><i>27</i><i>28</i><i>29</i><i>30</i><i>31</i>
+          <s class="sec-plage"></s>
+        </div>
+        <div class="sec-htot"><span>3 nuits — 12 au 15 oct.</span><em>621 $</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 · GARAGE — le bon de travail chiffre -->
+  <div class="mock mock--bon" data-mock="garage">
+    <div class="sec-chrome"><i></i><i></i><span>mecanique-boisvert.ca</span><em>Soumission</em></div>
+    <div class="sec-page sec-page--bon">
+      <div class="sec-bon-tete">
+        <b>BON DE TRAVAIL 4412</b>
+        <span>Multisegment 2019 — 148 320 km — dépôt 7 h 40</span>
+        <em class="sec-badge">Prêt jeudi 16 h</em>
+      </div>
+      <div class="sec-bande">
+        <i><img class="sec-photo" src="images/secteurs/garage-hero.webp" width="720" height="405" alt="" decoding="async" /></i>
+        <div class="sec-vign sec-vign--serre">
+          <img class="" src="images/secteurs/garage-1.webp" width="240" height="240" alt="" decoding="async" />
+          <img class="" src="images/secteurs/garage-2.webp" width="240" height="240" alt="" decoding="async" />
+        </div>
+      </div>
+      <div class="sec-bon">
+        <div class="sec-brow sec-brow--tete"><span>CODE</span><span>DESCRIPTION</span><span>H</span><span>MONTANT</span></div>
+        <div class="sec-brow"><span>BRQ-221</span><span>Plaquettes avant, jeu complet</span><span>0,8</span><span>184,00</span></div>
+        <div class="sec-brow"><span>BRQ-118</span><span>Disques avant, la paire</span><span>1,2</span><span>246,00</span></div>
+        <div class="sec-brow"><span>HUI-05</span><span>Vidange 5W-30 synthétique</span><span>0,4</span><span>79,95</span></div>
+        <div class="sec-brow"><span>INS-01</span><span>Inspection 42 points</span><span>0,5</span><span>45,00</span></div>
+        <s class="sec-accolade"></s>
+      </div>
+      <div class="sec-somme">
+        <div><span>Sous-total</span><em>554,95 $</em></div>
+        <div><span>TPS + TVQ</span><em>82,96 $</em></div>
+        <div class="sec-somme--tot"><span>Total</span><em>637,91 $</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 · CONSTRUCTION — l'echeancier de chantier -->
+  <div class="mock mock--chantier" data-mock="construction">
+    <div class="sec-chrome"><i></i><i></i><span>construction-larivee.ca</span><em>Chantier 07</em></div>
+    <div class="sec-page sec-page--chantier">
+      <div class="sec-ch-tete">
+        <b class="sec-titre">Résidence des Pins</b>
+        <span class="sec-sh">Saint-Bruno · 3 étages · 11 unités</span>
+        <em class="sec-badge">En cours</em>
+      </div>
+      <div class="sec-bande">
+        <i><img class="sec-photo" src="images/secteurs/construction-hero.webp" width="720" height="405" alt="" decoding="async" /></i>
+        <div class="sec-vign sec-vign--serre">
+          <img class="" src="images/secteurs/construction-1.webp" width="240" height="240" alt="" decoding="async" />
+          <img class="" src="images/secteurs/construction-2.webp" width="240" height="240" alt="" decoding="async" />
+        </div>
+      </div>
+      <div class="sec-gantt">
+        <div class="sec-gtete"><span>PHASE</span><i class="sec-gmois"><span>SEPT</span><span>OCT</span><span>NOV</span><span>DÉC</span></i><span>AVANC.</span></div>
+        <div class="sec-grow"><span>Excavation</span><i class="sec-gbar"><i class="is-fait" style="--x:0%;--w:19%"></i></i><em>100 %</em></div>
+        <div class="sec-grow"><span>Fondation</span><i class="sec-gbar"><i class="is-fait" style="--x:16%;--w:22%"></i></i><em>100 %</em></div>
+        <div class="sec-grow"><span>Charpente</span><i class="sec-gbar"><i class="is-fait" style="--x:35%;--w:26%"></i></i><em>82 %</em></div>
+        <div class="sec-grow"><span>Toiture</span><i class="sec-gbar"><i style="--x:58%;--w:18%"></i></i><em>0 %</em></div>
+        <div class="sec-grow"><span>Finition</span><i class="sec-gbar"><i style="--x:73%;--w:27%"></i></i><em>0 %</em></div>
+        <s class="sec-gzone"><s class="sec-jour-j"></s></s>
+      </div>
+      <div class="sec-ch-pied">
+        <span>Livraison <b>12 décembre 2026</b></span><span>Budget <b>2,4 M$</b></span><span><b>0</b> incident en 148 jours</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 · PAYSAGEMENT — le territoire et la tournee -->
+  <div class="mock mock--territoire" data-mock="paysagement">
+    <div class="sec-chrome"><i></i><i></i><span>paysages-du-nord.ca</span><em>Déneigement</em></div>
+    <div class="sec-page sec-page--terr">
+      <div class="sec-plan">
+        <s class="sec-rue sec-rue--h1"></s><s class="sec-rue sec-rue--h2"></s><s class="sec-rue sec-rue--h3"></s>
+        <s class="sec-rue sec-rue--v1"></s><s class="sec-rue sec-rue--v2"></s><s class="sec-rue sec-rue--v3"></s>
+        <s class="sec-secteur"></s>
+        <s class="sec-passe"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></s>
+        <b class="sec-plan-lbl">SECTEUR NORD — 58 ENTRÉES</b>
+      </div>
+      <div class="sec-tcol">
+        <b class="sec-sh">Tournée 03 — départ 5 h 15</b>
+        <div class="sec-tliste">
+          <div class="sec-trow is-fait"><span>112, rue des Trembles</span><em>FAIT 5 h 22</em></div>
+          <div class="sec-trow is-fait"><span>128, rue des Trembles</span><em>FAIT 5 h 26</em></div>
+          <div class="sec-trow is-fait"><span>4, croissant Bellevue</span><em>FAIT 5 h 34</em></div>
+          <div class="sec-trow is-fait"><span>17, croissant Bellevue</span><em>FAIT 5 h 41</em></div>
+          <div class="sec-trow"><span>230, montée du Lac</span><em>EN COURS</em></div>
+          <div class="sec-trow"><span>244, montée du Lac</span><em>À FAIRE</em></div>
+          <div class="sec-trow"><span>9, impasse des Cèdres</span><em>À FAIRE</em></div>
+        </div>
+        <div class="sec-tpied"><b>42 / 58</b><span>entrées faites — fin prévue 8 h 05</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 · CLINIQUE — la prise de rendez-vous en trois etapes -->
+  <div class="mock mock--rdv" data-mock="clinique">
+    <div class="sec-chrome"><i></i><i></i><span>clinique-des-cedres.ca</span><em>Prise de rendez-vous</em></div>
+    <div class="sec-page sec-page--rdv">
+      <div class="sec-etapes">
+        <div class="sec-etape"><b>1</b><span>Service</span></div>
+        <div class="sec-etape"><b>2</b><span>Praticien</span></div>
+        <div class="sec-etape is-on"><b>3</b><span>Heure</span></div>
+      </div>
+      <div class="sec-rdv-tete">
+        <b>Dre Camille Nadeau</b>
+        <span>Physiothérapie · salle 2 · 45 minutes</span>
+        <em>jeu. 8 oct.</em>
+      </div>
+      <div class="sec-plages">
+        <i>8 h 15</i><i>8 h 45</i><i class="is-pris">9 h 15</i>
+        <i class="is-choisi">9 h 45</i><i>10 h 15</i><i class="is-pris">11 h 00</i>
+        <i>13 h 30</i><i>14 h 15</i><i>15 h 00</i>
+        <i class="is-pris">15 h 45</i><i>16 h 30</i><i>17 h 15</i>
+      </div>
+      <div class="sec-conf">
+        <b>Rendez-vous confirmé</b>
+        <span>Jeudi 8 octobre, 9 h 45 — 1250, rue des Cèdres, Repentigny</span>
+        <em>Carte RAMQ à présenter · rappel par texto 24 h avant</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 · IMMOBILIER — la fiche de propriete -->
+  <div class="mock mock--fiche" data-mock="immobilier">
+    <div class="sec-chrome"><i></i><i></i><span>immeubles-basseville.ca</span><em>Fiche 28 441 907</em></div>
+    <div class="sec-page sec-page--fiche">
+      <div class="sec-visu">
+        <i><img class="sec-photo" src="images/secteurs/immobilier-hero.webp" width="720" height="405" alt="" decoding="async" /></i>
+        <s class="sec-hot">Visite 360°</s>
+        <b>Salon, vue est — 4 pièces visitables</b>
+      </div>
+      <div class="sec-vign">
+        <img class="" src="images/secteurs/immobilier-1.webp" width="240" height="240" alt="" decoding="async" />
+        <img class="" src="images/secteurs/immobilier-2.webp" width="240" height="240" alt="" decoding="async" />
+        <img class="" src="images/secteurs/immobilier-3.webp" width="240" height="240" alt="" decoding="async" />
+      </div>
+      <div class="sec-prix">
+        <b>749 000 $</b>
+        <span>1284, rang Sainte-Marguerite, Saint-Élie-de-Caxton</span>
+        <em class="sec-badge">Nouveau</em>
+      </div>
+      <div class="sec-specs">
+        <div><em>CHAMBRES</em><b>4</b></div>
+        <div><em>SALLES DE BAIN</em><b>2</b></div>
+        <div><em>SUPERFICIE</em><b>2 140 pi²</b></div>
+        <div><em>ANNÉE</em><b>2011</b></div>
+      </div>
+      <div class="sec-courtier">
+        <span><b>Sophie Cadieux</b>, courtière</span><span>450 555-0142</span><span>Visite libre dimanche 13 h à 15 h</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11 · JURIDIQUE — la convention et son echeancier -->
+  <div class="mock mock--dossier" data-mock="juridique">
+    <div class="sec-chrome"><i></i><i></i><span>gagne-roy-avocats.ca</span><em>Dossier 2026-0184</em></div>
+    <div class="sec-page sec-page--dossier">
+      <div class="sec-jur-tete">
+        <b class="sec-titre">Gagné Roy</b>
+        <span class="sec-sh">Droit des affaires — Québec et Lévis</span>
+        <em>Me Antoine Roy</em>
+      </div>
+      <div class="sec-jur">
+        <div class="sec-arts">
+          <div class="sec-art"><em>1.1</em><span>Objet de la convention entre actionnaires</span></div>
+          <div class="sec-art"><em>1.2</em><span>Définitions et règles d’interprétation</span></div>
+          <div class="sec-art"><em>2.1</em><span>Droit de premier refus</span></div>
+          <div class="sec-art"><em>2.2</em><span>Clause d’entraînement</span></div>
+          <div class="sec-art"><em>3.1</em><span>Rachat en cas de décès</span></div>
+          <div class="sec-art"><em>4.1</em><span>Non-concurrence — 24 mois</span></div>
+        </div>
+        <div class="sec-delais">
+          <b class="sec-sh">Échéancier</b>
+          <div class="sec-drow"><em>12 sept.</em><span>Mise en demeure</span></div>
+          <div class="sec-drow"><em>4 oct.</em><span>Dépôt de la demande</span></div>
+          <div class="sec-drow"><em>21 nov.</em><span>Audience — salle 4.12</span></div>
+          <div class="sec-dcpt"><b>26</b><span>jours avant<br>l’audience</span></div>
+        </div>
+      </div>
+      <s class="sec-tampon">DÉPOSÉ</s>
+    </div>
+  </div>
+
+  <!-- 12 · PHOTOGRAPHE — l'index et la planche -->
+  <div class="mock mock--planche" data-mock="photo">
+    <div class="sec-chrome"><i></i><i></i><span>oceane-brunelle.photo</span><em>Séries</em></div>
+    <div class="sec-page sec-page--photo">
+      <div class="sec-index">
+        <b>OCÉANE<br>BRUNELLE</b>
+        <div class="sec-iliste">
+          <div class="sec-irow"><em>01</em><span>Nord-Côtier</span><i>2024</i></div>
+          <div class="sec-irow"><em>02</em><span>Ateliers</span><i>2025</i></div>
+          <div class="sec-irow is-on"><em>03</em><span>Marées</span><i>2026</i></div>
+          <div class="sec-irow"><em>04</em><span>Portraits</span><i>2026</i></div>
+          <div class="sec-irow"><em>05</em><span>Bois debout</span><i>2026</i></div>
+        </div>
+        <div class="sec-ipied"><span>Bas-Saint-Laurent</span><span>418 555-0117</span><span>38 images dans la série</span></div>
+      </div>
+      <div class="sec-planche">
+        <s class="sec-pile">
+          <i class="sec-plaque sec-plaque--d"></i>
+          <i class="sec-plaque sec-plaque--e"></i>
+          <i class="sec-plaque sec-plaque--f"></i>
+        </s>
+        <s class="sec-exif">Marées 04 — Baie-des-Sables · 1/250 s · f/2,8 · ISO 200</s>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13 · VOTRE INDUSTRIE ICI — la matiere -->
+  <div class="mock mock--matiere" data-mock="atelier">
+    <div class="sec-chrome"><i></i><i></i><span>votre-domaine.ca</span><em>Atelier</em></div>
+    <div class="sec-page sec-page--matiere">
+      <div class="sec-mat-txt">
+        <span class="sec-kicker">Votre industrie ici</span>
+        <b class="sec-titre sec-titre--xl">On part de la matière, pas d’un gabarit.</b>
+        <p>Les grains arrivent dispersés et s’assemblent. Votre site se construit à partir de ce que vous faites vraiment — pas d’un thème acheté et repeint.</p>
+        <div class="sec-mat-data">
+          <div><b>13</b><em>secteurs livrés</em></div>
+          <div><b>0</b><em>gabarit réutilisé</em></div>
+          <div><b>4–6</b><em>semaines</em></div>
+        </div>
+      </div>
+      <!-- Soixante-trois grains, neuf par rangee. Le champ les coupe
+           a sa bordure : ils arrivent de hors-champ au lieu de
+           survoler le titre. -->
+      <div class="sec-mat-champ">
+        <div class="sec-lim">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</template>
+          <figcaption id="sectorCaption" role="status" aria-live="polite">Restauration · Menu en ligne, réservations, commande</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+
+<!-- ===================== 05 · VISITE 360 ===================== -->
+<section id="visite">
+      <!-- ===== FRONTIERE 05 · 04 vers 05 =====
+           G4 : volet (bas). On entre dans un instrument. La visite est une piece sombre, l'arete le dit.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="04" data-vers="05" data-dress="encre" data-verbe="volet" data-sens="bas">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>04</span><span>05</span></span></b><span class="seuil-nom">Visite 360</span></p>
+        </div>
+      </div>
+  <div class="wrap band">
+    <div class="head" style="margin-top: var(--s-6);">
+      <p class="head-index">Démo · Immobilier</p>
+      <h2>L’acheteur fait le tour avant de prendre rendez-vous.</h2>
+      <p>Trois pièces, un seul lien. Il arrive sur la terrasse, entre au salon, monte à la chambre, depuis son téléphone et sans rien installer. Vous arrêtez d’ouvrir la porte à des gens qui repartent après deux minutes.</p>
+    </div>
+
+    <div class="tour rise" data-tour>
+      <div class="tour-stage plate" data-tour-stage>
+        <img
+          class="tour-poster"
+          src="images/tour/poster.webp"
+          width="1040"
+          height="585"
+          alt="Terrasse pavée d’une maison de campagne blanche : un bassin, une table et des chaises en fer forgé, une grande baie vitrée ouvrant sur le salon."
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          data-tour-poster
+        />
+
+        <div class="tour-enter">
+          <p class="label">Visite 360 · 3 pièces</p>
+          <p class="tour-enter-note">Terrasse, salon, chambre. Rien ne se télécharge avant votre clic.</p>
+          <button class="btn btn--primary btn--lg" type="button" data-tour-start>
+            <span data-tour-label>Entrer dans la visite</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="fine">
+        Chaque pièce s’ouvre en 2048 px puis monte en 4096 px toute seule, une fois affichée.
+        Au clavier : flèches pour regarder autour, + et − pour le cadrage, tabulation pour atteindre
+        les passages d’une pièce à l’autre. Le plan en bas à gauche fait la même chose à la souris.
+      </p>
+      <p class="fine">
+        Panoramas de démonstration : les trois pièces sont celles d’une même propriété, Lythwood Lodge
+        (KwaZulu-Natal), photographiées par Greg Zaal et publiées par
+        <a href="https://polyhaven.com/license" rel="noopener noreferrer">Poly Haven en CC0</a> —
+        domaine public, usage commercial libre, aucune attribution exigée. Moteur Pannellum 2.5.7 (MIT),
+        hébergé sur ce serveur. Aucune requête vers un tiers.
+      </p>
+    </div>
+  </div>
+</section>
+
+  <!-- ===================== 05 · CALCULATEUR ===================== -->
+  <section id="calculateur">
+      <!-- ===== FRONTIERE 06 · 05 vers 06 =====
+           G4 : volet (haut). La RECIPROQUE du seuil precedent : la meme arete, dans l'autre sens. On ressort.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="05" data-vers="06" data-dress="encre" data-verbe="volet" data-sens="haut">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>05</span><span>06</span></span></b><span class="seuil-nom">Calculateur</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+      <div class="head" style="margin-top: var(--s-6);">
+        <p class="head-index">On ne vous demande rien</p>
+        <h2>Combien vous coûte le travail fait à la main.</h2>
+        <p>Choisissez votre industrie, poussez les trois curseurs. Les deux chiffres suivent. Le détail est replié dessous, si vous le voulez.</p>
+      </div>
+
+      <div class="roi-presets" id="roiPresets" role="group" aria-label="Profils d’industrie préréglés">
+        <button type="button" data-preset="construction" aria-pressed="false">Métiers et chantier</button>
+        <button type="button" data-preset="services" aria-pressed="false">Garage et mécanique</button>
+        <button type="button" data-preset="restauration" aria-pressed="false">Restauration</button>
+        <button type="button" data-preset="sante" aria-pressed="false">Clinique et santé</button>
+        <button type="button" data-preset="commerce" aria-pressed="false">Boutique en ligne</button>
+        <button type="button" data-preset="manufacturier" aria-pressed="false">Bureau et cabinet</button>
+        <button type="button" data-preset="perso" aria-pressed="true">À ma main</button>
+      </div>
+
+      <!-- LES DEUX CHIFFRES, AVANT TOUTE INTERACTION.
+           Ils sont calcules et poses au premier rendu, sur des
+           valeurs par defaut plausibles : le visiteur comprend ce que
+           la section lui propose sans toucher a rien. Deux chiffres,
+           pas huit : les heures qu'il perd et ce que ca lui coute.
+           Le reste du detail existe encore, replie. -->
+      <div class="roi-verdict">
+        <div class="roi-vcell">
+          <span class="label">Heures récupérées par semaine</span>
+          <b class="num" id="roiWeekly">0 h</b>
+        </div>
+        <div class="roi-vcell roi-vcell--accent">
+          <span class="label">Ce que ça vaut par année</span>
+          <b class="num" id="roiImpact">0 $</b>
+        </div>
+        <!-- Le montant est un `<b>`, donc muet pour un lecteur d'ecran.
+             Annonce a la fin du geste seulement : annoncer a chaque
+             image du glissement noierait l'utilisateur. -->
+        <p class="sr-only" id="roiAnnounce" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="roi-grid">
+        <div class="roi-inputs">
+          <p class="roi-sub">Trois réglages, c’est tout</p>
+
+          <div class="roi-field">
+            <div class="roi-top"><label for="inEmp">Nombre d’employés</label><output class="num" id="outEmp" for="inEmp">5</output></div>
+            <input type="range" id="inEmp" min="1" max="50" value="5" />
+          </div>
+          <div class="roi-field">
+            <div class="roi-top"><label for="inRate">Ce que vous coûte une heure de main-d’œuvre</label><output class="num" id="outRate" for="inRate">42 $</output></div>
+            <input type="range" id="inRate" min="15" max="120" value="42" />
+          </div>
+          <!-- LE CURSEUR MAITRE.
+               Onze curseurs demandaient au visiteur de faire lui-meme
+               la ventilation de son administration avant d'obtenir un
+               chiffre. Celui-ci demande UN total et repartit les huit
+               taches en gardant leurs proportions actuelles. Le modele
+               a huit taches ponderees est intact : c'est la meme
+               formule, on a seulement change la porte d'entree. -->
+          <div class="roi-field">
+            <div class="roi-top"><label for="inAdmin">Heures par semaine sur l’administration</label><output class="num" id="outAdmin" for="inAdmin">26 h</output></div>
+            <input type="range" id="inAdmin" min="0" max="80" value="26" />
+          </div>
+
+          <details class="roi-details" id="roiDetails">
+            <summary>Ajuster en détail<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+
+            <div class="roi-field">
+              <div class="roi-top"><label for="inRev">Chiffre d’affaires par mois</label><output class="num" id="outRev" for="inRev">65 000 $</output></div>
+              <input type="range" id="inRev" min="5000" max="500000" step="5000" value="65000" />
+            </div>
+
+          <p class="roi-sub">Heures par semaine passées sur</p>
+
+          <div class="roi-field roi-task" data-task="Facturation et paiements" data-share="0.8">
+            <div class="roi-top"><label for="task1">Facturation et paiements</label><output class="num" id="outTask1" for="task1">4 h</output></div>
+            <input type="range" id="task1" min="0" max="20" value="4" />
+          </div>
+          <div class="roi-field roi-task" data-task="Courriels et suivis clients" data-share="0.6">
+            <div class="roi-top"><label for="task2">Courriels et suivis clients</label><output class="num" id="outTask2" for="task2">6 h</output></div>
+            <input type="range" id="task2" min="0" max="20" value="6" />
+          </div>
+          <div class="roi-field roi-task" data-task="Rendez-vous et planification" data-share="0.9">
+            <div class="roi-top"><label for="task3">Rendez-vous et planification</label><output class="num" id="outTask3" for="task3">3 h</output></div>
+            <input type="range" id="task3" min="0" max="20" value="3" />
+          </div>
+          <div class="roi-field roi-task" data-task="Saisie de données" data-share="0.85">
+            <div class="roi-top"><label for="task4">Saisie de données</label><output class="num" id="outTask4" for="task4">3 h</output></div>
+            <input type="range" id="task4" min="0" max="20" value="3" />
+          </div>
+          <div class="roi-field roi-task" data-task="Rapports et paperasse" data-share="0.7">
+            <div class="roi-top"><label for="task5">Rapports et paperasse</label><output class="num" id="outTask5" for="task5">2 h</output></div>
+            <input type="range" id="task5" min="0" max="20" value="2" />
+          </div>
+          <div class="roi-field roi-task" data-task="Service client" data-share="0.5">
+            <div class="roi-top"><label for="task6">Appels et demandes de clients</label><output class="num" id="outTask6" for="task6">3 h</output></div>
+            <input type="range" id="task6" min="0" max="20" value="3" />
+          </div>
+          <div class="roi-field roi-task" data-task="Soumissions et devis" data-share="0.65">
+            <div class="roi-top"><label for="task7">Soumissions et devis</label><output class="num" id="outTask7" for="task7">3 h</output></div>
+            <input type="range" id="task7" min="0" max="20" value="3" />
+          </div>
+          <div class="roi-field roi-task" data-task="Réseaux sociaux" data-share="0.5">
+            <div class="roi-top"><label for="task8">Réseaux sociaux</label><output class="num" id="outTask8" for="task8">2 h</output></div>
+            <input type="range" id="task8" min="0" max="20" value="2" />
+          </div>
+          </details>
+        </div>
+
+        <div class="roi-panel">
+          <p class="roi-block">Votre semaine, avant et visée</p>
+          <div class="roi-bars">
+            <div class="roi-bar">
+              <div class="roi-bar-top"><span>Actuel, à la main</span><b id="barManualVal">0 h</b></div>
+              <i id="barManual"></i>
+            </div>
+            <div class="roi-bar roi-bar--auto">
+              <div class="roi-bar-top"><span>Une fois automatisé</span><b id="barAutoVal">0 h</b></div>
+              <i id="barAuto"></i>
+            </div>
+          </div>
+
+          <p class="roi-block">À automatiser en premier</p>
+          <ol class="roi-top3" id="roiTop3"></ol>
+          <p class="empty" id="roiTop3Empty" hidden>Tous les curseurs sont à zéro. Remontez-en un pour voir par où commencer.</p>
+
+          <button class="btn btn--primary btn--block" type="button" data-modal-open="modal-booking">
+            Réserver un appel
+            <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+          </button>
+
+          <form class="roi-mail" id="roiMailForm" novalidate>
+            <div class="field">
+              <label for="roiEmail">Recevez ce calcul par courriel</label>
+              <div class="roi-mail-row focus-group">
+                <input id="roiEmail" name="email" type="email" inputmode="email" spellcheck="false" autocomplete="email" placeholder="prenom@entreprise.ca…" required />
+                <button class="btn-icon" type="submit" aria-label="Envoyer le calcul par courriel">
+                  <svg class="icon" aria-hidden="true"><use href="#i-send" /></svg>
+                </button>
+              </div>
+              <span class="field-error">Entrez un courriel valide.</span>
+            </div>
+            <p class="form-status" role="status" aria-live="polite"></p>
+          </form>
+
+          <!-- POINT DE CAPTURE 1, le moins intrusif des trois : le
+               visiteur vient de voir SON chiffre, et le document qui
+               explique d'ou il sort arrive exactement a la question
+               qu'il se pose. Aucune interruption, aucune couche. -->
+          <div class="appat" style="margin-top: var(--s-5);">
+            <p><b>D’où sort ce chiffre ?</b> La méthode complète est dans notre document sur l’automatisation : 42 pages, 13 domaines, chaque chiffre avec sa source.</p>
+            <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
+              Télécharger, sans courriel
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+            </a>
+          </div>
+
+          <!-- Le detail du calcul reste disponible, il n'est plus au
+               premier plan. Un patron de PME veut d'abord savoir
+               combien ; celui qui veut verifier la methode ouvre. -->
+          <details class="roi-details roi-details--panel">
+            <summary>Le détail du calcul<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <div class="roi-rows">
+              <div><span>Jours de travail récupérés par an</span><b id="roiDays">0</b></div>
+              <div><span>Ça équivaut à combien d’employés</span><b id="roiFte">0</b></div>
+              <div><span>Heures facturables rendues</span><b id="roiDirect">0 $</b></div>
+              <div><span>Erreurs manuelles évitées</span><b id="roiErrors">0 $</b></div>
+              <div><span>Revenus gagnés, réponse plus rapide</span><b id="roiUplift">0 $</b></div>
+            </div>
+            <p class="roi-note">Même méthode que notre document sur l’automatisation : une minute par semaine récupérée vaut 28 $ par année, à 35 $ l’heure sur 48 semaines. Le taux de récupération change selon la tâche, de 50 à 90 %, parce qu’aucune ne tombe à zéro. C’est un ordre de grandeur, pas une soumission.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 06 · COMPARATIF ===================== -->
+  <section id="comparatif">
+      <!-- ===== FRONTIERE 07 · 06 vers 07 =====
+           G4 : relais-chiffre (droite). « Ce que ca vaut » devient « a quoi ca se compare » : le montant migre et roule.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="06" data-vers="07" data-dress="clair" data-verbe="aligner" data-sens="droite" data-cible=".vs-row">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>06</span><span>07</span></span></b><span class="seuil-nom">Comparatif</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+      <div class="head" style="margin-top: var(--s-6);">
+        <h2>À la main contre automatisé.</h2>
+        <p>Minutes par jour, sur des tâches d’administration observées chez des PME. Les vôtres sortiront du diagnostic.</p>
+      </div>
+
+      <!-- LE SCHEMA. Il manquait, et c'est lui qui porte la section.
+
+           Les six pistes par tache disent COMBIEN. Elles ne disent
+           pas ce que ca fait a une journee, et c'est pourtant la
+           seule question qu'un patron se pose. Le schema pose donc
+           les deux journees sur LE MEME AXE de huit heures, l'une
+           sous l'autre, et rend l'ecart comme un pont qui enjambe la
+           difference. On ne compare plus deux nombres : on voit un
+           trou.
+
+           Test a passer : comprendre l'ecart SANS lire un chiffre.
+           Il est tenu parce que la seule chose qui se voit d'abord,
+           c'est la longueur de deux traits sur une meme regle.
+
+           Lisible a l'arret : les barres sont a leur longueur finale
+           dans le document. L'animation ne fait que les tracer. -->
+      <div class="ecart" data-ecart>
+        <p class="label">Une journée de huit heures, part passée sur l’administration</p>
+
+        <div class="ecart-corps">
+          <div class="ecart-rang ecart-rang--axe" aria-hidden="true">
+            <span></span>
+            <div class="ecart-axe">
+              <i style="--t:0%"><b>0 h</b></i>
+              <i style="--t:25%"><b>2 h</b></i>
+              <i style="--t:50%"><b>4 h</b></i>
+              <i style="--t:75%"><b>6 h</b></i>
+              <i style="--t:100%"><b>8 h</b></i>
+            </div>
+            <span></span>
+          </div>
+
+          <div class="ecart-rang">
+            <p class="ecart-nom">À la main</p>
+            <div class="ecart-piste"><i class="ecart-barre ecart-barre--main" style="--p:91.7%"></i></div>
+            <p class="ecart-val num">7 h 20</p>
+          </div>
+
+          <div class="ecart-rang">
+            <p class="ecart-nom">Une fois automatisé</p>
+            <div class="ecart-piste"><i class="ecart-barre ecart-barre--auto" style="--p:21.7%"></i></div>
+            <p class="ecart-val num">1 h 44</p>
+          </div>
+
+          <div class="ecart-rang ecart-rang--pont" aria-hidden="true">
+            <span></span>
+            <div class="ecart-piste">
+              <i class="ecart-pont"><b class="num">5 h 36 rendus, chaque jour</b></i>
+            </div>
+            <span></span>
+          </div>
+        </div>
+
+        <!-- Le schema est decoratif pour un lecteur d'ecran : la
+             meme information lui est donnee en une phrase. -->
+        <p class="sr-only">Sur une journée de huit heures : sept heures vingt à la main, une heure quarante-quatre une fois automatisé. L’écart est de cinq heures trente-six par jour.</p>
+      </div>
+
+      <!-- LE DETAIL, TACHE PAR TACHE.
+           Une seule piste par ligne : le trait attenue est le temps
+           actuel, la portion d'accent est ce qui RESTE une fois
+           automatise. L'ecart est ce qui depasse, donc il n'y a
+           aucune soustraction a faire.
+           L'echelle a ete reduite : les quatre colonnes tenaient sur
+           18 rem de libelle et un chiffre en corps de titre, ce qui
+           debordait des 1280 px. -->
+      <p class="label ecart-sous">Le détail, tâche par tâche</p>
+      <div class="vs" id="vsTable">
+        <div class="vs-row" data-manual="60" data-auto="15" style="--m:60%;--a:15%">
+          <p class="vs-task">Feuilles de temps et demandes de congé</p>
+          <div class="vs-track">
+            <i class="vs-manual" data-bar="manual"></i>
+            <i class="vs-auto" data-bar="auto"></i>
+          </div>
+          <p class="vs-nums"><b>60</b> min <span aria-hidden="true">→</span> <b>15</b> min</p>
+          <p class="vs-gain">75 %</p>
+        </div>
+        <div class="vs-row" data-manual="60" data-auto="9" style="--m:60%;--a:9%">
+          <p class="vs-task">Relance des soumissions sans réponse</p>
+          <div class="vs-track">
+            <i class="vs-manual" data-bar="manual"></i>
+            <i class="vs-auto" data-bar="auto"></i>
+          </div>
+          <p class="vs-nums"><b>60</b> min <span aria-hidden="true">→</span> <b>9</b> min</p>
+          <p class="vs-gain">85 %</p>
+        </div>
+        <div class="vs-row" data-manual="90" data-auto="27" style="--m:90%;--a:27%">
+          <p class="vs-task">Compte rendu d’appel et mise à jour du CRM</p>
+          <div class="vs-track">
+            <i class="vs-manual" data-bar="manual"></i>
+            <i class="vs-auto" data-bar="auto"></i>
+          </div>
+          <p class="vs-nums"><b>90</b> min <span aria-hidden="true">→</span> <b>27</b> min</p>
+          <p class="vs-gain">70 %</p>
+        </div>
+        <div class="vs-row" data-manual="100" data-auto="20" style="--m:100%;--a:20%">
+          <p class="vs-task">Statut de commande ou de dossier</p>
+          <div class="vs-track">
+            <i class="vs-manual" data-bar="manual"></i>
+            <i class="vs-auto" data-bar="auto"></i>
+          </div>
+          <p class="vs-nums"><b>100</b> min <span aria-hidden="true">→</span> <b>20</b> min</p>
+          <p class="vs-gain">80 %</p>
+        </div>
+        <div class="vs-row" data-manual="90" data-auto="23" style="--m:90%;--a:23%">
+          <p class="vs-task">Conciliation bancaire</p>
+          <div class="vs-track">
+            <i class="vs-manual" data-bar="manual"></i>
+            <i class="vs-auto" data-bar="auto"></i>
+          </div>
+          <p class="vs-nums"><b>90</b> min <span aria-hidden="true">→</span> <b>23</b> min</p>
+          <p class="vs-gain">75 %</p>
+        </div>
+        <div class="vs-row" data-manual="40" data-auto="10" style="--m:40%;--a:10%">
+          <p class="vs-task">Réactivation des clients inactifs</p>
+          <div class="vs-track">
+            <i class="vs-manual" data-bar="manual"></i>
+            <i class="vs-auto" data-bar="auto"></i>
+          </div>
+          <p class="vs-nums"><b>40</b> min <span aria-hidden="true">→</span> <b>10</b> min</p>
+          <p class="vs-gain">75 %</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 07 · PROCESSUS ===================== -->
+  <!-- LE PARCOURS D'ATELIER.
+
+       Le brief dit « un chemin qui serpente, qui part sur le côté »,
+       et il pose aussitôt la contrainte qui gouverne : « le visiteur
+       doit toujours savoir à quelle étape il est et combien il en
+       reste. Un chemin animé où on se perd est pire que quatre
+       colonnes statiques. »
+
+       Les deux se contredisent si on les prend au pied de la lettre.
+       Un chemin qui part vraiment sur le côté, à gauche puis à
+       droite, oblige l'oeil à chercher la suite à chaque étape : on
+       gagne un effet et on perd le fil. L'arbitrage retenu :
+
+       · un FIL VERTICAL unique, toujours au même endroit, qui se
+         remplit au défilement. Sa portion pleine EST la progression,
+         donc l'orientation ne peut pas mentir ;
+       · les quatre stations s'accrochent dessus par un embranchement
+         à angle droit, et leur RETRAIT alterne. Le chemin serpente
+         donc réellement, mais autour d'un axe qui, lui, ne bouge
+         jamais ;
+       · un nodule carré par station, numéroté, posé SUR le fil : le
+         numéro n'est pas à côté du chemin, il est dedans ;
+       · un compteur « étape N sur 4 » et « il en reste K » en tête,
+         mis à jour au défilement.
+
+       LE FIL EST FAIT DE RECTANGLES EN `scaleY`, PAS D'UN TRACE SVG.
+       C'est un choix mesuré : seuls `opacity` et `transform` restent
+       sur le compositeur, alors qu'un `stroke-dashoffset` repeint le
+       tracé à chaque image. Et le plugin de tracé SVG traîne deux
+       défauts documentés — calcul de longueur faux sous Firefox,
+       rendu épais des contours de `<rect>` sous iOS — qui touchent
+       exactement l'exigence « net au pixel » de ce projet.
+
+       Chaque station porte un COMPOSANT qui se construit à l'écran :
+       la fiche d'appel s'écrit, la maquette s'assemble en limaille,
+       le code se pose ligne par ligne, le site passe en ligne. Ce
+       n'est pas de la décoration : chaque composant montre ce que
+       l'étape produit. -->
+  <section id="processus">
+      <!-- ===== FRONTIERE 08 · 07 vers 08 =====
+           G4 : aligner (droite). Une methode, ce sont des pieces qui se mettent en ligne.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="07" data-vers="08" data-dress="clair" data-verbe="aligner" data-sens="droite" data-cible=".parc-etape">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>07</span><span>08</span></span></b><span class="seuil-nom">Processus</span></p>
+        </div>
+      </div>
+    <div class="wrap band-loose">
+      <div class="head" style="margin-top: var(--s-6);">
+        <h2>Comment ça se passe.</h2>
+        <p>Quatre étapes, de l’appel à la mise en ligne. Vous approuvez chacune avant qu’on passe à la suivante.</p>
+      </div>
+
+      <!-- N1 · ORIENTATION. Le compteur vit en tête du parcours et
+           suit le défilement. Sans script il affiche l'étape 01,
+           ce qui reste vrai : c'est là qu'on commence. -->
+      <div class="parc-bar">
+        <p class="parc-compte"><b class="num" id="parcNum">01</b><span class="num">/ 04</span></p>
+        <p class="parc-nom" id="parcNom">On se parle</p>
+        <p class="parc-reste" id="parcReste">3 étapes après celle-ci</p>
+      </div>
+
+      <ol class="parc" id="parc">
+
+        <li class="parc-etape" data-parc="On se parle" style="--r:0">
+          <i class="parc-fil" aria-hidden="true"><b></b></i>
+          <span class="parc-nodule num" aria-hidden="true">01</span>
+          <i class="parc-branche" aria-hidden="true"></i>
+          <div class="parc-corps">
+            <div class="parc-txt">
+              <h3>On se parle</h3>
+              <p>Trente minutes au téléphone. Votre entreprise, votre clientèle, et ce que le projet doit vraiment régler. On repart avec une proposition écrite, pas avec une intention.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>une proposition écrite, sans engagement</b></p>
+            </div>
+
+            <!-- La fiche d'appel s'écrit toute seule. -->
+            <figure class="parc-vis vis--fiche" aria-hidden="true">
+              <div class="vis-tete"><b>Appel · 30 min</b><em>Notes</em></div>
+              <div class="vis-corps">
+                <p class="vis-l"><em>Entreprise</em><i></i></p>
+                <p class="vis-l"><em>Clientèle</em><i></i></p>
+                <p class="vis-l"><em>Ce qui bloque</em><i></i></p>
+                <p class="vis-l"><em>Échéance</em><i></i></p>
+                <p class="vis-sortie"><b>Proposition écrite</b><s>24 h</s></p>
+              </div>
+            </figure>
+          </div>
+        </li>
+
+        <li class="parc-etape" data-parc="On dessine" style="--r:1">
+          <i class="parc-fil" aria-hidden="true"><b></b></i>
+          <span class="parc-nodule num" aria-hidden="true">02</span>
+          <i class="parc-branche" aria-hidden="true"></i>
+          <div class="parc-corps">
+            <div class="parc-txt">
+              <h3>On dessine</h3>
+              <p>Des maquettes que vous approuvez avant qu’une ligne de code existe. Vous voyez à quoi ça va ressembler, sur écran et sur téléphone, et vous demandez les changements pendant qu’ils coûtent une minute.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>les maquettes, écran et téléphone</b></p>
+            </div>
+
+            <!-- La maquette s'assemble en limaille : les blocs
+                 arrivent dispersés et se reprennent à leur place.
+                 C'est le motif du hero à l'échelle d'une mise en
+                 page — la même idée, pas une idée de plus. -->
+            <figure class="parc-vis vis--maq" aria-hidden="true">
+              <div class="vis-tete"><b>Maquette · v3</b><em>Approuvée</em></div>
+              <div class="vis-corps vis-grille">
+                <i style="--d:0"></i><i style="--d:1"></i><i style="--d:2"></i>
+                <i style="--d:3"></i><i style="--d:4"></i><i style="--d:5"></i>
+                <i style="--d:6"></i><i style="--d:7"></i>
+              </div>
+            </figure>
+          </div>
+        </li>
+
+        <li class="parc-etape" data-parc="On code" style="--r:2">
+          <i class="parc-fil" aria-hidden="true"><b></b></i>
+          <span class="parc-nodule num" aria-hidden="true">03</span>
+          <i class="parc-branche" aria-hidden="true"></i>
+          <div class="parc-corps">
+            <div class="parc-txt">
+              <h3>On code</h3>
+              <p>Vous voyez l’avancement en continu, sur une adresse à vous. Aucune boîte noire, aucune surprise le jour de la livraison, et le code s’écrit ici, pas à l’autre bout du monde.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>un lien qui montre l’avancement, chaque jour</b></p>
+            </div>
+
+            <figure class="parc-vis vis--code" aria-hidden="true">
+              <div class="vis-tete"><b>Chantier · en cours</b><em>Aujourd’hui</em></div>
+              <div class="vis-corps">
+                <div class="vis-code">
+                  <p><em>01</em><span class="c-k">section</span> <span class="c-n">accueil</span></p>
+                  <p><em>02</em><span class="c-k">grille</span> <span class="c-n">12 colonnes</span></p>
+                  <p><em>03</em><span class="c-k">panier</span> <span class="c-a">branché</span></p>
+                  <p><em>04</em><span class="c-k">paiement</span> <span class="c-a">testé</span></p>
+                </div>
+                <p class="vis-sortie"><b>Tests passés</b><s>24 / 24</s></p>
+              </div>
+            </figure>
+          </div>
+        </li>
+
+        <li class="parc-etape" data-parc="On met en ligne" style="--r:3">
+          <i class="parc-fil parc-fil--fin" aria-hidden="true"><b></b></i>
+          <span class="parc-nodule parc-nodule--fin num" aria-hidden="true">04</span>
+          <i class="parc-branche" aria-hidden="true"></i>
+          <div class="parc-corps">
+            <div class="parc-txt">
+              <h3>On met en ligne</h3>
+              <p>Mise en ligne, une heure de formation, et on répond encore après la facture. Le code, l’hébergement et l’adresse web sont à vous : un autre développeur peut reprendre demain matin.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>les clés, la formation, et une réponse en 24 h</b></p>
+            </div>
+
+            <figure class="parc-vis vis--live" aria-hidden="true">
+              <div class="vis-tete"><b>votre-entreprise.ca</b><em class="vis-live">En ligne</em></div>
+              <div class="vis-corps">
+                <div class="vis-page">
+                  <span class="vis-h"></span>
+                  <span class="vis-p"></span>
+                  <span class="vis-p vis-p--court"></span>
+                </div>
+                <p class="vis-sortie"><b>Propriétaire</b><s>vous</s></p>
+              </div>
+            </figure>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== 08 · AGENCE ===================== -->
+  <!-- QUATRE ENGAGEMENTS, ET LA PREUVE DE CHACUN.
+
+       C'etaient quatre blocs de texte poses sur le fond. Les
+       arguments etaient bons, ils ne MONTRAIENT rien : un visiteur
+       qui lit « le prix est dit au depart » sur un site d'agence
+       lit la meme phrase que sur tous les autres sites d'agence.
+       Ce qui distingue, ce n'est pas la promesse, c'est sa preuve.
+
+       Chaque engagement porte donc un objet qui le demontre :
+       · le prix, deux barres de MEME longueur, estimation et
+         facture, avec le signe egal au milieu ;
+       · l'accord, une case qui se coche avant que le chantier
+         s'ouvre ;
+       · la propriete, une remise de cles ou les trois lignes
+         basculent a votre nom ;
+       · la vitesse, une semaine graduee ou les maquettes tombent
+         le cinquieme jour.
+
+       Aucun montant nulle part : la preuve du premier engagement
+       est que les deux barres sont EGALES, pas ce qu'elles valent.
+       C'est plus fort, et ca ne publie pas notre grille. -->
+  <section id="apropos">
+      <!-- ===== FRONTIERE 09 · 08 vers 09 =====
+           G4 : souder (droite). La methode se termine, on signe : un filet unique se soude sur toute la largeur.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="08" data-vers="09" data-dress="clair" data-verbe="souder" data-sens="droite">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>08</span><span>09</span></span></b><span class="seuil-nom">Agence</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+
+      <div class="agc" style="margin-top: var(--s-6);">
+
+        <div class="agc-tete">
+          <div class="head" style="margin-bottom: 0;">
+            <h2>Vous parlez à la personne qui code.</h2>
+            <p>APED est une agence québécoise. Pas de sous-traitance à l’autre bout du monde, pas de gestionnaire de compte entre vous et le clavier.</p>
+          </div>
+
+          <!-- La plaque d'atelier : la meme matiere que le hero, a
+               l'echelle d'un bloc. Elle remplace la photo d'equipe
+               generique que ce genre de section porte d'habitude. -->
+          <div class="agc-plaque" aria-hidden="true"></div>
+
+          <ul class="agc-faits">
+            <li><b class="num">1</b><span>Interlocuteur, du premier appel à la mise en ligne</span></li>
+            <li><b class="num">0</b><span>Gabarit acheté. On repart de la page blanche chaque fois</span></li>
+            <li><b class="num">24 h</b><span>Le délai de réponse, jours ouvrables</span></li>
+          </ul>
+        </div>
+
+        <ol class="agc-liste" data-agc>
+
+          <li class="agc-eng">
+            <p class="agc-num num">01</p>
+            <div class="agc-txt">
+              <h3>Le prix est dit au départ</h3>
+              <p>Le chiffre du premier appel est celui de la facture. S’il doit bouger, vous le savez avant, pas après, et vous décidez.</p>
+            </div>
+            <figure class="agc-preuve pr--egal" aria-hidden="true">
+              <p class="pr-l"><em>Estimation</em><i></i></p>
+              <p class="pr-egal"><b>=</b></p>
+              <p class="pr-l"><em>Facture</em><i></i></p>
+            </figure>
+          </li>
+
+          <li class="agc-eng">
+            <p class="agc-num num">02</p>
+            <div class="agc-txt">
+              <h3>Rien ne se code sans votre accord</h3>
+              <p>Vous approuvez ce que ça va donner avant qu’on ouvre l’éditeur. Les changements se demandent pendant qu’ils coûtent une minute.</p>
+            </div>
+            <figure class="agc-preuve pr--coche" aria-hidden="true">
+              <p class="pr-ligne"><span class="pr-case"><s></s><s></s></span>Maquettes approuvées</p>
+              <p class="pr-ligne pr-ligne--suite"><span class="pr-fleche"></span>Le chantier s’ouvre</p>
+            </figure>
+          </li>
+
+          <li class="agc-eng">
+            <p class="agc-num num">03</p>
+            <div class="agc-txt">
+              <h3>Le code vous appartient</h3>
+              <p>Un autre développeur peut reprendre le projet demain matin. On ne garde rien en otage, ni le code, ni l’hébergement, ni l’adresse web.</p>
+            </div>
+            <figure class="agc-preuve pr--cles" aria-hidden="true">
+              <p class="pr-r"><em>Code source</em><b>vous</b></p>
+              <p class="pr-r"><em>Hébergement</em><b>vous</b></p>
+              <p class="pr-r"><em>Adresse web</em><b>vous</b></p>
+            </figure>
+          </li>
+
+          <li class="agc-eng">
+            <p class="agc-num num">04</p>
+            <div class="agc-txt">
+              <h3>Ça va vite</h3>
+              <p>Premières maquettes en quelques jours, pas en quelques semaines. Vous voyez l’avancement en continu jusqu’à la mise en ligne.</p>
+            </div>
+            <figure class="agc-preuve pr--jours" aria-hidden="true">
+              <div class="pr-sem">
+                <i style="--d:0"></i><i style="--d:1"></i><i style="--d:2"></i><i style="--d:3"></i><i class="pr-jalon" style="--d:4"></i>
+              </div>
+              <p class="pr-note"><b>Jour 5</b><span>Premières maquettes</span></p>
+            </figure>
+          </li>
+
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 09 · RÉFÉRENCE ===================== -->
+  <!-- DEUX CORRECTIONS, ET LA SECONDE EST STRATEGIQUE.
+
+       1. LE FOND. Le bloc etait en `--surface-inverse`, c'est-a-dire
+          « l'inverse du theme ». En clair, ca donnait le seul aplat
+          fonce de la page, ce qui etait l'intention. En SOMBRE, ca
+          donnait un aplat CLAIR au milieu d'un site sombre : le bloc
+          criait, et pas dans le bon sens. La section est maintenant
+          sombre dans les deux themes — en clair par inversion, en
+          sombre par elevation de surface.
+
+       2. LA GRILLE DE COMMISSIONS EST RETIREE. Elle disait au
+          visiteur comment le montant se calcule, donc elle
+          l'invitait a calculer : « ce projet vaut 10 000, je touche
+          500 ». Le montant qui attire est le PLAFOND, pas le
+          barème. On garde donc « jusqu'à 5 000 $ », qui est vrai, et
+          le detail se revele dans le formulaire, apres que le
+          visiteur a manifeste son interet. C'est aussi ce qui evite
+          de publier notre structure de prix : un barème de
+          commissions par tranche de contrat la donne en creux.
+
+       Le mecanisme en trois temps ne se contente plus d'etre
+       decrit : chaque temps porte l'objet qui le prouve. Le texto
+       part, la signature se trace, le virement tombe. -->
+  <section id="reference">
+      <!-- ===== FRONTIERE 10 · 09 vers 10 =====
+           G4 : relais-montant (droite). Le seul argument de la section est un chiffre : il roule d'un cran.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="09" data-vers="10" data-dress="clair" data-verbe="cran" data-sens="droite" data-cible=".referral-max .num">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>09</span><span>10</span></span></b><span class="seuil-nom">Référence</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+      <div class="plate referral">
+        <div class="referral-head">
+          <p class="label">Programme de référence</p>
+          <h2 style="margin-top: var(--s-4);">Vous présentez. On encaisse ensemble.</h2>
+          <p style="margin-top: var(--s-4);">Un nom et un numéro suffisent. Vous n’avez aucune vente à faire, aucun suivi à donner, et rien à avancer.</p>
+        </div>
+
+        <!-- Le plafond est un bloc a lui, dans la colonne de droite :
+             en le laissant dans l'en-tete, la moitie droite de la
+             premiere rangee restait vide — la « colonne morte » que
+             cette section avait deja eue une fois. -->
+        <p class="referral-max">
+          <span class="label">Jusqu’à</span>
+          <b class="num">5 000 $</b>
+          <span>par entreprise référée, versés à la signature. Aucun plafond sur le nombre de références.</span>
+        </p>
+
+        <!-- LES TROIS TEMPS. Le filet qui les relie se trace au
+             defilement : c'est le dossier qui avance d'un temps a
+             l'autre. Chaque temps porte sa preuve. -->
+        <ol class="referral-steps" data-ref>
+          <li>
+            <span class="num">01</span>
+            <strong>Vous nous présentez</strong>
+            <span>« Appelle APED, ils refont des sites. » Un texto suffit.</span>
+            <figure class="ref-preuve pr--texto" aria-hidden="true">
+              <p class="rp-bulle">Appelle APED, ils refont<br>des sites. 418 555 0142</p>
+              <p class="rp-etat"><i></i>Envoyé</p>
+            </figure>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <strong>Le contrat se signe</strong>
+            <span>On appelle, on chiffre, on livre. Vous n’y êtes pour rien.</span>
+            <figure class="ref-preuve pr--signe" aria-hidden="true">
+              <p class="rp-doc"><span></span><span></span><span class="rp-court"></span></p>
+              <svg class="rp-signature" viewBox="0 0 120 28" aria-hidden="true">
+                <path d="M4 20c8-14 12 6 18-2s8-12 14-4 8 10 14 2 10-12 16-4 10 8 16 2 8-6 14-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" />
+              </svg>
+              <p class="rp-etat"><i></i>Signé</p>
+            </figure>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <strong>Vous êtes payé</strong>
+            <span>Viré à la signature. Autant de fois que vous voulez.</span>
+            <figure class="ref-preuve pr--vire" aria-hidden="true">
+              <p class="rp-avis"><em>Dépôt</em><b>reçu</b></p>
+              <p class="rp-avis"><em>Plafond</em><b>aucun</b></p>
+              <p class="rp-etat"><i></i>Encaissé</p>
+            </figure>
+          </li>
+          <i class="referral-line" aria-hidden="true"><b></b></i>
+        </ol>
+
+        <div class="referral-foot">
+          <button class="btn btn--primary btn--lg" type="button" data-modal-open="modal-refer">
+            Encaissez jusqu’à 5 000 $
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+          </button>
+          <p class="fine" style="margin-top: var(--s-4);">Commission versée uniquement à la signature, selon la valeur du contrat. Le détail vous est donné dans le formulaire. Aucun plafond sur le nombre de références.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 10 · QUESTIONS ===================== -->
+  <section id="faq">
+      <!-- ===== FRONTIERE 11 · 10 vers 11 =====
+           G4 : degager (droite). Un libelle se lit de gauche a droite : la premiere question se degage dans ce sens.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="10" data-vers="11" data-dress="clair" data-verbe="degager" data-sens="droite" data-cible=".faq-item">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>10</span><span>11</span></span></b><span class="seuil-nom">Questions</span></p>
+        </div>
+      </div>
+    <div class="wrap band-loose">
+      <div class="faq-grid" style="margin-top: var(--s-6);">
+        <!-- La colonne de gauche etait un en-tete collant de 140 px
+             dans une colonne de 835 : 700 px de vide sans intention,
+             juste au moment ou le visiteur a une question sans
+             reponse. Elle porte maintenant la sortie de secours. -->
+        <div class="faq-head head">
+          <p class="head-index">9 questions</p>
+          <h2>Questions fréquentes.</h2>
+          <p>Les neuf qu’on nous pose le plus, avec la vraie réponse.</p>
+          <div class="faq-aside">
+            <p class="label">Votre question n’y est pas</p>
+            <a class="faq-mail" href="mailto:dorvalwilliam11@gmail.com?subject=Une%20question">dorvalwilliam11@gmail.com</a>
+            <button class="btn btn--ghost" type="button" data-modal-open="modal-booking">
+              Poser la question de vive voix
+              <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+            </button>
+            <p class="fine">Réponse en 24 h ouvrables. L’appel de 30 minutes ne coûte rien.</p>
+          </div>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Combien coûte un site web ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Ça dépend de l’envergure, et on ne publie pas de grille : aucun projet ne ressemble au précédent, et une grille publiée finit toujours par mentir dans un sens ou dans l’autre. Ce qu’on peut faire tout de suite, sans appel : l’estimation en 60 secondes vous donne votre fourchette à l’écran. Le chiffre ferme est dit au premier appel, et c’est celui de la facture.</p>
+          </details>
+          <details class="faq-item">
+            <summary>L’automatisation, ça veut dire quoi concrètement ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>On relie vos outils entre eux pour que les tâches répétitives se fassent seules : rappels de rendez-vous, factures, suivis, rapports. Vous gardez la décision, la machine fait la saisie.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Combien de temps ça prend ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Deux à quatre semaines pour un site vitrine. Un à trois mois pour une boutique ou un logiciel, selon l’envergure. L’échéancier est confirmé avant qu’on commence.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Est-ce qu’on peut modifier le site nous-mêmes ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Oui. Vous changez vos textes et vos photos vous-mêmes, et la formation est incluse au lancement.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Vous faites la maintenance après le lancement ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Oui. Un plan mensuel couvre l’hébergement, la sécurité, les sauvegardes et les petites modifications. Ce n’est pas obligatoire : le site est à vous, avec ou sans plan.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Le site nous appartient à 100 % ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Oui. Tout est à vous, le code comme l’adresse web. Aucun abonnement obligatoire pour garder le site en ligne.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Quelles technologies utilisez-vous ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>React, Next.js, Node.js, Python. Rien d’exotique : un autre développeur peut reprendre le code demain matin sans vous appeler.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Et si le résultat ne me plaît pas ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Les maquettes passent par vous avant le développement, et des révisions sont incluses à chaque étape. Rien ne va en ligne sans votre accord.</p>
+          </details>
+          <details class="faq-item">
+            <summary>On n’est pas dans votre région, ça fonctionne ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Oui. Tout se fait à distance, rencontres sur Google Meet incluses. On travaille avec des entreprises partout au Québec.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 11 · CONTACT ===================== -->
+  <!-- CE QUI MANQUAIT : LE DECLIC.
+
+       La composition etait juste — cinq entrees, trois poids — mais
+       elle etait muette. Un patron de PME devant cinq portes ne
+       choisit pas : il remet a plus tard. Trois choses ont ete
+       ajoutees, et chacune repond a une hesitation precise.
+
+       1. « LAQUELLE ? » L'entree principale n'est plus simplement
+          plus grande, elle est en MINIUM PLEIN. C'est le seul aplat
+          d'accent de toute la page hors boutons, et il est ici
+          parce que c'est ici que le visiteur peut agir sur la
+          matiere — la regle d'accent du projet, appliquee a la
+          lettre. Les quatre autres descendent franchement d'un cran.
+
+       2. « ET APRES ? » Une frise de trois temps dit ce qui se passe
+          une fois le message parti, avec les delais. L'inconnu
+          d'apres l'envoi est ce qui retient le doigt au-dessus du
+          bouton.
+
+       3. « CA M'ENGAGE A QUOI ? » La reassurance etait la, elle
+          reste, et elle gagne une quatrieme ligne : ce qu'on ne
+          fait PAS. Dire ce qu'on ne fera pas vaut plus qu'une
+          promesse de plus.
+
+       LES ETATS DE SURVOL SONT FRANCS : la tuile monte d'une
+       surface, son filet d'accent se compose en grains depuis la
+       gauche, et la fleche s'encliquette de six pixels. Aucune
+       ombre, aucun agrandissement : rien ne flotte. -->
+  <section id="contact">
+      <!-- ===== FRONTIERE 12 · 11 vers 12 =====
+           G4 : degager (bas). Un panneau se lit de haut en bas : la tuile de contact se degage dans ce sens.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="11" data-vers="12" data-dress="clair" data-verbe="degager" data-sens="bas" data-cible=".cell">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>11</span><span>12</span></span></b><span class="seuil-nom">Contact</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+      <div class="head" style="margin-top: var(--s-6);">
+        <h2>Cinq façons de nous joindre.</h2>
+        <p>La première est la bonne dans neuf cas sur dix. Les quatre autres sont là pour le dixième.</p>
+      </div>
+
+      <div class="bento">
+        <button class="cell cell--lead" type="button" data-modal-open="modal-project">
+          <span class="num">Le plus direct · 7 étapes · 4 minutes</span>
+          <span>
+            <h3>Démarrer votre projet</h3>
+            <p>Des questions simples, une à la fois. Vous joignez vos photos et vos documents, on revient avec une proposition écrite.</p>
+            <span class="cell-plus">
+              <i></i>Aucun compte à créer
+              <i></i>Vous pouvez tout envoyer plus tard
+            </span>
+          </span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+
+        <button class="cell cell--moyen" type="button" data-modal-open="modal-estimate">
+          <span class="num">Six questions</span>
+          <span>
+            <h3>Estimation rapide</h3>
+            <p>Six questions, votre fourchette à l’écran. Sans appel, sans attendre.</p>
+          </span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+
+        <button class="cell cell--moyen" type="button" data-modal-open="modal-booking">
+          <span class="num">30 minutes</span>
+          <span>
+            <h3>Réserver un appel</h3>
+            <p>Vous choisissez la date et l’heure, sur Google Meet. L’appel ne coûte rien.</p>
+          </span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+
+        <button class="cell" type="button" data-modal-open="modal-urgent">
+          <span class="num">Traité en premier</span>
+          <span>
+            <h3>Urgence</h3>
+            <p>Site en panne ou lancement qui dérape.</p>
+          </span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+
+        <button class="cell" type="button" data-modal-open="modal-refer">
+          <span class="num">Jusqu’à 5 000 $</span>
+          <span>
+            <h3>Référer une entreprise</h3>
+            <p>Commission versée dès que le contrat est signé.</p>
+          </span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+      </div>
+
+      <!-- CE QUI ARRIVE APRES. L'inconnu d'apres l'envoi est ce qui
+           retient le doigt au-dessus du bouton : trois temps, trois
+           delais, et c'est reglé. -->
+      <div class="suite" data-suite>
+        <p class="label">Ce qui arrive après votre message</p>
+        <ol class="suite-temps">
+          <li>
+            <span class="num">01</span>
+            <strong>On le lit</strong>
+            <span>Une vraie personne, pas un accusé de réception automatique.</span>
+            <b class="suite-delai">le jour même</b>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <strong>On vous répond</strong>
+            <span>Avec des questions s’il en manque, ou directement avec une proposition.</span>
+            <b class="suite-delai">sous 24 h ouvrables</b>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <strong>Vous décidez</strong>
+            <span>Une proposition écrite, un prix ferme, et le droit de dire non.</span>
+            <b class="suite-delai">quand vous voulez</b>
+          </li>
+          <i class="suite-fil" aria-hidden="true"><b></b></i>
+        </ol>
+      </div>
+
+      <ul class="contact-sur">
+        <li><b class="num">24 h</b><span>Le délai de réponse, jours ouvrables. Souvent moins.</span></li>
+        <li><b class="num">0 $</b><span>L’appel de 30 minutes ne coûte rien et ne se facture jamais.</span></li>
+        <li><b class="num">Écrit</b><span>Une proposition écrite, sans engagement. Elle se lit, se garde, et se refuse.</span></li>
+        <li><b class="num">Jamais</b><span>De relance insistante, de liste d’envoi non demandée, ni de revente de vos coordonnées.</span></li>
+      </ul>
+
+      <!-- La porte de sortie. Certains n'ouvriront aucun formulaire :
+           l'adresse doit etre lisible et copiable, en clair. -->
+      <p class="contact-direct">
+        <span class="label">Ou simplement</span>
+        <a href="mailto:dorvalwilliam11@gmail.com?subject=Projet">dorvalwilliam11@gmail.com</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== PIED DE PAGE ===================== -->
+  <!-- ===== FRONTIERE 12 · 12 vers le pied =====
+     G4 : volet + cran (bas). La boucle se ferme sur la plaque de
+     l'entree : le monogramme revient, roule d'un cran, et c'est le
+     dernier mouvement du site. -->
+<div class="seuil seuil--pied" data-seuil data-de="12" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
+  <div class="wrap seuil-in">
+    <div class="section-rule draw seuil-filet" data-section-rule></div>
+    <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>12</span><span>00</span></span></b><span class="seuil-nom">Fin de la traversée</span></p>
+  </div>
+</div>
+
+<footer class="footer">
+    <div class="wrap footer-grid">
+      <div class="footer-left">
+        <h2>On commence quand vous voulez.</h2>
+        <ul class="footer-points">
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un appel de 30 minutes, gratuit</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Une proposition écrite, sans engagement</li>
+        </ul>
+        <button class="btn btn--primary btn--lg" type="button" data-modal-open="modal-start">
+          Démarrer votre projet
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+
+        <!-- Les deux documents sont telechargeables SANS courriel. Le
+             courriel vient apres, pour la suite, jamais pour ouvrir la
+             porte. Un cadeau qu'il faut payer n'est pas un cadeau. -->
+        <p class="footer-docs-mot">Deux documents, 91 pages, gratuits et sans courriel. Ils vous servent même si vous ne nous engagez jamais.</p>
+        <ul class="footer-docs">
+          <li>
+            <a href="documents/aped-automatisation.pdf" download>
+              Ce que votre entreprise pourrait automatiser
+              <b>PDF · 42 pages · sans courriel</b>
+            </a>
+          </li>
+          <li>
+            <a href="documents/aped-ia-croissance.pdf" download>
+              Comment utiliser l’IA pour faire grossir votre entreprise
+              <b>PDF · 49 pages · sans courriel</b>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer-right">
+        <span class="footer-mark"><svg class="wordmark-mark" viewBox="0 0 685 501" aria-hidden="true"><path fill="currentColor" d="M227.2 0 454.3 487 179.1 487 202.9 436 373.5 436 227.2 122.2 57.1 487 .1 487Z"/><path fill="currentColor" opacity=".47" d="M289.7 4H519.5a131.5 131.5 0 0 1 0 263H402.7L378 214H519.5a78.5 78.5 0 0 0 0-157H314.4Z"/><path fill="var(--accent)" d="M424.9 322H571.5V373H448.6ZM478 436H571.5V487H501.8Z"/><path fill="currentColor" opacity=".47" d="M605 302.5a101.5 101.5 0 0 1 0 198V448.9a52.5 52.5 0 0 0 0-94.8Z"/></svg></span>
+        <a class="footer-mail" href="mailto:dorvalwilliam11@gmail.com">dorvalwilliam11@gmail.com</a>
+        <nav class="footer-nav" aria-label="Pied de page">
+          <a href="#services">Services</a>
+          <a href="#realisations">Projets</a>
+          <a href="#demos">Secteurs</a>
+          <a href="#calculateur">Calculateur</a>
+          <a href="#apropos">Agence</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+    <!-- PHASE 8 · V1 — LA DERNIERE PLAQUE. Le monogramme geant du
+         pied ne s'affichait pas, il etait la. Il se DEGAGE
+         maintenant du bas, sous la meme arete franche que tout le
+         reste : la page s'ouvre sur une plaque de limaille qui se
+         compose, elle se ferme sur la meme plaque qu'on degage. -->
+    <p class="footer-mega" aria-hidden="true" translate="no" data-degage="haut">APED</p>
+    <div class="wrap footer-legal">
+      <span>© 2026 APED Agence. Tous droits réservés.</span>
+      <span>Québec, Canada</span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ===================== LE CADEAU =====================
+     UN SEUL POPUP SUR TOUT LE SITE, sur `<dialog>` natif avec
+     `showModal()`. Ce n'est pas un detail d'outillage : le natif
+     fournit gratuitement le piege de focus, l'inertie du reste de
+     la page, la fermeture par Echap et la couche superieure — donc
+     aucun conflit de `z-index` possible.
+
+     CE QUI A CHANGE, ET POURQUOI, LE 2026-07-26.
+
+     1. IL Y AVAIT TROP DE CHOSES A LIRE. L'ancienne version tenait
+        un titre de quatre lignes, un paragraphe de quatre lignes,
+        deux puces, DEUX boutons de telechargement, un champ, un
+        libelle de champ long et un lien de refus. Neuf objets a
+        trier. Un popup se lit en deux secondes ou il se ferme : le
+        visiteur ne comprenait pas ce qu'on lui offrait, et il avait
+        raison de ne pas comprendre.
+
+     2. IL Y AVAIT TROIS ACTIONS CONCURRENTES. Telecharger le
+        premier, telecharger le second, envoyer son courriel. Trois
+        appels a l'action dans un encart de deux secondes ne font
+        pas trois chances : ils font une hesitation. Il n'y en a
+        plus qu'UNE, et le benefice est dans son libelle.
+
+     3. LE CADEAU NE SE VOYAIT PAS. Deux etiquettes de texte
+        tenaient lieu de documents. On montre maintenant les VRAIES
+        couvertures, rendues depuis la source des PDF par
+        `tools/couvertures.mjs` : elles ne peuvent pas se
+        desynchroniser du document livre.
+
+     CE QUI N'A PAS CHANGE : le cadeau reste un cadeau. Les deux
+     documents partent par courriel ET sont telechargeables sur
+     place a la seconde ou l'adresse est donnee — meme si l'envoi
+     echoue. Ils sont aussi en clair dans le pied de page, sans
+     aucun courriel. Le champ sert a rester en contact, pas a ouvrir
+     la porte.
+
+     UN SEUL CHAMP. Au-dela de trois champs, le jeu de donnees de
+     reference mesure une chute de 2,2 % a 1,5 %. On demande le
+     courriel, rien d'autre : pas de nom, pas d'entreprise, pas de
+     telephone.
+
+     LA MISE EN SCENE EST EN CSS, PAS EN GSAP. Le popup peut
+     s'ouvrir a la onzieme seconde, donc apres la seconde vague de
+     scripts — mais il peut aussi s'ouvrir sur un engagement fort
+     AVANT elle. Une entree qui dependrait de GSAP apparaitrait
+     alors sans mise en scene une fois sur dix. En CSS, elle joue
+     toujours, a tous les paliers.
+     · ENTREE : V1 · DEGAGER, arete franche de haut en bas — un
+       panneau se lit de haut en bas. Jamais un fondu.
+     · LES COUVERTURES : V2 · S'ALIGNER, elles arrivent decalees en
+       alternance et se reprennent. Aucun depassement.
+     · SORTIE : la RECIPROQUE, l'arete repasse par ou elle est
+       venue. -->
+<dialog class="cadeau" id="cadeau" aria-labelledby="cadeauTitre">
+  <div class="cadeau-in">
+    <button class="cadeau-x btn-icon" type="button" data-cadeau-non aria-label="Fermer">
+      <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+    </button>
+
+    <!-- LE VISUEL. Deux vraies couvertures, decalees comme deux
+         pieces posees l'une sur l'autre sur un banc. `width` et
+         `height` sont ecrits : aucun decalage de mise en page
+         possible pendant que l'image arrive. -->
+    <div class="cadeau-vue" aria-hidden="true">
+      <img class="cadeau-couv cadeau-couv--1" src="images/doc-automatisation.webp"
+           width="560" height="725" alt="" loading="lazy" decoding="async" />
+      <img class="cadeau-couv cadeau-couv--2" src="images/doc-ia.webp"
+           width="560" height="725" alt="" loading="lazy" decoding="async" />
+    </div>
+
+    <div class="cadeau-dire">
+      <!-- CE QU'ON DIT, ET DANS QUEL ORDRE ON LE DIT.
+
+           1. L'ETIQUETTE dit GRATUIT et SANS COMPTE. C'est la
+              premiere objection d'un patron de PME, on la leve avant
+              qu'elle se forme.
+           2. LE TITRE FAIT TROIS MOTS. « C'est pour vous. » Il n'y a
+              rien a decoder. On a ecarte « Bravo, vous avez recu un
+              cadeau » : le visiteur n'a rien accompli — il a laisse
+              une page ouverte onze secondes — et le feliciter est ce
+              qui se lit le plus vite comme de la manipulation. Sur un
+              site dont la voix est « le prix est dit au premier
+              appel », ca affaiblit exactement ce qu'on veut renforcer.
+           3. LA FICHE porte les chiffres bruts. C'est l'idiome du
+              site — la fiche technique du hero, le compteur des
+              chantiers, le bareme — et c'est ce qui rend la chose
+              IMPRESSIONNANTE sans un seul adjectif. « 24 taches
+              chiffrees » dit plus que « guide complet et detaille ».
+           4. UNE LIGNE de benefice. Ce qu'il pourra faire, pas ce
+              qu'il y a dedans.
+           Puis un champ, un bouton, une reassurance, une sortie. -->
+      <p class="label cadeau-eyebrow">Cadeau &middot; Gratuit &middot; Sans compte</p>
+      <h2 id="cadeauTitre">C&rsquo;est pour vous.</h2>
+
+      <p class="cadeau-fiche" translate="no">
+        <span><b>2</b>guides</span>
+        <span><b>91</b>pages</span>
+        <span><b>24</b>t&acirc;ches chiffr&eacute;es</span>
+      </p>
+
+      <p class="cadeau-lead">Ce que vous pouvez arr&ecirc;ter de faire &agrave; la main, ce que &ccedil;a vous co&ucirc;te aujourd&rsquo;hui, et par o&ugrave; commencer.</p>
+
+      <form class="cadeau-form" id="cadeauForm" novalidate>
+        <div class="field">
+          <label class="sr-only" for="cadeauEmail">Votre courriel</label>
+          <input id="cadeauEmail" name="email" type="email" inputmode="email" spellcheck="false"
+                 autocomplete="email" placeholder="prenom@entreprise.ca" required />
+          <span class="field-error">Entrez un courriel valide.</span>
+        </div>
+        <button class="btn btn--primary btn--lg cadeau-go" type="submit">
+          <span data-label>Recevoir mes deux guides</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="cadeau-fin">Gratuit &middot; Aucun envoi non sollicit&eacute; &middot; D&eacute;sabonnement en un clic</p>
+
+      <!-- LA REMISE. Cachee tant que rien n'est envoye ; devoilee a
+           la seconde ou l'adresse est donnee, y compris si l'envoi
+           echoue. Le visiteur repart toujours avec ce qu'on lui a
+           promis. -->
+      <div class="cadeau-recu" hidden>
+        <a class="btn btn--primary" href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">
+          Guide 1 &middot; Automatisation
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </a>
+        <a class="btn btn--ghost" href="documents/aped-ia-croissance.pdf" download data-cadeau-pdf="ia">
+          Guide 2 &middot; L&rsquo;IA pour grossir
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </a>
+      </div>
+
+      <button class="cadeau-non link-btn" type="button" data-cadeau-non>Non merci</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===================== MODALES ===================== -->
+
+<!-- Choix de départ -->
+<div class="modal" id="modal-start" role="dialog" aria-modal="true" aria-labelledby="startTitle" hidden>
+  <div class="modal-scrim" data-modal-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <div>
+        <h3 id="startTitle">Par où on commence ?</h3>
+        <p class="modal-sub">Choisissez la vôtre.</p>
+      </div>
+      <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
+        <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+      </button>
+    </div>
+    <div class="options">
+      <button type="button" data-modal-switch="modal-booking">
+        <span class="o-num">01</span>
+        <span><strong>Réserver un appel</strong><small>Vous choisissez la date et l’heure.</small></span>
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+      </button>
+      <button type="button" data-modal-switch="modal-estimate">
+        <span class="o-num">02</span>
+        <span><strong>Estimation en 60 secondes</strong><small>Six questions, un prix à l’écran.</small></span>
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+      </button>
+      <button type="button" data-modal-switch="modal-project">
+        <span class="o-num">03</span>
+        <span><strong>Démarrer votre projet</strong><small>Des questions simples, avec envoi de photos et de documents.</small></span>
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Réserver un appel -->
+<div class="modal" id="modal-booking" role="dialog" aria-modal="true" aria-labelledby="bookingTitle" hidden>
+  <div class="modal-scrim" data-modal-close></div>
+  <div class="modal-panel modal-panel--wide">
+    <div class="modal-head">
+      <h3 id="bookingTitle">Réserver un appel</h3>
+      <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
+        <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+      </button>
+    </div>
+
+    <div class="step" data-bstep="1">
+      <p class="modal-sub" style="margin-top:0">La date, puis l’heure. Rencontre de 30 minutes sur Google Meet.</p>
+      <div class="booking">
+        <div>
+          <div class="cal-head">
+            <button class="btn-icon" type="button" id="calPrev" aria-label="Mois précédent">
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron-left" /></svg>
+            </button>
+            <span class="cal-month" id="calMonth"></span>
+            <button class="btn-icon" type="button" id="calNext" aria-label="Mois suivant">
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron-right" /></svg>
+            </button>
+          </div>
+          <div class="cal-week" aria-hidden="true"><span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span></div>
+          <div class="cal-days" id="calDays" role="group" aria-label="Jours disponibles"></div>
+        </div>
+        <div class="slots">
+          <p class="slots-title" id="slotsTitle">Sélectionnez une date</p>
+          <div class="slots-list" id="slotsList"></div>
+          <p class="empty" id="slotsEmpty" hidden>Plus rien de libre ce jour-là. Prenez une autre date.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" data-bstep="2" hidden>
+      <p class="modal-sub" style="margin-top:0">Vos coordonnées, et l’invitation Google Meet part.</p>
+      <p class="recap"><span id="bookingRecap"></span><button type="button" class="link-btn" id="bookingChange">Changer</button></p>
+      <form class="form" data-form="booking" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="bkName">Votre nom</label>
+            <input id="bkName" name="nom" type="text" required autocomplete="name" />
+            <span class="field-error">Entrez votre nom.</span>
+          </div>
+          <div class="field">
+            <label for="bkCompany">Entreprise <span class="opt">(optionnel)</span></label>
+            <input id="bkCompany" name="entreprise" type="text" autocomplete="organization" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="bkEmail">Courriel</label>
+            <input id="bkEmail" name="email" type="email" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+            <span class="field-error">Entrez un courriel valide.</span>
+          </div>
+          <div class="field">
+            <label for="bkPhone">Téléphone</label>
+            <input id="bkPhone" name="telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+            <span class="field-error">Entrez votre numéro.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="bkTopic">De quoi voulez-vous parler ? <span class="opt">(optionnel)</span></label>
+          <textarea id="bkTopic" name="sujet" rows="2"></textarea>
+        </div>
+        <button class="btn btn--primary" type="submit" data-submit>
+          <span data-label>Confirmer ma réservation</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+        </button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="step success" data-bstep="3" hidden>
+      <span class="num">01 / 01</span>
+      <h4>Demande reçue.</h4>
+      <p class="modal-sub" style="margin-top:0">On confirme la plage par courriel avec l’invitation Google Meet, en moins de 24 h.</p>
+      <button class="btn btn--ghost" type="button" data-modal-close>
+        Fermer
+        <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Démarrer un projet -->
+<div class="modal" id="modal-project" role="dialog" aria-modal="true" aria-labelledby="projectTitle" hidden>
+  <div class="modal-scrim" data-modal-close></div>
+  <div class="modal-panel modal-panel--wide">
+    <div class="modal-head">
+      <h3 id="projectTitle">Démarrer votre projet</h3>
+      <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
+        <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+      </button>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Progression du formulaire" aria-valuemin="0" aria-valuemax="100" aria-valuenow="14"><i id="projectBar"></i></div>
+
+    <form id="projectWizard" novalidate>
+
+      <div class="step" data-pstep="1">
+        <p class="step-q">Qui êtes-vous ?</p>
+        <div class="form-row">
+          <div class="field">
+            <label for="prName">Votre nom</label>
+            <input id="prName" name="nom" type="text" required autocomplete="name" />
+            <span class="field-error">Entrez votre nom.</span>
+          </div>
+          <div class="field">
+            <label for="prCompany">Nom de l’entreprise</label>
+            <input id="prCompany" name="entreprise" type="text" required autocomplete="organization" />
+            <span class="field-error">Entrez le nom de votre entreprise.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="prCity">Ville ou région</label>
+          <input id="prCity" name="ville" type="text" autocomplete="address-level2" />
+        </div>
+      </div>
+
+      <div class="step" data-pstep="2" hidden>
+        <p class="step-q">Parlez-nous de l’entreprise.</p>
+        <div class="form-row">
+          <div class="field">
+            <label for="prIndustry">Votre domaine</label>
+            <select id="prIndustry" name="domaine" required>
+              <option value="">Choisir…</option>
+              <option>Restauration</option>
+              <option>Garage et mécanique</option>
+              <option>Construction et rénovation</option>
+              <option>Santé et beauté</option>
+              <option>Immobilier</option>
+              <option>Commerce de détail</option>
+              <option>Services professionnels</option>
+              <option>Autre</option>
+            </select>
+            <span class="field-error">Choisissez votre domaine.</span>
+          </div>
+          <div class="field">
+            <label for="prSize">Nombre d’employés</label>
+            <select id="prSize" name="nombre_employes" required>
+              <option value="">Choisir…</option>
+              <option>Juste moi</option>
+              <option>2 à 10</option>
+              <option>11 à 50</option>
+              <option>51 à 200</option>
+              <option>Plus de 200</option>
+            </select>
+            <span class="field-error">Indiquez la taille de l’équipe.</span>
+          </div>
+        </div>
+        <div class="field">
+          <p class="field-legend" id="prSiteLegend">Avez-vous déjà un site web ?</p>
+          <div class="choices" data-choice="site_existant" role="group" aria-labelledby="prSiteLegend">
+            <button type="button" data-value="Oui">Oui</button>
+            <button type="button" data-value="Non">Non</button>
+          </div>
+          <input type="hidden" name="site_existant" required />
+          <span class="field-error">Répondez oui ou non.</span>
+        </div>
+        <div class="field" id="prUrlField" hidden>
+          <label for="prUrl">Adresse de votre site actuel</label>
+          <input id="prUrl" name="site_actuel" type="url" inputmode="url" spellcheck="false" autocomplete="url" placeholder="https://votresite.ca…" />
+        </div>
+      </div>
+
+      <div class="step" data-pstep="3" hidden>
+        <p class="step-q">De quoi avez-vous besoin ?</p>
+        <div class="field">
+          <p class="field-legend" id="prNeedLegend">Ce qui vous intéresse <span class="opt">(plusieurs choix possibles)</span></p>
+          <div class="check-grid" data-checks="besoins" role="group" aria-labelledby="prNeedLegend">
+            <label class="check"><input type="checkbox" name="besoins" value="Site vitrine" /><span>Site vitrine</span></label>
+            <label class="check"><input type="checkbox" name="besoins" value="Boutique en ligne" /><span>Boutique en ligne</span></label>
+            <label class="check"><input type="checkbox" name="besoins" value="Application ou logiciel" /><span>Application ou logiciel</span></label>
+            <label class="check"><input type="checkbox" name="besoins" value="Automatisation et IA" /><span>Automatisation et IA</span></label>
+            <label class="check"><input type="checkbox" name="besoins" value="Google Maps et visibilité locale" /><span>Google Maps et visibilité</span></label>
+            <label class="check"><input type="checkbox" name="besoins" value="Je ne sais pas encore" /><span>Je ne sais pas encore</span></label>
+          </div>
+          <span class="field-error">Cochez au moins une option.</span>
+        </div>
+        <div class="field">
+          <label for="prGoal">Objectif principal</label>
+          <select id="prGoal" name="objectif" required>
+            <option value="">Choisir…</option>
+            <option>Attirer plus de clients</option>
+            <option>Vendre en ligne</option>
+            <option>Sauver du temps, automatiser</option>
+            <option>Moderniser mon image</option>
+            <option>Autre</option>
+          </select>
+          <span class="field-error">Choisissez un objectif.</span>
+        </div>
+      </div>
+
+      <div class="step" data-pstep="4" hidden>
+        <p class="step-q">Budget et échéancier.</p>
+        <div class="form-row">
+          <!-- LES FOURCHETTES CHIFFREES ONT SAUTE, et ce n'etait pas
+               un oubli du premier nettoyage : ce champ demandait le
+               budget DU VISITEUR, donc il ne publiait pas nos prix
+               directement. Mais une liste « moins de 5 000 $ / 5 000
+               a 15 000 / 15 000 a 50 000 / plus de 50 000 » dit en
+               creux entre quelles bornes nos projets tombent, et
+               elle est lisible par n'importe qui en ouvrant la
+               modale. C'est exactement « un montant qui revele
+               notre structure de prix ».
+               Ce qui la remplace qualifie mieux, d'ailleurs : savoir
+               si l'enveloppe est deja votee compte plus que son
+               montant, et le montant se dit de vive voix au premier
+               appel. -->
+          <div class="field">
+            <label for="prBudget">Où en êtes-vous côté budget ?</label>
+            <select id="prBudget" name="budget" required>
+              <option value="">Choisir…</option>
+              <option>Une enveloppe est déjà déterminée</option>
+              <option>J’ai un ordre de grandeur en tête, à valider</option>
+              <option>Je cherche d’abord à savoir ce que ça coûte</option>
+              <option>Le budget suivra si le projet est le bon</option>
+            </select>
+            <span class="field-error">Choisissez une réponse.</span>
+          </div>
+          <div class="field">
+            <label for="prWhen">Quand voulez-vous lancer ?</label>
+            <select id="prWhen" name="echeancier" required>
+              <option value="">Choisir…</option>
+              <option>Le plus vite possible</option>
+              <option>D’ici 1 à 2 mois</option>
+              <option>D’ici 3 à 6 mois</option>
+              <option>Pas pressé, j’explore</option>
+            </select>
+            <span class="field-error">Choisissez un échéancier.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="prMsg">Décrivez votre projet dans vos mots <span class="opt">(optionnel)</span></label>
+          <textarea id="prMsg" name="description" rows="3" placeholder="Ce que vous avez en tête, vos inspirations, ce qui vous dérange de votre site actuel…"></textarea>
+        </div>
+      </div>
+
+      <div class="step" data-pstep="5" hidden>
+        <p class="step-q">Des photos ou des documents à nous montrer ? <span class="opt">(optionnel)</span></p>
+        <label class="dropzone" for="prFiles">
+          <svg class="icon" aria-hidden="true"><use href="#i-cloud-upload" /></svg>
+          <strong>Déposez votre logo, vos photos, vos inspirations</strong>
+          <span>Images ou PDF, 10&nbsp;Mo maximum au total</span>
+          <input id="prFiles" name="fichiers" type="file" multiple accept="image/*,.pdf" hidden />
+        </label>
+        <ul class="file-list" id="prFileList"></ul>
+        <p class="empty" id="prFileEmpty">Aucun fichier pour l’instant. Cette étape se saute sans problème.</p>
+      </div>
+
+      <div class="step" data-pstep="6" hidden>
+        <p class="step-q">Où peut-on vous joindre ?</p>
+        <div class="form-row">
+          <div class="field">
+            <label for="prEmail">Courriel</label>
+            <input id="prEmail" name="email" type="email" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+            <span class="field-error">Entrez un courriel valide.</span>
+          </div>
+          <div class="field">
+            <label for="prPhone">Téléphone</label>
+            <input id="prPhone" name="telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+            <span class="field-error">Entrez votre numéro.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="prContactPref">Meilleur moment pour vous joindre</label>
+          <select id="prContactPref" name="moment_contact">
+            <option>Peu importe</option>
+            <option>Avant-midi</option>
+            <option>Après-midi</option>
+            <option>Soir</option>
+          </select>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="step success" data-pstep="7" hidden>
+        <span class="num">01 / 01</span>
+        <h4>Reçu cinq sur cinq.</h4>
+        <p class="modal-sub" style="margin-top:0">On regarde votre projet et on revient en moins de 24 h ouvrables avec la suite.</p>
+        <button class="btn btn--ghost" type="button" data-modal-close>
+          Fermer
+          <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+        </button>
+      </div>
+
+      <div class="step-nav" id="projectNav">
+        <button class="btn btn--ghost" type="button" id="projectBack" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-left" /></svg>
+          Retour
+        </button>
+        <button class="btn btn--primary" type="button" id="projectNext" data-submit style="margin-left:auto">
+          <span data-label>Continuer</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Urgence -->
+<div class="modal" id="modal-urgent" role="dialog" aria-modal="true" aria-labelledby="urgentTitle" hidden>
+  <div class="modal-scrim" data-modal-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <div>
+        <h3 id="urgentTitle">Urgence</h3>
+        <p class="modal-sub">Site en panne ou lancement qui dérape : vous passez devant.</p>
+      </div>
+      <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
+        <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+      </button>
+    </div>
+    <form class="form" data-form="urgent" novalidate>
+      <div class="form-row">
+        <div class="field">
+          <label for="urName">Votre nom</label>
+          <input id="urName" name="nom" type="text" required autocomplete="name" />
+          <span class="field-error">Entrez votre nom.</span>
+        </div>
+        <div class="field">
+          <label for="urPhone">Téléphone</label>
+          <input id="urPhone" name="telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+          <span class="field-error">Entrez un numéro où on peut vous joindre vite.</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="urEmail">Courriel</label>
+        <input id="urEmail" name="email" type="email" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+        <span class="field-error">Entrez un courriel valide.</span>
+      </div>
+      <div class="field">
+        <label for="urMsg">Décrivez l’urgence</label>
+        <textarea id="urMsg" name="message" rows="3" required placeholder="Ce qui ne fonctionne plus, depuis quand, ce que ça bloque…"></textarea>
+        <span class="field-error">Décrivez la situation.</span>
+      </div>
+      <button class="btn btn--primary" type="submit" data-submit>
+        <span data-label>Envoyer en priorité</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-alert-triangle" /></svg>
+      </button>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
+<!-- Référence -->
+<div class="modal" id="modal-refer" role="dialog" aria-modal="true" aria-labelledby="referTitle" hidden>
+  <div class="modal-scrim" data-modal-close></div>
+  <div class="modal-panel modal-panel--wide">
+    <div class="modal-head">
+      <div>
+        <h3 id="referTitle">Référer une entreprise</h3>
+        <p class="modal-sub">Vous présentez l’entreprise, on prend le relais. La commission part dès que le contrat est signé.</p>
+      </div>
+      <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
+        <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+      </button>
+    </div>
+    <form class="form" data-form="refer" novalidate>
+
+      <p class="form-legend">Vous</p>
+      <div class="form-row">
+        <div class="field">
+          <label for="rfName">Votre nom</label>
+          <input id="rfName" name="votre_nom" type="text" required autocomplete="name" />
+          <span class="field-error">Entrez votre nom.</span>
+        </div>
+        <div class="field">
+          <label for="rfEmail">Votre courriel</label>
+          <input id="rfEmail" name="votre_email" type="email" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+          <span class="field-error">Entrez un courriel valide.</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="rfPhone">Votre téléphone <span class="opt">(optionnel)</span></label>
+          <input id="rfPhone" name="votre_telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="418 555 0142…" />
+        </div>
+        <div class="field">
+          <label for="rfRelation">Votre lien avec l’entreprise</label>
+          <select id="rfRelation" name="votre_lien" required>
+            <option value="">Choisir…</option>
+            <option>Ami ou famille</option>
+            <option>Client ou fournisseur</option>
+            <option>Collègue ou partenaire d’affaires</option>
+            <option>Simple connaissance</option>
+          </select>
+          <span class="field-error">Indiquez votre lien.</span>
+        </div>
+      </div>
+
+      <p class="form-legend">L’entreprise référée</p>
+      <div class="form-row">
+        <div class="field">
+          <label for="rfCompany">Nom de l’entreprise</label>
+          <input id="rfCompany" name="entreprise_referee" type="text" required autocomplete="off" />
+          <span class="field-error">Nommez l’entreprise référée.</span>
+        </div>
+        <div class="field">
+          <label for="rfIndustry">Domaine</label>
+          <input id="rfIndustry" name="domaine" type="text" autocomplete="off" placeholder="Restauration, construction…" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="rfSizeRef">Taille approximative</label>
+          <select id="rfSizeRef" name="taille">
+            <option>Je ne sais pas</option>
+            <option>Travailleur autonome</option>
+            <option>2 à 10 employés</option>
+            <option>11 à 50 employés</option>
+            <option>Plus de 50 employés</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rfNeed">Besoin pressenti</label>
+          <select id="rfNeed" name="besoin">
+            <option>Je ne sais pas</option>
+            <option>Site web</option>
+            <option>Boutique en ligne</option>
+            <option>Application ou logiciel</option>
+            <option>Automatisation et IA</option>
+            <option>Visibilité Google Maps</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="rfContact">Personne à contacter <span class="opt">(nom et courriel ou téléphone)</span></label>
+        <input id="rfContact" name="contact_reference" type="text" required autocomplete="off" placeholder="Marie Lavoie, 418 555 0142…" />
+        <span class="field-error">Indiquez comment joindre cette entreprise.</span>
+      </div>
+      <div class="field">
+        <label for="rfMsg">Contexte <span class="opt">(optionnel)</span></label>
+        <textarea id="rfMsg" name="contexte" rows="2" placeholder="Pourquoi cette entreprise aurait besoin de nous, meilleur moment pour l’appeler…"></textarea>
+      </div>
+
+      <details class="faq-item">
+        <summary>Voir la grille de commissions<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+        <p>Commission versée uniquement lorsque le contrat est signé, selon sa valeur : 500 $ pour un contrat de 1 000 $ à 10 000 $, 700 $ de 10 000 $ à 30 000 $, 1 500 $ de 30 000 $ à 50 000 $, 3 000 $ de 50 000 $ à 80 000 $, 4 000 $ de 80 000 $ à 100 000 $, 5 000 $ à partir de 100 000 $.</p>
+      </details>
+
+      <button class="btn btn--primary" type="submit" data-submit>
+        <span data-label>Envoyer ma référence</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+      </button>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
+<!-- Estimateur -->
+<div class="modal" id="modal-estimate" role="dialog" aria-modal="true" aria-labelledby="estimateTitle" hidden>
+  <div class="modal-scrim" data-modal-close></div>
+  <div class="modal-panel modal-panel--wide">
+    <div class="modal-head">
+      <h3 id="estimateTitle">Estimation en 60 secondes</h3>
+      <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
+        <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+      </button>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Progression du questionnaire" aria-valuemin="0" aria-valuemax="100" aria-valuenow="12"><i id="wizardBar"></i></div>
+
+    <div id="wizard">
+
+      <div class="step" data-step="1">
+        <p class="step-q">Quel type de projet ?</p>
+        <div class="options" data-key="type">
+          <button type="button" data-value="vitrine"><span class="o-num">01</span><span><strong>Site vitrine</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="ecommerce"><span class="o-num">02</span><span><strong>E-commerce</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="app"><span class="o-num">03</span><span><strong>Application ou logiciel</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="automatisation"><span class="o-num">04</span><span><strong>Automatisation et IA</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="2" hidden>
+        <p class="step-q">Dans quel domaine ?</p>
+        <div class="options" data-key="industrie">
+          <button type="button" data-value="restauration"><span class="o-num">01</span><span><strong>Restauration</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="construction"><span class="o-num">02</span><span><strong>Construction et services</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="commerce"><span class="o-num">03</span><span><strong>Commerce de détail</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="sante"><span class="o-num">04</span><span><strong>Santé et beauté</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="immobilier"><span class="o-num">05</span><span><strong>Immobilier</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="autre"><span class="o-num">06</span><span><strong>Autre</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="3" hidden>
+        <p class="step-q">Quelle envergure ?</p>
+        <div class="options" data-key="envergure">
+          <button type="button" data-value="petit"><span class="o-num">01</span><span><strong>Simple</strong><small>Quelques pages ou fonctions</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="moyen"><span class="o-num">02</span><span><strong>Moyen</strong><small>Plusieurs sections et intégrations</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="grand"><span class="o-num">03</span><span><strong>Ambitieux</strong><small>Plateforme complète</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="4" hidden>
+        <p class="step-q">Quel niveau de design ?</p>
+        <div class="options" data-key="design">
+          <button type="button" data-value="essentiel"><span class="o-num">01</span><span><strong>Essentiel</strong><small>Propre et efficace</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="premium"><span class="o-num">02</span><span><strong>Premium</strong><small>Animations et identité forte</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="signature"><span class="o-num">03</span><span><strong>Signature</strong><small>Direction visuelle complète, animations sur mesure</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="5" hidden>
+        <p class="step-q">Quel échéancier ?</p>
+        <div class="options" data-key="delai">
+          <button type="button" data-value="urgent"><span class="o-num">01</span><span><strong>Urgent</strong><small>Moins d’un mois</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="normal"><span class="o-num">02</span><span><strong>1 à 2 mois</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="flexible"><span class="o-num">03</span><span><strong>Flexible</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="6" hidden>
+        <p class="step-q">Avez-vous déjà un site web ?</p>
+        <div class="options" data-key="site_existant">
+          <button type="button" data-value="oui"><span class="o-num">01</span><span><strong>Oui</strong><small>À refaire ou améliorer</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="non"><span class="o-num">02</span><span><strong>Non</strong><small>On part de zéro</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="7" hidden>
+        <p class="step-q">Où envoyer votre estimation ?</p>
+        <form class="form" data-form="estimate" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label for="esName">Votre nom</label>
+              <input id="esName" name="nom" type="text" required autocomplete="name" />
+              <span class="field-error">Entrez votre nom.</span>
+            </div>
+            <div class="field">
+              <label for="esEmail">Courriel</label>
+              <input id="esEmail" name="email" type="email" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+              <span class="field-error">Entrez un courriel valide.</span>
+            </div>
+          </div>
+          <button class="btn btn--primary" type="submit" data-submit>
+            <span data-label>Voir mon estimation</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="step" data-step="8" hidden>
+        <p class="label">Votre fourchette estimée</p>
+        <!-- La borne haute peut ne pas exister : au-dela de la
+             derniere fourchette, c'est sur devis. Inventer un
+             plafond serait un chiffre faux affiche avec aplomb. -->
+        <p class="num" style="font-size: var(--fs-2); color: var(--accent-text); letter-spacing: -0.05em;">
+          <span id="priceLow">0</span> $ à <span id="priceHigh">0</span> <span id="priceSuite">$</span>
+        </p>
+        <p class="roi-note">Ordre de grandeur, calculé sur vos réponses. C’est une fourchette publiée, pas un devis : le prix ferme est dit au premier appel, et c’est celui de la facture.</p>
+        <button class="btn btn--primary" type="button" data-modal-switch="modal-booking" style="justify-self:start">
+          Réserver un appel
+          <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- GSAP auto-heberge : aucune requete tierce sur toute la page, donc
+     aucune panne de CDN possible et rien a preconnecter.
+
+     LES SCRIPTS NE SONT PLUS SUR LE CHEMIN DU PREMIER RENDU.
+     Mesure du 2026-07-25 : en `defer`, l'analyse du document et
+     l'evaluation des 112 Ko de GSAP et ScrollTrigger formaient une
+     tache de 222 ms qui s'executait AVANT que le navigateur ait
+     l'occasion de peindre. Resultat : LCP a 588 ms pour une cible de
+     300, alors que le texte etait pret depuis longtemps.
+
+     Ils sont donc injectes apres deux images, c'est-a-dire apres que
+     la page a ete peinte au moins une fois. `async = false` sur des
+     balises injectees garantit l'ORDRE d'execution tout en laissant
+     les huit fichiers se telecharger en parallele.
+
+     Ce n'est pas un pari : la page est concue pour etre complete
+     sans script. Sans eux, le texte est la, les liens marchent, les
+     formulaires se soumettent normalement, et `html.js` n'est jamais
+     pose donc rien n'est masque en attendant une animation. -->
+<script>
+  (function () {
+    /* DEUX VAGUES, ET L'ORDRE EST L'ARGUMENT.
+
+       Les huit fichiers partaient ensemble : leur evaluation formait
+       UNE tache de 51 ms apres la peinture. Mesure du 2026-07-26,
+       liste complete des taches longues : `109ms@39 · 51ms@257`.
+
+       Vague 1 — la MATIERE et l'USAGE. La plaque du hero, la
+       bascule de theme, le rail des services, les cadres de projet,
+       le popup, les six formulaires, l'orientation. Tout ce avec
+       quoi le visiteur peut AGIR.
+       Vague 2 — la CHOREGRAPHIE. Les 112 Ko de GSAP et
+       ScrollTrigger, plus les animations, la pointe et la visite.
+
+       Le site devient donc utilisable avant que la bibliotheque
+       d'animation soit meme demandee, et chaque vague est sa propre
+       tache : deux taches courtes valent mieux qu'une longue, parce
+       que le navigateur peut repondre a un clic entre les deux.
+
+       L'ordre INTERNE de chaque vague reste garanti par
+       `async = false`. `hero.js` a besoin de `limaille.js`,
+       `motion.js` a besoin de GSAP : les deux dependances restent
+       dans la meme vague que ce dont elles dependent. */
+    var vagues = [
+      ["js/limaille.js", "js/main.js", "js/hero.js"],
+      /* `langue.js` — le langage de mouvement de la phase 8 — arrive
+         APRES `motion.js` et pour la meme raison que lui : il ne
+         contient que de la choregraphie, il depend de GSAP, et il
+         s'arrete net sous `prefers-reduced-motion`. Tout ce qui
+         porte une information — odometres, curseur du rail, filet
+         de section active — est reste dans `main.js`, vague 1. */
+      ["js/vendor/gsap.min.js", "js/vendor/ScrollTrigger.min.js",
+       "js/motion.js", "js/langue.js", "js/pointe.js", "js/tour360.js"]
+    ];
+    /* LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.
+       Les treize apercus vivent dans un `<template>` et ne sont
+       poses dans le document que par `js/main.js` : sans script, il
+       n'y a pas d'apercu, donc ces 55 Ko de CSS n'ont rien a styler.
+       Les lire avant le premier rendu retardait le rendu pour du
+       contenu qui n'existait pas encore. Ils partent donc apres la
+       premiere peinture, comme les scripts, et bien avant que le
+       visiteur atteigne la section. */
+    function poserVague(liste, apres) {
+      var reste = liste.length;
+      for (var i = 0; i < liste.length; i++) {
+        var s = document.createElement("script");
+        s.src = liste[i];
+        s.async = false;
+        if (apres) {
+          s.onload = s.onerror = function () {
+            if (--reste === 0) requestAnimationFrame(apres);
+          };
+        }
+        document.body.appendChild(s);
+      }
+    }
+
+    /* LA VAGUE 2 ATTEND QUE LE VISITEUR BOUGE.
+
+       La choregraphie ne sert a rien tant que personne ne defile :
+       toutes ses animations sont declenchees par le defilement, et
+       depuis que les etats de depart ont quitte le CSS, plus rien
+       n'est cache en l'attendant. Ses 51 ms d'evaluation sortent
+       donc du chargement pour aller se placer dans un moment ou le
+       visiteur n'attend rien.
+
+       Trois declencheurs, le premier qui vient gagne : un
+       defilement, un mouvement de pointeur, une touche. Plus une
+       echeance de 1,2 s pour le cas ou personne ne touche a rien —
+       il faut que la page finisse de se construire meme devant un
+       visiteur immobile. */
+    function differerVague2() {
+      var fait = false;
+      var gestes = ["scroll", "pointerdown", "pointermove", "keydown", "touchstart"];
+      function partir() {
+        if (fait) return;
+        fait = true;
+        for (var i = 0; i < gestes.length; i++) {
+          window.removeEventListener(gestes[i], partir, { passive: true });
+        }
+        poserVague(vagues[1], null);
+      }
+      for (var i = 0; i < gestes.length; i++) {
+        window.addEventListener(gestes[i], partir, { passive: true, once: true });
+      }
+      window.setTimeout(partir, 1200);
+    }
+
+    function injecter() {
+      /* L'ORDRE EST CELUI DE LA CASCADE : `differe.css` d'abord,
+         parce qu'il est la suite de `critique.css` ; puis les deux
+         feuilles de section, qui ne surchargent que leurs propres
+         classes. */
+      ["css/differe.css", "css/secteurs.css", "css/tour360.css"].forEach(function (href) {
+        var f = document.createElement("link");
+        f.rel = "stylesheet";
+        f.href = href;
+        document.head.appendChild(f);
+      });
+      poserVague(vagues[0], differerVague2);
+    }
+    /* Deux images : la premiere programme le rendu, la seconde
+       s'execute une fois qu'il a eu lieu. */
+    if (window.requestAnimationFrame) {
+      requestAnimationFrame(function () { requestAnimationFrame(injecter); });
+    } else {
+      window.setTimeout(injecter, 32);
+    }
+  })();
+</script>
+</body>
+</html>

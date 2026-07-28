@@ -1,0 +1,261 @@
+/* ============================================================
+   APED AGENCE - Direction ATELIER
+   Systeme de design. Aucune valeur en dur ailleurs que dans ce fichier.
+
+   Principes verrouilles :
+   - Rayon 0 sur absolument tout. Aucune ombre. La separation est un filet.
+   - Un seul accent, le minium. Il n'apparait que sur quatre choses :
+     le chiffre ROI vivant, l'etat actif de l'index, le CTA primaire,
+     le filet de la section active. Nulle part ailleurs.
+   - Trois familles : Archivo (display, axes wdth + wght), Chivo (texte),
+     Martian Mono (donnees et etiquettes).
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Polices auto-hebergees. Aucune requete tierce.
+   ------------------------------------------------------------ */
+@font-face {
+  font-family: "Archivo";
+  src: url("../fonts/archivo-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Archivo";
+  src: url("../fonts/archivo-latin-ext.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Chivo";
+  src: url("../fonts/chivo-latin.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Chivo";
+  src: url("../fonts/chivo-latin-ext.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Martian Mono";
+  src: url("../fonts/martian-latin.woff2") format("woff2");
+  font-weight: 100 800;
+  font-stretch: 75% 112.5%;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Martian Mono";
+  src: url("../fonts/martian-latin-ext.woff2") format("woff2");
+  font-weight: 100 800;
+  font-stretch: 75% 112.5%;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ------------------------------------------------------------
+   Couleur. Deux themes a parite complete de hierarchie.
+   Ratios remesures le 2026-07-25 par script dans Chrome 150, formule
+   WCAG 2.x. Toute valeur ci-dessous est un releve, pas une estimation.
+   ------------------------------------------------------------ */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --surface-0: #dcdedb;              /* ciment froid */
+  --surface-1: #cbcec9;              /* ciment enfonce */
+  --surface-2: #f2f3f1;              /* plaque claire */
+  --surface-inverse: #101211;
+
+  --ink: #101211;                    /* 13,89:1 sur surface-0 */
+  --ink-muted: #565a57;              /*  5,18:1 sur surface-0 */
+  --ink-inverse: #dcdedb;
+
+  --accent: #c8371b;                 /* minium, aplat uniquement */
+  --accent-text: #9b2810;            /*  5,73:1 sur surface-0 */
+  --accent-ink: #f2f3f1;             /*  4,70:1 sur accent */
+  --accent-wash: rgb(200 55 27 / 0.10);
+  /* Accent LISIBLE SUR LA SURFACE INVERSE. Il manquait, et
+     `--accent-text` etait employe a sa place : mesure du 2026-07-25,
+     #9b2810 sur #101211 donne 2,42:1 dans le compteur des projets,
+     donc un echec AA franc. Cette valeur-ci donne 7,31:1. */
+  --accent-on-inverse: #ff7a52;      /*  7,31:1 sur surface-inverse */
+
+  --rule: rgb(16 18 17 / 0.16);
+  --rule-strong: rgb(16 18 17 / 0.38);
+  --rule-accent: #c8371b;
+
+  --danger: #a11a10;                 /*  5,81:1 sur surface-0 */
+  --danger-wash: rgb(161 26 16 / 0.10);
+  --ok: #1d5c34;                     /*  5,89:1 sur surface-0 */
+
+  --scrim: rgb(16 18 17 / 0.72);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --surface-0: #101211;
+  --surface-1: #191c1a;
+  --surface-2: #232724;
+  --surface-inverse: #dcdedb;
+
+  --ink: #dcdedb;                    /* 13,89:1 sur surface-0 */
+  --ink-muted: #9aa09c;              /*  7,06:1 sur surface-0 */
+  --ink-inverse: #101211;
+
+  --accent: #e8562f;
+  --accent-text: #ff7a52;            /*  7,31:1 sur surface-0 */
+  --accent-ink: #101211;             /*  5,20:1 sur accent */
+  --accent-wash: rgb(232 86 47 / 0.14);
+  /* En sombre la surface inverse est CLAIRE : l'accent lisible
+     dessus est le minium fonce, pas l'orange. 5,73:1. */
+  --accent-on-inverse: #9b2810;      /*  5,73:1 sur surface-inverse */
+
+  --rule: rgb(220 222 219 / 0.18);
+  --rule-strong: rgb(220 222 219 / 0.40);
+  --rule-accent: #e8562f;
+
+  --danger: #ff8b7a;                 /*  8,26:1 sur surface-0 */
+  --danger-wash: rgb(255 139 122 / 0.12);
+  --ok: #6fcf8f;
+
+  --scrim: rgb(8 9 8 / 0.82);
+}
+
+/* ------------------------------------------------------------
+   Typographie
+   ------------------------------------------------------------ */
+:root {
+  --font-display: "Archivo", ui-sans-serif, sans-serif;
+  --font-text: "Chivo", ui-sans-serif, sans-serif;
+  --font-data: "Martian Mono", ui-monospace, monospace;
+
+  /* Axes variables du display. Le hero anime --wdth au defilement.
+     Sur petit ecran la fonte se resserre d'elle-meme : plus de mots
+     par ligne, sans toucher au corps. */
+  --wdth-wide: 100;
+  --wdth-mid: 92;
+  --wdth-narrow: 78;
+
+  /* Le titre du hero tient en deux lignes au bureau. Une échelle plus
+     grande produisait quatre lignes et poussait les boutons hors de
+     l’écran : c’est une erreur de corps, pas de longueur de texte. */
+  --fs-1: clamp(2rem, 1rem + 3.2vw, 3.75rem);
+  --fs-2: clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem);
+  --fs-3: clamp(1.5rem, 1.15rem + 1.6vw, 2.5rem);
+  --fs-4: clamp(1.125rem, 1rem + 0.6vw, 1.4375rem);
+  --fs-5: 1.0625rem;
+  --fs-6: 0.9375rem;
+  --fs-7: 0.8125rem;
+  --fs-8: 0.6875rem;
+
+  --lh-tight: 0.94;
+  --lh-snug: 1.14;
+  --lh-text: 1.58;
+
+  --tracking-display: -0.03em;
+  --tracking-label: 0.14em;
+}
+
+/* ------------------------------------------------------------
+   Espace. Base 8. Les respirations de bande sont volontairement
+   inegales : chaque section choisit la sienne.
+   ------------------------------------------------------------ */
+:root {
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+  --s-11: 12rem;
+
+  /* Respirations resserrees. Mesure a 1440 : la bande normale
+     passait de 112 a 80 px et la large de 187 a 118. Le rythme reste
+     INEGAL — c'est ce qui distingue les sections — mais il ne mange
+     plus l'ecran. La variete de composition est un acquis, la
+     longueur de parcours ne l'etait pas. */
+  --band-tight: clamp(2rem, 3.6vw, 3rem);
+  --band: clamp(3.25rem, 5.6vw, 5rem);
+  --band-loose: clamp(4.5rem, 8.2vw, 7.4rem);
+}
+
+/* ------------------------------------------------------------
+   Forme. Une seule valeur. Aucune ombre nulle part.
+   ------------------------------------------------------------ */
+:root {
+  --radius: 0;
+  --rule-w: 1px;
+  --focus-w: 2px;
+  --focus-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Grille
+   ------------------------------------------------------------ */
+:root {
+  --cols: 12;
+  --gutter: clamp(1rem, 1.6vw, 1.5rem);
+  --pad: clamp(1.25rem, 3.4vw, 3rem);
+  --maxw: 1560px;
+  --rail-w: 15.5rem;
+  --nav-h: 3.5rem;
+  --measure: 62ch;
+}
+
+/* A partir de 48em la fonte display reprend toute sa largeur. */
+@media (min-width: 48em) {
+  :root { --wdth-wide: 125; --wdth-mid: 100; }
+}
+
+/* ------------------------------------------------------------
+   Mouvement. Rien ne fond, tout s'encliquette.
+   ------------------------------------------------------------ */
+:root {
+  --t-1: 160ms;   /* retour tactile */
+  --t-2: 240ms;   /* survol, etat */
+  --t-3: 380ms;   /* entree de bloc */
+  --t-4: 520ms;   /* modale, changement de theme */
+
+  --e-snap: cubic-bezier(0.2, 0, 0, 1);      /* entree seche */
+  --e-drive: cubic-bezier(0.65, 0, 0.35, 1); /* echange */
+  --e-brake: cubic-bezier(0.33, 1, 0.68, 1); /* sortie */
+}
+
+/* ------------------------------------------------------------
+   Couches
+   ------------------------------------------------------------ */
+:root {
+  --z-rail: 20;
+  --z-menu: 60;
+  /* La barre passe AU-DESSUS du menu plein ecran. Elle etait dessous, donc
+     le menu opaque recouvrait le bourgeon : sur telephone, plus aucun
+     moyen visible de refermer le menu, et pas de touche Echap. Le
+     `padding-top` du menu reservait deja la hauteur de la barre. */
+  --z-nav: 70;
+  --z-modal: 80;
+  --z-skip: 100;
+}

@@ -1,0 +1,20 @@
+# Dépendances
+node_modules/
+
+# Sorties de mesure et captures (régénérables via tools/*.mjs)
+refonte-captures/
+tools/_captures-secteurs/
+tools/_captures-tour/
+tools/_planches/
+8099/
+*.trace.json
+
+# Système
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp

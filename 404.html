@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Page introuvable | APED Agence</title>
+  <meta name="description" content="Cette adresse n’existe pas sur le site d’APED Agence. Voici l’index complet du site." />
+  <meta name="robots" content="noindex" />
+
+  <!-- Une seule balise, sans `media` : elle doit suivre la bascule manuelle,
+       pas la preference systeme. -->
+  <meta name="theme-color" id="metaThemeColor" content="#dcdedb" />
+
+  <link rel="icon" href="images/logo-mark.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+
+  <link rel="preload" href="fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/chivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/martian-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/app.css" />
+
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      var saved = null;
+      try { saved = localStorage.getItem("aped-theme"); } catch (e) {}
+      var sys = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      var theme = saved || sys;
+      d.setAttribute("data-theme", theme);
+      var m = document.getElementById("metaThemeColor");
+      if (m) m.setAttribute("content", theme === "dark" ? "#101211" : "#dcdedb");
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        d.classList.add("reduced-motion");
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008" /></symbol></svg>
+
+<header class="nav">
+  <a class="wordmark" href="index.html" translate="no">APED<span>Agence</span></a>
+  <span></span>
+  <div class="nav-right">
+    <button class="btn-icon theme-toggle" id="themeToggle" type="button" aria-label="Basculer en thème sombre">
+      <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun" /></svg>
+      <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon" /></svg>
+    </button>
+    <a class="btn btn--primary" href="index.html">
+      Retour à l’accueil
+      <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+    </a>
+  </div>
+</header>
+
+<main class="wrap derail" id="contenu">
+  <h1>Cette page n’existe pas.</h1>
+  <p class="derail-lead">Le reste du site est intact. Voici tout ce qu’il contient.</p>
+
+  <!-- Index du site a l'echelle de la page. La premiere ligne porte
+       l'adresse demandee : c'est la seule qui n'a pas de rang, la seule
+       qui sort de la colonne, et elle est barrée. -->
+  <ol class="derail-list">
+    <li class="derail-row derail-row--lost">
+      <!-- L'enveloppe epouse la largeur du contenu : la barre barre
+           l'entree, elle ne traverse pas la page. -->
+      <span class="derail-lost">
+        <em translate="no">404</em>
+        <span id="lostPath">Adresse introuvable</span>
+        <i class="derail-strike" aria-hidden="true"></i>
+      </span>
+    </li>
+    <li class="derail-row" style="--i: 1"><em>01</em><a href="index.html#top">Accueil</a></li>
+    <li class="derail-row" style="--i: 2"><em>02</em><a href="index.html#services">Services</a></li>
+    <li class="derail-row" style="--i: 3"><em>03</em><a href="index.html#realisations">Projets</a></li>
+    <li class="derail-row" style="--i: 4"><em>04</em><a href="index.html#demos">Secteurs</a></li>
+    <li class="derail-row" style="--i: 5"><em>05</em><a href="index.html#visite">Visite 360</a></li>
+    <li class="derail-row" style="--i: 6"><em>06</em><a href="index.html#calculateur">Calculateur</a></li>
+    <li class="derail-row" style="--i: 7"><em>07</em><a href="index.html#comparatif">Comparatif</a></li>
+    <li class="derail-row" style="--i: 8"><em>08</em><a href="index.html#processus">Processus</a></li>
+    <li class="derail-row" style="--i: 9"><em>09</em><a href="index.html#apropos">Agence</a></li>
+    <li class="derail-row" style="--i: 10"><em>10</em><a href="index.html#reference">Référence</a></li>
+    <li class="derail-row" style="--i: 11"><em>11</em><a href="index.html#faq">Questions</a></li>
+    <li class="derail-row" style="--i: 12"><em>12</em><a href="index.html#contact">Contact</a></li>
+  </ol>
+
+  <p class="derail-lead" style="margin-top: var(--s-5); font-size: var(--fs-6);">
+    Vous cherchiez autre chose ? Écrivez à
+    <a href="mailto:dorvalwilliam11@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;">dorvalwilliam11@gmail.com</a>,
+    on répond en moins de 24 h.
+  </p>
+</main>
+
+<footer class="footer" style="padding-top: var(--s-8); margin-top: var(--s-8);">
+  <div class="wrap footer-legal">
+    <span>© 2026 APED Agence. Tous droits réservés.</span>
+    <span>Québec, Canada</span>
+  </div>
+</footer>
+
+<script>
+  /* Page utilitaire : dix lignes en ligne plutot que les 38 Ko de main.js,
+     que le visiteur n'a pas forcement en cache s'il arrive ici en premier.
+     La bascule de theme est reprise a l'identique pour que les deux pages
+     se comportent pareil. */
+  (function () {
+    "use strict";
+    var d = document;
+    var root = d.documentElement;
+
+    /* L'adresse demandee, telle quelle. `textContent` uniquement : jamais
+       d'injection de balise a partir de l'URL. */
+    var lost = d.getElementById("lostPath");
+    if (lost) {
+      var path = location.pathname + location.search;
+      try { path = decodeURIComponent(path); } catch (e) {}
+      if (path && path !== "/" && path.length < 90) lost.textContent = path;
+    }
+
+    /* Moment wow : la ligne demandee est ejectee de la colonne et barrée.
+       Declenche apres le premier rendu pour que l'etat de depart soit vu. */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { root.classList.add("derail-go"); });
+    });
+
+    var toggle = d.getElementById("themeToggle");
+    var meta = d.getElementById("metaThemeColor");
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function label(next) {
+      toggle.setAttribute("aria-label", next === "dark" ? "Basculer en thème clair" : "Basculer en thème sombre");
+    }
+    if (toggle) {
+      label(root.getAttribute("data-theme"));
+      toggle.addEventListener("click", function () {
+        var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        var apply = function () {
+          root.classList.add("theme-shifting");
+          root.setAttribute("data-theme", next);
+          label(next);
+          if (meta) meta.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
+          try { localStorage.setItem("aped-theme", next); } catch (e) {}
+          window.setTimeout(function () { root.classList.remove("theme-shifting"); }, 560);
+        };
+        if (d.startViewTransition && !reduced.matches) d.startViewTransition(apply);
+        else apply();
+      });
+    }
+  })();
+</script>
+</body>
+</html>

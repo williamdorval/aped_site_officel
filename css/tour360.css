@@ -1,0 +1,411 @@
+/* ============================================================
+   APED AGENCE - Visite virtuelle 360
+   Feuille autonome. Ne redefinit rien du site, ne depend que des
+   jetons de tokens.css. A charger APRES css/vendor/pannellum.css
+   (elle en corrige plusieurs defauts).
+
+   Deux dettes connues de Pannellum 2.5.7 sont fermees ici :
+   1. `.pnlm-container { outline: 0 }` supprime l'anneau de focus du
+      conteneur, alors que Pannellum lui pose pourtant `tabIndex = 0`
+      et ecoute les fleches dessus. Sans anneau, la navigation au
+      clavier existe mais est invisible.
+   2. Les points de passage sont des `div` sans etat de focus. On
+      leur rend un anneau, et une forme qui se lit sur une photo.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Bloc
+   ------------------------------------------------------------ */
+.tour {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.tour-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--surface-1);
+}
+
+/* Sur telephone le 16:9 rend la piece illisible : on redonne de la
+   hauteur plutot que de la largeur. */
+@media (max-width: 40em) {
+  .tour-stage { aspect-ratio: 4 / 3; }
+}
+
+/* ------------------------------------------------------------
+   Affiche plate. C'est la seule chose que la section pese avant
+   le clic. `loading="lazy"` est pose dans le markup : cette image
+   ne peut donc jamais devenir l'element LCP de la page.
+   ------------------------------------------------------------ */
+.tour-poster {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* LA PLAQUE D'ENTREE — aplat franc, jamais un degrade.
+   Elle portait un `linear-gradient` sur trois arrets. C'etait le
+   dernier degrade du site, en contradiction frontale avec la
+   direction, et il ne tenait rien : mesure du 2026-07-26, le texte
+   de l'incrustation donnait 1,43:1 sur la photo claire, soit un
+   echec AA franc.
+   Un degrade ne se mesure pas : le contraste depend du pixel de
+   photo qui passe dessous, donc il change d'un panorama a l'autre.
+   Un aplat, lui, est nomme, donc il se mesure une fois pour toutes.
+   La plaque n'occupe plus tout le cadre : elle s'ancre en bas, sur
+   la largeur, et la photo reste entiere au-dessus. */
+.tour-enter {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: var(--s-3);
+  padding: clamp(1rem, 2.4vw, 1.75rem);
+  background: #101211;
+  border-top: var(--rule-w) solid rgb(242 243 241 / 0.24);
+}
+
+/* Le texte de l'incrustation est toujours sur photo sombre : il ne
+   suit pas le theme, il suit son fond. */
+.tour-enter .label,
+.tour-enter .tour-enter-note {
+  color: #f2f3f1;
+}
+
+.tour-enter-note {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.5;
+  max-width: 46ch;
+}
+
+.tour[data-tour].is-live .tour-enter,
+.tour[data-tour].is-live .tour-poster { display: none; }
+
+/* Pendant le chargement la plaque prend tout le cadre : c'est le
+   seul moment ou elle doit couvrir la photo, parce que ce qui se
+   passe alors n'est pas la photo mais l'attente. Toujours un aplat. */
+.tour[data-tour].is-loading .tour-enter {
+  inset: 0;
+  background: #101211;
+}
+
+/* Message d'echec (moteur absent, WebGL absent, fichier illisible). */
+.tour-msg {
+  position: absolute;
+  inset: auto var(--s-4) var(--s-4) var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--rule-strong);
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.5;
+}
+
+/* ------------------------------------------------------------
+   Conteneur du visionneur
+   ------------------------------------------------------------ */
+.tour-view {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* En plein ecran c'est `.tour-view` qui est promue : les commandes et
+   le plan vivent DEDANS, sinon ils disparaitraient. */
+.tour-view:fullscreen { width: 100%; height: 100%; }
+
+/* Pannellum met `background: #f4f4f4 url(damier)` sur son conteneur.
+   Le damier gris est un fond de demo, pas un fond de site. */
+.tour-view.pnlm-container {
+  background: var(--surface-1);
+  font-family: var(--font-text);
+  outline-offset: -4px;
+}
+
+/* Dette 1 : l'anneau de focus du conteneur. Il est INTERIEUR, sinon il
+   est rogne par `overflow: hidden`. */
+.tour-view.pnlm-container:focus-visible {
+  outline: var(--focus-w) solid var(--accent-text);
+}
+
+/* Pannellum impose `box-sizing: content-box` a tous ses descendants, et
+   sa feuille est injectee au clic donc APRES celle-ci : a specificite
+   egale c'est elle qui gagne. Il faut donc monter d'un cran, sinon les
+   pastilles du plan mesurent leur largeur + leur padding et debordent
+   du plan. Mesure : 130 px au lieu de 104. */
+.pnlm-container .tour-hud,
+.pnlm-container .tour-hud * { box-sizing: border-box; }
+
+.tour-hud {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.tour-hud > * { pointer-events: auto; }
+
+/* ------------------------------------------------------------
+   Points de passage
+   Pannellum leur donne `pnlm-hotspot pnlm-sprite pnlm-scene` :
+   26 x 26, un rond blanc en sprite, aucun texte. On garde la classe
+   (le module a besoin de `.pnlm-hotspot`) et on remplace la forme.
+   ------------------------------------------------------------ */
+.pnlm-hotspot.tour-hs {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background-image: none;
+  background-color: var(--surface-2);
+  border: var(--rule-w) solid var(--rule-strong);
+  color: var(--ink);
+  cursor: pointer;
+  /* Cible tactile : 44 px de haut au minimum. */
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0 var(--s-3) 0 var(--s-2);
+  transition:
+    background-color var(--t-1) var(--e-snap),
+    border-color var(--t-1) var(--e-snap);
+}
+
+.pnlm-hotspot.tour-hs::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  background: var(--accent);
+}
+
+.pnlm-hotspot.tour-hs:hover {
+  background-color: var(--surface-2);
+  border-color: var(--ink);
+}
+
+.tour-hs-txt {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Dette 2 : pannellum.css n'a aucune regle :focus. La pastille est un
+   aplat opaque, donc l'anneau minium garde son contraste quelle que
+   soit la photo derriere. */
+.pnlm-hotspot:focus-visible {
+  outline: 2px solid #9b2810;
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Commandes
+   ------------------------------------------------------------ */
+.tour-ctls {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  display: flex;
+  gap: var(--s-2);
+}
+
+.tour-ctl {
+  display: inline-grid;
+  place-items: center;
+  width: 2.875rem;
+  height: 2.875rem;
+  padding: 0;
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--rule-strong);
+  border-radius: 0;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background-color var(--t-1) var(--e-snap),
+    border-color var(--t-1) var(--e-snap),
+    transform var(--t-1) var(--e-snap);
+}
+
+.tour-ctl:hover { border-color: var(--ink); }
+.tour-ctl:active { transform: translateY(1px); }
+.tour-ctl:focus-visible {
+  outline: var(--focus-w) solid var(--accent-text);
+  outline-offset: var(--focus-offset);
+}
+.tour-ctl svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: square;
+}
+
+/* ------------------------------------------------------------
+   Plan
+   Trois pieces, murs mitoyens, deux ouvertures. Le SVG ne porte que
+   les murs : les etiquettes sont de vrais boutons, donc leur nom
+   accessible est exactement le texte visible.
+   ------------------------------------------------------------ */
+.tour-map {
+  position: absolute;
+  left: var(--s-3);
+  bottom: var(--s-3);
+  width: clamp(10rem, 28%, 14rem);
+  aspect-ratio: 240 / 140;
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--rule-strong);
+}
+
+@media (max-width: 30em) {
+  .tour-map { width: 10rem; }
+}
+
+.tour-map-plan {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  stroke: var(--rule-strong);
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: square;
+}
+
+.tour-map-jamb { stroke: var(--rule); }
+
+.tour-map-room {
+  position: absolute;
+  /* Une seule colonne a 100 % et un item etire : sans ca l'item se
+     dimensionne en max-content et « Salle de bain » sort de sa piece
+     au lieu de passer a la ligne. */
+  display: grid;
+  grid-template-columns: 100%;
+  align-content: center;
+  justify-items: stretch;
+  padding: 2px 6%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color var(--t-1) var(--e-snap), color var(--t-1) var(--e-snap);
+}
+
+.tour-map-room:hover { color: var(--ink); background: var(--accent-wash); }
+
+.tour-map-room:focus-visible {
+  outline: var(--focus-w) solid var(--accent-text);
+  outline-offset: -2px;
+}
+
+/* Etat actif. Meme emploi de l'accent que l'index de section :
+   il dit ou on est, il ne decore pas. */
+.tour-map-room[aria-current="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ------------------------------------------------------------
+   Chargement et erreurs de Pannellum, remis au format du site.
+   ------------------------------------------------------------ */
+.tour-view .pnlm-load-box,
+.tour-view .pnlm-error-msg {
+  width: auto;
+  min-width: 13rem;
+  height: auto;
+  margin: 0;
+  inset: auto auto var(--s-3) 50%;
+  transform: translateX(-50%);
+  top: auto;
+  left: 50%;
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--rule-strong);
+  border-radius: 0;
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.5;
+}
+
+.tour-view .pnlm-load-box p { margin: 0 0 var(--s-2); }
+.tour-view .pnlm-lbox { display: none !important; }
+.tour-view .pnlm-lbar { width: 100%; height: 2px; border: 0; background: var(--rule); }
+.tour-view .pnlm-lbar-fill { background: var(--accent); }
+.tour-view .pnlm-lmsg { font-size: var(--fs-8); }
+
+/* ------------------------------------------------------------
+   Texte reserve aux lecteurs d'ecran
+   ------------------------------------------------------------ */
+.tour-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------
+   Le lien de licence, sous la visite.
+   Dans `.fine`, un lien herite exactement de la couleur, de la
+   graisse et de la fonte du texte qui l'entoure, et le site ne
+   souligne pas les liens par defaut : mesure faite, le lien vers
+   polyhaven.com/license etait rigoureusement indistinguable de la
+   phrase autour (meme rgb(16,18,17), aucun soulignement, meme
+   graisse). C'est le cas d'ecole du critere WCAG 1.4.1 — la seule
+   facon de le reperer aurait ete de promener la souris dessus.
+   Un soulignement suffit et ne coute rien au reste.
+   ------------------------------------------------------------ */
+.tour .fine a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.tour .fine a:hover { text-decoration-thickness: 2px; }
+
+.tour .fine a:focus-visible {
+  outline: var(--focus-w) solid var(--accent-text);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Mouvement reduit. La derive automatique ne demarre jamais (c'est
+   le module qui le decide), on coupe ici ce qui reste : le fondu
+   d'echange de scene de Pannellum et nos transitions.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .pnlm-hotspot.tour-hs,
+  .tour-ctl,
+  .tour-map-room { transition: none; }
+  .tour-view .pnlm-fade-img { display: none; }
+}

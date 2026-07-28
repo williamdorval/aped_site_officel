@@ -1,0 +1,192 @@
+/* ============================================================
+   LE BUDGET DE DEGRADATION — verification.
+
+   Un budget qu'on ecrit sans le tester est un commentaire. Ce
+   script verifie les trois paliers pour de vrai, chacun par son
+   declencheur reel :
+
+   · PALIER 0 — machine de bureau, large, pointeur fin. Tout est la.
+   · PALIER 1 — declencheur STATIQUE. Trois cas independants, testes
+     separement : ecran etroit, pointeur grossier, et peu de coeurs
+     ou peu de memoire (`navigator` est truque a l'initialisation,
+     comme le ferait un vrai appareil d'entree de gamme).
+   · PALIER 2 — declencheur MESURE. On ne truque rien : on BRIDE LE
+     PROCESSEUR par le protocole DevTools, on defile, et on verifie
+     que la page s'en apercoit toute seule et retire ce qu'il faut.
+
+   On verifie aussi les deux proprietes qui rendent le budget sur :
+   · l'escalade est A SENS UNIQUE — un palier ne redescend jamais,
+     sinon la page scintille entre deux etats ;
+   · l'ORIENTATION ne tombe a aucun palier. C'est le plancher.
+   ============================================================ */
+import { chromium } from "playwright";
+
+const B = process.argv[2] || "http://localhost:8099";
+const nav = await chromium.launch();
+
+let echecs = 0;
+const dire = (ok, t) => { console.log((ok ? "  OK   " : "  ECHEC") + "  " + t); if (!ok) echecs++; };
+
+async function sonder(nom, opts = {}) {
+  const ctx = await nav.newContext({
+    viewport: opts.viewport || { width: 1440, height: 900 },
+    hasTouch: !!opts.tactile,
+    isMobile: !!opts.tactile,
+    deviceScaleFactor: 1
+  });
+  const page = await ctx.newPage();
+
+  if (opts.faible) {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "hardwareConcurrency", { get: () => 4 });
+      Object.defineProperty(navigator, "deviceMemory", { get: () => 4 });
+    });
+  }
+  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+
+  let cdp = null;
+  if (opts.bride) {
+    cdp = await ctx.newCDPSession(page);
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: opts.bride });
+  }
+
+  await page.goto(B + "/", { waitUntil: "load" });
+  await page.mouse.move(700, 400);
+  await page.waitForTimeout(opts.bride ? 4500 : 2000);
+
+  /* Un defilement REEL : c'est la seule chose qui alimente la
+     mesure de frequence d'images. */
+  const h = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  for (let i = 0; i < 40; i++) {
+    await page.evaluate((v) => window.scrollBy(0, v), Math.round(h / 60));
+    await page.waitForTimeout(opts.bride ? 60 : 30);
+  }
+  await page.waitForTimeout(opts.bride ? 1200 : 500);
+
+  const r = await page.evaluate(() => {
+    const html = document.documentElement;
+    /* `.nav-cta` ouvre `modal-start` : c'est un CTA PRIMAIRE, donc
+       520 ms. Le bouton secondaire de reference est celui de
+       l'estimation. */
+    const btn = document.querySelector('.btn[data-modal-open="modal-estimate"]');
+    const cta = document.querySelector(".nav-cta");
+    return {
+      palier: html.getAttribute("data-palier"),
+      images: html.getAttribute("data-images"),
+      mots: document.querySelectorAll(".mot-encre").length,
+      etiquette: !!document.querySelector(".pointe-mot"),
+      cran: btn ? getComputedStyle(btn).getPropertyValue("--cran").trim() : "",
+      cranCta: cta ? getComputedStyle(cta).getPropertyValue("--cran").trim() : "",
+      /* L'ORIENTATION — le plancher. */
+      reste: (document.getElementById("railLeftNum") || {}).textContent || "",
+      etape: (document.getElementById("parcNum") || {}).textContent || "",
+      chantier: (document.getElementById("svcNum") || {}).textContent || "",
+      curseur: !!document.querySelector(".rail-curseur.is-on"),
+      /* LES DOUZE FRONTIERES. Le CRAN du seuil est du N1 : il vit
+         dans `main.js` et ne tombe a aucun palier. Le geste propre
+         a chaque frontiere (G4), lui, tombe au palier 2. */
+      seuilsCrantes: document.querySelectorAll('[data-seuil][data-cran="fait"]').length,
+      seuilsTotal: document.querySelectorAll("[data-seuil]").length,
+      seuilNumeroJuste: (() => {
+        const s = [...document.querySelectorAll("[data-seuil]")].find((e) => {
+          const r = e.getBoundingClientRect();
+          return r.top < innerHeight && r.bottom > 0;
+        });
+        if (!s) return null;
+        const r = s.querySelector(".seuil-roul");
+        const cells = [...r.children].map((c) => c.textContent);
+        const m = /matrix.*?,\s*(-?[\d.]+)\)$/.exec(getComputedStyle(r).transform);
+        const em = parseFloat(getComputedStyle(s.querySelector(".seuil-num")).height);
+        const i = m ? Math.round(-parseFloat(m[1]) / em) : 0;
+        return { montre: cells[i], attendu: s.dataset.vers, juste: cells[i] === s.dataset.vers };
+      })(),
+      lecture: (document.getElementById("readBar") || { style: {} }).style.getPropertyValue("--read")
+    };
+  });
+
+  await ctx.close();
+  return { nom, ...r };
+}
+
+console.log("\nPALIER 0 — bureau, large, pointeur fin");
+{
+  const r = await sonder("plein");
+  dire(r.palier === "0", `data-palier = ${r.palier}`);
+  dire(r.mots > 100, `mots d'encre poses : ${r.mots}`);
+  dire(r.cran === "230ms", `--cran d'un bouton secondaire : ${r.cran}`);
+  dire(r.cranCta === "520ms", `--cran d'un CTA primaire : ${r.cranCta}`);
+}
+
+console.log("\nPALIER 1 — trois declencheurs statiques, testes separement");
+for (const [nom, opts] of [
+  ["ecran etroit (390 px)", { viewport: { width: 390, height: 844 } }],
+  ["pointeur grossier", { tactile: true, viewport: { width: 1440, height: 900 } }],
+  ["4 coeurs / 4 Go", { faible: true }]
+]) {
+  const r = await sonder(nom, opts);
+  dire(r.palier === "1", `${nom.padEnd(24)} -> data-palier = ${r.palier}`);
+  dire(r.mots === 0, `${nom.padEnd(24)} -> chapos NON decoupes (${r.mots} spans)`);
+  dire(!r.etiquette, `${nom.padEnd(24)} -> etiquette de pointe absente`);
+}
+
+console.log("\nPALIER 2 — declencheur mesure, processeur bride x6");
+{
+  const r = await sonder("bride", { bride: 6 });
+  dire(r.palier === "2", `data-palier = ${r.palier} (mesure : ${r.images} i/s)`);
+  dire(r.cran === "0ms" && r.cranCta === "0ms",
+    `--cran ramene a ${r.cran} / ${r.cranCta} : tous les boutons basculent d'un bloc`);
+  console.log(`         frequence relevee par la page elle-meme : ${r.images} i/s`);
+}
+
+console.log("\nL'ORIENTATION NE TOMBE A AUCUN PALIER");
+for (const [nom, opts] of [
+  ["palier 0", {}],
+  ["palier 1", { viewport: { width: 390, height: 844 } }],
+  ["palier 2", { bride: 6 }]
+]) {
+  const r = await sonder(nom, opts);
+  const ok = r.reste.trim() !== "" && r.etape.trim() !== "" &&
+             r.chantier.trim() !== "" && r.curseur;
+  dire(ok, `${nom} -> restantes « ${r.reste.trim()} », etape « ${r.etape.trim()} », chantier « ${r.chantier.trim()} », curseur ${r.curseur ? "pose" : "ABSENT"}`);
+  /* Le numero du seuil dit lui aussi « ou on est ». Il doit donc
+     etre JUSTE a tous les paliers, y compris quand plus rien ne
+     roule : au repos la bande montre deja la bonne valeur. */
+  dire(r.seuilsCrantes > 0, `${nom} -> seuils crantes : ${r.seuilsCrantes} / ${r.seuilsTotal}`);
+  dire(!r.seuilNumeroJuste || r.seuilNumeroJuste.juste,
+    `${nom} -> numero du seuil a l'ecran : « ${r.seuilNumeroJuste ? r.seuilNumeroJuste.montre : "(hors ecran)"} »`);
+}
+
+console.log("\nL'ESCALADE EST A SENS UNIQUE");
+{
+  const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  const cdp = await ctx.newCDPSession(page);
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: 6 });
+  await page.goto(B + "/", { waitUntil: "load" });
+  await page.mouse.move(700, 400);
+  await page.waitForTimeout(4500);
+  const h = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  for (let i = 0; i < 40; i++) {
+    await page.evaluate((v) => window.scrollBy(0, v), Math.round(h / 60));
+    await page.waitForTimeout(60);
+  }
+  await page.waitForTimeout(1200);
+  const monte = await page.evaluate(() => document.documentElement.getAttribute("data-palier"));
+
+  /* La machine « respire » : on retire le bridage et on redefile. */
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
+  for (let i = 0; i < 40; i++) {
+    await page.evaluate((v) => window.scrollBy(0, -v), Math.round(h / 60));
+    await page.waitForTimeout(20);
+  }
+  await page.waitForTimeout(1500);
+  const apres = await page.evaluate(() => document.documentElement.getAttribute("data-palier"));
+  dire(monte === "2" && apres === "2",
+    `bride -> palier ${monte}, puis debride -> palier ${apres} (doit rester ${monte})`);
+  await ctx.close();
+}
+
+await nav.close();
+console.log(`\n${echecs === 0 ? "LE BUDGET DE DEGRADATION TIENT" : echecs + " ECHEC(S)"}\n`);
+process.exit(echecs ? 1 : 0);
