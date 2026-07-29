@@ -142,6 +142,10 @@
       try { o.kill && o.kill(); } catch (e) {}
     });
     jetables.length = 0;
+    /* Un voile de trame en vol continue a peindre plusieurs
+       centaines de tuiles par image alors qu'on vient justement de
+       decider que ca coute trop cher. Il tombe avec le reste. */
+    if (window.APED_TRAME) window.APED_TRAME.tout_arreter();
   }
 
   /* ------------------------------------------------------------
@@ -333,15 +337,95 @@
       haut: ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]
     };
 
-    function auFranchissement(seuil, quand, faire) {
-      var st = ScrollTrigger.create({
-        trigger: seuil,
-        start: quand,
-        once: true,
-        onEnter: faire
-      });
-      jetables.push(st);
-      return st;
+    /* ------------------------------------------------------------
+       LE FRANCHISSEMENT SE LIT A L'INTERSECTION, PLUS A UNE
+       POSITION MISE EN CACHE. C'EST UNE CORRECTION DE DEFAUT.
+
+       CE QUI N'ALLAIT PAS. ScrollTrigger calcule la position de
+       depart de chaque declencheur a la CREATION, puis a chaque
+       `refresh()`. Or les douze sections portent
+       `content-visibility: auto` : tant qu'une section n'a pas ete
+       traversee, le navigateur lui rend sa taille RESERVEE, pas sa
+       vraie hauteur. Les positions mises en cache sont donc
+       fausses, et elles le restent — le document grandit a mesure
+       qu'on descend, mais les declencheurs, eux, ne bougent plus.
+
+       CE QUE CA COUTAIT, MESURE. Traversee complete, voiles
+       releves un par un par leur nom :
+         seuil-02 · 03 · 05 · 06 · 11 · 12 partent.
+         seuil-00 — LA FRONTIERE DU PIED — ne part JAMAIS.
+       Sa position mise en cache tombe au-dela de la fin du
+       document : aucun defilement ne peut plus l'atteindre. La
+       boucle qui devait se refermer sur la plaque de l'entree ne
+       se refermait pas, et ca ne se voyait dans aucun test parce
+       qu'aucun test ne demandait « laquelle manque ».
+
+       CE QU'ON FAIT. `IntersectionObserver` ne met rien en cache :
+       il lit la geometrie REELLE au moment ou elle change. Un
+       `rootMargin` bas de -8 % place le bord du cadre a 92 % de la
+       hauteur d'ecran, ce qui est exactement `top 92%`, et -10 %
+       exactement `top 90%`.
+
+       CE QU'ON NE FAIT PAS. On ne rafraichit pas ScrollTrigger en
+       boucle : un `refresh()` recalcule TOUS les declencheurs du
+       site, et le declencher a chaque changement de hauteur
+       pendant une traversee coute plus cher que le probleme.
+       ------------------------------------------------------------ */
+    function auFranchissement(cible, pourcent, faire) {
+      if (!("IntersectionObserver" in window)) {
+        var st = ScrollTrigger.create({ trigger: cible, start: "top " + pourcent + "%", once: true, onEnter: faire });
+        jetables.push(st);
+        return st;
+      }
+      var io = new IntersectionObserver(function (entrees) {
+        for (var i = 0; i < entrees.length; i++) {
+          if (!entrees[i].isIntersecting) continue;
+          io.disconnect();
+          faire();
+          return;
+        }
+      }, { rootMargin: "0px 0px -" + (100 - pourcent) + "% 0px", threshold: 0 });
+      io.observe(cible);
+      var jetable = { kill: function () { io.disconnect(); } };
+      jetables.push(jetable);
+      return jetable;
+    }
+
+    /* ------------------------------------------------------------
+       PHASE 10 — LA TRAME SUR LES FRONTIERES.
+
+       Le G4 des frontieres en « volet » et en « degager » etait une
+       arete de regle : un `clip-path` qui balaye. C'est juste, mais
+       c'est LISSE, et la matiere du site ne l'est pas. La trame
+       (`js/trame.js`) rend la meme arete en GRAINS qui se
+       resorbent : V1 · DEGAGER dont le bord est fait de la matiere
+       de V3 · SOUDER.
+
+       LA GRAINE VIENT DU NUMERO DE LA SECTION, pas d'un compteur ni
+       d'un hasard. Douze frontieres, douze textures de front, et la
+       meme frontiere rend exactement la meme trame a chaque
+       franchissement : `Math.random()` ferait scintiller deux
+       passages successifs, et c'est la faute qu'on a deja evitee
+       sur les quinze filets de `limaille.js`.
+
+       LE PALIER, EN TROIS TEMPS AU LIEU DE DEUX :
+         · 0 — la trame ;
+         · 1 — l'arete de regle d'avant, meme verbe, meme sens,
+           meme duree : sur une machine modeste on garde le geste et
+           on lache la texture, jamais l'inverse ;
+         · 2 — rien, comme avant. La frontiere reste lisible :
+           filet, numero, nom.
+       ------------------------------------------------------------ */
+    var trameDispo = function () {
+      return PALIER === 0 && typeof window.APED_TRAME !== "undefined";
+    };
+    /* La maille suit la HAUTEUR de ce qu'on degage : une bande de
+       seuil de 120 px decoupee en mailles de 44 px rend trois
+       rangees, ce qui se lit comme une trame ; la meme maille sur
+       une capture de 600 px rendrait un damier de gros paves. */
+    function mailleDe(el) {
+      var h = el.getBoundingClientRect().height;
+      return Math.max(28, Math.min(64, Math.round(h / 4.5)));
     }
 
     SEUILS.forEach(function (seuil) {
@@ -349,6 +433,7 @@
       var verbe = seuil.getAttribute("data-verbe");
       var cible = seuil.getAttribute("data-cible");
       var section = seuil.closest("section") || seuil.parentNode;
+      var graine = (parseInt(seuil.getAttribute("data-vers"), 10) || 1) * 37 + 11;
 
       /* ---------- G3 · DEGAGER — le nom du seuil ----------
          Le nom est un LIBELLE : il se lit de gauche a droite, quel
@@ -356,16 +441,16 @@
          lecture appartient a ce qu'on decouvre, pas au voisinage. */
       var nom = $(".seuil-nom", seuil);
       if (nom) {
-        gsap.fromTo(nom,
-          { clipPath: ARETE.droite[0] },
-          {
-            clipPath: ARETE.droite[1],
-            duration: 0.3,
-            ease: "power2.out",
-            immediateRender: false,
-            scrollTrigger: { trigger: seuil, start: "top 94%", once: true }
-          }
-        );
+        /* G3 passe par le meme franchissement que les autres : une
+           frontiere dont le nom se degage a un instant et dont le
+           geste part a un autre n’est plus un franchissement, c’est
+           deux animations voisines. */
+        auFranchissement(seuil, 94, function () {
+          gsap.fromTo(nom,
+            { clipPath: ARETE.droite[0] },
+            { clipPath: ARETE.droite[1], duration: 0.3, ease: "power2.out", immediateRender: false }
+          );
+        });
       }
 
       /* ---------- G4 · LE GESTE PROPRE A LA FRONTIERE ----------
@@ -386,19 +471,35 @@
            `willChange` puis `clearProps` : la bande est pleine
            largeur, on ne laisse pas une couche de composition de
            cette taille en place pour le reste de la visite. */
-        var a = ARETE[sens] || ARETE.bas;
-        var t = gsap.fromTo(seuil,
-          { clipPath: a[0] },
-          {
-            clipPath: a[1],
-            duration: 0.44,
-            ease: "power3.out",
-            immediateRender: false,
-            onComplete: function () { gsap.set(seuil, { clearProps: "clipPath" }); },
-            scrollTrigger: { trigger: seuil, start: "top 92%", once: true }
-          }
-        );
-        jetables.push(t);
+        if (trameDispo()) {
+          /* La bande d'encre est deja peinte au repos. La trame la
+             recouvre de la couleur de la PAGE — donc du ciment — et
+             se retire : le ciment s'erode en encre, grain par grain.
+             En theme sombre `--surface-0` est l'encre et la bande
+             est le ciment : c'est l'INVERSION qui porte le sens, et
+             elle se lit dans les deux themes sans rien changer ici. */
+          var st = auFranchissement(seuil, 92, function () {
+            window.APED_TRAME.degager(seuil, {
+              sens: sens, graine: graine, duree: 420, vie: 190,
+              maille: mailleDe(seuil), z: 3, nom: "seuil-" + seuil.getAttribute("data-vers")
+            });
+          });
+          jetables.push(st);
+        } else {
+          var a = ARETE[sens] || ARETE.bas;
+          var t = gsap.fromTo(seuil,
+            { clipPath: a[0] },
+            {
+              clipPath: a[1],
+              duration: 0.44,
+              ease: "power3.out",
+              immediateRender: false,
+              onComplete: function () { gsap.set(seuil, { clearProps: "clipPath" }); },
+              scrollTrigger: { trigger: seuil, start: "top 92%", once: true }
+            }
+          );
+          jetables.push(t);
+        }
       }
 
       if (verbe === "degager" && cible) {
@@ -408,19 +509,29 @@
            poser un rideau devant du texte deja lisible. */
         var el = $(cible, section);
         if (el) {
-          var b = ARETE[sens] || ARETE.bas;
-          var t2 = gsap.fromTo(el,
-            { clipPath: b[0] },
-            {
-              clipPath: b[1],
-              duration: 0.46,
-              ease: "power3.out",
-              immediateRender: false,
-              onComplete: function () { gsap.set(el, { clearProps: "clipPath" }); },
-              scrollTrigger: { trigger: el, start: "top 90%", once: true }
-            }
-          );
-          jetables.push(t2);
+          if (trameDispo()) {
+            var st2 = auFranchissement(el, 90, function () {
+              window.APED_TRAME.degager(el, {
+                sens: sens, graine: graine, duree: 440, vie: 200,
+                maille: mailleDe(el), z: 3, nom: "seuil-" + seuil.getAttribute("data-vers")
+              });
+            });
+            jetables.push(st2);
+          } else {
+            var b = ARETE[sens] || ARETE.bas;
+            var t2 = gsap.fromTo(el,
+              { clipPath: b[0] },
+              {
+                clipPath: b[1],
+                duration: 0.46,
+                ease: "power3.out",
+                immediateRender: false,
+                onComplete: function () { gsap.set(el, { clearProps: "clipPath" }); },
+                scrollTrigger: { trigger: el, start: "top 90%", once: true }
+              }
+            );
+            jetables.push(t2);
+          }
         }
       }
 
@@ -433,19 +544,18 @@
            `transform` seul, donc zero paint. */
         var blocs = $$(cible, section);
         if (blocs.length) {
-          var t3 = gsap.fromTo(blocs,
-            { x: function (i) { return i % 2 ? 26 : -26; } },
-            {
-              x: 0,
-              duration: 0.42,
-              ease: "power2.out",
-              stagger: 0.05,
-              immediateRender: false,
-              clearProps: "transform",
-              scrollTrigger: { trigger: blocs[0], start: "top 88%", once: true }
-            }
-          );
-          jetables.push(t3);
+          /* Meme franchissement que les trois autres gestes : la
+             position mise en cache par ScrollTrigger est fausse sous
+             `content-visibility`, et une frontiere sur trois est un
+             « aligner ». Les perdre serait perdre le quart de la
+             continuite de la page. */
+          jetables.push(auFranchissement(blocs[0], 88, function () {
+            gsap.fromTo(blocs,
+              { x: function (i) { return i % 2 ? 26 : -26; } },
+              { x: 0, duration: 0.42, ease: "power2.out", stagger: 0.05,
+                immediateRender: false, clearProps: "transform" }
+            );
+          }));
         }
       }
 
@@ -456,7 +566,7 @@
            frontiere a le droit de faire ca, sinon ce n'est plus une
            signature, c'est une habitude. */
         seuil.classList.add("seuil-soudure-longue");
-        auFranchissement(seuil, "top 96%", function () {
+        auFranchissement(seuil, 96, function () {
           var filet = $(".seuil-filet", seuil);
           if (!filet) return;
           filet.classList.add("en-soudure-longue");
@@ -480,7 +590,7 @@
 
            La valeur d'arrivee est lue DANS LE DOCUMENT : le contenu
            reste la seule source, le script ne la republie pas. */
-        auFranchissement(seuil, "top 74%", function () {
+        auFranchissement(seuil, 74, function () {
           var num = $(cible, section);
           if (!num || typeof window.APED_ROULER !== "function") return;
           var arrivee = num.textContent.trim();
@@ -1052,9 +1162,42 @@
        Ce qu'on perd : le lien direct entre la molette et le morphe.
        Ce qu'on gagne : un etat de repos qui ne ment jamais.
        -------------------------------------------------------- */
+    /* --------------------------------------------------------
+       5b. LA PILE — CE QU'ON A PRIS A LA REFERENCE 1, ET CE QU'ON
+       EN A JETE.
+
+       LA REFERENCE, MESUREE et pas decrite : cinq cartes de
+       320 x 200 empilees ; au survol elles s'eventaillent par
+       ROTATION, -18, -9, 0, +9, +18 degres — donc 9 degres
+       d'ecart constant entre voisines — en 452 ms, avec 7,1 % de
+       DEPASSEMENT a l'aller et 0 % au retour. Courbe declaree :
+       cubic-bezier(0.6, 1.5, 0.5, 1), un ressort.
+
+       CE QU'ON GARDE : l'idee qu'une PILE se rend lisible par un
+       ECART CONSTANT entre voisines. C'est ca, le geste ; le reste
+       est l'habillage.
+
+       CE QU'ON JETTE, et ce n'est pas negociable ici :
+       · la rotation. Rien ne pivote sur ce site : la limaille se
+         range en lignes, elle ne fait pas la roue ;
+       · les 7,1 % de depassement. Amortissement critique partout,
+         zeta = 1. Un rebond dirait que la matiere est molle ;
+       · les 452 ms. 440, comme les autres recompositions — une
+         duree de plus serait une duree a retenir.
+
+       OU CA S'APPLIQUE, ET POURQUOI PAS AILLEURS. Les treize
+       apercus SONT une pile : il y en a treize, on en voit un.
+       Changer de metier, c'est tirer une autre carte. Mais
+       ENTRER dans la section n'est pas tirer une carte : c'est la
+       matiere qui prend forme, et ca reste le depart depuis les
+       quinze filets. Deux evenements differents, deux departs
+       differents, et toujours UNE SEULE animation par bloc —
+       c'est la correction de conception de la phase 8, on ne la
+       defait pas.
+       -------------------------------------------------------- */
     var enCours = null;
 
-    function recomposer(mock, amplitude) {
+    function recomposer(mock, amplitude, depuis) {
       if (!mock) return;
       /* PALIER 2 — la maquette change NET, sans recomposition.
          C'est le moment de preuve de la page, donc c'est le dernier
@@ -1067,11 +1210,20 @@
       if (enCours) enCours.kill();
       var h = scene.clientHeight || 400;
 
+      /* L'ECART CONSTANT de la pile : 11 px par bloc, borne a
+         cinq — au-dela, une pile de dix se lit comme un
+         escalier, et un escalier n'est plus une pile. */
+      var pile = depuis === "pile";
+
       enCours = gsap.timeline();
       enCours.fromTo(blocs,
         {
-          y: function (i) { return filetDe(i, h) * amplitude; },
-          x: function (i) { return (i % 2 ? 1 : -1) * 18 * amplitude / 0.22; },
+          y: pile
+            ? function (i) { return Math.min(i, 5) * -7; }
+            : function (i) { return filetDe(i, h) * amplitude; },
+          x: pile
+            ? function (i) { return Math.min(i, 5) * 11; }
+            : function (i) { return (i % 2 ? 1 : -1) * 18 * amplitude / 0.22; },
           opacity: 0.08
         },
         {
@@ -1088,7 +1240,7 @@
     }
 
     document.addEventListener("aped:secteur", function (e) {
-      recomposer($('.mock[data-mock="' + e.detail.cle + '"]', scene), 0.22);
+      recomposer($('.mock[data-mock="' + e.detail.cle + '"]', scene), 0.22, "pile");
     });
 
     /* La premiere fois que la vitrine entre par le bas, la maquette
@@ -1245,6 +1397,24 @@
       { clipPath: "inset(0 0 100% 0)", y: -10 },
       { clipPath: "inset(0 0 0% 0)", y: 0, duration: 0.26, ease: "power3.out", clearProps: "clipPath,transform" }
     );
+    /* PHASE 10 — la trame par-dessus l'arete, pas a la place.
+       Le `clip-path` porte le geste et il est garanti ; la trame
+       porte la MATIERE et elle est un supplement. Si le voile
+       n'arrive pas, la modale s'ouvre exactement comme avant.
+
+       LE VOILE VIT DANS LA MODALE, PAS DANS LE CORPS. Un
+       `<dialog>` ouvert par `showModal()` est dans la COUCHE
+       SUPERIEURE du navigateur : aucun `z-index`, meme maximal, ne
+       fait passer un enfant du corps par-dessus. Pose dans le
+       corps, le voile serait toujours dessous et on ne le verrait
+       jamais — le genre de defaut qu'un test de presence declare
+       reussi. */
+    if (PALIER === 0 && window.APED_TRAME) {
+      window.APED_TRAME.degager(panneau, {
+        nom: "modale", sens: "bas", graine: 907, duree: 300, vie: 150,
+        maille: 40, z: 9, hote: panneau.closest("dialog") || panneau.parentNode
+      });
+    }
   });
 
   /* La fermeture est la RECIPROQUE de l'ouverture, pas une seconde

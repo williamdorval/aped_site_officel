@@ -415,7 +415,37 @@
         b.style.height = p.boite[3] + "%";
         b.addEventListener("click", function () {
           if (racine(visionneur.getScene()) === p.id) return;
-          visionneur.loadScene(p.id, p.pitch, p.yaw, p.hfov);
+          /* PHASE 10 — LE PASSAGE D'UNE PIECE A L'AUTRE.
+
+             `loadScene` remplace la texture en une image : d'un mur
+             on se retrouve dans l'autre piece sans qu'aucun geste
+             n'ait dit qu'on se DEPLACAIT. C'est le seul endroit du
+             site ou un changement d'etat n'avait aucune mise en
+             scene du tout.
+
+             La trame le dit en un mouvement lateral — on passe une
+             porte, donc l'arete balaye horizontalement — et la
+             charge se fait DERRIERE le voile, au moment ou l'ecran
+             est couvert : le remplacement de texture ne se voit
+             plus, il n'est plus qu'un temps du passage.
+
+             Sans `trame.js` ou sous mouvement reduit : `loadScene`
+             tout de suite, exactement comme avant. La visite ne
+             depend pas de la mise en scene. */
+          var t = window.APED_TRAME;
+          var doux = t && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (!doux) { visionneur.loadScene(p.id, p.pitch, p.yaw, p.hfov); return; }
+          t.couvrir(scene, {
+            nom: "piece-couvre", sens: "droite", graine: 727,
+            duree: 240, vie: 130, maille: 48, z: 6,
+            onFin: function () {
+              visionneur.loadScene(p.id, p.pitch, p.yaw, p.hfov);
+              t.degager(scene, {
+                nom: "piece-degage", sens: "droite", graine: 727,
+                duree: 300, vie: 150, maille: 48, z: 6
+              });
+            }
+          });
         });
         pastilles[p.id] = b;
         carte.appendChild(b);

@@ -6,6 +6,8 @@ refonte-captures/
 tools/_captures-secteurs/
 tools/_captures-tour/
 tools/_planches/
+tools/_refs/
+tools/_nous/
 8099/
 *.trace.json
 

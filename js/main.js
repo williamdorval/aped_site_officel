@@ -990,14 +990,77 @@
     else if (mq.addListener) mq.addListener(onChange);
   })();
 
+  /* ------------------------------------------------------------
+     PHASE 10 — LA BASCULE PASSE PAR UNE TRAME, PLUS PAR UN FONDU.
+
+     CE QU'IL Y AVAIT : `document.startViewTransition`. Le
+     navigateur photographie l'avant et l'apres et les FOND l'un
+     dans l'autre. C'est exactement le mot que la direction
+     interdit : rien ne fond ici, tout s'encliquette. C'etait aussi
+     le seul endroit du site ou un fondu avait survecu.
+
+     CE QUE LA REFERENCE 6 DONNE, TRADUIT. Le toggle Framer bascule
+     en `translate 0.3s ease-out` : un etat GLISSE vers l'autre.
+     Chez nous un etat ne glisse pas non plus, il ROULE d'un cran —
+     V4. A l'echelle de la page entiere, le cran est une bande de
+     matiere qui TRAVERSE : la trame couvre dans le sens de
+     lecture, le theme bascule quand elle a couvert, la meme trame
+     se retire dans le meme sens. Derriere la vague, l'autre etat.
+
+     DEUX TEMPS, ET LA MEME GRAINE POUR LES DEUX : c'est la meme
+     matiere qui passe, pas deux voiles differents. 220 + 260 ms.
+
+     ET UN TROISIEME TEMPS QU'ON NE CHOISIT PAS. Changer
+     `data-theme` sur la racine recalcule le style d'un document de
+     trente mille pixels : mesure du jour, 250 a 350 ms de tache,
+     AVEC ET SANS le voile — 256/221/219 ms sans trame contre
+     316/258/231 avec. Ce cout ne vient donc pas d'ici, il etait
+     deja la. `startViewTransition` le cachait sous une photo
+     figee ; on le cache sous la couverture pleine de la trame, au
+     seul instant ou l'ecran est un aplat et ou une pause ne se
+     voit pas. C'est le meme abri, dans notre matiere au lieu d'un
+     fondu. Duree vue par le visiteur, bout en bout : environ
+     750 ms, dont un tiers qu'aucune mise en scene ne supprime.
+
+     LA COULEUR EST CELLE D'ARRIVEE, pas celle de depart. La vague
+     apporte le nouvel etat ; une vague de l'ancienne couleur
+     dirait qu'on revient en arriere.
+
+     CE QUI TIENT SANS ELLE : `applyTheme` est appele dans tous les
+     cas. Sans `trame.js`, sous mouvement reduit, ou si le voile
+     echoue, le theme bascule net — ce qui est le repli correct
+     pour un etat binaire.
+     ------------------------------------------------------------ */
+  function couleurSurface(theme) {
+    return theme === "dark" ? "#101211" : "#dcdedb";
+  }
+
+  function basculerTheme(next) {
+    var trame = window.APED_TRAME;
+    if (!trame || reduced.matches) { applyTheme(next); return; }
+
+    /* La cible est l'element racine : `trame.js` sait que la boite
+       d'une racine est la FENETRE, pas les trente mille pixels du
+       document. */
+    var scene = doc.documentElement;
+    var teinte = couleurSurface(next);
+
+    trame.couvrir(scene, {
+      nom: "theme-couvre", sens: "droite", graine: 613, maille: 56, z: 2147483000,
+      couleur: teinte, duree: 220, vie: 120,
+      onFin: function () {
+        applyTheme(next);
+        trame.degager(scene, {
+          nom: "theme-degage", sens: "droite", graine: 613, maille: 56, z: 2147483000,
+          couleur: teinte, duree: 260, vie: 140
+        });
+      }
+    });
+  }
+
   if (themeToggle) {
     themeToggle.addEventListener("click", function () {
-      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      if (doc.startViewTransition && !reduced.matches) {
-        doc.startViewTransition(function () { applyTheme(next); });
-      } else {
-        applyTheme(next);
-      }
+      basculerTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
     });
   }
 
@@ -1012,6 +1075,16 @@
     menu.classList.remove("is-open");
     burger.setAttribute("aria-expanded", "false");
     burger.setAttribute("aria-label", "Ouvrir le menu");
+    /* La fermeture est la RECIPROQUE : l'arete repasse par ou elle
+       est venue. `inverse()` la calcule au lieu de la decider — une
+       reciproque qu'on choisit a la main finit par diverger de son
+       ouverture, et deux idees remplacent une. */
+    if (window.APED_TRAME && !reduced.matches) {
+      window.APED_TRAME.couvrir(menu, {
+        nom: "menu-ferme", sens: window.APED_TRAME.inverse("bas"), graine: 331,
+        duree: 300, vie: 150, maille: 52, z: 2147483000
+      });
+    }
     window.setTimeout(function () { menu.hidden = true; }, reduced.matches ? 0 : 380);
     if (!activeModal) unlockScroll();
     // Le focus revient sur le bourgeon, jamais sur le body.
@@ -1025,6 +1098,16 @@
     requestAnimationFrame(function () { menu.classList.add("is-open"); });
     burger.setAttribute("aria-expanded", "true");
     burger.setAttribute("aria-label", "Fermer le menu");
+    /* PHASE 10 — le menu est un PANNEAU : il se lit de haut en bas,
+       donc l'arete descend. La trame est un supplement, jamais le
+       mecanisme : la classe `is-open` fait tout le travail utile et
+       le menu s'ouvre a l'identique si le voile n'arrive pas. */
+    if (window.APED_TRAME && !reduced.matches) {
+      window.APED_TRAME.degager(menu, {
+        nom: "menu-ouvre", sens: "bas", graine: 331, duree: 340, vie: 170,
+        maille: 52, z: 2147483000
+      });
+    }
     // Le menu est un calque plein ecran : le focus doit y entrer, sinon la
     // premiere tabulation part dans le contenu couvert derriere.
     var first = focusablesIn(menu)[0];
@@ -1042,6 +1125,38 @@
     var wordmark = $(".nav .wordmark");
     if (wordmark) wordmark.addEventListener("click", closeMenu);
   }
+
+  /* ============================================================
+     PHASE 10 — LE PANNEAU « AJUSTER EN DETAIL », ET LES AUTRES
+     REPLIS DU MEME TYPE.
+
+     Un `<details>` natif bascule d'un coup : le contenu est absent,
+     puis il est la. C'est correct, et ca doit le rester — c'est le
+     seul repli qui marche sans script. Mais « d'un coup » n'est pas
+     la meme chose que « d'un cran » : on ne voit pas D'OU vient ce
+     qui arrive.
+
+     La trame le dit : le panneau se DEGAGE de haut en bas, parce
+     qu'un panneau se lit de haut en bas. A la fermeture, rien —
+     le navigateur retire le contenu dans la meme image et il n'y a
+     pas de reciproque a jouer sur un element qui n'existe plus.
+     Mentir la-dessus demanderait de retarder la fermeture, donc de
+     retenir le visiteur pour une decoration.
+     ============================================================ */
+  $$("details.roi-details").forEach(function (repli) {
+    repli.addEventListener("toggle", function () {
+      if (!repli.open || !window.APED_TRAME || reduced.matches) return;
+      /* La cible est le CONTENU, pas le `<details>` entier : degager
+         le tout recouvrirait le resume, donc le bouton que le
+         visiteur vient de cliquer. */
+      var contenu = repli.querySelector("summary") ? repli.querySelector("summary").nextElementSibling : null;
+      if (!contenu) return;
+      window.APED_TRAME.degager(contenu, {
+        nom: "repli-" + (repli.id || "detail"), sens: "bas", graine: 449,
+        duree: 320, vie: 160, maille: 36, z: 3
+      });
+    });
+  });
 
   /* ============================================================
      Verrou de defilement. La largeur de la barre est compensee,

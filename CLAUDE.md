@@ -86,6 +86,37 @@ paliers. Le cran n'ajoute que le mouvement, jamais l'information.
 
 Table des douze, argument de chacune, mesures : `PHASE-9.md` § 2.
 
+### LA TRAME — le passage, depuis la phase 10
+
+`js/trame.js`, vague 1, aucune dépendance. **Un seul mécanisme de
+passage, décliné partout.**
+
+> Une grille de tuiles en aplat recouvre une cible **déjà peinte**, puis
+> chaque tuile **rétrécit sur son centre**. Le retard d'une tuile est sa
+> projection le long de l'axe de **lecture**, plus un désordre borné tiré
+> d'une **graine** — jamais `Math.random()`, sinon deux passages
+> successifs scintillent.
+
+**Ce n'est pas un cinquième verbe.** C'est **V1 · DÉGAGER** dont l'arête
+est faite de la matière de **V3 · SOUDER**. La règle d'admission tient.
+
+Sept frontières sur treize la portent (02, 03, 05, 06, 11, 12, pied) ;
+les cinq autres gardent aligner / souder / cran. **Douze passages
+identiques feraient le tic que la phase 9 refusait.**
+
+Aussi : bascule clair↔sombre (elle a remplacé `startViewTransition`, qui
+était un **fondu**), menu plein écran et sa réciproque, panneau « Ajuster
+en détail », modales, passage d'une pièce à l'autre de la visite 360 — où
+la texture se charge **derrière** le voile.
+
+API : `APED_TRAME.degager(el, opts)` · `.couvrir(el, opts)` ·
+`.inverse(sens)` · `.tout_arreter()`. Chaque voile porte `data-passage` :
+un test qui **compte** les voiles ne peut pas dire lequel manque, et
+c'est exactement comme ça que la frontière du pied est restée invisible.
+
+Détail, chiffres des six références, six pièges d'instrument :
+`PHASE-10.md`.
+
 ### LA SÉQUENCE D'ENTRÉE — ce qui la déclenche
 
 Elle **rejoue à chaque rechargement**. On lit
@@ -121,7 +152,7 @@ besoin de JS.
 | Palier | Déclencheur | Ce qui tombe |
 |---|---|---|
 | **0 · plein** | rien | — |
-| **1 · allégé** | **statique**, connu à l'init : largeur < 64em **OU** `pointer: coarse` **OU** `hardwareConcurrency` ≤ 4 **OU** `deviceMemory` ≤ 4 | 1. parallaxe souris de la vitrine · 2. vitesses différenciées des fiches · 3. étiquette de la pointe · 4. flèche qui sort du cadre · **5. découpage par mot des chapôs — le poste le plus cher** · 6. balayage des 25 sous-titres |
+| **1 · allégé** | **statique**, connu à l'init : largeur < 64em **OU** `pointer: coarse` **OU** `hardwareConcurrency` ≤ 4 **OU** `deviceMemory` ≤ 4 | 1. parallaxe souris de la vitrine · 2. vitesses différenciées des fiches · 3. étiquette de la pointe · 4. flèche qui sort du cadre · **5. découpage par mot des chapôs — le poste le plus cher** · 6. balayage des 25 sous-titres · **6bis. la trame des frontières → l'arête de règle d'avant, même verbe, même sens, même durée : on garde le geste, on lâche la texture** |
 | **2 · minimal** | **mesuré** : fréquence d'images médiane **< 50 i/s** sur 90 images d'un défilement réel | 7. cascade par lettre → `--cran: 0ms`, bascule d'un bloc · 8. recomposition des secteurs → changement net · 9. soudure des filets · 10. FLIP de la FAQ → saut natif · 11. dégagement des modales · **12. le geste propre à chaque frontière (G4) et le dégagement du nom de seuil (G3) — la frontière reste lisible : filet, numéro, nom** |
 | **3 · aucun** | `prefers-reduced-motion` | `langue.js` et `motion.js` ne s'exécutent pas |
 

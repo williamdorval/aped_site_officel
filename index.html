@@ -3161,7 +3161,14 @@
        `motion.js` a besoin de GSAP : les deux dependances restent
        dans la meme vague que ce dont elles dependent. */
     var vagues = [
-      ["js/limaille.js", "js/main.js", "js/hero.js"],
+      /* `trame.js` — le moteur de passage de la phase 10 — est en
+         vague 1 et PAS en vague 2, pour la meme raison que
+         `limaille.js` : il ne depend de rien, il pese moins de 6 Ko,
+         et deux de ses usages — la bascule de theme et le menu — se
+         declenchent au premier clic, donc potentiellement AVANT que
+         GSAP soit meme demande. Le mettre en vague 2 rendrait ces
+         deux passages absents une fois sur dix. */
+      ["js/limaille.js", "js/trame.js", "js/main.js", "js/hero.js"],
       /* `langue.js` — le langage de mouvement de la phase 8 — arrive
          APRES `motion.js` et pour la meme raison que lui : il ne
          contient que de la choregraphie, il depend de GSAP, et il
