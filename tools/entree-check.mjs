@@ -15,7 +15,24 @@
       navigation interne ;
    3. elle ne joue PAS au retour arriere ;
    4. n'importe quel clic ou touche la saute ;
-   5. un saut vaut pour la session : un rechargement ne la remet pas ;
+   5. UN SAUT NE VAUT QUE POUR CETTE VUE : un rechargement la remet.
+      RETOURNE LE 2026-07-29, et c'est la deuxieme fois que ce test
+      verrouille exactement le defaut qu'il devait attraper. Il
+      affirmait « un saut vaut pour la session ». Or l'ecouteur qui
+      posait `sessionStorage["aped-entree-saut"]` voyait N'IMPORTE
+      QUEL `pointerdown` et N'IMPORTE QUEL `keydown` : un clic sur un
+      bouton du site, ou la touche F5 elle-meme. Autrement dit la
+      garantie 2 — « elle REJOUE au rechargement » — etait annulee
+      par la garantie 5 des que le visiteur touchait a quoi que ce
+      soit, et le test ne pouvait pas le voir puisqu'il testait les
+      deux separement, sur deux pages differentes. Releve du
+      2026-07-29 : quatre rechargements de suite a
+      `<html class="js">`, sans rideau ni composition.
+      Le drapeau est supprime. Sauter reste immediat — c'est le sens
+      de ce geste — mais un rechargement est une ARRIVEE, chaque
+      fois. Le scenario est donc joue dans le meme onglet, a la
+      suite : on clique, PUIS on recharge, PUIS on verifie que la
+      sequence est bien la ;
    6. elle ne reste JAMAIS bloquee, meme si le signal de fin de
       chargement n'arrive jamais — on coupe la promesse des polices
       pour le prouver ;
@@ -105,11 +122,28 @@ await page2.waitForTimeout(400);
 R.saut = await sonde(page2);
 R.saut.rideauParti = !R.saut.rideauPresent;
 await page2.screenshot({ path: path.join(SORTIE, "saut-apres.png") });
-/* Sauter, c'est dire non : un rechargement ne doit pas la remettre. */
-await page2.reload({ waitUntil: "commit" });
-await page2.waitForFunction(() => performance.now() >= 200, null, { timeout: 8000 }).catch(() => {});
-const apresSaut = await sonde(page2);
-R.saut.nePasRemettreApresUnSaut = !apresSaut.classes.includes("entree-on");
+/* SAUTER NE VAUT QUE POUR CETTE VUE. On recharge DEUX fois dans le
+   MEME onglet : une seule passe ne prouve rien, c'est justement
+   l'accumulation qui revelait le defaut. La sequence doit etre la
+   les deux fois, et la composition du hero avec elle — un rideau
+   sans composition serait le meme bug une case plus loin. */
+R.saut.rechargementsApresSaut = [];
+for (let i = 1; i <= 2; i++) {
+  await page2.reload({ waitUntil: "commit" });
+  await page2.waitForFunction(() => performance.now() >= 200, null, { timeout: 8000 }).catch(() => {});
+  const apres = await sonde(page2);
+  R.saut.rechargementsApresSaut.push({
+    passe: i,
+    classes: apres.classes,
+    rejoue: apres.classes.includes("entree-on"),
+    composition: apres.classes.includes("compo-hero"),
+    drapeau: await page2.evaluate(() => { try { return sessionStorage.getItem("aped-entree-saut"); } catch (e) { return "?"; } }),
+  });
+}
+R.saut.remiseApresUnSaut = R.saut.rechargementsApresSaut.every((p) => p.rejoue && p.composition);
+/* Le drapeau ne doit plus exister du tout : s'il revient un jour,
+   ce test le dit avant que quiconque s'en apercoive a l'oeil. */
+R.saut.aucunDrapeauDeSession = R.saut.rechargementsApresSaut.every((p) => p.drapeau === null);
 await page2.close();
 
 /* ---------- 4. ELLE NE RESTE JAMAIS BLOQUEE ----------
@@ -168,7 +202,8 @@ R.verdict = {
   rejoueAuRechargement: R.rechargement.rejoue === true,
   neRejouePasAuRetourArriere: R.retourArriere.neRejouePas,
   seSaute: R.saut.rideauParti === true,
-  unSautVautPourLaSession: R.saut.nePasRemettreApresUnSaut === true,
+  unSautNeVautQuePourCetteVue: R.saut.remiseApresUnSaut === true,
+  aucunDrapeauDeSession: R.saut.aucunDrapeauDeSession === true,
   neResteJamaisBloquee: R.blocage.sortieForcee === true,
   mouvementReduitLogoPuisSite: R.reduit.logoVisible === true && R.reduit.rideauParti === true,
   aucuneErreurConsole: R.erreurs.length === 0

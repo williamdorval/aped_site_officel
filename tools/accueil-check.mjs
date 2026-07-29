@@ -31,6 +31,7 @@
 import { chromium } from "playwright";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { decodePNG, diffStats } from "./_png.mjs";
 
 const BASE = process.env.APED_BASE || "http://localhost:8099";
 const RACINE = join(process.cwd(), "refonte-captures", "accueil");
@@ -199,6 +200,16 @@ async function entree(nav) {
         if (cibles.length) {
           window.__he.push({
             t: +(performance.now() - t0).toFixed(1),
+            /* LE RIDEAU EST DANS LE RELEVE, ET C'EST LA CORRECTION
+               LA PLUS IMPORTANTE DE CET OUTIL.
+               Cette sonde mesurait des durees et rendait « tout
+               joue » pendant que les trois premiers pas se jouaient
+               DERRIERE un aplat opaque plein ecran. Une duree juste
+               sous un rideau ferme est un faux verdict, et c'est
+               exactement le genre de test qui verrouille un defaut
+               au lieu de l'attraper. On note donc, a chaque image,
+               si le rideau est encore la. */
+            r: !!document.getElementById("entree"),
             e: cibles.map((el) => {
               const cs = getComputedStyle(el, "::after");
               const csr = getComputedStyle(el);
@@ -226,6 +237,11 @@ async function entree(nav) {
     noms: [...document.querySelectorAll(".he")].map((el) => (el.className + " · " + (el.textContent || "").trim().slice(0, 26))),
   }));
 
+  /* L'instant ou le rideau n'est plus dans le document. Tout ce qui
+     se termine avant lui n'a jamais ete vu par personne. */
+  const iRideau = brut.ech.findIndex((s) => !s.r);
+  const rideauPartiA = iRideau >= 0 ? brut.ech[iRideau].t : null;
+
   const pas = [];
   if (brut.ech.length) {
     const n = brut.ech[0].e.length;
@@ -238,11 +254,21 @@ async function entree(nav) {
          fin = premiere image ou elle a disparu */
       let iD = 0; while (iD < sx.length - 1 && sx[iD] > 0.995) iD++;
       let iF = iD; while (iF < sx.length - 1 && sx[iF] > 0.005) iF++;
+      const tD = brut.ech[iD] ? brut.ech[iD].t : null;
+      const tF = brut.ech[iF] ? brut.ech[iF].t : null;
+      /* LE SEUL CHIFFRE QUI COMPTE : la part du geste qui se joue
+         alors que le rideau n'est plus la. « Visible, sinon ca ne
+         compte pas. » */
+      let vu = null;
+      if (tD != null && tF != null && rideauPartiA != null && tF > tD) {
+        vu = Math.round(Math.max(0, tF - Math.max(tD, rideauPartiA)) / (tF - tD) * 100);
+      }
       pas.push({
         pas: i, quoi: brut.noms[i], retard_ecrit_ms: brut.ech[0].e[i].e,
-        decouvre_a_ms: brut.ech[iD] ? brut.ech[iD].t : null,
-        fini_a_ms: brut.ech[iF] ? brut.ech[iF].t : null,
-        duree_ms: brut.ech[iF] && brut.ech[iD] ? +(brut.ech[iF].t - brut.ech[iD].t).toFixed(1) : null,
+        decouvre_a_ms: tD,
+        fini_a_ms: tF,
+        duree_ms: tF != null && tD != null ? +(tF - tD).toFixed(1) : null,
+        pourcent_vu: vu,
         /* Zero valeur intermediaire d'OPACITE : la plaque se
            retire, le texte ne fond pas. */
         opacites: [...new Set(brut.ech.map((s) => s.e[i].o))],
@@ -286,14 +312,29 @@ async function entree(nav) {
     }
   }
 
-  /* film de l'arrivee, 18 images */
+  /* FILM DE L'ARRIVEE. 40 images et non 18 : la composition ne part
+     plus a 560 ms depuis la navigation mais a l'ouverture du rideau,
+     et elle court jusqu'a environ 3,4 s. Un film de 1,7 s s'arretait
+     avant la moitie. On mesure aussi l'ecart de pixels entre deux
+     images consecutives : c'est le seul critere qui dise « ca se
+     voit », par opposition a une duree qui dit seulement « ca
+     joue ». */
   const p2 = await ouvrir(nav);
   p2.goto(BASE + "/index.html", { waitUntil: "commit" }).catch(() => {});
-  for (let k = 0; k < 18; k++) {
-    await p2.screenshot({ path: join(d, `arrivee-${nb(k)}.png`), clip: { x: 0, y: 0, width: 1440, height: 900 } }).catch(() => {});
-    await attendre(95);
+  const film = [];
+  for (let k = 0; k < 40; k++) {
+    const buf = await p2.screenshot({ clip: { x: 0, y: 0, width: 1440, height: 900 } }).catch(() => null);
+    if (buf) {
+      writeFileSync(join(d, `arrivee-${nb(k)}.png`), buf);
+      film.push(buf);
+    }
+    await attendre(60);
   }
   await p2.close();
+  const ecarts = [];
+  for (let k = 1; k < film.length; k++) {
+    try { ecarts.push(diffStats(decodePNG(film[k - 1]), decodePNG(film[k])).pct); } catch (e) {}
+  }
 
   /* mouvement reduit : la composition doit etre entiere et immobile */
   const p3 = await ouvrir(nav, { reduced: true });
@@ -307,13 +348,25 @@ async function entree(nav) {
   await p3.screenshot({ path: join(d, "mouvement-reduit.png") });
   await p3.close();
 
-  const r = { pas, decalages_ms: decalages, filets, mouvementReduit: reduit, erreurs: page._erreurs };
+  const caches = pas.filter((p) => p.pourcent_vu !== null && p.pourcent_vu < 100);
+  const r = {
+    rideau_parti_a_ms: rideauPartiA, pas, decalages_ms: decalages, filets,
+    pas_partiellement_caches: caches.map((p) => p.quoi + " (" + p.pourcent_vu + " %)"),
+    film_ecarts_pct: ecarts,
+    film_images_qui_bougent: ecarts.filter((v) => v > 1).length,
+    mouvementReduit: reduit, erreurs: page._erreurs,
+  };
   await page.close();
   rapport.entree = r;
   console.log("\n=== 2 · ENTREE ===");
+  console.log("  rideau parti a :", rideauPartiA, "ms");
   pas.forEach((p) => console.log("  ", JSON.stringify(p)));
   console.log("  decalages entre pas (ms) :", decalages);
   console.log("  filets :", JSON.stringify(filets));
+  /* LE VERDICT. Un pas qui finit avant que le rideau parte n'a pas
+     ete vu, quelle que soit sa duree. */
+  console.log("  PAS CACHES PAR LE RIDEAU :", caches.length, caches.length ? JSON.stringify(r.pas_partiellement_caches) : "— aucun");
+  console.log("  film : ", ecarts.length + 1, "images ·", r.film_images_qui_bougent, "ecarts > 1 % · ecart max", Math.max(0, ...ecarts) + " %");
   console.log("  mouvement reduit — tous visibles :", reduit.every((x) => x.visible && x.opacite === 1), "· plaques rendues :", reduit.filter((x) => x.plaque !== "none").length);
   return r;
 }
@@ -520,11 +573,21 @@ async function derive(nav) {
     suivi.push(await page.evaluate((yy) => ({
       y: yy,
       p: [...document.querySelectorAll(".plaque")].map((p) => {
-        const cs = getComputedStyle(p);
-        const m = String(cs.transform).match(/matrix\(([^)]+)\)/);
-        if (!m) return { ty: 0, rot: 0 };
-        const v = m[1].split(",").map(Number);
-        return { ty: +v[5].toFixed(2), rot: +(Math.atan2(v[1], v[0]) * 180 / Math.PI).toFixed(2) };
+        const ang = (el) => {
+          const m = String(getComputedStyle(el).transform).match(/matrix\(([^)]+)\)/);
+          if (!m) return { ty: 0, rot: 0 };
+          const v = m[1].split(",").map(Number);
+          return { ty: +v[5].toFixed(2), rot: +(Math.atan2(v[1], v[0]) * 180 / Math.PI).toFixed(2) };
+        };
+        const coque = ang(p);
+        /* L'ANGLE QU'ON VOIT EST LA SOMME DES DEUX BOITES. La coque
+           porte ce que GSAP ecrit, le corps porte l'inclinaison de
+           repos. Ne relever que la coque, c'est mesurer la moitie du
+           geste et croire qu'une plaque se redresse alors qu'elle
+           garde 45 % de sa pente — defaut du 2026-07-29. */
+        const corps = p.querySelector(".plaque-corps");
+        const c = corps ? ang(corps) : { rot: 0 };
+        return { ty: coque.ty, rot: coque.rot, net: +(coque.rot + c.rot).toFixed(2) };
       }),
     }), y));
   }
@@ -533,11 +596,17 @@ async function derive(nav) {
   const bilan = [];
   for (let i = 0; i < n; i++) {
     const ty = suivi.map((s) => s.p[i].ty), rot = suivi.map((s) => s.p[i].rot);
+    const net = suivi.map((s) => s.p[i].net);
     bilan.push({
       plaque: i + 1,
       derive_y_px: `${Math.min(...ty).toFixed(1)} → ${Math.max(...ty).toFixed(1)}`,
       amplitude_y_px: +(Math.max(...ty) - Math.min(...ty)).toFixed(1),
       rotation_ajoutee_deg: `${Math.min(...rot).toFixed(2)} → ${Math.max(...rot).toFixed(2)}`,
+      /* L'angle VU, coque + corps. Il doit passer par ~0 quelque
+         part au milieu de la course : c'est le redressement. */
+      angle_vu_deg: `${Math.min(...net).toFixed(2)} → ${Math.max(...net).toFixed(2)}`,
+      se_redresse: Math.min(...net.map((v) => Math.abs(v))) < 0.35,
+      amplitude_angle_deg: +(Math.max(...net) - Math.min(...net)).toFixed(2),
     });
   }
   const r = { bilan, erreurs: page._erreurs };
@@ -546,6 +615,7 @@ async function derive(nav) {
   console.log("\n=== 5 · DERIVE ===");
   bilan.forEach((b) => console.log("  ", JSON.stringify(b)));
   console.log("  amplitude Y max :", Math.max(...bilan.map((b) => b.amplitude_y_px)), "px");
+  console.log("  plaques qui se redressent vraiment :", bilan.filter((b) => b.se_redresse).length, "/", n);
   return r;
 }
 
@@ -635,6 +705,212 @@ async function cadre(nav) {
 }
 
 /* ============================================================ */
+/* ============================================================
+   8 · SEQUENCES — « VISIBLE, SINON CA NE COMPTE PAS »
+
+   Le critere de ce chantier n'est pas une duree, c'est une suite
+   d'images qui NE SE RESSEMBLENT PAS. Chaque geste rend donc au
+   moins cinq vues et l'ecart de pixels entre deux vues
+   consecutives. Une suite dont tous les ecarts sont sous 1 % est
+   une animation qui n'existe pas, meme si la sonde dit qu'elle
+   joue.
+
+   Une capture d'ecran coute 30 a 50 ms : elle ne peut pas suivre
+   une transition de 420 ms image par image. Ce n'est pas un
+   probleme ici — on ne cherche pas la courbe, qui est relevee dans
+   la page par les autres blocs, mais la PREUVE QU'ON VOIT QUELQUE
+   CHOSE.
+   ============================================================ */
+async function ecarts(images) {
+  const out = [];
+  for (let i = 1; i < images.length; i++) {
+    try { out.push(+diffStats(decodePNG(images[i - 1].buf), decodePNG(images[i].buf)).pct.toFixed(2)); }
+    catch (e) { out.push(null); }
+  }
+  return out;
+}
+
+async function sequences(nav) {
+  const res = {};
+
+  /* --- les trois gestes du chargement, un chargement par cadrage --- */
+  /* LES CADRAGES SONT RELEVES, PAS DEVINES. Premiere version : le
+     cadre du « titre » etait pose a y=300 et photographiait la
+     plaque de limaille, 180 px trop haut. Un cadrage faux rend une
+     suite d'images qui bougent — mais pas celles qu'on croit. */
+  const cadrages = [
+    { nom: "titre", cible: ".hero-claim", marge: 22, de: 1150, a: 2250 },
+    { nom: "sous-titre-et-cta", cible: ".hero-sub", bas: ".hero-cta", marge: 18, de: 1600, a: 2800 },
+    { nom: "fiche", cible: ".hero-fiche", marge: 14, de: 2050, a: 3600 },
+  ];
+  for (const c of cadrages) {
+    const d = dossier(join("sequences", c.nom));
+    /* On releve le cadre sur une page DEJA POSEE, puis on recharge
+       pour filmer : la boite d'un element en cours d'animation ne
+       vaut rien, et `content-visibility: auto` fait mentir une
+       boite relevee hors ecran. */
+    const repere = await ouvrir(nav);
+    await repere.goto(BASE + "/index.html", { waitUntil: "load" });
+    await attendre(4200);
+    const clip = await repere.evaluate(([sel, bas, m]) => {
+      const a = document.querySelector(sel).getBoundingClientRect();
+      const b = bas ? document.querySelector(bas).getBoundingClientRect() : a;
+      const y = Math.max(0, Math.round(a.top - m));
+      return {
+        x: Math.max(0, Math.round(a.left - m)),
+        y,
+        width: Math.min(1440 - Math.max(0, Math.round(a.left - m)), Math.round(Math.max(a.width, b.width) + m * 2)),
+        height: Math.min(900 - y, Math.round(b.bottom - a.top + m * 2)),
+      };
+    }, [c.cible, c.bas || null, c.marge]);
+    await repere.close();
+
+    const page = await ouvrir(nav);
+    const t0 = Date.now();
+    page.goto(BASE + "/index.html", { waitUntil: "commit" }).catch(() => {});
+    const vues = [];
+    while (Date.now() - t0 < c.a) {
+      if (Date.now() - t0 < c.de) { await attendre(20); continue; }
+      const buf = await page.screenshot({ clip }).catch(() => null);
+      if (!buf) continue;
+      const t = Date.now() - t0;
+      writeFileSync(join(d, `${nb(vues.length)}-${t}ms.png`), buf);
+      vues.push({ t, buf });
+    }
+    await page.close();
+    const e = await ecarts(vues);
+    res[c.nom] = {
+      dossier: d, cadre: clip, vues: vues.length, instants_ms: vues.map((v) => v.t),
+      ecarts_pct: e, vues_qui_bougent: e.filter((v) => v > 1).length, ecart_max_pct: Math.max(0, ...e.filter((v) => v != null)),
+    };
+  }
+
+  /* --- les deux boutons au survol --- */
+  for (const [nom, sel] of [["survol-primaire", ".hero-cta .btn--primary"], ["survol-secondaire", ".hero-cta .btn--ghost"]]) {
+    const d = dossier(join("sequences", nom));
+    const page = await ouvrir(nav);
+    await page.goto(BASE + "/index.html", { waitUntil: "load" });
+    await page.mouse.move(20, 20);
+    await attendre(2600);
+    await fermerPopups(page);
+    const bo = await page.locator(sel).boundingBox();
+    const clip = { x: Math.max(0, bo.x - 10), y: Math.max(0, bo.y - 10), width: bo.width + 20, height: bo.height + 20 };
+    const vues = [];
+    const buf0 = await page.screenshot({ clip });
+    writeFileSync(join(d, "00-repos.png"), buf0);
+    vues.push({ t: 0, buf: buf0 });
+    const t0 = Date.now();
+    await page.mouse.move(bo.x + bo.width / 2, bo.y + bo.height / 2);
+    while (Date.now() - t0 < 700) {
+      const buf = await page.screenshot({ clip }).catch(() => null);
+      if (!buf) break;
+      const t = Date.now() - t0;
+      writeFileSync(join(d, `${nb(vues.length)}-${t}ms.png`), buf);
+      vues.push({ t, buf });
+    }
+    /* Le retour compte autant : c'est la moitie du geste. */
+    const t1 = Date.now();
+    await page.mouse.move(20, 20);
+    const retour = [];
+    while (Date.now() - t1 < 700) {
+      const buf = await page.screenshot({ clip }).catch(() => null);
+      if (!buf) break;
+      const t = Date.now() - t1;
+      writeFileSync(join(d, `r${nb(retour.length)}-${t}ms.png`), buf);
+      retour.push({ t, buf });
+    }
+    await page.close();
+    const e = await ecarts(vues), er = await ecarts(retour);
+    res[nom] = {
+      dossier: d, vues_aller: vues.length, ecarts_aller_pct: e, ecart_max_aller: Math.max(0, ...e.filter((v) => v != null)),
+      vues_retour: retour.length, ecarts_retour_pct: er, ecart_max_retour: Math.max(0, ...er.filter((v) => v != null)),
+    };
+  }
+
+  /* --- les sept plaques pendant le defilement --- */
+  {
+    const d = dossier(join("sequences", "plaques-defilement"));
+    const page = await ouvrir(nav);
+    await page.goto(BASE + "/index.html", { waitUntil: "load" });
+    await attendre(2200);
+    await fermerPopups(page);
+    const cible = await page.evaluate(() => Math.round(document.querySelector(".plaques").getBoundingClientRect().top + window.scrollY));
+    const vues = [];
+    /* On defile PAR PAS, jamais d'un saut : un `scrollTo` qui saute
+       casse un pin de ScrollTrigger. */
+    for (let k = 0; k < 12; k++) {
+      const y = Math.max(0, cible - 820) + k * 150;
+      await page.evaluate((v) => window.scrollTo(0, v), y);
+      await attendre(260);
+      /* On remesure la cible juste avant de la photographier :
+         `content-visibility: auto` fait mentir une boite relevee
+         plus tot. */
+      /* CADRE FIXE, et c'est une correction. Un cadre calcule sur
+         la boite de la bande change de taille d'une vue a l'autre,
+         et deux images de tailles differentes rendent 100 % d'ecart
+         — un chiffre qui ne veut rien dire. Le cadre est donc la
+         fenetre du visiteur, qui ne bouge pas ; ce qui bouge dedans
+         est exactement ce qu'il voit bouger. */
+      const buf = await page.screenshot({ clip: { x: 0, y: 140, width: 1440, height: 700 } }).catch(() => null);
+      if (!buf) continue;
+      writeFileSync(join(d, `${nb(k)}-y${y}.png`), buf);
+      vues.push({ t: y, buf });
+    }
+    await page.close();
+    const e = await ecarts(vues);
+    res["plaques-defilement"] = { dossier: d, vues: vues.length, ecarts_pct: e, ecart_max_pct: Math.max(0, ...e.filter((v) => v != null)) };
+  }
+
+  /* --- CINQ RECHARGEMENTS : la sequence doit rejouer a chaque fois.
+         C'est le defaut qui a ouvert ce chantier — un seul clic
+         posait `aped-entree-saut` et la composition ne revenait
+         jamais. On clique EXPRES au premier chargement. --- */
+  {
+    const page = await ouvrir(nav);
+    const releve = () => page.evaluate(() => ({
+      cls: document.documentElement.className,
+      rideau: !!document.getElementById("entree"),
+      saut: (() => { try { return sessionStorage.getItem("aped-entree-saut"); } catch (e) { return "?"; } })(),
+    }));
+    const passes = [];
+    await page.goto(BASE + "/index.html", { waitUntil: "commit" });
+    await attendre(300);
+    await page.mouse.click(700, 840);
+    await attendre(200);
+    passes.push({ passe: "1er chargement + 1 clic", ...(await releve()) });
+    for (let i = 1; i <= 5; i++) {
+      await attendre(1400);
+      await page.reload({ waitUntil: "commit" });
+      await attendre(300);
+      const r0 = await releve();
+      /* La composition doit non seulement etre declaree, mais
+         JOUER : on attend la disparition du rideau et on verifie
+         que `compo-hero` est bien la a ce moment. */
+      await attendre(1300);
+      const r1 = await page.evaluate(() => ({ compo: document.documentElement.className.includes("compo-hero"), rideau: !!document.getElementById("entree") }));
+      passes.push({ passe: "rechargement " + i, ...r0, apres_rideau: r1 });
+    }
+    await page.close();
+    res.rechargements = passes;
+  }
+
+  rapport.sequences = res;
+  console.log("\n=== 8 · SEQUENCES ===");
+  for (const [nom, v] of Object.entries(res)) {
+    if (nom === "rechargements") continue;
+    if (v.ecarts_pct) {
+      console.log("  " + nom.padEnd(20), v.vues + " vues ·", "ecart max " + v.ecart_max_pct + " %", "· ecarts :", JSON.stringify(v.ecarts_pct));
+    } else {
+      console.log("  " + nom.padEnd(20), v.vues_aller + " aller / " + v.vues_retour + " retour ·",
+        "max aller " + v.ecart_max_aller + " % · max retour " + v.ecart_max_retour + " %");
+      console.log("     aller :", JSON.stringify(v.ecarts_aller_pct), " retour :", JSON.stringify(v.ecarts_retour_pct));
+    }
+  }
+  console.log("  -- cinq rechargements apres un clic --");
+  res.rechargements.forEach((p) => console.log("    ", p.passe.padEnd(24), "saut=" + p.saut, "| " + p.cls, p.apres_rideau ? "| apres rideau : compo-hero=" + p.apres_rideau.compo : ""));
+  return res;
+}
+
 const quoi = (process.argv[2] || "tout").toLowerCase();
 const nav = await chromium.launch();
 try {
@@ -645,6 +921,7 @@ try {
   if (quoi === "tout" || quoi === "derive") await derive(nav);
   if (quoi === "tout" || quoi === "tenue") await tenue(nav);
   if (quoi === "tout" || quoi === "cadre") await cadre(nav);
+  if (quoi === "tout" || quoi === "sequences") await sequences(nav);
 } finally {
   await nav.close();
 }

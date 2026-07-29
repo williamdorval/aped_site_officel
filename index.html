@@ -83,34 +83,45 @@
          si le reste du JavaScript ne se charge jamais, la page se
          decouvre quand meme.
 
-         CE QUI LA DECLENCHE, ET POURQUOI CE N'EST PLUS UN SIMPLE
-         DRAPEAU DE SESSION.
-         La premiere version posait `aped-entree` des le premier
-         chargement et lisait ce drapeau ensuite : un rechargement
-         dans la meme session ne rejouait donc RIEN, et c'est la
-         raison pour laquelle personne ne l'a jamais vue. Or un
-         rechargement est un ARRIVEE, pas une navigation interne.
+         CE QUI LA DECLENCHE — ET IL N'Y A PLUS AUCUN DRAPEAU.
 
-         On lit maintenant le TYPE DE NAVIGATION, qui dit exactement
-         ce qui s'est passe :
+         Historique, parce qu'il explique la regle actuelle.
+         · Version 1 : `aped-entree` pose au premier chargement, lu
+           ensuite. Un rechargement ne rejouait RIEN.
+         · Version 2 : on lisait le TYPE DE NAVIGATION, mais on
+           gardait un drapeau `aped-entree-saut` pour ne pas remettre
+           la sequence a qui l'avait sautee. Or ce drapeau etait pose
+           par N'IMPORTE QUEL `pointerdown` ou `keydown` — donc par un
+           clic sur un bouton du site, ou par la touche F5 elle-meme.
+           Releve du 2026-07-29, `tools/diag-accueil.mjs` : un seul
+           clic pendant la premiere seconde, et les QUATRE
+           rechargements suivants rendaient `<html class="js">` — ni
+           `entree-on`, ni `compo-hero`. La composition du hero
+           n'existait plus pour le reste de l'onglet. Un « saut »
+           qu'on n'a pas demande n'est pas un refus, c'est un bug.
+           Pire : `catch (e) { saute = true; }` faisait qu'en
+           navigation privee stricte, ou `sessionStorage` leve, le
+           site n'avait JAMAIS de sequence d'entree.
+
+         Version 3, celle-ci : plus de drapeau du tout. On lit
+         uniquement ce qui s'est passe, qui est une information et
+         pas une supposition :
            · `navigate` — on arrive sur le site  -> elle joue ;
            · `reload`   — on rafraichit          -> elle rejoue ;
            · `back_forward` — retour arriere, ou page restauree du
              cache de retour -> elle NE joue PAS. C'est la seule
              « navigation interne » possible sur un site d'une seule
              page, et la rejouer la serait une punition.
-         Le drapeau de session ne sert plus qu'a une chose : si le
-         visiteur l'a SAUTEE, on ne la lui remet pas au prochain
-         rechargement. Sauter, c'est dire non. */
-      var saute = false;
-      try { saute = sessionStorage.getItem("aped-entree-saut") === "1"; } catch (e) { saute = true; }
+         Sauter reste possible et instantane — n'importe quel geste
+         termine le rideau en 200 ms — mais le saut ne se MEMORISE
+         plus. Un rechargement est une arrivee, chaque fois. */
       var type = "navigate";
       try {
         var n = performance.getEntriesByType("navigation")[0];
         if (n && n.type) type = n.type;
         else if (performance.navigation && performance.navigation.type === 2) type = "back_forward";
       } catch (e) {}
-      if (!saute && type !== "back_forward") d.classList.add("entree-on");
+      if (type !== "back_forward") d.classList.add("entree-on");
     })();
   </script>
 </head>
@@ -309,15 +320,40 @@
   <!-- ===================== 01 · HERO ===================== -->
   <section class="hero wrap" id="top">
     <!-- LES ONZE PAS DE LA COMPOSITION.
+
          `--e` porte le retard en millisecondes, pas un indice : la
-         sequence n'est pas reguliere — le titre part avant le
-         sous-titre, la fiche technique se compose pendant que le
-         rideau finit de s'ouvrir — et un indice force une cadence
-         uniforme qu'il faut ensuite corriger a coups d'exceptions.
-         Tout cela ne vit que sous `html.entree-on`, en CSS pur :
+         sequence n'est pas reguliere — 280 ms entre les deux lignes
+         du titre, 80 ms entre deux rangees de fiche — et un indice
+         force une cadence uniforme qu'il faut ensuite corriger a
+         coups d'exceptions.
+
+         L'ORIGINE DE CES RETARDS EST L'OUVERTURE DU RIDEAU, PAS LA
+         NAVIGATION. `main.js` pose `compo-hero` a la fin
+         d'animation de la derniere bande : le premier pas est donc
+         a `--e:0`, c'est-a-dire « des que le rideau a disparu ».
+         Avant le 2026-07-29 ces valeurs etaient des heures depuis
+         la navigation (560 a 1 470 ms) alors que le rideau, qui est
+         un aplat OPAQUE, ne s'ecartait qu'a partir de 801 ms et
+         n'etait retire qu'a 1 250 ms : les trois premiers pas —
+         sur-titre, ligne 1, ligne 2 — se jouaient donc a 0 % de
+         visibilite. Mesure : `tools/diag-accueil2.mjs`, 228
+         echantillons a 60 Hz.
+
+         Tout cela ne vit que sous `html.compo-hero`, en CSS pur :
          aucun etat de depart n'existe sans la sequence, donc le
          titre reste candidat au LCP des le premier rendu. -->
-    <p class="label hero-eyebrow he" style="--e:560">Agence numérique · Québec</p>
+    <!-- LE SUR-TITRE NOMME LES TROIS DOMAINES, PAS LA CATEGORIE.
+         « Agence numérique » ne disait rien qu'un visiteur ne
+         devine deja en arrivant sur le site d'une agence. Les trois
+         mots qui suivent, eux, ecartent immediatement les trois
+         quarts des concurrents : personne ne fait les trois. -->
+    <!-- LES ESPACES INSECABLES NE SONT PAS DE LA COQUETTERIE : a
+         390 px la ligne casse, et sans elles elle cassait AVANT le
+         point median — « · QUÉBEC » se retrouvait seul en tete de
+         seconde ligne, ce qui se lit comme une puce de liste. Liees,
+         les trois dernieres unites tiennent ensemble et la coupe
+         tombe apres « immobilier, ». -->
+    <p class="label hero-eyebrow he" style="--e:0">Web, immobilier, automatisation&nbsp;·&nbsp;Québec</p>
 
     <!-- LA PLAQUE DE LIMAILLE.
          Le <h1> porte le texte reel : c'est lui que lit un lecteur
@@ -336,9 +372,9 @@
          le chemin critique, et la coupe ne peut pas tomber au
          mauvais endroit. L'espace entre les deux boites est un noeud
          de texte : le nom accessible reste identique au caractere. -->
-    <p class="hero-claim"><span class="ligne he" style="--e:640">On code ce qui fait rouler</span> <span class="ligne he" style="--e:760">votre entreprise.</span></p>
-    <p class="hero-sub he" style="--e:880">Site web, boutique en ligne, automatisations, logiciel interne. Rien de gabarit. Le code est à vous.</p>
-    <div class="hero-cta rise he" style="--e:980">
+    <p class="hero-claim"><span class="ligne he" style="--e:80">On code ce qui fait rouler</span> <span class="ligne he" style="--e:360">votre entreprise.</span></p>
+    <p class="hero-sub he" style="--e:580">Site web, boutique en ligne, automatisations, logiciel interne. Rien de gabarit. Le code est à vous.</p>
+    <div class="hero-cta rise he" style="--e:740">
       <button class="btn btn--primary btn--lg" type="button" data-modal-open="modal-start">
         Démarrer votre projet
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
@@ -364,7 +400,7 @@
          Masquee sous 64em : Services arrive 400 px plus bas sur
          telephone et repete la meme grille. -->
     <aside class="hero-fiche" aria-label="Chantiers et délais typiques">
-      <p class="label he" style="--e:1060">Fiche technique · 2026</p>
+      <p class="label he" style="--e:820">Fiche technique · 2026</p>
       <!-- LES QUATRE RANGEES SE COMPOSENT, ELLES N'APPARAISSENT PAS.
            Chaque rangee porte deux gestes du meme pas : son filet se
            trace en grains puis se ressoude — V3 · SOUDER —, et son
@@ -375,16 +411,25 @@
            Ils gardent `data-section-rule` pour le filet de section
            active, mais le fichier de mouvement les saute. -->
       <ol class="fiche-rows">
+        <li style="--e:900"><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a class="he" href="#services"><em>01</em><span>Site web vitrine</span><b class="num">1 semaine</b></a></li>
+        <li style="--e:980"><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a class="he" href="#calculateur"><em>02</em><span>Estimateur pour vos clients</span><b class="num">2 semaines</b></a></li>
+        <li style="--e:1060"><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a class="he" href="#services"><em>03</em><span>Automatisation, logiciels et applications</span><b class="num">3 semaines</b></a></li>
         <li style="--e:1140"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#services"><em>01</em><span>Site ou boutique</span><b class="num">2 à 4 semaines</b></a></li>
-        <li style="--e:1210"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#services"><em>02</em><span>Automatisation et IA</span><b class="num">1 à 3 semaines</b></a></li>
-        <li style="--e:1280"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#services"><em>03</em><span>Visibilité locale</span><b class="num">1 semaine</b></a></li>
-        <li style="--e:1350"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#services"><em>04</em><span>Logiciel sur mesure</span><b class="num">1 à 3 mois</b></a></li>
+          <a class="he" href="#visite"><em>04</em><span>Visite virtuelle immobilière et vidéo</span><b class="num">1 semaine</b></a></li>
       </ol>
-      <p class="fiche-foot he" style="--e:1470"><i class="section-rule draw fiche-rule" data-section-rule></i>Le prix est dit au premier appel. Réponse en 12 h.</p>
+      <!-- LA MENTION EST OBLIGATOIRE, ET ELLE EST ECRITE POUR NE PAS
+           AFFAIBLIR LA PROMESSE.
+           Un delai de production et une date de demarrage sont deux
+           choses differentes ; les confondre, c'est soit mentir,
+           soit s'excuser. On separe donc les deux : le delai de
+           production est ferme, c'est notre engagement ; la date de
+           demarrage depend de la file, et c'est un fait de bonne
+           foi qui donne au visiteur une raison d'appeler tout de
+           suite plutot qu'un doute a emporter. -->
+      <p class="fiche-foot he" style="--e:1240"><i class="section-rule draw fiche-rule" data-section-rule></i>Délais de production, une fois le projet démarré — la visite virtuelle part après la séance de prise de vue. La date de démarrage, elle, dépend de la liste d’attente : vingt sites commandés la même semaine ne sortent pas la même semaine. On vous la donne au premier appel, avec le prix.</p>
     </aside>
   </section>
 
@@ -459,14 +504,14 @@
             rognage non plus, et le debordement lateral demande par
             le brief se voit enfin. -->
     <div class="plaques" data-plaques>
-      <article class="plaque" style="--ang:-1.7deg;--dx:-26px;--dy:0px;--z:1;--v:1">
+      <article class="plaque" style="--ang:-3.6deg;--dx:-46px;--dy:0px;--z:1;--v:1">
         <div class="plaque-corps">
 
           <b class="num">12 h</b>
           <span>Le délai de réponse, jours ouvrables. Souvent moins.</span>
         </div>
       </article>
-      <article class="plaque" style="--ang:1.2deg;--dx:6px;--dy:30px;--z:0.97;--v:0.6">
+      <article class="plaque" style="--ang:2.6deg;--dx:14px;--dy:34px;--z:0.97;--v:0.6">
         <div class="plaque-corps">
 
           <!-- PAS DE COMPTEUR ICI, ET C'EST UN DEFAUT CORRIGE.
@@ -480,35 +525,35 @@
           <span>Du code vous appartient, vos données comprises.</span>
         </div>
       </article>
-      <article class="plaque" style="--ang:-0.9deg;--dx:24px;--dy:10px;--z:1;--v:0.85">
+      <article class="plaque" style="--ang:-2.1deg;--dx:42px;--dy:10px;--z:1;--v:0.85">
         <div class="plaque-corps">
 
           <b class="num">0</b>
           <span>Sous-traitance. Vous parlez à la personne qui code.</span>
         </div>
       </article>
-      <article class="plaque" style="--ang:1.6deg;--dx:-18px;--dy:22px;--z:0.95;--v:0.7">
+      <article class="plaque" style="--ang:3.4deg;--dx:-32px;--dy:22px;--z:0.95;--v:0.7">
         <div class="plaque-corps">
 
           <b class="num">0</b>
           <span>Abonnement obligatoire pour rester en ligne.</span>
         </div>
       </article>
-      <article class="plaque" style="--ang:-1.3deg;--dx:2px;--dy:-10px;--z:0.98;--v:1">
+      <article class="plaque" style="--ang:-2.8deg;--dx:6px;--dy:-10px;--z:0.98;--v:1">
         <div class="plaque-corps">
 
           <b class="num">1 h</b>
           <span>De formation incluse au lancement, pour être autonome.</span>
         </div>
       </article>
-      <article class="plaque" style="--ang:2deg;--dx:14px;--dy:34px;--z:0.94;--v:0.55">
+      <article class="plaque" style="--ang:4.2deg;--dx:28px;--dy:34px;--z:0.94;--v:0.55">
         <div class="plaque-corps">
 
           <b class="num">60 s</b>
           <span>Pour chiffrer vos économies. Sans donner votre courriel.</span>
         </div>
       </article>
-      <article class="plaque" style="--ang:-1.4deg;--dx:28px;--dy:6px;--z:0.97;--v:0.9">
+      <article class="plaque" style="--ang:-3deg;--dx:48px;--dy:6px;--z:0.97;--v:0.9">
         <div class="plaque-corps">
 
           <b class="num num--mot">Québec</b>

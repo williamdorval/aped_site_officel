@@ -27,6 +27,18 @@ const nav = await chromium.launch();
 let echecs = 0;
 const dire = (ok, t) => { console.log((ok ? "  OK   " : "  ECHEC") + "  " + t); if (!ok) echecs++; };
 
+/* LE TAUX DE BRIDAGE EST UN REGLAGE D'INSTRUMENT, PAS UNE
+   SPECIFICATION. Le palier 2 se declenche sous 50 i/s medians.
+   A x6, cette machine rendait encore 60 i/s le 2026-07-29 : le test
+   ne testait donc RIEN — il rendait « palier 0 » et DEUX echecs qui
+   accusaient le code alors que le fautif etait l'instrument, trop
+   faible pour atteindre le declencheur. C'est le meme piege qu'un
+   detecteur qui n'attend pas assez : l'outil ne dit pas « je n'ai
+   pas reussi a declencher », il dit « ca ne se declenche pas ».
+   Si une machine future redevient trop rapide, c'est ce nombre
+   qu'on monte — jamais le seuil du site. */
+const BRIDE = Number(process.env.APED_BRIDE || 20);
+
 async function sonder(nom, opts = {}) {
   const ctx = await nav.newContext({
     viewport: opts.viewport || { width: 1440, height: 900 },
@@ -42,7 +54,13 @@ async function sonder(nom, opts = {}) {
       Object.defineProperty(navigator, "deviceMemory", { get: () => 4 });
     });
   }
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  /* `aped-entree-saut` n'existe plus : le drapeau qui memorisait un
+     saut a ete supprime le 2026-07-29, parce que n'importe quel clic
+     le posait et tuait la composition du hero pour tout l'onglet.
+     La sequence joue donc ici comme chez un visiteur.
+     `aped-sans-popup`, lui, reste indispensable : un `<dialog>`
+     ouvert capture tous les evenements de pointeur. */
+  await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
 
   let cdp = null;
   if (opts.bride) {
@@ -150,9 +168,9 @@ for (const [nom, opts] of [
   dire(!r.etiquette, `${nom.padEnd(24)} -> etiquette de pointe absente`);
 }
 
-console.log("\nPALIER 2 — declencheur mesure, processeur bride x6");
+console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + "");
 {
-  const r = await sonder("bride", { bride: 6 });
+  const r = await sonder("bride", { bride: BRIDE });
   dire(r.palier === "2", `data-palier = ${r.palier} (mesure : ${r.images} i/s)`);
   dire(r.cran === "0ms" && r.cranCta === "0ms" && r.cranGhost === "0ms",
     `--cran ramene a ${r.cran} / ${r.cranCta} / ${r.cranGhost} : tous les boutons basculent d'un bloc`);
@@ -163,7 +181,7 @@ console.log("\nL'ORIENTATION NE TOMBE A AUCUN PALIER");
 for (const [nom, opts] of [
   ["palier 0", {}],
   ["palier 1", { viewport: { width: 390, height: 844 } }],
-  ["palier 2", { bride: 6 }]
+  ["palier 2", { bride: BRIDE }]
 ]) {
   const r = await sonder(nom, opts);
   const ok = r.reste.trim() !== "" && r.etape.trim() !== "" &&
@@ -181,9 +199,15 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
 {
   const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  /* `aped-entree-saut` n'existe plus : le drapeau qui memorisait un
+     saut a ete supprime le 2026-07-29, parce que n'importe quel clic
+     le posait et tuait la composition du hero pour tout l'onglet.
+     La sequence joue donc ici comme chez un visiteur.
+     `aped-sans-popup`, lui, reste indispensable : un `<dialog>`
+     ouvert capture tous les evenements de pointeur. */
+  await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
   const cdp = await ctx.newCDPSession(page);
-  await cdp.send("Emulation.setCPUThrottlingRate", { rate: 6 });
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: BRIDE });
   await page.goto(B + "/", { waitUntil: "load" });
   await page.mouse.move(700, 400);
   await page.waitForTimeout(4500);

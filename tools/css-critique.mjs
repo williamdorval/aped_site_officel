@@ -51,7 +51,20 @@ const CRITIQUES = [
   "rail", "rail-list", "rail-left", "rail-impact", "read-progress",
   "btn", "btn-icon", "theme-toggle", "icon", "label", "num", "skip-link", "sr-only",
   "entree", "hero", "plate-text", "plate-big", "plate-small", "fiche-rows", "fiche-foot", "fiche-rule",
-  "spec", "spec-cell", "shell", "focus-group", "opt", "fine"
+  "spec", "spec-cell", "shell", "focus-group", "opt", "fine",
+  /* LA COMPOSITION DU HERO EST CRITIQUE, ET C'EST UN DEFAUT MESURE.
+     `html.compo-hero .he::after` tombait en differe, or `differe.css`
+     est injecte par JavaScript apres deux `requestAnimationFrame` :
+     l'`animation-delay` ne court qu'a partir de l'arrivee de la
+     feuille. Releve du 2026-07-29 par `tools/diag-accueil2.mjs` :
+     un decalage CONSTANT de +223 ms entre le `--e` ecrit dans le
+     document et le moment reel. Le rideau, lui, est dans
+     `critique.css` et part a l'heure — les onze pas glissaient donc
+     sous sa queue, et les trois premiers (sur-titre, ligne 1, ligne
+     2) se jouaient a 0 % de visibilite.
+     Une animation de CHARGEMENT ne peut pas vivre dans une feuille
+     differee. La regle vaut pour tout ce qu'on ajoutera ensuite. */
+  "he", "compo-hero", "compo-attend", "ligne"
 ];
 const estCritique = (nom) =>
   CRITIQUES.includes(nom) ||

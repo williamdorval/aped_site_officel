@@ -1285,13 +1285,29 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
    La jauge et le compteur portent DEUX animations chacun ;
    `animation-play-state` est une liste, donc on met la premiere en
    marche et la seconde en pause. C'est la seule facon de retenir la
-   derniere tranche sans retenir tout le reste. */
+   derniere tranche sans retenir tout le reste.
+
+   POURQUOI `!important`, ET CE N'EST PAS UNE FACILITE.
+   `animation` est un RACCOURCI : il remet `animation-play-state` a
+   `running`, meme quand on ne l'ecrit pas. Ces regles de pause
+   etaient posees ici, ligne 1290 ; les declarations `animation:` des
+   bandes, de la plaque, du cadre et de la jauge viennent toutes
+   PLUS BAS dans la feuille, a specificite egale. L'ordre tranchait
+   donc en faveur du raccourci et LA PAUSE N'A JAMAIS AGI — ni sur
+   le rideau, ni sur la composition du hero. Defaut trouve le
+   2026-07-29 en mesurant : les onze pas partaient a 276 ms alors
+   que `compo-attend` etait pose.
+   Deplacer les regles apres chaque declaration marcherait aussi,
+   mais il faudrait le refaire a chaque animation ajoutee, et
+   l'oubli serait silencieux. Ici la priorite dit exactement ce
+   qu'on veut dire : une pause bat une declaration, ou qu'elle
+   soit. */
 html.entree-attend .entree-bandes i,
 html.entree-attend .entree-plaque,
-html.entree-attend .entree-cadre { animation-play-state: paused; }
+html.entree-attend .entree-cadre { animation-play-state: paused !important; }
 html.entree-attend .entree-jauge,
 html.entree-attend .entree-etat,
-html.entree-attend .entree-rouleau { animation-play-state: running, paused; }
+html.entree-attend .entree-rouleau { animation-play-state: running, paused !important; }
 /* LA COMPOSITION DU HERO ATTEND AVEC LE RESTE. Sans cette ligne,
    les onze pas se joueraient DERRIERE un rideau encore ferme quand
    le chargement traine : le visiteur verrait s'ouvrir un hero deja
@@ -1299,8 +1315,31 @@ html.entree-attend .entree-rouleau { animation-play-state: running, paused; }
    aussi les deux animations du filet de fiche — trace et soudure —
    parce qu'une valeur unique de `animation-play-state` s'applique a
    toute la liste. */
+/* LA COMPOSITION EST POSEE TOT ET TENUE A L'ARRET.
+
+   `compo-attend` est posee en meme temps que `compo-hero`, des que
+   `main.js` s'execute, et n'est retiree qu'a la disparition du
+   rideau. Les plaques sont donc DEJA sur le texte quand les bandes
+   s'ecartent — sans quoi le titre apparait nu pendant les ~96 ms
+   qui separent la sortie des bandes qui le couvrent (`--k` de 1 a
+   3, parties a 1 072 ms) de celle de la derniere bande (1 168 ms),
+   et se fait ensuite recouvrir pour etre redecouvert. Un
+   clignotement, mesure le 2026-07-29.
+
+   Une animation en pause n'avance pas son horloge : les onze
+   retards partent donc tous de la levee de cette classe, et
+   `--e:0` veut dire « des que le rideau a disparu ». C'est ce qui
+   rend le passage deterministe d'une machine a l'autre.
+
+   `entree-attend` couvre le meme besoin pendant que le CHARGEMENT
+   traine ; les deux classes se recouvrent souvent, jamais
+   totalement. */
+html.compo-attend .he,
+html.compo-attend .he::after,
+html.compo-attend .hero-fiche .fiche-rule,
+html.entree-attend .he,
 html.entree-attend .he::after,
-html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused; }
+html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused !important; }
 
 html.entree-on .entree {
   display: block;
@@ -2152,6 +2191,11 @@ html.entree-saut .entree-plaque {
 }
 
 @keyframes he-plaque { to { transform: scaleX(0); } }
+/* V2 · S'ALIGNER, a l'echelle d'un pas. Le bloc arrive decale sur
+   la gauche — le SENS DE LECTURE, le meme que celui de l'arete qui
+   le decouvre — et se reprend a sa place. `--e-snap` est une courbe
+   sans depassement : la matiere ne rebondit pas, elle s'arrete. */
+@keyframes he-venir { from { transform: translate3d(var(--he-x, -24px), 0, 0); } }
 @keyframes he-filet { from { transform: scaleX(0); } }
 /* V3 · SOUDER. La trame tient presque toute la course, puis le
    trait se ferme d'un coup : une soudure ne se fond pas. */
@@ -2164,7 +2208,58 @@ html.entree-saut .entree-plaque {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html.compo-hero .he { position: relative; }
+  /* ============================================================
+     CE QUI A CHANGE LE 2026-07-29, ET POURQUOI CE N'EST PAS UN
+     REGLAGE MAIS UNE CORRECTION.
+
+     Releve de `tools/diag-accueil2.mjs`, 228 echantillons a 60 Hz :
+     les trois premiers pas — sur-titre, ligne 1, ligne 2 — se
+     jouaient a **0 % de visibilite**. Le rideau d'entree est un
+     aplat OPAQUE (`.entree-bandes i { background: var(--surface-0) }`,
+     `inset: 0`) dont la premiere bande ne part qu'a 801 ms et dont
+     le noeud n'est retire qu'a 1 250 ms. Les pas etaient programmes
+     de 560 a 1 280 ms : la revelation du titre avait lieu SOUS un
+     rideau ferme. Ce n'etait pas une animation trop discrete,
+     c'etait une animation qu'on ne pouvait pas voir.
+
+     Trois corrections, dans cet ordre d'importance :
+
+     1. LE TEMPO. La composition part maintenant a 1 180 ms, une
+        fois le rideau parti. Elle dure plus longtemps qu'avant et
+        c'est voulu : ce qui etait cache n'avait pas besoin d'etre
+        rapide, ce qui se voit a besoin d'etre lu.
+
+     2. LA FEUILLE. Ces regles vivaient dans `differe.css`, injecte
+        par JavaScript : l'`animation-delay` ne courait qu'a partir
+        de l'arrivee de la feuille, soit un decalage CONSTANT de
+        +223 ms qui poussait tout sous la queue du rideau. Les
+        classes `he`, `compo-hero` et `ligne` sont desormais dans la
+        liste critique de `tools/css-critique.mjs`. Regle generale :
+        une animation de CHARGEMENT ne peut pas vivre dans une
+        feuille differee.
+
+     3. L'AMPLITUDE. Une plaque de 300 ms qui se retire est une
+        arete franche, mais une arete seule ne dit pas d'ou vient le
+        bloc. Chaque pas ARRIVE maintenant decale de 24 a 40 px sur
+        la gauche et se reprend en 560 ms, amortissement critique.
+        Le deplacement est un `transform` : aucun decalage de mise
+        en page, aucun cout de disposition, et le texte reste peint
+        entier des la premiere image — donc candidat au LCP, ce qui
+        etait et reste la contrainte.
+     ============================================================ */
+  html.compo-hero .he {
+    position: relative;
+    animation: he-venir 560ms var(--e-snap) calc(var(--e, 0) * 1ms) backwards;
+  }
+  /* L'AMPLITUDE SUIT LA HIERARCHIE. Le titre est ce qu'on doit voir
+     arriver ; une rangee de fiche technique n'a pas a traverser
+     l'ecran pour se faire remarquer.
+     40 px et pas davantage sur le titre : au-dela, la ligne passe
+     sous le rail de gauche a partir de 64em. Mesure, pas prudence. */
+  html.compo-hero .hero-claim .ligne { --he-x: -40px; }
+  html.compo-hero .hero-eyebrow,
+  html.compo-hero .hero-sub { --he-x: -32px; }
+
   html.compo-hero .he::after {
     content: "";
     position: absolute;
@@ -2175,20 +2270,25 @@ html.entree-saut .entree-plaque {
     background: var(--surface-0);
     transform-origin: right center;
     /* Pas de `backwards` : avant son retard, la plaque est a
-       `scaleX(1)`, sa valeur CSS. Rien a rattraper, aucun saut. */
-    animation: he-plaque 300ms var(--e-drive) calc(var(--e, 0) * 1ms) forwards;
+       `scaleX(1)`, sa valeur CSS. Rien a rattraper, aucun saut.
+       420 ms et non 300 : l'arete doit avoir le temps de TRAVERSER
+       le mot, sinon on ne voit qu'un clignotement. */
+    animation: he-plaque 420ms var(--e-drive) calc(var(--e, 0) * 1ms) forwards;
     pointer-events: none;
     z-index: 2;
   }
   /* Le libelle d'une rangee part 90 ms APRES son filet : un cran
-     apres l'autre, jamais deux crans en meme temps. */
+     apres l'autre, jamais deux crans en meme temps. La plaque ET
+     l'arrivee prennent le meme retard, sinon le bloc glisserait
+     avant d'etre decouvert. */
+  html.compo-hero .hero-fiche a.he,
   html.compo-hero .hero-fiche a.he::after {
     animation-delay: calc((var(--e, 0) + 90) * 1ms);
   }
   html.compo-hero .hero-fiche .fiche-rule {
     animation:
       he-filet 340ms var(--e-drive) calc(var(--e, 0) * 1ms) backwards,
-      he-souder 820ms linear calc(var(--e, 0) * 1ms) backwards;
+      he-souder 600ms linear calc(var(--e, 0) * 1ms) backwards;
   }
   /* Le filet du pied est SOUS la plaque de son propre paragraphe :
      il attend donc qu'elle soit partie, sinon il se trace en
@@ -2200,6 +2300,7 @@ html.entree-saut .entree-plaque {
   /* SAUTER, C'EST DIRE NON. `main.js` pose `entree-saut` au premier
      geste et termine le rideau en 200 ms : la composition doit
      finir avec lui, pas continuer a se jouer toute seule. */
+  html.entree-saut .he,
   html.entree-saut .he::after { animation-duration: 140ms; animation-delay: 0s; }
   html.entree-saut .hero-fiche .fiche-rule {
     animation-duration: 140ms, 140ms;
@@ -2295,10 +2396,19 @@ html.entree-saut .entree-plaque {
      toujours. Les deux coefficients ci-dessous, eux, sont poses sur
      le CONTENEUR et heritent : ils multiplient l'inclinaison et les
      decalages sans jamais avoir a les redeclarer.
-     0,45 sur telephone : l'inclinaison se voit encore — c'est la
-     signature — mais chaque plaque reste d'aplomb pour la lecture. */
-  --incl: 0.45;
-  --ecart: 0.35;
+     LES DEUX COEFFICIENTS NE SE VALENT PAS, ET LE PARTAGE A CHANGE.
+     `--incl` porte l'INCLINAISON, qui est la signature et qui ne
+     coute presque rien en largeur : une plaque de 110 px de haut
+     tournee de 2,3° ne gagne que 2 px. `--ecart` porte la
+     TRANSLATION, qui coute sa valeur pleine et qui sort dans la
+     gouttiere. Quand les angles sont passes de 2° a 4,2° et les
+     decalages de 28 a 48 px, `tools/deborde.mjs` a rendu 395 > 390
+     et 435 > 430 : cinq pixels de trop, aux deux largeurs les plus
+     etroites, et nulle part ailleurs. On monte donc l'inclinaison
+     et on baisse la translation — la signature se voit MIEUX
+     qu'avant sur telephone, et la page ne deborde plus. */
+  --incl: 0.55;
+  --ecart: 0.22;
 }
 /* LA COQUE. Elle ne se voit pas : elle occupe la case de grille et
    c'est elle que GSAP fait deriver. Elle ne porte aucune
@@ -4373,7 +4483,7 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
 
 /* --- 640 px : les plaques passent en deux colonnes --- */
 @media (min-width: 40em) {
-  .plaques { grid-template-columns: repeat(2, 1fr); gap: var(--s-5) var(--s-4); --incl: 0.7; --ecart: 0.6; }
+  .plaques { grid-template-columns: repeat(2, 1fr); gap: var(--s-5) var(--s-4); --incl: 0.78; --ecart: 0.42; }
 
   .form-row { grid-template-columns: repeat(2, 1fr); }
   .check-grid { grid-template-columns: repeat(2, 1fr); }
@@ -4557,13 +4667,21 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
        n'apparaissait qu'aux DEUX largeurs intermediaires, ce qui est
        exactement le genre de chose qu'on ne voit pas a l'oeil.
 
-       Le rembourrage retrecit la grille de 34 px de chaque cote :
+       Le rembourrage retrecit la grille de 60 px de chaque cote :
        les plaques debordent de leur colonne comme demande, et ce
        debordement retombe dans le rembourrage au lieu d'agrandir la
        page. Le filet du haut et celui du bas, eux, sont sur la boite
        de bordure : ils gardent la largeur du `wrap`, donc ils
-       restent alignes avec toutes les autres regles du site. */
-    padding-inline: 34px;
+       restent alignes avec toutes les autres regles du site.
+
+       DE 34 A 60 PX, ET C'EST UNE CONSEQUENCE. Les decalages sont
+       passes de +-28 px a +-48 px et les angles de 2° a 4,2° : sous
+       2°, une inclinaison ne se percoit tout simplement pas — c'est
+       le constat qui a ouvert ce chantier. Une plaque de 300 px
+       tournee de 4,2° gagne environ 5 px de largeur apparente ;
+       48 + 5 + une marge de securite tombent a 60. Verifie par
+       `tools/deborde.mjs` a neuf largeurs, pas estime. */
+    padding-inline: 60px;
     --incl: 1;
     --ecart: 1;
   }
@@ -4964,6 +5082,71 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
 .hero-cta .btn--ghost:focus-visible::after {
   background-image: linear-gradient(90deg, var(--ink) 0 100%);
 }
+
+/* ============================================================
+   LES DEUX BOUTONS DU HERO BASCULENT SANS JAVASCRIPT.
+
+   DEFAUT MESURE LE 2026-07-29, `tools/diag-accueil2.mjs`.
+   L'aplat qui balaye vivait sur `.btn[data-lettres]::before`, et
+   `data-lettres` est pose par `langue.js` — c'est-a-dire par la
+   VAGUE 2, qui n'arrive qu'au premier geste ou a 1,2 s, et qui ne
+   s'execute PAS DU TOUT sous mouvement reduit. Releve au palier 3 :
+   `data-lettres` absent, 0 lettre decoupee, `::before` a `none`,
+   « aucun ::before ». Les deux CTA du hero n'avaient alors qu'un
+   changement de couleur de cadre. Un visiteur qui a le mouvement
+   reduit active — ou qui survole avant 1,2 s — voyait donc des
+   boutons qui ne repondent pas.
+
+   La regle du selecteur d'attribut restait bonne pour la CASCADE
+   PAR LETTRE : sans `--i` ni `--p`, toutes les lettres basculeraient
+   ensemble et rouvriraient la fenetre de contraste que la phase 8
+   avait fermee. Mais l'APLAT, lui, n'a besoin d'aucun script.
+
+   On separe donc les deux : l'aplat est inconditionnel, la cascade
+   par lettre reste conditionnelle. Et quand le libelle n'est pas
+   decoupe, il bascule d'une seule image A MI-COURSE — mesure de la
+   reference `fancy-toggle` (`RECHERCHE-ACCUEIL.md`) : elle fait
+   basculer son texte trop tot et tombe a 1,03:1 pendant 117 ms. A
+   la moitie de la course, l'arete est passee sous le milieu du mot
+   et les deux etats tiennent leur contraste.
+
+   Sous mouvement reduit, `--cran` tombe a 0 : ce n'est plus un
+   balayage, c'est un CRAN. Le geste reste, la course disparait.
+   ============================================================ */
+.hero-cta .btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--cran) linear;
+  pointer-events: none;
+}
+.hero-cta .btn--ghost::before { background: var(--accent); }
+.hero-cta .btn:hover::before,
+.hero-cta .btn:focus-visible::before { transform: scaleX(1); }
+
+.hero-cta .btn:not([data-lettres]) {
+  transition:
+    color 0s linear calc(var(--cran) * 0.5),
+    border-color var(--t-2) var(--e-snap);
+}
+.hero-cta .btn--primary:not([data-lettres]):hover,
+.hero-cta .btn--primary:not([data-lettres]):focus-visible {
+  color: var(--ink-inverse);
+  border-color: var(--ink);
+}
+.hero-cta .btn--ghost:not([data-lettres]):hover,
+.hero-cta .btn--ghost:not([data-lettres]):focus-visible {
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta .btn { --cran: 0ms; }
+}
+.hero-cta .btn[disabled]::before,
+.hero-cta .btn[aria-disabled="true"]::before { transform: scaleX(0); }
 
 /* Un bouton desactive ne bascule pas : il n'y a rien a faire. */
 .btn[disabled][data-lettres]::before,

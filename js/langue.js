@@ -1503,7 +1503,17 @@
          valeur brute, sinon la plaque se redresserait au-dela de
          zero et pencherait de l'autre cote. */
       var reel = ang * incl;
-      var course = 34 * v;
+      /* 110 PX ET NON 34, ET C'EST UNE CORRECTION MESUREE.
+         34 px etalees sur toute la traversee de la bande — de
+         `top bottom` a `bottom top`, soit environ 1 100 px de
+         defilement — font 3 % de course. Un deplacement de 3 %
+         ne se percoit pas : le releve du 2026-07-29 a confirme
+         que les sept plaques etaient, a l'oeil, immobiles. Le
+         coefficient `--v` reste ce qui differencie les vitesses :
+         de 0,55 a 1, donc de 60 a 110 px selon la plaque. C'est
+         ce DECALAGE entre elles qui se lit, plus encore que la
+         course elle-meme. */
+      var course = 110 * v;
 
       var tl = gsap.timeline({
         scrollTrigger: {
@@ -1514,9 +1524,16 @@
           invalidateOnRefresh: true
         }
       });
+      /* LE REDRESSEMENT EST MAINTENANT COMPLET. `-reel * 0.55`
+         laissait 45 % de l'inclinaison en place au centre : la
+         plaque ne se redressait pas, elle se redressait un peu.
+         La coque tourne de `-reel` exactement, donc le net avec
+         l'inclinaison du corps vaut ZERO au centre de l'ecran —
+         V2 · S'ALIGNER se lit parce qu'il y a une fin nette a
+         atteindre, pas parce que ca bouge. */
       tl.fromTo(p,
         { y: course, rotation: 0 },
-        { y: 0, rotation: -reel * 0.55, ease: "none", duration: 0.5 })
+        { y: 0, rotation: -reel, ease: "none", duration: 0.5 })
         .to(p, { y: -course, rotation: 0, ease: "none", duration: 0.5 });
 
       /* TUER UN SCRUB NE SUFFIT PAS : il faut RENDRE l'element.

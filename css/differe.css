@@ -194,10 +194,6 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
    GSAP est la et le mouvement autorise. `inline-block` est ce qui
    permet a `clip-path` de s'appliquer par mot. */
 .head h2 .mot { display: inline; }
-/* Une ligne du titre est une BOITE : c'est elle que le balayage
-   decouvre, jamais un mot isole. `text-wrap` est neutralise ici,
-   sinon le navigateur re-equilibrerait des lignes deja arretees. */
-.head h2 .ligne { display: block; text-wrap: nowrap; }
 [data-settle],
 .parc-corps {
   overflow-x: clip;
@@ -578,8 +574,6 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
   margin-bottom: var(--s-5);
 }
 .link-btn { text-decoration: underline; text-underline-offset: 3px; font-family: var(--font-data); font-size: var(--fs-8); }
-html.entree-attend .he::after,
-html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused; }
 @keyframes entree-bande {
   to { transform: translate3d(calc(var(--d) * 101%), 0, 0); }
 }
@@ -897,56 +891,8 @@ html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused; }
 /* Une fois la matiere posee, le texte reel sort de la vue mais
    reste dans l'arbre d'accessibilite. */
 .hero-plate.is-live .plate-text { visibility: hidden; }
-/* ============================================================
-   LA COMPOSITION DU HERO — V1 · DEGAGER et V3 · SOUDER.
-
-   POURQUOI UNE PLAQUE QUI SE RETIRE, ET PAS UN `clip-path`.
-
-   La reference etudiee — `fullstack-studio.webflow.io` — ne fond
-   pas ses lignes de titre. Releve du 2026-07-29, 120 echantillons
-   a 60 Hz : l'opacite du texte passe de 0 a 1 SANS UNE SEULE
-   valeur intermediaire, ligne 1 a 672-720 ms, ligne 2 a
-   999-1049 ms, soit environ 330 ms de decalage. Ce qui bouge est
-   un `.text-highlight_rect` en `position: absolute` pose PAR-DESSUS
-   la ligne. Autrement dit : une plaque qui se retire, pas un fondu.
-   C'est deja V1 · DEGAGER, on n'a rien a traduire.
-
-   ET C'EST AUSSI CE QUI SAUVE LE LCP. Un `clip-path` qui masque le
-   titre pendant les 700 premieres millisecondes le retire de la
-   mesure du plus grand contenu peint, exactement comme le faisait
-   `opacity: 0` avant la phase 6 — c'est ecrit en toutes lettres en
-   tete de `motion.js`, et c'est la raison pour laquelle le hero
-   avait cesse de s'animer. Une plaque OPAQUE POSEE DESSUS ne
-   change rien au texte : il est peint, entier, des la premiere
-   image ; il reste candidat au LCP ; et le visiteur ne le voit pas
-   encore parce qu'une plaque est devant. Aucun compromis a faire.
-
-   TOUT EST EN CSS, ET RIEN N'EXISTE SANS LA SEQUENCE. Les plaques
-   ne sont rendues que sous `html.compo-hero`, posee par `main.js`
-   uniquement quand la sequence joue vraiment. Sans elle — retour
-   arriere, mouvement reduit, script coupe — le hero est simplement
-   la, en entier. Il n'y a donc AUCUN etat de depart d'animation
-   dans le CSS au sens de la regle 0bis : l'etat de repos reste la
-   forme finale.
-
-   POURQUOI PAS `html.entree-on`, QUI EXISTAIT DEJA. Parce qu'elle
-   tombe avec le rideau, vers 1,3 s. Mesure du 2026-07-29 par
-   `tools/accueil-check.mjs` : les six premiers pas se decouvraient
-   normalement et les CINQ SUIVANTS — toute la fiche technique,
-   dont les retards vont de 1 140 a 1 420 ms — voyaient leur
-   animation annulee en vol et se posaient d'un bloc. Le rideau doit
-   partir tot, c'est un rideau ; la composition doit durer, c'est
-   une composition. Deux cycles, deux classes.
-
-   `--e` porte le retard en millisecondes et il est pose dans le
-   document, un pas a la fois. Il herite : la rangee de fiche le
-   donne a son filet ET a son libelle, qui l'utilisent avec deux
-   decalages differents — le filet se soude, PUIS le libelle se
-   degage. Le filet annonce la rangee au lieu de la souligner,
-   c'est le meme argument que G1 sur les douze frontieres.
-   ============================================================ */
-.hero-claim .ligne { display: block; }
 @keyframes he-plaque { to { transform: scaleX(0); } }
+@keyframes he-venir { from { transform: translate3d(var(--he-x, -24px), 0, 0); } }
 @keyframes he-filet { from { transform: scaleX(0); } }
 @keyframes he-souder {
   0%, 86% {
@@ -954,44 +900,6 @@ html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused; }
       90deg, var(--rule-strong) 0 2px, transparent 2px 4px);
   }
   100% { background-image: linear-gradient(90deg, var(--rule-strong) 0 100%); }
-}
-@media (prefers-reduced-motion: no-preference) {
-html.compo-hero .he { position: relative; }
-html.compo-hero .he::after {
-    content: "";
-    position: absolute;
-    /* Hors flux, donc jamais un element de grille ni de flexbox :
-       `.fiche-foot` et `.hero-cta` en sont, et un pseudo-element en
-       flux y aurait pris une rangee a lui tout seul. */
-    inset: -0.06em -0.06em -0.16em;
-    background: var(--surface-0);
-    transform-origin: right center;
-    /* Pas de `backwards` : avant son retard, la plaque est a
-       `scaleX(1)`, sa valeur CSS. Rien a rattraper, aucun saut. */
-    animation: he-plaque 300ms var(--e-drive) calc(var(--e, 0) * 1ms) forwards;
-    pointer-events: none;
-    z-index: 2;
-  }
-/* Le libelle d'une rangee part 90 ms APRES son filet : un cran
-     apres l'autre, jamais deux crans en meme temps. */
-html.compo-hero .hero-fiche a.he::after {
-    animation-delay: calc((var(--e, 0) + 90) * 1ms);
-  }
-html.compo-hero .hero-fiche .fiche-rule {
-    animation:
-      he-filet 340ms var(--e-drive) calc(var(--e, 0) * 1ms) backwards,
-      he-souder 820ms linear calc(var(--e, 0) * 1ms) backwards;
-  }
-/* Le filet du pied est SOUS la plaque de son propre paragraphe :
-     il attend donc qu'elle soit partie, sinon il se trace en
-     aveugle. */
-html.compo-hero .fiche-foot .fiche-rule {
-    animation-delay: calc((var(--e, 0) + 300) * 1ms), calc((var(--e, 0) + 300) * 1ms);
-  }
-/* SAUTER, C'EST DIRE NON. `main.js` pose `entree-saut` au premier
-     geste et termine le rideau en 200 ms : la composition doit
-     finir avec lui, pas continuer a se jouer toute seule. */
-html.entree-saut .he::after { animation-duration: 140ms; animation-delay: 0s; }
 }
 /* ============================================================
    13. LES PLAQUES D'ATELIER
@@ -1067,10 +975,19 @@ html.entree-saut .he::after { animation-duration: 140ms; animation-delay: 0s; }
      toujours. Les deux coefficients ci-dessous, eux, sont poses sur
      le CONTENEUR et heritent : ils multiplient l'inclinaison et les
      decalages sans jamais avoir a les redeclarer.
-     0,45 sur telephone : l'inclinaison se voit encore — c'est la
-     signature — mais chaque plaque reste d'aplomb pour la lecture. */
-  --incl: 0.45;
-  --ecart: 0.35;
+     LES DEUX COEFFICIENTS NE SE VALENT PAS, ET LE PARTAGE A CHANGE.
+     `--incl` porte l'INCLINAISON, qui est la signature et qui ne
+     coute presque rien en largeur : une plaque de 110 px de haut
+     tournee de 2,3° ne gagne que 2 px. `--ecart` porte la
+     TRANSLATION, qui coute sa valeur pleine et qui sort dans la
+     gouttiere. Quand les angles sont passes de 2° a 4,2° et les
+     decalages de 28 a 48 px, `tools/deborde.mjs` a rendu 395 > 390
+     et 435 > 430 : cinq pixels de trop, aux deux largeurs les plus
+     etroites, et nulle part ailleurs. On monte donc l'inclinaison
+     et on baisse la translation — la signature se voit MIEUX
+     qu'avant sur telephone, et la page ne deborde plus. */
+  --incl: 0.55;
+  --ecart: 0.22;
 }
 /* LA COQUE. Elle ne se voit pas : elle occupe la case de grille et
    c'est elle que GSAP fait deriver. Elle ne porte aucune
@@ -3028,7 +2945,7 @@ html.js .derail-row,
 .derail-row--lost { grid-column: 1 / -1; }
 }
 @media (min-width: 40em) {
-.plaques { grid-template-columns: repeat(2, 1fr); gap: var(--s-5) var(--s-4); --incl: 0.7; --ecart: 0.6; }
+.plaques { grid-template-columns: repeat(2, 1fr); gap: var(--s-5) var(--s-4); --incl: 0.78; --ecart: 0.42; }
 .form-row { grid-template-columns: repeat(2, 1fr); }
 .check-grid { grid-template-columns: repeat(2, 1fr); }
 .footer-nav { grid-template-columns: repeat(2, 1fr); }
@@ -3191,13 +3108,21 @@ html.js .derail-row,
        n'apparaissait qu'aux DEUX largeurs intermediaires, ce qui est
        exactement le genre de chose qu'on ne voit pas a l'oeil.
 
-       Le rembourrage retrecit la grille de 34 px de chaque cote :
+       Le rembourrage retrecit la grille de 60 px de chaque cote :
        les plaques debordent de leur colonne comme demande, et ce
        debordement retombe dans le rembourrage au lieu d'agrandir la
        page. Le filet du haut et celui du bas, eux, sont sur la boite
        de bordure : ils gardent la largeur du `wrap`, donc ils
-       restent alignes avec toutes les autres regles du site. */
-    padding-inline: 34px;
+       restent alignes avec toutes les autres regles du site.
+
+       DE 34 A 60 PX, ET C'EST UNE CONSEQUENCE. Les decalages sont
+       passes de +-28 px a +-48 px et les angles de 2° a 4,2° : sous
+       2°, une inclinaison ne se percoit tout simplement pas — c'est
+       le constat qui a ouvert ce chantier. Une plaque de 300 px
+       tournee de 4,2° gagne environ 5 px de largeur apparente ;
+       48 + 5 + une marge de securite tombent a 60. Verifie par
+       `tools/deborde.mjs` a neuf largeurs, pas estime. */
+    padding-inline: 60px;
     --incl: 1;
     --ecart: 1;
   }

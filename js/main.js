@@ -247,24 +247,32 @@
         if (leve) return;
         leve = true;
         root.classList.remove("entree-attend");
-        /* Le compte a rebours part de la LEVEE, pas du chargement :
-           quand l'attente s'allonge, la composition s'allonge avec
-           elle au lieu d'etre coupee par la fin d'un minuteur qui
-           n'avait rien vu. */
-        /* 3,2 s, et la marge est mesuree. La derniere chose qui joue
-           est la SOUDURE du filet de pied de fiche : elle se ferme a
-           2 701 ms depuis la navigation, releve du 2026-07-29. A
-           2,6 s il restait 150 ms de marge, c'est-a-dire neuf images
-           — assez pour qu'une machine plus lente coupe la derniere
-           soudure en vol. Retirer la classe trop tard ne coute rien
-           du tout : c'est une classe sur `<html>`, et plus aucune
-           animation n'y est attachee. */
-        window.setTimeout(function () {
-          root.classList.remove("compo-hero");
-        }, 3200);
       }
       root.classList.add("entree-attend");
+      /* LES PLAQUES SONT POSEES TOUT DE SUITE, MAIS A L'ARRET.
+
+         DEFAUT VU DANS NOS PROPRES CAPTURES, 2026-07-29.
+         Premiere tentative de correction : poser `compo-hero` a la
+         fin du rideau, pour que les retards partent de la. Mais les
+         quinze bandes ne sortent PAS toutes en meme temps — celles
+         qui couvrent le titre ont `--k` de 1 a 3, donc elles sont
+         parties des 1 072 ms, alors que la derniere, celle qui porte
+         `data-entree-fin` et declenche la suite, ne finit qu'a
+         1 168 ms. Pendant ces ~96 ms, le titre etait nu ; puis la
+         plaque tombait dessus et le recouvrait pour le decouvrir a
+         nouveau. Un CLIGNOTEMENT, c'est-a-dire l'inverse exact de ce
+         qu'on cherche. Releve : `refonte-captures/accueil/sequences/
+         titre/00-1337ms.png` (titre nu) contre `03-1521ms.png`
+         (recouvert).
+
+         La classe est donc posee ICI, avant que le rideau ne
+         decouvre quoi que ce soit, et les animations sont mises a
+         l'ARRET par `compo-attend` jusqu'a la disparition du rideau.
+         Une animation en pause n'avance pas son horloge : les
+         retards partent donc bien de la levee, et le titre n'est
+         jamais nu une seule image. */
       root.classList.add("compo-hero");
+      root.classList.add("compo-attend");
 
       var restent = 2;
       function pret() { if (--restent <= 0) lever(); }
@@ -313,28 +321,80 @@
          ET termine la sequence. C'est le comportement juste : il
          savait ce qu'il visait, le contenu etait deja peint dessous.
 
-         Sauter, c'est dire non : on le note pour la session, donc un
-         rechargement ne le lui remet pas. */
+         LE SAUT NE SE MEMORISE PLUS, et c'est un defaut corrige.
+         On ecrivait `sessionStorage["aped-entree-saut"] = "1"` ici.
+         Or cet ecouteur voit N'IMPORTE QUEL `pointerdown` et
+         N'IMPORTE QUEL `keydown` — donc un clic sur un bouton du
+         site, et la touche F5 elle-meme. Un seul geste pendant la
+         premiere seconde, et le script en tete de document ne posait
+         plus `entree-on` : ni rideau, ni `compo-hero`, ni composition
+         du hero, pour tout le reste de l'onglet. Releve du
+         2026-07-29 par `tools/diag-accueil.mjs`, quatre rechargements
+         de suite a `<html class="js">`.
+         Sauter reste immediat — c'est le sens de ce geste — mais
+         c'est une decision qui vaut POUR CETTE VUE-LA. Un
+         rechargement est une arrivee, pas la suite de la precedente. */
       function sauter() {
         if (root.classList.contains("entree-saut")) return;
         lever();
         root.classList.add("entree-saut");
-        try { sessionStorage.setItem("aped-entree-saut", "1"); } catch (e) {}
         window.setTimeout(finir, 200);
       }
       var opts = { capture: true, passive: true, once: true };
       window.addEventListener("pointerdown", sauter, opts);
       window.addEventListener("keydown", sauter, opts);
 
-      /* ---------- LA FIN ----------
+      /* ---------- LA FIN, ET LE DEPART DE LA COMPOSITION ----------
          Le rideau lui-meme n'anime plus rien : ce sont ses quinze
          bandes. On ecoute donc la DERNIERE, celle qui porte le
-         marqueur, et pas le conteneur. */
+         marqueur, et pas le conteneur.
+
+         LA COMPOSITION DEMARRE ICI, ET C'EST TOUT L'INTERET.
+         `compo-hero` etait posee plus haut, au moment ou ce script
+         s'execute. Or une animation CSS demarre son horloge quand
+         elle est DECLAREE : les onze retards partaient donc de
+         l'instant ou `main.js` tourne — c'est-a-dire apres deux
+         `requestAnimationFrame` plus l'injection, un instant qui
+         varie d'une machine a l'autre. Releve du 2026-07-29 : le
+         rideau partait avec +103 ms de decalage sur l'heure ecrite,
+         la composition avec +281 ms. Deux horloges differentes pour
+         deux gestes qui doivent s'enchainer, ca ne peut pas tenir :
+         sur une machine rapide, la composition repassait sous le
+         rideau ; sur une machine lente, elle laissait un trou.
+
+         La classe est maintenant posee a l'instant EXACT ou le
+         rideau disparait. Les `--e` du document ne sont plus des
+         heures depuis la navigation mais des retards depuis
+         l'ouverture — 0 pour le premier pas, ce qui veut dire
+         « tout de suite ». Le passage de l'un a l'autre est
+         deterministe, quelle que soit la machine.
+
+         `fini` garde l'idempotence : cette fonction est appelee par
+         la fin d'animation, par le saut, et par un filet de
+         securite. Poser deux fois la classe ne couterait rien, mais
+         programmer deux fois son retrait, si. */
+      var fini = false;
       function finir() {
         root.classList.remove("entree-on");
         root.classList.remove("entree-attend");
-        root.classList.remove("entree-saut");
         if (entree.parentNode) entree.parentNode.removeChild(entree);
+        if (fini) return;
+        fini = true;
+        /* LE DEPART. La pause tombe, les onze horloges partent
+           ensemble, et `--e:0` veut dire « maintenant ». */
+        root.classList.remove("compo-attend");
+        /* 3,2 s de budget. Le dernier geste est la soudure du filet
+           de pied de fiche : retard 1 240 + 300 ms, puis 600 ms de
+           soudure, soit 2 140 ms. Il reste une seconde de marge pour
+           une machine lente. Retirer la classe trop tard ne coute
+           rien — c'est une classe sur `<html>` et plus aucune
+           animation n'y est attachee ; la couper trop tot pose les
+           derniers pas d'un bloc, defaut deja paye une fois. */
+        window.setTimeout(function () {
+          root.classList.remove("compo-hero");
+          root.classList.remove("compo-attend");
+          root.classList.remove("entree-saut");
+        }, 3200);
       }
       entree.addEventListener("animationend", function (e) {
         if (!e.target.hasAttribute || !e.target.hasAttribute("data-entree-fin")) return;
