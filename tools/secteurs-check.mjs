@@ -10,6 +10,15 @@ fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: "light" });
 const page = await ctx.newPage();
+/* L'INTERRUPTEUR PREVU POUR LES OUTILS DE MESURE. Sans lui, le
+   popup cadeau s'ouvre entre la 11e et la 20e seconde ; un
+   `<dialog>` ouvert par `showModal()` capture TOUS les evenements
+   de pointeur, et le survol d'une pastille de secteur expire au
+   bout de trente secondes en accusant le mauvais coupable. Le
+   popup a son propre outil, `cadeau-check.mjs`. */
+await page.addInitScript(() => {
+  try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+});
 const errs = [];
 page.on("pageerror", e => errs.push(String(e)));
 page.on("console", m => { if (m.type() === "error") errs.push(m.text()); });

@@ -66,10 +66,25 @@ async function sonder(nom, opts = {}) {
   const r = await page.evaluate(() => {
     const html = document.documentElement;
     /* `.nav-cta` ouvre `modal-start` : c'est un CTA PRIMAIRE, donc
-       520 ms. Le bouton secondaire de reference est celui de
-       l'estimation. */
-    const btn = document.querySelector('.btn[data-modal-open="modal-estimate"]');
+       520 ms.
+
+       LE BOUTON SECONDAIRE DE REFERENCE A CHANGE, ET CE TEST
+       VERROUILLAIT UN DEFAUT. Il prenait « Estimation en 60
+       secondes » — `[data-modal-open="modal-estimate"]` — comme
+       exemple de bouton a 230 ms. Or ce bouton a vingt-deux
+       lettres : 230 ms font 10,5 ms par lettre, c'est-a-dire une
+       cascade que l'oeil ne peut pas lire. Le chantier 01 a fait
+       passer les DEUX boutons du hero a 520 ms pour cette raison
+       precise. Le test affirmait donc que le second CTA le plus
+       important du site devait garder un effet invisible.
+
+       La reference est maintenant un vrai bouton secondaire, hors
+       hero : le telechargement du document, dans l'appat du
+       calculateur. Et on verifie EN PLUS que le fantome du hero est
+       bien monte a 520 ms — sinon rien ne garderait la correction. */
+    const btn = document.querySelector(".appat .btn");
     const cta = document.querySelector(".nav-cta");
+    const ghost = document.querySelector(".hero-cta .btn--ghost");
     return {
       palier: html.getAttribute("data-palier"),
       images: html.getAttribute("data-images"),
@@ -77,6 +92,7 @@ async function sonder(nom, opts = {}) {
       etiquette: !!document.querySelector(".pointe-mot"),
       cran: btn ? getComputedStyle(btn).getPropertyValue("--cran").trim() : "",
       cranCta: cta ? getComputedStyle(cta).getPropertyValue("--cran").trim() : "",
+      cranGhost: ghost ? getComputedStyle(ghost).getPropertyValue("--cran").trim() : "",
       /* L'ORIENTATION — le plancher. */
       reste: (document.getElementById("railLeftNum") || {}).textContent || "",
       etape: (document.getElementById("parcNum") || {}).textContent || "",
@@ -115,6 +131,11 @@ console.log("\nPALIER 0 — bureau, large, pointeur fin");
   dire(r.mots > 100, `mots d'encre poses : ${r.mots}`);
   dire(r.cran === "230ms", `--cran d'un bouton secondaire : ${r.cran}`);
   dire(r.cranCta === "520ms", `--cran d'un CTA primaire : ${r.cranCta}`);
+  /* LA CORRECTION DU CHANTIER 01, GARDEE ICI. Sans cette ligne,
+     rien n'empecherait le fantome du hero de retomber a 230 ms —
+     c'est-a-dire 10,5 ms par lettre sur vingt-deux lettres, une
+     cascade que personne ne voit. */
+  dire(r.cranGhost === "520ms", `--cran du fantome du hero : ${r.cranGhost}`);
 }
 
 console.log("\nPALIER 1 — trois declencheurs statiques, testes separement");
@@ -133,8 +154,8 @@ console.log("\nPALIER 2 — declencheur mesure, processeur bride x6");
 {
   const r = await sonder("bride", { bride: 6 });
   dire(r.palier === "2", `data-palier = ${r.palier} (mesure : ${r.images} i/s)`);
-  dire(r.cran === "0ms" && r.cranCta === "0ms",
-    `--cran ramene a ${r.cran} / ${r.cranCta} : tous les boutons basculent d'un bloc`);
+  dire(r.cran === "0ms" && r.cranCta === "0ms" && r.cranGhost === "0ms",
+    `--cran ramene a ${r.cran} / ${r.cranCta} / ${r.cranGhost} : tous les boutons basculent d'un bloc`);
   console.log(`         frequence relevee par la page elle-meme : ${r.images} i/s`);
 }
 

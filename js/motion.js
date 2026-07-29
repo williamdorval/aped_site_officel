@@ -92,7 +92,15 @@
      l'echelle d'un filet, et c'est reconnaissable comme la meme
      idee sans etre une copie.
      ------------------------------------------------------------ */
+  /* LES CINQ FILETS DE LA FICHE TECHNIQUE SONT EXCLUS, et c'est la
+     consequence directe de la composition d'entree.
+     Ils se soudent maintenant DANS la sequence, en CSS, au rythme
+     de `--e`. Les laisser ici les faisait retracer une seconde fois
+     a l'arrivee de GSAP — soit 1,2 s apres, hors tempo, sur un
+     objet deja pose. Ils gardent `data-section-rule` : l'attribut
+     sert aussi au filet de section active, qui vit dans `main.js`. */
   $$("[data-section-rule]").forEach(function (rule) {
+    if (rule.classList.contains("fiche-rule")) return;
     gsap.fromTo(rule, { scaleX: 0 }, {
       scaleX: 1,
       duration: 0.72,

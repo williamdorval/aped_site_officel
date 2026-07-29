@@ -308,7 +308,16 @@
 
   <!-- ===================== 01 · HERO ===================== -->
   <section class="hero wrap" id="top">
-    <p class="label hero-eyebrow">Agence numérique · Québec</p>
+    <!-- LES ONZE PAS DE LA COMPOSITION.
+         `--e` porte le retard en millisecondes, pas un indice : la
+         sequence n'est pas reguliere — le titre part avant le
+         sous-titre, la fiche technique se compose pendant que le
+         rideau finit de s'ouvrir — et un indice force une cadence
+         uniforme qu'il faut ensuite corriger a coups d'exceptions.
+         Tout cela ne vit que sous `html.entree-on`, en CSS pur :
+         aucun etat de depart n'existe sans la sequence, donc le
+         titre reste candidat au LCP des le premier rendu. -->
+    <p class="label hero-eyebrow he" style="--e:560">Agence numérique · Québec</p>
 
     <!-- LA PLAQUE DE LIMAILLE.
          Le <h1> porte le texte reel : c'est lui que lit un lecteur
@@ -319,9 +328,17 @@
       <canvas id="heroCanvas" aria-hidden="true"></canvas>
     </div>
 
-    <p class="hero-claim">On code ce qui fait rouler votre entreprise.</p>
-    <p class="hero-sub">Site web, boutique en ligne, automatisations, logiciel interne. Rien de gabarit. Le code est à vous.</p>
-    <div class="hero-cta rise">
+    <!-- LES DEUX LIGNES SONT ECRITES, PAS MESUREES.
+         `motion.js` decoupe les `h2` en lignes reelles apres mise en
+         page : c'est necessaire pour un titre dont on ignore la
+         longueur. Ici la phrase est fixe et connue, donc la coupe
+         est ecrite dans le document — zero mise en page forcee sur
+         le chemin critique, et la coupe ne peut pas tomber au
+         mauvais endroit. L'espace entre les deux boites est un noeud
+         de texte : le nom accessible reste identique au caractere. -->
+    <p class="hero-claim"><span class="ligne he" style="--e:640">On code ce qui fait rouler</span> <span class="ligne he" style="--e:760">votre entreprise.</span></p>
+    <p class="hero-sub he" style="--e:880">Site web, boutique en ligne, automatisations, logiciel interne. Rien de gabarit. Le code est à vous.</p>
+    <div class="hero-cta rise he" style="--e:980">
       <button class="btn btn--primary btn--lg" type="button" data-modal-open="modal-start">
         Démarrer votre projet
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
@@ -347,40 +364,157 @@
          Masquee sous 64em : Services arrive 400 px plus bas sur
          telephone et repete la meme grille. -->
     <aside class="hero-fiche" aria-label="Chantiers et délais typiques">
-      <p class="label">Fiche technique · 2026</p>
+      <p class="label he" style="--e:1060">Fiche technique · 2026</p>
+      <!-- LES QUATRE RANGEES SE COMPOSENT, ELLES N'APPARAISSENT PAS.
+           Chaque rangee porte deux gestes du meme pas : son filet se
+           trace en grains puis se ressoude — V3 · SOUDER —, et son
+           libelle se degage sous une arete franche — V1 · DEGAGER.
+           Les filets ne passent PLUS par `motion.js` : sa boucle
+           `[data-section-rule]` les retracait a l'arrivee de GSAP,
+           soit 1,2 s apres, donc une seconde fois et hors sequence.
+           Ils gardent `data-section-rule` pour le filet de section
+           active, mais le fichier de mouvement les saute. -->
       <ol class="fiche-rows">
-        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a href="#services"><em>01</em><span>Site ou boutique</span><b class="num">2 à 4 semaines</b></a></li>
-        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a href="#services"><em>02</em><span>Automatisation et IA</span><b class="num">1 à 3 semaines</b></a></li>
-        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a href="#services"><em>03</em><span>Visibilité locale</span><b class="num">1 semaine</b></a></li>
-        <li><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a href="#services"><em>04</em><span>Logiciel sur mesure</span><b class="num">1 à 3 mois</b></a></li>
+        <li style="--e:1140"><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a class="he" href="#services"><em>01</em><span>Site ou boutique</span><b class="num">2 à 4 semaines</b></a></li>
+        <li style="--e:1210"><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a class="he" href="#services"><em>02</em><span>Automatisation et IA</span><b class="num">1 à 3 semaines</b></a></li>
+        <li style="--e:1280"><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a class="he" href="#services"><em>03</em><span>Visibilité locale</span><b class="num">1 semaine</b></a></li>
+        <li style="--e:1350"><i class="section-rule draw fiche-rule" data-section-rule></i>
+          <a class="he" href="#services"><em>04</em><span>Logiciel sur mesure</span><b class="num">1 à 3 mois</b></a></li>
       </ol>
-      <p class="fiche-foot"><i class="section-rule draw fiche-rule" data-section-rule></i>Le prix est dit au premier appel. Réponse en 24 h.</p>
+      <p class="fiche-foot he" style="--e:1470"><i class="section-rule draw fiche-rule" data-section-rule></i>Le prix est dit au premier appel. Réponse en 12 h.</p>
     </aside>
   </section>
 
-  <!-- ===================== BANDE DE SPÉCIFICATION ===================== -->
+  <!-- ===================== LES PLAQUES D'ATELIER =====================
+
+       CE QUI A CHANGE, ET POURQUOI.
+
+       La bande de specification alignait quatre cellules a plat sur
+       une seule regle. Elle disait quatre choses, dont une FAUSSE —
+       « 12+ industries deja servies », qu'on n'a pas faites — et une
+       trop abstraite pour un patron de PME — « 0 gabarit achete ».
+       Les sept plaques ci-dessous ne disent que des faits verifiables
+       ailleurs dans ce document : le delai (fiche technique et
+       contact), la propriete du code (FAQ et section Agence),
+       l'absence de sous-traitance (section Agence), l'absence
+       d'abonnement obligatoire (FAQ), l'heure de formation (Services,
+       Parcours et FAQ), le calculateur sans courriel (section 06) et
+       le Quebec (partout). Aucun prix, ici comme ailleurs.
+
+       LA MISE EN SCENE — V2 · S'ALIGNER.
+
+       Reference etudiee : `fullstack-studio.webflow.io`, dont l'arc
+       de cartes pose des elements a des angles allant de -40° a
+       +47°, chacun a un decalage different, avec un debordement
+       lateral assume (releve : x = -791 px pour une piste de
+       1 422 px). Ce qu'on en garde : l'angle VARIABLE, le decalage
+       vertical qui interdit tout alignement sur un meme axe, la
+       derive a vitesse differenciee, le redressement au passage, la
+       profondeur entre les plans. Ce qu'on jette : le rayon de
+       10 px, les images photographiques, les ressorts mous.
+
+       Chez nous : des plaques d'atelier a angles vifs, rayon 0,
+       posees de travers sur la grille de douze colonnes. La
+       profondeur ne vient pas d'une ombre — il n'y en a aucune sur
+       ce site — mais d'un FILET DE 1 px DECALE en bas a droite, plus
+       une echelle legerement reduite pour les plaques du second
+       plan. Les angles restent SOUS 2° : une plaque dont on ne peut
+       pas lire le chiffre ne sert a rien, et c'est la contrainte qui
+       arbitre, pas le style.
+
+       LE REPOS EST L'ETAT INCLINE. Chaque plaque est faite d'une
+       COQUE — `.plaque`, la case de grille, que la choregraphie
+       fait deriver — et d'un CORPS — `.plaque-corps`, qui porte
+       l'inclinaison. `--ang`, `--dx`, `--dy` et `--z` sont ecrits
+       ici, dans le document : sans script, sous mouvement reduit et
+       a tous les paliers, la composition est exactement celle qu'on
+       voit. La derive de `langue.js` ne fait que MODULER autour,
+       dans une bande bornee — jamais l'opacite, jamais rien qui
+       touche a la lisibilite d'un texte scrubbe.
+       ===================================================== -->
   <div class="wrap">
-    <div class="spec" data-settle>
-      <div class="spec-cell">
-        <b class="num">24 h</b>
-        <span>Le temps qu’on prend pour vous répondre. Souvent moins.</span>
-      </div>
-      <div class="spec-cell">
-        <b class="num" data-count="12" data-suffix="+">0</b>
-        <span>Industries déjà servies, du garage à la clinique.</span>
-      </div>
-      <div class="spec-cell">
-        <b class="num" data-count="100" data-suffix=" %">0</b>
-        <span>Du code vous appartient, vos données comprises.</span>
-      </div>
-      <div class="spec-cell">
-        <b class="num">0</b>
-        <span>Gabarit acheté. On repart de la page blanche chaque fois, au Québec.</span>
-      </div>
+    <!-- PAS DE `data-settle` ICI, ET C'EST DEUX RAISONS QUI SE
+         RENFORCENT.
+
+         1. CE SERAIT LE MEME VERBE DEUX FOIS SUR LE MEME OBJET.
+            `data-settle` fait arriver des blocs DECALES
+            lateralement, en alternance, qui se reprennent : c'est
+            V2 · S'ALIGNER. Or les sept plaques portent deja ce
+            geste, en permanence — `--dx` alterne de signe d'une
+            plaque a l'autre, et la derive les redresse au passage
+            du centre. Poser un second V2 par-dessus, ce n'est pas
+            une signature plus forte, c'est une signature bavarde.
+
+         2. LE ROGNAGE QUI VA AVEC MANGEAIT LE DEBORDEMENT.
+            `[data-settle] { overflow-x: clip }` existe depuis le
+            2026-07-25 pour une bonne raison : l'etat de depart
+            `x: ±26` etendait la page de 6 px sur telephone. Mais il
+            rogne a la boite de la bande, donc il coupait aussi le
+            decalage PERMANENT des plaques : capture du 2026-07-29,
+            « 12 h » rendait « 2 h » et « Québec » perdait sa
+            derniere lettre. Le geste transitoire n'y est plus, le
+            rognage non plus, et le debordement lateral demande par
+            le brief se voit enfin. -->
+    <div class="plaques" data-plaques>
+      <article class="plaque" style="--ang:-1.7deg;--dx:-26px;--dy:0px;--z:1;--v:1">
+        <div class="plaque-corps">
+
+          <b class="num">12 h</b>
+          <span>Le délai de réponse, jours ouvrables. Souvent moins.</span>
+        </div>
+      </article>
+      <article class="plaque" style="--ang:1.2deg;--dx:6px;--dy:30px;--z:0.97;--v:0.6">
+        <div class="plaque-corps">
+
+          <!-- PAS DE COMPTEUR ICI, ET C'EST UN DEFAUT CORRIGE.
+               Avec `data-count`, le repos de cette plaque etait le
+               texte « 0 » : sans script, sous mouvement reduit, ou
+               simplement avant d'arriver a la bande, on lisait
+               « 0 · Du code vous appartient ». Un chiffre qui se pose
+               est du N3 ; ecrire le contraire de ce qu'on affirme est
+               un mensonge. L'etat de repos est la valeur vraie. -->
+          <b class="num">100 %</b>
+          <span>Du code vous appartient, vos données comprises.</span>
+        </div>
+      </article>
+      <article class="plaque" style="--ang:-0.9deg;--dx:24px;--dy:10px;--z:1;--v:0.85">
+        <div class="plaque-corps">
+
+          <b class="num">0</b>
+          <span>Sous-traitance. Vous parlez à la personne qui code.</span>
+        </div>
+      </article>
+      <article class="plaque" style="--ang:1.6deg;--dx:-18px;--dy:22px;--z:0.95;--v:0.7">
+        <div class="plaque-corps">
+
+          <b class="num">0</b>
+          <span>Abonnement obligatoire pour rester en ligne.</span>
+        </div>
+      </article>
+      <article class="plaque" style="--ang:-1.3deg;--dx:2px;--dy:-10px;--z:0.98;--v:1">
+        <div class="plaque-corps">
+
+          <b class="num">1 h</b>
+          <span>De formation incluse au lancement, pour être autonome.</span>
+        </div>
+      </article>
+      <article class="plaque" style="--ang:2deg;--dx:14px;--dy:34px;--z:0.94;--v:0.55">
+        <div class="plaque-corps">
+
+          <b class="num">60 s</b>
+          <span>Pour chiffrer vos économies. Sans donner votre courriel.</span>
+        </div>
+      </article>
+      <article class="plaque" style="--ang:-1.4deg;--dx:28px;--dy:6px;--z:0.97;--v:0.9">
+        <div class="plaque-corps">
+
+          <b class="num num--mot">Québec</b>
+          <span>Écrit à la main ici, du premier trait à la mise en ligne.</span>
+        </div>
+      </article>
     </div>
   </div>
 
@@ -664,7 +798,7 @@
          et coupait les quatre cartes de 17 a 85 px selon la
          largeur. Mesure du 2026-07-26. -->
     <div class="appat svc-appat">
-      <p><b>Vous hésitez entre deux chantiers ?</b> Nos deux documents couvrent les treize domaines qu’on sert, tâche par tâche, avec le temps et l’argent que chacune coûte. 91 pages, gratuites, sans courriel.</p>
+      <p><b>Vous hésitez entre deux chantiers ?</b> Nos deux documents parcourent les treize domaines qu’on couvre, tâche par tâche, avec le temps et l’argent que chacune coûte. 91 pages, gratuites, sans courriel.</p>
       <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
         Voir ce qui s’automatise dans votre métier
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
@@ -1293,7 +1427,7 @@
         <b class="sec-titre sec-titre--xl">On part de la matière, pas d’un gabarit.</b>
         <p>Les grains arrivent dispersés et s’assemblent. Votre site se construit à partir de ce que vous faites vraiment — pas d’un thème acheté et repeint.</p>
         <div class="sec-mat-data">
-          <div><b>13</b><em>secteurs livrés</em></div>
+          <div><b>13</b><em>secteurs couverts</em></div>
           <div><b>0</b><em>gabarit réutilisé</em></div>
           <div><b>4–6</b><em>semaines</em></div>
         </div>
@@ -1794,7 +1928,7 @@
                 <p class="vis-l"><em>Clientèle</em><i></i></p>
                 <p class="vis-l"><em>Ce qui bloque</em><i></i></p>
                 <p class="vis-l"><em>Échéance</em><i></i></p>
-                <p class="vis-sortie"><b>Proposition écrite</b><s>24 h</s></p>
+                <p class="vis-sortie"><b>Proposition écrite</b><s>12 h</s></p>
               </div>
             </figure>
           </div>
@@ -1860,7 +1994,7 @@
             <div class="parc-txt">
               <h3>On met en ligne</h3>
               <p>Mise en ligne, une heure de formation, et on répond encore après la facture. Le code, l’hébergement et l’adresse web sont à vous : un autre développeur peut reprendre demain matin.</p>
-              <p class="parc-livre"><i></i>Ce que vous recevez <b>les clés, la formation, et une réponse en 24 h</b></p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>les clés, la formation, et une réponse en 12 h</b></p>
             </div>
 
             <figure class="parc-vis vis--live" aria-hidden="true">
@@ -1931,7 +2065,7 @@
           <ul class="agc-faits">
             <li><b class="num">1</b><span>Interlocuteur, du premier appel à la mise en ligne</span></li>
             <li><b class="num">0</b><span>Gabarit acheté. On repart de la page blanche chaque fois</span></li>
-            <li><b class="num">24 h</b><span>Le délai de réponse, jours ouvrables</span></li>
+            <li><b class="num">12 h</b><span>Le délai de réponse, jours ouvrables</span></li>
           </ul>
         </div>
 
@@ -2123,7 +2257,7 @@
               Poser la question de vive voix
               <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
             </button>
-            <p class="fine">Réponse en 24 h ouvrables. L’appel de 30 minutes ne coûte rien.</p>
+            <p class="fine">Réponse en 12 h ouvrables. L’appel de 30 minutes ne coûte rien.</p>
           </div>
         </div>
 
@@ -2281,7 +2415,7 @@
             <span class="num">02</span>
             <strong>On vous répond</strong>
             <span>Avec des questions s’il en manque, ou directement avec une proposition.</span>
-            <b class="suite-delai">sous 24 h ouvrables</b>
+            <b class="suite-delai">sous 12 h ouvrables</b>
           </li>
           <li>
             <span class="num">03</span>
@@ -2294,7 +2428,7 @@
       </div>
 
       <ul class="contact-sur">
-        <li><b class="num">24 h</b><span>Le délai de réponse, jours ouvrables. Souvent moins.</span></li>
+        <li><b class="num">12 h</b><span>Le délai de réponse, jours ouvrables. Souvent moins.</span></li>
         <li><b class="num">0 $</b><span>L’appel de 30 minutes ne coûte rien et ne se facture jamais.</span></li>
         <li><b class="num">Écrit</b><span>Une proposition écrite, sans engagement. Elle se lit, se garde, et se refuse.</span></li>
         <li><b class="num">Jamais</b><span>De relance insistante, de liste d’envoi non demandée, ni de revente de vos coordonnées.</span></li>
@@ -2630,7 +2764,7 @@
     <div class="step success" data-bstep="3" hidden>
       <span class="num">01 / 01</span>
       <h4>Demande reçue.</h4>
-      <p class="modal-sub" style="margin-top:0">On confirme la plage par courriel avec l’invitation Google Meet, en moins de 24 h.</p>
+      <p class="modal-sub" style="margin-top:0">On confirme la plage par courriel avec l’invitation Google Meet, en moins de 12 h.</p>
       <button class="btn btn--ghost" type="button" data-modal-close>
         Fermer
         <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
@@ -2833,7 +2967,7 @@
       <div class="step success" data-pstep="7" hidden>
         <span class="num">01 / 01</span>
         <h4>Reçu cinq sur cinq.</h4>
-        <p class="modal-sub" style="margin-top:0">On regarde votre projet et on revient en moins de 24 h ouvrables avec la suite.</p>
+        <p class="modal-sub" style="margin-top:0">On regarde votre projet et on revient en moins de 12 h ouvrables avec la suite.</p>
         <button class="btn btn--ghost" type="button" data-modal-close>
           Fermer
           <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>

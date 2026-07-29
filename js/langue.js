@@ -1436,7 +1436,108 @@
   });
 
   /* ============================================================
-     10. RECALCUL. Les captures de projet mesurent plusieurs
+     10. LES SEPT PLAQUES D'ATELIER — V2 · S'ALIGNER.
+
+     LE REPOS EST DEJA LA COMPOSITION, ET IL EST DANS UNE AUTRE
+     BOITE. Chaque plaque est faite d'une COQUE — `.plaque`, la case
+     de grille, sans transformation propre — et d'un CORPS —
+     `.plaque-corps`, qui porte l'inclinaison ecrite dans le
+     document. On anime la coque, jamais le corps. Consequence : si
+     ce fichier ne s'execute jamais — mouvement reduit, script
+     coupe, palier 1 — la composition est intacte, seulement
+     immobile. C'est exactement ce que demande le brief.
+
+     Et c'est la SEULE facon d'y arriver. La premiere version
+     mettait l'inclinaison sur la meme boite, via les proprietes
+     individuelles `rotate` / `translate` / `scale`, en croyant
+     laisser `transform` libre pour GSAP. GSAP, lui, ECRIT
+     `rotate: none` sur tout element dont il prend les
+     transformations en main : les sept plaques se retrouvaient
+     droites des que la choregraphie arrivait.
+
+     POURQUOI ICI ET PAS DANS `motion.js`. Le palier est pose par
+     ce fichier, et `motion.js` s'execute AVANT lui : un test de
+     palier la-bas lirait toujours 0. La derive est aussi, par
+     nature, le poste que le palier 1 doit tuer — c'est la meme
+     famille que « vitesses differenciees des fiches », deja
+     nommee dans le budget de degradation.
+
+     CE QUE LE SCRUB A LE DROIT DE TOUCHER. Une animation scrubbee
+     n'a pas d'etat de repos : elle a l'etat ou le visiteur s'est
+     arrete, et chaque position de defilement est donc un etat
+     PERMANENT possible. Il est par consequent interdit d'y mettre
+     l'opacite d'un element qui porte du texte. Ici on ne scrubbe
+     que deux choses :
+     · `y`, borne a +/- 34 px multiplies par la vitesse propre de
+       la plaque. Une plaque decalee de 30 px reste lisible ;
+     · `rotation`, bornee entre 0 et -55 % de l'inclinaison de
+       repos. Au pire la plaque est a 2°, au mieux a 0,9° : elle ne
+       peut jamais devenir illisible, ni depasser son angle ecrit,
+       ni basculer de l'autre cote.
+
+     LE REDRESSEMENT EST AU CENTRE, ET IL FAUT DEUX TEMPS POUR CA.
+     Une seule tranche donnerait un redressement monotone : la
+     plaque finirait droite en bas d'ecran au lieu de se redresser
+     EN PASSANT. Deux tranches egales — se redresser puis se
+     recoucher — mettent le point droit exactement a mi-course,
+     c'est-a-dire quand la plaque traverse le centre.
+     ============================================================ */
+  (function plaques() {
+    var bande = $("[data-plaques]");
+    if (!bande) return;
+    /* PALIER 1 — la derive tombe. Les plaques restent inclinees,
+       decalees et lisibles : on ne perd que le mouvement. */
+    if (PALIER !== 0) return;
+
+    var lot = $$(".plaque", bande);
+    if (!lot.length) return;
+
+    lot.forEach(function (p) {
+      var cs = getComputedStyle(p);
+      var ang = parseFloat(cs.getPropertyValue("--ang")) || 0;
+      var incl = parseFloat(cs.getPropertyValue("--incl")) || 1;
+      var v = parseFloat(cs.getPropertyValue("--v")) || 1;
+      /* L'inclinaison REELLE est l'angle ecrit multiplie par le
+         coefficient du conteneur : sur telephone il vaut 0,45, donc
+         le redressement doit se calculer dessus et pas sur la
+         valeur brute, sinon la plaque se redresserait au-dela de
+         zero et pencherait de l'autre cote. */
+      var reel = ang * incl;
+      var course = 34 * v;
+
+      var tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: bande,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+          invalidateOnRefresh: true
+        }
+      });
+      tl.fromTo(p,
+        { y: course, rotation: 0 },
+        { y: 0, rotation: -reel * 0.55, ease: "none", duration: 0.5 })
+        .to(p, { y: -course, rotation: 0, ease: "none", duration: 0.5 });
+
+      /* TUER UN SCRUB NE SUFFIT PAS : il faut RENDRE l'element.
+         Un `kill()` seul laisse la plaque exactement ou le visiteur
+         s'etait arrete — decalee de 20 px et tournee de 1° — et
+         cette valeur devient permanente, alors qu'on vient
+         justement de decider qu'on n'anime plus. On efface donc le
+         `transform` pose par GSAP ; l'inclinaison de repos, elle,
+         vit dans `rotate` / `translate` / `scale` et ne bouge pas. */
+      jetables.push({
+        kill: function () {
+          tl.scrollTrigger && tl.scrollTrigger.kill();
+          tl.kill();
+          gsap.set(p, { clearProps: "transform" });
+        }
+      });
+    });
+  })();
+
+  /* ============================================================
+     11. RECALCUL. Les captures de projet mesurent plusieurs
      milliers de pixels : tant qu'elles ne sont pas chargees, les
      plages de defilement calculees ici sont fausses.
      ============================================================ */

@@ -224,13 +224,47 @@
          trop tard ne sert plus a rien — la jauge est deja passee.
          Elle est levee des que les deux conditions tombent, donc
          dans le cas normal elle n'aura jamais ete visible. */
+      /* ---------- LA COMPOSITION DU HERO A SA PROPRE VIE ----------
+
+         DEFAUT MESURE LE 2026-07-29 par `tools/accueil-check.mjs`.
+         Les onze pas de la composition etaient d'abord accroches a
+         `html.entree-on`. Or cette classe tombe avec le rideau, vers
+         1,3 s : les cinq rangees de la fiche technique, dont le
+         retard va de 1 140 a 1 420 ms, voyaient donc leur animation
+         ANNULEE en vol et se posaient d'un coup. Releve : les six
+         premiers pas se decouvraient normalement, les cinq suivants
+         n'avaient tout simplement aucune duree.
+
+         Une classe a part, et le probleme n'existe plus : le rideau
+         garde son cycle — il faut qu'il parte tot, c'est un rideau —
+         et la composition garde le sien. Elle ne demarre que si la
+         sequence joue, donc sans script il n'y a pas de plaque du
+         tout et le hero est simplement la ; et elle est retiree une
+         fois finie, pour ne pas laisser onze pseudo-elements
+         composites en place pour le reste de la visite. */
       var leve = false;
       function lever() {
         if (leve) return;
         leve = true;
         root.classList.remove("entree-attend");
+        /* Le compte a rebours part de la LEVEE, pas du chargement :
+           quand l'attente s'allonge, la composition s'allonge avec
+           elle au lieu d'etre coupee par la fin d'un minuteur qui
+           n'avait rien vu. */
+        /* 3,2 s, et la marge est mesuree. La derniere chose qui joue
+           est la SOUDURE du filet de pied de fiche : elle se ferme a
+           2 701 ms depuis la navigation, releve du 2026-07-29. A
+           2,6 s il restait 150 ms de marge, c'est-a-dire neuf images
+           — assez pour qu'une machine plus lente coupe la derniere
+           soudure en vol. Retirer la classe trop tard ne coute rien
+           du tout : c'est une classe sur `<html>`, et plus aucune
+           animation n'y est attachee. */
+        window.setTimeout(function () {
+          root.classList.remove("compo-hero");
+        }, 3200);
       }
       root.classList.add("entree-attend");
+      root.classList.add("compo-hero");
 
       var restent = 2;
       function pret() { if (--restent <= 0) lever(); }

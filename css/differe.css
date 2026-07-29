@@ -578,6 +578,8 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
   margin-bottom: var(--s-5);
 }
 .link-btn { text-decoration: underline; text-underline-offset: 3px; font-family: var(--font-data); font-size: var(--fs-8); }
+html.entree-attend .he::after,
+html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused; }
 @keyframes entree-bande {
   to { transform: translate3d(calc(var(--d) * 101%), 0, 0); }
 }
@@ -895,6 +897,231 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
 /* Une fois la matiere posee, le texte reel sort de la vue mais
    reste dans l'arbre d'accessibilite. */
 .hero-plate.is-live .plate-text { visibility: hidden; }
+/* ============================================================
+   LA COMPOSITION DU HERO — V1 · DEGAGER et V3 · SOUDER.
+
+   POURQUOI UNE PLAQUE QUI SE RETIRE, ET PAS UN `clip-path`.
+
+   La reference etudiee — `fullstack-studio.webflow.io` — ne fond
+   pas ses lignes de titre. Releve du 2026-07-29, 120 echantillons
+   a 60 Hz : l'opacite du texte passe de 0 a 1 SANS UNE SEULE
+   valeur intermediaire, ligne 1 a 672-720 ms, ligne 2 a
+   999-1049 ms, soit environ 330 ms de decalage. Ce qui bouge est
+   un `.text-highlight_rect` en `position: absolute` pose PAR-DESSUS
+   la ligne. Autrement dit : une plaque qui se retire, pas un fondu.
+   C'est deja V1 · DEGAGER, on n'a rien a traduire.
+
+   ET C'EST AUSSI CE QUI SAUVE LE LCP. Un `clip-path` qui masque le
+   titre pendant les 700 premieres millisecondes le retire de la
+   mesure du plus grand contenu peint, exactement comme le faisait
+   `opacity: 0` avant la phase 6 — c'est ecrit en toutes lettres en
+   tete de `motion.js`, et c'est la raison pour laquelle le hero
+   avait cesse de s'animer. Une plaque OPAQUE POSEE DESSUS ne
+   change rien au texte : il est peint, entier, des la premiere
+   image ; il reste candidat au LCP ; et le visiteur ne le voit pas
+   encore parce qu'une plaque est devant. Aucun compromis a faire.
+
+   TOUT EST EN CSS, ET RIEN N'EXISTE SANS LA SEQUENCE. Les plaques
+   ne sont rendues que sous `html.compo-hero`, posee par `main.js`
+   uniquement quand la sequence joue vraiment. Sans elle — retour
+   arriere, mouvement reduit, script coupe — le hero est simplement
+   la, en entier. Il n'y a donc AUCUN etat de depart d'animation
+   dans le CSS au sens de la regle 0bis : l'etat de repos reste la
+   forme finale.
+
+   POURQUOI PAS `html.entree-on`, QUI EXISTAIT DEJA. Parce qu'elle
+   tombe avec le rideau, vers 1,3 s. Mesure du 2026-07-29 par
+   `tools/accueil-check.mjs` : les six premiers pas se decouvraient
+   normalement et les CINQ SUIVANTS — toute la fiche technique,
+   dont les retards vont de 1 140 a 1 420 ms — voyaient leur
+   animation annulee en vol et se posaient d'un bloc. Le rideau doit
+   partir tot, c'est un rideau ; la composition doit durer, c'est
+   une composition. Deux cycles, deux classes.
+
+   `--e` porte le retard en millisecondes et il est pose dans le
+   document, un pas a la fois. Il herite : la rangee de fiche le
+   donne a son filet ET a son libelle, qui l'utilisent avec deux
+   decalages differents — le filet se soude, PUIS le libelle se
+   degage. Le filet annonce la rangee au lieu de la souligner,
+   c'est le meme argument que G1 sur les douze frontieres.
+   ============================================================ */
+.hero-claim .ligne { display: block; }
+@keyframes he-plaque { to { transform: scaleX(0); } }
+@keyframes he-filet { from { transform: scaleX(0); } }
+@keyframes he-souder {
+  0%, 86% {
+    background-image: repeating-linear-gradient(
+      90deg, var(--rule-strong) 0 2px, transparent 2px 4px);
+  }
+  100% { background-image: linear-gradient(90deg, var(--rule-strong) 0 100%); }
+}
+@media (prefers-reduced-motion: no-preference) {
+html.compo-hero .he { position: relative; }
+html.compo-hero .he::after {
+    content: "";
+    position: absolute;
+    /* Hors flux, donc jamais un element de grille ni de flexbox :
+       `.fiche-foot` et `.hero-cta` en sont, et un pseudo-element en
+       flux y aurait pris une rangee a lui tout seul. */
+    inset: -0.06em -0.06em -0.16em;
+    background: var(--surface-0);
+    transform-origin: right center;
+    /* Pas de `backwards` : avant son retard, la plaque est a
+       `scaleX(1)`, sa valeur CSS. Rien a rattraper, aucun saut. */
+    animation: he-plaque 300ms var(--e-drive) calc(var(--e, 0) * 1ms) forwards;
+    pointer-events: none;
+    z-index: 2;
+  }
+/* Le libelle d'une rangee part 90 ms APRES son filet : un cran
+     apres l'autre, jamais deux crans en meme temps. */
+html.compo-hero .hero-fiche a.he::after {
+    animation-delay: calc((var(--e, 0) + 90) * 1ms);
+  }
+html.compo-hero .hero-fiche .fiche-rule {
+    animation:
+      he-filet 340ms var(--e-drive) calc(var(--e, 0) * 1ms) backwards,
+      he-souder 820ms linear calc(var(--e, 0) * 1ms) backwards;
+  }
+/* Le filet du pied est SOUS la plaque de son propre paragraphe :
+     il attend donc qu'elle soit partie, sinon il se trace en
+     aveugle. */
+html.compo-hero .fiche-foot .fiche-rule {
+    animation-delay: calc((var(--e, 0) + 300) * 1ms), calc((var(--e, 0) + 300) * 1ms);
+  }
+/* SAUTER, C'EST DIRE NON. `main.js` pose `entree-saut` au premier
+     geste et termine le rideau en 200 ms : la composition doit
+     finir avec lui, pas continuer a se jouer toute seule. */
+html.entree-saut .he::after { animation-duration: 140ms; animation-delay: 0s; }
+}
+/* ============================================================
+   13. LES PLAQUES D'ATELIER
+   Remplacent la bande de specification, qui alignait quatre
+   cellules a plat sur une seule regle.
+
+   TROIS REGLES QUI NE SE NEGOCIENT PAS :
+
+   1. LE REPOS EST L'ETAT INCLINE, ET IL VIT DANS UNE COQUE.
+      Chaque plaque est faite de DEUX boites : `.plaque`, la case de
+      grille, que GSAP fait deriver ; et `.plaque-corps`, la plaque
+      elle-meme, qui porte l'inclinaison ecrite dans le document.
+      La composition existe donc sans script, sous mouvement reduit
+      et a tous les paliers ; la derive s'ajoute par-dessus.
+
+      POURQUOI DEUX BOITES ET PAS LES PROPRIETES INDIVIDUELLES.
+      Premiere version : une seule boite, avec `rotate`, `translate`
+      et `scale` — les proprietes individuelles de transformation —
+      pour laisser `transform` libre a GSAP. Elle ne tient pas :
+      GSAP, quand il prend la main sur les transformations d'un
+      element, ECRIT `rotate: none; translate: none; scale: none`
+      dessus pour eviter d'entrer en conflit avec elles. Releve du
+      2026-07-29 : les sept plaques rendaient `rotate: "none"` alors
+      que `--ang` valait bien `-1.7deg`. L'inclinaison de repos etait
+      donc effacee des que la choregraphie arrivait, et elle ne
+      reapparaissait qu'aux paliers ou GSAP ne touche a rien — c'est
+      exactement l'incoherence qu'on cherchait a eviter.
+
+   2. L'ANGLE RESTE SOUS 2°. La reference etudiee va jusqu'a 47°,
+      mais elle incline des PHOTOS. Une plaque dont on ne peut pas
+      lire le chiffre ne sert a rien.
+
+   3. LA PROFONDEUR EST UN FILET, PAS UNE OMBRE. `::after` ne tire
+      que deux aretes — droite et basse — decalees de 9 px. C'est
+      exactement la trace qu'une plaque laisse sur un banc, et ca
+      reste du trait de 1 px comme tout le reste du site.
+   ============================================================ */
+.plaques {
+  border-block: var(--rule-w) solid var(--rule-strong);
+  padding-block: var(--s-6);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-4);
+  /* LE DEBORDEMENT EST CONTROLE PAR LA GOUTTIERE, PAS PAR UN
+     ROGNAGE — ET C'EST UN CORRECTIF, PAS UN OUBLI.
+
+     Premiere version : `overflow-x: clip` sur cette bande, pour
+     garantir qu'aucun pixel de plaque ne puisse ajouter une barre
+     de defilement horizontale. Capture du 2026-07-29 : le « 1 » de
+     « 12 h » et le « c » de « Québec » etaient coupes net. Le
+     garde-fou rognait exactement le debordement lateral que le
+     brief demandait, et `overflow-clip-margin` ne le rattrape pas
+     quand les deux axes n'ont pas la meme valeur.
+
+     Le vrai garde-fou est ailleurs, et il est plus simple : la
+     colonne 1 commence au bord INTERIEUR du `wrap`, qui a une
+     gouttiere. Un decalage de 28 px tombe donc dans cette
+     gouttiere, pas hors de l'ecran — et le coefficient `--ecart`
+     le divise encore par trois sur telephone, la ou la gouttiere
+     est la plus etroite. Ce n'est pas un raisonnement, c'est un
+     relevé : `tools/accueil-check.mjs cadre` mesure la largeur du
+     document contre celle de la vue a onze largeurs, de 320 a
+     1920 px. Rien a rogner tant qu'il rend zero.
+
+     L'AMPLEUR DE LA COMPOSITION EST UN COEFFICIENT, PAS UNE SERIE
+     D'EXCEPTIONS.
+
+     Le brief demandait de REPENSER la disposition sur telephone, pas
+     de la retrecir : sept plaques inclinees sur un ecran etroit se
+     chevauchent et deviennent illisibles. Mais `--ang` et `--dx`
+     sont poses EN LIGNE dans le document, donc aucune regle de
+     feuille ne peut les corriger — une declaration en ligne gagne
+     toujours. Les deux coefficients ci-dessous, eux, sont poses sur
+     le CONTENEUR et heritent : ils multiplient l'inclinaison et les
+     decalages sans jamais avoir a les redeclarer.
+     0,45 sur telephone : l'inclinaison se voit encore — c'est la
+     signature — mais chaque plaque reste d'aplomb pour la lecture. */
+  --incl: 0.45;
+  --ecart: 0.35;
+}
+/* LA COQUE. Elle ne se voit pas : elle occupe la case de grille et
+   c'est elle que GSAP fait deriver. Elle ne porte aucune
+   transformation propre, donc GSAP peut y ecrire ce qu'il veut. */
+.plaque { display: grid; }
+/* LA PLAQUE. Tout le visuel, et l'inclinaison de repos. */
+.plaque-corps {
+  position: relative;
+  padding: var(--s-5) var(--s-4);
+  display: grid;
+  gap: var(--s-2);
+  align-content: start;
+  /* `--surface-2` s'appelle « plaque claire » dans les jetons, et
+     ce n'est pas un hasard. Premiere version avec `--surface-1` :
+     la phrase en `--ink-muted` tombait a 4,41:1, sous le seuil AA,
+     dans les vingt-huit releves du theme clair. Mesure du
+     2026-07-29 par `tools/accueil-check.mjs`. Sur `--surface-2`
+     elle vaut 6,26:1 en clair et 5,70:1 en sombre. */
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--rule-strong);
+  height: 100%;
+  transform:
+    translate(calc(var(--dx, 0px) * var(--ecart)), calc(var(--dy, 0px) * var(--ecart)))
+    rotate(calc(var(--ang, 0deg) * var(--incl)))
+    scale(calc(1 - (1 - var(--z, 1)) * var(--ecart)));
+}
+/* Le filet decale — ce qui remplace l'ombre portee de la
+   reference. Deux aretes seulement : un rectangle entier tracerait
+   deux traits EN TRAVERS de la plaque. */
+.plaque-corps::after {
+  content: "";
+  position: absolute;
+  inset: 9px -10px -10px 9px;
+  border-right: var(--rule-w) solid var(--rule);
+  border-bottom: var(--rule-w) solid var(--rule);
+  pointer-events: none;
+}
+.plaque-corps .num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variation-settings: "wdth" var(--wdth-wide);
+  font-variant-numeric: tabular-nums;
+}
+/* « Québec » n'est pas un chiffre : il ne prend ni les chiffres
+   tabulaires ni la meme taille, sinon il pousse la plaque a la
+   ligne sur ecran etroit. */
+.plaque-corps .num--mot { font-size: clamp(1.75rem, 3.4vw, 2.5rem); letter-spacing: -0.02em; }
+.plaque-corps span { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); line-height: 1.5; }
 /* ============================================================
    14. SERVICES - rail horizontal
    Les quatre feuilles collantes plein ecran sont remplacees par un
@@ -2801,6 +3028,7 @@ html.js .derail-row,
 .derail-row--lost { grid-column: 1 / -1; }
 }
 @media (min-width: 40em) {
+.plaques { grid-template-columns: repeat(2, 1fr); gap: var(--s-5) var(--s-4); --incl: 0.7; --ecart: 0.6; }
 .form-row { grid-template-columns: repeat(2, 1fr); }
 .check-grid { grid-template-columns: repeat(2, 1fr); }
 .footer-nav { grid-template-columns: repeat(2, 1fr); }
@@ -2933,6 +3161,53 @@ html.js .derail-row,
 .modal-panel { padding: var(--s-8); }
 }
 @media (min-width: 64em) {
+/* ------------------------------------------------------------
+     LA COMPOSITION DES SEPT PLAQUES — grille de douze colonnes.
+
+     Trois plaques larges en premier plan, quatre plus etroites
+     derriere. Aucune ne partage son decalage vertical avec une
+     autre : c'est ce qui interdit a l'oeil de retrouver une regle
+     et ce qui fait la difference avec une bande de statistiques.
+     Les spans sont ecrits ici et non dans le document : c'est de la
+     mise en page, et elle change avec la largeur.
+     ------------------------------------------------------------ */
+.plaques {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: var(--s-6);
+    padding-block: var(--s-7);
+    /* LA MARGE DE DEBORDEMENT EST PRISE SUR LA BANDE, PAS SUR LA
+       PAGE — et c'est un debordement mesure, pas une precaution.
+
+       Sans ce rembourrage, la colonne 1 commence au bord du `wrap`
+       et la colonne 12 s'y termine : le decalage de -26 px de la
+       premiere plaque et celui de +28 px de la derniere sortaient
+       donc du `wrap`. Tant que la fenetre est plus large que la
+       largeur maximale du `wrap`, la marge exterieure les absorbe ;
+       des que la fenetre se resserre, elle n'existe plus. Mesure du
+       2026-07-29 par `tools/deborde.mjs`, A/B contre la version
+       d'avant : `scrollWidth` 1283 pour 1280, et 1025 pour 1024,
+       alors que 1440 et 1920 ne bougeaient pas. Le defaut
+       n'apparaissait qu'aux DEUX largeurs intermediaires, ce qui est
+       exactement le genre de chose qu'on ne voit pas a l'oeil.
+
+       Le rembourrage retrecit la grille de 34 px de chaque cote :
+       les plaques debordent de leur colonne comme demande, et ce
+       debordement retombe dans le rembourrage au lieu d'agrandir la
+       page. Le filet du haut et celui du bas, eux, sont sur la boite
+       de bordure : ils gardent la largeur du `wrap`, donc ils
+       restent alignes avec toutes les autres regles du site. */
+    padding-inline: 34px;
+    --incl: 1;
+    --ecart: 1;
+  }
+.plaques > :nth-child(1) { grid-column: 1 / span 4; }
+.plaques > :nth-child(2) { grid-column: 5 / span 4; }
+.plaques > :nth-child(3) { grid-column: 9 / span 4; }
+.plaques > :nth-child(4) { grid-column: 1 / span 3; }
+.plaques > :nth-child(5) { grid-column: 4 / span 3; }
+.plaques > :nth-child(6) { grid-column: 7 / span 3; }
+.plaques > :nth-child(7) { grid-column: 10 / span 3; }
 /* LA SCENE EPINGLEE TIENT DANS UN ECRAN, exactement.
      Une scene epinglee plus haute que l'ecran est le pire des deux
      mondes : le defilement est detourne ET il faut quand meme
@@ -3120,6 +3395,10 @@ html.js .derail-row,
   47%  { transform: translateX(-220%); }
   100% { transform: translateX(0); }
 }
+.hero-cta .btn--ghost:hover .l,
+.hero-cta .btn--ghost:focus-visible .l,
+.hero-cta .btn--ghost[data-lettres]:hover .icon,
+.hero-cta .btn--ghost[data-lettres]:focus-visible .icon { color: var(--accent-ink); }
 /* ============================================================
    V4 · L'ODOMETRE — les compteurs d'orientation.
    Pilote depuis `main.js`, donc vivant meme sous mouvement reduit :

@@ -117,6 +117,45 @@ c'est exactement comme ça que la frontière du pied est restée invisible.
 Détail, chiffres des six références, six pièges d'instrument :
 `PHASE-10.md`.
 
+### L'ACCUEIL — depuis le chantier 01
+
+Trois choses vivent dans la section 01 et n'existent nulle part
+ailleurs. Les trois se réclament d'un verbe.
+
+**La composition du hero — V1 · DÉGAGER et V3 · SOUDER.** Onze pas,
+en CSS pur, sous `html.compo-hero` : eyebrow, les deux lignes du
+titre, le sous-titre, les deux CTA, puis la fiche technique rangée
+par rangée. Chaque pas porte son retard en millisecondes dans
+`--e`, écrit dans le document.
+
+> **La plaque se retire, elle ne se fond pas — et ce n'est pas
+> qu'une question de style.** Un `clip-path` qui masque le titre
+> pendant les 700 premières millisecondes le retire de la mesure du
+> LCP, exactement comme `opacity: 0` avant la phase 6. Une plaque
+> **opaque posée dessus** ne change rien au texte : il est peint,
+> entier, dès la première image. C'est aussi ce que fait la
+> référence — mesuré, 0 valeur d'opacité intermédiaire sur 120
+> échantillons à 60 Hz.
+
+`compo-hero` est une classe **distincte** de `entree-on`, qui tombe
+avec le rideau vers 1,3 s : accrochée à `entree-on`, la fiche
+technique voyait son animation annulée en vol.
+
+**Les sept plaques — V2 · S'ALIGNER.** Une **coque** (`.plaque`, la
+case de grille, que GSAP fait dériver) et un **corps**
+(`.plaque-corps`, qui porte l'inclinaison écrite dans le document).
+Deux boîtes, parce que GSAP écrit `rotate: none` sur tout élément
+dont il prend les transformations en main. Angles sous 2°,
+coefficients `--incl` / `--ecart` sur le conteneur pour les
+retailler par largeur, profondeur par **filet 1 px décalé** et
+jamais par une ombre.
+
+**Les deux CTA — V4 · CRAN.** `--cran: 520ms` sur les deux : à
+230 ms, « Estimation en 60 secondes » faisait 10,5 ms par lettre,
+donc un effet invisible. La hiérarchie est portée par la matière —
+le primaire garde l'inversion complète vers l'encre, le secondaire
+reçoit **l'arête minium**.
+
 ### LA SÉQUENCE D'ENTRÉE — ce qui la déclenche
 
 Elle **rejoue à chaque rechargement**. On lit
@@ -152,7 +191,7 @@ besoin de JS.
 | Palier | Déclencheur | Ce qui tombe |
 |---|---|---|
 | **0 · plein** | rien | — |
-| **1 · allégé** | **statique**, connu à l'init : largeur < 64em **OU** `pointer: coarse` **OU** `hardwareConcurrency` ≤ 4 **OU** `deviceMemory` ≤ 4 | 1. parallaxe souris de la vitrine · 2. vitesses différenciées des fiches · 3. étiquette de la pointe · 4. flèche qui sort du cadre · **5. découpage par mot des chapôs — le poste le plus cher** · 6. balayage des 25 sous-titres · **6bis. la trame des frontières → l'arête de règle d'avant, même verbe, même sens, même durée : on garde le geste, on lâche la texture** |
+| **1 · allégé** | **statique**, connu à l'init : largeur < 64em **OU** `pointer: coarse` **OU** `hardwareConcurrency` ≤ 4 **OU** `deviceMemory` ≤ 4 | 1. parallaxe souris de la vitrine · 2. vitesses différenciées des fiches · **2bis. la dérive des sept plaques de l'accueil — même famille que 2 : elles restent inclinées, décalées et lisibles, elles ne dérivent plus** · 3. étiquette de la pointe · 4. flèche qui sort du cadre · **5. découpage par mot des chapôs — le poste le plus cher** · 6. balayage des 25 sous-titres · **6bis. la trame des frontières → l'arête de règle d'avant, même verbe, même sens, même durée : on garde le geste, on lâche la texture** |
 | **2 · minimal** | **mesuré** : fréquence d'images médiane **< 50 i/s** sur 90 images d'un défilement réel | 7. cascade par lettre → `--cran: 0ms`, bascule d'un bloc · 8. recomposition des secteurs → changement net · 9. soudure des filets · 10. FLIP de la FAQ → saut natif · 11. dégagement des modales · **12. le geste propre à chaque frontière (G4) et le dégagement du nom de seuil (G3) — la frontière reste lisible : filet, numéro, nom** |
 | **3 · aucun** | `prefers-reduced-motion` | `langue.js` et `motion.js` ne s'exécutent pas |
 
@@ -272,6 +311,9 @@ pas des impressions. `node tools/serve.mjs 8099` d'abord, puis :
 | `traversee-check.mjs` | planche de 24 vues + i/s pendant un défilement réel (médiane, 5ᵉ centile, nombre d'images > 20 ms) |
 | `cadeau-check.mjs` · `cadeau-scene.mjs` · `cadeau-e2e.mjs` | déclenchement et contenu · l'entrée est une arête et pas un fondu · le parcours complet, `--envoi-reel` compris |
 | `couvertures.mjs` | les deux couvertures de PDF en webp, rendues depuis la source des documents |
+| `accueil-check.mjs` | l'accueil en sept relevés : contenu des sept plaques et chasse aux énoncés retirés · composition du hero image par image · survol des deux CTA avec le contraste à chaque image · lisibilité de chaque plaque à l'arrêt · dérive bornée · i/s, LCP, CLS · débordement à onze largeurs |
+| `ab-accueil.mjs` | A/B de l'accueil contre une copie de la version d'avant servie sur un second port, **passes alternées** et médiane des différences |
+| `refs-accueil.mjs` · `refs-reveal*.mjs` · `refs-toggle.mjs` | mesurent les deux références du chantier 01 dans un vrai navigateur : structure, durées, décalages, courbes |
 
 **Deux règles de mesure, apprises à la dure :**
 

@@ -681,6 +681,15 @@ html.entree-attend .entree-cadre { animation-play-state: paused; }
 html.entree-attend .entree-jauge,
 html.entree-attend .entree-etat,
 html.entree-attend .entree-rouleau { animation-play-state: running, paused; }
+/* LA COMPOSITION DU HERO ATTEND AVEC LE RESTE. Sans cette ligne,
+   les onze pas se joueraient DERRIERE un rideau encore ferme quand
+   le chargement traine : le visiteur verrait s'ouvrir un hero deja
+   compose, c'est-a-dire rien du tout. La declaration unique couvre
+   aussi les deux animations du filet de fiche — trace et soudure —
+   parce qu'une valeur unique de `animation-play-state` s'applique a
+   toute la liste. */
+html.entree-attend .he::after,
+html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused; }
 html.entree-on .entree {
   display: block;
   position: fixed;
@@ -1146,6 +1155,41 @@ html.entree-on .entree-saut-mot { display: none; }
 .hero-plate { aspect-ratio: 1000 / 360; max-height: 34dvh; }
 .plate-small { letter-spacing: 0.28em; }
 }
+/* L'ETAT DE REPOS DU FILET DE FICHE EST LE TRAIT PLEIN.
+   Ces cinq filets ne passent plus par la boucle
+   `[data-section-rule]` de `motion.js` — elle les retracait a
+   l'arrivee de GSAP, 1,2 s apres la sequence, donc une seconde
+   fois et hors tempo. Ils gardent l'attribut, qui sert au filet de
+   section active ; c'est le fichier de mouvement qui les saute.
+
+   UNE SEULE CLASSE, PAS DEUX, et c'est un ecart de cascade
+   mesure. Ecrite `.hero-fiche .fiche-rule`, la regle pesait 0,2,0
+   — donc autant que `.section-rule.is-current`, qui passe le filet
+   de la section active au minium. Elle gagnait par l'ordre dans la
+   feuille entiere et PERDAIT dans la feuille decoupee, ou
+   `css-critique.mjs` les separe : `tools/cascade-check.mjs` a rendu
+   exactement ce point, deux ecarts, un par theme. A 0,1,0 il n'y a
+   plus d'egalite du tout et l'accent reprend la main partout. */
+.fiche-rule {
+  background-image: linear-gradient(90deg, var(--rule-strong) 0 100%);
+}
+@keyframes he-plaque { to { transform: scaleX(0); } }
+@keyframes he-filet { from { transform: scaleX(0); } }
+/* V3 · SOUDER. La trame tient presque toute la course, puis le
+   trait se ferme d'un coup : une soudure ne se fond pas. */
+@keyframes he-souder {
+  0%, 86% {
+    background-image: repeating-linear-gradient(
+      90deg, var(--rule-strong) 0 2px, transparent 2px 4px);
+  }
+  100% { background-image: linear-gradient(90deg, var(--rule-strong) 0 100%); }
+}
+@media (prefers-reduced-motion: no-preference) {
+html.entree-saut .hero-fiche .fiche-rule {
+    animation-duration: 140ms, 140ms;
+    animation-delay: 0s, 0s;
+  }
+}
 /* La fiche n'apparait qu'a partir de 64em : sous cette largeur la
    colonne de droite n'existe pas, et la meme grille de prix arrive
    400 px plus bas dans Services. Rien n'est perdu, seul l'ordre
@@ -1159,33 +1203,6 @@ html.entree-on .entree-saut-mot { display: none; }
 .hero-cta { grid-column: 1 / span 7; }
 .hero-fiche { display: grid; grid-column: 9 / span 4; grid-row: 3 / span 3; }
 }
-/* ============================================================
-   13. BANDE DE SPECIFICATION
-   Remplace l'ancien bandeau de confiance et l'ancienne section
-   de statistiques, qui disaient la meme chose deux fois.
-   ============================================================ */
-.spec {
-  border-block: var(--rule-w) solid var(--rule-strong);
-  display: grid;
-  grid-template-columns: 1fr;
-}
-.spec-cell {
-  padding: var(--s-6) var(--s-5);
-  display: grid;
-  gap: var(--s-2);
-  border-top: var(--rule-w) solid var(--rule);
-}
-.spec-cell:first-child { border-top: 0; }
-.spec-cell b {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-variation-settings: "wdth" var(--wdth-wide);
-  font-variant-numeric: tabular-nums;
-}
-.spec-cell span { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); line-height: 1.5; }
 @keyframes ecr-scan {
   0%, 8% { transform: translateY(0); }
   30% { transform: translateY(16px); }
@@ -1214,25 +1231,9 @@ html.entree-on .entree-saut-mot { display: none; }
 }
 @keyframes shot-bat { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.45); } }
 .fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
-/* ============================================================
-   26. POINTS DE RUPTURE
-   Chaque mise en page multi-colonnes declare ici son repli.
-   Le mobile n'herite pas : il decide.
-   ============================================================ */
-/* --- 640 px : la bande de specification passe en deux colonnes --- */
-@media (min-width: 40em) {
-.spec { grid-template-columns: repeat(2, 1fr); }
-.spec-cell { border-top: 0; border-left: var(--rule-w) solid var(--rule); }
-.spec-cell:nth-child(-n + 2) { border-top: 0; }
-.spec-cell:nth-child(2n + 1) { border-left: 0; }
-.spec-cell:nth-child(n + 3) { border-top: var(--rule-w) solid var(--rule); }
-}
 /* --- 768 px : compositions asymetriques --- */
 @media (min-width: 48em) {
 .hero-sub { max-width: 44ch; }
-.spec { grid-template-columns: repeat(4, 1fr); }
-.spec-cell { border-top: 0 !important; border-left: var(--rule-w) solid var(--rule); }
-.spec-cell:first-child { border-left: 0; }
 }
 /* --- 1024 px : la navigation deploie ses liens --- */
 @media (min-width: 64em) {
@@ -1363,6 +1364,61 @@ html.entree-on .entree-saut-mot { display: none; }
    contredisent des que l'un des deux est en retard d'une image. */
 .btn--primary:hover { background: var(--accent); }
 .btn--primary[data-lettres]:hover { border-color: var(--ink); }
+/* ============================================================
+   LES DEUX BOUTONS DU HERO — V4 · CRAN, et la hierarchie est
+   PORTEE PAR LA MATIERE, pas par la taille.
+
+   REFERENCE MESUREE : `fancy-toggle-753251.framer.app`, releve du
+   2026-07-29. L'objet fait 141 x 33, rayon 10 px. Au survol il
+   INVERSE completement : fond `rgb(0,0,0)` -> `rgb(255,255,255)`,
+   texte blanc -> noir, en ~525 ms aller et ~505 ms retour. Au clic,
+   le fond met 199,7 ms a changer et le TEXTE bascule en 16,9 ms —
+   c'est-a-dire un cran, pas un fondu. Sa transition declaree est
+   `translate 0.3s ease-out` : la matiere se DEPLACE.
+   Ce qu'on jette : le rayon de 10 px, les ombres, le blanc pur.
+   Ce qu'on garde : l'inversion franche, le texte qui bascule d'un
+   cran, et une duree assez longue pour que ca se LISE.
+
+   DEUX CORRECTIONS, ET LA PREMIERE EST UN DEFAUT MESURABLE :
+
+   1. « Estimation en 60 secondes » heritait de `--cran: 230ms`,
+      alors que « Démarrer votre projet » avait 520 ms. Vingt-deux
+      lettres en 230 ms font 10,5 ms par lettre : sous le seuil ou
+      l'oeil lit une CASCADE. L'effet etait donc litteralement
+      invisible sur le second CTA le plus important du site. Les
+      deux boutons du hero passent a 520 ms — 23,6 ms par lettre.
+
+   2. LES DEUX BOUTONS AVAIENT LE MEME APLAT D'ENCRE, donc aucune
+      hierarchie : deux inversions identiques cote a cote se lisent
+      comme deux boutons de meme rang. Le primaire, deja en minium
+      plein, garde l'inversion COMPLETE vers l'encre — c'est la
+      version pleine. Le secondaire recoit l'ARETE MINIUM : l'aplat
+      qui balaye est l'accent, pas l'encre. C'est un cran plus bas
+      en intensite, et c'est exactement la politique d'accent du
+      site — le minium ne revient que la ou le visiteur peut agir.
+
+   Le contraste tient des deux cotes : `--accent-ink` sur
+   `--accent` vaut 4,70:1 en clair et 5,20:1 en sombre, et la
+   bascule reste a 0 s au passage de l'arete, donc il n'existe
+   aucune image intermediaire.
+   ============================================================ */
+.hero-cta .btn { --cran: 520ms; }
+.hero-cta .btn--ghost[data-lettres]::before { background: var(--accent); }
+.hero-cta .btn--ghost:hover .l,
+.hero-cta .btn--ghost:focus-visible .l,
+.hero-cta .btn--ghost[data-lettres]:hover .icon,
+.hero-cta .btn--ghost[data-lettres]:focus-visible .icon { color: var(--accent-ink); }
+/* Le cadre suit l'aplat : minium sur le secondaire, encre sur le
+   primaire. Deux boutons, deux matieres, un seul geste. */
+.hero-cta .btn--ghost[data-lettres]:hover,
+.hero-cta .btn--ghost[data-lettres]:focus-visible { border-color: var(--accent); }
+/* Le filet de 2 px est la TRACE de ce remplissage : sur le
+   secondaire il est deja minium, donc il disparait dans son propre
+   aplat. Il passe a l'encre au survol pour rester une arete. */
+.hero-cta .btn--ghost:hover::after,
+.hero-cta .btn--ghost:focus-visible::after {
+  background-image: linear-gradient(90deg, var(--ink) 0 100%);
+}
 /* Un bouton desactive ne bascule pas : il n'y a rien a faire. */
 .btn[disabled][data-lettres]::before,
 .btn[aria-disabled="true"][data-lettres]::before { transform: scaleX(0); }
