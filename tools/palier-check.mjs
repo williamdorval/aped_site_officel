@@ -121,6 +121,25 @@ async function sonder(nom, opts = {}) {
          a chaque frontiere (G4), lui, tombe au palier 2. */
       seuilsCrantes: document.querySelectorAll('[data-seuil][data-cran="fait"]').length,
       seuilsTotal: document.querySelectorAll("[data-seuil]").length,
+      /* ------------------------------------------------------------
+         LA BOUCLE DE VIE DES PLAQUES — poste 2ter du budget, ajoute
+         le 2026-07-29. C'est une animation PERMANENTE : par
+         definition le poste le plus cher du site, puisqu'elle ne
+         s'arrete jamais. Sur un telephone elle brulerait de la
+         batterie pour un effet qui n'apporte aucune orientation.
+         Elle tombe donc au palier 1, avec la derive dont elle est la
+         suite, et les plaques y restent inclinees et lisibles.
+         Sans cette ligne, rien n'empecherait une prochaine session de
+         la rendre inconditionnelle : le budget de degradation ne vaut
+         que ce que l'outil en verifie.
+         ------------------------------------------------------------ */
+      plaquesVivantes: !!document.querySelector("[data-plaques].est-vivante"),
+      plaquesAnimees: [...new Set([...document.querySelectorAll(".plaque-corps")]
+        .map((c) => getComputedStyle(c).animationName))],
+      plaquesInclinees: [...document.querySelectorAll(".plaque-corps")].filter((c) => {
+        const m = new DOMMatrixReadOnly(getComputedStyle(c).transform);
+        return Math.abs(Math.atan2(m.b, m.a) * 180 / Math.PI) > 0.9;
+      }).length,
       seuilNumeroJuste: (() => {
         const s = [...document.querySelectorAll("[data-seuil]")].find((e) => {
           const r = e.getBoundingClientRect();
@@ -154,6 +173,8 @@ console.log("\nPALIER 0 — bureau, large, pointeur fin");
      c'est-a-dire 10,5 ms par lettre sur vingt-deux lettres, une
      cascade que personne ne voit. */
   dire(r.cranGhost === "520ms", `--cran du fantome du hero : ${r.cranGhost}`);
+  dire(r.plaquesVivantes === true && r.plaquesAnimees.includes("plaque-vie"),
+    `boucle de vie des plaques : ${r.plaquesVivantes ? "elle tourne" : "ABSENTE"} (${r.plaquesAnimees.join(",")})`);
 }
 
 console.log("\nPALIER 1 — trois declencheurs statiques, testes separement");
@@ -166,6 +187,14 @@ for (const [nom, opts] of [
   dire(r.palier === "1", `${nom.padEnd(24)} -> data-palier = ${r.palier}`);
   dire(r.mots === 0, `${nom.padEnd(24)} -> chapos NON decoupes (${r.mots} spans)`);
   dire(!r.etiquette, `${nom.padEnd(24)} -> etiquette de pointe absente`);
+  dire(r.plaquesVivantes === false && r.plaquesAnimees.every((a) => a === "none"),
+    `${nom.padEnd(24)} -> boucle de vie des plaques TOMBEE (${r.plaquesAnimees.join(",")})`);
+  /* ET LA COMPOSITION RESTE. Retirer le mouvement ne doit rien
+     retirer a la lecture : les huit plaques gardent leur inclinaison
+     ecrite dans le document. C'est la moitie de la promesse du
+     palier 1, et c'est celle qu'on oublie de verifier. */
+  dire(r.plaquesInclinees === 8,
+    `${nom.padEnd(24)} -> les huit plaques restent inclinees (${r.plaquesInclinees} / 8)`);
 }
 
 console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + "");
@@ -174,6 +203,13 @@ console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + ""
   dire(r.palier === "2", `data-palier = ${r.palier} (mesure : ${r.images} i/s)`);
   dire(r.cran === "0ms" && r.cranCta === "0ms" && r.cranGhost === "0ms",
     `--cran ramene a ${r.cran} / ${r.cranCta} / ${r.cranGhost} : tous les boutons basculent d'un bloc`);
+  /* Au palier 2 la boucle est deja tombee au palier 1 — mais elle
+     doit AUSSI mourir quand on y monte EN VOL depuis le palier 0, et
+     c'est le bloc « escalade » qui le verifie. Ici on constate
+     seulement qu'elle n'est pas la, et que les plaques restent
+     lisibles. */
+  dire(r.plaquesVivantes === false && r.plaquesInclinees === 8,
+    `boucle de vie absente, huit plaques inclinees et lisibles (${r.plaquesInclinees} / 8)`);
   console.log(`         frequence relevee par la page elle-meme : ${r.images} i/s`);
 }
 
@@ -229,6 +265,32 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
   const apres = await page.evaluate(() => document.documentElement.getAttribute("data-palier"));
   dire(monte === "2" && apres === "2",
     `bride -> palier ${monte}, puis debride -> palier ${apres} (doit rester ${monte})`);
+
+  /* ------------------------------------------------------------
+     LE CAS QUE SEUL CE BLOC PEUT COUVRIR : LA BOUCLE TUEE EN VOL.
+     Ici la page demarre en palier 0 — grand ecran, pointeur fin,
+     machine normale — donc la boucle de vie EST creee. Le bridage la
+     fait ensuite monter au palier 2, et `monterAuPalier` doit
+     l'avoir tuee par `jetables`. Les trois autres sondes de palier 1
+     et 2 ne prouvent rien de ca : chez elles la boucle n'a jamais
+     existe. Un `kill` qui ne serait jamais appele passerait donc
+     inapercu partout ailleurs.
+     Et la pose de repos doit survivre au `kill` : c'est tout
+     l'interet d'avoir mis la boucle dans `translate` / `rotate` et
+     la pose dans `transform`.
+     ------------------------------------------------------------ */
+  const apresEscalade = await page.evaluate(() => ({
+    vivante: !!document.querySelector("[data-plaques].est-vivante"),
+    animees: [...new Set([...document.querySelectorAll(".plaque-corps")].map((c) => getComputedStyle(c).animationName))],
+    inclinees: [...document.querySelectorAll(".plaque-corps")].filter((c) => {
+      const m = new DOMMatrixReadOnly(getComputedStyle(c).transform);
+      return Math.abs(Math.atan2(m.b, m.a) * 180 / Math.PI) > 0.9;
+    }).length,
+  }));
+  dire(apresEscalade.vivante === false && apresEscalade.animees.every((a) => a === "none"),
+    `boucle de vie TUEE EN VOL a l'escalade (${apresEscalade.animees.join(",")})`);
+  dire(apresEscalade.inclinees === 8,
+    `pose de repos intacte apres le kill (${apresEscalade.inclinees} / 8 plaques inclinees)`);
   await ctx.close();
 }
 

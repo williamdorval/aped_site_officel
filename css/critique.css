@@ -1392,6 +1392,87 @@ html.entree-saut .hero-fiche .fiche-rule {
 .hero-cta { grid-column: 1 / span 7; }
 .hero-fiche { display: grid; grid-column: 9 / span 4; grid-row: 3 / span 3; }
 }
+/* ============================================================
+   13bis. LA BOUCLE DE VIE DES PLAQUES — ajoutee le 2026-07-29.
+
+   LE DEFAUT QU'ELLE CORRIGE. La derive au defilement existait deja,
+   et elle est juste : 121 a 220 px d'amplitude, redressement complet
+   au centre de l'ecran. Mais un `scrub` n'avance que pendant qu'on
+   defile. Des qu'on s'arrete de lire pour regarder, la bande entiere
+   se fige — huit plaques inclinees, parfaitement immobiles. Ce
+   n'etait pas un choix, c'etait une consequence non vue.
+
+   QUEL VERBE, PARCE QUE LA REGLE D'ADMISSION L'EXIGE.
+   · LA DERIVE est V2 · S'ALIGNER. Chaque cycle revient EXACTEMENT a
+     la pose ecrite dans le document — la derniere image d'etape vaut
+     la premiere, au caractere — et chaque segment porte une courbe
+     sinusoidale sans depassement. La plaque ne part pas et ne revient
+     pas ailleurs : elle tire sur son alignement et le reprend. C'est
+     la meme idee que le hero, a l'echelle d'une respiration.
+   · L'ARRET ET LA REPRISE sont V4 · CRAN. `animation-play-state:
+     paused` gele la valeur courante SANS aucune interpolation : il
+     n'existe aucun etat intermediaire entre « ca bouge » et « c'est
+     arrete ». C'est la definition meme du cran, et c'est ce que le
+     brief demandait — franc, pas mou. Un amortissement de sortie
+     aurait ete plus « joli » et aurait rate le point.
+
+   OU ELLE VIT, ET POURQUOI PAS AILLEURS. Sur `.plaque-corps`, via
+   les proprietes INDIVIDUELLES `translate` et `rotate` — jamais via
+   `transform`, qui porte deja la pose de repos sur cette meme boite.
+   La chaine CSS applique `translate`, puis `rotate`, puis `scale`,
+   puis `transform` : la boucle se COMPOSE donc par-dessus la pose au
+   lieu de l'ecraser. Et GSAP ne touche jamais cette boite — il anime
+   la coque `.plaque` — donc son habitude d'ecrire `rotate: none` sur
+   ce qu'il prend en main ne peut pas nous atteindre. Trois boites
+   auraient ete la solution naive ; deux suffisent parce que les
+   proprietes individuelles et `transform` ne se disputent pas.
+
+   L'AMPLITUDE EST BORNEE PAR LA GOUTTIERE, PAS PAR LE GOUT.
+   `--vie-y` vaut 12 px et ne coute rien en largeur. `--vie-x` vaut
+   6 px, et c'est le chiffre contraint : les decalages de repos vont
+   deja jusqu'a 48 px et l'inclinaison en ajoute environ 5. Le
+   rembourrage de la bande a 64em a donc ete porte de 60 a 76 px pour
+   absorber la nouvelle course — verifie par `tools/deborde.mjs` et
+   par `accueil-check cadre`, aux phases extremes de la boucle, pas
+   a un instant quelconque.
+   `--vie-a` vaut 1,15deg, donc 2,3° de battement : au-dessus du seuil
+   de 2° sous lequel, mesure sur ce site, une inclinaison ne se
+   percoit pas.
+
+   POURQUOI ELLE TOMBE AU PALIER 1. Une animation PERMANENTE est le
+   poste le plus cher du site par definition : elle ne s'arrete
+   jamais. Sur un telephone, elle brule de la batterie pour un effet
+   qui n'apporte aucune orientation — exactement le critere de chute.
+   Elle rejoint donc la derive au meme palier : les plaques restent
+   inclinees, decalees et lisibles, on ne perd que le mouvement.
+   `est-vivante` est posee par `js/langue.js`, qui ne s'execute pas du
+   tout sous mouvement reduit et sort tout de suite hors palier 0.
+
+   TROIS VERROUS D'ARRET, ET AUCUN N'EST DECORATIF :
+   1. le survol d'une plaque arrete TOUTE la bande. Pas seulement
+      celle qu'on survole : on survole pour LIRE, et une plaque
+      immobile a cote de sept qui bougent est plus difficile a lire
+      qu'une bande entiere arretee ;
+   2. `[data-repos]` quand la bande sort de l'ecran — pose par un
+      `IntersectionObserver` ;
+   3. `[data-repos]` quand l'onglet est cache — `visibilitychange`.
+   Les deux derniers partagent le meme attribut : un seul selecteur,
+   deux causes, et aucune facon que l'un annule l'autre.
+
+   `!important` N'EST PAS UNE PARESSE ICI. `animation` est un
+   RACCOURCI : il remet `animation-play-state` a `running`. Ce piege a
+   deja rendu inoperantes la pause du rideau ET celle de la
+   composition du hero sans que rien ne le signale. Les regles de
+   pause portent donc `!important`, et ce commentaire est la pour que
+   personne ne le retire en croyant nettoyer.
+   ============================================================ */
+@keyframes plaque-vie {
+  0%   { translate: 0 0; rotate: 0deg; }
+  25%  { translate: calc(var(--vie-x) * -1) var(--vie-y); rotate: var(--vie-a); }
+  50%  { translate: var(--vie-x) calc(var(--vie-y) * -1); rotate: calc(var(--vie-a) * -1); }
+  75%  { translate: var(--vie-x) calc(var(--vie-y) * 0.55); rotate: calc(var(--vie-a) * 0.45); }
+  100% { translate: 0 0; rotate: 0deg; }
+}
 @keyframes ecr-scan {
   0%, 8% { transform: translateY(0); }
   30% { transform: translateY(16px); }

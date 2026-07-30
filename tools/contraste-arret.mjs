@@ -84,7 +84,44 @@ await page.evaluate(() => {
 const h = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
 const mauvais = new Map();
 for (let i = 0; i <= N; i++) {
-  await page.evaluate((y) => window.scrollTo(0, y), Math.round(h * i / N));
+  /* ============================================================
+     ON DEFILE PAR PAS, PAS D'UN BOND — ET C'EST UN DEFAUT
+     D'INSTRUMENT QUI FAISAIT CONDAMNER DU CODE SAIN, RELEVE LE
+     2026-07-29.
+
+     Version precedente : `window.scrollTo(0, y)` d'un seul saut vers
+     chaque position d'arret. Sept elements ressortaient alors a 0,10
+     ou 0,12 d'opacite — les trois etats du programme de reference, la
+     bulle, les deux avis, la ligne de suite du parcours — et le
+     rapport les comptait comme du « texte echoue ».
+
+     Or aucun des sept n'est pilote par un scrub. Ce sont des
+     timelines `once: true` qui montent de 0,1 a 1 en 240 a 340 ms, et
+     dont l'etat de repos vaut bien 1. Ce qui se passait est autre
+     chose : un saut de plusieurs milliers de pixels laisse les
+     positions de declenchement de ScrollTrigger perimees — les
+     sections traversees portent `content-visibility: auto`, donc leur
+     hauteur reelle remplace la hauteur reservee pendant le saut. Le
+     declencheur ne partait jamais, l'element restait a son etat de
+     depart, et la sonde le photographiait a l'ecran, immobile, a 0,1.
+     Attendre plus longtemps n'y changeait rien : il n'y avait rien a
+     attendre.
+
+     C'est le piege deja nomme au § 8 de CLAUDE.md — « un `scrollTo`
+     qui saute casse un pin de ScrollTrigger, defiler par pas comme un
+     visiteur ». Il valait aussi pour cet outil-ci.
+     ============================================================ */
+  const cible = Math.round(h * i / N);
+  await page.evaluate(async (y) => {
+    const pas = 140;
+    let ici = window.scrollY;
+    while (Math.abs(y - ici) > pas) {
+      ici += Math.sign(y - ici) * pas;
+      window.scrollTo(0, ici);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, y);
+  }, cible);
   /* ON ATTEND QUE TOUT SOIT POSE. Sans ce delai, le script attrape
      les animations d'entree EN VOL — elles partent a 0,1 d'opacite
      et montent en 300 a 600 ms — et rend trente-huit faux echecs.
@@ -97,7 +134,7 @@ for (let i = 0; i <= N; i++) {
   for (const x of lot) {
     if (x.r >= x.seuil) continue;
     const cle = x.cls + "|" + x.txt;
-    if (!mauvais.has(cle) || mauvais.get(cle).r > x.r) mauvais.set(cle, { ...x, y: Math.round(h * i / N) });
+    if (!mauvais.has(cle) || mauvais.get(cle).r > x.r) mauvais.set(cle, { ...x, y: cible });
   }
 }
 await nav.close();

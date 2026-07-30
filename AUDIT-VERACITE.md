@@ -1,5 +1,44 @@
 # AUDIT DE VÉRACITÉ — site officiel APED Agency
 
+> ## ⬛ ÉTAT AU 2026-07-30 : LES 36 CONSTATS SONT TRAITÉS
+>
+> Cet audit a été écrit en lecture seule le 2026-07-29. **Il a été
+> appliqué dans la nuit du 29 au 30.** Les tableaux ci-dessous ne sont
+> plus une liste de choses à faire : ils sont la trace de ce qui était
+> faux, et ils restent tels quels parce qu'un audit qu'on réécrit après
+> correction ne prouve plus rien.
+>
+> **Ce qui a été fait, constat par constat :**
+>
+> | Catégorie | Constats | Traités | Comment |
+> |---|---|---|---|
+> | **A** · faussetés démontrables | 9 | **9** | A1·A2 la fiche technique est alignée sur les quatre chantiers de Services · A3 courriel facultatif, remise avant le formulaire · A4 déjà corrigé le 29 · A5 « jusqu'à » rendu · A6 « le prochain jour ouvrable » · A7 résolu en corrigeant C5 · A8 le cadre « journée de huit heures » retiré, le tableau intact · A9 les deux affirmations retirées, **plus** les cinq lignes « ce qui a changé » réécrites |
+> | **B** · invérifiables | 10 | **10** | B1·B2 douze métiers préparés · B3·B4·B5 les trois statistiques inventées retirées · B6 deux postes retirés du calcul, dont un **double comptage** · B7 arrondi à la centaine, « ≈ » · B8 l'appel de 30 minutes nommé · B9 bornes fermées + plancher · B10 « Votre entreprise », figure étiquetée « Exemple » |
+> | **C** · engagements intenables | 6 | **6** | C1·C2 les deux promesses de classement Google retirées · C3 déjà corrigé le 29 · C4 « en six questions » aux cinq endroits · C5 le désabonnement retiré · C6 « Réponse — 12 h » |
+> | **D** · jargon | 8 | **8** | D1 « CRM » aux trois endroits · D2 ordre inversé et liste complétée · D3·D4 le bénéfice devant, les crédits en note · D5·D6 la figure du chantier · D7 « robot d'usine » · D8 la ligne supprimée avec la refonte de la fiche |
+> | **E** · taxonomies | 3 | **3** | E1 il ne reste que deux listes, de granularités différentes · E2 la note dit quel taux calcule quoi · E3 la sixième voie nommée |
+> | **V** · à vérifier | 7 | **5** | V2 repli `mailto:`, les six formulaires livrent · V3 nommé comme l'appel de 30 min · V5 bornes fermées · V6 **vérifié VRAI** dans la source des PDF (« 24 tâches · 13 domaines » en couverture) · V7 la démo dit prouver le lecteur, pas la prise de vue · **V1 et V4 restent suspendus** : voir `DECISIONS-NUIT.md § 2 · B4` |
+>
+> **Trois défauts que cet audit n'avait pas vus**, trouvés en mesurant
+> pendant l'application :
+>
+> 1. **Sept textes restaient à 10-12 % d'opacité en permanence** pour un
+>    visiteur normal — 1,15:1 à 1,36:1. Leur déclencheur ne partait
+>    jamais. Corrigé (`immediateRender: false`, onze tweens) ;
+>    `contraste-arret` passe de 8 échecs à **0**.
+> 2. **« Itinéraire », dans la figure Google : 1,34:1.** Une règle de
+>    conteneur écrasait la couleur du bouton.
+> 3. **Le survol des cinq cartes de contact faisait BAISSER le
+>    contraste** à 4,41:1 — sous le seuil AA, sur le texte qu'on est
+>    précisément en train de lire.
+>
+> Les trois sont antérieurs à l'application, prouvés par A/B en worktree
+> contre le commit précédent. Détail et arbitrages : `DECISIONS-NUIT.md`.
+> La règle qui gouverne désormais l'écriture : `CLAUDE.md § 0.A`.
+
+---
+
+
 **Version auditée :** `index.html`, md5 `8f275bfa77d4144b1c91651c5087e931`, 208 731 octets,
 relevé le 2026-07-29 à 22 h 10. Le fichier a été modifié **deux fois pendant l'audit** :
 les quatre plaques du hero et leurs échos dans Services, Parcours et FAQ étaient déjà

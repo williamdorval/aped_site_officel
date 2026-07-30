@@ -1492,6 +1492,83 @@
     var lot = $$(".plaque", bande);
     if (!lot.length) return;
 
+    /* ============================================================
+       LA BOUCLE DE VIE — ajoutee le 2026-07-29.
+
+       LE DEFAUT. La derive ci-dessous est un `scrub` : elle n'avance
+       que pendant qu'on defile. Des qu'on s'arrete pour lire, les
+       huit plaques se figent. Personne ne l'avait vu parce que toutes
+       les mesures de derive se prennent EN DEFILANT — l'instrument
+       ne pouvait pas rendre le defaut qu'il fallait trouver.
+
+       CE FICHIER NE POSE QU'UNE CLASSE ET UN ATTRIBUT. Le mouvement
+       est entierement en CSS — voir le bloc 13bis de `app.css`. Trois
+       raisons, et aucune n'est esthetique :
+       · une animation CSS de `translate` / `rotate` est composee par
+         le compositeur, donc elle ne coute rien au fil principal ;
+       · `animation-play-state: paused` gele la valeur courante sans
+         AUCUNE interpolation. C'est le cran demande par le brief, et
+         aucune boucle en JavaScript ne peut faire mieux : elle
+         devrait lire la valeur, la reecrire, et laisser une image
+         d'ecart ;
+       · le mouvement survit a la mort de ce fichier. Si le palier
+         monte a 2, `jetables` retire la classe et tout s'arrete net,
+         sans laisser de valeur en vol.
+
+       CE QUI SERAIT FAUX DE FAIRE ICI : poser la classe sans les deux
+       verrous. Une animation permanente sur une section hors ecran est
+       de la batterie brulee pour personne. `IntersectionObserver` et
+       `visibilitychange` ne sont donc pas des raffinements, ils font
+       partie de la fonction.
+       ============================================================ */
+    bande.classList.add("est-vivante");
+
+    /* UN MASQUE DE BITS, PAS DEUX DRAPEAUX. Bit 1 = hors ecran,
+       bit 2 = onglet cache. Deux booleens independants auraient laisse
+       le retour d'un onglet relancer la boucle d'une section qui n'est
+       plus a l'ecran : la cause qui reste doit continuer de retenir. */
+    var repos = 0;
+    function appliquerRepos() {
+      if (repos) bande.setAttribute("data-repos", "");
+      else bande.removeAttribute("data-repos");
+    }
+
+    /* La marge de declenchement est GENEREUSE a dessein : la boucle
+       doit tourner avant que la bande entre, sinon le visiteur la
+       decouvre a l'arret et voit huit plaques se mettre en marche —
+       ce qui est exactement l'effet « animation qui demarre » qu'on
+       ne veut pas. */
+    var oeil = null;
+    if (typeof IntersectionObserver === "function") {
+      oeil = new IntersectionObserver(function (entrees) {
+        for (var i = 0; i < entrees.length; i++) {
+          if (entrees[i].isIntersecting) repos &= ~1; else repos |= 1;
+        }
+        appliquerRepos();
+      }, { rootMargin: "200px 0px" });
+      oeil.observe(bande);
+    }
+
+    function surVisibilite() {
+      if (document.hidden) repos |= 2; else repos &= ~2;
+      appliquerRepos();
+    }
+    document.addEventListener("visibilitychange", surVisibilite);
+    surVisibilite();
+
+    jetables.push({
+      kill: function () {
+        if (oeil) oeil.disconnect();
+        document.removeEventListener("visibilitychange", surVisibilite);
+        /* Retirer la classe suffit : l'animation disparait, et comme
+           elle vivait dans `translate` / `rotate` et non dans
+           `transform`, la pose de repos ecrite dans le document
+           reapparait intacte. Rien a nettoyer, rien a remettre. */
+        bande.classList.remove("est-vivante");
+        bande.removeAttribute("data-repos");
+      }
+    });
+
     lot.forEach(function (p) {
       var cs = getComputedStyle(p);
       var ang = parseFloat(cs.getPropertyValue("--ang")) || 0;

@@ -88,23 +88,88 @@ const attendre = (p, ms) => p.waitForFunction(
         src: i.getAttribute("src"), rendue: i.naturalWidth > 0, l: i.naturalWidth, h: i.naturalHeight
       })),
       motsALire: (d.querySelector(".cadeau-dire") || d).innerText.trim().split(/\s+/).length,
-      remiseCacheeAuDepart: d.querySelector(".cadeau-recu").hidden
+      /* ------------------------------------------------------------
+         CE RELEVE S'APPELAIT `remiseCacheeAuDepart`, ET SON NOM ETAIT
+         LE DEFAUT.
+         Il affirmait, comme une qualite, que les deux guides sont
+         VERROUILLES jusqu'a ce qu'on donne une adresse. Or le pied de
+         page, Services et le Calculateur offrent LES MEMES deux
+         documents « gratuits et sans courriel », liens directs vers
+         les PDF. Le popup faisait donc payer d'une adresse ce que la
+         page donne trois ecrans plus bas — constat A3 de l'audit du
+         2026-07-29, et exactement la faute que le proprietaire venait
+         de retirer du hero.
+         Le test passait, et il passait PARCE QUE le defaut etait la.
+         C'est le piege nommé au § 8 de CLAUDE.md : quand on corrige
+         un defaut, il faut relire le test qui le couvrait. On mesure
+         donc maintenant l'inverse, et le nom le dit.
+         ------------------------------------------------------------ */
+      remiseOuverteDesLeDepart: !d.querySelector(".cadeau-recu").hidden,
+      remiseAvantLeFormulaire: (() => {
+        const blocs = [...d.querySelectorAll(".cadeau-recu, .cadeau-form")];
+        return blocs.length === 2 && blocs[0].classList.contains("cadeau-recu");
+      })(),
+      lienDirectsVersLesPdf: [...d.querySelectorAll(".cadeau-recu a")].map((a) => a.getAttribute("href")),
+      courrielRequis: (() => { const c = d.querySelector("#cadeauEmail"); return c ? c.required : null; })()
     };
   });
 
   /* ---------- 7. CLAVIER ---------- */
   R.clavier = { focusALOuverture: await p.evaluate(() => document.activeElement && document.activeElement.className) };
+
+  /* ============================================================
+     LE NOMBRE DE TABULATIONS NE PEUT PAS ETRE UNE CONSTANTE, ET
+     C'EST UN DEFAUT D'INSTRUMENT QUI A PRODUIT UN FAUX ECHEC.
+
+     Version precedente : six tabulations, puis « le focus est-il
+     encore dans le dialogue ? ». Ca marchait avec quatre elements
+     atteignables. Le correctif A3 en a ajoute deux — les deux liens
+     de telechargement direct — et la sixieme tabulation est tombee
+     pile sur l'etape ou Chromium fait passer le focus par la barre
+     du navigateur avant de revenir dans le dialogue. Verdict rendu :
+     « le focus s'echappe ». A/B en worktree contre le commit
+     precedent : la sequence d'AVANT etait
+     `INPUT → BUTTON → BUTTON.cadeau-non → BODY → BUTTON.cadeau-x →
+     INPUT`. Le BODY y etait DEJA, au milieu. Le piege fonctionnait
+     dans les deux versions ; seul le nombre d'elements avait change.
+
+     CE QU'IL FAUT MESURER N'EST DONC PAS « OU ATTERRIT LA N-IEME
+     TABULATION » mais la propriete reelle du piege : aucun element de
+     la PAGE derriere la modale ne doit jamais recevoir le focus, et
+     le cycle doit revenir dans le dialogue. On compte donc les
+     elements atteignables, on fait un tour complet plus deux, et on
+     regarde la suite entiere.
+     ============================================================ */
+  const combien = await p.evaluate(() => {
+    const d = document.getElementById("cadeau");
+    return [...d.querySelectorAll('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter((e) => !e.disabled && !e.closest("[hidden]") && e.getBoundingClientRect().width > 0).length;
+  });
   const ordre = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < combien + 3; i++) {
     await p.keyboard.press("Tab");
     ordre.push(await p.evaluate(() => {
       const a = document.activeElement;
-      return a ? (a.tagName + "." + String(a.className || "").split(" ")[0]) : "?";
+      if (!a) return { ou: "?", dedans: false };
+      const dedans = !!document.getElementById("cadeau").contains(a);
+      return {
+        ou: a.tagName + "." + String(a.className || "").split(" ")[0],
+        dedans,
+        /* `body` n'est pas « la page » : c'est l'etape par laquelle
+           Chromium fait transiter le focus vers sa propre barre. Ce
+           qui serait un vrai defaut, c'est un lien ou un bouton de la
+           page derriere la modale. */
+        estUnElementDeLaPage: !dedans && a !== document.body && a !== document.documentElement,
+      };
     }));
   }
-  R.clavier.ordreDeTabulation = ordre;
-  R.clavier.focusResteDansLeDialogue = await p.evaluate(() =>
-    !!document.getElementById("cadeau").contains(document.activeElement));
+  R.clavier.elementsAtteignables = combien;
+  R.clavier.ordreDeTabulation = ordre.map((o) => o.ou);
+  R.clavier.aucunElementDeLaPageNAEuLeFocus = ordre.every((o) => !o.estUnElementDeLaPage);
+  R.clavier.leCycleRevientDansLeDialogue = ordre.slice(1).some((o, i) => o.dedans && !ordre[i].dedans)
+    || ordre.every((o) => o.dedans);
+  R.clavier.focusResteDansLeDialogue =
+    R.clavier.aucunElementDeLaPageNAEuLeFocus && R.clavier.leCycleRevientDansLeDialogue;
   await p.keyboard.press("Escape");
   await p.waitForTimeout(450);
   R.clavier.echapFerme = !(await ouvert(p));
@@ -248,7 +313,19 @@ R.verdict = {
   nInterromptPasUneSaisie: R.nInterromptPasUneSaisie.ouvertPendantLaSaisie === false
     && R.nInterromptPasUneSaisie.paraitUneFoisLaSaisieFinie === true,
   unSeulChamp: R.contenu.nombreDeChamps === 1 && R.contenu.champs[0] === "email",
-  uneSeuleAction: R.contenu.actionsVisibles.length === 1,
+  /* `uneSeuleAction: actionsVisibles.length === 1` a ete retire le
+     2026-07-29. Il verrouillait le peage : une seule action possible,
+     donc forcement celle qui exige l'adresse. Il y en a maintenant
+     trois, et c'est la correction — deux telechargements directs plus
+     un envoi facultatif. Ce qui compte n'est plus le NOMBRE mais
+     l'ORDRE et la GRATUITE, et c'est ce qu'on mesure. */
+  lesDeuxGuidesSansRienDonner: R.contenu.remiseOuverteDesLeDepart === true
+    && R.contenu.lienDirectsVersLesPdf.length === 2
+    && R.contenu.courrielRequis === false,
+  laRemiseVientAvantLeFormulaire: R.contenu.remiseAvantLeFormulaire === true,
+  /* C5 · un desabonnement suppose un abonnement, et il n'y a pas de
+     liste d'envoi — la section Contact promet meme le contraire. */
+  aucunePromesseDeDesabonnement: !/d[ée]sabonnement/i.test(R.contenu.reassurance || ""),
   beneficeLeBoutonLeDit: /guide/i.test(R.contenu.actionsVisibles[0] || ""),
   visuelDesDeuxDocuments: R.contenu.couvertures.length === 2 && R.contenu.couvertures.every((c) => c.rendue),
   sortieEvidente: R.contenu.sorties.length >= 2,

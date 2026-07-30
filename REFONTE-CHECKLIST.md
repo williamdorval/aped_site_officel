@@ -599,3 +599,71 @@ serveur de test répond en `no-store`, donc rien n'est servi depuis le cache.
    expiraient systématiquement. Le symptôme a mené au 🟠 5, donc l'outil
    défaillant a quand même trouvé un vrai bug. Playwright MCP n'est pas
    exposé dans cette session.
+
+---
+
+## 16. NUIT DU 29 AU 30 JUILLET 2026 — VÉRACITÉ ET BOUCLE DE VIE
+
+Chantier mené sans arbitrage du propriétaire, sur mandat explicite de
+tout traiter. **Deux documents en portent le détail** :
+`AUDIT-VERACITE.md` (l'encadré de tête : les 36 constats et leur
+traitement) et `DECISIONS-NUIT.md` (les 31 arbitrages, ce qui a été
+écarté, ce qui reste bloqué, les réserves).
+
+### Ce qui est livré
+
+| | |
+|---|---|
+| **Les 36 constats de véracité** | traités. Deux points restent suspendus à une information que seul le propriétaire a : les cinq adresses en ligne des projets, la pile réelle des projets clients |
+| **Les six formulaires livrent** | FormSubmit n'est toujours pas activé — un clic dans la boîte du propriétaire. En attendant, un repli `mailto:` paraît sur échec avec le message déjà rempli. Mesuré : 6 / 6 |
+| **La boucle de vie des huit plaques** | mouvement permanent, arrêt net au survol, pause hors écran et onglet caché, aucune boucle sous mouvement réduit, tombe au palier 1 |
+| **La mention des délais** | une ligne : « Semaines estimées, variables selon la demande et la file d'attente » |
+| **La règle permanente** | `CLAUDE.md § 0.A` — quatre questions, et la règle de propagation |
+
+### Trois défauts trouvés en mesurant, que l'audit n'avait pas vus
+
+1. **Sept textes à 10-12 % d'opacité en permanence** (1,15:1 à 1,36:1) :
+   leur déclencheur ne partait jamais, parce que `content-visibility:
+   auto` périme les positions calculées par ScrollTrigger. Dégât corrigé
+   (`immediateRender: false`), **cause notée comme ouverte**.
+2. **« Itinéraire » à 1,34:1** dans la figure Google.
+3. **Le survol des cartes de contact faisait BAISSER le contraste** à
+   4,41:1, sur le texte qu'on est en train de lire.
+
+### Cinq faux verdicts d'instrument, corrigés
+
+Chacun aurait fait condamner du code sain ou déclarer un défaut absent.
+Ils sont écrits en entier dans `CLAUDE.md § 8`, points 20 à 24 :
+`transform` ne contient pas les propriétés individuelles · une amplitude
+absolue mélange trois mouvements · l'englobant d'un élément tourné est
+plus grand que lui · un nombre fixe de tabulations ne mesure pas un
+piège de focus · une fenêtre trop courte cache le mouvement le plus
+lent. Plus, dans `§ 0.B` : **ne jamais conclure sur la pire image.**
+
+### Un test qui verrouillait son défaut
+
+`cadeau-check.mjs` affirmait, **comme une qualité**, que les deux guides
+sont verrouillés jusqu'à ce qu'on donne une adresse — alors que le pied
+de page les donne directement. Le test passait *parce que* le défaut
+était là. Trois verdicts retournés, l'ancien nom du relevé
+(`remiseCacheeAuDepart`) remplacé par ce qu'on veut vraiment mesurer.
+
+### Réserves
+
+1. **L'amplitude de la boucle est un jugement, pas une mesure.** Les
+   chiffres sont au-dessus des seuils de perception ; l'écart entre
+   « ça vit » et « ça danse » ne se mesure pas. Trois variables dans un
+   seul bloc, `css/app.css § 13bis`.
+2. **Le chiffre du calculateur a baissé de 27 %** — de 53 751 à
+   ≈ 39 100 $. Le double comptage retiré n'est pas négociable ; le reste
+   est un choix qui peut se renverser en publiant la méthode.
+3. **La pause sur onglet caché n'est pas prouvable sur ce poste.**
+   Chromium sous Playwright ne modélise pas la visibilité d'un onglet,
+   sans tête comme avec tête. Le branchement est prouvé, la plateforme
+   ne l'est pas. À vérifier à la main.
+4. **Les deux PDF n'ont pas été relus** contre le site corrigé. Une
+   seule affirmation vérifiée dedans — les 24 tâches, vraie.
+5. **`formsubmit.co` est une requête tierce à l'envoi**, alors qu'une
+   plaque du hero dit « 0 · service extérieur ». Raisonnement complet
+   dans `DECISIONS-NUIT.md § 3 · R6` — c'est un raisonnement, pas une
+   mesure.

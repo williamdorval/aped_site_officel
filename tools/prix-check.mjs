@@ -149,8 +149,31 @@ const renduTries = rendu.map((r) => {
   const ok = /^5[  \s]*000$/.test(n) || /^0$/.test(n);
   /* Les sorties vivantes du calculateur partent a zero puis suivent
      les curseurs : elles sont identifiables par leur voisinage. */
-  const vivant = /(annuel|impact|vaut par|Heures|estim|fourchette|évitées|rendues|gagnés)/i.test(r.avant + " " + r.apres);
-  return { ...r, verdict: ok ? "autorise" : vivant ? "sortie vivante du calculateur" : "A VERIFIER" };
+  const vivant = /(annuel|impact|vaut par|Heures|estim|fourchette|évitées|rendues|gagnés)/i.test(r.avant + " " + r.apres)
+    /* LE SIGNE « ≈ » EST DEVENU LA SIGNATURE DE LA SORTIE VIVANTE.
+       Le montant du calculateur est un `<b>` seul dans sa boite : son
+       voisinage textuel est VIDE, donc aucun mot-cle ne pouvait
+       l'identifier et il ressortait « A VERIFIER » a chaque passe. Il
+       porte depuis le 2026-07-29 un « environ » — B7 de l'audit de
+       veracite, la fausse precision au dollar pres — et ce prefixe ne
+       se trouve nulle part ailleurs dans la page. Un montant precede
+       de « ≈ » est, par construction, une estimation calculee et non
+       un tarif. */
+    || /^≈/.test(r.avant) || r.avant === "≈";
+  /* LE BAREME DE COMMISSION EST UNE LIGNE CONTINUE : le decoupage par
+     montant la fragmente, et les fragments perdent le contexte. On
+     reconnait donc la ligne a l'un de ses reperes, pas chaque
+     morceau. C'est un engagement envers un TIERS, pas notre grille de
+     prix — decision assumee, deja nommee dans les contextes du
+     source. */
+  const bareme = /(Commission versée|contrat est signé|pas de commission|→\s*\d)/i.test(r.avant + " " + r.apres);
+  return {
+    ...r,
+    verdict: ok ? "autorise"
+      : vivant ? "sortie vivante du calculateur"
+      : bareme ? "bareme de commission, engagement envers un tiers"
+      : "A VERIFIER",
+  };
 });
 
 const aRetirer = source.filter((s) => s.verdict === "A RETIRER");

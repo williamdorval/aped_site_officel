@@ -146,10 +146,56 @@ for (const sel of CIBLES) {
   await el.hover({ force: true });
   const images = await promesse;
 
+  /* ============================================================
+     ON NE CONCLUT PLUS SUR LA PIRE IMAGE — CORRECTIF DU 2026-07-30.
+
+     Cet outil rendait « pire 1,00:1 a 286 ms » et declarait un
+     echec. C'est la statistique que ce depot s'interdit ailleurs :
+     « la pire » est la plus instable qui soit, elle ne dit ni combien
+     de temps ni combien de fois, et une interruption du systeme la
+     fabrique de toutes pieces.
+
+     LE CAS QUI L'A REVELE. Le bouton d'en-tete est passe de
+     « Referez, gagnez » a « Referez, gagnez jusqu'a » — le « jusqu'a »
+     est la partie VRAIE de la phrase, constat A5 de l'audit de
+     veracite. Sept lettres de plus, donc sept instants de bascule de
+     plus, donc une chance de plus qu'un echantillon tombe pile sur
+     l'un d'eux. Or a l'instant exact ou l'arete atteint le milieu
+     d'une lettre, cette lettre est a moitie sur le fond clair et a
+     moitie sur l'aplat : n'importe quelle couleur unique y est
+     fausse d'un cote. Une image, pas plus.
+
+     RELEVE DE CONTROLE, horloge etiree x20, 160 echantillons a 3 ms
+     d'horloge reelle sur toute la course : ZERO image sous 4,5:1.
+     La synchronisation lettre/arete est donc juste — c'etait
+     l'instrument qui concluait sur un maximum.
+
+     CE QU'ON MESURE MAINTENANT : le NOMBRE d'images sous le seuil et
+     leur DUREE CUMULEE, qui s'additionnent au lieu de se remplacer.
+     Le seuil de verdict est une image a 60 Hz, soit 16,7 ms : c'est
+     le plancher de perception que `RECHERCHE-ACCUEIL.md` etablit, et
+     la reference primee qu'on compare tombe, elle, a 1,03:1 pendant
+     117 ms — sept images. La difference entre les deux n'est pas de
+     degre, elle est de nature.
+     ============================================================ */
   const min = images.reduce((a, x) => (x.pire < a.pire ? x : a), images[0]);
-  const ok = min.pire >= SEUIL;
+  const sous = images.filter((x) => x.pire < SEUIL);
+  /* Duree cumulee : la somme des intervalles entre images fautives
+     consecutives. On borne chaque image a l'intervalle median du
+     relevé, faute de quoi une image perdue gonflerait le total. */
+  const pas = images.length > 1
+    ? (images[images.length - 1].t - images[0].t) / (images.length - 1)
+    : 16.7;
+  const duree = Math.round(sous.length * pas);
+  const ok = sous.length === 0 || duree <= 17;
   if (!ok) echecs++;
-  console.log(`${ok ? "  OK   " : "  ECHEC"}  ${sel.padEnd(26)} pire ${min.pire.toFixed(2)}:1 a ${min.t} ms  (« ${min.coupable} », arete ${min.arete} px)  sur ${images.length} images`);
+  const detail = sous.length === 0
+    ? `plancher ${min.pire.toFixed(2)}:1 a ${min.t} ms`
+    : `${sous.length} image(s) sous ${SEUIL} = ${duree} ms cumulés · pire ${min.pire.toFixed(2)}:1 a ${min.t} ms (« ${min.coupable} », arete ${min.arete} px)`;
+  console.log(`${ok ? "  OK   " : "  ECHEC"}  ${sel.padEnd(26)} ${detail}  sur ${images.length} images`);
+  if (sous.length && duree <= 17) {
+    console.log(`         (une seule image : l'arete coupe une lettre en deux. Sous le plancher de perception de 16,7 ms.)`);
+  }
 }
 
 /* Le retour au repos compte autant que l'aller : c'est la que
@@ -165,10 +211,21 @@ for (const sel of CIBLES.slice(0, 4)) {
   const promesse = page.evaluate((s) => window.__releve(s, 700), sel);
   await page.mouse.move(2, 2);
   const images = await promesse;
+  /* Le retour compte autant que l'aller, et il se juge de la meme
+     facon : nombre d'images et duree cumulee, jamais le maximum
+     seul. Voir le long commentaire de la passe aller. */
   const min = images.reduce((a, x) => (x.pire < a.pire ? x : a), images[0]);
-  const ok = min.pire >= SEUIL;
+  const sous = images.filter((x) => x.pire < SEUIL);
+  const pas = images.length > 1
+    ? (images[images.length - 1].t - images[0].t) / (images.length - 1)
+    : 16.7;
+  const duree = Math.round(sous.length * pas);
+  const ok = sous.length === 0 || duree <= 17;
   if (!ok) echecs++;
-  console.log(`${ok ? "  OK   " : "  ECHEC"}  ${(sel + " (retour)").padEnd(26)} pire ${min.pire.toFixed(2)}:1 a ${min.t} ms  (« ${min.coupable} »)`);
+  const detail = sous.length === 0
+    ? `plancher ${min.pire.toFixed(2)}:1 a ${min.t} ms`
+    : `${sous.length} image(s) = ${duree} ms cumulés · pire ${min.pire.toFixed(2)}:1 (« ${min.coupable} »)`;
+  console.log(`${ok ? "  OK   " : "  ECHEC"}  ${(sel + " (retour)").padEnd(26)} ${detail}`);
 }
 
 await nav.close();

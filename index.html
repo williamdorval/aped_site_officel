@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>APED Agence | Sites web, automatisation et logiciels sur mesure</title>
-  <meta name="description" content="APED Agence code des sites web, des boutiques en ligne, des automatisations et des logiciels internes pour les entreprises du Québec. Le code vous appartient. Calculez vos économies en 60 secondes." />
+  <meta name="description" content="APED Agence code des sites web, des boutiques en ligne, des automatisations et des logiciels internes pour les entreprises du Québec. Le code vous appartient. Calculez vos économies en six questions." />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_CA" />
@@ -247,8 +247,15 @@
          peut plus etre enterre en bas de page. Le libelle dit le
          BENEFICE, pas le nom du programme. Secondaire mais visible,
          et atteignable sur telephone sans ouvrir le menu. -->
+    <!-- A5 · « JUSQU'A » N'EST PAS UN ORNEMENT, C'EST LA PARTIE VRAIE.
+         Le bouton affichait « Référez, gagnez 5 000 $ ». Le bareme de
+         la modale commence a 500 dollars et n'atteint le plafond de
+         5 000 qu'au dernier palier ;
+         partout ailleurs le site ecrit « jusqu'a 5 000 $ ». L'element
+         le plus visible du site — present sur TOUTES les vues — etait
+         le seul a annoncer le plafond comme un montant plat. -->
     <button class="btn btn--ghost nav-refer" type="button" data-modal-open="modal-refer">
-      Référez, gagnez
+      Référez, gagnez jusqu’à
       <b class="nav-refer-num">5 000 $</b>
     </button>
     <button class="btn btn--primary nav-cta" type="button" data-modal-open="modal-start">
@@ -380,7 +387,7 @@
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
       </button>
       <button class="btn btn--ghost btn--lg" type="button" data-modal-open="modal-estimate">
-        Estimation en 60 secondes
+        Estimation en six questions
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
       </button>
     </div>
@@ -410,26 +417,70 @@
            soit 1,2 s apres, donc une seconde fois et hors sequence.
            Ils gardent `data-section-rule` pour le filet de section
            active, mais le fichier de mouvement les saute. -->
+      <!-- ============================================================
+           A1 · A2 · D8 · E1 — LA FICHE EST MAINTENANT LA MEME LISTE
+           QUE SERVICES, DANS LE MEME ORDRE, AVEC LES MEMES NOMS ET LES
+           MEMES DELAIS. Quatre defauts tombent d'un seul coup, et
+           c'etait le seul correctif qui les tuait tous les quatre.
+
+           A1 · LE DELAI D'UN SITE VITRINE AVAIT QUATRE VALEURS dans le
+           meme document : « 1 semaine » ICI, « 2 a 4 semaines » dans
+           Services, « Deux a quatre semaines » dans la FAQ, « 4–6
+           semaines » dans la maquette Secteurs. Ecart de 1 a 6, et
+           c'est la valeur du hero — la PREMIERE chose que le visiteur
+           lit — qui etait la plus flatteuse et la moins defendable. Un
+           client qui a lu 1 semaine et recoit une proposition a 4 a un
+           grief ECRIT.
+
+           A2 · « Automatisation, logiciels et applications — 3
+           semaines » reunissait sous un seul chiffre deux chantiers
+           dont les delais reels differaient d'un FACTEUR QUATRE :
+           l'automatisation est de 1 a 3 semaines, un logiciel de 1 a 3
+           mois. Services et la FAQ disaient les deux ; le hero les
+           moyennait en un nombre qui n'etait vrai pour aucun des deux.
+           Ils sont donc scindes, comme dans Services.
+
+           D8 · « Estimateur pour vos clients » etait un nom de produit
+           interne : un patron de garage ne devine pas que c'est un
+           outil qu'on met sur SON site pour que SES clients se
+           chiffrent. C'etait la seule des quatre lignes qui demandait
+           un decodage — et elle ne correspondait a aucun chantier.
+
+           E1 · TROIS DECOUPAGES DE LA MEME OFFRE COEXISTAIENT dans une
+           seule page : quatre lignes de fiche, quatre chantiers de
+           Services, sept produits sur une plaque. « Immobilier et
+           visibilite locale » etait un chantier entier absent de la
+           fiche ; « Estimateur » etait dans la fiche et dans aucun
+           chantier. Le visiteur ne pouvait pas rapprocher les listes.
+           Il n'en reste plus que deux, et elles ne comptent pas la
+           meme chose : quatre CHANTIERS, sept PRODUITS.
+           ============================================================ -->
       <ol class="fiche-rows">
         <li style="--e:900"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#services"><em>01</em><span>Site web vitrine</span><b class="num">1 semaine</b></a></li>
+          <a class="he" href="#services"><em>01</em><span>Sites web et boutiques</span><b class="num">2 à 4 semaines</b></a></li>
         <li style="--e:980"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#calculateur"><em>02</em><span>Estimateur pour vos clients</span><b class="num">2 semaines</b></a></li>
+          <a class="he" href="#services"><em>02</em><span>Automatisation et IA</span><b class="num">1 à 3 semaines</b></a></li>
         <li style="--e:1060"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#services"><em>03</em><span>Automatisation, logiciels et applications</span><b class="num">3 semaines</b></a></li>
+          <a class="he" href="#visite"><em>03</em><span>Immobilier et visibilité locale</span><b class="num">1 semaine</b></a></li>
         <li style="--e:1140"><i class="section-rule draw fiche-rule" data-section-rule></i>
-          <a class="he" href="#visite"><em>04</em><span>Visite virtuelle immobilière et vidéo</span><b class="num">1 semaine</b></a></li>
+          <a class="he" href="#services"><em>04</em><span>Logiciels et applications</span><b class="num">1 à 3 mois</b></a></li>
       </ol>
-      <!-- LA MENTION EST OBLIGATOIRE, ET ELLE EST ECRITE POUR NE PAS
-           AFFAIBLIR LA PROMESSE.
-           Un delai de production et une date de demarrage sont deux
-           choses differentes ; les confondre, c'est soit mentir,
-           soit s'excuser. On separe donc les deux : le delai de
-           production est ferme, c'est notre engagement ; la date de
-           demarrage depend de la file, et c'est un fait de bonne
-           foi qui donne au visiteur une raison d'appeler tout de
-           suite plutot qu'un doute a emporter. -->
-      <p class="fiche-foot he" style="--e:1240"><i class="section-rule draw fiche-rule" data-section-rule></i>Délais de production, une fois le projet démarré — la visite virtuelle part après la séance de prise de vue. La date de démarrage, elle, dépend de la liste d’attente : vingt sites commandés la même semaine ne sortent pas la même semaine. On vous la donne au premier appel, avec le prix.</p>
+      <!-- LA MENTION EST OBLIGATOIRE, ET SA LONGUEUR AFFAIBLISSAIT CE
+           QU'ELLE DEVAIT PROTEGER.
+           Version precedente : quatre phrases, dont un exemple — « vingt
+           sites commandes la meme semaine ne sortent pas la meme
+           semaine ». L'exemple etait juste, et c'est precisement le
+           probleme : il occupait quatre lignes sous une fiche de
+           quatre, donc il PESAIT autant que la promesse, et une
+           reserve qui pese autant que la promesse se lit comme une
+           excuse.
+           Ce qui doit rester est une seule chose : le chiffre est une
+           estimation, et il bouge avec la charge. Une ligne, en petit
+           corps, entierement lisible — `.fiche-foot` garde son
+           contraste et sa taille. Rien a expliquer, rien a demontrer.
+           Le detail — l'engagement ferme, la date de demarrage — se
+           dit au premier appel, ou il a sa place. -->
+      <p class="fiche-foot he" style="--e:1240"><i class="section-rule draw fiche-rule" data-section-rule></i>Semaines estimées, variables selon la demande et la file d’attente.</p>
     </aside>
   </section>
 
@@ -628,8 +679,17 @@
           <!-- Les sept sont offerts ET demontres sur ce site :
                Services, Secteurs, Visite 360, Calculateur. La largeur
                de l'offre signale une structure, et elle est vraie. -->
+          <!-- E1 · « METIERS » COMPTAIT SEPT CHOSES pendant que la
+               fiche technique en comptait quatre et Services quatre :
+               trois decoupages de la meme offre sur un seul ecran. La
+               fiche est maintenant alignee sur Services — quatre
+               chantiers, memes noms, memes delais. Cette plaque garde
+               ses sept, mais elle dit ce qu'elle compte : des PRODUITS,
+               pas des chantiers. Deux listes de granularites
+               differentes ne se contredisent pas ; deux listes qui
+               pretendent compter la meme chose, si. -->
           <b class="num">7</b>
-          <span>Métiers : site, boutique, automatisation, logiciel, application, visite 360, vidéo.</span>
+          <span>Produits : site, boutique, automatisation, logiciel, application, visite 360, vidéo.</span>
         </div>
       </article>
       <article class="plaque" style="--ang:2.2deg;--dx:-24px;--dy:18px;--z:0.96;--v:0.8">
@@ -725,7 +785,19 @@
             <div class="svc-texte">
               <p class="label"><em class="num">01</em>Sites web et boutiques</p>
               <h3>Un site qui travaille pendant que vous dormez.</h3>
-              <p class="svc-lead">Vitrine, catalogue, page de vente. Il se charge avant que la page d’à côté ait fini de clignoter, il se trouve sur Google, et vous le modifiez vous-même.</p>
+              <!-- C2 · C3 — DEUX PROMESSES DE RESULTAT REMPLACEES PAR
+                   LE TRAVAIL QUI LES REND PROBABLES.
+                   « Il se charge avant que la page d'a cote ait fini de
+                   clignoter » etait un superlatif compare a un
+                   concurrent anonyme, sans mesure : « la page d'a
+                   cote » n'existe pas, donc rien ne peut la
+                   defendre. « Il se trouve sur Google » promettait un
+                   CLASSEMENT que personne ne controle — ni nous, ni
+                   qui que ce soit. Ce qui reste est vrai et
+                   verifiable : la cause de la vitesse est un choix de
+                   construction, et le referencement est un travail
+                   fait au depart, pas un resultat garanti. -->
+              <p class="svc-lead">Vitrine, catalogue, page de vente. Rien de superflu à charger, c’est ce qui le rend rapide. Il est construit pour être trouvé sur Google, et vous le modifiez vous-même.</p>
               <ul class="svc-specs">
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Design fait pour vous, pas acheté</li>
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement Google monté au départ, jamais vendu en option</li>
@@ -791,10 +863,25 @@
               <h3>Les tâches que personne n’aime faire se font toutes seules.</h3>
               <p class="svc-lead">Vos outils se parlent enfin. La soumission arrive, la fiche client se crée, la facture part, le rappel part. Vous récupérez vos soirées.</p>
               <ul class="svc-specs">
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Diagnostic de vos processus, offert et sans engagement</li>
+                <!-- B8 · LE « DIAGNOSTIC » N'EXISTAIT NULLE PART
+                     AILLEURS DANS LE SITE. Il promettait une
+                     prestation distincte que le Processus ne connait
+                     pas : ses quatre etapes commencent a l'appel. Le
+                     seul rendez-vous offert du site est l'appel de
+                     30 minutes — c'est donc lui qu'on nomme, et la
+                     promesse redevient tenable telle qu'ecrite.
+                     D1 · « CRM » est un sigle anglais de logiciel. Un
+                     garagiste tient ses clients dans un cahier ou
+                     dans un chiffrier ; le mot ne lui dit rien. La
+                     figure d'a cote ecrit deja « Fiche client creee »
+                     deux noeuds plus loin — on aligne sur elle.
+                     D7 · « modele generique » est du vocabulaire
+                     d'ingenieur pour une idee simple : vos mots
+                     contre des mots d'usine. -->
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>L’appel de 30 minutes fait le tour de vos processus, sans engagement</li>
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Factures, rappels et suivis qui partent sans vous</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Vos outils reliés entre eux : CRM, courriels, comptabilité, rapports</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un agent IA entraîné sur vos vraies réponses, pas sur un modèle générique</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Vos outils reliés entre eux : fichier clients, courriels, comptabilité, rapports</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un agent IA qui répond avec vos mots, pas avec ceux d’un robot d’usine</li>
               </ul>
               <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 à 3 semaines</b><span>Le calculateur plus bas vous dit ce que ça vaut chez vous.</span></p>
               <button class="btn btn--primary" type="button" data-modal-open="modal-start">
@@ -810,7 +897,7 @@
                   <div class="ecr-noeud" style="--x:0;--y:0"><b>Formulaire</b><span>site web</span></div>
                   <div class="ecr-noeud" style="--x:0;--y:1"><b>Courriel</b><span>boîte info@</span></div>
                   <div class="ecr-noeud ecr-noeud--ia" style="--x:1;--y:0.5"><b>Tri par IA</b><span>urgence, secteur</span></div>
-                  <div class="ecr-noeud" style="--x:2;--y:0"><b>Fiche CRM</b><span>créée</span></div>
+                  <div class="ecr-noeud" style="--x:2;--y:0"><b>Fiche client</b><span>créée</span></div>
                   <div class="ecr-noeud" style="--x:2;--y:1"><b>Facture</b><span>envoyée</span></div>
                   <!-- Huit fils a angles droits. Un cablage se lit
                        parce que les fils TOUCHENT les boites : quatre
@@ -839,7 +926,16 @@
           <article class="svc-carte" data-svc-carte="Immobilier et visibilité locale">
             <div class="svc-texte">
               <p class="label"><em class="num">03</em>Immobilier et visibilité locale</p>
-              <h3>Quand quelqu’un cherche dans votre coin, c’est vous qui sortez.</h3>
+              <!-- C1 · LA PROMESSE DE POSITION GOOGLE, RETIREE.
+                   « c'est vous qui sortez » etait a l'indicatif
+                   present, en titre de chantier : une promesse de
+                   CLASSEMENT, invérifiable avant l'achat et
+                   demontrable CONTRE nous apres. Personne ne controle
+                   le classement de Google, et surtout pas par
+                   contrat. Ce qui est vrai et se tient : la mise en
+                   place. C'est notre travail, il est livrable, et il
+                   se constate. -->
+              <h3>Quand quelqu’un cherche dans votre coin, tout est en place pour que ce soit vous.</h3>
               <p class="svc-lead">Fiche Google tenue à jour, carte de zone, visites virtuelles, avis gérés. On vise le quartier, pas la province.</p>
               <ul class="svc-specs">
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Fiche Google Business montée et tenue à jour</li>
@@ -848,7 +944,16 @@
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Avis clients gérés, pas subis</li>
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement dans votre quartier, pas juste au Québec</li>
               </ul>
-              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 semaine</b><span>La visite 360 de la section suivante est faite comme ça.</span></p>
+              <!-- V7 · « FAITE COMME CA » LAISSAIT CROIRE A UNE PRISE
+                   DE VUE CHEZ UN CLIENT. La note de la section 05 dit
+                   elle-meme que les panoramas sont des photos CC0 de
+                   Poly Haven : la demo prouve le LECTEUR qu'on
+                   installe, pas la seance de photo. On dit donc
+                   exactement ce que la demo demontre. Le jour ou une
+                   visite tournee chez un vrai client existe, elle
+                   remplace la demo et cette ligne redevient
+                   « faite comme ca ». -->
+              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 semaine</b><span>La section suivante montre le lecteur de visite qu’on installe.</span></p>
               <button class="btn btn--primary" type="button" data-modal-open="modal-start">
                 Démarrer ce chantier
                 <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
@@ -856,17 +961,32 @@
             </div>
 
             <figure class="svc-ecran ecr ecr--carte" aria-hidden="true">
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>Recherche · « déneigement près de moi »</span></div>
+              <!-- B10 · UNE NOTE GOOGLE INVENTEE, ATTRIBUEE A UN CLIENT
+                   PRESENTE AILLEURS COMME REEL.
+                   La figure montrait « MV Deneigement » en position 1
+                   avec « 4,9 · 128 avis ». Les deux chiffres sont
+                   inventes, et la section Projets presente la meme
+                   entreprise comme un client. Contrairement aux
+                   treize maquettes de Secteurs — annoncees « treize
+                   apercus » —, rien n'etiquetait cette figure comme
+                   une demonstration : un visiteur la lisait comme un
+                   releve.
+                   Trois correctifs, pas un : la fiche devient « Votre
+                   entreprise », le mot « Exemple » est ecrit dans le
+                   chrome de la figure, et les deux voisins prennent
+                   des noms manifestement generiques. Aucun nom de
+                   client reel ne sert plus de decor. -->
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · « déneigement près de moi »</span></div>
               <div class="ecr-page ecr-page--deux">
                 <div class="ecr-rang">
-                  <p class="ecr-sh">Résultats locaux</p>
-                  <div class="ecr-rrow"><em>1</em><b>MV Déneigement</b><i class="ecr-etoiles"></i></div>
-                  <div class="ecr-rrow"><em>2</em><b>Déneigement Portneuf</b><i class="ecr-etoiles"></i></div>
-                  <div class="ecr-rrow"><em>3</em><b>Les Frères Nadeau</b><i class="ecr-etoiles"></i></div>
+                  <p class="ecr-sh">Résultats locaux · exemple</p>
+                  <div class="ecr-rrow"><em>1</em><b>Votre entreprise</b><i class="ecr-etoiles"></i></div>
+                  <div class="ecr-rrow"><em>2</em><b>Un concurrent</b><i class="ecr-etoiles"></i></div>
+                  <div class="ecr-rrow"><em>3</em><b>Un autre concurrent</b><i class="ecr-etoiles"></i></div>
                   <div class="ecr-fiche">
-                    <b>MV Déneigement</b>
+                    <b>Votre entreprise</b>
                     <span>Ouvert · Ferme à 21 h</span>
-                    <span class="ecr-avis">4,9 · 128 avis</span>
+                    <span class="ecr-avis">Vos vraies notes ici</span>
                     <span class="ecr-btn ecr-btn--mini">Itinéraire</span>
                   </div>
                 </div>
@@ -940,7 +1060,13 @@
          et coupait les quatre cartes de 17 a 85 px selon la
          largeur. Mesure du 2026-07-26. -->
     <div class="appat svc-appat">
-      <p><b>Vous hésitez entre deux chantiers ?</b> Nos deux documents parcourent les treize domaines qu’on couvre, tâche par tâche, avec le temps et l’argent que chacune coûte. 91 pages, gratuites, sans courriel.</p>
+      <!-- « les treize domaines qu'on couvre » se lisait comme un
+           compte de secteurs SERVIS, et il entrait en conflit avec les
+           douze metiers de la section Secteurs. Les treize domaines
+           sont ceux du DOCUMENT — c'est ce que dit la note du
+           calculateur, « 42 pages, 13 domaines ». On le dit donc du
+           document. -->
+      <p><b>Vous hésitez entre deux chantiers ?</b> Nos deux documents parcourent treize domaines d’activité, tâche par tâche, avec le temps et l’argent que chacune coûte. 91 pages, gratuites, sans courriel.</p>
       <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
         Voir ce qui s’automatise dans votre métier
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
@@ -985,8 +1111,22 @@
       </div>
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
-        <h2>Des sites en ligne, pas des maquettes.</h2>
-        <p>Cinq projets livrés. Chaque cadre contient la vraie page d’accueil, au complet. Elle ne bouge pas toute seule : survolez le cadre, ou cliquez dedans, et vous la parcourez à votre rythme.</p>
+        <!-- A9 · DEUX AFFIRMATIONS RETIREES, ET C'EST L'ARBITRAGE DU
+             PROPRIETAIRE DU 2026-07-29.
+             « Des sites en ligne, pas des maquettes » et « Cinq
+             projets livres » affirmaient une livraison qu'un visiteur
+             ne peut pas verifier : les cinq cadres sont des captures
+             `webp` statiques, aucun n'est LIE a une adresse en ligne.
+             Une affirmation de livraison sans lien vers le livrable
+             est la plus facile a demolir de toutes — il suffit de
+             demander l'adresse.
+             Ce qui reste est entierement vrai et se constate a
+             l'ecran : la page est entiere, elle est a nous, et le
+             visiteur la parcourt. Le jour ou les cinq adresses
+             existent, on met le lien sur chaque cadre et
+             l'affirmation revient — en preuve, cette fois. -->
+        <h2>Cinq pages d’accueil, dessinées et codées ici.</h2>
+        <p>Chaque cadre contient la page entière, du haut jusqu’au pied — pas une vignette. Elle ne bouge pas toute seule : survolez le cadre, ou cliquez dedans, et vous la parcourez à votre rythme.</p>
       </div>
     </div>
 
@@ -1009,7 +1149,7 @@
           <dl class="project-facts" data-souder>
             <div><dt>Secteur</dt><dd>Restauration</dd></div>
             <div><dt>Livrable</dt><dd>Site vitrine et réservation</dd></div>
-            <div><dt>Ce qui a changé</dt><dd>Le menu se met à jour depuis le téléphone du chef, en salle.</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>Le menu se met à jour depuis le téléphone du chef, en salle.</dd></div>
           </dl>
         </div>
       </article>
@@ -1031,7 +1171,7 @@
           <dl class="project-facts" data-souder>
             <div><dt>Secteur</dt><dd>Commerce en ligne</dd></div>
             <div><dt>Livrable</dt><dd>Boutique et recherche par véhicule</dd></div>
-            <div><dt>Ce qui a changé</dt><dd>Plus personne ne cherche une référence de pneu au téléphone.</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>La bonne référence de pneu se trouve par véhicule, sans appeler.</dd></div>
           </dl>
         </div>
       </article>
@@ -1053,7 +1193,7 @@
           <dl class="project-facts" data-souder>
             <div><dt>Secteur</dt><dd>Carrosserie</dd></div>
             <div><dt>Livrable</dt><dd>Vitrine et demande de soumission</dd></div>
-            <div><dt>Ce qui a changé</dt><dd>Le chiffrage se fait sur photo, avant que le véhicule entre.</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>Le chiffrage se fait sur photo, avant que le véhicule entre.</dd></div>
           </dl>
         </div>
       </article>
@@ -1075,7 +1215,7 @@
           <dl class="project-facts" data-souder>
             <div><dt>Secteur</dt><dd>Déneigement</dd></div>
             <div><dt>Livrable</dt><dd>Site de service et inscription</dd></div>
-            <div><dt>Ce qui a changé</dt><dd>Les appels hors territoire ont cessé : la carte répond avant nous.</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>La carte répond avant l’appel : le client voit si son adresse est couverte.</dd></div>
           </dl>
         </div>
       </article>
@@ -1097,7 +1237,7 @@
           <dl class="project-facts" data-souder>
             <div><dt>Secteur</dt><dd>Design intérieur</dd></div>
             <div><dt>Livrable</dt><dd>Portfolio et prise de contact</dd></div>
-            <div><dt>Ce qui a changé</dt><dd>Une nouvelle réalisation se publie en deux minutes, sans nous.</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>Une nouvelle réalisation se publie sans nous appeler.</dd></div>
           </dl>
         </div>
       </article>
@@ -1119,7 +1259,12 @@
     <div class="wrap band-loose">
       <div class="head" style="margin-top: var(--s-6);">
         <h2>Le style change selon le métier.</h2>
-        <p>Treize secteurs, treize aperçus. Chacun montre la fonction qui fait la différence dans ce métier-là. Survolez ou tabulez pour voir, cliquez si c’est le bon.</p>
+        <!-- B2 · LE COMPTE ETAIT FAUX DE UN, ET C'EST LE TREIZIEME QUI
+             LE FAUSSAIT : « Votre industrie ici » est un emplacement
+             VIDE, pas un metier. Douze est le chiffre vrai, et le
+             treizieme se dit mieux comme une invitation que comme une
+             unite de compte. -->
+        <p>Douze métiers, douze aperçus — et le vôtre s’ajoute. Chacun montre la fonction qui fait la différence dans ce métier-là. Survolez ou tabulez pour voir, cliquez si c’est le bon.</p>
       </div>
 
       <div class="sectors-grid">
@@ -1568,10 +1713,20 @@
         <span class="sec-kicker">Votre industrie ici</span>
         <b class="sec-titre sec-titre--xl">On part de la matière, pas d’un gabarit.</b>
         <p>Les grains arrivent dispersés et s’assemblent. Votre site se construit à partir de ce que vous faites vraiment — pas d’un thème acheté et repeint.</p>
+        <!-- B1 · TROIS CORRECTIFS DANS TROIS CELLULES.
+             « 13 secteurs couverts » : le treizieme est un
+             emplacement vide, et « couverts » affirme en plus qu'ils
+             ont ete SERVIS. Douze, et « prepares » — montrer un
+             apercu est vrai, avoir servi le secteur ne l'est pas
+             encore.
+             « 4–6 semaines » etait la QUATRIEME valeur du site pour
+             le delai d'un site : le hero disait 1 semaine, Services
+             et la FAQ disent 2 a 4. On aligne sur la valeur
+             defendable, celle que Services engage. -->
         <div class="sec-mat-data">
-          <div><b>13</b><em>secteurs couverts</em></div>
+          <div><b>12</b><em>métiers préparés</em></div>
           <div><b>0</b><em>gabarit réutilisé</em></div>
-          <div><b>4–6</b><em>semaines</em></div>
+          <div><b>2–4</b><em>semaines</em></div>
         </div>
       </div>
       <!-- Soixante-trois grains, neuf par rangee. Le champ les coupe
@@ -1641,8 +1796,18 @@
         </div>
       </div>
 
+      <!-- D3 · D4 — LA MENTION LEGALE RESTE, LE JARGON PART DEVANT.
+           « 2048 px puis 4096 px » disait la mecanique et jamais le
+           benefice. « Pannellum 2.5.7 (MIT) » et « CC0 » sont
+           necessaires — l'attribution est honnete et on la garde,
+           c'est meme la seule chose du site qui avoue ce qu'elle ne
+           doit pas — mais un numero de version et deux licences
+           logicielles ne sont pas un argument de vente.
+           On separe donc les deux : d'abord ce qu'un patron de garage
+           comprend en trois secondes, ensuite les credits, en note. -->
       <p class="fine">
-        Chaque pièce s’ouvre en 2048 px puis monte en 4096 px toute seule, une fois affichée.
+        La pièce s’ouvre tout de suite, puis se précise d’elle-même. Tout est hébergé chez nous :
+        votre visite ne dépend d’aucun service extérieur.
         Au clavier : flèches pour regarder autour, + et − pour le cadrage, tabulation pour atteindre
         les passages d’une pièce à l’autre. Le plan en bas à gauche fait la même chose à la souris.
       </p>
@@ -1650,8 +1815,9 @@
         Panoramas de démonstration : les trois pièces sont celles d’une même propriété, Lythwood Lodge
         (KwaZulu-Natal), photographiées par Greg Zaal et publiées par
         <a href="https://polyhaven.com/license" rel="noopener noreferrer">Poly Haven en CC0</a> —
-        domaine public, usage commercial libre, aucune attribution exigée. Moteur Pannellum 2.5.7 (MIT),
-        hébergé sur ce serveur. Aucune requête vers un tiers.
+        domaine public, usage commercial libre, aucune attribution exigée. Ce ne sont pas nos prises
+        de vue : la démonstration montre le lecteur, pas la séance de photo.
+        Crédits techniques : moteur Pannellum 2.5.7, licence MIT, servi depuis ce serveur.
       </p>
     </div>
   </div>
@@ -1828,14 +1994,25 @@
                combien ; celui qui veut verifier la methode ouvre. -->
           <details class="roi-details roi-details--panel">
             <summary>Le détail du calcul<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <!-- B6 · DEUX LIGNES RETIREES LE 2026-07-29.
+                 « Erreurs manuelles évitées » et « Revenus gagnés,
+                 réponse plus rapide » pesaient 14 657 sur les
+                 53 751 affichés, soit 27 % du chiffre vedette, et
+                 aucune des deux n'avait de méthode publiée. La
+                 première comptait en outre une seconde fois les mêmes
+                 heures que « Heures facturables rendues » — voir le
+                 commentaire de `js/main.js`. Ce qui reste se défend
+                 ligne à ligne devant un client.
+                 E2 · LA NOTE DONNAIT DEUX TAUX HORAIRES EN MÊME TEMPS
+                 sans dire lequel produisait le montant : 35 dans le
+                 texte, 42 sur le curseur juste au-dessus. Elle dit
+                 maintenant lequel calcule quoi. -->
             <div class="roi-rows">
               <div><span>Jours de travail récupérés par an</span><b id="roiDays">0</b></div>
               <div><span>Ça équivaut à combien d’employés</span><b id="roiFte">0</b></div>
               <div><span>Heures facturables rendues</span><b id="roiDirect">0 $</b></div>
-              <div><span>Erreurs manuelles évitées</span><b id="roiErrors">0 $</b></div>
-              <div><span>Revenus gagnés, réponse plus rapide</span><b id="roiUplift">0 $</b></div>
             </div>
-            <p class="roi-note">Même méthode que notre document sur l’automatisation : une minute par semaine récupérée vaut 28 $ par année, à 35 $ l’heure sur 48 semaines. Le taux de récupération change selon la tâche, de 50 à 90 %, parce qu’aucune ne tombe à zéro. C’est un ordre de grandeur, pas une soumission.</p>
+            <p class="roi-note">Le montant, c’est les heures récupérées multipliées par <b>le taux horaire que vous avez réglé plus haut</b>, sur cinquante-deux semaines. Rien d’autre n’y entre. Le taux de récupération change selon la tâche, de 50 à 90 %, parce qu’aucune ne tombe à zéro — même méthode que notre document sur l’automatisation, où une minute par semaine récupérée vaut 28 $ par année, sur une base de 35 $ l’heure. C’est un ordre de grandeur, pas une soumission.</p>
           </details>
         </div>
       </div>
@@ -1856,7 +2033,16 @@
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
         <h2>À la main contre automatisé.</h2>
-        <p>Minutes par jour, sur des tâches d’administration observées chez des PME. Les vôtres sortiront du diagnostic.</p>
+        <!-- B5 · « OBSERVEES CHEZ DES PME » NE CITAIT RIEN.
+             Observees chez qui, combien, quand ? Le Calculateur juste
+             au-dessus cite sa methode ; le Comparatif affichait des
+             chiffres plus agressifs et aucune source. Or la source
+             existe et elle est publique : le document sur
+             l'automatisation, ou chaque chiffre porte la sienne. On
+             renvoie donc a ce qui existe deja. Et le « diagnostic »
+             est devenu l'appel de 30 minutes, comme partout ailleurs
+             dans le site — voir Services 02. -->
+        <p>Six tâches tirées de notre document sur l’automatisation, où chaque chiffre porte sa source. Les vôtres sortiront de l’appel.</p>
       </div>
 
       <!-- LE SCHEMA. Il manquait, et c'est lui qui porte la section.
@@ -1876,7 +2062,20 @@
            Lisible a l'arret : les barres sont a leur longueur finale
            dans le document. L'animation ne fait que les tracer. -->
       <div class="ecart" data-ecart>
-        <p class="label">Une journée de huit heures, part passée sur l’administration</p>
+        <!-- A8 · LE CADRE ETAIT LA FAUSSETE, PAS LE TABLEAU.
+             « Une journee de huit heures, part passee sur
+             l'administration » affirmait qu'une PME passe 91,7 % de
+             sa journee en administration : il resterait quarante
+             minutes pour faire le metier. Personne ne le croit, et un
+             patron de garage le contredit en une phrase.
+             Le tableau detaille, lui, est arithmetiquement JUSTE :
+             440 min a la main, 104 min automatisees, ecart 336 min =
+             5 h 36, verifie ligne a ligne. Et ces 440 minutes sont
+             celles d'une ENTREPRISE, toutes personnes confondues —
+             jamais celles d'un seul employe. On retire donc le cadre
+             et on garde la mesure : l'axe reste une regle de huit
+             heures, il n'affirme plus une proportion de journee. -->
+        <p class="label">Six tâches d’administration, chronométrées bout à bout, pour toute l’entreprise</p>
 
         <div class="ecart-corps">
           <div class="ecart-rang ecart-rang--axe" aria-hidden="true">
@@ -1914,7 +2113,7 @@
 
         <!-- Le schema est decoratif pour un lecteur d'ecran : la
              meme information lui est donnee en une phrase. -->
-        <p class="sr-only">Sur une journée de huit heures : sept heures vingt à la main, une heure quarante-quatre une fois automatisé. L’écart est de cinq heures trente-six par jour.</p>
+        <p class="sr-only">Ces six tâches d’administration, chronométrées bout à bout pour toute l’entreprise : sept heures vingt à la main, une heure quarante-quatre une fois automatisé. L’écart est de cinq heures trente-six par jour.</p>
       </div>
 
       <!-- LE DETAIL, TACHE PAR TACHE.
@@ -1946,7 +2145,8 @@
           <p class="vs-gain">85 %</p>
         </div>
         <div class="vs-row" data-manual="90" data-auto="27" style="--m:90%;--a:27%">
-          <p class="vs-task">Compte rendu d’appel et mise à jour du CRM</p>
+          <!-- D1, troisieme et derniere occurrence de « CRM ». -->
+          <p class="vs-task">Compte rendu d’appel et mise à jour du fichier clients</p>
           <div class="vs-track">
             <i class="vs-manual" data-bar="manual"></i>
             <i class="vs-auto" data-bar="auto"></i>
@@ -2070,7 +2270,17 @@
                 <p class="vis-l"><em>Clientèle</em><i></i></p>
                 <p class="vis-l"><em>Ce qui bloque</em><i></i></p>
                 <p class="vis-l"><em>Échéance</em><i></i></p>
-                <p class="vis-sortie"><b>Proposition écrite</b><s>12 h</s></p>
+                <!-- C6 · LES 12 H SONT LE DELAI DE REPONSE, PAS CELUI
+                     D'UNE PROPOSITION. Partout ailleurs — hero, Agence,
+                     FAQ, Contact, Parcours, modales — « 12 h » est le
+                     delai de reponse, et le Contact precise que cette
+                     reponse peut etre « des questions s'il en manque,
+                     OU directement une proposition ». La figure
+                     transformait ce conditionnel en engagement ferme
+                     de livrable. Le texte de l'etape, lui, dit
+                     correctement qu'on repart avec une proposition
+                     ecrite : il n'y a rien a lui retirer. -->
+                <p class="vis-sortie"><b>Réponse</b><s>12 h</s></p>
               </div>
             </figure>
           </div>
@@ -2118,11 +2328,22 @@
               <div class="vis-corps">
                 <div class="vis-code">
                   <p><em>01</em><span class="c-k">section</span> <span class="c-n">accueil</span></p>
-                  <p><em>02</em><span class="c-k">grille</span> <span class="c-n">12 colonnes</span></p>
+                  <!-- D5 · « grille 12 colonnes » est une notion de
+                       mise en page INTERNE : elle ne decrit aucun
+                       livrable que le client puisse reconnaitre, alors
+                       que la figure est censee lui montrer ce qu'il
+                       verra de l'avancement. -->
+                  <p><em>02</em><span class="c-k">galerie</span> <span class="c-n">photos intégrées</span></p>
                   <p><em>03</em><span class="c-k">panier</span> <span class="c-a">branché</span></p>
                   <p><em>04</em><span class="c-k">paiement</span> <span class="c-a">testé</span></p>
                 </div>
-                <p class="vis-sortie"><b>Tests passés</b><s>24 / 24</s></p>
+                <!-- D6 · « Tests passés — 24 / 24 » cumulait deux
+                     defauts : le client ne sait pas ce qu'est un test
+                     automatise, ni pourquoi 24, ni ce qui arriverait a
+                     23 ; et le 24 etait invente, donc invérifiable.
+                     Ce qui reste dit la meme chose sans chiffre a
+                     defendre. -->
+                <p class="vis-sortie"><b>Vérifications</b><s>faites</s></p>
               </div>
             </figure>
           </div>
@@ -2395,7 +2616,13 @@
         <div class="faq-head head">
           <p class="head-index">9 questions</p>
           <h2>Questions fréquentes.</h2>
-          <p>Les neuf qu’on nous pose le plus, avec la vraie réponse.</p>
+          <!-- B3 · « LES NEUF QU'ON NOUS POSE LE PLUS » affirmait un
+               historique de questions recues qu'un visiteur ne peut pas
+               verifier, et qu'une maison jeune ne peut pas demontrer si
+               on le lui demande. Les neuf reponses, elles, sont bonnes
+               et ne perdent rien : c'est l'affirmation de VOLUME qui
+               disparait, pas le contenu. -->
+          <p>Neuf questions, et la vraie réponse à chacune.</p>
           <div class="faq-aside">
             <p class="label">Votre question n’y est pas</p>
             <a class="faq-mail" href="mailto:dorvalwilliam11@gmail.com?subject=Une%20question">dorvalwilliam11@gmail.com</a>
@@ -2410,7 +2637,7 @@
         <div class="faq-list">
           <details class="faq-item">
             <summary>Combien coûte un site web ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-            <p>Ça dépend de l’envergure, et on ne publie pas de grille : aucun projet ne ressemble au précédent, et une grille publiée finit toujours par mentir dans un sens ou dans l’autre. Ce qu’on peut faire tout de suite, sans appel : l’estimation en 60 secondes vous donne votre fourchette à l’écran. Le chiffre ferme est dit au premier appel, et c’est celui de la facture.</p>
+            <p>Ça dépend de l’envergure, et on ne publie pas de grille : aucun projet ne ressemble au précédent, et une grille publiée finit toujours par mentir dans un sens ou dans l’autre. Ce qu’on peut faire tout de suite, sans appel : l’estimation en six questions vous donne votre fourchette à l’écran. Le chiffre ferme est dit au premier appel, et c’est celui de la facture.</p>
           </details>
           <details class="faq-item">
             <summary>L’automatisation, ça veut dire quoi concrètement ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
@@ -2448,7 +2675,19 @@
           </details>
           <details class="faq-item">
             <summary>Quelles technologies utilisez-vous ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-            <p>React, Next.js, Node.js, Python. Rien d’exotique : un autre développeur peut reprendre le code demain matin sans vous appeler.</p>
+            <!-- D2 · V4 — L'ORDRE ETAIT INVERSE, ET LA LISTE ETAIT
+                 INCOMPLETE.
+                 La vraie reponse — un autre developpeur reprend le code
+                 demain matin — arrivait apres quatre noms de
+                 technologies et se noyait dedans. Pire : ce site-ci est
+                 en HTML, CSS et JavaScript sans cadriciel ni etape de
+                 compilation, donc la vitrine ne demontrait AUCUNE des
+                 quatre. Un prospect technique, ou un concurrent, le
+                 voit en trente secondes.
+                 On met donc le benefice devant, et on nomme la
+                 fourchette reelle — ce qui rend la reponse verifiable
+                 sur ce site meme au lieu de contredite par lui. -->
+            <p>Des technologies courantes, choisies pour qu’un autre développeur reprenne le code demain matin sans vous appeler. Selon le projet : HTML, CSS et JavaScript quand le site doit être le plus rapide possible — c’est le cas de celui que vous lisez ; React, Next.js, Node.js ou Python quand il faut une application. Rien d’exotique, rien qui vous enferme.</p>
           </details>
           <details class="faq-item">
             <summary>Et si le résultat ne me plaît pas ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
@@ -2505,7 +2744,16 @@
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
         <h2>Cinq façons de nous joindre.</h2>
-        <p>La première est la bonne dans neuf cas sur dix. Les quatre autres sont là pour le dixième.</p>
+        <!-- B4 · E3 — UNE STATISTIQUE INVENTEE SUR NOTRE PROPRE
+             TRAFIC, ET UN COMPTE QUI NE FERMAIT PLUS.
+             « la bonne dans neuf cas sur dix » : personne ne peut la
+             produire si un client la conteste, et elle n'ajoutait
+             rien — le classement visuel dit deja laquelle est
+             recommandee. En la retirant, « le dixieme » disparait
+             aussi, et c'etait lui qui refermait le compte de cinq. La
+             sixieme voie — l'adresse courriel, en bas de section —
+             est donc nommee ici : cinq cartes, plus l'adresse. -->
+        <p>La première est celle qu’on recommande. Les quatre autres sont là pour les cas particuliers — et l’adresse courriel est en bas de page si vous préférez écrire.</p>
       </div>
 
       <div class="bento">
@@ -2569,7 +2817,14 @@
             <span class="num">01</span>
             <strong>On le lit</strong>
             <span>Une vraie personne, pas un accusé de réception automatique.</span>
-            <b class="suite-delai">le jour même</b>
+            <!-- A6 · « LE JOUR MEME » EST INTENABLE ET SE CONTREDIT A
+                 TROIS LIGNES D'ECART. Un message depose a 23 h ou le
+                 samedi ne peut pas etre lu le jour meme, et l'etape 02
+                 juste dessous annonce « sous 12 h ouvrables ». Le
+                 delai affiche partout ailleurs dans le site est
+                 « 12 h ouvrables » : on aligne, et la promesse
+                 redevient tenable un dimanche soir. -->
+            <b class="suite-delai">le prochain jour ouvrable</b>
           </li>
           <li>
             <span class="num">02</span>
@@ -2776,27 +3031,35 @@
 
       <p class="cadeau-lead">Ce que vous pouvez arr&ecirc;ter de faire &agrave; la main, ce que &ccedil;a vous co&ucirc;te aujourd&rsquo;hui, et par o&ugrave; commencer.</p>
 
-      <form class="cadeau-form" id="cadeauForm" novalidate>
-        <div class="field">
-          <label class="sr-only" for="cadeauEmail">Votre courriel</label>
-          <input id="cadeauEmail" name="email" type="email" inputmode="email" spellcheck="false"
-                 autocomplete="email" placeholder="prenom@entreprise.ca" required />
-          <span class="field-error">Entrez un courriel valide.</span>
-        </div>
-        <button class="btn btn--primary btn--lg cadeau-go" type="submit">
-          <span data-label>Recevoir mes deux guides</span>
-          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-        </button>
-        <p class="form-status" role="status" aria-live="polite"></p>
-      </form>
+      <!-- ============================================================
+           A3 · C4 · C5 — LE COURRIEL N'EST PLUS UN PEAGE, ET L'ORDRE
+           DES DEUX BLOCS A ETE INVERSE.
 
-      <p class="cadeau-fin">Gratuit &middot; Aucun envoi non sollicit&eacute; &middot; D&eacute;sabonnement en un clic</p>
+           CE QUI ETAIT FAUX. Le pied de page, Services et le
+           Calculateur offrent LES DEUX MEMES documents « gratuits et
+           sans courriel » — et les liens du pied pointent bien
+           directement sur les PDF. Ce popup, lui, exigeait une adresse
+           (`required`) pour la meme chose, derriere le libelle
+           « Recevoir mes deux guides ». C'est exactement la faute que
+           le proprietaire venait de retirer du hero — « 60 s · Sans
+           donner votre courriel » —, deplacee ici. Un visiteur qui lit
+           le popup puis le pied trouve deux reponses differentes a la
+           meme question, et c'est la contradiction la plus facile a
+           opposer parce qu'elle tient sur un seul ecran.
 
-      <!-- LA REMISE. Cachee tant que rien n'est envoye ; devoilee a
-           la seconde ou l'adresse est donnee, y compris si l'envoi
-           echoue. Le visiteur repart toujours avec ce qu'on lui a
-           promis. -->
-      <div class="cadeau-recu" hidden>
+           CE QUI EST FAIT. Les deux guides sont TELECHARGEABLES TOUT DE
+           SUITE, sans rien donner. La remise n'est donc plus cachee :
+           elle vient AVANT le formulaire, parce que l'ordre visuel EST
+           la promesse. Le courriel devient une commodite — retrouver
+           les guides plus tard — et le bouton d'envoi est secondaire.
+
+           C5 · « Desabonnement en un clic » promettait un mecanisme qui
+           doit exister le jour ou quelqu'un l'utilise, et il
+           contredisait la ligne « jamais de liste d'envoi non
+           demandee » de la section Contact : un desabonnement suppose
+           un abonnement. Il n'y a pas de liste d'envoi. On le dit.
+           ============================================================ -->
+      <div class="cadeau-recu">
         <a class="btn btn--primary" href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">
           Guide 1 &middot; Automatisation
           <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
@@ -2806,6 +3069,22 @@
           <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
         </a>
       </div>
+
+      <form class="cadeau-form" id="cadeauForm" novalidate>
+        <div class="field">
+          <label for="cadeauEmail">Ou recevez-les par courriel, pour les retrouver plus tard</label>
+          <input id="cadeauEmail" name="email" type="email" inputmode="email" spellcheck="false"
+                 autocomplete="email" placeholder="prenom@entreprise.ca" />
+          <span class="field-error">Entrez un courriel valide.</span>
+        </div>
+        <button class="btn btn--ghost cadeau-go" type="submit">
+          <span data-label>Me les envoyer par courriel</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="cadeau-fin">Gratuit &middot; Sans compte &middot; Votre adresse sert &agrave; envoyer les deux guides, et &agrave; rien d&rsquo;autre</p>
 
       <button class="cadeau-non link-btn" type="button" data-cadeau-non>Non merci</button>
     </div>
@@ -2835,7 +3114,7 @@
       </button>
       <button type="button" data-modal-switch="modal-estimate">
         <span class="o-num">02</span>
-        <span><strong>Estimation en 60 secondes</strong><small>Six questions, un prix à l’écran.</small></span>
+        <span><strong>Estimation en six questions</strong><small>Votre fourchette à l’écran, sans appel.</small></span>
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
       </button>
       <button type="button" data-modal-switch="modal-project">
@@ -3286,7 +3565,19 @@
 
       <details class="faq-item">
         <summary>Voir la grille de commissions<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-        <p>Commission versée uniquement lorsque le contrat est signé, selon sa valeur : 500 $ pour un contrat de 1 000 $ à 10 000 $, 700 $ de 10 000 $ à 30 000 $, 1 500 $ de 30 000 $ à 50 000 $, 3 000 $ de 50 000 $ à 80 000 $, 4 000 $ de 80 000 $ à 100 000 $, 5 000 $ à partir de 100 000 $.</p>
+        <!-- B9 · CINQ BORNES AMBIGUES DANS LE SEUL ENGAGEMENT
+             FINANCIER CHIFFRE DU SITE ENVERS UN TIERS.
+             L'ancienne redaction disait « 500 de 1 000 a 10 000,
+             700 de 10 000 a 30 000 », en dollars : a un contrat de
+             EXACTEMENT 10 000, la commission valait 500 ou 700 sans
+             qu'on puisse trancher. Idem a 30 000, 50 000, 80 000 et
+             100 000. Une ambiguite dans un engagement ecrit se regle
+             en faveur de celui a qui on l'a promis — l'ecrire
+             explicitement ne coute donc rien et supprime la dispute.
+             Les bornes sont maintenant fermees d'un seul cote, et le
+             plancher — rien n'etait prevu sous 1 000 — est nomme au
+             lieu d'etre un silence. -->
+        <p>Commission versée uniquement lorsque le contrat est signé, selon sa valeur : de 1 000 $ à 9 999 $ → 500 $ · de 10 000 $ à 29 999 $ → 700 $ · de 30 000 $ à 49 999 $ → 1 500 $ · de 50 000 $ à 79 999 $ → 3 000 $ · de 80 000 $ à 99 999 $ → 4 000 $ · 100 000 $ et plus → 5 000 $. Sous 1 000 $, il n’y a pas de commission.</p>
       </details>
 
       <button class="btn btn--primary" type="submit" data-submit>
@@ -3303,7 +3594,7 @@
   <div class="modal-scrim" data-modal-close></div>
   <div class="modal-panel modal-panel--wide">
     <div class="modal-head">
-      <h3 id="estimateTitle">Estimation en 60 secondes</h3>
+      <h3 id="estimateTitle">Estimation en six questions</h3>
       <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
         <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
       </button>
@@ -3401,6 +3692,14 @@
           <span id="priceLow">0</span> $ à <span id="priceHigh">0</span> <span id="priceSuite">$</span>
         </p>
         <p class="roi-note">Ordre de grandeur, calculé sur vos réponses. C’est une fourchette publiée, pas un devis : le prix ferme est dit au premier appel, et c’est celui de la facture.</p>
+        <!-- L'ETAT DE L'ENVOI VIT ICI, ET C'EST UN DEFAUT CORRIGE.
+             La fourchette s'affiche a l'etape 8 ; le `.form-status` du
+             formulaire, lui, vit a l'etape 7, qui devient `hidden` a ce
+             moment-la. Un message d'echec pose la-bas — et le bouton de
+             repli avec lui — etait donc invisible exactement quand il
+             servait. C'est le meme genre de piege qu'un test qui
+             verrouille son defaut : tout etait juste, sauf l'endroit. -->
+        <p class="form-status" id="estimateStatus" role="status" aria-live="polite"></p>
         <button class="btn btn--primary" type="button" data-modal-switch="modal-booking" style="justify-self:start">
           Réserver un appel
           <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>

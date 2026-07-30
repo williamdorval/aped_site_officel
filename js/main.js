@@ -106,6 +106,17 @@
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || doc).querySelectorAll(sel)); };
 
   var fmtMoney = function (n) { return Math.round(n).toLocaleString("fr-CA") + " $"; };
+  /* B7 · LA FAUSSE PRECISION INVITE EXACTEMENT LA CONTESTATION
+     QU'ELLE VEUT EVITER. La section dit elle-meme, sous le detail,
+     que c'est « un ordre de grandeur, pas une soumission » — et le
+     rail affichait « 53 751 », au dollar pres, avant meme que le
+     visiteur ait touche un curseur. Un chiffre arrondi a la centaine
+     et precede de « environ » dit la meme chose et ne promet plus
+     rien qu'on ne puisse tenir. Il stabilise en outre l'odometre :
+     le ressort ne fait plus defiler des unites illisibles. */
+  var fmtImpact = function (n) {
+    return "≈ " + (Math.round(n / 100) * 100).toLocaleString("fr-CA") + " $";
+  };
   var fmtHours = function (n) { return (Math.round(n * 10) / 10).toLocaleString("fr-CA") + " h"; };
 
   /* ============================================================
@@ -875,11 +886,17 @@
       var bouton = $(".cadeau-go", form);
       var recu = $(".cadeau-recu", boite);
 
+      /* A3 · LA REMISE N'EST PLUS CACHEE AU DEPART.
+         Elle exigeait une adresse pour deverrouiller ce que le pied de
+         page donne directement — la contradiction « sans courriel »
+         que l'audit du 2026-07-29 a relevee. Les deux liens sont donc
+         visibles des l'ouverture. `hidden = false` reste : il ne coute
+         rien et il protege le jour ou quelque chose d'autre les
+         cacherait. Le focus, lui, garde son sens : apres un envoi, ce
+         qu'on vient de promettre est ce que le clavier atteint. */
       function remettre() {
         if (!recu) return;
         recu.hidden = false;
-        /* Le premier lien recoit le focus : ce qu'on vient de
-           promettre est ce que le clavier atteint ensuite. */
         var a = $("a", recu);
         if (a) a.focus();
       }
@@ -887,9 +904,26 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         say(etat, "");
-        if (!validate(form)) { say(etat, "Entrez un courriel valide.", "err"); return; }
-        if (bouton) setLoading(bouton, true, "Envoi en cours…");
+        /* LE CHAMP N'EST PLUS `required`, DONC `validate()` NE PEUT
+           PLUS LE JUGER : sa premiere regle est « pas requis, donc
+           valide », ce qui laisserait passer une adresse vide ou
+           malformee jusqu'au service d'envoi. On valide donc ici, a la
+           main, et seulement parce que le visiteur a demande un envoi
+           par courriel — s'il voulait les guides, il les a deja
+           au-dessus. */
         var adresse = champ.value.trim();
+        var champBoite = champ.closest(".field");
+        var valide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adresse);
+        if (!valide) {
+          if (champBoite) markField(champBoite, false);
+          say(etat, adresse
+            ? "Cette adresse ne semble pas valide. Les deux guides restent téléchargeables juste au-dessus."
+            : "Entrez une adresse pour recevoir la copie. Les deux guides sont déjà téléchargeables juste au-dessus.", "err");
+          champ.focus();
+          return;
+        }
+        if (champBoite) markField(champBoite, true);
+        if (bouton) setLoading(bouton, true, "Envoi en cours…");
 
         /* ------------------------------------------------------------
            CE QUI PART VERS LE VISITEUR, ET CE QUI N'EST PAS POSSIBLE.
@@ -1548,6 +1582,119 @@
     status.textContent = message;
   }
 
+  /* ============================================================
+     LE REPLI QUI LIVRE VRAIMENT — corrige le risque de veracite le
+     plus grave du site, releve le 2026-07-29.
+
+     L'ETAT DES FAITS, MESURE ET NON SUPPOSE. Le point d'entree
+     `https://formsubmit.co/ajax/…` n'a JAMAIS ete active. Verifie ce
+     soir, deux fois, avec et sans en-tete `Referer` :
+
+       HTTP 200
+       {"success":"false","message":"This form needs Activation.
+        We've sent you an email containing an 'Activate Form' link."}
+
+     Le code sait deja lire ce corps et lever — c'est le correctif du
+     2026-07-26, et il tient. Mais savoir qu'un envoi a echoue ne le
+     fait pas arriver. Aujourd'hui, DONC : aucun des six formulaires
+     du site ne livre, et toutes les promesses de delai du site
+     — « 12 h » a sept endroits, « le prochain jour ouvrable », « on
+     confirme la plage par courriel » — reposent sur un message que
+     personne ne recoit. Une promesse de reponse adossee a un canal
+     mort est une faussete, meme si chaque mot est sincere.
+
+     POURQUOI CE REPLI ET PAS AUTRE CHOSE.
+     · Activer FormSubmit demande de cliquer un lien dans la boite du
+       proprietaire. C'est un geste d'une seconde, et je ne peux pas
+       le faire a sa place. Tant qu'il n'est pas fait, il fallait un
+       chemin qui ne depende de PERSONNE.
+     · `mailto:` est le seul canal d'envoi qui ne soit pas une requete
+       vers un tiers. Il tient donc la plaque « 0 · Mouchard, traceur,
+       service exterieur », que `formsubmit.co` entame deja au moment
+       de l'envoi — voir DECISIONS-NUIT.md.
+     · Le repli n'est PAS le chemin par defaut : ouvrir le logiciel de
+       courriel du visiteur est une friction reelle, et beaucoup de
+       postes de bureau n'en ont aucun de configure. L'envoi
+       automatique reste donc l'essai numero un, et il redeviendra
+       silencieux a la seconde ou le lien d'activation sera clique.
+
+     CE QUI EST GARANTI PAR CONSTRUCTION : rien de ce que le visiteur
+     a rempli n'est perdu. Le corps du message est construit a partir
+     du MEME objet que celui qui partait vers le service.
+     ============================================================ */
+
+  /* Les navigateurs et les clients de courriel se coupent quelque
+     part entre 2 000 et 8 000 caracteres selon la plateforme, et le
+     plus bas des deux gagne. On borne donc en dessous du plus bas,
+     et on le DIT dans le message plutot que de tronquer en silence :
+     un texte coupe sans avertissement est pire qu'un texte court. */
+  var REPLI_MAX = 1600;
+
+  function corpsCourriel(data, avecFichiers) {
+    var lignes = [];
+    Object.keys(data).forEach(function (cle) {
+      /* Les cles de service du formulaire — `_subject`, `_template`,
+         `_captcha`, `_autoresponse` — n'ont aucun sens pour un
+         humain qui relit son propre message. */
+      if (cle.charAt(0) === "_") return;
+      var v = data[cle];
+      if (v === null || v === undefined || String(v).trim() === "") return;
+      lignes.push(cle.replace(/_/g, " ") + " : " + String(v));
+    });
+    var corps = lignes.join("\n");
+    if (corps.length > REPLI_MAX) {
+      corps = corps.slice(0, REPLI_MAX) + "\n\n[La suite a été coupée par la longueur maximale d’un courriel préparé. Ajoutez ce qui manque avant d’envoyer.]";
+    }
+    if (avecFichiers) {
+      corps += "\n\nVos fichiers ne peuvent pas voyager par ce chemin : joignez-les au message avant de l’envoyer.";
+    }
+    return corps;
+  }
+
+  function lienRepli(kind, data, avecFichiers) {
+    return "mailto:" + CONTACT_EMAIL +
+      "?subject=" + encodeURIComponent(SUBJECTS[kind] || "Message - site APED") +
+      "&body=" + encodeURIComponent(corpsCourriel(data, avecFichiers));
+  }
+
+  /* Pose le repli JUSTE APRES le message d'etat, dans le meme parent,
+     et lui donne le focus : celui qui vient de voir un echec doit
+     atteindre la sortie au clavier suivant, pas la chercher.
+     Idempotent — un second echec remplace le premier bouton au lieu
+     d'en empiler deux. */
+  function poserRepli(status, kind, data, avecFichiers) {
+    if (!status || !status.parentNode) return;
+    var hote = status.parentNode;
+    var ancien = hote.querySelector("[data-repli]");
+    if (ancien) hote.removeChild(ancien);
+
+    var boite = doc.createElement("p");
+    boite.className = "form-repli";
+    boite.setAttribute("data-repli", "");
+
+    var lien = doc.createElement("a");
+    lien.className = "btn btn--primary";
+    lien.href = lienRepli(kind, data, avecFichiers);
+    lien.textContent = "Ouvrir mon courriel, message déjà écrit";
+
+    var note = doc.createElement("small");
+    note.textContent = "Tout ce que vous avez rempli est déjà dans le message. Il ne reste qu’à l’envoyer.";
+
+    boite.appendChild(lien);
+    boite.appendChild(note);
+    hote.insertBefore(boite, status.nextSibling);
+    lien.focus();
+  }
+
+  /* Un nouvel essai efface le repli du precedent : laisser un bouton
+     « l'envoi a echoue » sous un formulaire qui vient de reussir
+     serait exactement le genre de contradiction qu'on corrige. */
+  function retirerRepli(status) {
+    if (!status || !status.parentNode) return;
+    var ancien = status.parentNode.querySelector("[data-repli]");
+    if (ancien) ancien.parentNode.removeChild(ancien);
+  }
+
   /* Formulaires simples : urgence et reference */
   $$('form[data-form="urgent"], form[data-form="refer"]').forEach(function (form) {
     var kind = form.getAttribute("data-form");
@@ -1559,14 +1706,17 @@
       if (!validate(form)) { say(status, "Vérifiez les champs signalés puis renvoyez.", "err"); return; }
       setLoading(btn, true);
       say(status, "");
-      sendJson(kind, serialize(form)).then(function () {
+      retirerRepli(status);
+      var contenu = serialize(form);
+      sendJson(kind, contenu).then(function () {
         setLoading(btn, false);
         say(status, "Reçu. On vous répond très vite.", "ok");
         form.reset();
         window.setTimeout(function () { closeModal(); say(status, ""); }, 2200);
       }).catch(function () {
         setLoading(btn, false);
-        say(status, "L’envoi a échoué. Réessayez, ou écrivez directement à " + CONTACT_EMAIL + ".", "err");
+        say(status, "L’envoi automatique n’a pas passé. Votre message n’est pas perdu — envoyez-le d’ici :", "err");
+        poserRepli(status, kind, contenu);
       });
     });
   });
@@ -1725,6 +1875,7 @@
       var status = $(".form-status", bookingForm);
       setLoading(btn, true, "Réservation en cours…");
       say(status, "");
+      retirerRepli(status);
       var data = serialize(bookingForm);
       data.plage_demandee = selectedSlotLabel;
       sendJson("booking", data).then(function () {
@@ -1732,7 +1883,8 @@
         goBStep(3);
       }).catch(function () {
         setLoading(btn, false);
-        say(status, "L’envoi a échoué. Réessayez, ou écrivez à " + CONTACT_EMAIL + ".", "err");
+        say(status, "L’envoi automatique n’a pas passé. Votre demande de plage n’est pas perdue — envoyez-la d’ici :", "err");
+        poserRepli(status, "booking", data);
       });
     });
   }
@@ -1878,6 +2030,7 @@
       var status = $(".form-status", projectWizard);
       setLoading(projectNext, true);
       say(status, "");
+      retirerRepli(status);
 
       var fd = new FormData();
       var data = serialize(projectWizard);
@@ -1892,7 +2045,8 @@
         // fichiers que pas de demande du tout.
         sendJson("project", data).then(done).catch(function () {
           setLoading(projectNext, false);
-          say(status, "L’envoi a échoué. Réessayez, ou écrivez à " + CONTACT_EMAIL + ".", "err");
+          say(status, "L’envoi automatique n’a pas passé. Vos sept étapes ne sont pas perdues — envoyez-les d’ici :", "err");
+          poserRepli(status, "project", data, pickedFiles.length > 0);
         });
       });
     };
@@ -2007,9 +2161,23 @@
           }
         };
 
+        /* L'ETAT DE SORTIE EST CELUI DE L'ETAPE 8, PAS CELUI DU
+           FORMULAIRE. L'etape 7 devient `hidden` des que la fourchette
+           parait : un message pose sur son `.form-status` serait juste
+           et invisible. */
+        var sortie = $("#estimateStatus") || status;
+        retirerRepli(sortie);
+        say(sortie, "");
         sendJson("estimate", payload).then(reveal).catch(function () {
-          say(status, "Envoi impossible pour le moment, mais voici votre estimation.", "err");
+          /* L'ORDRE COMPTE. On revele d'abord la fourchette — c'est ce
+             que le visiteur est venu chercher, et elle est calculee
+             dans le navigateur, donc elle ne depend d'aucun envoi —
+             puis on offre le repli pour que NOUS aussi recevions la
+             demande. La promesse au visiteur est tenue dans les deux
+             cas ; le repli sert le rappel qu'on lui a promis. */
           reveal();
+          say(sortie, "L’envoi automatique n’a pas passé. Envoyez-nous cette estimation d’ici pour qu’on vous rappelle.", "err");
+          poserRepli(sortie, "estimate", payload);
         });
       });
     }
@@ -2094,7 +2262,7 @@
     var lastRoi = {};
 
     var impactSpring = new Spring(function (v) {
-      var text = fmtMoney(v);
+      var text = fmtImpact(v);
       if (impactEl) impactEl.textContent = text;
       if (railValue) railValue.textContent = text;
       if (navValue) navValue.textContent = text;
@@ -2127,13 +2295,38 @@
       if (inAdmin && !depuisMaitre) inAdmin.value = String(Math.min(Number(inAdmin.max), Math.round(totalHours)));
       if (outAdmin) outAdmin.textContent = fmtHours(totalHours);
 
+      /* ----------------------------------------------------------
+         B6 · DEUX POSTES RETIRES DU TOTAL LE 2026-07-29, ET LE
+         DEUXIEME ETAIT UNE FAUTE D'ARITHMETIQUE, PAS SEULEMENT UN
+         DEFAUT DE METHODE.
+
+         Le total valait `direct + errors + uplift`, ou :
+           errors = saved * 60 * 28 * 0.35 * util
+           uplift = rev * 12 * 0.018 * util
+
+         · `uplift` prenait 1,8 % du chiffre d'affaires annuel. Ni le
+           1,8 % ni le `util` n'ont de source, nulle part, et la note
+           de methode affichee sous le detail n'en parlait pas. Un
+           client qui demande « d'ou sortent ces 8 377 dollars ? »
+           n'avait aucune reponse dans la page.
+         · `errors` est plus grave : il monetise UNE SECONDE FOIS les
+           memes heures. `direct` les vend deja au taux du visiteur ;
+           `errors` reprenait les memes `saved` heures, les
+           reconvertissait en minutes hebdomadaires, les valorisait au
+           taux du DOCUMENT (28 la minute annuelle, en dollars) puis
+           en gardait 35 %. Ce n'est pas un second benefice, c'est le
+           premier compte deux fois.
+
+         Les deux pesaient 14 657 sur les 53 751 affiches par defaut,
+         soit 27 % du chiffre vedette. Le total tombe donc a 39 094 —
+         et ces 39 094 se defendent ligne a ligne : des
+         heures mesurees, au taux que le visiteur a lui-meme regle,
+         sur cinquante-deux semaines. C'est le standard que les deux
+         PDF s'imposent deja : « ecrit au plus bas, jamais au plus
+         flatteur ».
+         ---------------------------------------------------------- */
       var direct = saved * rate * 52;
-      var util = Math.min(1, saved / 30);
-      // Notre methode : la valeur vient des heures rendues, pas d'une
-      // constante d'erreurs reprise ailleurs. 28 $ par minute hebdo.
-      var errors = saved * 60 * 28 * 0.35 * util;
-      var uplift = rev * 12 * 0.018 * util;
-      var impact = direct + errors + uplift;
+      var impact = direct;
       var remaining = Math.max(0, totalHours - saved);
 
       impactSpring.set(impact, immediate);
@@ -2142,8 +2335,6 @@
       $("#roiDays").textContent = Math.round((saved * 52) / 8).toLocaleString("fr-CA");
       $("#roiFte").textContent = (Math.round((saved / 40) * 10) / 10).toLocaleString("fr-CA");
       $("#roiDirect").textContent = fmtMoney(direct);
-      $("#roiErrors").textContent = fmtMoney(errors);
-      $("#roiUplift").textContent = fmtMoney(uplift);
 
       $("#barManual").style.width = totalHours > 0 ? "100%" : "0%";
       $("#barAuto").style.width = totalHours > 0 ? (remaining / totalHours) * 100 + "%" : "0%";
@@ -2173,10 +2364,8 @@
         taux_horaire: rate + " $",
         revenus_mensuels: rev.toLocaleString("fr-CA") + " $",
         heures_recuperees_semaine: fmtHours(saved),
-        impact_annuel_total: fmtMoney(impact),
-        economies_directes: fmtMoney(direct),
-        erreurs_evitees: fmtMoney(errors),
-        revenus_acceleres: fmtMoney(uplift)
+        impact_annuel_total: fmtImpact(impact),
+        economies_directes: fmtMoney(direct)
       };
     }
 
@@ -2239,20 +2428,28 @@
       }
       var email = $("#roiEmail").value.trim();
       say(status, "Envoi en cours…");
-      sendJson("roi", Object.assign({ email: email }, lastRoi, {
-        _autoresponse: "Voici votre calcul d'economies APED Agence. Impact annuel total estime : " + lastRoi.impact_annuel_total +
+      retirerRepli(status);
+      /* L'ACCUSE NE CITE PLUS QUE CE QUI EXISTE ENCORE. Il enumerait
+         « erreurs evitees » et « revenus acceleres » : les deux postes
+         ont ete retires du calcul le 2026-07-29 — voir le commentaire
+         de `roiUpdate` — et les deux cles auraient rendu `undefined`
+         dans le corps du courriel envoye au visiteur. */
+      var chargeRoi = Object.assign({ email: email }, lastRoi, {
+        _autoresponse: "Voici votre calcul d'economies APED Agence. Impact annuel estime : " + lastRoi.impact_annuel_total +
           ". Heures recuperees par semaine : " + lastRoi.heures_recuperees_semaine +
-          ". Details : economies directes " + lastRoi.economies_directes +
-          ", erreurs evitees " + lastRoi.erreurs_evitees +
-          ", revenus acceleres " + lastRoi.revenus_acceleres +
-          ". Envie de le confirmer? Reservez un appel gratuit sur notre site. - L'equipe APED"
-      })).then(function () {
+          ". Le montant, c'est ces heures multipliees par le taux horaire que vous avez regle, sur 52 semaines : " +
+          lastRoi.economies_directes +
+          ". C'est un ordre de grandeur, pas une soumission." +
+          " Envie de le confirmer? Reservez un appel gratuit sur notre site. - L'equipe APED"
+      });
+      sendJson("roi", chargeRoi).then(function () {
         release();
         say(status, "Envoyé. Vérifiez votre boîte de réception.", "ok");
         roiMailForm.reset();
       }).catch(function () {
         release();
-        say(status, "L’envoi a échoué. Écrivez-nous à " + CONTACT_EMAIL + ".", "err");
+        say(status, "L’envoi automatique n’a pas passé. Votre calcul n’est pas perdu — envoyez-le d’ici :", "err");
+        poserRepli(status, "roi", chargeRoi);
       });
     });
 

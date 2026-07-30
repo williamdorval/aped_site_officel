@@ -382,6 +382,34 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
 }
 .form-status.is-ok { color: var(--ok); }
 .form-status.is-err { color: var(--danger); }
+/* ------------------------------------------------------------
+   LE REPLI D'ENVOI. Pose par `js/main.js` quand l'envoi automatique
+   echoue : un bouton qui ouvre le logiciel de courriel du visiteur
+   avec le message DEJA ECRIT. Voir le long commentaire de
+   `poserRepli` — c'est ce qui fait que la chaine des formulaires
+   livre meme si le service d'envoi ne repond pas.
+
+   Il est SOUS le message d'erreur et dans le meme parent, donc il
+   herite de la mise en grille du formulaire. Le filet du haut le
+   separe du champ : c'est une sortie de secours, pas une ligne de
+   plus dans le formulaire. Aucun rayon, aucune ombre, aucun
+   degrade — rien a inventer, la regle du site suffit.
+   ------------------------------------------------------------ */
+.form-repli {
+  display: grid;
+  gap: var(--s-2);
+  justify-items: start;
+  margin-top: var(--s-3);
+  padding-top: var(--s-3);
+  border-top: var(--rule-w) solid var(--rule-strong);
+}
+.form-repli small {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 46ch;
+}
 /* Choix binaire et cases : la cible cliquable est l'etiquette entiere. */
 .choices { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 .choices button,
@@ -1048,6 +1076,55 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
    ligne sur ecran etroit. */
 .plaque-corps .num--mot { font-size: clamp(1.75rem, 3.4vw, 2.5rem); letter-spacing: -0.02em; }
 .plaque-corps span { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); line-height: 1.5; }
+@keyframes plaque-vie {
+  0%   { translate: 0 0; rotate: 0deg; }
+  25%  { translate: calc(var(--vie-x) * -1) var(--vie-y); rotate: var(--vie-a); }
+  50%  { translate: var(--vie-x) calc(var(--vie-y) * -1); rotate: calc(var(--vie-a) * -1); }
+  75%  { translate: var(--vie-x) calc(var(--vie-y) * 0.55); rotate: calc(var(--vie-a) * 0.45); }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+.plaques {
+  /* Les trois amplitudes suivent les MEMES coefficients que la pose
+     de repos : sur un ecran etroit la composition se resserre, et la
+     boucle avec elle. Elle n'y tourne pas — palier 1 — mais si un
+     jour elle y tournait, elle serait deja a l'echelle. */
+  --vie-x: calc(6px * var(--ecart));
+  --vie-y: calc(12px * var(--ecart));
+  --vie-a: calc(1.15deg * var(--incl));
+}
+.plaques.est-vivante .plaque-corps {
+  /* LA DUREE VIENT DE `--v`, la vitesse propre deja ecrite dans le
+     document : de 7 s pour la plus rapide a 10,6 s pour la plus
+     lente. C'est ce DECALAGE entre voisines qui se lit, plus encore
+     que la course de chacune — le meme raisonnement que pour la
+     derive au defilement. Courbe sinusoidale symetrique : chaque
+     segment part et arrive a l'arret, donc ca respire au lieu de
+     glisser. */
+  animation: plaque-vie calc(7s + (1 - var(--v, 1)) * 8s) cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+/* LES PHASES SONT DESYNCHRONISEES A LA MAIN, ET C'EST OBLIGATOIRE.
+   Deux plaques partagent `--v: 1` — la premiere et la cinquieme :
+   meme duree, donc meme phase, donc deux plaques qui bougent comme
+   une seule piece. Un retard NEGATIF demarre l'animation deja
+   engagee, sans rien faire attendre. Les valeurs ne sont pas
+   regulieres : une progression arithmetique se rattrape a l'oeil. */
+.plaques.est-vivante > :nth-child(1) .plaque-corps { animation-delay: -0.4s; }
+.plaques.est-vivante > :nth-child(2) .plaque-corps { animation-delay: -3.1s; }
+.plaques.est-vivante > :nth-child(3) .plaque-corps { animation-delay: -6.4s; }
+.plaques.est-vivante > :nth-child(4) .plaque-corps { animation-delay: -1.7s; }
+.plaques.est-vivante > :nth-child(5) .plaque-corps { animation-delay: -4.9s; }
+.plaques.est-vivante > :nth-child(6) .plaque-corps { animation-delay: -8.2s; }
+.plaques.est-vivante > :nth-child(7) .plaque-corps { animation-delay: -2.3s; }
+.plaques.est-vivante > :nth-child(8) .plaque-corps { animation-delay: -5.6s; }
+/* LES TROIS VERROUS. Voir le commentaire ci-dessus pour `!important`. */
+.plaques.est-vivante:has(.plaque:hover) .plaque-corps,
+.plaques.est-vivante:focus-within .plaque-corps,
+.plaques.est-vivante[data-repos] .plaque-corps {
+  animation-play-state: paused !important;
+}
+@media (prefers-reduced-motion: reduce) {
+.plaques .plaque-corps { animation: none !important; }
+}
 /* ============================================================
    14. SERVICES - rail horizontal
    Les quatre feuilles collantes plein ecran sont remplacees par un
@@ -1378,6 +1455,28 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
 .ecr-fiche b { font-size: 1.1em; }
 .ecr-fiche span { font-family: var(--font-data); font-size: 0.8em; color: var(--ink-muted); }
 .ecr-fiche .ecr-avis { color: var(--accent-text); }
+/* ------------------------------------------------------------
+   1,34:1 — LE PIRE CONTRASTE A L'ARRET DE TOUT LE SITE, ET IL
+   N'ETAIT PAS DANS L'AUDIT.
+   `.ecr-btn` declare bien `color: var(--accent-ink)` sur son fond
+   minium. Mais dans cette fiche-ci le bouton est un `<span>`, et
+   `.ecr-fiche span` — meme specificite, declaree APRES — lui remettait
+   `--ink-muted`. Du gris de texte secondaire sur du minium : mesure
+   du 2026-07-29 par `tools/contraste-arret.mjs`, 1,34:1.
+
+   Le defaut est ANTERIEUR au chantier de ce soir — A/B en worktree
+   contre le commit precedent : les deux versions rendent exactement
+   1,34:1. Il est corrige ici quand meme, pour deux raisons : la
+   figure vient d'etre reecrite pour le constat B10, donc elle est
+   sous la main ; et l'accessibilite n'est pas negociable, meme
+   quand le defaut n'est pas le notre et meme sur une figure
+   `aria-hidden` — un lecteur d'ecran l'ignore, un oeil humain
+   non.
+
+   On restaure la regle du bouton au lieu d'inventer une couleur :
+   c'est `--accent-ink` qui est faite pour aller sur `--accent`.
+   ------------------------------------------------------------ */
+.ecr-fiche span.ecr-btn { color: var(--accent-ink); }
 .ecr-plan { position: relative; background: var(--surface-1); border: var(--rule-w) solid var(--rule); overflow: hidden; min-height: 8em; }
 .ecr-rue { position: absolute; background: var(--rule); }
 .ecr-rue--h1 { left: 0; right: 0; top: 22%; height: 2px; }
@@ -2540,6 +2639,36 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
 .cell h3 { font-size: var(--fs-4); }
 .cell p { color: var(--ink-muted); font-size: var(--fs-7); }
 .cell .num { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); letter-spacing: var(--tracking-label); }
+/* ------------------------------------------------------------
+   LE SURVOL FAISAIT BAISSER LE CONTRASTE, ET C'EST L'INVERSE DE CE
+   QU'UN SURVOL DOIT FAIRE.
+   `--ink-muted` sur `--surface-0` vaut 5,18:1 : conforme. Sur
+   `--surface-1` — le « ciment enfonce » du survol — il tombe a
+   4,41:1, sous le seuil AA de 4,5. Mesure du 2026-07-29 par
+   `tools/contraste-arret.mjs`, sur les cinq cartes de contact : le
+   texte secondaire de la carte qu'on POINTE est le seul du site a
+   passer sous le seuil, et c'est precisement celui qu'on est en
+   train de lire.
+
+   Defaut ANTERIEUR a ce chantier — A/B en worktree contre le commit
+   precedent : les deux versions rendent 4,41:1, au centieme. Corrige
+   ici parce que l'accessibilite n'est pas negociable, et parce que
+   4,41 contre 4,5 est le genre d'ecart qui ne se voit qu'a la
+   mesure et ne se corrige donc jamais tout seul.
+
+   DEUX CORRECTIFS ETAIENT POSSIBLES, ET LE CHOIX EST ARBITRE. On
+   pouvait eclaircir le fond de survol vers `--surface-2` — mais le
+   survol irait alors vers le CLAIR, c'est-a-dire « souleve », alors
+   que toute la langue du site dit « enfonce ». On monte donc l'encre
+   au lieu de bouger la matiere : la carte pointee se lit a fond,
+   `--ink` sur `--surface-1` valant 11,8:1 en clair et 12,8:1 en
+   sombre. Le survol change deja la couleur de sa fleche dans la
+   regle voisine — il n'y a pas de precedent a inventer.
+   ------------------------------------------------------------ */
+.cell:hover p,
+.cell:hover .num,
+.cell:focus-visible p,
+.cell:focus-visible .num { color: var(--ink); }
 .cell-go {
   position: absolute;
   right: var(--s-5);
@@ -2601,6 +2730,23 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
 .cell--lead h3 { color: var(--accent-ink); font-size: var(--fs-3); }
 .cell--lead .num,
 .cell--lead p { color: var(--accent-ink); }
+/* LA CARTE PRINCIPALE EST SUR MINIUM, DONC ELLE NE SUIT PAS LA REGLE
+   DE SURVOL DES QUATRE AUTRES — ET C'EST UN CORRECTIF DE CORRECTIF.
+   La regle `.cell:hover p, .cell:hover .num { color: var(--ink) }`
+   ajoutee juste au-dessus vaut (0,2,1) de specificite ; les regles de
+   cette carte-ci valent (0,1,1). L'encre sombre gagnait donc AUSSI
+   ici, sur un fond minium fonce : 3,02:1, mesure a la passe suivante
+   de `contraste-arret`. Un correctif de contraste qui en casse un
+   autre est exactement ce que la densification de l'echantillonnage
+   sert a attraper — la premiere passe, a 41 positions, ne voyait ni
+   l'un ni l'autre.
+   Sur minium, l'encre juste est `--accent-ink`, qui est faite pour
+   ca. On egalise donc la specificite au lieu de poser un
+   `!important`. */
+.cell--lead:hover p,
+.cell--lead:hover .num,
+.cell--lead:focus-visible p,
+.cell--lead:focus-visible .num { color: var(--accent-ink); }
 .cell--lead:hover { background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
 .cell--lead:hover .cell-go { transform: translate(6px, -6px); color: var(--accent-ink); }
 /* Le filet de survol serait invisible sur l'accent : il passe en
@@ -3130,8 +3276,18 @@ html.js .derail-row,
        le constat qui a ouvert ce chantier. Une plaque de 300 px
        tournee de 4,2° gagne environ 5 px de largeur apparente ;
        48 + 5 + une marge de securite tombent a 60. Verifie par
-       `tools/deborde.mjs` a neuf largeurs, pas estime. */
-    padding-inline: 60px;
+       `tools/deborde.mjs` a neuf largeurs, pas estime.
+
+       DE 60 A 76 PX LE 2026-07-29, ET C'EST LA BOUCLE DE VIE QUI LE
+       DEMANDE. Elle ajoute +-6 px de course laterale permanente et
+       +-1,15° de battement, soit environ 7 px de plus au pire moment
+       du cycle. Les 60 px n'avaient qu'environ 7 px de marge : la
+       boucle les mangeait exactement. On elargit donc le rembourrage
+       au lieu de rogner la boucle — c'est la bande qui se plie a la
+       signature, jamais l'inverse. Verifie aux phases EXTREMES du
+       cycle, pas a un instant quelconque : une seule mesure prise au
+       hasard dans une boucle de sept secondes ne prouve rien. */
+    padding-inline: 76px;
     --incl: 1;
     --ecart: 1;
   }

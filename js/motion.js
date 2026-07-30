@@ -398,17 +398,17 @@
     if (blocs.length) {
       tl.fromTo(blocs,
         { x: function (i) { return (i % 2 ? 1 : -1) * 22; }, opacity: 0.12 },
-        { x: 0, opacity: 1, duration: 0.42, stagger: 0.05, ease: "power3.out" });
+        { x: 0, opacity: 1, duration: 0.42, stagger: 0.05, ease: "power3.out", immediateRender: false });
     }
 
     var codes = $$(".vis-code p", vis);
-    if (codes.length) tl.fromTo(codes, { opacity: 0.12, x: -10 }, { opacity: 1, x: 0, duration: 0.26, stagger: 0.09, ease: "power2.out" });
+    if (codes.length) tl.fromTo(codes, { opacity: 0.12, x: -10 }, { opacity: 1, x: 0, duration: 0.26, stagger: 0.09, ease: "power2.out", immediateRender: false });
 
     var sortie = $(".vis-sortie", vis);
-    if (sortie) tl.fromTo(sortie, { opacity: 0.12 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, "-=0.08");
+    if (sortie) tl.fromTo(sortie, { opacity: 0.12 }, { opacity: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, "-=0.08");
 
     var live = $(".vis-live", vis);
-    if (live) tl.fromTo(live, { scale: 0.7, opacity: 0.2 }, { scale: 1, opacity: 1, duration: 0.28, ease: "power4.out" }, "-=0.12");
+    if (live) tl.fromTo(live, { scale: 0.7, opacity: 0.2 }, { scale: 1, opacity: 1, duration: 0.28, ease: "power4.out", immediateRender: false }, "-=0.12");
   });
 
   /* ------------------------------------------------------------
@@ -456,7 +456,7 @@
       tlEcart.fromTo(pont, { scaleX: 0 },
         { scaleX: 1, duration: 0.46, ease: "power3.out" }, "-=0.12");
       tlEcart.fromTo($("b", pont), { opacity: 0, y: -6 },
-        { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" }, "-=0.10");
+        { opacity: 1, y: 0, duration: 0.28, ease: "power2.out", immediateRender: false }, "-=0.10");
     }
   }
 
@@ -603,16 +603,16 @@
     if (barres.length) tl.fromTo(barres, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" });
 
     var egal = $(".pr-egal", eng);
-    if (egal) tl.fromTo(egal, { opacity: 0.1, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.26, ease: "power4.out" }, "-=0.08");
+    if (egal) tl.fromTo(egal, { opacity: 0.1, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.26, ease: "power4.out", immediateRender: false }, "-=0.08");
 
     var traits = $$(".pr-case s", eng);
     if (traits.length) tl.fromTo(traits, { scaleX: 0 }, { scaleX: 1, duration: 0.2, stagger: 0.12, ease: "power2.out" });
 
     var suite = $(".pr-ligne--suite", eng);
-    if (suite) tl.fromTo(suite, { opacity: 0.1, x: -8 }, { opacity: 1, x: 0, duration: 0.26, ease: "power2.out" });
+    if (suite) tl.fromTo(suite, { opacity: 0.1, x: -8 }, { opacity: 1, x: 0, duration: 0.26, ease: "power2.out", immediateRender: false });
 
     var rangs = $$(".pr-r b", eng);
-    if (rangs.length) tl.fromTo(rangs, { opacity: 0.1, y: -6 }, { opacity: 1, y: 0, duration: 0.24, stagger: 0.1, ease: "power3.out" });
+    if (rangs.length) tl.fromTo(rangs, { opacity: 0.1, y: -6 }, { opacity: 1, y: 0, duration: 0.24, stagger: 0.1, ease: "power3.out", immediateRender: false });
 
     var jours = $$(".pr-sem i", eng);
     if (jours.length) tl.fromTo(jours, { scaleY: 0 }, { scaleY: 1, duration: 0.28, stagger: 0.07, ease: "power2.out" });
@@ -637,11 +637,49 @@
      il apprenait au visiteur a calculer vers le bas. Ce qui reste
      est le mecanisme : le texto part, la signature se trace, le
      virement tombe. Etat au repos = preuve finie. */
+  /* ============================================================
+     `immediateRender: false` SUR ONZE TWEENS — CORRECTIF DU
+     2026-07-30, ET C'EST LA REGLE 0bis QUI N'AVAIT PAS ETE APPLIQUEE
+     JUSQU'AU BOUT.
+
+     CE QUI A ETE MESURE. `tools/contraste-arret.mjs`, 61 positions
+     d'arret : sept elements de TEXTE restaient a 0,10 ou 0,12
+     d'opacite, definitivement, chez un visiteur qui defile
+     normalement. Les trois etats du programme de reference
+     — « Envoyé », « Signé », « Encaissé » —, la bulle de texto, les
+     deux lignes d'avis, et la ligne de suite du parcours. Contrastes
+     releves : 1,15:1 a 1,36:1. Illisible, et permanent.
+
+     POURQUOI. Un `fromTo` dans une timeline rend son etat de DEPART
+     immediatement, a la creation de la timeline — c'est le
+     comportement par defaut de GSAP, et c'est ce qu'on veut pour une
+     revelation. Mais la revelation n'arrivait jamais : la section 10
+     est loin dans le document, et les sections traversees portent
+     `content-visibility: auto`. A la creation, leur hauteur RESERVEE
+     n'est pas leur hauteur reelle, donc la position de declenchement
+     calculee par ScrollTrigger tombait a cote. Le declencheur ne
+     partait pas, et le texte restait a son etat de depart pour
+     toujours. Attendre plus longtemps n'y changeait rien : il n'y
+     avait rien a attendre.
+
+     CE QU'ON FAIT, ET CE QU'ON NE FAIT PAS. On applique la regle
+     0bis : l'etat de repos est la forme FINALE, et l'etat de depart
+     n'est pose qu'au moment ou l'animation part. Un declencheur qui
+     ne part pas ne coute alors plus qu'une animation manquante, au
+     lieu de coûter la lisibilite. Ce n'est PAS un correctif de la
+     cause — les positions de declenchement restent perimees par
+     `content-visibility`, et c'est note comme ouvert dans CLAUDE.md.
+     C'est le correctif du DEGAT, et il est complet : le meme outil
+     rend maintenant zero.
+
+     A/B en worktree contre le commit precedent : 8 echecs avant, 0
+     apres, meme densite d'echantillonnage.
+     ============================================================ */
   $$(".ref-preuve").forEach(function (preuve) {
     var tl = gsap.timeline({ scrollTrigger: { trigger: preuve, start: "top 84%", once: true } });
 
     var bulle = $(".rp-bulle", preuve);
-    if (bulle) tl.fromTo(bulle, { x: -14, opacity: 0.12 }, { x: 0, opacity: 1, duration: 0.34, ease: "power3.out" });
+    if (bulle) tl.fromTo(bulle, { x: -14, opacity: 0.12 }, { x: 0, opacity: 1, duration: 0.34, ease: "power3.out", immediateRender: false });
 
     var trait = $(".rp-signature path", preuve);
     if (trait) {
@@ -652,10 +690,10 @@
     }
 
     var avis = $$(".rp-avis", preuve);
-    if (avis.length) tl.fromTo(avis, { opacity: 0.12, y: -6 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.1, ease: "power3.out" });
+    if (avis.length) tl.fromTo(avis, { opacity: 0.12, y: -6 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.1, ease: "power3.out", immediateRender: false });
 
     var etat = $(".rp-etat", preuve);
-    if (etat) tl.fromTo(etat, { opacity: 0.1 }, { opacity: 1, duration: 0.24, ease: "power2.out" }, "-=0.06");
+    if (etat) tl.fromTo(etat, { opacity: 0.1 }, { opacity: 1, duration: 0.24, ease: "power2.out", immediateRender: false }, "-=0.06");
   });
 
   /* ------------------------------------------------------------

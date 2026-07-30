@@ -11,15 +11,65 @@
 | **`SECTIONS.md`** | les 13 sections : ancre, plages de lignes HTML, blocs CSS, fonctions JS, composants | « modifie la section Y » |
 | **`ANIMATIONS.md`** | les 196 animations : fichier, ligne, déclencheur, durée, **verrou**, verbe, niveau | avant de toucher à un mouvement |
 | **`RECHERCHE-ACCUEIL.md`** | les deux références mesurées dans un vrai navigateur + l'état de l'art, en chiffres | avant de décider d'une amplitude ou d'une durée |
+| **`AUDIT-VERACITE.md`** | les 36 affirmations fausses, invérifiables ou en jargon relevées le 2026-07-29, **et le traitement de chacune** | avant d'écrire une phrase que le site affiche |
+| **`DECISIONS-NUIT.md`** | les 31 arbitrages pris sans le propriétaire dans la nuit du 29 au 30, avec ce qui a été écarté et pourquoi | avant de renverser un choix de contenu |
 
 Historique : `PHASE-6.md` à `PHASE-10.md`, `REFONTE-CHECKLIST.md`.
 
 ---
 
-## 0 · LA RÈGLE QUI GOUVERNE TOUT LE RESTE
+## 0 · LES DEUX RÈGLES QUI GOUVERNENT TOUT LE RESTE
 
-> **VISIBLE, SINON ÇA NE COMPTE PAS.**
+### 0.A · VRAI, SINON ÇA NE S'ÉCRIT PAS
+
+> **Aucune phrase de ce site ne s'affiche si elle ne survit pas à un
+> client qui la conteste au téléphone.**
 >
+> Ce n'est pas une règle de ton, c'est une règle de recevabilité. Une
+> affirmation qui ne passe pas les quatre questions ci-dessous ne se
+> reformule pas : elle ne s'écrit pas.
+
+**Les quatre questions, dans cet ordre. La première qui échoue arrête.**
+
+| | Question | Ce qu'elle élimine |
+|---|---|---|
+| **Q1** | **Est-ce vrai ?** Défendable, pièce en main, si un client appelle. | « 4,9 · 128 avis » inventés · « Tests passés 24 / 24 » · « la bonne dans neuf cas sur dix » |
+| **Q2** | **Le visiteur peut-il le vérifier ?** Sinon, qu'est-ce qui le soutient **ailleurs dans le document** ? | « Cinq projets livrés » sans un seul lien · « les neuf qu'on nous pose le plus » |
+| **Q3** | **Est-ce que je le contrôle ?** Une promesse de résultat que personne ne maîtrise se retourne contre nous après l'achat. | « c'est vous qui sortez » sur Google · « il se trouve sur Google » |
+| **Q4** | **Un patron de garage le comprend-il en trois secondes ?** | « CRM » · « 2048 px puis 4096 px » · « grille 12 colonnes » · « modèle générique » |
+
+**Et la règle de propagation, qui est celle qui a coûté le plus cher :**
+
+> **UNE CORRECTION DE VÉRACITÉ SE FAIT PARTOUT, EN UNE FOIS.**
+>
+> Une affirmation vit rarement à un seul endroit. Le 2026-07-29,
+> « abonnement obligatoire » a été corrigé dans la FAQ et laissé intact
+> dans Services : deux sections du même document se contredisaient, et
+> c'est la contradiction la plus facile à opposer parce qu'elle tient
+> sur un écran. Le lendemain, « sans courriel » disait la vérité à
+> trois endroits et son contraire dans le popup.
+>
+> Avant de fermer une correction : `grep` l'énoncé dans **tout**
+> `index.html`, les modales, le `<template>` des maquettes, les
+> `documents/src/*.html`, `404.html`, et le texte **rendu**. Le
+> périmètre d'un chantier ne justifie jamais de laisser une fausseté
+> ailleurs.
+
+**Une fausseté dans la FAQ est plus grave que dans le hero.** Celui qui
+ouvre la FAQ est un prospect sérieux, et c'est celui-là qui la reproche
+au téléphone. `node tools/accueil-check.mjs contenu` lit `textContent`
+et non `innerText` pour cette raison précise : les réponses de la FAQ
+vivent dans des `<details>` repliés, qu'`innerText` ne voit pas.
+
+**Ce que cette règle a coûté avant d'être écrite :** 36 constats dans
+`AUDIT-VERACITE.md`, dont neuf faussetés démontrables et six
+engagements que personne ne pouvait tenir tels qu'écrits — sur un site
+par ailleurs soigné, dont les deux PDF s'imposent déjà ce standard mot
+pour mot (« écrit au plus bas, jamais au plus flatteur »). La page
+d'accueil ne l'atteignait pas. Le trou n'était pas dans le code.
+
+### 0.B · VISIBLE, SINON ÇA NE COMPTE PAS
+
 > Une animation qu'on ne remarque pas n'existe pas. Une mesure qui dit
 > « 520 ms » alors qu'on ne voit rien est une mesure inutile.
 
@@ -36,6 +86,17 @@ sur la section 01, un rapport affirmant que tout était fait, et trois
 animations dont **zéro** était visible. Les durées étaient justes. Les
 mesures étaient justes. Personne n'avait mesuré si on **voyait** quelque
 chose.
+
+**Corollaire ajouté le 2026-07-30 : ne jamais conclure sur la pire
+image.** `contraste-survol.mjs` déclarait un échec sur un seul relevé à
+1,00:1. Mesure de contrôle, horloge étirée ×20 sur 160 échantillons :
+**zéro** image sous le seuil. Une image à l'instant où l'arête coupe une
+lettre en deux n'est pas une fenêtre illisible, c'est le plancher de
+perception. On mesure donc le **nombre** d'images fautives et leur
+**durée cumulée** — qui s'additionnent au lieu de se remplacer — et le
+seuil de verdict est une image à 60 Hz, soit 16,7 ms. La référence
+primée qu'on compare tombe, elle, à 1,03:1 pendant **117 ms**. La
+différence n'est pas de degré.
 
 ---
 
@@ -287,7 +348,7 @@ Deux règles, **les deux éliminatoires** :
 | 4 | **1** | Interlocuteur, du premier appel à la mise en ligne. | Agence, `agc-faits` |
 | 5 | **Tout** | Le code, l'hébergement, l'adresse web. Un autre peut reprendre demain. | Agence 03, FAQ, Parcours |
 | 6 | **0** | Mouchard, traceur, service extérieur. Votre site ne dépend de personne. | aucune adresse externe dans le document |
-| 7 | **7** | Métiers : site, boutique, automatisation, logiciel, application, visite 360, vidéo. | Services, Secteurs, Visite 360, Calculateur |
+| 7 | **7** | **Produits** : site, boutique, automatisation, logiciel, application, visite 360, vidéo. | Services, Secteurs, Visite 360, Calculateur |
 | 8 | **Québec** | Conçu, codé et livré ici, du premier trait à la mise en ligne. | — |
 
 **Quatre affirmations retirées le 2026-07-29 parce qu'elles étaient fausses
@@ -322,11 +383,97 @@ la mention du codeur unique dit la taille et pas le standard.**
 > repliés, qu'`innerText` ne voit pas — c'est-à-dire exactement l'endroit où
 > une fausseté fait le plus de dégâts.
 
+> **« Métiers » est devenu « Produits » le 2026-07-30, et ce n'est pas
+> un détail de vocabulaire.** Trois découpages de la même offre
+> coexistaient sur un seul écran : quatre lignes de fiche technique,
+> quatre chantiers de Services, sept « métiers » sur cette plaque. Le
+> visiteur ne pouvait rapprocher aucune des trois listes. La fiche est
+> maintenant **la même liste que Services** — mêmes noms, même ordre,
+> mêmes délais — et cette plaque dit ce qu'elle compte : des produits,
+> pas des chantiers. Deux listes de granularités différentes ne se
+> contredisent pas ; deux listes qui prétendent compter la même chose,
+> si. Détail : `AUDIT-VERACITE.md` E1, `DECISIONS-NUIT.md` D3.
+
+### 3.2bis La boucle de vie des plaques — V2 · S'ALIGNER, arrêtée d'un V4 · CRAN
+
+> **Un `scrub` n'a pas d'état de repos, mais il n'a pas non plus de
+> mouvement propre : il n'avance que pendant qu'on défile.** Dès qu'on
+> s'arrête pour lire, les huit plaques se figent. Personne ne l'avait
+> vu, parce que toutes les mesures de dérive se prennent **en
+> défilant** — l'instrument ne pouvait pas rendre le défaut qu'il
+> fallait trouver.
+
+Ajoutée le 2026-07-30. `css/app.css § 13bis` porte tout le mouvement ;
+`js/langue.js` ne pose qu'une classe et un attribut.
+
+- **Où elle vit.** Sur `.plaque-corps`, via les propriétés
+  **individuelles** `translate` et `rotate` — jamais via `transform`,
+  qui porte déjà la pose de repos sur cette même boîte. La chaîne CSS
+  applique `translate`, puis `rotate`, puis `scale`, puis `transform` :
+  la boucle se **compose** par-dessus la pose au lieu de l'écraser. Et
+  GSAP ne touche jamais cette boîte — il anime la coque `.plaque` —
+  donc son habitude d'écrire `rotate: none` ne peut pas l'atteindre.
+  **Deux boîtes suffisent** ; une troisième aurait été la solution
+  naïve.
+- **Les verbes.** La dérive est **V2 · S'ALIGNER** : chaque cycle
+  revient exactement à la pose écrite dans le document, chaque segment
+  porte une courbe sinusoïdale sans dépassement. L'arrêt et la reprise
+  sont **V4 · CRAN** : `animation-play-state: paused` gèle la valeur
+  courante sans **aucune** interpolation. Il n'existe aucun état entre
+  « ça bouge » et « c'est arrêté ».
+- **Trois verrous.** Le survol d'**une** plaque arrête les **huit** —
+  on survole pour lire, et une plaque immobile à côté de sept qui
+  bougent est plus dure à lire qu'une bande entière arrêtée.
+  `[data-repos]` quand la bande sort de l'écran
+  (`IntersectionObserver`, marge de 200 px) et quand l'onglet est caché
+  (`visibilitychange`). Les deux dernières causes partagent **un masque
+  de bits**, pas deux drapeaux : le retour d'un onglet ne doit pas
+  relancer une bande hors écran.
+- **`!important` sur les règles de pause, et ce n'est pas une
+  paresse.** `animation` est un raccourci : il remet
+  `animation-play-state` à `running`. Ce piège a déjà rendu
+  inopérantes la pause du rideau **et** celle de la composition du
+  hero sans que rien ne le signale.
+- **Elle tombe au palier 1**, avec la dérive. Une animation permanente
+  est par définition le poste le plus cher du site : elle ne s'arrête
+  jamais. Sur téléphone, les plaques restent inclinées, décalées et
+  lisibles.
+
+**Amplitudes mesurées** (`node tools/plaques-vie.mjs`, dix relevés) :
+dérive verticale **8 à 24,5 px**, horizontale **4 à 13,4 px**,
+battement **1,07° à 2,25°**, périodes **7 à 10,6 s** dérivées de `--v`,
+huit retards négatifs distincts pour désynchroniser les phases — deux
+plaques partagent `--v: 1` et bougeraient sinon comme une seule pièce.
+Écarts de pixels entre deux captures consécutives : **11 à 14,7 %**.
+Le rembourrage de la bande à 64em est passé de 60 à **76 px** pour
+absorber la nouvelle course latérale.
+
+> **La mesure qui décide est LOCALE, pas absolue.** Une position
+> absolue mélange trois choses : la boucle, la dérive au défilement, et
+> la recomposition du document par `content-visibility`. Le relevé
+> « hors écran » rendait 2 078 px d'amplitude sur une bande à l'arrêt.
+> `corps − coque` ne contient que ce que la boucle a écrit.
+>
+> **Et `getComputedStyle(el).transform` NE CONTIENT PAS la boucle** :
+> la pose de repos vit dans `transform`, la boucle dans `translate` et
+> `rotate`. Une sonde qui ne lit que la première rend `dangle 0°` sur
+> les huit plaques et fait chercher un défaut qui n'existe pas.
+
 ### 3.3 Les deux CTA — V4 · CRAN
 
-`--cran: 520ms` sur les deux : à 230 ms, « Estimation en 60 secondes »
-faisait 10,5 ms par lettre, **plus court qu'une image à 60 Hz**, donc un
-effet invisible.
+`--cran: 520ms` sur les deux : à 230 ms, le libellé du secondaire faisait
+10,5 ms par lettre, **plus court qu'une image à 60 Hz**, donc un effet
+invisible. Mesuré au 2026-07-30 : 21,7 ms par lettre, contraste minimal
+**4,70:1** pendant la transition, aller et retour.
+
+> **Le libellé est « Estimation en six questions », plus « en 60
+> secondes ».** Le parcours compte six questions **plus** une étape où
+> le nom et le courriel sont obligatoires ; soixante secondes se
+> mesurent au chronomètre, et le site chiffre déjà son autre formulaire
+> « 7 étapes · 4 minutes ». « Six questions » est vrai, se vérifie en
+> comptant, et c'est ce que dit déjà la carte Contact. Corrigé aux
+> **cinq** endroits, y compris la balise `<meta name="description">` —
+> voir la règle de propagation en § 0.A.
 
 La hiérarchie est portée par la **matière** : le primaire (minium) garde
 l'inversion complète vers l'encre, le secondaire reçoit **l'arête minium**.
@@ -363,7 +510,7 @@ besoin de JS.
 | Palier | Déclencheur | Ce qui tombe |
 |---|---|---|
 | **0 · plein** | rien | — |
-| **1 · allégé** | **statique**, connu à l'init : largeur < 64em **OU** `pointer: coarse` **OU** `hardwareConcurrency` ≤ 4 **OU** `deviceMemory` ≤ 4 | 1. parallaxe souris de la vitrine · 2. vitesses différenciées des fiches · **2bis. la dérive des sept plaques — elles restent inclinées, décalées et lisibles** · 3. étiquette de la pointe · 4. flèche qui sort du cadre · **5. découpage par mot des chapôs — le poste le plus cher** · 6. balayage des 25 sous-titres · **6bis. la trame des frontières → l'arête de règle d'avant** |
+| **1 · allégé** | **statique**, connu à l'init : largeur < 64em **OU** `pointer: coarse` **OU** `hardwareConcurrency` ≤ 4 **OU** `deviceMemory` ≤ 4 | 1. parallaxe souris de la vitrine · 2. vitesses différenciées des fiches · **2bis. la dérive des huit plaques — elles restent inclinées, décalées et lisibles** · **2ter. la BOUCLE DE VIE des huit plaques : une animation permanente est le poste le plus cher du site, elle ne s'arrête jamais** · 3. étiquette de la pointe · 4. flèche qui sort du cadre · **5. découpage par mot des chapôs — le poste le plus cher à l'image** · 6. balayage des 25 sous-titres · **6bis. la trame des frontières → l'arête de règle d'avant** |
 | **2 · minimal** | **mesuré** : fréquence d'images médiane **< 50 i/s** sur 90 images d'un défilement réel | 7. cascade par lettre → `--cran: 0ms` · 8. recomposition des secteurs → changement net · 9. soudure des filets · 10. FLIP de la FAQ → saut natif · 11. dégagement des modales · **12. G4 et G3 — la frontière reste lisible : filet, numéro, nom** |
 | **3 · aucun** | `prefers-reduced-motion` | `langue.js` et `motion.js` ne s'exécutent pas |
 
@@ -492,6 +639,8 @@ du JavaScript** — et un état de survol est nécessaire à l'usage.
 | Outil | Ce qu'il rend |
 |---|---|
 | `accueil-check.mjs [mode]` | l'accueil en huit relevés : `contenu` · `entree` (les onze pas, **avec le % réellement visible**) · `boutons` · `plaques` · `derive` · `tenue` (i/s, LCP, CLS) · `cadre` (débordement à 11 largeurs, console) · **`sequences`** (les six suites de captures + écarts de pixels + cinq rechargements) |
+| **`plaques-vie.mjs`** | la boucle de vie en **dix relevés**, un par promesse du brief : existe · **visible** (six captures d'un cadre fixe + écarts + déplacement réel) · survol · **franc** (image par image après l'entrée du curseur) · reprise · hors-écran · **onglet caché, en deux verdicts séparés** · lisible (texte réellement recouvert par `elementFromPoint`, contraste à 12 phases tirées au hasard) · tenue (i/s boucle **et** défilement) · mouvement réduit |
+| **`formulaires-e2e.mjs`** | la chaîne des six formulaires **de bout en bout** : l'état réel du service d'envoi, relevé et non supposé ; le repli `mailto:` par formulaire, avec **les réponses tapées retrouvées dans le corps du message** ; et les deux guides obtenus **sans donner de courriel** |
 | `diag-accueil.mjs` · `diag-accueil2.mjs` | le diagnostic : rideau et composition sur la même ligne de temps, verrou de session, boutons par palier |
 | `_png.mjs` | décodeur PNG + `diffStats` — le socle du critère « visible » |
 | `cascade-check.mjs` | **0 écart** obligatoire après toute régénération du CSS |
@@ -613,6 +762,43 @@ Chacun a produit un faux verdict avant d'être trouvé.
     coupable.
 19. **Un A/B se fait en worktree, pas en `stash`** : le CSS fabriqué fait
     échouer le `stash pop`. Tuer le serveur avant de retirer le worktree.
+    Les outils prennent une **adresse complète**, pas un numéro de port :
+    `node tools/contraste-arret.mjs http://localhost:8098`.
+
+**Ajoutés le 2026-07-30 — cinq faux verdicts, tous payés en une nuit**
+
+20. **`getComputedStyle(el).transform` ne contient pas les propriétés
+    individuelles.** `translate`, `rotate` et `scale` sont trois
+    propriétés distinctes qui se **composent** avec `transform`. Une
+    sonde qui ne lit que `transform` a rendu `dangle 0°` sur les huit
+    plaques alors que la rotation tournait : elle lisait la pose de
+    repos et ignorait la boucle.
+21. **Une amplitude ABSOLUE mélange trois mouvements.** La boucle, la
+    dérive au défilement, et la recomposition du document par
+    `content-visibility`. Relevé « hors écran » : 2 078 px d'amplitude
+    sur une bande dont l'animation était `paused`. Deux affirmations
+    contradictoires dans le même relevé, donc au moins une fausse. Il
+    faut mesurer **enfant moins parent**.
+22. **Le rectangle englobant d'un élément TOURNÉ est plus grand que
+    l'élément.** Compter les intersections d'englobants sur des plaques
+    inclinées de 4°, c'est compter des chevauchements qui n'existent pas
+    à l'écran. Ce qui décide est l'**occultation** :
+    `elementFromPoint` au centre du texte doit rendre un nœud de cette
+    plaque-là. Et il faut une **base de comparaison au repos** : la
+    composition décale déjà certaines plaques de 48 px dans la colonne
+    voisine.
+23. **Un nombre FIXE de tabulations ne mesure pas un piège de focus.**
+    `cadeau-check` pressait six fois Tab puis demandait « le focus est-il
+    dans le dialogue ? ». Deux liens ajoutés, et la sixième tabulation
+    est tombée pile sur l'étape où Chromium fait transiter le focus par
+    sa propre barre. Verdict rendu : « le focus s'échappe » — faux. Ce
+    qui se mesure est la **propriété** : aucun élément de la page
+    derrière la modale ne reçoit le focus, et le cycle revient dedans.
+24. **Une fenêtre d'observation trop courte cache le mouvement le plus
+    lent.** Quatre poses sur 750 ms rendaient « 7 plaques sur 8
+    bougent » : la huitième, la plus lente et la plus plate près de ses
+    extrémums, rendait moins de 2 px. La fenêtre doit couvrir au moins
+    une demi-période de l'élément le plus lent — ici 10,6 s.
 
 ---
 
@@ -622,7 +808,7 @@ Chacun a produit un faux verdict avant d'être trouvé.
 
 | Mesure | Valeur | Seuil |
 |---|---|---|
-| LCP | **124 ms** (`SPAN.plate-big`) | < 300 ms |
+| LCP | **84 · 92 · 112 ms** sur trois passes (`SPAN.plate-big`) | < 300 ms |
 | CLS | **0** | 0 |
 | i/s médiane, traversée de l'accueil | **59,9** | 60 |
 | images > 20 ms | **0** | 0 |
@@ -630,7 +816,16 @@ Chacun a produit un faux verdict avant d'être trouvé.
 | erreurs console, 11 largeurs | **0** | 0 |
 | écart de cascade, découpée vs entière | **0** sur 254 496 propriétés | 0 |
 | pas de composition visibles | **11 / 11 à 100 %** | 100 % |
-| dérive des plaques | **121 à 220 px**, redressement à ≈ 0,2° | perceptible |
+| dérive des plaques au défilement | **121 à 220 px**, redressement à ≈ 0,2° | perceptible |
+| **boucle de vie, dérive** | **8 à 24,5 px** vertical · **4 à 13,4 px** horizontal | perceptible |
+| **boucle de vie, battement** | **1,07° à 2,25°** | > 2° au plus fort |
+| **boucle de vie, écarts de pixels** | **11 à 14,7 %** entre deux captures | > 1 % |
+| **i/s, boucle ET défilement en même temps** | **59,9** · 0 image > 20 ms | 60 |
+| **texte sous 4,5:1 à l'arrêt, 61 positions** | **0** (était 8) | 0 |
+| **fenêtre illisible au survol, aller et retour** | **aucune** | aucune |
+| **formulaires qui livrent** | **6 / 6**, par le repli `mailto:` | 6 / 6 |
+| échecs de contraste, 12 sections × 2 thèmes × 5 largeurs | **0** | 0 |
+| arrêts au clavier, sans anneau de focus | **0 sur 100** | 0 |
 
 **Seuils de perception, issus de `RECHERCHE-ACCUEIL.md` :**
 
@@ -666,7 +861,17 @@ sur ce site :
   fantôme qui reste collé après un tap ;
 - la **lisibilité en plein soleil**, et le rendu des trois matières sur une
   dalle OLED calibrée autrement ;
-- le **réseau mobile** : tout est mesuré en local, sur `localhost`.
+- le **réseau mobile** : tout est mesuré en local, sur `localhost` ;
+- **la pause de la boucle des plaques quand l'onglet est caché.**
+  Ajouté le 2026-07-30. Le code réagit correctement — prouvé au pixel en
+  forçant `document.hidden` et en émettant `visibilitychange` — mais
+  **Chromium sous Playwright ne modélise pas la visibilité d'un
+  onglet** : `document.hidden` reste `false` avec un second onglet au
+  premier plan, sans tête comme avec tête, et
+  `Page.setWebLifecycleState` rejette `hidden`. `plaques-vie.mjs § 7`
+  rend donc **deux verdicts séparés** et refuse de les fondre en un
+  seul. Ce verrou-là se vérifie à la main : ouvrir le site, aller aux
+  plaques, changer d'onglet dix secondes, revenir.
 
 **Ce n'est pas une réserve de style, c'est un trou dans la preuve.** La
 règle « visible, sinon ça ne compte pas » n'a été appliquée que sur un
@@ -815,10 +1020,38 @@ HTML/CSS.
   5324, contenus différents). Voir `ANIMATIONS.md`.
 - **`404.html` charge `css/app.css` en entier**, seul endroit du dépôt à
   servir la feuille source.
-- **FormSubmit n'a jamais été activé** : HTTP 200 mais `success:"false"`.
-  Aucun formulaire du site n'a jamais livré.
+- **FormSubmit n'est toujours pas activé** — vérifié le 2026-07-30 :
+  HTTP 200 avec `{"success":"false","message":"This form needs
+  Activation."}`. Le lien d'activation est dans la boîte du
+  propriétaire, et c'est **un clic**. Depuis le 2026-07-30 les six
+  formulaires **livrent quand même** : sur échec, un repli `mailto:`
+  paraît avec le message déjà rempli à partir des réponses tapées.
+  `node tools/formulaires-e2e.mjs` relève l'état réel du service en
+  tête de rapport ; le jour où il dit `ACTIVE`, le repli cesse de
+  paraître sans qu'une ligne change.
+- **Les positions de déclenchement de ScrollTrigger sont périmées par
+  `content-visibility: auto`** — trouvé le 2026-07-30 en mesurant, pas
+  en lisant. Sept textes du site restaient à **10-12 % d'opacité en
+  permanence** pour un visiteur normal (1,15:1 à 1,36:1) : leur
+  déclencheur ne partait jamais, parce que la hauteur *réservée* des
+  sections traversées n'est pas leur hauteur réelle. Le **dégât** est
+  corrigé — onze tweens portent `immediateRender: false`, donc l'état de
+  repos est la forme finale et un déclencheur muet ne coûte plus qu'une
+  animation manquante. **La cause ne l'est pas.** Elle touche à la
+  stratégie `content-visibility` de toutes les sections, et c'est un
+  chantier en soi. `node tools/contraste-arret.mjs http://localhost:8099 60`
+  doit rester à **0**.
 - **RIEN N'A JAMAIS ÉTÉ VÉRIFIÉ SUR UN APPAREIL RÉEL.** Voir l'encadré en
   fin de § 9. C'est le plus gros trou de preuve du projet.
-- **Audit de véracité du reste du site** : `AUDIT-VERACITE.md` liste les
-  affirmations fausses, invérifiables ou en jargon de développeur trouvées
-  hors `#top`, avec une reformulation proposée pour chacune.
+- **`prix-check.mjs` compte les lignes de COMMENTAIRE.** Un montant cité
+  dans un commentaire pour documenter un correctif ressort « A RETIRER ».
+  Les commentaires du dépôt écrivent donc les montants **sans le glyphe
+  `$`**. Ce n'est pas la bonne façon : le jour où quelqu'un a le temps,
+  le premier passage doit distinguer code et commentaire, et rendre une
+  troisième catégorie au lieu d'un faux positif. En attendant, `A
+  RETIRER dans le source` doit rester à **0**.
+- **`AUDIT-VERACITE.md` : les 36 constats sont traités**, plus les deux
+  contrastes à l'arrêt et le défaut d'opacité ci-dessus. Deux points
+  restent suspendus à une information que seul le propriétaire a — les
+  cinq adresses en ligne des projets, et la pile réelle des projets
+  clients. Voir `DECISIONS-NUIT.md § 2`.
