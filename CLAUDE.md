@@ -255,6 +255,73 @@ dont il prend les transformations en main.
   téléphone : `--incl: 0.55`, `--ecart: 0.22`. À 64em :
   `padding-inline: 60px` sur la bande absorbe le débordement voulu.
 
+**Ce qu'elles disent — et les deux règles d'admission du contenu.**
+
+> **Ce qui ne fait pas grosse agence, malgré l'intuition : les chiffres de
+> volume.** Nombre de clients, années d'existence, projets livrés. Sur un
+> site qu'on ne connaît pas, personne ne les croit et personne ne peut les
+> vérifier. **Ce qui fait grosse agence, c'est le STANDARD** : une maison
+> qui affiche des engagements précis et chiffrés donne l'impression d'avoir
+> des processus, et une maison qui a des processus est grosse dans la tête
+> du visiteur.
+
+Deux règles, **les deux éliminatoires** :
+
+1. **Vraie et défendable si un client la conteste au téléphone.** Aucun
+   chiffre inventé, aucun volume gonflé, aucune certification qu'on n'a pas.
+   Chaque plaque est soutenue ailleurs dans le document, ou vérifiable par
+   le visiteur en dix secondes. Dans le doute, on ne l'écrit pas.
+2. **Comprise en trois secondes par un patron de garage.** Une affirmation
+   vraie et techniquement impressionnante qui demande un décodage ne sert à
+   rien. **Ce bloc parle la langue du client, pas celle du code.** Interdits
+   ici : « décalage de mise en page », « requête tierce », « LCP », « WCAG »,
+   « Core Web Vitals », « responsive ». C'est la raison pour laquelle une
+   neuvième plaque « 0 · décalage de mise en page » a été refusée alors
+   qu'elle était vraie et mesurée.
+
+| # | Mot fort | Phrase | Ce qui la soutient |
+|---|---|---|---|
+| 1 | **12 h** | Le délai de réponse, jours ouvrables. Souvent moins. | affiché à cinq endroits du site |
+| 2 | **Jour 5** | Les premières maquettes. Vous voyez avant qu'on code. | Agence, engagement 04, avec sa figure |
+| 3 | **=** | Le chiffre du premier appel est celui de la facture. | Agence, engagement 01 (`Estimation = Facture`) |
+| 4 | **1** | Interlocuteur, du premier appel à la mise en ligne. | Agence, `agc-faits` |
+| 5 | **Tout** | Le code, l'hébergement, l'adresse web. Un autre peut reprendre demain. | Agence 03, FAQ, Parcours |
+| 6 | **0** | Mouchard, traceur, service extérieur. Votre site ne dépend de personne. | aucune adresse externe dans le document |
+| 7 | **7** | Métiers : site, boutique, automatisation, logiciel, application, visite 360, vidéo. | Services, Secteurs, Visite 360, Calculateur |
+| 8 | **Québec** | Conçu, codé et livré ici, du premier trait à la mise en ligne. | — |
+
+**Quatre affirmations retirées le 2026-07-29 parce qu'elles étaient fausses
+ou faibles — et corrigées PARTOUT, pas seulement dans le hero :**
+
+| Retirée | Pourquoi | Où elle vivait aussi |
+|---|---|---|
+| « 60 s · Sans donner votre courriel » | FAUX : le courriel est requis pour recevoir l'estimation | — |
+| « 1 h · De formation incluse au lancement » | pas offert | Services (liste 01), Parcours (étape 04), FAQ |
+| « 0 · Abonnement obligatoire » | FAUX : l'hébergement a un coût récurrent | FAQ « Le site nous appartient à 100 % ? » |
+| « 100 % · Du code vous appartient » | vrai mais plat | revient en plaque **Tout** |
+
+Et « 0 · Sous-traitance. Vous parlez à la personne qui code » est devenue
+« 1 · Interlocuteur » : **l'absence d'intermédiaire est un argument premium,
+la mention du codeur unique dit la taille et pas le standard.**
+
+> **Une fausseté dans la FAQ est plus grave que dans le hero.** Celui qui
+> ouvre la FAQ est un prospect sérieux, et c'est celui-là qui la reproche au
+> téléphone. Le périmètre d'un chantier ne justifie jamais de laisser une
+> affirmation fausse en place ailleurs.
+>
+> La FAQ dit maintenant la vérité sur l'hébergement, **formulée comme une
+> force** : le coût technique est réel, modeste, annoncé avant la signature
+> et payable directement au fournisseur ; ce qui n'existe pas, c'est
+> l'abonnement à l'agence qu'il faut payer pour garder l'accès à son propre
+> site. L'ancienne version promettait l'impossible ; celle-ci nomme la seule
+> chose qui compte pour le client.
+>
+> `node tools/accueil-check.mjs contenu` chasse les six énoncés retirés dans
+> **tout** le texte rendu et doit rendre « aucun ». Il lit `textContent` et
+> non `innerText` : les onze réponses de la FAQ vivent dans des `<details>`
+> repliés, qu'`innerText` ne voit pas — c'est-à-dire exactement l'endroit où
+> une fausseté fait le plus de dégâts.
+
 ### 3.3 Les deux CTA — V4 · CRAN
 
 `--cran: 520ms` sur les deux : à 230 ms, « Estimation en 60 secondes »
@@ -577,6 +644,38 @@ Chacun a produit un faux verdict avant d'être trouvé.
   117 ms ; on bascule à mi-course ;
 - alignement : **24-32 px** latéraux, **520 ms**, dépassement **0,00 px**.
 
+### ⚠ CE QUI N'A JAMAIS ÉTÉ VÉRIFIÉ — À NE PAS OUBLIER
+
+> **AUCUNE de ces mesures n'a été prise sur un appareil réel.**
+>
+> Tout ce qui est écrit dans ce fichier — LCP, i/s, contrastes, paliers,
+> débordement, séquences — vient de **Chromium piloté par Playwright sur
+> une machine de bureau Windows**. Y compris les relevés « téléphone » :
+> 390 px de large avec `pointer: coarse` émulé n'est **pas** un téléphone.
+
+Ce que l'émulation **ne peut pas** dire, et que personne ne sait donc encore
+sur ce site :
+
+- le **budget de peinture réel** d'un téléphone d'entrée de gamme — c'est
+  toute la raison d'être des trois paliers, et le palier 2 n'a jamais été
+  déclenché autrement qu'en bridant artificiellement le processeur ;
+- le comportement de **Safari iOS**, qui n'est pas Chromium : `content-visibility`,
+  `animation-play-state`, `clip-path`, `@property`, la barre d'adresse qui
+  se rétracte et fait bouger `100vh` ;
+- le **toucher réel** : cibles de 44 px, défilement à inertie, `:hover`
+  fantôme qui reste collé après un tap ;
+- la **lisibilité en plein soleil**, et le rendu des trois matières sur une
+  dalle OLED calibrée autrement ;
+- le **réseau mobile** : tout est mesuré en local, sur `localhost`.
+
+**Ce n'est pas une réserve de style, c'est un trou dans la preuve.** La
+règle « visible, sinon ça ne compte pas » n'a été appliquée que sur un
+écran de bureau. Le propriétaire s'en charge de son côté ; en attendant,
+**aucune session ne doit écrire « vérifié sur mobile »** — ni le laisser
+entendre — tant que cette ligne est encore ici. Quand un vrai appareil aura
+été passé, remplacer ce bloc par ce qui a été mesuré, sur quel modèle, quelle
+version d'OS et quelle date.
+
 ---
 
 ## 10 · Design stack
@@ -718,6 +817,8 @@ HTML/CSS.
   servir la feuille source.
 - **FormSubmit n'a jamais été activé** : HTTP 200 mais `success:"false"`.
   Aucun formulaire du site n'a jamais livré.
-- **Deux affirmations retirées de l'accueil vivent encore ailleurs** :
-  « aucun abonnement obligatoire pour garder le site en ligne » (FAQ) et
-  « une heure de formation incluse » (Services, Parcours). À trancher.
+- **RIEN N'A JAMAIS ÉTÉ VÉRIFIÉ SUR UN APPAREIL RÉEL.** Voir l'encadré en
+  fin de § 9. C'est le plus gros trou de preuve du projet.
+- **Audit de véracité du reste du site** : `AUDIT-VERACITE.md` liste les
+  affirmations fausses, invérifiables ou en jargon de développeur trouvées
+  hors `#top`, avec une reformulation proposée pour chacune.

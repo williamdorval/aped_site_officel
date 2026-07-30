@@ -987,7 +987,16 @@ main.shell > section > .wrap > .project:last-child { padding-bottom: 0; }
      et on baisse la translation — la signature se voit MIEUX
      qu'avant sur telephone, et la page ne deborde plus. */
   --incl: 0.55;
-  --ecart: 0.22;
+  --ecart: 0.16;
+  /* SIX PIXELS DE CHAQUE COTE, ET C'EST LA MEME LOGIQUE QU'A 64em.
+     A 320 et 360 px, `tools/deborde.mjs` rendait 321 > 320 et
+     361 > 360 : un pixel, aux deux largeurs les plus etroites
+     seulement. La cause n'est pas le decalage seul mais la HAUTEUR
+     des plaques — une phrase plus longue fait une plaque plus haute,
+     et une boite plus haute inclinee du meme angle deborde
+     davantage sur les cotes. Le rembourrage encaisse ce que la
+     gouttiere ne prend plus. */
+  padding-inline: 6px;
 }
 /* LA COQUE. Elle ne se voit pas : elle occupe la case de grille et
    c'est elle que GSAP fait deriver. Elle ne porte aucune
@@ -3133,6 +3142,13 @@ html.js .derail-row,
 .plaques > :nth-child(5) { grid-column: 4 / span 3; }
 .plaques > :nth-child(6) { grid-column: 7 / span 3; }
 .plaques > :nth-child(7) { grid-column: 10 / span 3; }
+/* LA HUITIEME EST SEULE SUR SA RANGEE, ET DECALEE DES DEUX BORDS.
+     Trois larges, quatre etroites, puis une : la suite ne se devine
+     pas, et c'est exactement ce qui distingue une composition d'une
+     bande de statistiques. Elle porte « Québec » — la seule plaque
+     qui dise une provenance et non un engagement — et elle se lit
+     comme le poincon qu'on frappe en bas d'une piece finie. */
+.plaques > :nth-child(8) { grid-column: 4 / span 5; }
 /* LA SCENE EPINGLEE TIENT DANS UN ECRAN, exactement.
      Une scene epinglee plus haute que l'ecran est le pire des deux
      mondes : le defilement est detourne ET il faut quand meme

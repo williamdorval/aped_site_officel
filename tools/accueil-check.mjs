@@ -131,7 +131,16 @@ async function contenu(nav) {
       chiffre: p.querySelector(".num").textContent.trim(),
       phrase: p.querySelector("span").textContent.trim(),
     }));
-    const t = document.body.innerText;
+    /* `textContent` ET NON `innerText`, ET C'EST UN DEFAUT
+       D'INSTRUMENT CORRIGE. Les onze reponses de la FAQ vivent dans
+       des `<details>` REPLIES ; `innerText` ne rend que ce qui est
+       rendu, donc il ne les voit pas. Une chasse aux enonces retires
+       qui lit `innerText` declare donc « absent » tout ce qui se
+       cache dans la FAQ — c'est-a-dire l'endroit ou une faussete
+       fait le plus de degats, puisque celui qui ouvre la FAQ est un
+       prospect serieux. Meme raison pour `content-visibility: auto`,
+       deja notee plus bas. */
+    const t = document.body.textContent;
     return {
       plaques,
       /* Les enonces retires ne doivent plus exister NULLE PART dans
@@ -145,6 +154,26 @@ async function contenu(nav) {
         "secteurs livrés": (t.match(/secteurs livr[ée]s/gi) || []).length,
         "12 h": (t.match(/12\s*h/g) || []).length,
       },
+      /* LES QUATRE ENONCES SUPPRIMES LE 2026-07-29, plus les deux
+         faussetes qui vivaient AILLEURS que dans le hero. Chacun
+         doit rendre ZERO. Le compte ne suffit pas a dire lequel
+         manque — on rend donc aussi les extraits trouves. */
+      retires2607: (() => {
+        const motifs = {
+          "sans donner votre courriel": /sans donner votre courriel/gi,
+          "formation incluse": /formation (est )?incluse/gi,
+          "heure de formation": /(une )?heure de formation/gi,
+          "abonnement obligatoire": /abonnement obligatoire/gi,
+          "100 % du code vous appartient": /100\s*%[^.]{0,40}code vous appartient/gi,
+          "sous-traitance (plaque)": /Sous-traitance\.\s*Vous parlez/gi,
+        };
+        const out = {};
+        for (const [nom, re] of Object.entries(motifs)) {
+          const m = t.match(re) || [];
+          out[nom] = { n: m.length, extraits: m.slice(0, 3) };
+        }
+        return out;
+      })(),
       /* Aucun prix : on cherche tout montant en dollars dans la
          zone accueil. */
       dollars: (document.querySelector("#top").parentNode.innerText.slice(0, 4000).match(/\d[\d\s ]*\$/g) || []),
@@ -177,6 +206,8 @@ async function contenu(nav) {
   console.log("\n=== 1 · CONTENU ===");
   r.plaques.forEach((p, i) => console.log(`  ${nb(i + 1)}  ${p.chiffre.padEnd(8)} ${p.phrase}`));
   console.log("  restes :", JSON.stringify(r.restes));
+  const survivants = Object.entries(r.retires2607).filter(([, v]) => v.n > 0);
+  console.log("  ENONCES RETIRES QUI SURVIVENT :", survivants.length === 0 ? "aucun" : JSON.stringify(Object.fromEntries(survivants)));
   console.log("  apres chargement des secteurs :", JSON.stringify(apresSecteurs));
   console.log("  montants en dollars dans l'accueil :", r.dollars.length ? r.dollars : "aucun");
   return r;
