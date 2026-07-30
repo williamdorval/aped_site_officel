@@ -114,7 +114,20 @@ async function sonder(nom, opts = {}) {
       /* L'ORIENTATION — le plancher. */
       reste: (document.getElementById("railLeftNum") || {}).textContent || "",
       etape: (document.getElementById("parcNum") || {}).textContent || "",
-      chantier: (document.getElementById("svcNum") || {}).textContent || "",
+      /* L'ORIENTATION DE LA SECTION 02 NE PASSE PLUS PAR UN COMPTEUR.
+         Cette ligne lisait `#svcNum`, le « 01 / 04 » du rail
+         horizontal, supprime le 2026-07-30 avec le rail lui-meme :
+         elle rendait donc une chaine vide et trois ECHECS sur une
+         section entierement saine. Meme famille que le piege 17 —
+         un test qui affirme la presence du mecanisme qu'on vient de
+         retirer.
+         Ce qui remplace le compteur EST du N1 et se mesure mieux :
+         les quatre chantiers sont NOMMES et lisibles en meme temps,
+         a tous les paliers, sans script. On compte donc les noms
+         atteignables, pas un chiffre. */
+      chantiersNommes: document.querySelectorAll(".svc-index a").length,
+      chantiersLisibles: [...document.querySelectorAll(".svc-carte .svc-corps .label")]
+        .filter((e) => { const r = e.getBoundingClientRect(); return r.width > 2 && r.height > 2; }).length,
       curseur: !!document.querySelector(".rail-curseur.is-on"),
       /* LES DOUZE FRONTIERES. Le CRAN du seuil est du N1 : il vit
          dans `main.js` et ne tombe a aucun palier. Le geste propre
@@ -221,8 +234,8 @@ for (const [nom, opts] of [
 ]) {
   const r = await sonder(nom, opts);
   const ok = r.reste.trim() !== "" && r.etape.trim() !== "" &&
-             r.chantier.trim() !== "" && r.curseur;
-  dire(ok, `${nom} -> restantes « ${r.reste.trim()} », etape « ${r.etape.trim()} », chantier « ${r.chantier.trim()} », curseur ${r.curseur ? "pose" : "ABSENT"}`);
+             r.chantiersNommes === 4 && r.chantiersLisibles === 4 && r.curseur;
+  dire(ok, `${nom} -> restantes « ${r.reste.trim()} », etape « ${r.etape.trim()} », chantiers nommes ${r.chantiersNommes} / 4 et lisibles ${r.chantiersLisibles} / 4, curseur ${r.curseur ? "pose" : "ABSENT"}`);
   /* Le numero du seuil dit lui aussi « ou on est ». Il doit donc
      etre JUSTE a tous les paliers, y compris quand plus rien ne
      roule : au repos la bande montre deja la bonne valeur. */

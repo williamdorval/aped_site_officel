@@ -421,97 +421,65 @@
   }
 
   /* ============================================================
-     RAIL DES SERVICES — orientation.
+     SERVICES — la demonstration se lance d'ici.
 
-     Ce bloc est ici, et pas dans `js/motion.js`, pour une raison
-     precise : `motion.js` s'arrete net sous `prefers-reduced-motion`.
-     Y mettre le compteur et le nom du chantier reviendrait a
-     supprimer le N1 — « ou je suis, combien il en reste » — pour
-     exactement les gens qui ont demande moins de mouvement.
+     CE QUI A DISPARU LE 2026-07-30. Ce bloc tenait le rail
+     horizontal : le compteur « 01 / 04 », le nom du chantier, la
+     piste native avec accrochage, le clavier et les deux fleches.
+     Les quatre cartes sont maintenant peintes en meme temps dans une
+     grille CSS, et le detail de chacune est un `<details>` natif.
+     Il n'y a donc plus rien a orienter, plus rien a piloter, et plus
+     aucune touche a reimplementer : le navigateur fait tout.
 
-     Ce que ce bloc garantit sans GSAP, sans pin, sans animation :
-     · la piste se parcourt au doigt, a la molette laterale et au
-       clavier (fleches, Origine, Fin) ;
-     · le compteur et le nom suivent le defilement reel ;
-     · les deux boutons fonctionnent.
-     `motion.js` ne fait ensuite que REMPLACER le geste — glisser
-     devient descendre — en reecrivant `APED_SVC.aller`.
+     `window.APED_SVC` n'existe plus. `js/motion.js` bloc 6, qui
+     l'utilisait pour remplacer le geste « glisser » par
+     « descendre », a ete retire en meme temps.
+
+     CE QUI RESTE ICI, ET POURQUOI ICI. Un seul geste : lancer la
+     visite 360 depuis la carte 03. C'est de l'USAGE, pas de la
+     choregraphie — donc `main.js`, qui s'execute a tous les paliers
+     et sous `prefers-reduced-motion`, jamais `langue.js`, qui
+     s'arrete net.
+
+     ON NE CONSTRUIT PAS UN SECOND LECTEUR. Le bouton amene a la
+     section 05 et declenche celui qui existe deja. Une seconde
+     instance de Pannellum, ce sont 8,5 Mo de panoramas charges deux
+     fois et un deuxieme moteur pour montrer exactement la meme
+     piece.
      ============================================================ */
-  (function railServices() {
-    var svc = $("#svc");
-    var piste = $("#svcPiste");
-    var rail = $("#svcRail");
-    var cartes = $$(".svc-carte");
-    if (!svc || !piste || !rail || !cartes.length) return;
+  (function svcTour() {
+    var depart = $("[data-svc-tour]");
+    var visite = $("#visite");
+    var lanceur = $("[data-tour-start]");
+    if (!depart || !visite || !lanceur) return;
 
-    var num = $("#svcNum");
-    var nom = $("#svcNow");
-    var courant = 0;
+    depart.addEventListener("click", function () {
+      /* On defile d'abord, on declenche ensuite. Declencher avant
+         de defiler ferait charger 2 Mo pendant que le visiteur
+         regarde encore la section Services : il verrait une barre
+         de chargement pour quelque chose qu'il n'a pas sous les
+         yeux. */
+      visite.scrollIntoView({ behavior: reduced.matches ? "auto" : "smooth", block: "start" });
 
-    function poser(i) {
-      i = Math.max(0, Math.min(cartes.length - 1, i));
-      courant = i;
-      cartes.forEach(function (c, k) { c.classList.toggle("is-on", k === i); });
-      /* PHASE 8 · V4 — le compteur roule d'un cran. `rouler()` est
-         une DECLARATION de fonction plus bas dans le meme IIFE :
-         elle est hissee, donc appelable ici meme a l'initialisation. */
-      if (num) rouler(num, ("0" + (i + 1)).slice(-2));
-      if (nom) nom.textContent = cartes[i].getAttribute("data-svc-carte") || "";
-    }
-
-    /* Deplacement par defaut : la piste native. `motion.js` remplace
-       cette fonction quand il prend la main sur le geste. */
-    var api = {
-      svc: svc,
-      piste: piste,
-      rail: rail,
-      cartes: cartes,
-      poser: poser,
-      index: function () { return courant; },
-      aller: function (i) {
-        i = Math.max(0, Math.min(cartes.length - 1, i));
-        piste.scrollTo({ left: cartes[i].offsetLeft, behavior: reduced.matches ? "auto" : "smooth" });
-      }
-    };
-    window.APED_SVC = api;
-
-    /* Le compteur suit le defilement REEL de la piste. Sous 1024 px
-       c'est le seul mecanisme ; au-dessus, le pin fige la piste a
-       zero et c'est `motion.js` qui appelle `poser()`. */
-    var attente = 0;
-    piste.addEventListener("scroll", function () {
-      if (attente || svc.classList.contains("is-pinned")) return;
-      attente = requestAnimationFrame(function () {
-        attente = 0;
-        var g = piste.getBoundingClientRect().left;
-        var meilleur = 0, ecart = Infinity;
-        cartes.forEach(function (c, k) {
-          var d = Math.abs(c.getBoundingClientRect().left - g);
-          if (d < ecart) { ecart = d; meilleur = k; }
-        });
-        if (meilleur !== courant) poser(meilleur);
-      });
-    }, { passive: true });
-
-    $$("[data-svc]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        api.aller(courant + Number(b.getAttribute("data-svc")));
-      });
+      /* Le clic est programme apres le defilement, mais il ne DEPEND
+         pas de lui : `scrollIntoView` lisse n'a pas d'evenement de
+         fin fiable et un `scrollend` manquant laisserait le bouton
+         mort. Un delai unique, borne, puis on declenche quoi qu'il
+         arrive. Sous mouvement reduit le saut est immediat, donc le
+         delai tombe a une image. */
+      window.setTimeout(function () {
+        /* Si le visiteur a deja ouvert la visite, `tour360.js` a
+           retire le bouton de l'affichage : le declencher une
+           seconde fois relancerait un chargement pour rien. */
+        if (lanceur.isConnected && !lanceur.classList.contains("is-loading")) lanceur.click();
+        /* Le focus suit le regard. Sans ca, la tabulation suivante
+           repart du haut du document et le clavier perd la page. */
+        var vue = $("[data-tour-stage]") || visite;
+        if (vue.hasAttribute && !vue.hasAttribute("tabindex")) vue.setAttribute("tabindex", "-1");
+        try { vue.focus({ preventScroll: true }); } catch (e) {}
+      }, reduced.matches ? 16 : 620);
     });
-
-    /* Une zone a debordement horizontal DOIT etre atteignable au
-       clavier : sans ca c'est un echec WCAG 2.1.1 et 2.1.3, niveau
-       A. `tabindex="0"` est dans le markup, les touches sont ici. */
-    piste.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowRight") { e.preventDefault(); api.aller(courant + 1); }
-      else if (e.key === "ArrowLeft") { e.preventDefault(); api.aller(courant - 1); }
-      else if (e.key === "Home") { e.preventDefault(); api.aller(0); }
-      else if (e.key === "End") { e.preventDefault(); api.aller(cartes.length - 1); }
-    });
-
-    poser(0);
   })();
-
   /* ============================================================
      CADRES DE PROJET — le parcours se demande, il ne s'impose pas.
 

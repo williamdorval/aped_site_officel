@@ -961,7 +961,12 @@
      forcee par titre pour un gain invisible.
      260 ms : le texte est lisible avant que l'oeil ait fini
      d'arriver dessus. C'est la limite que ce site s'impose. */
-  if (PALIER === 0) $$(".project-meta h3, .cell h3, .sector-group h3, .parc-txt h3, .agc-txt h3, .svc-texte h3")
+  /* `.svc-texte h3` a ete retire de cette liste le 2026-07-30 : la
+     boite n'existe plus. Et le titre de chantier n'a pas besoin d'un
+     remplacant — il arrive deja avec sa carte, dans la cascade du
+     bloc 7bis. Lui poser un second balayage par-dessus, ce serait
+     deux verbes sur un seul objet. */
+  if (PALIER === 0) $$(".project-meta h3, .cell h3, .sector-group h3, .parc-txt h3, .agc-txt h3")
     .forEach(function (titre) {
       gsap.fromTo(titre,
         { clipPath: "inset(0 100% 0 0)" },
@@ -1334,6 +1339,121 @@
             if (Math.abs(dy) < 0.5) return;
             gsap.fromTo(el, { y: dy }, { y: 0, duration: 0.38, ease: "power3.out", overwrite: "auto" });
           });
+        });
+      });
+    });
+  })();
+
+
+  /* ============================================================
+     7bis. LES QUATRE CHANTIERS — V2 · S'ALIGNER, deux fois.
+
+     Ce bloc a remplace le pin horizontal de `motion.js` bloc 6. Il
+     ne pilote plus rien : la grille, l'index et les quatre
+     `<details>` fonctionnent entierement sans lui. Il n'ajoute que
+     le MOUVEMENT, et il peut disparaitre sans qu'on perde une seule
+     information.
+
+     1. L'ENTREE. Les quatre cartes arrivent decalees sur la gauche
+        et se reprennent a leur place, en cascade. Meme verbe, meme
+        courbe et meme absence de depassement que les huit plaques du
+        hero : `power3.out`, aucun `back`, aucun `elastic`.
+
+     2. L'OUVERTURE. Une fiche qui s'ouvre passe sur toute la largeur
+        de la bande, donc les trois autres cartes changent de place.
+        Sans rien, elles SAUTENT — la grille se reorganise sous l'oeil
+        du visiteur pendant qu'il commence a lire. Avec le FLIP
+        maison, elles GLISSENT : on voit que rien n'a disparu,
+        seulement qu'une chose s'est ouverte. C'est exactement le
+        raisonnement de la FAQ juste au-dessus, en deux dimensions au
+        lieu d'une.
+
+     ON MESURE LES QUATRE, PAS SEULEMENT LES SUIVANTES. Dans une
+     grille a deux colonnes, ouvrir la carte 02 fait remonter la 03
+     ET redescendre la 01 si elle se retrouve seule sur sa rangee.
+     La FAQ, elle, est une colonne : `items.slice(i + 1)` y suffit.
+     Ici, ca laisserait une carte sur deux sauter.
+     ============================================================ */
+  (function services() {
+    var grille = $(".svc-grille");
+    if (!grille) return;
+    var cartes = $$(".svc-carte", grille);
+    if (cartes.length < 2) return;
+
+    /* --- 1 · L'ENTREE — V2 · S'ALIGNER --- */
+    /* `immediateRender: false` est OBLIGATOIRE, et c'est la regle
+       0bis du projet : l'etat de repos est la forme FINALE. Si le
+       declencheur ne part jamais — position perimee, onglet en
+       arriere-plan, `once` deja consomme —, on perd l'animation,
+       jamais le contenu. Sept textes du site sont restes a 10 %
+       d'opacite en permanence pour ne pas avoir applique ca. */
+    if (PALIER < 2) {
+      gsap.fromTo(cartes,
+        {
+          x: function (i) { return -(26 + i * 4); },
+          opacity: 0.08
+        },
+        {
+          x: 0, opacity: 1,
+          duration: 0.56,
+          /* Amortissement critique : la piece se pose sur le banc,
+             elle ne rebondit pas dessus. */
+          ease: "power3.out",
+          stagger: 0.09,
+          overwrite: "auto",
+          immediateRender: false,
+          clearProps: "transform,opacity",
+          scrollTrigger: { trigger: grille, start: "top 84%", once: true }
+        }
+      );
+    }
+
+    /* --- 2 · L'OUVERTURE — FLIP, puis V1 · DEGAGER --- */
+    cartes.forEach(function (carte) {
+      var fiche = $(".svc-detail", carte);
+      var tete = fiche && $("summary", fiche);
+      if (!fiche || !tete) return;
+
+      tete.addEventListener("click", function () {
+        /* PALIER 2 — la grille se recompose d'un coup, comme le
+           ferait le navigateur seul. On perd le glissement, pas le
+           contenu. */
+        if (PALIER >= 2) return;
+
+        /* Le navigateur bascule `open` APRES le clic : on mesure
+           avant, on laisse le natif faire, on mesure au tour
+           suivant. Aucun `preventDefault`, donc le clavier, l'ancre
+           et la recherche dans la page restent intacts. */
+        var avant = cartes.map(function (c) { return c.getBoundingClientRect(); });
+
+        requestAnimationFrame(function () {
+          cartes.forEach(function (c, i) {
+            var apres = c.getBoundingClientRect();
+            var dx = avant[i].left - apres.left;
+            var dy = avant[i].top - apres.top;
+            /* Une carte qui n'a pas bouge d'un demi-pixel ne merite
+               pas un tween : une couche de composition en moins. */
+            if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+            gsap.fromTo(c,
+              { x: dx, y: dy },
+              { x: 0, y: 0, duration: 0.46, ease: "power3.out", overwrite: "auto", clearProps: "transform" }
+            );
+          });
+
+          /* LE CONTENU SE DEGAGE SOUS UNE ARETE DE GRAINS.
+             V1 dont l'arete est faite de la matiere de V3, comme aux
+             sept frontieres qui portent la trame. Le sens est BAS :
+             on decouvre un panneau, pas un titre. Palier 0
+             seulement — au 1, la trame tombe partout. */
+          if (fiche.open && PALIER === 0 && window.APED_TRAME) {
+            var dedans = $(".svc-detail-in", fiche);
+            if (dedans) {
+              window.APED_TRAME.degager(dedans, {
+                nom: "svc-detail", sens: "bas", graine: 421, duree: 320, vie: 160,
+                maille: 36, z: 4, hote: dedans.parentNode
+              });
+            }
+          }
         });
       });
     });

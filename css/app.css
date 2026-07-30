@@ -2631,123 +2631,257 @@ html.entree-saut .entree-plaque {
 }
 
 /* ============================================================
-   14. SERVICES - rail horizontal
-   Les quatre feuilles collantes plein ecran sont remplacees par un
-   rail qui se traverse lateralement. Voir le long commentaire de
-   `index.html` pour l'arbitrage roue / rail et les six garde-fous.
+   14. SERVICES - les quatre chantiers, tous visibles
 
-   CE QUI TIENT SANS JAVASCRIPT : la piste est une zone a
-   debordement horizontal NATIVE, avec accrochage. Sans script, on
-   la parcourt a la molette laterale, au doigt, ou au clavier. Le
-   pin GSAP ne fait que remplacer ce geste par le defilement
-   vertical ; il n'est jamais la condition d'acces au contenu.
+   CE QUI A ETE RETIRE ICI LE 2026-07-30, ET POURQUOI.
+   La section etait un rail horizontal epingle qui montrait UNE carte
+   a la fois derriere un compteur « 01 / 04 ». Trois raisons de le
+   supprimer, dans l'ordre de poids :
+
+   1. LA DECOUVRABILITE. Erik Runyon (Notre Dame, 2012-2013, 315 665
+      changements de diapositive) : ~1 % des visiteurs cliquent une
+      diapositive, et 84 % de ces clics tombent sur la position 1.
+      Baymard l'ecrit en exigence : « Avoid having carousel slides as
+      the only or primary route to features or content. » Le NN/g le
+      constate en oculometrie : « a user looking at a filmstrip of
+      product images never glanced at the arrows. » Sur les pages de
+      services qui ont pu etre rendues — Linear, Basement, Hello
+      Monday, Locomotive —, le relevé donne zero carrousel, zero
+      onglet, zero `<details>` sur la LISTE. Le clic n'y est jamais
+      depense pour la liste, seulement pour la profondeur.
+   2. QUATRE DEFAUTS MESURES tenaient au pin lui-meme, dont un qui
+      cassait la mise en page a chaque arrivee par ancre. Ils sont
+      documentes dans `CHANTIER-SERVICES.md § 1` et ils n'ont plus de
+      support ici.
+   3. Une scene epinglee a hauteur d'ecran imposait au contenu de se
+      plier a 750 px utiles. C'est la composition qui commandait au
+      texte.
+
+   CE QUI TIENT SANS UNE LIGNE DE JAVASCRIPT : tout. La grille est du
+   CSS, l'index est fait de quatre ancres, le detail est un
+   `<details>` natif. Aucun script n'est la condition d'acces a quoi
+   que ce soit ; le script n'ajoute que le glissement des voisines.
    ============================================================ */
 .svc { display: grid; gap: var(--s-5); }
+/* L'index se cale sous le chapo, pas a une bande de distance : le
+   `.head` porte deja sa propre marge et l'ecart cumule tombait a
+   112 px, soit un ecran de vide entre la promesse et la liste
+   qu'elle annonce. */
+.svc { margin-top: calc(var(--s-6) * -1); }
 
-/* LA BARRE D'INSTRUMENTS. Elle s'aligne a gauche sur la meme
-   colonne que le reste de la page et court jusqu'au bord droit :
-   c'est un tableau de bord, pas un paragraphe. */
-.svc-bar,
-.svc-piste {
-  margin-left: max(var(--pad), calc((100% - var(--maxw)) / 2));
+/* L'INDEX — N1, et il remplace le compteur.
+   « 01 / 04 » disait au visiteur COMBIEN il en manquait sans jamais
+   lui dire QUOI. Quatre ancres nommees repondent aux deux questions
+   en une ligne, avant tout defilement, et elles survivent au
+   no-JS, au mouvement reduit et aux trois paliers. */
+.svc-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  padding-bottom: var(--s-4);
+  border-bottom: var(--rule-w) solid var(--rule-strong);
 }
-.svc-bar {
-  margin-right: var(--pad);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: var(--s-4);
-  padding-bottom: var(--s-3);
-  border-bottom: var(--rule-w) solid var(--rule);
-}
-/* LE COMPTEUR EST GROS, et c'est une decision contre l'elegance.
-   L'eye-tracking du Nielsen Norman Group montre que les affordances
-   discretes d'un carrousel — fleches fines, puces de 8 px — ne sont
-   jamais regardees. L'orientation passe donc par un chiffre qu'on
-   ne peut pas manquer. */
-.svc-count {
+.svc-index a {
   display: flex;
   align-items: baseline;
-  gap: 0.3em;
-  font-family: var(--font-display);
-  font-weight: 800;
-  line-height: 1;
-}
-.svc-count b { font-size: var(--fs-3); color: var(--accent-text); font-variant-numeric: tabular-nums; }
-.svc-count span { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); }
-/* Le nom du chantier N'EST PAS tronque : c'est du N1. Il etait en
-   `nowrap` avec des points de suspension, donc a 390 px on lisait
-   « Immobilier et visibilite… », ce qui est exactement l'inverse de
-   dire ou on est. Il se replie sur deux lignes plutot que de se
-   couper. */
-.svc-now {
+  gap: var(--s-2);
   font-family: var(--font-data);
   font-size: var(--fs-8);
-  line-height: 1.4;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--ink);
-  min-width: 0;
+  text-decoration: none;
+  /* Cible tactile pleine hauteur : le libelle fait 11 px, la zone
+     cliquable fait 44. */
+  padding-block: 0.75rem;
 }
-/* LA JAUGE NE PEUT PAS MENTIR : elle est animee par LA MEME
-   timeline que le rail, a la meme position. Deux ScrollTrigger
-   separes, c'est le defaut classique ou la barre atteint 100 %
-   avant la derniere carte. */
-.svc-jauge {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  height: 3px;
-  background: var(--rule);
-}
-.svc-jauge i {
-  display: block;
-  height: 100%;
-  background-image: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px);
-  background-color: transparent;
+.svc-index a em { font-style: normal; color: var(--accent-text); }
+/* V1 · DEGAGER au survol : une arete franche passe sous le libelle,
+   de gauche a droite, dans le sens de lecture. Jamais un fondu. */
+.svc-index a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.35rem;
+  height: 2px;
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: left center;
+  transition: transform var(--cran, 260ms) var(--e-snap);
 }
-.svc-nav { display: flex; gap: var(--s-2); }
-/* Cibles tactiles pleines : 44 px, jamais reveles au survol seul. */
-.svc-nav .btn-icon { width: 2.75rem; height: 2.75rem; }
+.svc-index a { position: relative; }
+.svc-index a:hover::after,
+.svc-index a:focus-visible::after { transform: scaleX(1); }
 
-.svc-piste {
-  /* Le bord droit du cadre EST le bord de l'ecran : c'est lui qui
-     coupe la carte suivante. Une carte coupee est la seule
-     affordance de « il y en a d'autres » qui se soit montree
-     efficace en test — 6 utilisateurs sur 8 rataient le contenu
-     hors cadre quand tout tombait pile. */
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
-  padding-bottom: var(--s-2);
+/* LA GRILLE. Deux colonnes des 64em, une seule en dessous. Les
+   quatre chantiers sont peints en meme temps : il n'y a plus d'etat
+   « les trois autres n'existent pas ». */
+.svc-grille {
+  display: grid;
+  gap: var(--s-6) var(--gutter);
 }
-/* Une fois le pin GSAP en place, c'est le defilement vertical qui
-   pilote : la barre horizontale n'a plus rien a piloter. */
-.svc.is-pinned .svc-piste { overflow: hidden; scroll-snap-type: none; }
-
-.svc-rail { display: flex; gap: var(--gutter); align-items: stretch; }
 
 .svc-carte {
-  flex: 0 0 min(72rem, 84%);
-  scroll-snap-align: start;
   display: grid;
-  gap: var(--s-6);
+  grid-template-rows: auto 1fr auto;
+  gap: var(--s-5);
   align-content: start;
-  padding: var(--s-6);
+  padding: var(--s-5);
   background: var(--surface-2);
   border: var(--rule-w) solid var(--rule);
+  /* Le filet de profondeur, jamais une ombre. Rayon 0 partout. */
+  position: relative;
+  min-width: 0;
 }
-/* La carte active se distingue par son FILET, pas par une ombre ni
-   par une echelle : rien ne flotte. */
-.svc-carte.is-on { border-color: var(--rule-strong); }
+/* V1 · DEGAGER — l'arete de survol court sur tout le haut de la
+   carte. Elle est FRANCHE (2 px d'aplat minium), elle balaye de
+   gauche a droite, et elle est inconditionnelle : aucun etat
+   d'usage ne depend de la vague 2. */
+.svc-carte::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 320ms var(--e-snap);
+}
+.svc-carte:hover::before,
+.svc-carte:focus-within::before { transform: scaleX(1); }
+.svc-carte:hover,
+.svc-carte:focus-within { border-color: var(--rule-strong); }
 
-.svc-texte { display: grid; gap: var(--s-4); align-content: start; min-width: 0; }
-.svc-texte .label { display: flex; align-items: baseline; gap: var(--s-3); }
-.svc-texte .label em { font-style: normal; color: var(--accent-text); }
-.svc-carte h3 { font-size: var(--fs-3); max-width: 18ch; }
-.svc-lead { color: var(--ink-muted); font-size: var(--fs-5); max-width: 46ch; }
+/* LA VUE = un cadre a proportion fixe, PLUS une etiquette EN
+   DESSOUS. La carte ne change pas de hauteur selon que l'image est
+   arrivee ou non, donc CLS 0. */
+.svc-vue { display: grid; grid-template-rows: auto auto; min-width: 0; }
+.svc-cadre {
+  position: relative;
+  overflow: hidden;
+  /* 4/3 ET NON 16/10 : a 496 px de large, une maquette de site en
+     16/10 ne fait que 310 px de haut et son menu sortait du cadre,
+     qui le coupait net. Mesure, pas estimation — voir
+     tools/svc-cadre.mjs. */
+  aspect-ratio: 4 / 3;
+  background: var(--surface-1);
+  border: var(--rule-w) solid var(--rule);
+  min-width: 0;
+}
+.svc-cadre > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* L'ETIQUETTE D'HONNETETE.
+   ELLE EST SOUS LE CADRE, PAS DESSUS, ET C'EST UNE CORRECTION
+   MESUREE. Posee en surimpression au coin bas-gauche, elle
+   RECOUVRAIT la quatrieme ligne du menu de la maquette 01 des que la
+   fiche s'ouvrait. Une etiquette qui dit « ceci est un exemple » en
+   masquant l'exemple est le pire des deux mondes : on perd la
+   demonstration ET on a l'air de cacher quelque chose.
+   Elle est aussi permanente et sans survol : une demonstration doit
+   s'annoncer a l'arret, au doigt, et sans script. */
+.svc-vue-note {
+  padding: 0.45rem 0.6rem;
+  background: var(--surface-0);
+  border: var(--rule-w) solid var(--rule);
+  border-top: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.svc-corps { display: grid; gap: var(--s-3); align-content: start; min-width: 0; }
+.svc-corps .label { display: flex; align-items: baseline; gap: var(--s-3); }
+.svc-corps .label em { font-style: normal; color: var(--accent-text); }
+.svc-carte h3 { font-size: var(--fs-4); max-width: 22ch; }
+.svc-lead { color: var(--ink-muted); font-size: var(--fs-6); max-width: 46ch; }
+.svc-pied {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-4);
+  padding-top: var(--s-3);
+  border-top: var(--rule-w) solid var(--rule);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.6;
+}
+.svc-pied b { color: var(--accent-text); letter-spacing: var(--tracking-label); text-transform: uppercase; }
+.svc-pied span { color: var(--ink-muted); }
+
+/* ------------------------------------------------------------
+   LE DETAIL — `<details>` natif.
+
+   POURQUOI LE NATIF ET PAS UN BOUTON `aria-expanded`. Le contenu du
+   detail est de la LECTURE, et la regle du projet est que rien de
+   necessaire a la lecture ne depend du JavaScript. Un `<details>`
+   s'ouvre au clavier, s'annonce tout seul aux lecteurs d'ecran, et
+   Chrome le deplie tout seul quand on cherche dedans avec Ctrl+F.
+   Un bouton maison ne fait aucune des trois sans code.
+
+   PLUSIEURS PEUVENT ETRE OUVERTS EN MEME TEMPS, et c'est voulu : le
+   NN/g le demande explicitement pour les accordeons, et fermer la
+   fiche 01 parce qu'on ouvre la 03 empeche exactement la seule chose
+   qu'un visiteur veut faire ici, comparer deux chantiers.
+   ------------------------------------------------------------ */
+.svc-detail { display: grid; }
+.svc-plus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 0.85rem var(--s-4);
+  background: transparent;
+  border: var(--rule-w) solid var(--rule-strong);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+  /* V4 · CRAN — l'aplat minium roule sous le libelle, il ne fond
+     pas. Meme mecanique que les deux boutons du hero. */
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.svc-plus::-webkit-details-marker { display: none; }
+.svc-plus::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--cran, 520ms) var(--e-snap);
+}
+.svc-plus:hover,
+.svc-plus:focus-visible { color: var(--accent-ink); }
+.svc-plus:hover::before,
+.svc-plus:focus-visible::before { transform: scaleX(1); }
+/* Le chevron ROULE d'un cran, il ne tourne pas en continu. */
+.svc-plus .icon { flex: none; width: 0.875rem; height: 0.875rem; transition: transform var(--cran, 260ms) step-end; }
+.svc-detail[open] .svc-plus .icon { transform: rotate(180deg); }
+/* Deux libelles, un seul visible : l'etat se LIT, il ne se devine
+   pas a la forme d'une fleche. */
+.svc-detail[open] .svc-plus [data-ouvrir],
+.svc-detail:not([open]) .svc-plus [data-fermer] { display: none; }
+
+.svc-detail-in {
+  display: grid;
+  gap: var(--s-4);
+  padding-top: var(--s-5);
+  align-content: start;
+}
+.svc-detail-in > p { color: var(--ink-muted); font-size: var(--fs-6); max-width: 62ch; }
 .svc-specs {
   display: grid;
   gap: var(--s-3) var(--s-6);
@@ -2756,17 +2890,80 @@ html.entree-saut .entree-plaque {
 }
 .svc-specs li { display: grid; grid-template-columns: 1.25rem 1fr; gap: var(--s-3); font-size: var(--fs-7); }
 .svc-specs .icon { width: 0.875rem; height: 0.875rem; margin-top: 0.45em; color: var(--accent-text); }
-.svc-pied {
-  display: grid;
-  gap: var(--s-2);
-  padding-top: var(--s-4);
+.svc-detail-in .btn { justify-self: start; }
+/* La phrase-squelette ouvre le detail : c'est elle qui fait lire les
+   quatre chantiers comme UN standard et non comme quatre arguments
+   empiles. Elle est en encre pleine, pas en `--ink-muted` : c'est la
+   premiere ligne qu'on lit apres avoir clique. */
+.svc-detail-in .svc-lead { color: var(--ink); font-size: var(--fs-5); max-width: 54ch; }
+
+/* LA RESERVE SUR LES DELAIS. Elle est sous l'index, donc AVANT les
+   quatre delais qu'elle qualifie, et jamais dans un repli : sur
+   telephone ce sont les seuls delais affiches du site. */
+.svc-reserve { margin-top: calc(var(--s-4) * -1); }
+
+/* ------------------------------------------------------------
+   LE LANCEUR DE VISITE — carte 03.
+   La seule carte qui se DEMONTRE au lieu de se decrire. Le bouton
+   est pose sur la photo, en aplat franc, jamais revele au survol :
+   une affordance qui n'existe qu'au pointeur n'existe pas au doigt.
+   ------------------------------------------------------------ */
+/* LE CADRE COMMANDE LA PROPORTION, PAS LA MAQUETTE.
+   `.ecr` porte son propre `aspect-ratio: 16 / 10` — il date du
+   temps ou la maquette etait posee directement dans la carte. Dans
+   un cadre en 4/3, les deux se disputaient : la maquette se rendait
+   a 308 px dans une boite de 372, laissant 64 px vides EN DESSOUS
+   pendant que son propre contenu debordait de 36 px sur le menu.
+   Deux defauts opposes dans le meme cadre, ce qui est la signature
+   d'une proportion declaree deux fois. */
+.svc-cadre > .ecr { height: 100%; aspect-ratio: auto; }
+
+.svc-vue--photo .svc-cadre { display: grid; }
+.svc-vue--photo .svc-cadre > img { grid-area: 1 / 1; }
+.svc-tour {
+  grid-area: 1 / 1;
+  align-self: end;
+  justify-self: start;
+  margin: var(--s-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  /* 44 px de haut pleins, cible tactile comprise. */
+  min-height: 2.75rem;
+  padding: 0 var(--s-4);
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
   font-family: var(--font-data);
   font-size: var(--fs-8);
-  line-height: 1.6;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  /* V4 · CRAN — au survol, l'aplat roule vers l'encre d'un cran. Il
+     ne fond pas, et les deux etats tiennent leur contraste. */
+  transition: background-color var(--cran) step-end, color var(--cran) step-end;
+  --cran: 260ms;
 }
-.svc-pied b { color: var(--accent-text); letter-spacing: var(--tracking-label); text-transform: uppercase; }
-.svc-pied span { color: var(--ink-muted); }
-.svc-carte .btn { justify-self: start; }
+.svc-tour:hover,
+.svc-tour:focus-visible { background: var(--ink); color: var(--surface-0); }
+.svc-tour .icon { width: 0.875rem; height: 0.875rem; flex: none; }
+
+/* `--cran` est declare sur `.btn`, pas globalement : les deux
+   commandes de cette section le portent donc elles-memes. */
+.svc-plus { --cran: 520ms; }
+.svc-index a { --cran: 260ms; }
+
+/* MOUVEMENT REDUIT — le cran reste, le balayage part.
+   `--cran: 0ms` ne supprime pas l'etat, il supprime la course : le
+   survol bascule en une image au lieu de balayer. Aucune
+   information n'est perdue, et c'est la regle du projet. */
+@media (prefers-reduced-motion: reduce) {
+  .svc-plus,
+  .svc-index a,
+  .svc-tour { --cran: 0ms; }
+  .svc-carte::before,
+  .svc-index a::after { transition-duration: 0ms; }
+}
 
 /* ------------------------------------------------------------
    LES QUATRE ECRANS.
@@ -2856,9 +3053,7 @@ html.entree-saut .entree-plaque {
 .ecr-flanc span,
 .ecr-ligne b { min-width: 0; overflow-wrap: anywhere; }
 .ecr-trow span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ecr-noeud { overflow: hidden; }
-.ecr-noeud b,
-.ecr-noeud span { overflow-wrap: anywhere; }
+.ecr-journal { min-width: 0; }
 .ecr-sh {
   font-family: var(--font-data);
   font-size: 0.9em;
@@ -2896,16 +3091,63 @@ html.entree-saut .entree-plaque {
   letter-spacing: 0.16em;
   color: var(--ink);
 }
-.ecr-hero { display: grid; grid-template-columns: 5fr 6fr; gap: 1.2em; align-items: center; }
-/* La « photo » est une plaque de limaille, pas un rectangle gris :
-   une image absente doit se lire comme une decision, pas comme un
-   fichier manquant. Trame a arrets francs, aucun degrade. */
+/* LA PAGE DU SITE A UNE RANGEE ELASTIQUE, ET C'EST CE QUI EMPECHE
+   LE CADRE DE COUPER.
+   Mesure du 2026-07-30 par `tools/svc-cadre.mjs`, neuf largeurs,
+   les deux etats : la maquette 01 — la seule qui porte une barre de
+   nav, un hero ET un menu — sortait de son cadre de 84 a 93 px
+   entre 1024 et 1600, et le cadre la coupait EN SILENCE, parce
+   qu'un `overflow: hidden` ne se plaint jamais.
+   La cause n'etait pas une valeur mal choisie : c'est que la photo
+   du hero RECLAMAIT sa hauteur (un ratio 4/3 sur une largeur de
+   colonne) au lieu de prendre ce qui restait. On inverse. La nav et
+   le menu sont mesures, le hero absorbe le reste, et `object-fit:
+   cover` fait le cadrage. Il ne peut plus rien y avoir a couper, a
+   aucune largeur, dans aucun des deux etats. */
+.ecr--site .ecr-page { grid-template-rows: auto minmax(0, 1fr) auto; }
+.ecr-hero { display: grid; grid-template-columns: 5fr 6fr; gap: 1.2em; align-items: stretch; min-height: 0; }
+.ecr-hero-txt { align-content: center; }
+/* LA PHOTO DU SITE MONTRE EST UNE VRAIE PHOTO, ET C'EST LE POINT.
+   Cette case portait une trame de limaille — une decision assumee
+   pour dire « image absente » plutot que « fichier manquant ». Le
+   reproche fait a la section le 2026-07-30 est exactement celui-la :
+   « des cadres de navigateur avec des barres grises, ca ne fait pas
+   rever ». Or ce qui fait qu'un site a l'air d'un vrai site, c'est
+   sa PHOTOGRAPHIE. On y met donc la photographie sous licence qui
+   est deja dans le depot, celle-la meme que la section Secteurs
+   emploie pour la restauration : meme monde, meme licence, aucun
+   octet de plus.
+   La trame reste en fond : si l'image differee n'est pas encore la,
+   la case est une decision, jamais un trou. */
 .ecr-plaque {
-  aspect-ratio: 4 / 3;
+  position: relative;
+  overflow: hidden;
+  /* LA PHOTO PREND CE QUI RESTE, elle ne le reclame plus.
+     Version precedente : `aspect-ratio: 4 / 3`, donc une hauteur
+     derivee de la LARGEUR de sa colonne. Tout le reste du cadre
+     s'echelonne sur `clamp(5.4px, 2.15cqw, 11px)` et se PLAFONNE a
+     11 px passe 512 px de large ; la photo, elle, continuait de
+     grandir. Elle poussait donc le menu hors du cadre, qui le
+     coupait EN SILENCE — un `overflow: hidden` ne se plaint jamais.
+     Mesure du 2026-07-30, `tools/svc-cadre.mjs`, neuf largeurs, les
+     deux etats : 84 a 93 px coupes entre 1024 et 1600.
+     La rangee du hero est maintenant elastique — `minmax(0, 1fr)`
+     sur `.ecr--site .ecr-page` — et la photo la remplit ;
+     `object-fit: cover` fait le cadrage. Zero coupe aux neuf
+     largeurs, ferme comme ouvert. */
+  height: 100%;
+  min-height: 5em;
+  align-self: stretch;
   background-color: #101211;
   background-image:
     repeating-linear-gradient(0deg, transparent 0 2px, rgb(200 55 27 / 0.62) 2px 3px),
     repeating-linear-gradient(90deg, transparent 0 2px, rgb(220 222 219 / 0.16) 2px 3px);
+}
+.ecr-plaque img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .ecr-hero-txt { display: grid; gap: 0.7em; justify-items: start; }
 .ecr-kicker { font-family: var(--font-data); font-size: 0.8em; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-text); }
@@ -2917,43 +3159,33 @@ html.entree-saut .entree-plaque {
 .ecr-mrow em { order: 2; font-family: var(--font-data); font-style: normal; font-size: 1em; color: var(--ink-muted); }
 .ecr-scan { position: absolute; left: -0.4em; right: -0.4em; top: 1.9em; height: 1.5em; background: var(--accent-wash); border-left: 2px solid var(--accent); }
 
-/* --- 02 · le flux --- */
-.ecr--flux .ecr-page { grid-template-rows: minmax(0, 1fr) auto; }
-.ecr-flux { position: relative; min-height: 0; }
-/* Trois colonnes a 35 % de pas et 30 % de large : la derniere
-   s'arrete pile a 100 %. Elle debordait a 104 % et les deux boites
-   de droite etaient coupees par le cadre. */
-.ecr-noeud {
-  position: absolute;
-  left: calc(var(--x) * 35%);
-  top: calc(var(--y) * 64%);
-  width: 30%;
-  display: grid;
-  gap: 0.2em;
-  padding: 0.5em 0.6em;
-  background: var(--surface-0);
-  border: var(--rule-w) solid var(--rule-strong);
+/* --- 02 · la journee --- */
+/* LE CABLAGE A ETE RETIRE LE 2026-07-30.
+   Cinq boites `.ecr-noeud` reliees par huit segments `.ecr-fil` a
+   trajet : c'etait un schema d'ingenieur, et il est parti avec ses
+   trois familles de selecteurs et ses images-cles. Le brief le dit
+   sans detour — « pas un diagramme de developpeur ». Un patron de
+   PME ne lit pas un graphe de noeuds ; il lit une JOURNEE.
+
+   Reste donc le journal, qui dit ce qui s'est fait et combien
+   d'heures ca rend, et a cote la photographie du commerce a qui ca
+   arrive. Le monde a gauche, ce que le monde a produit tout seul a
+   droite. */
+.ecr--flux .ecr-page--jour {
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+  gap: 1.1em;
+  align-items: stretch;
 }
-.ecr-noeud b { font-size: 0.95em; font-weight: 700; color: var(--ink); }
-.ecr-noeud span { font-family: var(--font-data); font-size: 0.75em; color: var(--ink-muted); }
-.ecr-noeud--ia { border-color: var(--accent); }
-
-/* Le cablage. Les huit segments se touchent deux a deux : un
-   diagramme dont les fils flottent ne se lit pas comme un circuit,
-   il se lit comme un defaut de rendu. */
-.ecr-fil { position: absolute; background: var(--rule-strong); }
-.f-a { left: 30%; top: 8%; width: 2.5%; height: var(--rule-w); }
-.f-b { left: 30%; top: 72%; width: 2.5%; height: var(--rule-w); }
-.f-c { left: 32.5%; top: 8%; width: var(--rule-w); height: 64%; }
-.f-d { left: 32.5%; top: 40%; width: 2.5%; height: var(--rule-w); }
-.f-e { left: 65%; top: 40%; width: 2.5%; height: var(--rule-w); }
-.f-f { left: 67.5%; top: 8%; width: var(--rule-w); height: 64%; }
-.f-g { left: 67.5%; top: 8%; width: 2.5%; height: var(--rule-w); }
-.f-h { left: 67.5%; top: 72%; width: 2.5%; height: var(--rule-w); }
-
-.ecr-jeton { position: absolute; inset: 0; pointer-events: none; }
-.ecr-jeton s { position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; background: var(--accent); text-decoration: none; }
-.ecr-journal { display: grid; gap: 0.4em; padding-top: 0.7em; border-top: var(--rule-w) solid var(--rule); }
+.ecr-lieu {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  background: var(--surface-1);
+  border: var(--rule-w) solid var(--rule);
+}
+.ecr-lieu img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ecr-journal { display: grid; gap: 0.4em; align-content: start; min-width: 0; }
 .ecr-ligne { display: flex; gap: 0.8em; font-family: var(--font-data); font-size: 0.9em; color: var(--ink-muted); }
 .ecr-ligne em { font-style: normal; color: var(--accent-text); flex: none; }
 .ecr-ligne b { font-weight: 400; color: var(--ink); }
@@ -3027,9 +3259,7 @@ html.entree-saut .entree-plaque {
    contenu. Mesure : la page interne du site debordait de 63 px a
    390. Le cadre reprend de la hauteur plutot que de couper. */
 @media (max-width: 63.99em) {
-  .ecr { aspect-ratio: 4 / 3; }
   .ecr--site .ecr-page { gap: 0.5em; padding: 1.1em; }
-  .ecr--site .ecr-plaque { aspect-ratio: 16 / 9; }
   .ecr--site .ecr-menu { gap: 0.45em; }
 }
 /* Sous 480 px le cadre passe au carre. On aurait pu reduire encore
@@ -3037,19 +3267,30 @@ html.entree-saut .entree-plaque {
    un site : elle redevient la trame grise que ce chantier corrige.
    On donne donc de la HAUTEUR plutot que d'ecraser la matiere. */
 @media (max-width: 30em) {
-  .ecr { aspect-ratio: 1 / 1; }
+  .svc-cadre { aspect-ratio: 1 / 1; }
   .svc-carte { padding: var(--s-5); }
 }
 
 /* ------------------------------------------------------------
    LE MOUVEMENT DES ECRANS.
-   Il ne tourne QUE sur la carte active : quatre interfaces animees
-   en meme temps, c'est quatre foyers d'attention, donc aucun. Tout
-   est en `transform` ou en `opacity`, et tout se coupe sous
-   `prefers-reduced-motion` — l'etat de repos est alors la forme
-   finale, nette, jamais un ecran a moitie construit.
+
+   IL NE TOURNE PLUS QU'A LA DEMANDE — survol, focus, ou fiche
+   ouverte. Avant, il tournait en permanence sur la carte « active »
+   du rail ; avec les quatre cartes peintes en meme temps, la meme
+   regle donnerait quatre interfaces animees a la fois, c'est-a-dire
+   quatre foyers d'attention, c'est-a-dire aucun. Le mouvement suit
+   donc l'attention du visiteur au lieu de la reclamer.
+
+   C'est aussi le poste le moins cher possible : une animation
+   permanente ne s'arrete jamais, celle-ci ne demarre que si
+   quelqu'un regarde.
+
+   Tout est en `transform` ou en `opacity`, tout tombe au palier 1,
+   et tout se coupe sous `prefers-reduced-motion` — l'etat de repos
+   est alors la forme finale, nette, jamais un ecran a moitie
+   construit.
    ------------------------------------------------------------ */
-.svc-carte.is-on .ecr-scan { animation: ecr-scan 3.4s var(--e-drive) infinite; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-scan { animation: ecr-scan 3.4s var(--e-drive) infinite; }
 @keyframes ecr-scan {
   0%, 8% { transform: translateY(0); }
   30% { transform: translateY(16px); }
@@ -3061,8 +3302,6 @@ html.entree-saut .entree-plaque {
    tronc, entree dans le tri, puis remontee vers la fiche CRM. Les
    pourcentages sont ceux des fils, donc le trajet reste juste a
    toutes les largeurs sans une ligne de script. */
-.svc-carte.is-on .ecr-jeton { animation: ecr-jeton 4s var(--e-drive) infinite; }
-@keyframes ecr-jeton {
   0%   { transform: translate(30%, 8%); opacity: 0; }
   6%   { transform: translate(30%, 8%); opacity: 1; }
   16%  { transform: translate(32.5%, 8%); }
@@ -3074,43 +3313,66 @@ html.entree-saut .entree-plaque {
   86%  { transform: translate(70%, 8%); opacity: 1; }
   94%, 100% { transform: translate(70%, 8%); opacity: 0; }
 }
-.svc-carte.is-on .ecr-ligne { opacity: 0.15; animation: ecr-ligne 3.6s linear infinite; }
-.svc-carte.is-on .ecr-ligne:nth-child(3) { animation-delay: 0.35s; }
-.svc-carte.is-on .ecr-ligne:nth-child(4) { animation-delay: 0.7s; }
-.svc-carte.is-on .ecr-ligne:nth-child(5) { animation-delay: 1.05s; }
-.svc-carte.is-on .ecr-ligne:nth-child(6) { animation-delay: 1.4s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-ligne { opacity: 0.15; animation: ecr-ligne 3.6s linear infinite; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-ligne:nth-child(3) { animation-delay: 0.35s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-ligne:nth-child(4) { animation-delay: 0.7s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-ligne:nth-child(5) { animation-delay: 1.05s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-ligne:nth-child(6) { animation-delay: 1.4s; }
 @keyframes ecr-ligne { 0%, 4% { opacity: 0.15; } 12%, 92% { opacity: 1; } 100% { opacity: 0.15; } }
 
-.svc-carte.is-on .ecr-zone { animation: ecr-zone 3.2s var(--e-brake) infinite; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-zone { animation: ecr-zone 3.2s var(--e-brake) infinite; }
 @keyframes ecr-zone { 0%, 6% { transform: scale(0.2); } 46%, 100% { transform: scale(1); } }
-.svc-carte.is-on .ecr-broche { animation: ecr-broche 3.2s var(--e-snap) infinite; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-broche { animation: ecr-broche 3.2s var(--e-snap) infinite; }
 @keyframes ecr-broche { 0%, 40% { transform: scale(0.6); } 52% { transform: scale(1.35); } 66%, 100% { transform: scale(1); } }
 
-.svc-carte.is-on .ecr-graphe i { animation: ecr-barre 3.4s var(--e-brake) infinite; }
-.svc-carte.is-on .ecr-graphe i:nth-child(1) { animation-delay: 0.00s; }
-.svc-carte.is-on .ecr-graphe i:nth-child(2) { animation-delay: 0.05s; }
-.svc-carte.is-on .ecr-graphe i:nth-child(3) { animation-delay: 0.10s; }
-.svc-carte.is-on .ecr-graphe i:nth-child(4) { animation-delay: 0.15s; }
-.svc-carte.is-on .ecr-graphe i:nth-child(5) { animation-delay: 0.20s; }
-.svc-carte.is-on .ecr-graphe i:nth-child(6) { animation-delay: 0.25s; }
-.svc-carte.is-on .ecr-graphe i:nth-child(7) { animation-delay: 0.30s; }
-.svc-carte.is-on .ecr-graphe i:nth-child(8) { animation-delay: 0.35s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i { animation: ecr-barre 3.4s var(--e-brake) infinite; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(1) { animation-delay: 0.00s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(2) { animation-delay: 0.05s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(3) { animation-delay: 0.10s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(4) { animation-delay: 0.15s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(5) { animation-delay: 0.20s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(6) { animation-delay: 0.25s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(7) { animation-delay: 0.30s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-graphe i:nth-child(8) { animation-delay: 0.35s; }
 @keyframes ecr-barre { 0%, 4% { transform: scaleY(0); } 24%, 100% { transform: scaleY(1); } }
 
-.svc-carte.is-on .ecr-trow:not(.ecr-trow--tete) { animation: ecr-trow 3.4s var(--e-snap) infinite; }
-.svc-carte.is-on .ecr-trow:nth-child(3) { animation-delay: 0.12s; }
-.svc-carte.is-on .ecr-trow:nth-child(4) { animation-delay: 0.24s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-trow:not(.ecr-trow--tete) { animation: ecr-trow 3.4s var(--e-snap) infinite; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-trow:nth-child(3) { animation-delay: 0.12s; }
+.svc-carte:is(:hover, :focus-within, :has(.svc-detail[open])) .ecr-trow:nth-child(4) { animation-delay: 0.24s; }
 @keyframes ecr-trow {
   0%, 10% { transform: translateX(-10px); opacity: 0.15; }
   26%, 100% { transform: translateX(0); opacity: 1; }
 }
+
+/* PALIER 1 — le mouvement des ecrans tombe.
+   C'est du N3 pur : il n'apporte aucune orientation et il n'est
+   meme pas visible sans survol. Sur une machine qui rame, il part
+   avant tout le reste. L'etat de repos est la forme FINALE, donc on
+   ne perd rien d'autre que le mouvement. */
+:root[data-palier="1"] .svc-carte .ecr-scan,
+:root[data-palier="1"] .svc-carte .ecr-ligne,
+:root[data-palier="1"] .svc-carte .ecr-zone,
+:root[data-palier="1"] .svc-carte .ecr-broche,
+:root[data-palier="1"] .svc-carte .ecr-graphe i,
+:root[data-palier="1"] .svc-carte .ecr-trow,
+:root[data-palier="2"] .svc-carte .ecr-scan,
+:root[data-palier="2"] .svc-carte .ecr-ligne,
+:root[data-palier="2"] .svc-carte .ecr-zone,
+:root[data-palier="2"] .svc-carte .ecr-broche,
+:root[data-palier="2"] .svc-carte .ecr-graphe i,
+:root[data-palier="2"] .svc-carte .ecr-trow { animation: none !important; }
+:root[data-palier="1"] .svc-carte .ecr-graphe i,
+:root[data-palier="2"] .svc-carte .ecr-graphe i { transform: scaleY(1); }
+:root[data-palier="1"] .svc-carte .ecr-zone,
+:root[data-palier="2"] .svc-carte .ecr-zone { transform: scale(1); }
+:root[data-palier="1"] .svc-carte .ecr-ligne,
+:root[data-palier="2"] .svc-carte .ecr-ligne,
 
 /* Au repos, la forme finale. Un ecran fige a mi-construction se
    lirait comme un bogue, ce qui est exactement le reproche que ce
    chantier corrige. */
 @media (prefers-reduced-motion: reduce) {
   .svc-carte .ecr-scan,
-  .svc-carte .ecr-jeton,
   .svc-carte .ecr-ligne,
   .svc-carte .ecr-zone,
   .svc-carte .ecr-broche,
@@ -3119,7 +3381,6 @@ html.entree-saut .entree-plaque {
   .svc-carte .ecr-graphe i { transform: scaleY(1); }
   .svc-carte .ecr-zone { transform: scale(1); }
   .svc-carte .ecr-ligne { opacity: 1; }
-  .svc-carte .ecr-jeton { opacity: 1; }
 }
 
 /* ============================================================
@@ -4759,13 +5020,46 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   .project:nth-child(even) .shot { grid-column: 8 / span 5; grid-row: 1; }
   .project:nth-child(even) .project-meta { grid-column: 1 / span 6; grid-row: 1; }
 
-  /* A partir de 1024 la carte de service passe en deux colonnes :
-     le texte a gauche, l'ecran a droite. C'est aussi a partir d'ici
-     que le pin horizontal s'active (voir `js/motion.js`) : sous
-     cette largeur, le doigt fait deja le travail et le detournement
-     de defilement est proscrit. */
-  .svc-carte { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-7); align-items: center; padding: var(--s-7); }
-  .svc-carte h3 { font-size: var(--fs-2); }
+  /* A PARTIR DE 1024, LES QUATRE CHANTIERS SE RANGENT EN DEUX
+     COLONNES. Deux, pas quatre : a quatre de front, la vue de chaque
+     carte tombe sous 300 px et l'interface qu'elle montre redevient
+     la trame grise que ce chantier corrige. Deux colonnes gardent
+     les quatre visibles ensemble ET une image lisible. */
+  .svc-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .svc-carte { padding: var(--s-6); }
+  .svc-carte h3 { font-size: var(--fs-3); }
+
+  /* LA CARTE OUVERTE PREND LA LARGEUR ENTIERE, et sa vue devient une
+     BANDE. C'est le moment fort de la section : la grille se
+     recompose, et `js/langue.js` fait GLISSER les voisines a leur
+     nouvelle place au lieu de les laisser sauter — V2 · S'ALIGNER,
+     le meme verbe que les huit plaques du hero.
+
+     LA VUE PASSE EN HAUT, PAS A GAUCHE, ET C'EST UNE CORRECTION
+     MESUREE. Premiere version : vue en colonne 1 sur deux rangees,
+     `align-self: start`. Le texte de droite fait environ 800 px de
+     haut, la vue 310 : il restait ENVIRON 500 PX DE VIDE sous
+     l'image, sur la moitie de la carte la plus regardee. Etirer la
+     vue sur 800 px aurait donne un cadre en portrait, c'est-a-dire
+     une maquette de site qui ne ressemble plus a un ecran.
+     En bande, l'image GRANDIT visiblement — de 496 a 1144 px de
+     large — et le texte se range dessous en deux colonnes. Aucun
+     vide, et l'agrandissement EST le geste. */
+  .svc-carte:has(.svc-detail[open]) {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto auto;
+    column-gap: var(--s-7);
+    border-color: var(--rule-strong);
+  }
+  .svc-carte:has(.svc-detail[open]) .svc-vue { grid-column: 1 / -1; grid-row: 1; }
+  .svc-carte:has(.svc-detail[open]) .svc-cadre { aspect-ratio: 7 / 3; }
+  /* Le cadre remplit la bande : son propre ratio le laisserait
+     centre avec deux bandes mortes sur les cotes. */
+  .svc-carte:has(.svc-detail[open]) .ecr { height: 100%; aspect-ratio: auto; }
+  .svc-carte:has(.svc-detail[open]) .svc-corps { grid-column: 1; grid-row: 2; align-content: start; }
+  .svc-carte:has(.svc-detail[open]) .svc-detail { grid-column: 2; grid-row: 2; }
+  .svc-carte:has(.svc-detail[open]) h3 { font-size: var(--fs-2); }
   .svc-specs { grid-template-columns: repeat(2, 1fr); }
 
   .sector-group { grid-template-columns: 15rem 1fr; gap: var(--s-6); }
@@ -4888,7 +5182,22 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gutter);
     row-gap: var(--s-6);
-    padding-block: var(--s-7);
+    /* LE BAS EST PLUS EPAIS QUE LE HAUT, ET C'EST UNE MESURE.
+       La huitieme plaque — « Québec », celle qui ferme le bloc et
+       qui est posee le plus bas — sortait du hero et MORDAIT sur le
+       seuil de la section 02 : 28 a 38 px selon la largeur, releve
+       le 2026-07-30 par `tools/plaques-debord.mjs` sur une fenetre
+       de 12 s, donc plus d'une demi-periode du cycle le plus lent
+       (10,6 s) — piege 24. Une seule pose prise au hasard dans la
+       boucle ne prouve rien.
+       C'est la meme correction que celle des 60 -> 76 px lateraux :
+       c'est la BANDE qui se plie a la signature, jamais la
+       signature qu'on rogne, et surtout jamais la section d'en
+       dessous qu'on decale. 48 + 40 = 88, soit le pire debord
+       mesure plus une marge. Porte a 96 px apres controle : a
+       1024 les 88 px ne laissaient que 2 px, et 2 px ne sont pas une
+       marge, c'est une coincidence. */
+    padding-block: var(--s-7) 96px;
     /* LA MARGE DE DEBORDEMENT EST PRISE SUR LA BANDE, PAS SUR LA
        PAGE — et c'est un debordement mesure, pas une precaution.
 
@@ -4947,35 +5256,14 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
      comme le poincon qu'on frappe en bas d'une piece finie. */
   .plaques > :nth-child(8) { grid-column: 4 / span 5; }
 
-  /* LA SCENE EPINGLEE TIENT DANS UN ECRAN, exactement.
-     Une scene epinglee plus haute que l'ecran est le pire des deux
-     mondes : le defilement est detourne ET il faut quand meme
-     defiler pour lire. La hauteur est donc imposee ici et tout le
-     contenu s'y range — c'est la composition qui se plie a l'ecran,
-     jamais l'inverse. */
-  .svc {
-    height: calc(100dvh - var(--nav-h));
-    grid-template-rows: auto minmax(0, 1fr);
-    align-content: stretch;
-    padding-block: var(--s-5) var(--s-6);
-  }
-  .svc-piste { min-height: 0; }
-  .svc-rail { height: 100%; }
-  .svc-carte { height: 100%; overflow: hidden; align-content: center; padding: var(--s-5); gap: var(--s-5); }
-  /* Dans une scene a hauteur imposee, l'ecran remplit sa cellule :
-     un ratio fixe y laisserait une bande morte en haut ou en bas. */
-  .svc-ecran { height: 100%; align-self: stretch; aspect-ratio: auto; }
-  /* LE CONTENU SE PLIE A LA HAUTEUR DE LA SCENE, pas l'inverse.
-     Mesure a 1440x900 : la scene utile fait 750 px. Au corps
-     precedent, le titre prenait quatre lignes de 46 px et le haut de
-     la carte etait coupe net. Chaque valeur ci-dessous est calibree
-     pour que la colonne de texte rentre sans jamais defiler. */
-  .svc-carte h3 { font-size: clamp(1.375rem, 0.75rem + 1.25vw, 2.125rem); max-width: 19ch; }
-  .svc-texte { gap: var(--s-3); }
-  .svc-lead { font-size: var(--fs-6); max-width: 42ch; }
-  .svc-specs { gap: var(--s-2) var(--s-5); padding-top: var(--s-3); }
-  .svc-specs li { font-size: var(--fs-8); line-height: 1.5; }
-  .svc-pied { padding-top: var(--s-3); }
+  /* LA HAUTEUR IMPOSEE A DISPARU AVEC LE PIN.
+     `.svc { height: calc(100dvh - var(--nav-h)) }` obligeait quatre
+     cartes a tenir dans 750 px utiles : le titre etait ramene a
+     `clamp(1.375rem…)`, le chapo a `--fs-6`, les points a `--fs-8`,
+     et la carte portait `overflow: hidden` — c'est-a-dire qu'elle
+     COUPAIT ce qui ne rentrait pas. C'etait la composition qui
+     commandait au texte. La section reprend sa hauteur naturelle et
+     le texte reprend son corps. */
 
   .faq-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
   .faq-head { grid-column: 1 / span 4; position: sticky; top: calc(var(--nav-h) + var(--s-6)); align-self: start; }

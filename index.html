@@ -706,44 +706,52 @@
   </div>
 
   <!-- ===================== 02 · SERVICES ===================== -->
-  <!-- DEFILEMENT HORIZONTAL, ET LE CHOIX EST ARBITRE.
+  <!-- LES QUATRE CHANTIERS SONT PEINTS EN MEME TEMPS.
+       Reecrit le 2026-07-30. Detail complet : `CHANTIER-SERVICES.md`.
 
-       Le brief demandait d'essayer aussi une mecanique ROTATIVE, les
-       services qui tournent en cercle pendant le defilement. Les deux
-       ont ete construites et capturees (`tools/proto-rotatif.html`,
-       captures dans `refonte-captures/services-proto/`). La roue
-       perd sur deux points qui ne se rattrapent pas :
-       · sur un cercle il n'y a ni debut ni fin, donc plus aucune
-         reponse honnete a « combien il en reste » — c'est du N1
-         sacrifie pour du N3 ;
-       · pour rester lisible, une carte posee sur un cercle doit etre
-         redressee, donc elle glisse le long d'une courbe sans jamais
-         s'y aligner : ca flotte, et rien ne doit flotter ici.
-       L'horizontal garde un debut, une fin, une barre qui ne peut
-       pas mentir, et des cartes qui restent d'aplomb.
+       CE QU'IL Y AVAIT AVANT, ET POURQUOI IL EST PARTI.
+       Un rail horizontal epingle montrait UNE carte a la fois
+       derriere un compteur « 01 / 04 ». Le raisonnement d'origine
+       n'etait pas mauvais — il argumentait contre une roue, il
+       refusait la rotation automatique, il rendait la piste
+       focalisable au clavier, il coupait la carte suivante au bord
+       pour dire qu'il y en avait d'autres. Tout ca reste vrai. Mais
+       il defendait la bonne execution d'un patron qui, lui, ne tient
+       pas :
 
-       LES SIX GARDE-FOUS, chacun issu d'une mesure :
-       1. UNE SEULE timeline pilote le rail ET la barre. Deux
-          ScrollTrigger separes, c'est le defaut le plus courant du
-          scroll horizontal : la barre atteint 100 % avant la
-          derniere carte et le visiteur croit que c'est fini.
-       2. Le compteur est GROS. L'eye-tracking du Nielsen Norman
-          Group montre que les fleches de carrousel ne sont
-          litteralement jamais regardees : l'orientation doit passer
-          par un chiffre, pas par une puce de 8 px.
-       3. La carte suivante est COUPEE par le bord droit. Etude NN/g
-          sur Maple.com : 6 utilisateurs sur 8 n'ont pas decouvert le
-          contenu au-dela du visible quand tout tombait pile dans le
-          cadre. Un bord franc qui coupe est la seule affordance qui
-          se voit.
-       4. Le rail est FOCALISABLE (`tabindex="0"`, `role="group"`,
-          nom accessible) et double par deux boutons toujours
-          visibles. Sans ca, une zone a debordement echoue WCAG 2.1.1
-          et 2.1.3, niveau A.
-       5. AUCUNE rotation automatique, nulle part.
-       6. Sous 64em, PLUS AUCUN epinglage : defilement natif avec
-          accrochage. NN/g est explicite sur le detournement de
-          defilement au telephone, et un doigt sait deja glisser. -->
+       · Erik Runyon, Notre Dame, 315 665 changements de diapositive
+         releves : ~1 % des visiteurs cliquent, et 84 % de ces clics
+         tombent sur la POSITION 1. Les chantiers 02, 03 et 04
+         etaient, en pratique, non publies.
+       · Baymard l'ecrit en exigence : « Avoid having carousel slides
+         as the only or primary route to features or content. »
+       · NN/g, en oculometrie : « a user looking at a filmstrip of
+         product images never glanced at the arrows. » Le garde-fou
+         n° 2 — « le compteur est gros » — repondait a ce constat en
+         grossissant l'INDICATEUR. Or un compteur dit COMBIEN il en
+         manque, jamais QUOI.
+       · Releve dans le DOM rendu des sections de services qui ont pu
+         etre chargees (Linear, Basement, Hello Monday, Locomotive) :
+         zero carrousel, zero onglet, zero `<details>` SUR LA LISTE.
+         Aucun ne fait payer un clic pour connaitre son offre.
+
+       · Et quatre defauts mesures tenaient au pin lui-meme, dont un
+         qui cassait la mise en page a chaque arrivee par ancre — le
+         pin s'armait 284 px trop tot et la scene se teleportait de
+         280 px en une image. `CHANTIER-SERVICES.md § 1`.
+
+       CE QUI TIENT SANS UNE LIGNE DE JAVASCRIPT : tout. La grille
+       est du CSS, l'index est fait de quatre ancres, le detail est
+       un `<details>` natif — donc clavier, lecteur d'ecran et
+       Ctrl+F fonctionnent sans qu'on ecrive quoi que ce soit. Le
+       script n'ajoute que le GLISSEMENT des cartes voisines quand
+       une fiche s'ouvre.
+
+       PLUSIEURS FICHES PEUVENT ETRE OUVERTES A LA FOIS, et c'est le
+       comportement natif qu'on laisse faire : le NN/g le demande
+       explicitement pour les accordeons, et fermer la 01 parce qu'on
+       ouvre la 03 empeche la seule chose qu'un visiteur veut faire
+       ici, comparer deux chantiers. -->
   <section id="services">
       <!-- ===== FRONTIERE 02 · 01 vers 02 =====
            G4 : volet (bas). On quitte la matiere brute pour l'offre : seule bascule de fond du haut de page.
@@ -762,82 +770,58 @@
     </div>
 
     <div class="svc" id="svc">
-      <div class="svc-bar">
-        <p class="svc-count"><b class="num" id="svcNum">01</b><span class="num">/ 04</span></p>
-        <p class="svc-now" id="svcNow">Sites web et boutiques</p>
-        <div class="svc-jauge" aria-hidden="true"><i id="svcJauge"></i></div>
-        <div class="svc-nav">
-          <button class="btn-icon" type="button" data-svc="-1" aria-label="Service précédent">
-            <svg class="icon" aria-hidden="true"><use href="#i-chevron-left" /></svg>
-          </button>
-          <button class="btn-icon" type="button" data-svc="1" aria-label="Service suivant">
-            <svg class="icon" aria-hidden="true"><use href="#i-chevron-right" /></svg>
-          </button>
-        </div>
-      </div>
 
-      <div class="svc-piste" id="svcPiste" tabindex="0" role="group"
-           aria-label="Nos quatre chantiers, défilement horizontal. Utilisez les flèches gauche et droite.">
-        <div class="svc-rail" id="svcRail">
+      <!-- L'INDEX. Il remplace le compteur « 01 / 04 ».
+           Un compteur dit au visiteur COMBIEN il en manque, jamais
+           QUOI. Quatre ancres nommees repondent aux deux questions
+           sur une seule ligne, avant tout defilement, et elles
+           tiennent sans script, sous mouvement reduit et aux trois
+           paliers. C'est le `Jump ahead:` de Hello Monday, qui est
+           la seule chose de tout le releve qui NOMME les quatre
+           avant de les montrer. -->
+      <nav class="svc-index" aria-label="Les quatre chantiers">
+        <a href="#svc-01"><em class="num">01</em>Sites web et boutiques</a>
+        <a href="#svc-02"><em class="num">02</em>Automatisation et IA</a>
+        <a href="#svc-03"><em class="num">03</em>Immobilier et visibilité locale</a>
+        <a href="#svc-04"><em class="num">04</em>Logiciels et applications</a>
+      </nav>
+      <!-- LA RESERVE SUR LES DELAIS EST OBLIGATOIRE ICI, et ce n'est
+           pas de la prudence. Celle du hero vit dans `.fiche-foot`,
+           qui est en `display: none` sous 64em : sur telephone, les
+           quatre delais de cette section sont les SEULS delais
+           affiches du site, et rien ne les qualifiait.
+           `CLAUDE.md` § 12 : ce sont des delais de PRODUCTION, pas
+           des dates de depart — confondre les deux, c'est soit
+           mentir, soit s'excuser, et les separer donne une raison
+           d'appeler tout de suite.
+           CE SONT LES MOTS EXACTS DU HERO. Une meme reserve dite
+           deux fois differemment redevient deux affirmations a
+           comparer. -->
+      <p class="fine svc-reserve">Semaines estimées, variables selon la demande et la file d’attente.</p>
 
-          <!-- ---------------- 01 ---------------- -->
-          <article class="svc-carte is-on" data-svc-carte="Sites web et boutiques">
-            <div class="svc-texte">
-              <p class="label"><em class="num">01</em>Sites web et boutiques</p>
-              <h3>Un site qui travaille pendant que vous dormez.</h3>
-              <!-- C2 · C3 — DEUX PROMESSES DE RESULTAT REMPLACEES PAR
-                   LE TRAVAIL QUI LES REND PROBABLES.
-                   « Il se charge avant que la page d'a cote ait fini de
-                   clignoter » etait un superlatif compare a un
-                   concurrent anonyme, sans mesure : « la page d'a
-                   cote » n'existe pas, donc rien ne peut la
-                   defendre. « Il se trouve sur Google » promettait un
-                   CLASSEMENT que personne ne controle — ni nous, ni
-                   qui que ce soit. Ce qui reste est vrai et
-                   verifiable : la cause de la vitesse est un choix de
-                   construction, et le referencement est un travail
-                   fait au depart, pas un resultat garanti. -->
-              <p class="svc-lead">Vitrine, catalogue, page de vente. Rien de superflu à charger, c’est ce qui le rend rapide. Il est construit pour être trouvé sur Google, et vous le modifiez vous-même.</p>
-              <ul class="svc-specs">
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Design fait pour vous, pas acheté</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement Google monté au départ, jamais vendu en option</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Testé sur téléphone avant l’écran d’ordinateur</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Réservation et paiement en ligne quand ça s’applique</li>
-                <!-- CONTRADICTION CORRIGEE LE 2026-07-29, et elle
-                     avait ete introduite le jour meme. La FAQ venait
-                     d'etre reecrite pour dire qu'un site en ligne a
-                     TOUJOURS un cout d'hebergement ; cette ligne
-                     continuait d'annoncer l'hebergement « inclus ».
-                     Deux sections du meme document qui se
-                     contredisent, c'est la faussete la plus facile a
-                     opposer au telephone. Ce qui est vrai et reste
-                     un avantage : la mise en ligne ne se facture pas
-                     en supplement, et l'hebergement est ouvert AU NOM
-                     DU CLIENT — donc transferable, ce qui est
-                     precisement l'argument de la plaque « Tout ». -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Mise en ligne incluse, hébergement ouvert à votre nom</li>
-                <!-- « Une heure de formation » retire le 2026-07-29 :
-                     ce n'est pas offert. Remplace par une propriete du
-                     produit, verifiable a la remise. -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Textes et photos modifiables par vous, sans nous appeler</li>
-              </ul>
-              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>2 à 4 semaines</b><span>Et le code vous appartient, adresse web comprise.</span></p>
-              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
-                Démarrer ce chantier
-                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-              </button>
-            </div>
+      <div class="svc-grille">
 
-            <!-- L'ECRAN. Ce n'est pas une photo de portable pose sur un
-                 bureau : c'est l'interface elle-meme, construite, avec
-                 de vrais mots et de vrais nombres. Un gabarit gris ne
-                 vend rien parce qu'il ne montre rien. -->
-            <figure class="svc-ecran ecr ecr--site" aria-hidden="true">
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>cendre.ca</span></div>
+        <!-- ---------------- 01 ---------------- -->
+        <article class="svc-carte" id="svc-01">
+          <!-- L'ECRAN PORTE UNE VRAIE PHOTOGRAPHIE, et c'est tout le
+               correctif. La case du haut etait une trame de limaille
+               — une decision assumee pour ne pas mentir sur une image
+               absente, mais qui laissait la maquette a l'etat de
+               gabarit. Ce qui fait qu'un site a l'air d'un vrai site,
+               c'est sa photographie ; on y met donc celle que le
+               depot possede deja sous licence Pexels verifiee, celle
+               que la section Secteurs emploie pour la restauration.
+               Meme monde, meme licence, aucun octet de plus. -->
+          <figure class="svc-vue">
+            <div class="svc-cadre">
+            <div class="ecr ecr--site" aria-hidden="true">
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · cendre.ca</span></div>
               <div class="ecr-page">
                 <div class="ecr-nav"><b>CENDRE</b><span>Menu</span><span>Réserver</span><span>Nous joindre</span></div>
                 <div class="ecr-hero">
-                  <div class="ecr-plaque"></div>
+                  <div class="ecr-plaque">
+                    <img src="images/secteurs/restaurant-hero.webp" width="720" height="405" alt="" loading="lazy" decoding="async" fetchpriority="low">
+                  </div>
                   <div class="ecr-hero-txt">
                     <p class="ecr-kicker">Table du marché · Québec</p>
                     <p class="ecr-titre">Le menu change<br>chaque semaine.</p>
@@ -853,173 +837,244 @@
                   <i class="ecr-scan"></i>
                 </div>
               </div>
-            </figure>
-          </article>
+            </div>
+            </div>
+            <figcaption class="svc-vue-note">Exemple · pas un vrai client</figcaption>
+          </figure>
 
-          <!-- ---------------- 02 ---------------- -->
-          <article class="svc-carte" data-svc-carte="Automatisation et IA">
-            <div class="svc-texte">
-              <p class="label"><em class="num">02</em>Automatisation et IA</p>
-              <h3>Les tâches que personne n’aime faire se font toutes seules.</h3>
-              <p class="svc-lead">Vos outils se parlent enfin. La soumission arrive, la fiche client se crée, la facture part, le rappel part. Vous récupérez vos soirées.</p>
+          <div class="svc-corps">
+            <p class="label"><em class="num">01</em>Sites web et boutiques</p>
+            <!-- « Un site qui travaille pendant que vous dormez »,
+                 retire le 2026-07-30. C'etait la seule phrase de la
+                 section qui aurait pu vivre sur le site de n'importe
+                 quelle agence, et sa verite etait CONDITIONNELLE :
+                 « travaille » sous-entend « rapporte », donc un
+                 resultat que personne ne controle, et le point 4 de
+                 la meme carte reconnait lui-meme que la reservation
+                 en ligne n'existe que « quand ca s'applique ».
+                 Ce qui reste se constate le jour de la remise. -->
+            <h3>Un site à vous, que vous changez sans nous.</h3>
+            <p class="svc-pied"><b>2 à 4 semaines</b><span>Cinq pages d’accueil plus bas, dessinées et codées ici.</span></p>
+          </div>
+
+          <details class="svc-detail">
+            <summary class="svc-plus">
+              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
+              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+            </summary>
+            <div class="svc-detail-in">
+              <!-- C2 · C3 — DEUX PROMESSES DE RESULTAT REMPLACEES PAR
+                   LE TRAVAIL QUI LES REND PROBABLES.
+                   « Il se charge avant que la page d'a cote ait fini de
+                   clignoter » etait un superlatif compare a un
+                   concurrent anonyme, sans mesure. « Il se trouve sur
+                   Google » promettait un CLASSEMENT que personne ne
+                   controle. Ce qui reste est vrai et verifiable. -->
+              <p class="svc-lead">De la vitrine à la boutique en ligne, on code chaque page pour votre entreprise, et vos textes restent modifiables sans nous appeler.</p>
+              <p>On part de vos textes, de vos photos et de ce que vos clients demandent le plus souvent. Vous approuvez les maquettes avant qu’une ligne de code s’écrive. Chaque page est ensuite codée à la main : pas de gabarit acheté, rien d’inutile à charger. À la remise, vous recevez les accès, l’adresse web et le code.</p>
               <ul class="svc-specs">
-                <!-- B8 · LE « DIAGNOSTIC » N'EXISTAIT NULLE PART
-                     AILLEURS DANS LE SITE. Il promettait une
-                     prestation distincte que le Processus ne connait
-                     pas : ses quatre etapes commencent a l'appel. Le
-                     seul rendez-vous offert du site est l'appel de
-                     30 minutes — c'est donc lui qu'on nomme, et la
-                     promesse redevient tenable telle qu'ecrite.
-                     D1 · « CRM » est un sigle anglais de logiciel. Un
-                     garagiste tient ses clients dans un cahier ou
-                     dans un chiffrier ; le mot ne lui dit rien. La
-                     figure d'a cote ecrit deja « Fiche client creee »
-                     deux noeuds plus loin — on aligne sur elle.
-                     D7 · « modele generique » est du vocabulaire
-                     d'ingenieur pour une idee simple : vos mots
-                     contre des mots d'usine. -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>L’appel de 30 minutes fait le tour de vos processus, sans engagement</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Factures, rappels et suivis qui partent sans vous</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Vos outils reliés entre eux : fichier clients, courriels, comptabilité, rapports</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un agent IA qui répond avec vos mots, pas avec ceux d’un robot d’usine</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un design à vous, pas un gabarit acheté</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement monté au départ, pas vendu en option</li>
+                <!-- « TESTE SUR TELEPHONE AVANT L'ECRAN D'ORDINATEUR »
+                     ETAIT UNE AFFIRMATION QUE LE DEPOT CONTREDIT.
+                     `CLAUDE.md` § 9 : « AUCUNE de ces mesures n'a ete
+                     prise sur un appareil reel », et « aucune session
+                     ne doit ecrire "verifie sur mobile" — ni le
+                     laisser entendre ». Un test annonce au client est
+                     exactement ce que cette ligne interdit.
+                     Ce qui est vrai et se prouve dans le CSS de ce
+                     site meme : les styles de base sont ceux du
+                     telephone, et `@media (min-width: 64em)` vient
+                     par-dessus. C'est un ORDRE DE CONCEPTION, pas un
+                     test. Le jour ou un vrai appareil sera passe,
+                     l'ancienne ligne redevient la meilleure. -->
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Pensé sur téléphone d’abord, l’ordinateur ensuite</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Réservation et paiement en ligne, quand ça s’applique</li>
+                <!-- CONTRADICTION CORRIGEE LE 2026-07-29 : la FAQ dit
+                     qu'un site en ligne a TOUJOURS un cout
+                     d'hebergement ; cette ligne annoncait l'hebergement
+                     « inclus ». Ce qui est vrai et reste un avantage :
+                     la mise en ligne ne se facture pas en supplement,
+                     et l'hebergement est ouvert AU NOM DU CLIENT. -->
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Mise en ligne incluse, hébergement ouvert à votre nom</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Textes et photos modifiables par vous, sans nous appeler</li>
               </ul>
-              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 à 3 semaines</b><span>Le calculateur plus bas vous dit ce que ça vaut chez vous.</span></p>
               <button class="btn btn--primary" type="button" data-modal-open="modal-start">
                 Démarrer ce chantier
                 <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
               </button>
             </div>
+          </details>
+        </article>
 
-            <figure class="svc-ecran ecr ecr--flux" aria-hidden="true">
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>Atelier · Flux « Soumission »</span></div>
-              <div class="ecr-page">
-                <div class="ecr-flux">
-                  <div class="ecr-noeud" style="--x:0;--y:0"><b>Formulaire</b><span>site web</span></div>
-                  <div class="ecr-noeud" style="--x:0;--y:1"><b>Courriel</b><span>boîte info@</span></div>
-                  <div class="ecr-noeud ecr-noeud--ia" style="--x:1;--y:0.5"><b>Tri par IA</b><span>urgence, secteur</span></div>
-                  <div class="ecr-noeud" style="--x:2;--y:0"><b>Fiche client</b><span>créée</span></div>
-                  <div class="ecr-noeud" style="--x:2;--y:1"><b>Facture</b><span>envoyée</span></div>
-                  <!-- Huit fils a angles droits. Un cablage se lit
-                       parce que les fils TOUCHENT les boites : quatre
-                       segments flottants se lisaient comme un bogue. -->
-                  <i class="ecr-fil f-a"></i><i class="ecr-fil f-b"></i><i class="ecr-fil f-c"></i><i class="ecr-fil f-d"></i>
-                  <i class="ecr-fil f-e"></i><i class="ecr-fil f-f"></i><i class="ecr-fil f-g"></i><i class="ecr-fil f-h"></i>
-                  <!-- Le jeton est porte par une enveloppe de la
-                       taille du cadre : ses `translate` en pourcentage
-                       se resolvent donc sur le cadre, et le trajet
-                       reste juste a toutes les largeurs. -->
-                  <i class="ecr-jeton"><s></s></i>
+        <!-- ---------------- 02 ---------------- -->
+        <article class="svc-carte" id="svc-02">
+          <!-- LE CABLAGE A ETE RETIRE LE 2026-07-30.
+               Cinq boites reliees par huit fils a angles droits, avec
+               un jeton qui circule : c'est un schema d'ingenieur. Le
+               brief le dit sans detour — « pas un diagramme de
+               developpeur ». Un patron de PME ne lit pas un graphe de
+               noeuds ; il lit une JOURNEE. On garde donc le journal,
+               qui dit ce qui s'est fait et combien d'heures ca rend,
+               et on lui adjoint la photo du commerce a qui ca arrive.
+               Le monde a gauche, ce que le monde a produit tout seul
+               a droite. -->
+          <figure class="svc-vue">
+            <div class="svc-cadre">
+            <div class="ecr ecr--flux" aria-hidden="true">
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · une journée à l’atelier</span></div>
+              <div class="ecr-page ecr-page--jour">
+                <div class="ecr-lieu">
+                  <img src="images/secteurs/garage-hero.webp" width="720" height="405" alt="" loading="lazy" decoding="async" fetchpriority="low">
                 </div>
                 <div class="ecr-journal">
-                  <p class="ecr-sh">Journal · aujourd’hui</p>
-                  <div class="ecr-ligne"><em>09:04</em><b>Soumission #1042 reçue</b></div>
+                  <p class="ecr-sh">Fait sans vous, aujourd’hui</p>
+                  <div class="ecr-ligne"><em>09:04</em><b>Soumission reçue</b></div>
                   <div class="ecr-ligne"><em>09:04</em><b>Fiche client créée</b></div>
                   <div class="ecr-ligne"><em>09:05</em><b>Accusé de réception envoyé</b></div>
-                  <div class="ecr-ligne"><em>11:00</em><b>Rappel SMS livré</b></div>
+                  <div class="ecr-ligne"><em>11:00</em><b>Rappel de rendez-vous livré</b></div>
+                  <div class="ecr-ligne"><em>16:20</em><b>Facture envoyée</b></div>
                   <div class="ecr-ligne ecr-ligne--somme"><em>—</em><b>3 h 40 non travaillées</b></div>
                 </div>
               </div>
-            </figure>
-          </article>
+            </div>
+            </div>
+            <figcaption class="svc-vue-note">Exemple · pas un vrai client</figcaption>
+          </figure>
 
-          <!-- ---------------- 03 ---------------- -->
-          <article class="svc-carte" data-svc-carte="Immobilier et visibilité locale">
-            <div class="svc-texte">
-              <p class="label"><em class="num">03</em>Immobilier et visibilité locale</p>
-              <!-- C1 · LA PROMESSE DE POSITION GOOGLE, RETIREE.
-                   « c'est vous qui sortez » etait a l'indicatif
-                   present, en titre de chantier : une promesse de
-                   CLASSEMENT, invérifiable avant l'achat et
-                   demontrable CONTRE nous apres. Personne ne controle
-                   le classement de Google, et surtout pas par
-                   contrat. Ce qui est vrai et se tient : la mise en
-                   place. C'est notre travail, il est livrable, et il
-                   se constate. -->
-              <h3>Quand quelqu’un cherche dans votre coin, tout est en place pour que ce soit vous.</h3>
-              <p class="svc-lead">Fiche Google tenue à jour, carte de zone, visites virtuelles, avis gérés. On vise le quartier, pas la province.</p>
+          <div class="svc-corps">
+            <p class="label"><em class="num">02</em>Automatisation et IA</p>
+            <h3>Les tâches que personne n’aime faire se font toutes seules.</h3>
+            <!-- « ce que ca vaut CHEZ VOUS » promettait un chiffre
+                 personnel que le calculateur ne pretend pas donner :
+                 il annonce lui-meme « un ordre de grandeur, pas une
+                 soumission ». On reprend ses mots. -->
+            <p class="svc-pied"><b>1 à 3 semaines</b><span>Le calculateur plus bas en donne l’ordre de grandeur.</span></p>
+          </div>
+
+          <details class="svc-detail">
+            <summary class="svc-plus">
+              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
+              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+            </summary>
+            <div class="svc-detail-in">
+              <!-- « Vous recuperez vos soirees » est parti le
+                   2026-07-30 : c'est une promesse de resultat de VIE,
+                   entierement hors de notre controle, et le seul
+                   endroit de la section qui vendait une emotion
+                   plutot qu'un livrable. « enfin » etait du
+                   remplissage, et la cascade centrale redisait la
+                   figure d'a cote ligne par ligne. -->
+              <p class="svc-lead">Du formulaire jusqu’à la facture, on relie les outils que vous utilisez déjà, et le travail continue ensuite sans que vous y touchiez.</p>
+              <p>On regarde d’abord ce que vous refaites chaque semaine à la main : recopier une soumission, relancer un client, préparer une facture. Chaque tâche est chiffrée en minutes avant qu’on branche quoi que ce soit, et vous décidez lesquelles valent la peine. Ce qui est branché tourne ensuite tout seul, et vous gardez le bouton pour l’arrêter.</p>
               <ul class="svc-specs">
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Fiche Google Business montée et tenue à jour</li>
+                <!-- L'APPEL DE 30 MINUTES EST SORTI DE CE BLOC. Il est
+                     vrai (D21) mais ce n'est pas un livrable du
+                     chantier : c'est un rendez-vous de vente, et il
+                     occupait le premier des quatre points. Il vit
+                     deja en 12 · Contact. Le retirer ne rouvre pas
+                     B8 : B8 reprochait de promettre un diagnostic
+                     inexistant, pas de se taire.
+                     D1 · « CRM » est un sigle anglais de logiciel.
+                     D7 · « modele generique » est du vocabulaire
+                     d'ingenieur pour « des mots d'usine ». -->
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Vos outils reliés : fichier clients, courriels, comptabilité</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Factures, rappels et suivis qui partent sans vous</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Les demandes reçues sur le site triées et classées en arrivant</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un agent IA qui répond avec vos mots, pas ceux d’un robot d’usine</li>
+              </ul>
+              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                Démarrer ce chantier
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+              </button>
+            </div>
+          </details>
+        </article>
+
+        <!-- ---------------- 03 ---------------- -->
+        <article class="svc-carte" id="svc-03">
+          <!-- LA SEULE CARTE QUI PORTE UNE PHOTOGRAPHIE SEULE, ET LA
+               SEULE QUI SE DEMONTRE AU LIEU DE SE DECRIRE.
+
+               Le lecteur 360 n'est PAS reconstruit ici : le bouton
+               amene a la section 05 et declenche celui qui existe
+               deja. Une seconde instance de Pannellum, ce sont
+               8,5 Mo de panoramas et un deuxieme moteur pour montrer
+               exactement la meme piece.
+
+               V7 · L'ETIQUETTE EST OBLIGATOIRE ET ELLE VOYAGE AVEC
+               L'IMAGE. La section 05 dit deja « Ce ne sont pas nos
+               prises de vue » ; la regle de propagation veut que
+               l'image ne puisse pas dire le contraire ailleurs. -->
+          <figure class="svc-vue svc-vue--photo">
+            <div class="svc-cadre">
+            <img
+              src="images/tour/poster.webp"
+              width="1040" height="585"
+              alt="Terrasse pavée d’une maison de campagne blanche : un bassin, une table et des chaises en fer forgé, une grande baie vitrée ouvrant sur le salon."
+              loading="lazy" decoding="async" fetchpriority="low">
+            <button class="svc-tour" type="button" data-svc-tour>
+              <span>Lancer la visite 360</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+            </button>
+            </div>
+            <figcaption class="svc-vue-note">Démo · ce ne sont pas nos photos</figcaption>
+          </figure>
+
+          <div class="svc-corps">
+            <p class="label"><em class="num">03</em>Immobilier et visibilité locale</p>
+            <!-- C1 · LA PROMESSE DE POSITION GOOGLE, RETIREE. « c'est
+                 vous qui sortez » etait une promesse de CLASSEMENT,
+                 inverifiable avant l'achat et demontrable CONTRE nous
+                 apres. Ce qui est vrai et se tient : la mise en place.
+                 Raccourcie de 16 a 11 mots le 2026-07-30 pour tomber
+                 dans le meme palier que les trois autres titres. -->
+            <h3>Tout est complet quand un client cherche près de chez vous.</h3>
+            <p class="svc-pied"><b>1 semaine</b><span>Essayez ci-dessus le lecteur de visite qu’on installe.</span></p>
+          </div>
+
+          <details class="svc-detail">
+            <summary class="svc-plus">
+              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
+              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+            </summary>
+            <div class="svc-detail-in">
+              <p class="svc-lead">De la fiche Google à la visite virtuelle, on monte ce qui vous représente dans votre quartier, et tout sort à votre nom.</p>
+              <p>On remplit votre fiche Google au complet : heures, services, photos, zone desservie. La carte de votre zone arrive sur votre site, et une visite virtuelle si le lieu s’y prête. On met en place la façon de demander les avis et d’y répondre, au lieu de les subir. Une semaine suffit parce qu’on ne réinvente rien.</p>
+              <ul class="svc-specs">
+                <!-- « TENUE A JOUR » AVAIT LA FORME EXACTE DE
+                     « HEBERGEMENT INCLUS » (constat A4) : un entretien
+                     PERPETUEL et non facture, promis dans un chantier
+                     d'une semaine. La FAQ dit que l'entretien vit
+                     dans un plan mensuel FACULTATIF ; deux sections du
+                     meme document se seraient contredites. Ce qui est
+                     vrai et se constate a la remise : la fiche est
+                     montee et remplie au complet.
+                     « Google Business » est un nom de produit ; le mot
+                     du client, c'est « ma fiche Google ».
+                     La cinquieme puce est partie : « Referencement
+                     dans votre quartier, pas juste au Quebec » disait
+                     ce que la premiere phrase disait deja, avec deux
+                     geographies differentes pour un seul argument. -->
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Votre fiche Google montée et remplie au complet</li>
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Carte et zone de service sur votre site</li>
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Fiches de propriétés et visites virtuelles</li>
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Avis clients gérés, pas subis</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement dans votre quartier, pas juste au Québec</li>
               </ul>
-              <!-- V7 · « FAITE COMME CA » LAISSAIT CROIRE A UNE PRISE
-                   DE VUE CHEZ UN CLIENT. La note de la section 05 dit
-                   elle-meme que les panoramas sont des photos CC0 de
-                   Poly Haven : la demo prouve le LECTEUR qu'on
-                   installe, pas la seance de photo. On dit donc
-                   exactement ce que la demo demontre. Le jour ou une
-                   visite tournee chez un vrai client existe, elle
-                   remplace la demo et cette ligne redevient
-                   « faite comme ca ». -->
-              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 semaine</b><span>La section suivante montre le lecteur de visite qu’on installe.</span></p>
               <button class="btn btn--primary" type="button" data-modal-open="modal-start">
                 Démarrer ce chantier
                 <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
               </button>
             </div>
+          </details>
+        </article>
 
-            <figure class="svc-ecran ecr ecr--carte" aria-hidden="true">
-              <!-- B10 · UNE NOTE GOOGLE INVENTEE, ATTRIBUEE A UN CLIENT
-                   PRESENTE AILLEURS COMME REEL.
-                   La figure montrait « MV Deneigement » en position 1
-                   avec « 4,9 · 128 avis ». Les deux chiffres sont
-                   inventes, et la section Projets presente la meme
-                   entreprise comme un client. Contrairement aux
-                   treize maquettes de Secteurs — annoncees « treize
-                   apercus » —, rien n'etiquetait cette figure comme
-                   une demonstration : un visiteur la lisait comme un
-                   releve.
-                   Trois correctifs, pas un : la fiche devient « Votre
-                   entreprise », le mot « Exemple » est ecrit dans le
-                   chrome de la figure, et les deux voisins prennent
-                   des noms manifestement generiques. Aucun nom de
-                   client reel ne sert plus de decor. -->
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · « déneigement près de moi »</span></div>
-              <div class="ecr-page ecr-page--deux">
-                <div class="ecr-rang">
-                  <p class="ecr-sh">Résultats locaux · exemple</p>
-                  <div class="ecr-rrow"><em>1</em><b>Votre entreprise</b><i class="ecr-etoiles"></i></div>
-                  <div class="ecr-rrow"><em>2</em><b>Un concurrent</b><i class="ecr-etoiles"></i></div>
-                  <div class="ecr-rrow"><em>3</em><b>Un autre concurrent</b><i class="ecr-etoiles"></i></div>
-                  <div class="ecr-fiche">
-                    <b>Votre entreprise</b>
-                    <span>Ouvert · Ferme à 21 h</span>
-                    <span class="ecr-avis">Vos vraies notes ici</span>
-                    <span class="ecr-btn ecr-btn--mini">Itinéraire</span>
-                  </div>
-                </div>
-                <div class="ecr-plan">
-                  <i class="ecr-rue ecr-rue--h1"></i><i class="ecr-rue ecr-rue--h2"></i><i class="ecr-rue ecr-rue--h3"></i>
-                  <i class="ecr-rue ecr-rue--v1"></i><i class="ecr-rue ecr-rue--v2"></i>
-                  <i class="ecr-zone"></i>
-                  <i class="ecr-broche"></i>
-                </div>
-              </div>
-            </figure>
-          </article>
-
-          <!-- ---------------- 04 ---------------- -->
-          <article class="svc-carte" data-svc-carte="Logiciels et applications">
-            <div class="svc-texte">
-              <p class="label"><em class="num">04</em>Logiciels et applications</p>
-              <h3>Quand aucun logiciel du commerce ne fait la job.</h3>
-              <p class="svc-lead">Inventaire, horaires, suivi de chantier, portail client, espace membre. Bâti sur votre façon de travailler, pas l’inverse.</p>
-              <ul class="svc-specs">
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Application web ou mobile, portail client, espace membre</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Outils internes : inventaire, horaires, suivi de chantier</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Branché sur ce que vous utilisez déjà, et le code reste à vous</li>
-              </ul>
-              <p class="svc-pied"><i class="section-rule draw" data-section-rule></i><b>1 à 3 mois</b><span>Un autre développeur peut reprendre le projet demain matin.</span></p>
-              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
-                Démarrer ce chantier
-                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-              </button>
-            </div>
-
-            <figure class="svc-ecran ecr ecr--tableau" aria-hidden="true">
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>Portail interne · Chantiers</span></div>
+        <!-- ---------------- 04 ---------------- -->
+        <article class="svc-carte" id="svc-04">
+          <figure class="svc-vue">
+            <div class="svc-cadre">
+            <div class="ecr ecr--tableau" aria-hidden="true">
+              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · portail interne</span></div>
               <div class="ecr-page ecr-page--app">
                 <div class="ecr-flanc">
                   <b>ATELIER</b>
@@ -1043,30 +1098,82 @@
                   </div>
                 </div>
               </div>
-            </figure>
-          </article>
+            </div>
+            </div>
+            <figcaption class="svc-vue-note">Exemple · pas un vrai client</figcaption>
+          </figure>
 
-        </div>
+          <div class="svc-corps">
+            <p class="label"><em class="num">04</em>Logiciels et applications</p>
+            <h3>Quand aucun logiciel du commerce ne fait la job.</h3>
+            <p class="svc-pied"><b>1 à 3 mois</b><span>Un autre développeur peut reprendre demain matin.</span></p>
+          </div>
+
+          <details class="svc-detail">
+            <summary class="svc-plus">
+              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
+              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+            </summary>
+            <div class="svc-detail-in">
+              <p class="svc-lead">De l’inventaire au portail client, on bâtit l’outil qui vous manque, sur votre façon de travailler, et le code reste à vous.</p>
+              <p>On écrit d’abord ce que l’outil doit faire, écran par écran, avec vous. Vous approuvez les maquettes avant la première ligne de code. Le code est documenté au fur et à mesure, et il est à vous : ce n’est pas une faveur, c’est ce qui fait qu’un autre développeur peut ouvrir le projet sans nous appeler.</p>
+              <ul class="svc-specs">
+                <!-- QUATRE POINTS AU LIEU DE TROIS. C'etait le chantier
+                     le plus long et le plus engageant, et le moins
+                     etoffe : sur une grille ou les quatre cartes se
+                     voient ensemble, la plus courte se lit comme la
+                     moins reflechie. Le point ajoute repond a la seule
+                     vraie peur d'un projet de trois mois — « qu'est-ce
+                     que je vois pendant ce temps-la » — et il est
+                     soutenu par le Parcours (« vous approuvez avant
+                     qu'une ligne de code existe »).
+                     « et le code reste a vous » sort de la puce : il
+                     etait dit DEUX FOIS sur la meme carte, puce et
+                     pied. Il reste au pied, avec les mots exacts
+                     d'Agence 03. -->
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Application web ou mobile, portail client, espace membre</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Outils internes : inventaire, horaires, suivi de chantier</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Branché sur ce que vous utilisez déjà</li>
+                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Maquettes approuvées avant la première ligne de code</li>
+              </ul>
+              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                Démarrer ce chantier
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+              </button>
+            </div>
+          </details>
+        </article>
+
       </div>
     </div>
 
-    <!-- POINT DE CAPTURE 2. Une cinquieme carte sur le rail
-         casserait le compteur « 04 / 04 », qui est du N1 : l'appat
-         vit donc SOUS la scene epinglee, une fois les quatre
-         chantiers traverses.
-         IL EST DEHORS, ET C'EST OBLIGATOIRE : place a l'interieur de
-         `.svc`, il devenait une troisieme rangee d'une grille dont
-         la hauteur est imposee a un ecran, donc il ecrasait la piste
-         et coupait les quatre cartes de 17 a 85 px selon la
-         largeur. Mesure du 2026-07-26. -->
+    <!-- POINT DE CAPTURE 2. Il reste SOUS la grille, une fois les
+         quatre chantiers vus. Ce n'est plus la contrainte de hauteur
+         de la scene epinglee qui l'impose — elle a disparu avec le
+         pin — mais l'ordre de lecture : on ne propose une piste de
+         secours qu'a celui qui a deja regarde les quatre. Une
+         cinquieme case dans la grille se lirait, elle, comme un
+         cinquieme chantier. -->
     <div class="appat svc-appat">
       <!-- « les treize domaines qu'on couvre » se lisait comme un
            compte de secteurs SERVIS, et il entrait en conflit avec les
            douze metiers de la section Secteurs. Les treize domaines
            sont ceux du DOCUMENT — c'est ce que dit la note du
            calculateur, « 42 pages, 13 domaines ». On le dit donc du
-           document. -->
-      <p><b>Vous hésitez entre deux chantiers ?</b> Nos deux documents parcourent treize domaines d’activité, tâche par tâche, avec le temps et l’argent que chacune coûte. 91 pages, gratuites, sans courriel.</p>
+           document.
+
+           UN BOUTON, UN DOCUMENT — corrige le 2026-07-30.
+           La phrase vendait DEUX documents et 91 pages ; le bouton
+           juste dessous en telecharge UN, de 42 pages. Pire, la
+           structure annoncee — « treize domaines, tache par tache,
+           avec le temps et l'argent » — est celle du guide 1 SEUL :
+           sa couverture ecrit « 24 taches · 13 domaines », tandis que
+           le guide 2 s'annonce « 12 usages · 8 protocoles · 42
+           sources » et n'est organise par domaines nulle part.
+           Chaque chiffre est maintenant celui du document que ce
+           bouton-la remet. Le pied de page, lui, a ses deux liens :
+           c'est la qu'on peut parler des deux guides. -->
+      <p><b>Vous hésitez entre deux chantiers ?</b> Notre guide sur l’automatisation chiffre 24 tâches dans 13 domaines d’activité, avec le temps et l’argent que chacune coûte. 42 pages, gratuit, sans courriel.</p>
       <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
         Voir ce qui s’automatise dans votre métier
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>

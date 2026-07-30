@@ -13,6 +13,7 @@
 | **`RECHERCHE-ACCUEIL.md`** | les deux références mesurées dans un vrai navigateur + l'état de l'art, en chiffres | avant de décider d'une amplitude ou d'une durée |
 | **`AUDIT-VERACITE.md`** | les 36 affirmations fausses, invérifiables ou en jargon relevées le 2026-07-29, **et le traitement de chacune** | avant d'écrire une phrase que le site affiche |
 | **`DECISIONS-NUIT.md`** | les 31 arbitrages pris sans le propriétaire dans la nuit du 29 au 30, avec ce qui a été écarté et pourquoi | avant de renverser un choix de contenu |
+| **`CHANTIER-SERVICES.md`** | la section 02 refaite le 2026-07-30 : **la cause mesurée des quatre défauts du rail épinglé**, la recherche sur les carrousels en chiffres, **la provenance et la licence de chaque image**, et les 12 décisions prises sans le propriétaire | avant de toucher aux Services, et **avant d'employer une image du dépôt** |
 
 Historique : `PHASE-6.md` à `PHASE-10.md`, `REFONTE-CHECKLIST.md`.
 
@@ -827,6 +828,24 @@ Chacun a produit un faux verdict avant d'être trouvé.
 | échecs de contraste, 12 sections × 2 thèmes × 5 largeurs | **0** | 0 |
 | arrêts au clavier, sans anneau de focus | **0 sur 100** | 0 |
 
+**Section 02 · Services, après refonte du 2026-07-30** (`node tools/services-check.mjs`) :
+
+| Mesure | Avant | Après |
+|---|---|---|
+| chantiers lisibles **sans un clic** | **1 / 4** | **4 / 4** |
+| saut de la scène à l'arrivée par ancre | **275 à 280 px** | **0 px** |
+| écart du `start` du pin selon le chemin d'arrivée | **284 px**, 10 fois sur 10 | plus de pin |
+| rechargement sur `#services`, dix fois | saut à chaque fois | **0 px, 10 / 10** |
+| déplacement de la carte cliquée à l'ouverture | — | **0 px** (la position de lecture ne bouge pas) |
+| contenu de maquette coupé, 9 largeurs × 2 états | 84 à 93 px | **0** |
+| débordement horizontal, 11 largeurs (320→1920), toutes fiches ouvertes | — | **aucun** |
+| clavier : arrêts sans anneau de focus | — | **0** |
+| **sans JavaScript** : chantiers visibles · titres · points dans le document | — | **4 · 4 · 18** |
+| LCP · CLS | — | **104 · 104 · 116 ms** · **0** |
+| i/s traversée · images > 20 ms | — | **59,5** · **0** |
+| animations prouvées visibles (≥ 5 captures + écarts de pixels) | — | **4 / 4** — entrée 4,1-8,4 % · survol 0,9-3,5 % · ouverture 10,2-25,4 % · fermeture 9,5-18,7 % |
+| débordement de la plaque « Québec » sur le seuil de la 02 | **28 à 38 px** | **marge de 10 à 20 px** |
+
 **Seuils de perception, issus de `RECHERCHE-ACCUEIL.md` :**
 
 - décalage entre deux éléments : **40 ms** pour que l'ordre devienne
@@ -1050,6 +1069,30 @@ HTML/CSS.
   le premier passage doit distinguer code et commentaire, et rendre une
   troisième catégorie au lieu d'un faux positif. En attendant, `A
   RETIRER dans le source` doit rester à **0**.
+- **CINQ IMAGES DU DÉPÔT N'ONT AUCUNE LICENCE DOCUMENTÉE** — trouvé le
+  2026-07-30. `images/real-*.webp`, les cinq captures de site de la
+  section Projets : aucune trace de provenance nulle part — ni dans
+  `ARCHITECTURE.md`, ni dans un générateur, ni dans un commentaire,
+  ni dans les métadonnées, effacées au ré-encodage WebP. `real-pneus`
+  contient en plus **neuf marques de pneumatiques** (MICHELIN,
+  FALKEN, KUMHO, VREDESTEIN…). Les quatre `images/_retire/service-*`
+  sont des rendus d'IA visibles qui violent les quatre interdits du
+  § 5. **Elles sont toujours affichées en section 03.** Détail et
+  registre complet : `CHANTIER-SERVICES.md § 3`.
+- **`logo/LOGO_APED*.png` portent un manifeste C2PA signé** —
+  `gpt-image` 2.0, OpenAI, `trainedAlgorithmicMedia`, plus un
+  filigrane invisible non borné. `PHASE-6.md` réserve 9 le
+  soupçonnait ; c'est maintenant prouvé. Les deux fichiers ne sont
+  référencés nulle part (la marque affichée est `logo-mark.svg`),
+  mais on ne peut pas en revendiquer l'exclusivité.
+- **`images/og.png` contredit le site** — il affiche « 24 h · Délai de
+  réponse » là où le site dit **12 h** partout, et le § 12 sépare
+  explicitement les deux. C'est la carte qui part quand quelqu'un
+  partage le site, et **aucun outil ne lit le texte dans un PNG**.
+- **La plaque « 7 · Produits » compte la vidéo, que rien ne soutient**
+  — `grep vidéo index.html` ne rend qu'une ligne : celle de la plaque.
+  Six des sept produits sont démontrés par la section Services ; le
+  septième n'existe nulle part. Voir `CHANTIER-SERVICES.md § 4.1`.
 - **`AUDIT-VERACITE.md` : les 36 constats sont traités**, plus les deux
   contrastes à l'arrêt et le défaut d'opacité ci-dessus. Deux points
   restent suspendus à une information que seul le propriétaire a — les

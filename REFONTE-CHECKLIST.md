@@ -667,3 +667,22 @@ de page les donne directement. Le test passait *parce que* le défaut
    plaque du hero dit « 0 · service extérieur ». Raisonnement complet
    dans `DECISIONS-NUIT.md § 3 · R6` — c'est un raisonnement, pas une
    mesure.
+
+---
+
+## Chantier section 02 · Services — 2026-07-30
+
+Document complet : **`CHANTIER-SERVICES.md`**.
+
+| | Fait | Preuve |
+|---|---|---|
+| Le défaut d'affichage | ✅ cause trouvée et supprimée | `tools/svc-cause.mjs` — le `start` du pin était calculé 284 px trop tôt à toute arrivée qui n'est pas « par le haut », 10 passes sur 10 ; la scène se téléportait de 275-280 px en une image |
+| Trois autres défauts du rail | ✅ | bouton « suivant » visant au-delà de `st.end` (ratio 1,066 à 1,137) · `is-pinned` posée sans condition et jamais retirée · plaque « Québec » débordant de 28-38 px sur le seuil |
+| Le test qui verrouillait le défaut | ✅ réécrit en entier | `tools/services-check.mjs` — l'ancien défilait en sauts, ne chargeait jamais par `#services`, et ne regardait jamais si quelque chose était peint par-dessus |
+| Les quatre services visibles d'un coup | ✅ | 4 / 4 noms, bénéfices et délais lisibles sans un clic ; **4 / 4 aussi sans JavaScript** |
+| Détail au clic, fermeture sans perte de position | ✅ | `<details>` natif ; déplacement de la carte cliquée mesuré à **0 px** |
+| Images beaux visuels | ⚠️ **partiel, et c'est argumenté** | trois photographies sous licence écrite entrent dans les vues ; **aucune image de site, d'automatisation ou de logiciel du dépôt n'a de licence documentée** — `CHANTIER-SERVICES.md § 3.2` et décision D2 |
+| Le lecteur 360 depuis la carte Immobilier | ✅ | `nbLecteurs: 1` — il déclenche celui de la section 05, il n'en construit pas un second |
+| Animations : 5 captures minimum + écarts de pixels | ✅ **4 / 4** | `tools/svc-sequences.mjs` |
+| Contrastes, débordement, paliers, cascade, prix | ✅ | 0 partout ; `A RETIRER dans le source : 0` ; `0 écart sur 253 968 propriétés` |
+| Ce qui reste au propriétaire | 4 points | la vidéo de la plaque « 7 » · les 5 adresses des projets · qui tourne les panoramas · `og.png` qui dit 24 h |

@@ -74,7 +74,7 @@ function zonesDemo(texte) {
   const d = texte.indexOf('<template id="tplSecteurs">');
   if (d >= 0) bornes.push([d, texte.indexOf("</template>", d)]);
   let i = 0;
-  while ((i = texte.indexOf('<figure class="svc-ecran', i)) >= 0) {
+  while ((i = texte.indexOf('<div class="ecr ecr--', i)) >= 0) {
     bornes.push([i, texte.indexOf("</figure>", i)]);
     i += 10;
   }

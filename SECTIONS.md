@@ -68,20 +68,36 @@ dans `--e` (560 → 1470), écrit dans le document.
 | **Seuil** | `data-de="01" data-vers="02"` · nom **« Services »** · ligne 564-569 |
 | **Verbe / sens** | `data-verbe="volet"` `data-sens="bas"` — porte la trame |
 | **Fond encre** | **oui** (`data-dress="encre"`) |
-| **HTML** | `index.html` **560 → 807** |
-| **CSS** | `css/app.css` **2355-2824** (14. SERVICES — rail horizontal) · `.svc-appat` 1899 (dans le bloc 11c) |
-| **JS** | `js/main.js` bloc **RAIL DES SERVICES — orientation** 352-443 (`poser(i)` 380) · `js/motion.js` bloc **6. LE RAIL DES SERVICES** 187-290 · `js/langue.js` frontière (blocs 288-339 et 394-608) |
+| **HTML** | `index.html` **755 → 1182** |
+| **CSS** | `css/app.css` **2634-3386** (14. SERVICES — les quatre chantiers, tous visibles) · état ouvert dans le `@media (min-width: 64em)` · `.svc-appat` dans le bloc 11c |
+| **JS** | `js/main.js` bloc **SERVICES — la demonstration se lance d'ici** 424+ (le seul geste : le lanceur 360) · `js/langue.js` bloc **7bis. LES QUATRE CHANTIERS** 1344+ (entrée en cascade + FLIP à l'ouverture) · `js/langue.js` frontière · **`js/motion.js` n'a plus rien ici** |
+
+> **RÉÉCRITE LE 2026-07-30.** Le rail horizontal épinglé, le compteur
+> « 01 / 04 », la piste `#svcPiste`, le rail `#svcRail`, la jauge
+> `#svcJauge`, les deux boutons `[data-svc]` et l'API `window.APED_SVC`
+> **n'existent plus**. `motion.js` bloc 6 et le bloc `railServices()`
+> de `main.js` ont été supprimés. Cause, mesures et arbitrages :
+> **`CHANTIER-SERVICES.md`**.
 
 **Composants**
 
 | Bloc | Lignes |
 |---|---|
-| Seuil : filet `.seuil-filet`, carte `.seuil-carte` (numéro roulant + nom) | 564-569 |
-| En-tête `div.head` — h2 « Ce qu'on livre. » + chapô | 571-574 |
-| Barre d'orientation `.svc-bar` : compteur `#svcNum` / 04, `#svcNow`, jauge `#svcJauge`, 2 boutons `[data-svc]` | 578-590 |
-| Scène `div.svc#svc` (578 → 789), piste `#svcPiste` (`tabindex="0"`, `role="group"`) 592-788 > rail `#svcRail` 594-787 | 577-789 |
-| 4 cartes `article.svc-carte[data-svc-carte]` : Sites web et boutiques (597), Automatisation et IA (646), Immobilier et visibilité locale (697), Logiciels et applications (742) | 597-785 |
-| Appât PDF `div.appat.svc-appat` — 1 lien de téléchargement | 800-806 |
+| Seuil : filet `.seuil-filet`, carte `.seuil-carte` (numéro roulant + nom) | 759-764 |
+| En-tête `div.head` — h2 « Ce qu'on livre. » + chapô | 766-770 |
+| **Index `nav.svc-index`** — quatre ancres nommées `#svc-01`…`#svc-04`. Remplace le compteur : il dit *quoi*, pas seulement *combien* | 782-787 |
+| **Réserve `.svc-reserve`** — « Semaines estimées, variables selon la demande et la file d'attente ». Les mots exacts du hero, parce que `.fiche-foot` est masquée sous 64em | 801 |
+| Grille `div.svc-grille` — 2 colonnes ≥ 64em, 1 en dessous | 802-1155 |
+| 4 cartes `article.svc-carte[id]` : `#svc-01` Sites web et boutiques (805), `#svc-02` Automatisation et IA (911), `#svc-03` Immobilier et visibilité locale (995), `#svc-04` Logiciels et applications (1073) | 805-1155 |
+| Par carte : `figure.svc-vue` > `div.svc-cadre` (proportion, `overflow: hidden`) + `figcaption.svc-vue-note` (l'étiquette d'honnêteté, **sous** le cadre) | — |
+| Par carte : `div.svc-corps` (numéro + nom, `h3` bénéfice, `.svc-pied` délai) puis `details.svc-detail` > `summary.svc-plus` + `.svc-detail-in` | — |
+| Le lanceur 360 `button[data-svc-tour]` — carte 03 seulement | 1010 |
+| Appât PDF `div.appat.svc-appat` — 1 lien de téléchargement | 1157-1181 |
+
+**Ce que la section ne contient PAS** : aucun pin, aucun détournement
+de molette, aucun défilement horizontal, aucun état de défilement à
+corrompre, **aucun second lecteur 360** (la carte 03 déclenche celui
+de la section 05), et aucune image sans licence écrite dans le dépôt.
 
 ---
 

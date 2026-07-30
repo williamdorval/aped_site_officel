@@ -256,7 +256,11 @@ let echecs = 0;
       invisibles,
       reste: (document.getElementById("railLeftNum") || {}).textContent || "",
       etape: (document.getElementById("parcNum") || {}).textContent || "",
-      svc: (document.getElementById("svcNum") || {}).textContent || "",
+      /* Le compteur du rail des services a disparu avec le rail
+         le 2026-07-30. Ce qui porte le N1 de la section 02 est
+         maintenant l ensemble des quatre noms, lisibles en meme
+         temps et sans script. */
+      svc: document.querySelectorAll(".svc-index a").length + " / 4 chantiers nommes",
       curseur: !!document.querySelector(".rail-curseur.is-on"),
       langue: document.querySelectorAll(".mot-encre").length
     };
