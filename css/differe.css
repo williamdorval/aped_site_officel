@@ -1509,10 +1509,13 @@ html.js .svc-fiche[data-ouvert],
    preuve. Ce sont maintenant les quatre projets reels, servis par
    leur propre serveur et photographies a 760 px de large en densite
    2, coordonnees masquees a la prise de vue.
-   La hauteur suit l'image : 1140 x 2138, donc 187,5 cqw, et la
-   course de la boucle vaut ce qui depasse de la fenetre —
-   187,5 - 62,5 = 125 cqw, pose en ligne sur chaque scene. */
-.ba-page--shot { min-height: 0; background: none; }
+   L'image est cadree sur UNE fenetre, 1140 x 713, soit exactement  D-627
+   les 62,5 cqw du cadre : il n'y a plus rien a faire defiler de ce
+   cote. C'est un choix, pas une economie — le vieux site est un long
+   defile d'encombrement, le neuf le dit en un ecran. La boucle
+   interne ne tourne donc plus que sur l'AVANT, et c'est une
+   animation permanente de moins. */
+.ba-page--shot { min-height: 0; background: none; animation: none !important; }
 .ba-shot { display: block; width: 100%; height: auto; }
 /* UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.  D-619
    Des que l'apres est devenu une capture, le glissement s'est

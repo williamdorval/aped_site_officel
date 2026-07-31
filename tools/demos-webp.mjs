@@ -40,10 +40,31 @@ if (!Number.isFinite(LARGEUR) || !Number.isFinite(QUALITE)) {
 }
 fs.mkdirSync(SORTIE, { recursive: true });
 
-/* 138 cqw : l'image fait 100 cqw de large, donc 1,38 fois sa
-   largeur de haut. A 760 px de large en densite 2, cela fait
-   1520 x 2098 px de source. */
-const RAPPORT = 1.875;
+/* UNE SEULE FENETRE, CADREE SUR L'IDENTITE.  D-627
+   La premiere version gardait 187 cqw de haut et laissait la boucle
+   interne parcourir le reste. Vu a l'image : au repos, deux des
+   quatre « apres » ne montraient qu'une PHOTO — le nom, la phrase et
+   les boutons etaient sous le bord de la fenetre, et la comparaison
+   ne comparait rien pendant les premieres secondes.
+   La fenetre d'une comparaison fait exactement 62,5 cqw (16/10). On
+   cadre donc l'image dessus, une fois pour toutes, sur la zone qui
+   porte l'identite : le nom, l'accroche, les boutons. Il n'y a plus
+   rien a faire defiler du cote « apres », et c'est mieux ainsi — le
+   vieux site est un long defile d'encombrement, le neuf le dit en un
+   ecran. Le decalage est releve site par site, en pixels de la
+   capture source, et ecrit ici avec sa raison. */
+const RAPPORT = 0.625;
+const DECALAGE = {
+  /* le titre est deja haut dans la capture */
+  garage: 0,
+  /* la carte du heros vit en bas de la premiere fenetre du site */
+  design: 400,
+  /* ce site-la a ete photographie sans defiler : son nom en pleine
+     masse arrive a 1 080 px sur 1 425 (D-620) */
+  restau: 1900,
+  /* le titre est a 1 020 px, la capture part de 634 */
+  deneigement: 300
+};
 
 /* On part de la capture CADREE, pas de la pleine page : le point de
    depart est releve site par site dans `demos-capture.mjs`, parce
@@ -60,17 +81,18 @@ for (const f of sources) {
   const cle = f.replace("-cadre.png", "");
   const brut = fs.readFileSync(path.join(ENTREE, f));
   const b64 = brut.toString("base64");
-  const res = await page.evaluate(async ({ b64, LARGEUR, QUALITE, RAPPORT }) => {
+  const res = await page.evaluate(async ({ b64, LARGEUR, QUALITE, RAPPORT, DEC }) => {
     const img = new Image();
     img.src = "data:image/png;base64," + b64;
     await img.decode();
-    const hSource = Math.min(img.naturalHeight, Math.round(img.naturalWidth * RAPPORT));
+    const hSource = Math.round(img.naturalWidth * RAPPORT);
+    const y0 = Math.max(0, Math.min(DEC, img.naturalHeight - hSource));
     const h = Math.round((LARGEUR * hSource) / img.naturalWidth);
     const c = document.createElement("canvas");
     c.width = LARGEUR; c.height = h;
     const ctx = c.getContext("2d");
     ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(img, 0, 0, img.naturalWidth, hSource, 0, 0, LARGEUR, h);
+    ctx.drawImage(img, 0, y0, img.naturalWidth, hSource, 0, 0, LARGEUR, h);
     /* UNE CAPTURE UNIFORME N'EST PAS UNE CAPTURE.  D-614
        Un des quatre sites a rendu une bande entierement noire —
        5 Ko de WebP, une image vide, et rien dans le rapport pour le
@@ -95,8 +117,8 @@ for (const f of sources) {
     const url = c.toDataURL("image/webp", QUALITE);
     if (url.indexOf("data:image/webp") !== 0) throw new Error("le moteur n'a pas encode en WebP");
     return { url, w: LARGEUR, h, sourceW: img.naturalWidth, sourceH: img.naturalHeight, coupeA: hSource,
-             etendue: Math.round(max - min), ecartType: +ecartType.toFixed(1) };
-  }, { b64, LARGEUR, QUALITE, RAPPORT });
+             etendue: Math.round(max - min), ecartType: +ecartType.toFixed(1), y0 };
+  }, { b64, LARGEUR, QUALITE, RAPPORT, DEC: DECALAGE[cle] || 0 });
 
   if (res.ecartType < 6) {
     throw new Error(`${cle} : la capture est PLATE (ecart-type de luminance ${res.ecartType}, etendue ${res.etendue}). ` +
@@ -108,7 +130,7 @@ for (const f of sources) {
   R.push({
     cle,
     source: `${res.sourceW}x${res.sourceH}`,
-    coupeA: res.coupeA,
+    coupeDe: res.y0, coupeA: res.y0 + res.coupeA,
     rendu: `${res.w}x${res.h}`,
     ko: Math.round(bin.length / 1024),
     ecartType: res.ecartType,

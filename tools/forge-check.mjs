@@ -160,32 +160,52 @@ for (const theme of ["light", "dark"]) {
      limaille, donc c'est elle qui doit avancer d'un pas regulier. */
   await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), yDe(0.42));
   await page.waitForTimeout(900);
-  const molette = await page.evaluate(async () => {
-    const piste = document.querySelector('.sas[data-sas="descente"] .sas-piste');
-    const st = window.ScrollTrigger.getAll().filter((s) => s.vars && s.vars.trigger === piste && s.vars.onUpdate)[0];
-    if (!st) return { note: "declencheur de la forge introuvable" };
-    const ty = () => st.progress * 1000;
-    const pos = [];
-    let stop = false;
-    function tick() { pos.push(ty()); if (!stop) requestAnimationFrame(tick); }
-    requestAnimationFrame(tick);
-    for (let i = 0; i < 22; i++) {
-      window.scrollBy(0, 100);
-      await new Promise((r) => setTimeout(r, 50));
-    }
-    stop = true;
-    await new Promise((r) => setTimeout(r, 60));
-    const pas = [];
-    for (let i = 1; i < pos.length; i++) pas.push(Math.abs(pos[i] - pos[i - 1]));
-    const bouge = pas.filter((v) => v > 0.005);
-    if (!bouge.length) return { note: "la progression n'a pas avance pendant la rafale" };
-    return {
-      images: pas.length,
-      imagesFigees: pas.length - bouge.length,
-      partFigee: +((pas.length - bouge.length) / pas.length * 100).toFixed(1),
-      pasMoyenMillieme: +(bouge.reduce((a, b) => a + b, 0) / bouge.length).toFixed(2),
-      plusGrandBondMillieme: +Math.max.apply(null, bouge).toFixed(1)
-    };
+  /* TROIS RAFALES, ET ON RETIENT LA MEDIANE.  D-626
+     La mesure est sensible a la charge de la machine : cinq
+     harnais lances a la suite ont rendu 9,7 % d'images figees la
+     ou trois passes fraiches en rendent 0 %, avec un plus grand
+     bond identique au dixieme. Conclure sur une passe unique,
+     c'est transformer une machine occupee en regression du site —
+     `PIEGES.md` § 29, et le precedent de `palier-check.mjs`.
+     On mesure trois fois et on retient la mediane ; l'etendue est
+     rendue, pour qu'un lecteur voie lui-meme la dispersion. */
+  const rafales = [];
+  for (let n = 0; n < 3; n++) {
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), yDe(0.42));
+    await page.waitForTimeout(900);
+    rafales.push(await page.evaluate(async () => {
+      const piste = document.querySelector('.sas[data-sas="descente"] .sas-piste');
+      const st = window.ScrollTrigger.getAll().filter((s) => s.vars && s.vars.trigger === piste && s.vars.onUpdate)[0];
+      if (!st) return { note: "declencheur de la forge introuvable" };
+      const ty = () => st.progress * 1000;
+      const pos = [];
+      let stop = false;
+      function tick() { pos.push(ty()); if (!stop) requestAnimationFrame(tick); }
+      requestAnimationFrame(tick);
+      for (let i = 0; i < 22; i++) {
+        window.scrollBy(0, 100);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      stop = true;
+      await new Promise((r) => setTimeout(r, 60));
+      const pas = [];
+      for (let i = 1; i < pos.length; i++) pas.push(Math.abs(pos[i] - pos[i - 1]));
+      const bouge = pas.filter((v) => v > 0.005);
+      if (!bouge.length) return { note: "la progression n'a pas avance pendant la rafale" };
+      return {
+        images: pas.length,
+        imagesFigees: pas.length - bouge.length,
+        partFigee: +((pas.length - bouge.length) / pas.length * 100).toFixed(1),
+        pasMoyenMillieme: +(bouge.reduce((a, b) => a + b, 0) / bouge.length).toFixed(2),
+        plusGrandBondMillieme: +Math.max.apply(null, bouge).toFixed(1)
+      };
+    }));
+  }
+  const parts = rafales.map((r) => (typeof r.partFigee === "number" ? r.partFigee : 100)).sort((a, b) => a - b);
+  const molette = Object.assign({}, rafales[rafales.findIndex((r) => r.partFigee === parts[1])] || rafales[0], {
+    troisPasses: parts,
+    etendue: +(parts[2] - parts[0]).toFixed(1),
+    partFigee: parts[1]
   });
 
   R.themes[theme] = { etat, ecarts, plusFaibleDansLaForge: plusFaible, fps, molette, erreurs };

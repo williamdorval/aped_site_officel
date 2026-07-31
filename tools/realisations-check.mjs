@@ -219,7 +219,16 @@ R.verdict = {
   leClavierBouge: R.comparaisons.every((c) => c.clavier.bouge),
   leCurseurChange: R.comparaisons.every((c) => c.curseur === "ew-resize"),
   lesTroisPositionsDifferent: R.comparaisons.every((c) => c.ecarts[0] > 8 && c.ecarts[1] > 8 && c.ecarts[2] > 40),
-  lesHuitPagesSontCompletes: R.comparaisons.every((c) => c.hauteurs.avant > 500 && c.hauteurs.apres > 500),
+  /* LES DEUX COTES N'ONT PAS LA MEME MESURE, ET C'EST VOULU.  D-627
+     L'AVANT est une reconstitution de page entiere : il doit
+     depasser largement la fenetre, sinon c'est un fragment et le
+     reproche « les avant ne sont pas terminés » tient encore.
+     L'APRES est une capture cadree sur UNE fenetre : exiger de lui
+     une hauteur de page reviendrait a redemander la boucle qu'on
+     vient de retirer. On lui demande donc de remplir sa fenetre,
+     ni plus ni moins. */
+  lesQuatreAvantSontDesPagesEntieres: R.comparaisons.every((c) => c.hauteurs.avant > 500),
+  lesQuatreApresRemplissentLeurFenetre: R.comparaisons.every((c) => c.hauteurs.apres >= 300),
   aucunPlaceholderDansLApres: remplacements.length === 0,
   aucuneErreurConsole: erreurs.length === 0
 };

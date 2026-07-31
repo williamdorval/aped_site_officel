@@ -20,7 +20,8 @@ accompagne les images — et se refait par une seule commande.
 | L'arête de grains, enfin visible | `*-01-p020.png` |
 | Le banc de limaille | `*-05-p061.png` |
 | Le mot en cours d'alignement | `*-08-p085.png` |
-| Le CRAN, et le fil minium | `*-09-p090.png` |
+| Le CRAN — le canevas se vide, le mot est là | `*-09-p090.png` |
+| Le fil minium, tendu vers la pièce | `*-11-p097.png` |
 
 Le nom du fichier porte la progression : `p061` = 61 % de la piste.
 
@@ -63,7 +64,7 @@ Les deux renvois sont exercés **dix fois chacun** : `#realisations`
 |---|---|
 | Les quatre comparaisons, poignée à gauche / au milieu / à droite | `ba-*-p000.png` · `-p050` · `-p100` |
 | Les quatre « avant », pleine page, hors de leur fenêtre de 313 px | `ba-*-avant-pleine.png` |
-| Les quatre « après », pleine page | `ba-*-apres-pleine.png` |
+| Les quatre « après », cadrés sur une fenêtre | `ba-*-apres-pleine.png` |
 | Les quatre projets SOURCES, tels que leur propre serveur les rend | `sources/source-*.png` |
 
 Mettre `ba-garage-apres-pleine.png` à côté de `sources/source-garage.png` :
