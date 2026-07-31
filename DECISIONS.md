@@ -499,3 +499,10 @@ place des quatre sites « après ».
 | ID | Décision |
 |---|---|
 | D-650 | La loupe est retirée en entier : le bouton, le dialogue, le trou qui gardait la place, les règles de la vue agrandie, le pilote de `main.js` et les deux sections de test. Elle marchait et elle était prouvée ; elle n'était pas voulue. Vérifié après coup : la poignée atteint toujours 2 / 50 / 98 %, les quatre cadres gardent leur course et descendent jusqu'au pied du site neuf |
+
+### Le mouvement latéral continu — D-651 et D-652
+
+| ID | Décision |
+|---|---|
+| D-651 | Une scène épinglée n'est plus rejouée en **dix vues** — un saut tous les 240 px, un diaporama — mais en **deux couches continues** : le fond de la scène, et la piste qui glisse par-dessus, translatée. La mesure a tranché : dans les deux scènes, **un seul élément translate**, purement à l'horizontale, pendant que rien ne bouge verticalement. Une translation n'a pas de pas, donc elle ne peut pas sauter. Le poids des deux scènes tombe de 493 Ko à 96 Ko |
+| D-652 | Un fichier de sortie qui n'est plus produit est **effacé** par l'outil qui le produisait. Deux planches abandonnées quand les scènes sont passées en piste continue sont restées sur le disque, plus référencées, et gonflaient la section de 505 Ko sans que rien ne le dise |

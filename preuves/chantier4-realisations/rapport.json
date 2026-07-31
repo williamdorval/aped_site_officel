@@ -95,7 +95,7 @@
       },
       "curseur": "ew-resize",
       "ecarts": [
-        49.81,
+        49.8,
         49.8,
         97.95
       ],
@@ -147,13 +147,13 @@
       },
       "curseur": "ew-resize",
       "ecarts": [
-        49.63,
+        49.62,
         49.67,
-        97.64
+        97.63
       ],
       "hauteurs": {
         "avant": 1106,
-        "apres": 4036
+        "apres": 4037
       }
     },
     {

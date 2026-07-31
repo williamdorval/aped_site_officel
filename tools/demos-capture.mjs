@@ -538,24 +538,185 @@ for (const cle of aFaire) {
         }
       }
 
-      /* --- LES BANDES, EN SEQUENCES JOUABLES ---  D-644
-         Une scene epinglee ne se met pas a plat : a une hauteur
-         donnee elle n'a qu'un seul etat horizontal. On la
-         photographie donc IMAGE PAR IMAGE sur toute sa course, et
-         c'est le defilement du visiteur DANS LE CADRE qui choisira
-         laquelle montrer. La transition qu'il voit est la vraie,
-         prise sur le vrai site. */
+      /* --- LES BANDES, EN DEUX COUCHES CONTINUES ---  D-651
+         CE QUE CETTE VERSION REMPLACE, ET POURQUOI.
+         D-644 photographiait la scene epinglee IMAGE PAR IMAGE, dix
+         vues sur toute sa course. Dix vues sur 2 400 px de
+         defilement, c'est un saut tous les 240 px : ce n'est pas un
+         mouvement, c'est un diaporama. Sur la section censee prouver
+         notre maitrise du mouvement, c'etait le pire endroit
+         possible — releve par le proprietaire, et il avait raison.
+         Aucun reglage ne rend dix etats fluides.
+
+         CE QUE LA MESURE A DIT, ET QUI TRANCHE.
+         `tools/_bande-diag.mjs` sur la scene du design : UN SEUL
+         element translate, de 2 146 px, purement a l'horizontale,
+         pendant que rien ne bouge verticalement. Sa boite fait
+         3 917 px de large. Ce n'est donc pas « plus d'images » qu'il
+         faut — c'est UNE BANDE, translatee. Une translation est
+         continue par construction : elle n'a pas de pas, donc elle
+         ne peut pas sauter, quel que soit le defilement.
+
+         DEUX COUCHES.
+           · le FOND — la scene sans sa piste, une seule fenetre ;
+           · la PISTE — l'element qui bouge, seul, a sa largeur
+             ENTIERE, en une image.
+         Le poids tombe de dix fenetres a une fenetre plus une bande.
+
+         Si aucune piste ne se detache — rien qui translate assez —
+         on retombe sur la sequence d'images : mieux vaut un
+         diaporama qu'une bande fausse. */
       const IMAGES_BANDE = 10;
       for (const b of bandes) {
-        b.images = [];
-        const course = Math.max(1, b.finY - b.debutY);
-        for (let i = 0; i < IMAGES_BANDE; i++) {
-          const cible = b.debutY + Math.round((course * i) / (IMAGES_BANDE - 1));
-          await allerA(page, cible);
-          await page.waitForTimeout(420);
-          b.images.push((await page.screenshot()).toString("base64"));
+        /* ON RELEVE LA VRAIE FIN DE LA BANDE, PAS CELLE DU PAS.  D-651
+           La descente avance par fenetres de 640 px : la derniere
+           tuile ou la scene etait encore epinglee ne dit pas ou elle
+           cesse de l'etre, a 640 px pres. Sur le restaurant, la bande
+           mesuree faisait 600 px la ou elle en fait 1 260 — et la
+           course de la piste, mesuree sur cette bande tronquee,
+           tombait sous le seuil de detection. On avance donc par pas
+           fins jusqu'a ce que l'element ne soit plus fixe. */
+        for (let y = b.finY; y < docH - HAUT; y += 120) {
+          await allerA(page, y + 120);
+          await page.waitForTimeout(180);
+          const encore = await page.evaluate((id) => {
+            const el = document.querySelector(`[data-pin="${id}"]`);
+            return !!el && getComputedStyle(el).position === "fixed";
+          }, b.id);
+          if (!encore) break;
+          b.finY = await page.evaluate(() => Math.round(window.scrollY));
         }
+        const course = Math.max(1, b.finY - b.debutY);
         b.course = course;
+        b.images = [];
+
+        /* On releve la piste : l'element dont le `translateX` varie
+           le plus entre le debut et la fin de la bande. */
+        const marquer = async () => page.evaluate(() => {
+          let n = 0;
+          const out = [];
+          for (const el of document.querySelectorAll("body *")) {
+            const cs = getComputedStyle(el);
+            if (cs.transform === "none") continue;
+            const m = cs.transform.match(/matrix\(([^)]+)\)/);
+            if (!m) continue;
+            const v = m[1].split(",").map(Number);
+            if (!el.dataset.pisteId) el.dataset.pisteId = "p" + n++;
+            const r = el.getBoundingClientRect();
+            out.push({ id: el.dataset.pisteId, x: v[4], y: v[5], w: Math.round(r.width), h: Math.round(r.height) });
+          }
+          return out;
+        });
+        await allerA(page, b.debutY);
+        await page.waitForTimeout(500);
+        const t0 = await marquer();
+        await allerA(page, b.finY);
+        await page.waitForTimeout(500);
+        const t1 = await marquer();
+
+        let piste = null;
+        for (const e of t0) {
+          const f = t1.find((x) => x.id === e.id);
+          if (!f) continue;
+          const dx = Math.abs(f.x - e.x);
+          const dy = Math.abs(f.y - e.y);
+          /* Une piste de galerie translate BEAUCOUP, a l'horizontale,
+             et sa boite est plus large que la fenetre. Un bandeau
+             defilant permanent (`marquee`) bouge aussi, mais peu :
+             le seuil les separe. */
+          /* LE SEUIL SEPARE UNE GALERIE D'UN BANDEAU DEFILANT.  D-651
+             Les deux translatent a l'horizontale. Un bandeau
+             (`marquee`) avance de 80 a 180 px sur toute la bande, une
+             galerie de 700 a 2 400. Le seuil etait a la moitie de la
+             largeur de prise de vue — 640 px — et il a REJETE la
+             galerie du restaurant, qui en fait 721 sur une bande mal
+             bornee. Il descend au quart, ce qui laisse encore un
+             facteur trois avec le plus rapide des bandeaux, et la
+             largeur de boite superieure a la fenetre acheve de les
+             distinguer : un bandeau fait 29 px de haut. */
+          if (dx > LARG * 0.25 && dx > dy * 4 && e.w > LARG && e.h > HAUT * 0.25) {
+            if (!piste || dx > piste.dx) piste = { id: e.id, dx, xDebut: e.x, xFin: f.x, w: e.w, h: e.h };
+          }
+        }
+
+        if (!piste) {
+          console.log(`   ${cle} : aucune piste continue trouvee dans la bande — on retombe sur ${IMAGES_BANDE} vues`);
+          for (let i = 0; i < IMAGES_BANDE; i++) {
+            await allerA(page, b.debutY + Math.round((course * i) / (IMAGES_BANDE - 1)));
+            await page.waitForTimeout(420);
+            b.images.push((await page.screenshot()).toString("base64"));
+          }
+          continue;
+        }
+
+        await allerA(page, b.debutY);
+        await page.waitForTimeout(500);
+
+        /* 1 · LE FOND — la scene sans sa piste. */
+        await page.evaluate((id) => {
+          const el = document.querySelector(`[data-piste-id="${id}"]`);
+          el.setAttribute("data-piste-cachee", "");
+          el.style.visibility = "hidden";
+        }, piste.id);
+        await page.waitForTimeout(350);
+        b.fond = (await page.screenshot()).toString("base64");
+
+        /* 2 · LA PISTE SEULE, A SA LARGEUR ENTIERE.
+           On la remet a `translateX(0)`, on ouvre les rognages de ses
+           ancetres, et on masque tout le reste de la page : ce qui
+           reste sur l'image est la piste et rien d'autre. */
+        const boite = await page.evaluate((id) => {
+          const el = document.querySelector(`[data-piste-id="${id}"]`);
+          el.style.visibility = "";
+          el.removeAttribute("data-piste-cachee");
+          /* on ouvre les rognages, on garde de quoi restaurer */
+          const rognes = [];
+          for (let n = el.parentElement; n && n !== document.documentElement; n = n.parentElement) {
+            const cs = getComputedStyle(n);
+            if (cs.overflow !== "visible") {
+              rognes.push([n, n.style.overflow]);
+              n.style.overflow = "visible";
+            }
+          }
+          window.__rognes = rognes;
+          /* on masque tout ce qui n'est ni la piste, ni un de ses
+             ancetres, ni un de ses descendants */
+          const garder = new Set([el]);
+          for (let n = el.parentElement; n; n = n.parentElement) garder.add(n);
+          const caches = [];
+          for (const n of document.querySelectorAll("body *")) {
+            if (garder.has(n) || el.contains(n)) continue;
+            if (getComputedStyle(n).visibility === "hidden") continue;
+            caches.push(n);
+            n.style.visibility = "hidden";
+          }
+          window.__caches = caches;
+          const tr = el.style.transform;
+          window.__trAvant = tr;
+          el.style.transform = "translateX(0px)";
+          el.style.animation = "none";
+          const r = el.getBoundingClientRect();
+          return { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) };
+        }, piste.id);
+        await page.waitForTimeout(400);
+        const el = await page.$(`[data-piste-id="${piste.id}"]`);
+        b.piste = {
+          image: (await el.screenshot()).toString("base64"),
+          /* tout est en px de la fenetre de prise de vue */
+          x: boite.x, y: boite.y, w: boite.w, h: boite.h,
+          course: Math.round(Math.abs(piste.xFin - piste.xDebut)),
+          xDebut: Math.round(piste.xDebut)
+        };
+        /* on remet la page dans l'etat ou on l'a trouvee */
+        await page.evaluate((id) => {
+          const el = document.querySelector(`[data-piste-id="${id}"]`);
+          el.style.transform = window.__trAvant || "";
+          el.style.animation = "";
+          for (const n of window.__caches || []) n.style.visibility = "";
+          for (const [n, v] of window.__rognes || []) n.style.overflow = v || "";
+        }, piste.id);
+        await page.waitForTimeout(300);
+        console.log(`   ${cle} : piste continue ${b.piste.w}x${b.piste.h}, course ${b.piste.course} px`);
       }
 
       /* --- LA COMPOSITION --- */
@@ -579,13 +740,22 @@ for (const cle of aFaire) {
       const fichier = path.join(SORTIE, `${cle}-ecran.png`);
       fs.writeFileSync(fichier, Buffer.from(cousu.split(",")[1], "base64"));
 
-      /* Chaque bande sort en PLANCHE VERTICALE de N fenetres : c'est
-         la forme la plus simple a decouper au `background-position`,
-         et la seule qui ne demande pas de connaitre la mecanique
-         interne du site. */
+      /* Une bande CONTINUE sort en deux fichiers — le fond et la
+         piste. Une bande qui n'a pas trouve de piste retombe sur sa
+         planche de N fenetres, et le manifeste dit laquelle est
+         laquelle : le rendu n'a pas a deviner.  D-651 */
       const manifeste = [];
       for (let bi = 0; bi < bandes.length; bi++) {
         const b = bandes[bi];
+        if (b.piste) {
+          fs.writeFileSync(path.join(SORTIE, `${cle}-bande${bi}-fond.png`), Buffer.from(b.fond, "base64"));
+          fs.writeFileSync(path.join(SORTIE, `${cle}-bande${bi}-piste.png`), Buffer.from(b.piste.image, "base64"));
+          manifeste.push({
+            index: bi, genre: "continue", cls: b.cls, yImage: b.yImage, hauteur: HAUT, coursePage: b.course,
+            piste: { x: b.piste.x, y: b.piste.y, w: b.piste.w, h: b.piste.h, course: b.piste.course }
+          });
+          continue;
+        }
         const planche = await p2.evaluate(async ({ imgs, LARG, HAUT, DENSITE }) => {
           const c = document.createElement("canvas");
           c.width = Math.round(LARG * DENSITE);
@@ -601,7 +771,7 @@ for (const cle of aFaire) {
         }, { imgs: b.images, LARG, HAUT, DENSITE });
         const fb = path.join(SORTIE, `${cle}-bande${bi}.png`);
         fs.writeFileSync(fb, Buffer.from(planche.split(",")[1], "base64"));
-        manifeste.push({ index: bi, cls: b.cls, yImage: b.yImage, hauteur: HAUT, images: b.images.length, coursePage: b.course });
+        manifeste.push({ index: bi, genre: "vues", cls: b.cls, yImage: b.yImage, hauteur: HAUT, images: b.images.length, coursePage: b.course });
       }
       fs.writeFileSync(path.join(SORTIE, `${cle}-bandes.json`),
         JSON.stringify({ cle, largeur: LARG, fenetre: HAUT, hauteurImage: cibleH, hauteurPage: docH, bandes: manifeste }, null, 1));
@@ -613,7 +783,7 @@ for (const cle of aFaire) {
           "une bande n'a pas peint. Reprendre avant de convertir.");
       }
       console.log(`   ${cle} : image ${LARG}x${cibleH}, ${tuiles} tuiles, ${bandes.length} scene(s) epinglee(s)` +
-        bandes.map((b) => ` [${b.cls.slice(0, 30)} · ${b.course} px de course]`).join(""));
+        bandes.map((b) => ` [${b.piste ? "continue" : b.images.length + " vues"} · ${b.course} px]`).join(""));
     }
 
     /* La pleine page vient ensuite, et sert de piece de comparaison

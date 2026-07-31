@@ -761,9 +761,18 @@
         var piste = $("[data-ba-piste]", cadre);
         var pageAp = $(".ba-vue--apres .ba-page", cadre);
         var pageAv = $(".ba-vue--avant .ba-page", cadre);
+        /* `data-ba-bande` = y · hauteur · course de la scene · course
+           de la piste, tout en cqw. Une piste a une course non nulle :
+           c'est ce qui distingue une bande CONTINUE (D-651) d'une
+           bande rejouee en N vues (D-644, gardee en repli). */
         var bandes = $$(".ba-bande", cadre).map(function (el) {
           var d = (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number);
-          return { el: el, y: d[0] || 0, h: d[1] || 0, n: Math.max(2, d[2] || 2), course: d[3] || 0 };
+          var coursePiste = d[3] || 0;
+          return {
+            el: el, y: d[0] || 0, h: d[1] || 0, course: d[2] || 0,
+            continue: coursePiste > 0, coursePiste: coursePiste,
+            n: Math.max(2, +(el.style.getPropertyValue("--ba-b-n") || 2))
+          };
         });
         var segments = [];
         var courseTotale = 0;
@@ -807,6 +816,17 @@
           rendre();
         }
 
+        /* UNE BANDE SE POSE PAR SA FRACTION, PAS PAR UN INDICE.  D-651
+           Une piste CONTINUE se translate de `fraction x course` :
+           la valeur est reelle, donc le mouvement n'a pas de pas et
+           ne peut pas sauter. Une bande rejouee en N vues garde son
+           indice entier — c'est le repli, et lui saute par nature. */
+        function poserBande(b, frac) {
+          var f = Math.min(1, Math.max(0, frac));
+          if (b.continue) b.el.style.setProperty("--ba-piste", f * b.coursePiste);
+          else b.el.style.setProperty("--ba-bande-i", Math.round(f * (b.n - 1)));
+        }
+
         function rendre() {
           if (!courseTotale) return;
           var maxDef = vitre.scrollHeight - vitre.clientHeight;
@@ -822,21 +842,20 @@
                 yAp = seg.de + dans;
               } else {
                 yAp = seg.de;
-                var i = Math.round((dans / seg.long) * (seg.bande.n - 1));
-                seg.bande.el.style.setProperty("--ba-bande-i", i);
+                poserBande(seg.bande, dans / seg.long);
               }
               break;
             }
             acc += seg.long;
             /* Une bande DEPASSEE reste posee sur son dernier etat :
                la transition est finie, elle ne se rembobine pas. */
-            if (seg.t === "b") seg.bande.el.style.setProperty("--ba-bande-i", seg.bande.n - 1);
+            if (seg.t === "b") poserBande(seg.bande, 1);
           }
           /* Une bande PAS ENCORE ATTEINTE reste a son premier etat. */
           var vu = 0;
           for (var s2 = 0; s2 < segments.length; s2++) {
             if (segments[s2].t !== "b") { vu += segments[s2].long; continue; }
-            if (d < vu) segments[s2].bande.el.style.setProperty("--ba-bande-i", 0);
+            if (d < vu) poserBande(segments[s2].bande, 0);
             vu += segments[s2].long;
           }
           if (pageAp) pageAp.style.setProperty("--ba-y", yAp);

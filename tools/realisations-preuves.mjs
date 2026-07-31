@@ -145,49 +145,86 @@ async function ouvrir(w = 1440, h = 1000) {
        par le proprietaire, et c'est la seule facon de prouver qu'il
        est parti. */
     const bandes = await p.evaluate((i) => [...document.querySelectorAll("#" + i + " .ba-bande")]
-      .map((el) => (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number)), id);
+      .map((el) => ({
+        d: (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number),
+        continue: el.classList.contains("ba-bande--continue")
+      })), id);
     const suiviBandes = [];
     for (let bi = 0; bi < bandes.length; bi++) {
       const fb = [];
       const etats = [];
-      for (let k = 0; k < 8; k++) {
-        const frac = k / 7;
-        /* ON VISE LA POSITION, ON NE LA CHERCHE PAS.
-           Premiere version : une dichotomie qui posait `scrollTop`,
-           emettait un `scroll` de synthese et relisait
-           `--ba-bande-i`. Elle rendait « 0, 9, 0, 9 » — jamais un
-           etat intermediaire. Cause : le rendu est etale sur un
-           `requestAnimationFrame`, donc la relecture immediate
-           tombait toujours sur la valeur d'AVANT. On recalcule donc
-           la piste comme `main.js` la calcule, et on se pose au bon
-           endroit du premier coup. */
+      /* DOUZE PAS, PAS HUIT. Le defaut releve etait un SAUT tous les
+         240 px : on echantillonne donc plus fin que le pas qu'on
+         cherche a faire disparaitre, sinon on ne peut pas le voir
+         partir.  D-651 */
+      const N = 12;
+      for (let k = 0; k < N; k++) {
+        const frac = k / (N - 1);
         await p.evaluate(({ i, bi, frac }) => {
           const a = document.querySelector("#" + i);
           const v = a.querySelector("[data-ba-vitre]");
           const s = a.querySelector(".ba-scene");
-          const img = a.querySelector(".ba-shot");
           const el = a.querySelectorAll(".ba-bande")[bi];
           const d = (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number);
           const W = s.clientWidth;
           const fenetre = (s.clientHeight / W) * 100;
-          const hApres = (img.naturalHeight / img.naturalWidth) * 100;
-          const [y, h, , course] = d;
+          const hApres = (a.querySelector(".ba-vue--apres .ba-page").scrollHeight / W) * 100;
+          const [y, h, course] = d;
           const longBande = Math.max(h, course);
           const finFlux = Math.max(0, hApres - fenetre);
           const courseTotale = y + longBande + Math.max(0, finFlux - (y + h));
           const max = v.scrollHeight - v.clientHeight;
           v.scrollTop = ((y + frac * longBande) / courseTotale) * max;
         }, { i: id, bi, frac });
-        await p.waitForTimeout(420);
-        const f = path.join(OUT, `bande-${id}-${bi}-${k}.png`);
+        await p.waitForTimeout(380);
+        const f = path.join(OUT, `bande-${id}-${bi}-${String(k).padStart(2, "0")}.png`);
         await cadre.screenshot({ path: f });
         fb.push(f);
-        etats.push(await p.evaluate(({ i, bi }) => +getComputedStyle(document.querySelectorAll("#" + i + " .ba-bande")[bi]).getPropertyValue("--ba-bande-i") || 0, { i: id, bi }));
+        etats.push(await p.evaluate(({ i, bi }) => {
+          const el = document.querySelectorAll("#" + i + " .ba-bande")[bi];
+          return el.classList.contains("ba-bande--continue")
+            ? +(+getComputedStyle(el).getPropertyValue("--ba-piste") || 0).toFixed(1)
+            : +getComputedStyle(el).getPropertyValue("--ba-bande-i") || 0;
+        }, { i: id, bi }));
       }
       const eb = [];
       for (let k = 1; k < fb.length; k++) eb.push(+diffStats(lire(fb[k - 1]), lire(fb[k]), 8).pct.toFixed(2));
-      suiviBandes.push({ index: bi, mesures: bandes[bi], etatsAtteints: etats, ecarts: eb, ecartMinimal: Math.min(...eb) });
+      /* LA REGULARITE EST CE QU'ON MESURE. Un diaporama rend des
+         ecarts en dents de scie — gros quand l'image change, nul
+         quand elle ne change pas. Une piste continue rend des ecarts
+         du meme ordre a chaque pas. */
+      const pasEtats = [];
+      for (let k = 1; k < etats.length; k++) pasEtats.push(+(etats[k] - etats[k - 1]).toFixed(2));
+      const moy = eb.reduce((a, b) => a + b, 0) / eb.length;
+      const irregularite = +(Math.max(...eb) / Math.max(0.01, Math.min(...eb))).toFixed(2);
+      suiviBandes.push({
+        index: bi, continue: bandes[bi].continue, mesures: bandes[bi].d,
+        etatsAtteints: etats, pasEntreEtats: pasEtats,
+        ecarts: eb, ecartMinimal: Math.min(...eb), ecartMoyen: +moy.toFixed(2),
+        irregularite
+      });
     }
+
+    /* --- LES IMAGES PAR SECONDE PENDANT LE DEFILEMENT DANS LE CADRE ---
+       Une bande continue n'a de sens que si elle se rend a 60 i/s :
+       un mouvement fluide qui saccade a l'affichage n'est pas
+       fluide. On defile la vitre a la molette et on compte les
+       images pendant ce temps-la. */
+    await p.evaluate((i) => { document.querySelector("#" + i + " [data-ba-vitre]").scrollTop = 0; }, id);
+    await p.waitForTimeout(300);
+    await p.mouse.move(b.x + b.w * 0.5, b.y + b.h * 0.5);
+    const ipsPromesse = p.evaluate(() => new Promise((res) => {
+      const t = [];
+      const boucle = (ts) => { t.push(ts); if (t.length < 200) requestAnimationFrame(boucle); else res(t); };
+      requestAnimationFrame(boucle);
+    }));
+    for (let k = 0; k < 26; k++) { await p.mouse.wheel(0, 140); await p.waitForTimeout(28); }
+    const temps = await ipsPromesse;
+    const deltas = [];
+    for (let k = 1; k < temps.length; k++) deltas.push(temps[k] - temps[k - 1]);
+    deltas.sort((a, c) => a - c);
+    const mediane = deltas[Math.floor(deltas.length / 2)];
+    const lents = deltas.filter((x) => x > 20).length;
 
     R.blocs[id] = {
       ...m,
@@ -196,6 +233,7 @@ async function ouvrir(w = 1440, h = 1000) {
       poignee: poses,
       ecartsDescente: ecarts,
       ecartMinimal: Math.min(...ecarts),
+      imagesParSeconde: { mediane_ms: +mediane.toFixed(1), ips: +(1000 / mediane).toFixed(1), images: deltas.length, au_dessus_de_20ms: lents },
       pageDerriere: `${pageAvant} → ${pageApres}`,
       auBoutDuApres: bout,
       scenesEpinglees: suiviBandes

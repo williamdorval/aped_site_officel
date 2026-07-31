@@ -606,6 +606,66 @@ console.log("\n9 · LES IMAGES — chargees, decodees, et rendues");
   await ctx.close();
 }
 
+/* ---------- 10 · LE MOUVEMENT LATERAL NE SAUTE PAS ----------  D-651
+   Les scenes epinglees etaient rejouees en DIX VUES sur 2 400 px de
+   defilement : un saut tous les 240 px. Un diaporama, pas un
+   mouvement — et sur la section censee prouver notre maitrise du
+   mouvement.
+   Ce qui distingue les deux se mesure : on avance de douze pas
+   EGAUX dans la bande et on lit la position de la piste. Une piste
+   continue avance d'un pas regulier a chaque fois ; un diaporama
+   avance par bonds entiers et reste immobile entre deux.
+   On exige donc que le plus grand pas ne depasse pas le plus petit
+   de plus de moitie. Avec dix vues sur douze mesures, le rapport
+   part a l'infini — un pas vaut zero. */
+console.log("\n10 · LE MOUVEMENT LATERAL — continu, pas un diaporama");
+{
+  const { ctx, p } = await page();
+  let bandesVues = 0;
+  for (const id of CARTES) {
+    await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
+    await p.waitForTimeout(600);
+    const n = await p.evaluate((i) => document.querySelectorAll("#" + i + " .ba-bande").length, id);
+    for (let bi = 0; bi < n; bi++) {
+      bandesVues++;
+      const etats = [];
+      const N = 12;
+      for (let k = 0; k < N; k++) {
+        await p.evaluate(({ i, bi, frac }) => {
+          const a = document.querySelector("#" + i);
+          const v = a.querySelector("[data-ba-vitre]");
+          const s = a.querySelector(".ba-scene");
+          const el = a.querySelectorAll(".ba-bande")[bi];
+          const d = (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number);
+          const W = s.clientWidth;
+          const fen = (s.clientHeight / W) * 100;
+          const hAp = (a.querySelector(".ba-vue--apres .ba-page").scrollHeight / W) * 100;
+          const [y, h, course] = d;
+          const longB = Math.max(h, course);
+          const tot = y + longB + Math.max(0, Math.max(0, hAp - fen) - (y + h));
+          v.scrollTop = ((y + frac * longB) / tot) * (v.scrollHeight - v.clientHeight);
+        }, { i: id, bi, frac: k / (N - 1) });
+        await p.waitForTimeout(190);
+        etats.push(await p.evaluate(({ i, bi }) => {
+          const el = document.querySelectorAll("#" + i + " .ba-bande")[bi];
+          return el.classList.contains("ba-bande--continue")
+            ? +getComputedStyle(el).getPropertyValue("--ba-piste") || 0
+            : (+getComputedStyle(el).getPropertyValue("--ba-bande-i") || 0) * 10;
+        }, { i: id, bi }));
+      }
+      const pas = [];
+      for (let k = 1; k < etats.length; k++) pas.push(etats[k] - etats[k - 1]);
+      const mini = Math.min(...pas);
+      const maxi = Math.max(...pas);
+      const rapport = mini > 0.01 ? maxi / mini : Infinity;
+      dire(mini > 0.01, `${id} bande ${bi} : aucun pas immobile — le plus petit vaut ${mini.toFixed(2)}`);
+      dire(rapport < 1.5, `${id} bande ${bi} : pas reguliers — le plus grand vaut ${rapport === Infinity ? "une infinite de" : rapport.toFixed(2)} fois le plus petit`);
+    }
+  }
+  dire(bandesVues === 2, `les deux scenes epinglees sont mesurees (${bandesVues})`);
+  await ctx.close();
+}
+
 console.log(`\n${echecs === 0 ? "TOUT PASSE" : echecs + " ECHEC(S)"}   captures : ${OUT}`);
 await nav.close();
 process.exit(echecs === 0 ? 0 : 1);

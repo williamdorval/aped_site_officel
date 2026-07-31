@@ -122,7 +122,13 @@ page derrière avant et après** — elle ne doit pas avoir bougé.
 | Ce qu'il faut voir | Fichiers |
 |---|---|
 | La descente **jusqu'au pied du site neuf** : huit images plus la fin forcée | `defile-ba-*-0..7.png` et `defile-ba-*-fin.png` |
-| Les scènes épinglées qui **rejouent** leur transition latérale, sans superposition | `bande-ba-design-0-*.png` · `bande-ba-restaurant-0-*.png` |
+| Le mouvement latéral **continu** des scènes épinglées — douze pas rapprochés, à distance régulière | `bande-ba-design-0-00..11.png` · `bande-ba-restaurant-0-00..11.png` |
+
+`rapport.json` donne aussi `imagesParSeconde` — mesurées **pendant** un
+défilement à la molette dans le cadre, pas au repos — et, pour chaque
+scène épinglée, `pasEntreEtats` et `irregularite` : le rapport du plus
+grand pas au plus petit. Un diaporama le fait partir à l'infini, une
+piste continue le garde sous 1,5.
 
 `rapport.json` ajoute, pour chacune : `auBoutDuApres` — les deux côtés
 arrivent-ils à leur pied ensemble —, `scenesEpinglees` avec les états

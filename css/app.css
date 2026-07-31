@@ -2933,6 +2933,44 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   height: auto;
   transform: translateY(calc(var(--ba-bande-i, 0) * var(--ba-b-h) * -1cqw));
 }
+
+/* == UNE BANDE CONTINUE : LE FOND, ET LA PISTE QUI GLISSE. ==  D-651
+   CE QUE CETTE FORME REMPLACE. D-644 rejouait la scene epinglee en
+   DIX VUES. Dix vues sur 2 400 px de defilement, c'est un saut tous
+   les 240 px : ce n'est pas un mouvement, c'est un diaporama — et
+   sur la section censee prouver notre maitrise du mouvement, c'etait
+   le pire endroit possible.
+   La mesure a tranche : dans les deux scenes concernees, UN SEUL
+   element translate, purement a l'horizontale, pendant que rien ne
+   bouge verticalement. Une piste de 3 917 px pour le design, 2 933
+   pour le restaurant. Ce n'etait donc pas « plus d'images » qu'il
+   fallait, c'etait UNE BANDE — et une translation est continue par
+   construction : elle n'a pas de pas, donc elle ne peut pas sauter,
+   quelle que soit la finesse du defilement.
+   Le poids tombe au passage de 493 Ko a 96 Ko pour les deux scenes. */
+.ba-bande--continue .ba-bande-fond {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: none;
+}
+.ba-bande--continue .ba-bande-piste {
+  position: absolute;
+  left: calc(var(--ba-p-x) * 1cqw);
+  top: calc(var(--ba-p-y) * 1cqw);
+  width: calc(var(--ba-p-l) * 1cqw);
+  height: auto;
+  max-width: none;
+  /* `--ba-piste` est pose par `main.js` en cqw, de 0 a `--ba-p-c`. */
+  transform: translateX(calc(var(--ba-piste, 0) * -1cqw));
+}
+/* SOUS MOUVEMENT REDUIT, LA PISTE NE GLISSE PAS : elle reste a son
+   depart, et le cadre demeure consultable de bout en bout. */
+@media (prefers-reduced-motion: reduce) {
+  .ba-bande--continue .ba-bande-piste { transform: none; }
+}
 /* SOUS MOUVEMENT REDUIT, LA SCENE NE REJOUE PAS : elle reste posee
    sur son DERNIER etat, celui ou la transition est finie. Le cadre
    demeure consultable de bout en bout — l'information ne depend

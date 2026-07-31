@@ -101,26 +101,60 @@ for (const [id, cle] of Object.entries(CADRES)) {
   const debutImg = pile.lastIndexOf("<img", iShot);
   const finImg = pile.indexOf("/>", iShot) + 2;
   const ancienne = pile.slice(debutImg, finImg);
-  const mAlt = ancienne.match(/alt="([^"]*)"/);
-  const description = mAlt ? mAlt[1] : "";
-  if (!description) throw new Error(`${id} : pas de description a reprendre sur l'ancienne image`);
+  /* LA DESCRIPTION SE REPREND OU ELLE EST.
+     Avant D-648 elle vivait dans le `alt` de l'image d'un seul
+     tenant ; depuis, sur la vue en `aria-label`. L'outil doit se
+     relancer sur son propre resultat, donc il lit les deux — et il
+     s'arrete s'il ne trouve ni l'un ni l'autre plutot que de livrer
+     une comparaison muette pour un lecteur d'ecran. */
+  const mAlt = ancienne.match(/alt="([^"]+)"/);
+  const mAria = pile.match(/<div class="ba-vue ba-vue--apres"[^>]*aria-label="([^"]+)"/);
+  const description = (mAlt && mAlt[1]) || (mAria && mAria[1]) || "";
+  if (!description) throw new Error(`${id} : aucune description a reprendre, ni en \`alt\` ni en \`aria-label\``);
   const balise = mk.apres.tuiles.map((t, k) =>
     `<img class="ba-shot" src="${t.fichier}" width="${t.w}" height="${t.h}" alt=""\n` +
     `                         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />` +
     (k < mk.apres.tuiles.length - 1 ? "\n                    " : "")
   ).join("");
 
-  /* --- les bandes, posees juste apres l'image --- */
+  /* --- les bandes, posees juste apres l'image ---
+     Une bande CONTINUE porte deux images : le fond de la scene et la
+     piste qui glisse par-dessus. Une bande « vues » garde sa planche
+     de N fenetres — c'est le repli quand aucune piste ne se detache
+     (D-651). Le markup dit lequel des deux, le rendu ne devine pas. */
   const bandes = mk.bandes.map((b, i) => {
-    const donnees = `${b.y} ${b.hauteur} ${b.n} ${b.course}`;
-    return (
-      `\n                    <!-- SCENE EPINGLEE ${i} — ${b.n} vues de sa transition, jouees au defilement  D-644 -->\n` +
-      `                    <div class="ba-bande" data-ba-bande="${donnees}" aria-hidden="true"\n` +
-      `                         style="--ba-b-y: ${b.y}; --ba-b-h: ${b.hauteur}; --ba-b-n: ${b.n};">\n` +
-      `                      <img src="${b.fichier}" width="${b.w}" height="${b.h}" alt=""\n` +
-      `                           loading="lazy" decoding="async" fetchpriority="low" draggable="false" />\n` +
-      `                    </div>`
-    );
+    const tete = `
+                    <!-- SCENE EPINGLEE ${i} — ${b.genre === "continue" ? "piste continue, translatee au defilement" : b.n + " vues"}  D-651 -->`;
+    if (b.genre === "continue") {
+      return tete +
+        `
+                    <div class="ba-bande ba-bande--continue" aria-hidden="true"
+` +
+        `                         data-ba-bande="${b.y} ${b.hauteur} ${b.course} ${b.pisteCourse}"
+` +
+        `                         style="--ba-b-y: ${b.y}; --ba-b-h: ${b.hauteur}; --ba-p-x: ${b.pisteX}; --ba-p-y: ${b.pisteY}; --ba-p-l: ${b.pisteL}; --ba-p-c: ${b.pisteCourse};">
+` +
+        `                      <img class="ba-bande-fond" src="${b.fond.fichier}" width="${b.fond.w}" height="${b.fond.h}" alt=""
+` +
+        `                           loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
+` +
+        `                      <img class="ba-bande-piste" src="${b.piste.fichier}" width="${b.piste.w}" height="${b.piste.h}" alt=""
+` +
+        `                           loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
+` +
+        `                    </div>`;
+    }
+    return tete +
+      `
+                    <div class="ba-bande" data-ba-bande="${b.y} ${b.hauteur} ${b.course} 0" aria-hidden="true"
+` +
+      `                         style="--ba-b-y: ${b.y}; --ba-b-h: ${b.hauteur}; --ba-b-n: ${b.n};">
+` +
+      `                      <img src="${b.fichier}" width="${b.w}" height="${b.h}" alt=""
+` +
+      `                           loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
+` +
+      `                    </div>`;
   }).join("");
 
   /* ON RECONSTRUIT LE CORPS DE LA VUE « APRES » AU COMPLET, on ne le
@@ -142,10 +176,14 @@ for (const [id, cle] of Object.entries(CADRES)) {
   /* LA DESCRIPTION PASSE SUR LA VUE, comme du cote « avant ». Une
      pile de tuiles n'a pas sept descriptions a donner, elle en a
      une — et un `alt` vide ne peut plus remplir l'ecran de prose. */
-  const avantVue = pile;
   pile = pile.replace(/<div class="ba-vue ba-vue--apres"[^>]*>/,
     `<div class="ba-vue ba-vue--apres" role="img" aria-label="${description}">`);
-  if (pile === avantVue) throw new Error(`${id} : la vue « apres » n'a pas recu sa description`);
+  /* On verifie la PRESENCE, pas le changement : relancer l'outil sur
+     son propre resultat ne change rien, et « rien n'a change » n'est
+     pas une erreur. */
+  if (!/<div class="ba-vue ba-vue--apres" role="img" aria-label="[^"]+">/.test(pile)) {
+    throw new Error(`${id} : la vue « apres » n'a pas recu sa description`);
+  }
 
   const neuf =
     '<div class="ba-vitre" data-ba-vitre><div class="ba-piste" data-ba-piste></div></div>\n' +
@@ -161,7 +199,7 @@ if (sectionsAvant !== sectionsApres) {
 }
 const nbPiste = (html.match(/data-ba-piste/g) || []).length;
 const nbPile = (html.match(/class="ba-pile"/g) || []).length;
-const nbBande = (html.match(/class="ba-bande"/g) || []).length;
+const nbBande = (html.match(/class="ba-bande(?: ba-bande--continue)?"/g) || []).length;
  const nbTuile = (html.match(/class="ba-shot"/g) || []).length;
  const tuilesAttendues = Object.values(marques).reduce((a, m) => a + m.apres.tuiles.length, 0);
  if (nbTuile !== tuilesAttendues) throw new Error(`${nbTuile} tuiles posees pour ${tuilesAttendues} attendues. RIEN N EST ECRIT.`);

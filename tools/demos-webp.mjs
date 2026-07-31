@@ -174,11 +174,19 @@ for (const f of sources) {
     throw new Error(`${cle} : une tranche de la capture est PLATE (ecart-type ${pire.ec}, moyenne ${pire.moy}). ` +
       "C'est une bande vide, pas une page. Reprendre la capture avant de convertir.");
   }
-  /* On efface les tuiles d'une passe precedente : un reste plus long
-     que la nouvelle serie se retrouverait dans le markup et
-     donnerait un site qui se repete. */
+  /* ON EFFACE TOUT CE QUE LA PASSE PRECEDENTE AVAIT LAISSE.  D-652
+     Deux raisons, et les deux ont ete payees :
+       · une serie de tuiles plus longue que la nouvelle se
+         retrouverait dans le markup, et le site se repeterait ;
+       · une planche de bande abandonnee quand la scene est passee en
+         piste continue reste sur le disque, plus referencee nulle
+         part, et gonfle la section de 505 Ko sans que rien ne le
+         dise. Releve le 2026-07-31 : 1 545 Ko constates contre
+         911 annonces par cet outil meme.
+     Un fichier de sortie qui n'est plus produit doit disparaitre. */
+  const perimes = new RegExp(`^apres-${cle}(-t\\d+|-bande\\d+(-fond|-piste)?)?\\.webp$`);
   for (const vieux of fs.readdirSync(SORTIE)) {
-    if (new RegExp(`^apres-${cle}-t\\d+\\.webp$`).test(vieux)) fs.unlinkSync(path.join(SORTIE, vieux));
+    if (perimes.test(vieux)) fs.unlinkSync(path.join(SORTIE, vieux));
   }
   const fichiersTuiles = [];
   let poids = 0;
@@ -189,10 +197,6 @@ for (const f of sources) {
     poids += bin.length;
     fichiersTuiles.push({ fichier: `images/realisations/apres-${cle}-t${t}.webp`, w: res.tuiles[t].w, h: res.tuiles[t].h });
   }
-  /* L'image d'un seul tenant ne sert plus : on la retire pour qu'un
-     markup perime ne puisse pas la ressusciter en silence. */
-  const ancien = path.join(SORTIE, `apres-${cle}.webp`);
-  if (fs.existsSync(ancien)) fs.unlinkSync(ancien);
   R.push({
     cle,
     source: `${res.sourceW}x${res.sourceH}`,
@@ -220,45 +224,76 @@ for (const f of sources) {
     bandes: []
   };
   for (const b of meta.bandes) {
+    /* UNE BANDE CONTINUE SORT EN DEUX FICHIERS.  D-651
+       Le FOND — la scene sans sa piste — et la PISTE, a sa largeur
+       entiere. La page translate la seconde par-dessus le premier :
+       une translation n'a pas de pas, donc elle ne peut pas sauter.
+       Une bande « vues » garde son ancienne planche : c'est le repli
+       quand aucune piste ne se detache. */
+    const conv = async (fichierSrc, largeurCible) => {
+      const b64b = fs.readFileSync(fichierSrc).toString("base64");
+      return page.evaluate(async ({ b64b, L, QUALITE }) => {
+        const img = new Image();
+        img.src = "data:image/png;base64," + b64b;
+        await img.decode();
+        const h = Math.round((L * img.naturalHeight) / img.naturalWidth);
+        if (h > 16383 || L > 16383) throw new Error(`planche ${L}x${h} : au-dela des 16 383 px d'un WebP`);
+        let cw = img.naturalWidth, ch = img.naturalHeight;
+        let sr = document.createElement("canvas");
+        sr.width = cw; sr.height = ch;
+        sr.getContext("2d").drawImage(img, 0, 0);
+        while (cw / 2 > L) {
+          const nw = Math.round(cw / 2), nh = Math.round(ch / 2);
+          const c2 = document.createElement("canvas");
+          c2.width = nw; c2.height = nh;
+          const x2 = c2.getContext("2d");
+          x2.imageSmoothingQuality = "high";
+          x2.drawImage(sr, 0, 0, nw, nh);
+          sr = c2; cw = nw; ch = nh;
+        }
+        const c = document.createElement("canvas");
+        c.width = L; c.height = h;
+        const x = c.getContext("2d");
+        x.imageSmoothingQuality = "high";
+        x.drawImage(sr, 0, 0, cw, ch, 0, 0, L, h);
+        return { url: c.toDataURL("image/webp", QUALITE), w: L, h };
+      }, { b64b, L: largeurCible, QUALITE });
+    };
+    const ecrire = (res2, nom) => {
+      const dest = path.join(SORTIE, nom);
+      const bin = Buffer.from(res2.url.split(",")[1], "base64");
+      fs.writeFileSync(dest, bin);
+      R.push({ cle: `${cle} · ${nom.replace("apres-" + cle + "-", "")}`, source: "-", rapportAvant: "-", rendu: `${res2.w}x${res2.h}`, tuiles: "", ko: Math.round(bin.length / 1024), pireTuileKo: "", ecMin: "-" });
+      return { fichier: `images/realisations/${nom}`, w: res2.w, h: res2.h };
+    };
+
+    if (b.genre === "continue") {
+      const fond = path.join(ENTREE, `${cle}-bande${b.index}-fond.png`);
+      const pis = path.join(ENTREE, `${cle}-bande${b.index}-piste.png`);
+      if (!fs.existsSync(fond) || !fs.existsSync(pis)) throw new Error(`${cle} : bande ${b.index} annoncee continue et incomplete`);
+      const rf = ecrire(await conv(fond, LARGEUR), `apres-${cle}-bande${b.index}-fond.webp`);
+      /* La piste sort a l'echelle de la sortie : sa largeur suit le
+         rapport entre la largeur de prise de vue et celle du WebP. */
+      const largPiste = Math.round((b.piste.w * LARGEUR) / meta.largeur);
+      const rp = ecrire(await conv(pis, largPiste), `apres-${cle}-bande${b.index}-piste.webp`);
+      MARQUES[cle].bandes.push({
+        genre: "continue", fond: rf, piste: rp,
+        y: enCqw(b.yImage), hauteur: enCqw(b.hauteur), course: enCqw(b.coursePage),
+        pisteX: enCqw(b.piste.x), pisteY: enCqw(b.piste.y),
+        pisteL: enCqw(b.piste.w), pisteH: enCqw(b.piste.h), pisteCourse: enCqw(b.piste.course),
+        cls: b.cls
+      });
+      continue;
+    }
+
     const src = path.join(ENTREE, `${cle}-bande${b.index}.png`);
     if (!fs.existsSync(src)) throw new Error(`${cle} : planche ${b.index} annoncee et absente`);
-    const b64b = fs.readFileSync(src).toString("base64");
-    const rb = await page.evaluate(async ({ b64b, LARGEUR, QUALITE }) => {
-      const img = new Image();
-      img.src = "data:image/png;base64," + b64b;
-      await img.decode();
-      const h = Math.round((LARGEUR * img.naturalHeight) / img.naturalWidth);
-      if (h > 16383) throw new Error(`planche ${LARGEUR}x${h} : au-dela des 16 383 px d'un WebP`);
-      let cw = img.naturalWidth, ch = img.naturalHeight;
-      let s = document.createElement("canvas");
-      s.width = cw; s.height = ch;
-      s.getContext("2d").drawImage(img, 0, 0);
-      while (cw / 2 > LARGEUR) {
-        const nw = Math.round(cw / 2), nh = Math.round(ch / 2);
-        const c2 = document.createElement("canvas");
-        c2.width = nw; c2.height = nh;
-        const x2 = c2.getContext("2d");
-        x2.imageSmoothingQuality = "high";
-        x2.drawImage(s, 0, 0, nw, nh);
-        s = c2; cw = nw; ch = nh;
-      }
-      const c = document.createElement("canvas");
-      c.width = LARGEUR; c.height = h;
-      const x = c.getContext("2d");
-      x.imageSmoothingQuality = "high";
-      x.drawImage(s, 0, 0, cw, ch, 0, 0, LARGEUR, h);
-      return { url: c.toDataURL("image/webp", QUALITE), w: LARGEUR, h };
-    }, { b64b, LARGEUR, QUALITE });
-    const destB = path.join(SORTIE, `apres-${cle}-bande${b.index}.webp`);
-    const binB = Buffer.from(rb.url.split(",")[1], "base64");
-    fs.writeFileSync(destB, binB);
+    const rb = ecrire(await conv(src, LARGEUR), `apres-${cle}-bande${b.index}.webp`);
     MARQUES[cle].bandes.push({
-      fichier: `images/realisations/apres-${cle}-bande${b.index}.webp`,
-      w: rb.w, h: rb.h, n: b.images,
+      genre: "vues", fichier: rb.fichier, w: rb.w, h: rb.h, n: b.images,
       y: enCqw(b.yImage), hauteur: enCqw(b.hauteur), course: enCqw(b.coursePage),
       cls: b.cls
     });
-    R.push({ cle: `${cle} · bande ${b.index}`, source: "-", rapportAvant: "-", rendu: `${rb.w}x${rb.h}`, ko: Math.round(binB.length / 1024), ecMin: "-", fichier: path.relative(RACINE, destB).replace(/\\/g, "/") });
   }
 }
 

@@ -762,3 +762,33 @@ Le maximum calculé valait donc six fois trop peu — et l'assertion
 celle que le pilote utilise. Et se méfier d'une assertion qui ne peut
 échouer que par le haut : elle ne dit rien quand le calcul déraille par
 le bas.
+
+### 54 · Dix images ne font pas un mouvement
+
+Une scène épinglée rejouée en dix vues sur 2 400 px de défilement, ça
+fait **un saut tous les 240 px**. Aucun réglage ne rend ça fluide : le
+problème n'est pas la vitesse, c'est qu'il n'y a que dix états.
+
+Et le test ne le voyait pas, parce qu'il mesurait l'**écart de pixels
+entre deux captures** — grand à chaque changement d'image, donc
+rassurant. Ce qu'il fallait mesurer, c'est la **régularité du pas** :
+on avance de douze pas égaux et on lit la position. Une piste continue
+avance du même pas à chaque fois ; un diaporama avance par bonds et
+reste **immobile** entre deux — un pas vaut zéro, et le rapport du plus
+grand au plus petit part à l'infini.
+
+**Avant de multiplier les images, mesurer ce qui bouge.** Ici, un seul
+élément translatait, purement à l'horizontale : la réponse n'était pas
+« plus d'images », c'était **une seule image translatée**. Continue par
+construction, et cinq fois plus légère.
+
+### 55 · Un fichier de sortie abandonné ne disparaît pas tout seul
+
+Quand la forme d'une sortie change — deux planches remplacées par un
+fond et une piste — les anciens fichiers restent sur le disque. Plus
+référencés nulle part, invisibles à toute vérification de page, et
+**505 Ko** de plus dans le dossier servi.
+
+L'outil qui produit doit **effacer ce qu'il ne produit plus**, en
+bornant le nettoyage à son propre motif de nom. Sinon le seul relevé
+juste est un `du` à la main, et personne ne le fait.
