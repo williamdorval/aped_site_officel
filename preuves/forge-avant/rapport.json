@@ -1,0 +1,76 @@
+{
+  "light": {
+    "etat": {
+      "actif": true,
+      "sasOk": true,
+      "palier": "0",
+      "hauteurPiste": 1800,
+      "fondVolet": "rgb(16, 18, 17)",
+      "theme": "light"
+    },
+    "ecarts": [
+      33.77,
+      32.67,
+      25.14,
+      9.14,
+      1.79,
+      2.62,
+      5.42,
+      5,
+      2.67,
+      0.17
+    ],
+    "fps": {
+      "images": 155,
+      "medianeMs": 16.7,
+      "isMediane": 59.9,
+      "pires": [
+        16.8,
+        16.8,
+        16.8,
+        16.8,
+        16.8
+      ],
+      "au_dessus_de_20ms": 0,
+      "au_dessus_de_33ms": 0
+    },
+    "erreurs": []
+  },
+  "dark": {
+    "etat": {
+      "actif": true,
+      "sasOk": true,
+      "palier": "0",
+      "hauteurPiste": 1800,
+      "fondVolet": "rgb(220, 222, 219)",
+      "theme": "dark"
+    },
+    "ecarts": [
+      33.93,
+      32.71,
+      25.11,
+      9.13,
+      1.79,
+      2.61,
+      5.39,
+      4.96,
+      2.66,
+      0.17
+    ],
+    "fps": {
+      "images": 155,
+      "medianeMs": 16.7,
+      "isMediane": 59.9,
+      "pires": [
+        16.8,
+        16.8,
+        16.8,
+        16.8,
+        16.8
+      ],
+      "au_dessus_de_20ms": 0,
+      "au_dessus_de_33ms": 0
+    },
+    "erreurs": []
+  }
+}

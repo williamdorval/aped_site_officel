@@ -256,6 +256,24 @@
         var m = Math.round(ref.getBoundingClientRect().left - vitre.getBoundingClientRect().left);
         if (m >= 0 && m < 600) rail.style.paddingInline = m + "px";
       }
+      /* LA MARGE DE FIN N'EST PAS CELLE DU TEXTE.  D-598
+         Elle l'etait, et le dernier item ne pouvait donc jamais se
+         centrer : sa cible `centre - W/2` depassait le `scrollLeft`
+         maximal et se faisait borner, si bien que le panneau de
+         cloture se calait contre le bord droit — 222 px a droite de
+         la ou toutes les autres cartes s'arretent. On reserve donc a
+         DROITE la gouttiere de centrage d'une carte. La marge de
+         gauche, elle, reste celle du texte : au repos, la premiere
+         carte doit s'aligner sur le titre. */
+      var derniere = plans[n - 1];
+      if (derniere) {
+        /* `ceil` plus deux pixels : au pixel pres, le bornage de la
+           cible mordait encore de 6 px et la derniere carte
+           s'arretait a cote des autres. On reserve un cheveu de
+           trop — la reserve ne se voit pas, le decalage si. */
+        var reste = vitre.clientWidth - derniere.getBoundingClientRect().width;
+        if (reste > 0) rail.style.paddingInlineEnd = (Math.ceil(reste / 2) + 2) + "px";
+      }
       var W = vitre.clientWidth;
       var max = Math.max(0, vitre.scrollWidth - W);
       if (W <= 0) return;
@@ -279,6 +297,8 @@
       estActif = st.position === "sticky";
       collant = parseFloat(st.top) || 0;
       course = Math.max(0, piste.offsetHeight - scene.offsetHeight);
+      /* Toute relecture de geometrie invalide la position ecrite. */
+      figer();
       if (!estActif) {
         rail.removeAttribute("data-degage");
         vitre.scrollLeft = 0;
@@ -299,7 +319,17 @@
     }
 
     /* LA CARTE DE PROGRESSION — V2 · S'ALIGNER, arretee d'un  D-374 */
-    var MORT = 0.18;
+    /* LA ZONE MORTE PASSE DE 18 % A 10 %.  D-597
+       Elle s'ajoutait au lissage : 18 % de plat, puis TOUTE la
+       distance parcourue sur les 64 % du milieu, puis 18 % de plat.
+       La pente maximale valait donc 1,5 / 0,64 = 2,34 fois la
+       moyenne — la carte restait immobile, partait d'un coup, se
+       rearretait. C'est ce qu'on ressentait comme « ca n'a pas de
+       rythme ». A 10 %, la pente maximale tombe a 1,79, et le pas
+       vertical a ete ouvert a 400 px pour compenser la glisse plus
+       longue. Le repos, lui, ne change pas : arrivee et depart
+       restent a derivee nulle, donc aucun depassement — ζ = 1. */
+    var MORT = 0.10;
 
     function lisser(t) { return t * t * (3 - 2 * t); }
 
@@ -353,8 +383,51 @@
       var t = lisser(g);
 
       /* `scrollLeft` ET NON `transform` — voir l'argument en tete du  D-379 */
-      vitre.scrollLeft = cibles[i] + (cibles[i + 1] - cibles[i]) * t;
+      vise = cibles[i] + (cibles[i + 1] - cibles[i]) * t;
       marquer(t >= 0.5 ? i + 1 : i);
+      ecrire();
+    }
+
+    /* == LE RATTRAPAGE — LE CORRECTIF DE « CA NE GLISSE PAS ». ==  D-599
+       La cible ci-dessus est une fonction PURE de la position de
+       defilement, et elle le reste. Mais une molette n'avance pas de
+       facon continue : elle envoie des paliers d'environ 100 px,
+       donc le rail se posait vingt fois par seconde a des endroits
+       distants les uns des autres, et sautait. Meme cause que la
+       saccade du sas, meme correctif : entre deux crans de molette,
+       on rejoint la cible sur le rythme d'affichage.
+       Ce qui compte est preserve : A L'ARRET, la position converge
+       vers la valeur exacte de la cible — donc une meme position de
+       defilement rend toujours le meme cadrage, et un arret en plein
+       vol reste un etat legitime. Toute mesure doit laisser 400 ms
+       de convergence avant de lire. */
+    var vise = null;
+    var pose = null;
+    var boucle = 0;
+
+    function ecrire() {
+      if (vise === null) return;
+      if (pose === null) { pose = vise; vitre.scrollLeft = vise; return; }
+      if (!boucle) boucle = requestAnimationFrame(rattraper);
+    }
+
+    function rattraper() {
+      boucle = 0;
+      if (vise === null || pose === null) return;
+      var d = vise - pose;
+      if (d < 0.5 && d > -0.5) { pose = vise; vitre.scrollLeft = vise; return; }
+      pose += d * 0.22;
+      vitre.scrollLeft = pose;
+      boucle = requestAnimationFrame(rattraper);
+    }
+
+    /* Un recalcul de geometrie invalide la position ecrite : on
+       reprend au pixel, sans rattrapage, sinon le rail glisserait
+       tout seul apres un redimensionnement ou une arrivee par
+       ancre. */
+    function figer() {
+      pose = null;
+      if (boucle) { cancelAnimationFrame(boucle); boucle = 0; }
     }
 
     /* LE PILOTE. Un ecouteur `scroll` passif, une seule image  D-380 */
@@ -586,8 +659,86 @@
           curseur.setAttribute("aria-valuetext", Math.round(v) + " % de la version d'avant");
         }
 
+        /* --- LE GLISSEMENT, ET IL EST EXPLICITE. ---  D-593
+           Le `input[type=range]` reste : c'est la bonne semantique
+           pour le clavier, le lecteur d'ecran et `aria-valuetext`.
+           Mais son glissement NATIF ne repondait pas. Releve du
+           2026-07-31, vrai `mouse.down` puis `mouse.move` sur huit
+           positions de 15 % a 90 % de la scene : `--ba-p` est reste
+           a 50 du debut a la fin, les huit fois, souris ET doigt.
+           Le clavier, lui, marchait — donc le champ n'etait ni
+           desactive ni couvert.
+           Cause : le champ est etire en `inset: 0` sur toute la
+           scene et son pouce fait `height: 100%`, mais la PISTE du
+           champ n'a aucune hauteur. Chromium ne suit le pointeur que
+           s'il est dans la piste : une bande mince, qui n'est pas la
+           ou le visiteur attrape.
+           `ba-check.mjs` ne POUVAIT pas le voir : il synthetisait un
+           evenement `input` au lieu de glisser. Piege 17 — un test
+           qui verrouille le defaut qu'il devait attraper.
+           On pilote donc au pointeur, et on garde le champ. */
+        var idPointeur = null;
+        var pese = null;
+
+        function valeurEn(clientX) {
+          var r = scene.getBoundingClientRect();
+          if (!r.width) return null;
+          return ((clientX - r.left) / r.width) * 100;
+        }
+        function suivre(clientX) {
+          var v = valeurEn(clientX);
+          if (v === null) return;
+          poser(v);
+          curseur.value = String(Math.round(v));
+        }
+
+        scene.addEventListener("pointerdown", function (e) {
+          if (e.button) return;
+          touche = true;
+          /* AU DOIGT, ON NE PREND PAS LA MAIN TOUT DE SUITE : le  D-594
+             meme geste peut vouloir dire « je compare » ou « je
+             continue a lire ». On attend le premier deplacement pour
+             trancher ; s'il est plutot vertical, le doigt est rendu
+             a la page et le defilement n'est jamais bloque. */
+          if (e.pointerType === "touch") {
+            pese = { x: e.clientX, y: e.clientY, id: e.pointerId };
+            return;
+          }
+          idPointeur = e.pointerId;
+          try { scene.setPointerCapture(e.pointerId); } catch (err) { /* sans capture, ca marche quand meme */ }
+          suivre(e.clientX);
+        });
+
+        scene.addEventListener("pointermove", function (e) {
+          if (pese && e.pointerId === pese.id) {
+            var dx = Math.abs(e.clientX - pese.x);
+            var dy = Math.abs(e.clientY - pese.y);
+            if (dx < 6 && dy < 6) return;
+            if (dy > dx) { pese = null; return; }
+            idPointeur = pese.id;
+            pese = null;
+            try { scene.setPointerCapture(idPointeur); } catch (err) {}
+          }
+          if (idPointeur === null || e.pointerId !== idPointeur) return;
+          if (e.cancelable) e.preventDefault();
+          suivre(e.clientX);
+        });
+
+        function lacher(e) {
+          if (pese && e.pointerId === pese.id) pese = null;
+          if (idPointeur === null || e.pointerId !== idPointeur) return;
+          try { scene.releasePointerCapture(idPointeur); } catch (err) {}
+          idPointeur = null;
+        }
+        scene.addEventListener("pointerup", lacher);
+        scene.addEventListener("pointercancel", lacher);
+
         curseur.addEventListener("input", function () {
           touche = true;
+          /* Pendant un glissement, c'est le pointeur qui fait foi :
+             le champ natif poserait sa propre valeur par-dessus et
+             la poignee sauterait d'un bord a l'autre. */
+          if (idPointeur !== null) return;
           poser(Number(curseur.value));
         });
         poser(Number(curseur.value));

@@ -1132,7 +1132,10 @@ html.js .svc {
        grande valeur et la scene depasse d'autant. */
     --svc-scene: calc(100dvh - var(--nav-h));
     /* LE PAS VERTICAL — la distance de defilement qui fait passer  D-192 */
-    --svc-pas: min(40vh, 360px);
+    /* Ouvert d'un cran le 2026-07-31 : la zone morte est passee de  D-597
+       18 % a 10 % de chaque pas, donc la glisse est plus longue. A
+       360 px elle devenait pressee. */
+    --svc-pas: min(44vh, 400px);
     /* SIX ITEMS, PAS QUATRE : cinq services et le panneau de  D-477 */
     --svc-n: 6;
   }
@@ -1150,15 +1153,26 @@ html.js .svc-scene {
     padding-block: var(--s-5);
   }
 /* LA VITRE EST UN CONTENEUR DE DEFILEMENT, ET C'EST ELLE QUI  D-194 */
-/* LA PLANCHE REMPLIT LA VITRE — ET C'EST LE CORRECTIF DU VIDE  D-494 */
+/* LA PLANCHE NE REMPLIT PLUS LA VITRE — ET C'EST LE CORRECTIF  D-595
+     DU TROU. Elle la remplissait (`min-height: 100%`), donc chaque
+     carte etait etiree sur toute la hauteur ; et comme le corps de
+     la carte est colle EN BAS de sa rangee `1fr` (D-490), tout
+     l'excedent s'accumulait en un vide au-dessus du titre. Releve a
+     1440x900 : plusieurs centaines de pixels entre le filet du
+     numero et le nom du service.
+     Maintenant la planche fait la hauteur de son contenu et se
+     CENTRE dans la vitre. Les cartes restent etirees entre elles —
+     `align-items: stretch` sur le flex — donc les deux lignes
+     d'horizon tiennent : le filet des numeros en haut, le corps des
+     cartes en bas. Ce qui disparait, c'est seulement l'excedent. */
 html.js .svc-vitre {
     overflow: hidden;
     scroll-behavior: auto;
     display: grid;
-    align-content: stretch;
+    align-content: center;
     min-height: 0;
   }
-html.js .svc-planche { min-height: 100%; }
+html.js .svc-planche { min-height: 0; max-height: 100%; }
 /* LE RAIL. Une seule transformation par image, ecrite par  D-195 */
 html.js .svc-planche {
     display: flex;
@@ -1185,7 +1199,27 @@ html.js .svc-plan-num {
     border-bottom: var(--rule-w) solid var(--rule-strong);
   }
 html.js .svc-plan-bas { gap: var(--s-4); }
-html.js .svc-plan--fin { width: var(--svc-fin); }
+/* LE PANNEAU DE CLOTURE S'INSCRIT DANS LA MEME GRILLE.  D-596
+     Il n'avait pas de `.svc-plan-num`, donc son corps se placait
+     tout seul en RANGEE 1 — c'est-a-dire colle EN HAUT — pendant que
+     les cinq cartes ont le leur en rangee 2, colle en bas. Deux
+     lignes d'horizon opposees dans la meme vitre, et il etait deux
+     fois plus etroit par-dessus le marche.
+     On lui rend la largeur d'une carte et on reserve sa rangee 1
+     avec une boite de meme gabarit typographique que le numero,
+     vide, sur un filet LEGER : meme horizon, mais on voit qu'il
+     n'est pas le sixieme service. Le numero, lui, ne revient pas —
+     D-469 tient. */
+html.js .svc-plan--fin { width: var(--svc-larg); }
+html.js .svc-plan--fin::before {
+    content: "\200B";
+    grid-row: 1;
+    font-family: var(--font-data);
+    font-size: var(--fs-7);
+    letter-spacing: var(--tracking-label);
+    padding-bottom: var(--s-3);
+    border-bottom: var(--rule-w) solid var(--rule);
+  }
 /* L'ECHELLE — RAMENEE A 80 %, ET C'EST UNE MESURE, PAS UN GOUT.  D-479 */
 html.js .svc-plan-nom {
     font-size: clamp(2rem, 5vw, 4.25rem);
@@ -1278,6 +1312,11 @@ html.js .svc-fiche[data-ouvert],
   isolation: isolate;
   /* LA POSITION DE REPOS EST 50, ET C'EST UNE DECISION.  D-504 */
   --ba-p: 50;
+  /* La scene ENTIERE est attrapable, et le glissement y est pilote  D-593
+     au pointeur. `pan-y` rend le geste vertical a la page : on
+     compare a l'horizontale, on lit a la verticale. */
+  touch-action: pan-y;
+  cursor: ew-resize;
 }
 /* LE CADRE EST UNE IMAGE, ET UNE IMAGE NE S'INVERSE PAS.  D-545 */
 /* Releve du 2026-07-31, passe de critique 3. En theme sombre, la

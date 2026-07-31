@@ -33,15 +33,51 @@
 
   var vivants = [];
 
-  /* == LA FORGE — les grains pleuvent et deviennent le mot.  D-575
+  /* == LE LISSAGE — le correctif de la saccade.  D-589
+     `scrub: true` recopie la position de defilement TELLE QUELLE.
+     Or une molette n'avance pas de facon continue : elle envoie des
+     paliers de 100 px. Les grains se teleportaient donc d'un paquet
+     au suivant, et le seul moment du site cense prouver notre
+     maitrise etait le seul a saccader. Mesure : 60 i/s des le
+     depart — le probleme n'a JAMAIS ete le nombre de grains, il
+     etait dans la marche d'escalier de l'entree.
+     `scrub: <nombre>` interpose un rattrapage joue sur le rythme
+     d'affichage : la progression devient continue entre deux crans.
+     Ce que le sas garantissait reste vrai — a l'ARRET la
+     progression converge vers la valeur exacte de la position, donc
+     une meme position de defilement rend toujours la meme image, et
+     s'arreter en plein vol reste un etat legitime. == */
+  var LISSE = 0.45;
+
+  /* == LA FORGE — la limaille tombe, puis S'ALIGNE en mot.  D-575
      Pilotee par la progression, jamais par le temps : chaque
      position de defilement rend exactement la meme image, et
-     l'arret en plein vol est un etat legitime du sas. == */
+     l'arret en plein vol est un etat legitime du sas.
+
+     DEUX MOUVEMENTS, PAS UN.  D-587
+     La premiere version faisait converger chaque grain en droite
+     ligne vers sa place : un nuage rectangulaire qui se resserrait
+     sans jamais rien dire, et 1,79 % de pixels bouges entre deux
+     images — un moment qu'on ne remarque pas n'existe pas.
+     Maintenant :
+       1. CHUTE (haut vers bas — le sens de lecture d'une page) :
+          chaque grain tombe jusqu'a sa HAUTEUR finale, mais reste
+          decale lateralement. Il se forme un BANC de limaille, plus
+          large que le mot, avec le profil de masse du texte.
+       2. ALIGNEMENT (V2, ζ = 1) : les grains se reprennent
+          horizontalement. Le banc se compacte et les lettres
+          apparaissent d'elles-memes.
+     Les deux ne se chevauchent jamais : le banc est complet avant
+     que l'alignement commence. == */
+  var BANC = 0.58;   /* part de la course d'un grain passee a tomber */
+  var ETAL = 0.50;   /* etalement des departs : 0 = tous ensemble */
+
   function Forge(canvas, mot) {
     this.ok = false;
     this.canvas = canvas;
     this.mot = mot;
     this.lastP = -1;
+    this.w0 = 0;
   }
 
   Forge.prototype.batir = function () {
@@ -49,13 +85,21 @@
     var boite = mot.getBoundingClientRect();
     if (boite.width < 8 || boite.height < 8) return false;
 
-    var marge = Math.round(boite.height * 1.1);
-    var cw = Math.round(boite.width + marge);
-    var ch = Math.round(boite.height + marge * 2);
-    var dpr = Math.min(root.devicePixelRatio || 1, 1.5);
+    /* Marges SYMETRIQUES, et ce n'est pas un detail de confort : le
+       canevas et le mot partagent le meme centre par CSS. Une marge
+       haute plus grande que la basse decalerait les grains du vrai
+       mot, et le CRAN se verrait comme un saut. */
+    var margeX = Math.round(boite.width * 0.10);
+    var margeY = Math.round(boite.height * 1.25);
+    var cw = Math.round(boite.width + margeX * 2);
+    var ch = Math.round(boite.height + margeY * 2);
+    /* Le grain de la signature mesure 2 px de COTE CSS. Le peindre a
+       la densite de l'ecran le rendrait plus fin que la trame qu'il
+       prolonge, et multiplierait par quatre le cout de la passe. */
+    var dpr = 1;
 
-    canvas.width = Math.round(cw * dpr);
-    canvas.height = Math.round(ch * dpr);
+    canvas.width = cw;
+    canvas.height = ch;
     canvas.style.width = cw + "px";
     canvas.style.height = ch + "px";
 
@@ -66,6 +110,7 @@
     if (!octx) return false;
     octx.font = st.fontWeight + " " + st.fontSize + " " + st.fontFamily;
     try { octx.fontStretch = st.fontStretch; } catch (e) { /* moteur sans l'axe */ }
+    try { octx.letterSpacing = st.letterSpacing; } catch (e) { /* idem */ }
     octx.textAlign = "center";
     octx.textBaseline = "middle";
     octx.fillStyle = "#fff";
@@ -75,22 +120,25 @@
     try { data = octx.getImageData(0, 0, cw, ch).data; }
     catch (e) { return false; }
 
-    /* Couleurs lues dans la page : la masse est l'encre du volet,
-       une part des grains est minium. Jamais de valeur en dur. */
-    var enc = st.color;
-    var acc = getComputedStyle(doc.documentElement).getPropertyValue("--accent").trim() || "#c8371b";
+    /* Couleurs lues dans la page. La chambre ne depend pas du  D-586
+       theme : ses jetons sont nommes, pas deduits d'une inversion. */
+    var rac = getComputedStyle(doc.documentElement);
+    var enc = rac.getPropertyValue("--chambre-ink").trim() || st.color;
+    var acc = rac.getPropertyValue("--chambre-accent").trim() || "#e8562f";
 
-    function packCss(css) {
-      var mm = css.match(/\d+/g) || [220, 222, 219];
-      return ((255 << 24) | ((+mm[2]) << 16) | ((+mm[1]) << 8) | (+mm[0])) >>> 0;
+    function pack(v) {
+      var h = v.trim();
+      if (h.charAt(0) === "#") {
+        h = h.slice(1);
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+      }
+      var mm = h.match(/\d+/g) || [220, 222, 219];
+      return [+mm[0], +mm[1], +mm[2]];
     }
-    function packHex(hex) {
-      var h = hex.replace("#", "");
-      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
-      return ((255 << 24) | (parseInt(h.slice(4, 6), 16) << 16) |
-        (parseInt(h.slice(2, 4), 16) << 8) | parseInt(h.slice(0, 2), 16)) >>> 0;
-    }
-    this.tons = [packCss(enc), acc.charAt(0) === "#" ? packHex(acc) : packCss(acc)];
+    var ce = pack(enc), ca = pack(acc);
+    this.tons = ["rgb(" + ce[0] + "," + ce[1] + "," + ce[2] + ")",
+                 "rgb(" + ca[0] + "," + ca[1] + "," + ca[2] + ")"];
 
     var xs = [], ys = [], tn = [];
     var pas = 3;
@@ -99,72 +147,76 @@
         if (data[(y * cw + x) * 4 + 3] > 170) {
           xs.push(x + (pseudo(x, y) - 0.5) * pas * 0.7);
           ys.push(y + (pseudo(y, x + 977) - 0.5) * pas * 0.7);
-          tn.push(pseudo(x + 31, y + 17) < 0.14 ? 1 : 0);
+          tn.push(pseudo(x + 31, y + 17) < 0.13 ? 1 : 0);
         }
       }
     }
     var n = this.n = xs.length;
     if (!n) return false;
 
-    this.tgt = new Float32Array(n * 2);
-    this.dep = new Float32Array(n * 2);
+    this.tgt = new Float32Array(n * 2);   /* la place finale */
+    this.banc = new Float32Array(n);      /* le x du banc, avant reprise */
+    this.dep = new Float32Array(n);       /* le y de depart, au-dessus */
     this.ret = new Float32Array(n);
     this.ton = new Uint8Array(n);
     for (var i = 0; i < n; i++) {
       this.tgt[i * 2] = xs[i];
       this.tgt[i * 2 + 1] = ys[i];
-      /* La pluie : chaque grain part au-dessus de sa place, dans le
-         sens de lecture d'une page — haut vers bas. */
-      this.dep[i * 2] = xs[i] + (pseudo(i * 7 + 3, i * 3 + 1) - 0.5) * cw * 0.14;
-      this.dep[i * 2 + 1] = ys[i] - (0.25 + pseudo(i * 13 + 11, i * 5 + 7) * 0.95) * ch;
-      this.ret[i] = pseudo(i * 17 + 5, i * 11 + 13);
+      this.banc[i] = xs[i] + (pseudo(i * 7 + 3, i * 3 + 1) - 0.5) * cw * 0.15;
+      this.dep[i] = ys[i] - (0.35 + pseudo(i * 13 + 11, i * 5 + 7) * 0.9) * ch;
+      /* Le minium se pose EN DERNIER : la piece finit de se prendre
+         sur une derniere pincee de couleur d'action. */
+      this.ret[i] = tn[i]
+        ? 0.52 + pseudo(i * 17 + 5, i * 11 + 13) * 0.48
+        : pseudo(i * 17 + 5, i * 11 + 13) * 0.86;
       this.ton[i] = tn[i];
     }
 
     var ctx = canvas.getContext("2d");
     if (!ctx) return false;
     this.ctx = ctx;
-    this.image = ctx.createImageData(canvas.width, canvas.height);
-    this.buf = new Uint32Array(this.image.data.buffer);
     this.cw = cw; this.ch = ch; this.dpr = dpr;
+    this.g = 2;
+    this.w0 = Math.round(boite.width);
     this.ok = true;
+    this.lastP = -1;
     return true;
   };
 
   Forge.prototype.peindre = function (p) {
     if (!this.ok) return;
-    if (Math.abs(p - this.lastP) < 0.001) return;
+    if (Math.abs(p - this.lastP) < 0.0015) return;
     this.lastP = p;
 
-    var buf = this.buf, w = this.canvas.width, h = this.canvas.height;
-    buf.fill(0);
+    var ctx = this.ctx, w = this.cw, h = this.ch, g = this.g;
+    ctx.clearRect(0, 0, w, h);
 
-    var n = this.n, dpr = this.dpr;
-    var g = Math.max(1, Math.round(1.6 * dpr));
-    var S = 0.55;
+    var n = this.n;
+    var tgt = this.tgt, banc = this.banc, dep = this.dep, ret = this.ret, ton = this.ton;
 
-    for (var i = 0; i < n; i++) {
-      var d = this.ret[i] * S;
-      var u = clamp((p - d) / (1 - S), 0, 1);
-      var e = sortie(u);
-      var x = ((this.dep[i * 2] + (this.tgt[i * 2] - this.dep[i * 2]) * e) * dpr) | 0;
-      var y = ((this.dep[i * 2 + 1] + (this.tgt[i * 2 + 1] - this.dep[i * 2 + 1]) * e) * dpr) | 0;
-      if (x < 0 || y < 0 || x > w - g || y > h - g) continue;
-      var c = this.tons[this.ton[i]];
-      var base = y * w + x;
-      for (var gy = 0; gy < g; gy++) {
-        var row = base + gy * w;
-        for (var gx = 0; gx < g; gx++) buf[row + gx] = c;
+    /* Deux passes, une par ton : changer `fillStyle` cinq mille fois
+       coute plus cher que parcourir la table deux fois. */
+    for (var t = 0; t < 2; t++) {
+      ctx.fillStyle = this.tons[t];
+      for (var i = 0; i < n; i++) {
+        if (ton[i] !== t) continue;
+        var u = clamp((p - ret[i] * ETAL) / (1 - ETAL), 0, 1);
+        var a = sortie(clamp(u / BANC, 0, 1));
+        var b = sortie(clamp((u - BANC) / (1 - BANC), 0, 1));
+        var bx = banc[i];
+        var x = (bx + (tgt[i * 2] - bx) * b) | 0;
+        var y = (dep[i] + (tgt[i * 2 + 1] - dep[i]) * a) | 0;
+        if (x < 0 || y < 0 || x > w - g || y > h - g) continue;
+        ctx.fillRect(x, y, g, g);
       }
     }
-    this.ctx.putImageData(this.image, 0, 0);
   };
 
   Forge.prototype.vider = function () {
     if (!this.ok) return;
     if (this.lastP === -2) return;
     this.lastP = -2;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.cw, this.ch);
   };
 
   /* == Les trois pistes == */
@@ -193,36 +245,60 @@
         var forge = canvas && mot ? new Forge(canvas, mot) : null;
         var batie = false;
 
-        gsap.fromTo(volet, { yPercent: -101 }, {
-          yPercent: 0, ease: "none", immediateRender: false,
-          scrollTrigger: {
-            trigger: piste, start: "top bottom", end: "55% bottom", scrub: true
-          }
-        });
-
+        /* LES TROIS TEMPS, ET AUCUN NE MORD SUR LE SUIVANT.  D-588
+           Deux defauts corriges d'un coup.
+           1. Le volet AVAIT une descente en `yPercent`, de 0 a 0,42
+              de la course. Elle ne s'est jamais vue : la scene est
+              COLLANTE, donc elle n'est epinglee qu'a partir du
+              moment ou le haut de la piste touche le haut de la
+              fenetre — c'est-a-dire a 100vh de course, soit p = 0,42
+              sur 240vh. Toute la descente du volet se jouait dans
+              une scene encore en train d'entrer par le bas. Releve :
+              a p = 0,20, le bord bas du volet etait a 964 px, soit
+              64 px SOUS la fenetre. Le balayage est supprime ; la
+              plaque est deja la et c'est le visiteur qui descend
+              dedans, ce qui est la definition exacte de V1.  D-592
+           2. La limaille etait peinte jusqu'a 0,94 alors que le vrai
+              mot etait pose des 0,86 : pendant 8 % de la course elle
+              GRIFFONNAIT par-dessus un texte deja peint. Ce n'etait
+              pas une forge, c'etait une panne d'affichage.
+             0,00 → 0,42  la plaque d'encre entre, arete de grains
+                          en tete (le defilement EST le balayage)
+             0,45 → 0,88  la limaille tombe puis s'aligne (V2)
+             0,90         CRAN : le canevas se vide, le mot est la (V4)
+             0,91 → 1,00  le fil minium tire vers la piece (V3)
+           A 0,88 tous les grains sont a leur place. Les deux pour
+           cent qui suivent sont la marge : le CRAN tombe sur une
+           image ou plus rien ne bouge. */
         var st = root.ScrollTrigger.create({
-          trigger: piste, start: "top bottom", end: "bottom bottom", scrub: true,
+          trigger: piste, start: "top bottom", end: "bottom bottom", scrub: LISSE,
           onUpdate: function (self) {
             var p = self.progress;
-            if (forge && !batie && p > 0.2) batie = forge.batir();
+            if (forge && !batie && p > 0.24) batie = forge.batir();
             if (forge && batie) {
-              if (p > 0.4 && p < 0.94) {
-                forge.peindre(clamp((p - 0.42) / 0.46, 0, 1));
-              } else if (p >= 0.94) {
-                forge.vider();
-              } else {
-                forge.vider();
-              }
+              if (p >= 0.45 && p < 0.90) forge.peindre(clamp((p - 0.45) / 0.43, 0, 1));
+              else forge.vider();
             }
-            /* Le mot bascule d'un CRAN, jamais en fondu. Une seule
-               image le separe d'absent a present. */
-            if (mot) mot.classList.toggle("est-la", p >= 0.86);
-            /* Puis le fil minium nait sous le mot et tire vers la
-               piece — il donne sa direction a la sortie du sas. */
-            if (filD) gsap.set(filD, { scaleY: clamp((p - 0.88) / 0.12, 0, 1) });
+            if (mot) mot.classList.toggle("est-la", p >= 0.90);
+            if (filD) gsap.set(filD, { scaleY: clamp((p - 0.91) / 0.09, 0, 1) });
           }
         });
         vivants.push(st);
+
+        /* Un changement de largeur change le corps du mot : la table
+           de grains devient fausse et le CRAN sauterait. On la jette,
+           elle se refait au prochain passage. */
+        var minuteur = 0;
+        root.addEventListener("resize", function () {
+          root.clearTimeout(minuteur);
+          minuteur = root.setTimeout(function () {
+            if (!forge || !batie) return;
+            if (Math.abs(Math.round(mot.getBoundingClientRect().width) - forge.w0) < 2) return;
+            batie = false;
+            forge.ok = false;
+            forge.lastP = -1;
+          }, 180);
+        }, { passive: true });
       }
 
       if (genre === "remontee") {
@@ -236,7 +312,7 @@
           scrollTrigger: {
             trigger: sas, start: "top 85%",
             end: "+=" + Math.round(root.innerHeight * 1.15),
-            scrub: true
+            scrub: LISSE
           }
         });
       }
@@ -249,7 +325,7 @@
           gsap.fromTo(fil, { scaleY: 0 }, {
             scaleY: 1, ease: "none", immediateRender: false,
             scrollTrigger: {
-              trigger: piste, start: "top bottom", end: "bottom bottom", scrub: true
+              trigger: piste, start: "top bottom", end: "bottom bottom", scrub: LISSE
             }
           });
         }

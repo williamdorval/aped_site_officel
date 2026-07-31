@@ -37,65 +37,98 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 .sas-volet { position: relative; }
 .sas-arete, .sas-forge, .sas-mot, .sas-fil { display: none; }
 /* LA CHAMBRE NOIRE — la section 05, seule piece sombre du site.  D-572
-   Elle adopte le jeu de jetons du THEME OPPOSE : en clair elle est
-   nuit, en sombre elle est jour. Chaque paire de contraste qui s'y
-   rend est une paire deja auditee de l'autre theme — aucun nouveau
-   couple de couleurs n'existe. */
-:root[data-theme="light"] #visite {
+   ELLE NE DEPEND PAS DU THEME, et c'est la correction du 2026-07-31 :  D-586
+   elle prenait le jeu de jetons du theme OPPOSE, donc en sombre elle
+   virait au ciment clair et le sas forgeait « Essayez. » sur du blanc.
+   L'arc de luminance raconte une descente ; un recit qui s'inverse
+   avec le theme n'a plus de direction. Un seul jeu, les deux themes :
+   les jetons `--chambre-*` de `tokens.css`. Chaque paire est celle du
+   theme sombre, rehaussee par un fond plus profond. */
+#visite {
   color-scheme: dark;
-  --surface-0: #101211; --surface-1: #191c1a; --surface-2: #232724;
-  --surface-inverse: #dcdedb;
-  --ink: #dcdedb; --ink-muted: #9aa09c; --ink-inverse: #101211;
-  --accent: #e8562f; --accent-text: #ff7a52; --accent-ink: #101211;
+  --surface-0: var(--chambre); --surface-1: var(--chambre-1); --surface-2: var(--chambre-2);
+  --surface-inverse: var(--chambre-ink);
+  --ink: var(--chambre-ink); --ink-muted: var(--chambre-ink-muted); --ink-inverse: var(--chambre);
+  --accent: var(--chambre-accent); --accent-text: var(--chambre-accent-text);
+  --accent-ink: var(--chambre);
   --accent-wash: rgb(232 86 47 / 0.14);
   --accent-on-inverse: #9b2810;
-  --rule: rgb(220 222 219 / 0.18); --rule-strong: rgb(220 222 219 / 0.40);
-  --rule-accent: #e8562f;
+  --rule: var(--chambre-rule); --rule-strong: var(--chambre-rule-strong);
+  --rule-accent: var(--chambre-accent);
   --danger: #ff8b7a; --danger-wash: rgb(255 139 122 / 0.12); --ok: #6fcf8f;
-  --scrim: rgb(8 9 8 / 0.82);
-}
-:root[data-theme="dark"] #visite {
-  color-scheme: light;
-  --surface-0: #dcdedb; --surface-1: #cbcec9; --surface-2: #f2f3f1;
-  --surface-inverse: #101211;
-  --ink: #101211; --ink-muted: #565a57; --ink-inverse: #dcdedb;
-  --accent: #c8371b; --accent-text: #9b2810; --accent-ink: #f2f3f1;
-  --accent-wash: rgb(200 55 27 / 0.10);
-  --accent-on-inverse: #ff7a52;
-  --rule: rgb(16 18 17 / 0.16); --rule-strong: rgb(16 18 17 / 0.38);
-  --rule-accent: #c8371b;
-  --danger: #a11a10; --danger-wash: rgb(161 26 16 / 0.10); --ok: #1d5c34;
-  --scrim: rgb(16 18 17 / 0.72);
+  --scrim: rgb(4 5 4 / 0.86);
 }
 #visite { background: var(--surface-0); color: var(--ink); }
+/* Les jetons du sas ne sont PAS poses sur `.sas` : un sas replie
+   contient une bande de seuil qui doit garder les couleurs de la
+   page, au pixel pres, sur telephone. Ce qui est PROPRE au sas — le
+   volet, l'arete, le mot, la forge — nomme `--chambre-*` en clair. */
 @media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
 html.sas-ok .sas .sas-piste { height: var(--sas-course, 220vh); }
 html.sas-ok .sas .sas-scene {
     position: sticky;
     top: 0;
     height: 100vh;
-    overflow: hidden;
   }
+/* PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.  D-591
+     L'arete de grains vit HORS de la plaque, sur son bord qui
+     avance : rognee, elle n'existe pas. Rien d'autre ne deborde —
+     le volet est en `inset: 0` sans transformation, le canevas et
+     le mot sont mesures pour tenir dans la colonne. */
+html.sas-ok .sas[data-sas="cloture"] .sas-scene { overflow: hidden; }
 html.sas-ok .sas .sas-volet {
     position: absolute;
     inset: 0;
     z-index: 2;
-    background: var(--surface-inverse);
+    background: var(--chambre);
     will-change: transform;
   }
-/* L'arete du volet : la frange de grains de la signature, posee
-     HORS du panneau, sur son bord qui avance. Une trame, pas un
-     fondu. */
+/* L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.  D-592
+     Elle etait posee sous le volet, sur le bord qu'il pousse quand
+     il balaye vers le bas. Or ce balayage se jouait ENTIEREMENT
+     HORS DE L'ECRAN : la scene est collante, donc elle n'est
+     epinglee qu'a partir du moment ou le haut de la piste touche le
+     haut de la fenetre — la premiere moitie de la course, le volet
+     jouait sa descente dans une scene encore en train d'entrer par
+     le bas. Releve : a p = 0,20 le bord bas du volet etait a 964 px,
+     soit 64 px sous la fenetre. L'arete n'a jamais ete vue.
+     Le balayage est donc SUPPRIME : la plaque est deja la, c'est le
+     visiteur qui descend dedans — V1 dans sa definition exacte,
+     « une forme DEJA LA se decouvre sous une arete franche ». Le
+     bord qui avance est celui du HAUT, et la frange y est.
+     Trois rangs de densite decroissante : un bord n'est pas une
+     ligne, c'est une matiere qui se rarefie. */
 html.sas-ok .sas .sas-arete {
     display: block;
     position: absolute;
     left: 0;
     right: 0;
-    bottom: calc(-1 * var(--s-5));
-    height: var(--s-5);
-    background-image: repeating-linear-gradient(
-      90deg, var(--surface-inverse) 0 2px, transparent 2px 5px);
+    top: calc(-1 * var(--s-4));
+    height: var(--s-4);
+    background-image:
+      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 13px),
+      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 7px),
+      repeating-linear-gradient(90deg, var(--chambre) 0 3px, transparent 3px 5px);
+    background-size: 100% 34%, 100% 33%, 100% 33%;
+    background-position: 0 0, 0 34%, 0 100%;
+    background-repeat: repeat-x;
   }
+/* La remontee est un calque qui se DEGAGE vers le haut : son bord
+     qui avance est celui du bas, et sa frange s'y densifie. */
+html.sas-ok .sas--calque .sas-arete {
+    top: auto;
+    bottom: calc(-1 * var(--s-4));
+    background-image:
+      repeating-linear-gradient(90deg, var(--chambre) 0 3px, transparent 3px 5px),
+      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 7px),
+      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 13px);
+  }
+/* LA SCENE EST DEJA LA COLONNE.  D-590
+     Le fil ecartait le rail une seconde fois — `calc(--rail-w + …)`
+     sur une scene dont le bord gauche vaut deja 296 px : la piece
+     partait 124 px a droite du mot qu'elle etait censee prolonger.
+     Mesure : mot centre a 868, fil a 992. Un centrage se releve, il
+     ne se deduit pas. */
 html.sas-ok .sas .sas-forge {
     display: block;
     position: absolute;
@@ -116,12 +149,17 @@ html.sas-ok .sas .sas-mot {
     z-index: 4;
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(3rem, 9vw, 8.25rem);
+    /* Il occupe la COLONNE, pas un timbre au milieu du noir. Mesure :
+       le mot rend 5,02 fois son corps a tous les crans de largeur.
+       A 12 vw il remplit 76 a 85 % de la colonne, de 1024 a 1920 px,
+       sans jamais toucher les bords. */
+    font-size: clamp(3rem, 12vw, 12rem);
     font-weight: 800;
     font-stretch: 118%;
     letter-spacing: var(--tracking-display);
     line-height: 1;
-    color: var(--ink-inverse);
+    white-space: nowrap;
+    color: var(--chambre-ink);
     visibility: hidden;
   }
 html.sas-ok .sas .sas-mot.est-la { visibility: visible; }
@@ -132,7 +170,7 @@ html.sas-ok .sas .sas-mot.est-la { visibility: visible; }
 html.sas-ok .sas .sas-fil {
     display: block;
     position: absolute;
-    left: calc(var(--rail-w) + (100% - var(--rail-w)) / 2);
+    left: 50%;
     top: 0;
     width: 2px;
     height: calc(100vh - 96px);
@@ -143,13 +181,23 @@ html.sas-ok .sas .sas-fil {
 /* Le fil de la descente est MINIUM : il nait sous le mot forge et
      tire vers la piece sombre — la couleur d'action, la ou l'on va
      agir. */
+/* Le fil de la descente NAIT SOUS LE MOT, pas dedans : a `top:50%`
+     il traversait le « y ». Le mot fait 12 vw de haut, donc 6 vw de
+     demi-hauteur ; 7,5 vw laisse une respiration a toutes les
+     largeurs sans jamais mordre. */
 html.sas-ok .sas[data-sas="descente"] .sas-fil {
-    top: 50%;
-    height: 50vh;
-    background: var(--accent);
-    z-index: 3;
+    top: calc(50% + 7.5vw);
+    height: calc(50vh - 7.5vw);
+    background: var(--chambre-accent);
+    z-index: 5;
   }
-.sas[data-sas="descente"] { --sas-course: 200vh; }
+/* 240vh, et le chiffre se deduit : la scene collante n'est
+     epinglee qu'a partir de 100vh de course. Sur 200vh, la moitie
+     du chantier servait a faire monter la plaque et il ne restait
+     que 900 px pour la forge entiere. A 240vh il en reste 1 260 —
+     la limaille a le temps de tomber, de former son banc et de se
+     reprendre sans que le visiteur ait a ralentir. */
+.sas[data-sas="descente"] { --sas-course: 240vh; }
 .sas[data-sas="cloture"]  { --sas-course: 100vh; }
 /* LA REMONTEE EST UN CALQUE, PAS UNE PISTE. Le volet couvre le  D-579
      debut du Calculateur et se degage vers le haut par translation :
@@ -164,7 +212,7 @@ html.sas-ok .sas--calque .sas-volet {
     height: 130vh;
     z-index: 6;
     pointer-events: none;
-    background: var(--surface-inverse);
+    background: var(--chambre);
     transform: translateY(-102%);
     will-change: transform;
   }

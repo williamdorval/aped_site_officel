@@ -11,7 +11,14 @@ import { fileURLToPath } from "node:url";
 import { diffStats, lire } from "./_png.mjs";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
-const ADRESSE = process.argv[2] || "http://127.0.0.1:8099";
+/* Une barre oblique finale rendait « …8099//#visite », que Chromium
+   sert comme une page sans ancre : `querySelector` tombait sur null
+   et l'outil MOURAIT au lieu de rendre un verdict. Un numero de port
+   seul est accepte aussi — c'est ce que prennent les autres outils
+   de ce dossier, et melanger les conventions coute une passe a
+   chaque fois. */
+const BRUT = process.argv[2] || "8099";
+const ADRESSE = (/^\d+$/.test(BRUT) ? "http://127.0.0.1:" + BRUT : BRUT).replace(/\/+$/, "");
 const DOSSIER = path.join(ICI, "..", "refonte-captures", "sas");
 fs.mkdirSync(DOSSIER, { recursive: true });
 

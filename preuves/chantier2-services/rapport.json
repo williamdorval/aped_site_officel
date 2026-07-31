@@ -1,0 +1,454 @@
+{
+  "geo": {
+    "haut": 1050,
+    "course": 1980,
+    "collant": 56,
+    "actif": true,
+    "n": 6
+  },
+  "horizons": {
+    "hauts": [
+      111
+    ],
+    "filets": [
+      176
+    ],
+    "bas": [
+      480
+    ],
+    "largeurs": [
+      605
+    ],
+    "reposSaufPremiere": [
+      270,
+      269
+    ]
+  },
+  "trous": [
+    {
+      "id": "svc-01",
+      "trou": 25
+    },
+    {
+      "id": "svc-02",
+      "trou": 0
+    },
+    {
+      "id": "svc-03",
+      "trou": 0
+    },
+    {
+      "id": "svc-04",
+      "trou": 0
+    },
+    {
+      "id": "svc-05",
+      "trou": 0
+    },
+    {
+      "id": "svc-fin",
+      "trou": 36
+    }
+  ],
+  "positions": [
+    {
+      "pas": 0,
+      "vitreH": 591,
+      "actif": 0,
+      "cartes": [
+        {
+          "id": "svc-01",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 201,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 48
+        },
+        {
+          "id": "svc-02",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 725
+        },
+        {
+          "id": "svc-03",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 1402
+        },
+        {
+          "id": "svc-04",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 2078
+        },
+        {
+          "id": "svc-05",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 2755
+        },
+        {
+          "id": "svc-fin",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 212,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 3432
+        }
+      ]
+    },
+    {
+      "pas": 1,
+      "vitreH": 591,
+      "actif": 1,
+      "cartes": [
+        {
+          "id": "svc-01",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 201,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -407
+        },
+        {
+          "id": "svc-02",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 270
+        },
+        {
+          "id": "svc-03",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 947
+        },
+        {
+          "id": "svc-04",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 1623
+        },
+        {
+          "id": "svc-05",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 2300
+        },
+        {
+          "id": "svc-fin",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 212,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 2977
+        }
+      ]
+    },
+    {
+      "pas": 2,
+      "vitreH": 591,
+      "actif": 2,
+      "cartes": [
+        {
+          "id": "svc-01",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 201,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -1084
+        },
+        {
+          "id": "svc-02",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -407
+        },
+        {
+          "id": "svc-03",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 270
+        },
+        {
+          "id": "svc-04",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 946
+        },
+        {
+          "id": "svc-05",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 1623
+        },
+        {
+          "id": "svc-fin",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 212,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 2300
+        }
+      ]
+    },
+    {
+      "pas": 3,
+      "vitreH": 591,
+      "actif": 3,
+      "cartes": [
+        {
+          "id": "svc-01",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 201,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -1761
+        },
+        {
+          "id": "svc-02",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -1084
+        },
+        {
+          "id": "svc-03",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -407
+        },
+        {
+          "id": "svc-04",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 269
+        },
+        {
+          "id": "svc-05",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 946
+        },
+        {
+          "id": "svc-fin",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 212,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 1623
+        }
+      ]
+    },
+    {
+      "pas": 4,
+      "vitreH": 591,
+      "actif": 4,
+      "cartes": [
+        {
+          "id": "svc-01",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 201,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -2438
+        },
+        {
+          "id": "svc-02",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -1761
+        },
+        {
+          "id": "svc-03",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -1084
+        },
+        {
+          "id": "svc-04",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -408
+        },
+        {
+          "id": "svc-05",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 269
+        },
+        {
+          "id": "svc-fin",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 212,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 946
+        }
+      ]
+    },
+    {
+      "pas": 5,
+      "vitreH": 591,
+      "actif": 5,
+      "cartes": [
+        {
+          "id": "svc-01",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 201,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -3114
+        },
+        {
+          "id": "svc-02",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -2437
+        },
+        {
+          "id": "svc-03",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -1760
+        },
+        {
+          "id": "svc-04",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -1084
+        },
+        {
+          "id": "svc-05",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 176,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": -407
+        },
+        {
+          "id": "svc-fin",
+          "haut": 111,
+          "filet": 176,
+          "hautNom": 212,
+          "basCorps": 480,
+          "larg": 605,
+          "repos": 270
+        }
+      ]
+    }
+  ],
+  "ecarts": [
+    4.59,
+    4.93,
+    3.82,
+    5.21,
+    4.87,
+    5.85,
+    5.6,
+    5.05,
+    6.09,
+    4.1,
+    5.89,
+    4.22
+  ],
+  "molette": {
+    "images": 73,
+    "imagesFigees": 4,
+    "partFigee": 5.5,
+    "pasMoyenPx": 25.39,
+    "plusGrandBondPx": 52
+  },
+  "erreurs": [],
+  "verdict": {
+    "memeHautPourLesSix": true,
+    "memeFiletPourLesSix": true,
+    "memeBasPourLesSix": true,
+    "memeLargeurPourLesSix": true,
+    "memeReposSaufLaPremiere": true,
+    "aucunTrouAuDessusDuNom": true,
+    "aucuneImageIdentiqueDansLaSequence": true,
+    "moinsDeDixPourCentDImagesFigeesALaMolette": true,
+    "aucuneErreurConsole": true
+  }
+}
