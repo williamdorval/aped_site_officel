@@ -141,9 +141,32 @@ for (const f of sources) {
     for (let t = 0; t < T; t++) {
       tranches.push(lire(Math.floor((h * t) / T), Math.floor((h * (t + 1)) / T)));
     }
-    const url = c.toDataURL("image/webp", QUALITE);
-    if (url.indexOf("data:image/webp") !== 0) throw new Error("le moteur n'a pas encode en WebP");
-    return { url, w: LARGEUR, h, sourceW: img.naturalWidth, sourceH: img.naturalHeight, coupeA: hSource, tranches };
+    /* == ON DECOUPE EN TUILES, ET C'EST LA CORRECTION DU 2026-07-31. ==  D-648
+       Une seule image de 6 916 px de haut ne peut pas arriver
+       progressivement : c'est tout ou rien. Pendant le « rien »,
+       le navigateur peint le TEXTE ALTERNATIF dans une boite de
+       3 863 px — ce que le proprietaire a vu, et pris pour des
+       images cassees. Reproduit en bridant le reseau a 400 kbit/s :
+       les quatre « apres » restent vides une seconde et demie, puis
+       arrivent d'un coup.
+       Le cout cache etait pire que le poids : 21 a 23 Mo de bitmap
+       DECODE par image, 107 Mo pour la section.
+       Decoupees en tuiles de 1 100 px, chaque piece pese 30 a 50 Ko,
+       decode 3,6 Mo, et le chargement differe natif ne demande que
+       celles qui approchent de la fenetre. Le cadre se remplit du
+       haut vers le bas au lieu de rester vide. */
+    const TUILE = 1100;
+    const tuiles = [];
+    for (let y0 = 0; y0 < h; y0 += TUILE) {
+      const ht = Math.min(TUILE, h - y0);
+      const ct = document.createElement("canvas");
+      ct.width = LARGEUR; ct.height = ht;
+      ct.getContext("2d").drawImage(c, 0, y0, LARGEUR, ht, 0, 0, LARGEUR, ht);
+      const u = ct.toDataURL("image/webp", QUALITE);
+      if (u.indexOf("data:image/webp") !== 0) throw new Error("le moteur n'a pas encode en WebP");
+      tuiles.push({ url: u, w: LARGEUR, h: ht });
+    }
+    return { tuiles, w: LARGEUR, h, sourceW: img.naturalWidth, sourceH: img.naturalHeight, coupeA: hSource, tranches };
   }, { b64, LARGEUR, QUALITE, rapport });
 
   const pire = res.tranches.reduce((a, b) => (b.ec < a.ec ? b : a));
@@ -151,17 +174,34 @@ for (const f of sources) {
     throw new Error(`${cle} : une tranche de la capture est PLATE (ecart-type ${pire.ec}, moyenne ${pire.moy}). ` +
       "C'est une bande vide, pas une page. Reprendre la capture avant de convertir.");
   }
-  const bin = Buffer.from(res.url.split(",")[1], "base64");
-  const dest = path.join(SORTIE, `apres-${cle}.webp`);
-  fs.writeFileSync(dest, bin);
+  /* On efface les tuiles d'une passe precedente : un reste plus long
+     que la nouvelle serie se retrouverait dans le markup et
+     donnerait un site qui se repete. */
+  for (const vieux of fs.readdirSync(SORTIE)) {
+    if (new RegExp(`^apres-${cle}-t\\d+\\.webp$`).test(vieux)) fs.unlinkSync(path.join(SORTIE, vieux));
+  }
+  const fichiersTuiles = [];
+  let poids = 0;
+  for (let t = 0; t < res.tuiles.length; t++) {
+    const bin = Buffer.from(res.tuiles[t].url.split(",")[1], "base64");
+    const dest = path.join(SORTIE, `apres-${cle}-t${t}.webp`);
+    fs.writeFileSync(dest, bin);
+    poids += bin.length;
+    fichiersTuiles.push({ fichier: `images/realisations/apres-${cle}-t${t}.webp`, w: res.tuiles[t].w, h: res.tuiles[t].h });
+  }
+  /* L'image d'un seul tenant ne sert plus : on la retire pour qu'un
+     markup perime ne puisse pas la ressusciter en silence. */
+  const ancien = path.join(SORTIE, `apres-${cle}.webp`);
+  if (fs.existsSync(ancien)) fs.unlinkSync(ancien);
   R.push({
     cle,
     source: `${res.sourceW}x${res.sourceH}`,
     rapportAvant: rapport,
     rendu: `${res.w}x${res.h}`,
-    ko: Math.round(bin.length / 1024),
-    ecMin: pire.ec,
-    fichier: path.relative(RACINE, dest).replace(/\\/g, "/")
+    tuiles: res.tuiles.length,
+    ko: Math.round(poids / 1024),
+    pireTuileKo: Math.round(Math.max(...res.tuiles.map((t) => Buffer.from(t.url.split(",")[1], "base64").length)) / 1024),
+    ecMin: pire.ec
   });
 
   /* --- LES PLANCHES DES SCENES EPINGLEES ---  D-644
@@ -175,7 +215,7 @@ for (const f of sources) {
   const meta = fs.existsSync(manif) ? JSON.parse(fs.readFileSync(manif, "utf8")) : { bandes: [], largeur: 1280 };
   const enCqw = (px) => +((px / meta.largeur) * 100).toFixed(3);
   MARQUES[cle] = {
-    apres: { fichier: `images/realisations/apres-${cle}.webp`, w: res.w, h: res.h },
+    apres: { w: res.w, h: res.h, tuiles: fichiersTuiles },
     hauteurPage: meta.hauteurPage,
     bandes: []
   };

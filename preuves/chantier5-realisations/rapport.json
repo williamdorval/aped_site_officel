@@ -16,15 +16,15 @@
         98
       ],
       "ecartsDescente": [
-        54.12,
+        54.18,
         57.17,
-        49.58,
-        40.85,
-        48.32,
-        43.73,
-        47.31
+        49.71,
+        40.7,
+        48.31,
+        43.59,
+        47.12
       ],
-      "ecartMinimal": 40.85,
+      "ecartMinimal": 40.7,
       "pageDerriere": "4139 → 4139",
       "auBoutDuApres": {
         "auBout": true,
@@ -48,13 +48,13 @@
         98
       ],
       "ecartsDescente": [
-        66.81,
+        66.82,
         63.47,
         49.38,
-        65.64,
-        64.65,
+        65.48,
+        64.51,
         61.73,
-        64.93
+        64.79
       ],
       "ecartMinimal": 49.38,
       "pageDerriere": "4139 → 4139",
@@ -73,25 +73,25 @@
             187.734
           ],
           "etatsAtteints": [
-            0,
-            1,
-            3,
-            4,
-            5,
-            6,
-            8,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
             9
           ],
           "ecarts": [
-            50.24,
-            49.09,
-            49.79,
-            49.04,
-            49,
-            47.53,
-            39.4
+            63.35,
+            62.64,
+            53.07,
+            60.68,
+            63.7,
+            65.02,
+            36.64
           ],
-          "ecartMinimal": 39.4
+          "ecartMinimal": 36.64
         }
       ]
     },
@@ -110,15 +110,15 @@
         98
       ],
       "ecartsDescente": [
-        76.37,
-        57.08,
-        41.85,
-        26.5,
-        65.78,
-        70.38,
-        42.48
+        76.3,
+        57.19,
+        42.01,
+        26.62,
+        65.81,
+        70.35,
+        42.61
       ],
-      "ecartMinimal": 26.5,
+      "ecartMinimal": 26.62,
       "pageDerriere": "4643 → 4643",
       "auBoutDuApres": {
         "auBout": true,
@@ -135,25 +135,25 @@
             47.266
           ],
           "etatsAtteints": [
-            0,
-            1,
-            3,
-            4,
-            5,
-            6,
-            8,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
             9
           ],
           "ecarts": [
-            34.67,
-            38.46,
-            33.64,
-            32.92,
-            32.26,
-            32.74,
-            40.66
+            55.71,
+            42.55,
+            35.47,
+            34.47,
+            35.99,
+            41.5,
+            40.97
           ],
-          "ecartMinimal": 32.26
+          "ecartMinimal": 34.47
         }
       ]
     },
@@ -172,15 +172,15 @@
         98
       ],
       "ecartsDescente": [
-        80.58,
-        74.88,
-        61.07,
-        75.39,
-        66.24,
-        59.07,
-        73.96
+        80.56,
+        74.9,
+        60.95,
+        75.51,
+        66.27,
+        58.91,
+        73.95
       ],
-      "ecartMinimal": 59.07,
+      "ecartMinimal": 58.91,
       "pageDerriere": "4643 → 4643",
       "auBoutDuApres": {
         "auBout": true,
@@ -242,19 +242,19 @@
         "cadreDedans": true,
         "trouPose": true,
         "scene": "1314x833",
-        "course": 10249
+        "course": 10253
       },
       "poigneeEnGrand": [
         25,
         75
       ],
       "ecartsDefileEnGrand": [
-        52.97,
-        38.82,
-        29.43,
-        27.42
+        52.95,
+        38.85,
+        29.41,
+        27.48
       ],
-      "ecartMinimalEnGrand": 27.42,
+      "ecartMinimalEnGrand": 27.48,
       "pageAvant": 4139,
       "apresFermeture": {
         "fermee": true,
@@ -273,19 +273,19 @@
         "cadreDedans": true,
         "trouPose": true,
         "scene": "1314x833",
-        "course": 9764
+        "course": 9767
       },
       "poigneeEnGrand": [
         25,
         75
       ],
       "ecartsDefileEnGrand": [
-        41.77,
-        37.16,
-        38.58,
+        41.6,
+        36.89,
+        38.51,
         54.07
       ],
-      "ecartMinimalEnGrand": 37.16,
+      "ecartMinimalEnGrand": 36.89,
       "pageAvant": 4139,
       "apresFermeture": {
         "fermee": true,
@@ -304,19 +304,19 @@
         "cadreDedans": true,
         "trouPose": true,
         "scene": "1314x833",
-        "course": 10746
+        "course": 10750
       },
       "poigneeEnGrand": [
         25,
         75
       ],
       "ecartsDefileEnGrand": [
-        49.22,
-        36.81,
-        47.46,
-        65.36
+        49.23,
+        36.78,
+        47.44,
+        65.35
       ],
-      "ecartMinimalEnGrand": 36.81,
+      "ecartMinimalEnGrand": 36.78,
       "pageAvant": 4643,
       "apresFermeture": {
         "fermee": true,
@@ -335,19 +335,19 @@
         "cadreDedans": true,
         "trouPose": true,
         "scene": "1314x833",
-        "course": 6056
+        "course": 6058
       },
       "poigneeEnGrand": [
         25,
         75
       ],
       "ecartsDefileEnGrand": [
-        67.7,
-        64.78,
-        55.26,
-        54.14
+        67.69,
+        64.79,
+        55.41,
+        54.18
       ],
-      "ecartMinimalEnGrand": 54.14,
+      "ecartMinimalEnGrand": 54.18,
       "pageAvant": 4643,
       "apresFermeture": {
         "fermee": true,

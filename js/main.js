@@ -773,12 +773,16 @@
           var W = scene.clientWidth;
           if (!W) return;
           var enCqw = function (px) { return (px / W) * 100; };
-          /* 100 cqw = la largeur du cadre. La hauteur de l'image
-             « apres » est donnee par son rapport naturel ; celle de
-             la reconstitution se MESURE, parce qu'elle depend du
-             texte qui s'y replie. */
-          var img = $(".ba-shot", cadre);
-          hApres = img && img.naturalWidth ? (img.naturalHeight / img.naturalWidth) * 100 : 0;
+          /* 100 cqw = la largeur du cadre. LES DEUX HAUTEURS SE
+             MESURENT DANS LE DOCUMENT.  D-648
+             Celle de l'« apres » se lisait sur l'image, par son
+             rapport naturel. Elle est maintenant une PILE DE TUILES :
+             la premiere ne dit plus rien de la hauteur totale. Et
+             une mesure prise sur `naturalHeight` ne vaut qu'une fois
+             l'image arrivee, alors que les attributs `width` et
+             `height` reservent la place tout de suite — c'est ce qui
+             garde le CLS a zero, et c'est donc ce qu'il faut lire. */
+          hApres = pageAp ? enCqw(pageAp.scrollHeight) : 0;
           var hAvant = pageAv ? enCqw(pageAv.scrollHeight) : 0;
           var fenetre = enCqw(scene.clientHeight);
 
@@ -849,8 +853,6 @@
             enVol = true;
             requestAnimationFrame(function () { enVol = false; rendre(); });
           }, { passive: true });
-          var imgAp = $(".ba-shot", cadre);
-          if (imgAp && !imgAp.complete) imgAp.addEventListener("load", mesurer);
           mesurer();
           if (window.ResizeObserver) new ResizeObserver(mesurer).observe(scene);
         }
