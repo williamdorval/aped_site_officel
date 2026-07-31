@@ -617,9 +617,41 @@
     /* LES PORTES DU PIED FERMENT AVANT DE SAUTER : sinon le visiteur  D-488 */
     var sauts = $$("[data-svc-ferme-vers]");
     for (var s2 = 0; s2 < sauts.length; s2++) {
-      sauts[s2].addEventListener("click", function () {
+      sauts[s2].addEventListener("click", function (e) {
         if (ficheOuverte) fermer(ficheOuverte, true);
+        if (e.currentTarget.hasAttribute("data-lance-visite")) lancerLaVisite();
       });
+    }
+
+    /* == OUVRIR LA VISITE DEPUIS LE PANNEAU 03. ==  D-607
+       Trois choses doivent s'etre produites avant que le clic serve a
+       quelque chose, et aucune n'est instantanee :
+         1. le panneau doit etre ferme, sinon le verrou de defilement
+            tient encore la page ;
+         2. l'ancre `#visite` doit avoir fini d'atterrir — la re-visee
+            de `viserLesAncres` repasse jusqu'a 900 ms apres le saut,
+            et un lecteur qui demarre pendant qu'on corrige la
+            position donne une arrivee bancale ;
+         3. `tour360.js` doit etre CABLE. Il arrive en vague 2 : un
+            `.click()` envoye avant frappe un bouton sans ecouteur et
+            ne fait rien, en silence. D'ou le drapeau `data-tour-pret`
+            pose par ce fichier-la.
+       On attend donc le drapeau, jusqu'a quatre secondes, puis on
+       clique UNE fois. Si le drapeau n'arrive jamais, on ne fait
+       rien : le visiteur est de toute facon devant le bouton, a
+       l'endroit exact ou il faut cliquer. */
+    function lancerLaVisite() {
+      var debut = Date.now();
+      (function guetter() {
+        var bloc = $("[data-tour]");
+        var bouton = $("[data-tour-start]");
+        if (bloc && bouton && bloc.hasAttribute("data-tour-pret")) {
+          if (!bloc.classList.contains("is-loading")) bouton.click();
+          return;
+        }
+        if (Date.now() - debut > 4000) return;
+        window.setTimeout(guetter, 120);
+      })();
     }
 
     /* LE CLIC A L'EXTERIEUR. Le voile est le `::before` de la boite :  D-489 */

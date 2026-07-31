@@ -129,6 +129,14 @@
         .catch(echec);
     });
 
+    /* LE BOUTON EST CABLE — ET C'EST UN DRAPEAU, PAS UN DETAIL.  D-607
+       Ce fichier arrive en VAGUE 2, donc au premier geste du visiteur
+       ou 1,2 s apres le rendu. Le panneau du service 03 propose
+       « Ouvrir la visite » : un `.click()` envoye avant ce moment-la
+       frappe un bouton sans ecouteur et ne fait RIEN, en silence. On
+       pose donc de quoi attendre. */
+    bloc.setAttribute("data-tour-pret", "");
+
     function echec() {
       lance = false;
       bloc.classList.remove("is-loading");

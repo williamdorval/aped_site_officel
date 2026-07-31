@@ -77,6 +77,21 @@ const estCritique = (nom) =>
   nom.startsWith("plate-") || nom.startsWith("spec-") || nom.startsWith("fiche-") ||
   nom.startsWith("sas-");
 
+/* Les images-cles qui n'animent QUE des panneaux ouverts au clic.  D-608
+   Un `@keyframes` est indivisible, donc l'outil le recopie dans les
+   DEUX feuilles pour qu'aucune animation ne se retrouve sans ses
+   images. Celles-ci sont l'exception justifiee : le panneau du
+   service 02 ne s'ouvre pas sans JavaScript, et c'est ce meme
+   JavaScript qui injecte `differe.css`. Les mettre au chemin
+   critique, c'etait 0,7 Ko payes par tous les visiteurs pour un
+   dessin que la plupart ne verront jamais.
+   Liste EXPLICITE, jamais un prefixe : une heuristique ici couterait
+   un jour une animation muette qu'aucun test ne verrait passer. */
+const KEYFRAMES_DIFFEREES = new Set([
+  "svc-auto-court", "svc-auto-soude",
+  "svc-fait-1", "svc-fait-2", "svc-fait-3", "svc-fait-4"
+]);
+
 /* TOUTES les classes du selecteur, pas seulement celles du sujet.
 
    Premiere version : on ne regardait que le sujet, et un sujet sans
@@ -166,7 +181,19 @@ function decouper(texte, profondeur) {
     }
     if (tete.startsWith("@")) {
       /* `@font-face`, `@keyframes`, `@page` : indivisibles, et une
-         image-cle absente casse une animation. Dans les deux. */
+         image-cle absente casse une animation. Dans les deux —
+         SAUF celles nommees ci-dessous, qui n'animent QUE des
+         panneaux ouverts au clic. Un panneau ne s'ouvre pas sans
+         JavaScript, et `differe.css` est injecte par le meme
+         JavaScript : leur image-cle ne peut pas manquer au moment
+         ou elle sert. La liste est explicite, jamais deduite d'un
+         prefixe — une heuristique ici couterait une animation
+         muette qu'aucun test ne verrait. */
+      const nomIm = /^@keyframes\s+([A-Za-z0-9_-]+)/.exec(tete);
+      if (nomIm && KEYFRAMES_DIFFEREES.has(nomIm[1])) {
+        vider(differe); differe.push(regle);
+        continue;
+      }
       vider(critique); critique.push(regle);
       differe.push(regle);
       continue;

@@ -1,0 +1,241 @@
+{
+  "panneaux": [
+    {
+      "id": "svc-fiche-01",
+      "ouvert": true,
+      "role": "dialog",
+      "hauteurPanneau": 900,
+      "hauteurContenu": 439,
+      "defileInterne": 0,
+      "debordeFenetre": 0,
+      "visuels": 1,
+      "elementsAnimes": 0,
+      "liensSortants": [
+        "#realisations",
+        "#contact",
+        "#calculateur"
+      ]
+    },
+    {
+      "id": "svc-fiche-02",
+      "ouvert": true,
+      "role": "dialog",
+      "hauteurPanneau": 925,
+      "hauteurContenu": 497,
+      "defileInterne": 32,
+      "debordeFenetre": 0,
+      "visuels": 2,
+      "elementsAnimes": 6,
+      "liensSortants": [
+        "#contact",
+        "#calculateur"
+      ]
+    },
+    {
+      "id": "svc-fiche-03",
+      "ouvert": true,
+      "role": "dialog",
+      "hauteurPanneau": 925,
+      "hauteurContenu": 638,
+      "defileInterne": 174,
+      "debordeFenetre": 0,
+      "visuels": 2,
+      "elementsAnimes": 0,
+      "liensSortants": [
+        "#visite",
+        "#contact",
+        "#visite"
+      ]
+    },
+    {
+      "id": "svc-fiche-04",
+      "ouvert": true,
+      "role": "dialog",
+      "hauteurPanneau": 925,
+      "hauteurContenu": 467,
+      "defileInterne": 3,
+      "debordeFenetre": 0,
+      "visuels": 4,
+      "elementsAnimes": 0,
+      "liensSortants": [
+        "#contact",
+        "#processus"
+      ]
+    },
+    {
+      "id": "svc-fiche-05",
+      "ouvert": true,
+      "role": "dialog",
+      "hauteurPanneau": 925,
+      "hauteurContenu": 655,
+      "defileInterne": 234,
+      "debordeFenetre": 0,
+      "visuels": 4,
+      "elementsAnimes": 0,
+      "liensSortants": [
+        "#contact",
+        "#realisations"
+      ]
+    }
+  ],
+  "renvois": {
+    "realisations": [
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#realisations",
+        "ecartAuHaut": 88,
+        "defilementRendu": true
+      }
+    ],
+    "visite": [
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      },
+      {
+        "panneauFerme": true,
+        "hash": "#visite",
+        "ecartAuHaut": 88,
+        "tourPret": true,
+        "lecteurLance": true,
+        "etat": "tour rise is-live"
+      }
+    ]
+  },
+  "erreurs": [],
+  "verdict": {
+    "lesCinqSOuvrent": true,
+    "lesCinqOntUnVisuel": true,
+    "aucunNeDebordeLaFenetre": true,
+    "leDeuxEstAnime": true,
+    "renvoiRealisationsDixSurDix": true,
+    "renvoiVisiteDixSurDix": true,
+    "aucuneErreurConsole": true
+  },
+  "compte": {
+    "realisations": "10/10",
+    "visite": "10/10"
+  }
+}

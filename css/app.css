@@ -2361,21 +2361,162 @@ html:not(.js) .svc-fiche-x { display: none; }
   color: var(--ink-muted);
   line-height: 1.55;
 }
-.svc-plan2d .p2-grille { stroke: var(--rule); stroke-width: 1; }
-.svc-plan2d .p2-forme { fill: none; stroke: var(--accent); stroke-width: 2; }
-.svc-plan2d .p2-bord { fill: none; stroke: var(--ink); stroke-width: 3; }
-.svc-plan2d .p2-noeud { fill: var(--surface-2); stroke: var(--ink); stroke-width: 1.5; }
-.svc-plan2d .p2-cote { fill: none; stroke: var(--ink-muted); stroke-width: 1; }
-.svc-plan2d .p2-txt {
+:is(.svc-plan2d, .svc-renvoi) .p2-grille { stroke: var(--rule); stroke-width: 1; }
+:is(.svc-plan2d, .svc-renvoi) .p2-forme { fill: none; stroke: var(--accent); stroke-width: 2; }
+:is(.svc-plan2d, .svc-renvoi) .p2-bord { fill: none; stroke: var(--ink); stroke-width: 3; }
+:is(.svc-plan2d, .svc-renvoi) .p2-noeud { fill: var(--surface-2); stroke: var(--ink); stroke-width: 1.5; }
+:is(.svc-plan2d, .svc-renvoi) .p2-cote { fill: none; stroke: var(--ink-muted); stroke-width: 1; }
+:is(.svc-plan2d, .svc-renvoi) .p2-txt {
   fill: var(--ink-muted);
   font-family: var(--font-data);
   font-size: 11px;
   letter-spacing: 0.08em;
 }
-.svc-plan2d .p2-txt--fort { fill: var(--accent-text); }
-.svc-plan2d .p2-masse { fill: var(--surface-1); stroke: var(--ink-muted); stroke-width: 1; }
-.svc-plan2d .p2-lame { stroke: var(--rule-strong); stroke-width: 1; }
-.svc-plan2d .p2-sol { fill: var(--surface-1); }
+:is(.svc-plan2d, .svc-renvoi) .p2-txt--fort { fill: var(--accent-text); }
+:is(.svc-plan2d, .svc-renvoi) .p2-masse { fill: var(--surface-1); stroke: var(--ink-muted); stroke-width: 1; }
+:is(.svc-plan2d, .svc-renvoi) .p2-lame { stroke: var(--rule-strong); stroke-width: 1; }
+:is(.svc-plan2d, .svc-renvoi) .p2-sol { fill: var(--surface-1); }
+/* LE VOCABULAIRE DU DESSIN NE VIT PLUS SOUS UNE SEULE BOITE.  D-609
+   Il etait porte par `.svc-plan2d` seul. Le renvoi du panneau 01
+   n'est pas un `.svc-plan2d` — il a son propre cadre et son texte a
+   cote — donc AUCUNE de ses classes ne s'appliquait et le dessin
+   rendait en NOIR PLEIN, remplissage par defaut du SVG. Vu a la
+   capture, pas au code : un `p2-plaque` sans regle ne leve aucune
+   erreur. `:is()` garde la specificite a l'identique, donc la
+   cascade ne bouge pas d'un cran. */
+/* Ajouts du 2026-07-31, pour les panneaux 01 a 04. Le vocabulaire  D-601
+   du 05 est repris tel quel — c'etait le point de D-475 : aucune
+   regle n'y etait specifique au 05. Trois classes de remplissage
+   manquaient, les voici, et rien d'autre. */
+:is(.svc-plan2d, .svc-renvoi) .p2-plaque { fill: var(--surface-2); stroke: var(--rule-strong); stroke-width: 1; }
+:is(.svc-plan2d, .svc-renvoi) .p2-aplat { fill: var(--accent); }
+:is(.svc-plan2d, .svc-renvoi) .p2-encre { fill: var(--ink); }
+:is(.svc-plan2d, .svc-renvoi) .p2-mute { fill: var(--ink-muted); }
+:is(.svc-plan2d, .svc-renvoi) .p2-fin { fill: none; stroke: var(--rule-strong); stroke-width: 1; }
+
+/* == LE RENVOI VERS LES DEMONSTRATIONS — panneau 01. ==  D-602
+   Le panneau disait « pas de gabarit acheté » sans jamais montrer la
+   difference. Le renvoi porte donc un DESSIN de ce qu'on va voir :
+   une comparaison coupee en deux par le filet minium, exactement la
+   mecanique de la section ou il mene. On ne promet pas une preuve,
+   on en montre la forme. */
+.svc-renvoi {
+  display: grid;
+  gap: var(--s-4);
+  align-items: center;
+  padding: var(--s-4);
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-0);
+}
+@media (min-width: 34em) {
+  .svc-renvoi { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: var(--s-5); }
+}
+.svc-renvoi svg { display: block; width: 100%; height: auto; }
+.svc-renvoi-dit { display: grid; gap: var(--s-3); justify-items: start; }
+.svc-renvoi-dit p { margin: 0; font-size: var(--fs-7); color: var(--ink-muted); }
+.svc-renvoi-dit b { color: var(--ink); }
+
+/* == L'AUTOMATISATION QUI TOURNE TOUTE SEULE — panneau 02. ==  D-603
+   C'est le service le plus abstrait des cinq : c'est celui qui a le
+   plus besoin d'etre MONTRE. Pas un schema de developpeur — quatre
+   stations nommees en francais de tous les jours, et une piece de
+   minium qui les parcourt sans que personne la pousse. Chaque
+   station se coche d'un CRAN quand la piece y arrive : une seule
+   image separe « pas fait » de « fait », jamais un fondu.
+   Sous mouvement reduit, la course s'arrete et TOUT est coche : la
+   piece est a la derniere station, les quatre marques sont la.
+   L'information ne depend jamais du mouvement. */
+.svc-auto { display: grid; gap: var(--s-3); }
+.svc-auto svg { display: block; width: 100%; height: auto; }
+.svc-auto .p2-piece { fill: var(--accent); }
+.svc-auto .p2-fait { opacity: 1; }
+.svc-auto .p2-fait path { fill: none; stroke: var(--accent-text); stroke-width: 2.5; stroke-linecap: square; }
+.svc-auto .p2-fin { color: var(--ink-muted); }
+.svc-auto-note {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .svc-auto .p2-piece { animation: svc-auto-court 7.2s var(--e-snap) infinite; }
+  .svc-auto .p2-soudure {
+    transform-origin: left center;
+    animation: svc-auto-soude 7.2s var(--e-snap) infinite;
+  }
+  .svc-auto .p2-fait { opacity: 0; }
+  .svc-auto .p2-fait--1 { animation: svc-fait-1 7.2s step-end infinite; }
+  .svc-auto .p2-fait--2 { animation: svc-fait-2 7.2s step-end infinite; }
+  .svc-auto .p2-fait--3 { animation: svc-fait-3 7.2s step-end infinite; }
+  .svc-auto .p2-fait--4 { animation: svc-fait-4 7.2s step-end infinite; }
+}
+/* Le palier 2 coupe le mouvement comme le mouvement reduit : la  D-604
+   marque reste, la course s'arrete. `!important` parce qu'`animation`
+   est un raccourci qui remet `animation-play-state: running` — piege
+   16, deja paye une fois. */
+html[data-palier="2"] .svc-auto *,
+html[data-palier="3"] .svc-auto * { animation: none !important; }
+html[data-palier="2"] .svc-auto .p2-fait,
+html[data-palier="3"] .svc-auto .p2-fait { opacity: 1; }
+html[data-palier="2"] .svc-auto .p2-piece,
+html[data-palier="3"] .svc-auto .p2-piece { transform: translateX(285px); }
+html[data-palier="2"] .svc-auto .p2-soudure,
+html[data-palier="3"] .svc-auto .p2-soudure { transform: scaleX(1); }
+
+@keyframes svc-auto-court {
+  0%, 16% { transform: translateX(0); }
+  25%, 41% { transform: translateX(95px); }
+  50%, 66% { transform: translateX(190px); }
+  75%, 100% { transform: translateX(285px); }
+}
+@keyframes svc-auto-soude {
+  0%, 16% { transform: scaleX(0); }
+  25%, 41% { transform: scaleX(0.333); }
+  50%, 66% { transform: scaleX(0.666); }
+  75%, 100% { transform: scaleX(1); }
+}
+@keyframes svc-fait-1 { 0%, 7% { opacity: 0; } 8%, 100% { opacity: 1; } }
+@keyframes svc-fait-2 { 0%, 32% { opacity: 0; } 33%, 100% { opacity: 1; } }
+@keyframes svc-fait-3 { 0%, 57% { opacity: 0; } 58%, 100% { opacity: 1; } }
+@keyframes svc-fait-4 { 0%, 82% { opacity: 0; } 83%, 100% { opacity: 1; } }
+
+/* == LA VISITE, MONTREE AVANT D'ETRE OUVERTE — panneau 03. ==  D-605
+   L'affiche est la VRAIE premiere image de la visite du site
+   (`images/tour/poster.webp`), pas une illustration : on voit ce
+   qu'on va obtenir avant de cliquer. Elle est differee et ne pese
+   sur rien tant que le panneau est ferme. */
+.svc-visu {
+  display: grid;
+  gap: var(--s-3);
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-0);
+  padding: var(--s-4);
+}
+.svc-visu-cadre { position: relative; display: block; }
+.svc-visu-cadre img { display: block; width: 100%; height: auto; }
+.svc-visu-etq {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.svc-visu-actes { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+.svc-visu-note {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+}
 
 .svc-fiche-pied {
   display: grid;
