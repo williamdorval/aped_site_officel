@@ -743,6 +743,118 @@
           }, { passive: false });
         }
 
+        /* --- LE VERROU EN POURCENTAGE ---  D-645
+           Les deux cotes n'ont pas la meme hauteur — un site de 2011
+           fait quelques centaines de pixels, un site neuf en fait dix
+           mille. Une course partagee EN PIXELS plafonne donc le grand
+           a la hauteur du petit : c'est le blocage releve par le
+           proprietaire. Une course partagee EN POURCENTAGE ne
+           plafonne rien : a mi-chemin d'un cote, on est a mi-chemin
+           de l'autre, et les deux atteignent leur pied ensemble.
+           La vitre ne contient qu'une PISTE vide. C'est elle qui
+           donne la course ; les deux pages sont posees par-dessus et
+           translatees, chacune de sa propre fraction.
+           Tout est calcule en `cqw` — centiemes de la largeur du
+           cadre — donc rien n'est a recalculer quand la fenetre
+           change de taille, et la meme valeur sert au cadre en
+           grille comme au cadre agrandi.  D-646 */
+        var piste = $("[data-ba-piste]", cadre);
+        var pageAp = $(".ba-vue--apres .ba-page", cadre);
+        var pageAv = $(".ba-vue--avant .ba-page", cadre);
+        var bandes = $$(".ba-bande", cadre).map(function (el) {
+          var d = (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number);
+          return { el: el, y: d[0] || 0, h: d[1] || 0, n: Math.max(2, d[2] || 2), course: d[3] || 0 };
+        });
+        var segments = [];
+        var courseTotale = 0;
+        var hApres = 0;
+
+        function mesurer() {
+          var W = scene.clientWidth;
+          if (!W) return;
+          var enCqw = function (px) { return (px / W) * 100; };
+          /* 100 cqw = la largeur du cadre. La hauteur de l'image
+             « apres » est donnee par son rapport naturel ; celle de
+             la reconstitution se MESURE, parce qu'elle depend du
+             texte qui s'y replie. */
+          var img = $(".ba-shot", cadre);
+          hApres = img && img.naturalWidth ? (img.naturalHeight / img.naturalWidth) * 100 : 0;
+          var hAvant = pageAv ? enCqw(pageAv.scrollHeight) : 0;
+          var fenetre = enCqw(scene.clientHeight);
+
+          segments = [];
+          var cur = 0;
+          for (var b = 0; b < bandes.length; b++) {
+            var bd = bandes[b];
+            if (bd.y > cur) segments.push({ t: "f", de: cur, long: bd.y - cur });
+            segments.push({ t: "b", de: bd.y, long: Math.max(bd.h, bd.course), bande: bd });
+            cur = bd.y + bd.h;
+          }
+          var finFlux = Math.max(0, hApres - fenetre);
+          if (cur < finFlux) segments.push({ t: "f", de: cur, long: finFlux - cur });
+
+          courseTotale = 0;
+          for (var s = 0; s < segments.length; s++) courseTotale += segments[s].long;
+          /* La reconstitution ne doit pas etre plus courte que sa
+             propre course, sinon elle s'arrete avant la fin de la
+             piste : on prend la plus longue des deux. */
+          scene.style.setProperty("--ba-h-avant", Math.max(0, hAvant - fenetre));
+          piste.style.height = (scene.clientHeight + (courseTotale / 100) * W) + "px";
+          rendre();
+        }
+
+        function rendre() {
+          if (!courseTotale) return;
+          var maxDef = vitre.scrollHeight - vitre.clientHeight;
+          var p = maxDef > 0 ? Math.min(1, Math.max(0, vitre.scrollTop / maxDef)) : 0;
+          var d = p * courseTotale;
+          var acc = 0;
+          var yAp = 0;
+          for (var s = 0; s < segments.length; s++) {
+            var seg = segments[s];
+            if (d <= acc + seg.long || s === segments.length - 1) {
+              var dans = Math.min(seg.long, Math.max(0, d - acc));
+              if (seg.t === "f") {
+                yAp = seg.de + dans;
+              } else {
+                yAp = seg.de;
+                var i = Math.round((dans / seg.long) * (seg.bande.n - 1));
+                seg.bande.el.style.setProperty("--ba-bande-i", i);
+              }
+              break;
+            }
+            acc += seg.long;
+            /* Une bande DEPASSEE reste posee sur son dernier etat :
+               la transition est finie, elle ne se rembobine pas. */
+            if (seg.t === "b") seg.bande.el.style.setProperty("--ba-bande-i", seg.bande.n - 1);
+          }
+          /* Une bande PAS ENCORE ATTEINTE reste a son premier etat. */
+          var vu = 0;
+          for (var s2 = 0; s2 < segments.length; s2++) {
+            if (segments[s2].t !== "b") { vu += segments[s2].long; continue; }
+            if (d < vu) segments[s2].bande.el.style.setProperty("--ba-bande-i", 0);
+            vu += segments[s2].long;
+          }
+          if (pageAp) pageAp.style.setProperty("--ba-y", yAp);
+          if (pageAv) {
+            var hAv = parseFloat(scene.style.getPropertyValue("--ba-h-avant")) || 0;
+            pageAv.style.setProperty("--ba-y", p * hAv);
+          }
+        }
+
+        if (piste && vitre) {
+          var enVol = false;
+          vitre.addEventListener("scroll", function () {
+            if (enVol) return;
+            enVol = true;
+            requestAnimationFrame(function () { enVol = false; rendre(); });
+          }, { passive: true });
+          var imgAp = $(".ba-shot", cadre);
+          if (imgAp && !imgAp.complete) imgAp.addEventListener("load", mesurer);
+          mesurer();
+          if (window.ResizeObserver) new ResizeObserver(mesurer).observe(scene);
+        }
+
         function valeurEn(clientX) {
           var r = scene.getBoundingClientRect();
           if (!r.width) return null;

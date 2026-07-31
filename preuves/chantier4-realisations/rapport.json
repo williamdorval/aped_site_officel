@@ -43,13 +43,13 @@
       },
       "curseur": "ew-resize",
       "ecarts": [
-        47.98,
-        49.75,
-        96.08
+        45.47,
+        49.73,
+        93.53
       ],
       "hauteurs": {
         "avant": 541,
-        "apres": 541
+        "apres": 3863
       }
     },
     {
@@ -82,26 +82,26 @@
       ],
       "suitLeCurseur": true,
       "doigt": {
-        "horizontal": 22,
+        "horizontal": 42,
         "pageABougePendantLHorizontal": 0,
         "verticalNeCompareRien": true,
         "defileDansLeCadre": 135,
         "pageABougePendantLeVertical": 0
       },
       "clavier": {
-        "avant": 22,
-        "apres": 24,
+        "avant": 42,
+        "apres": 44,
         "bouge": true
       },
       "curseur": "ew-resize",
       "ecarts": [
-        49.77,
-        49.79,
-        97.91
+        49.8,
+        49.8,
+        97.95
       ],
       "hauteurs": {
         "avant": 1246,
-        "apres": 1247
+        "apres": 3120
       }
     },
     {
@@ -147,13 +147,13 @@
       },
       "curseur": "ew-resize",
       "ecarts": [
-        49.69,
-        49.8,
-        97.84
+        49.62,
+        49.67,
+        97.62
       ],
       "hauteurs": {
         "avant": 1106,
-        "apres": 1106
+        "apres": 4036
       }
     },
     {
@@ -199,13 +199,13 @@
       },
       "curseur": "ew-resize",
       "ecarts": [
-        34.37,
-        31.94,
-        64.45
+        46.93,
+        49.39,
+        94.65
       ],
       "hauteurs": {
         "avant": 1903,
-        "apres": 1903
+        "apres": 2402
       }
     }
   ],

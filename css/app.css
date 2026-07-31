@@ -2835,23 +2835,44 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
 @media (pointer: coarse) {
   .ba-vitre { overscroll-behavior: auto; }
 }
-/* LA PILE EST UNE GRILLE D'UNE SEULE CASE, ET C'EST LA CORRECTION.  D-632
-   Premiere version de ce chantier : l'apres en flux, l'avant en
-   `position: absolute; inset: 0`. Consequence mesuree, invisible au
-   code : la pile prenait la hauteur de la SEULE image apres — une
-   fenetre exactement — donc `scrollHeight - clientHeight = 0` sur les
-   quatre. La vitre etait bien defilante et n'avait RIEN a defiler,
-   pendant que l'avant, haut de 540 a 1 903 px, se faisait couper a
-   286. Un cadre vide qui passait au vert dans la lecture du code.
-   Deux enfants dans la meme case de grille : la rangee prend la
-   hauteur du PLUS GRAND des deux, sans un chiffre magique et sans
-   JavaScript. Les deux cotes montent ensemble, donc ils ne peuvent
-   pas se desynchroniser.
-   Piege 26 : une grille fait un element anonyme de chaque noeud de
-   TEXTE — les noeuds d'espaces seuls n'en font pas, et il n'y a rien
-   d'autre entre les deux vues que des commentaires. */
-.ba-pile { display: grid; }
+/* == LES DEUX COTES DEFILENT EN POURCENTAGE, PAS EN PIXELS. ==  D-645
+   CE QUI NE MARCHAIT PAS, ET POURQUOI C'ETAIT STRUCTUREL.
+   Les deux vues vivaient DANS la vitre, empilees en grille : une
+   seule course, celle du plus grand. Comme chaque « apres » etait
+   coupe a la hauteur de son « avant » (D-632), la course commune
+   valait celle du site de 2011 — quelques centaines de pixels — et
+   le site neuf, haut de dix mille, se bloquait avec lui. Le
+   proprietaire l'a dit en une phrase : « j'arrive au bas du site
+   avant, tout se bloque, et le après a encore beaucoup a montrer ».
+   Deux pages de hauteurs tres differentes ne peuvent pas partager
+   une course en pixels. Elles peuvent partager une course en
+   POURCENTAGE : a mi-chemin d'un cote, on est a mi-chemin de
+   l'autre. C'est le seul verrou qui garde la comparaison lisible
+   sans qu'aucun des deux ne plafonne l'autre.
+   La vitre ne contient donc plus que sa PISTE — un espaceur vide qui
+   ne sert qu'a donner de la course. La pile, elle, est posee
+   par-dessus, ne defile pas, et chaque cote y est TRANSLATE de sa
+   propre fraction. `pointer-events: none` sur la pile : la molette
+   et le doigt traversent et trouvent la vitre en dessous, qui est le
+   vrai conteneur defilant.
+   Sans JavaScript, `.ba-cadre` est retire de la page (D-510) : rien
+   de ce qui suit n'est necessaire a la lecture. */
+.ba-piste { width: 100%; height: var(--ba-piste, 100%); }
+.ba-pile {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+  pointer-events: none;
+}
 .ba-vue { grid-area: 1 / 1; min-width: 0; overflow: hidden; background: var(--surface-0); }
+/* LA TRANSLATION EST POSEE PAR `main.js` EN PIXELS, PAS EN POURCENT :
+   un pourcentage de `translateY` se rapporte a la hauteur de
+   l'element traduit, qui est justement ce qui differe des deux
+   cotes. `will-change` n'est PAS pose en permanence — 33 Mo de
+   couche compositeur par cadre, c'est la faute deja payee en
+   phase 4. */
+.ba-page { transform: translateY(calc(var(--ba-y, 0) * -1cqw)); }
 /* L'APRES EST LA COUCHE DU DESSOUS, ENTIERE. L'AVANT EST ROGNE PAR  D-505 */
 .ba-vue--avant {
   z-index: 2;
@@ -2877,6 +2898,48 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
    finissent a la meme ligne.  D-628 */
 .ba-page--shot { min-height: 0; background: none; }
 .ba-shot { display: block; width: 100%; height: auto; }
+
+/* == LES SCENES EPINGLEES SE REJOUENT, ELLES NE S'EMPILENT PLUS. ==  D-644
+   CE QUE LE PROPRIETAIRE VOYAIT : dans le restaurant et le design,
+   « les images se superposent les unes sur les autres », et ca faisait
+   passer nos propres sites pour du travail bâclé.
+   LA CAUSE, ET ELLE EST DE MOI. Ces deux sites epinglent une section
+   en `position: fixed` pendant deux a trois mille pixels de
+   defilement : la page avance, le contenu reste en place et glisse
+   LATERALEMENT. Ma couture faisait deux fautes qui se composaient —
+   elle masquait tous les elements fixes a partir de la deuxieme
+   fenetre (donc la scene epinglee disparaissait), et elle posait
+   chaque fenetre a sa hauteur de defilement (donc ce qui restait se
+   recouvrait). Ni GSAP ni ScrollTrigger dans ces sites : l'epinglage
+   est maison.
+   UNE IMAGE PLATE NE PEUT PAS PORTER CA. A une hauteur donnee, une
+   scene epinglee n'a qu'un seul etat horizontal. On la photographie
+   donc IMAGE PAR IMAGE sur toute sa course, on empile les vues en
+   planche verticale, et c'est le defilement du visiteur DANS LE
+   CADRE qui choisit laquelle montrer. La transition qu'il voit est
+   la vraie, prise sur le vrai site — ce n'est pas le site qui tourne,
+   c'est sa transition qui se rejoue sous sa main. */
+.ba-bande {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--ba-b-y) * 1cqw);
+  height: calc(var(--ba-b-h) * 1cqw);
+  overflow: hidden;
+}
+.ba-bande img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: translateY(calc(var(--ba-bande-i, 0) * var(--ba-b-h) * -1cqw));
+}
+/* SOUS MOUVEMENT REDUIT, LA SCENE NE REJOUE PAS : elle reste posee
+   sur son DERNIER etat, celui ou la transition est finie. Le cadre
+   demeure consultable de bout en bout — l'information ne depend
+   jamais de l'animation. */
+@media (prefers-reduced-motion: reduce) {
+  .ba-bande img { transform: translateY(calc((var(--ba-b-n, 1) - 1) * var(--ba-b-h) * -1cqw)); }
+}
 /* UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.  D-619
    Des que l'apres est devenu une capture, le glissement s'est
    remis a coller : la valeur suivait le curseur sur le premier

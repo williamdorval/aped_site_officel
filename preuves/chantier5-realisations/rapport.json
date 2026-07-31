@@ -4,10 +4,10 @@
     "ba-garage": {
       "cadre": "460x323",
       "vitre": "458x286",
-      "pile": 540,
-      "course": 254,
+      "pile": 3863,
+      "course": 3577,
       "avant": 540,
-      "apres": 540,
+      "apres": 286,
       "rapportEcrit": 1.179,
       "rapportLu": 1.179,
       "poignee": [
@@ -16,22 +16,30 @@
         98
       ],
       "ecartsDescente": [
-        52.97,
-        40.33,
-        29.34,
-        29.02,
-        13.43
+        54.12,
+        57.17,
+        49.58,
+        40.85,
+        48.32,
+        43.73,
+        47.31
       ],
-      "ecartMinimal": 13.43,
-      "pageDerriere": "4139 → 4139"
+      "ecartMinimal": 40.85,
+      "pageDerriere": "4139 → 4139",
+      "auBoutDuApres": {
+        "auBout": true,
+        "yApres": 781,
+        "yAvant": 55
+      },
+      "scenesEpinglees": []
     },
     "ba-design": {
       "cadre": "460x323",
       "vitre": "458x286",
-      "pile": 1246,
-      "course": 960,
+      "pile": 3694,
+      "course": 3408,
       "avant": 1246,
-      "apres": 1246,
+      "apres": 286,
       "rapportEcrit": 2.721,
       "rapportLu": 2.721,
       "poignee": [
@@ -40,22 +48,60 @@
         98
       ],
       "ecartsDescente": [
-        65.47,
-        47.84,
-        60.92,
-        59.34,
-        66.47
+        66.79,
+        63.47,
+        49.38,
+        65.64,
+        64.65,
+        61.73,
+        64.93
       ],
-      "ecartMinimal": 47.84,
-      "pageDerriere": "4139 → 4139"
+      "ecartMinimal": 49.38,
+      "pageDerriere": "4139 → 4139",
+      "auBoutDuApres": {
+        "auBout": true,
+        "yApres": 619,
+        "yAvant": 210
+      },
+      "scenesEpinglees": [
+        {
+          "index": 0,
+          "mesures": [
+            142.891,
+            62.5,
+            10,
+            187.734
+          ],
+          "etatsAtteints": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9
+          ],
+          "ecarts": [
+            50.25,
+            49.1,
+            49.79,
+            49.04,
+            49,
+            47.53,
+            39.41
+          ],
+          "ecartMinimal": 39.41
+        }
+      ]
     },
     "ba-restaurant": {
       "cadre": "460x323",
       "vitre": "458x286",
-      "pile": 1105,
-      "course": 819,
+      "pile": 4036,
+      "course": 3750,
       "avant": 1105,
-      "apres": 1105,
+      "apres": 286,
       "rapportEcrit": 2.413,
       "rapportLu": 2.413,
       "poignee": [
@@ -64,22 +110,60 @@
         98
       ],
       "ecartsDescente": [
-        61.02,
-        28.86,
-        31.64,
-        61.57,
-        79.59
+        76.37,
+        57.04,
+        41.64,
+        26.37,
+        65.74,
+        70.38,
+        42.48
       ],
-      "ecartMinimal": 28.86,
-      "pageDerriere": "4643 → 4643"
+      "ecartMinimal": 26.37,
+      "pageDerriere": "4643 → 4643",
+      "auBoutDuApres": {
+        "auBout": true,
+        "yApres": 819,
+        "yAvant": 179
+      },
+      "scenesEpinglees": [
+        {
+          "index": 0,
+          "mesures": [
+            188.75,
+            62.5,
+            10,
+            47.266
+          ],
+          "etatsAtteints": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9
+          ],
+          "ecarts": [
+            34.35,
+            38.11,
+            33.27,
+            32.55,
+            31.91,
+            32.33,
+            40.22
+          ],
+          "ecartMinimal": 31.91
+        }
+      ]
     },
     "ba-renovation": {
       "cadre": "460x323",
       "vitre": "458x286",
-      "pile": 1903,
-      "course": 1617,
+      "pile": 2401,
+      "course": 2115,
       "avant": 1903,
-      "apres": 1903,
+      "apres": 286,
       "rapportEcrit": 4.155,
       "rapportLu": 4.155,
       "poignee": [
@@ -88,14 +172,22 @@
         98
       ],
       "ecartsDescente": [
-        78.53,
-        75.36,
-        59.99,
-        62.61,
-        59.3
+        80.49,
+        74.88,
+        61.03,
+        75.34,
+        66.26,
+        59.07,
+        73.96
       ],
-      "ecartMinimal": 59.3,
-      "pageDerriere": "4643 → 4643"
+      "ecartMinimal": 59.07,
+      "pageDerriere": "4643 → 4643",
+      "auBoutDuApres": {
+        "auBout": true,
+        "yApres": 462,
+        "yAvant": 353
+      },
+      "scenesEpinglees": []
     }
   },
   "rangees": {

@@ -65,31 +65,35 @@ if (!sources.length) throw new Error("aucune capture `-ecran.png` dans tools/_de
 const nav = await chromium.launch();
 const page = await nav.newPage();
 const R = [];
+const MARQUES = {};
 
 for (const f of sources) {
   const cle = f.replace("-ecran.png", "");
+  /* ON NE COUPE PLUS AU RAPPORT DE LA RECONSTITUTION.  D-643
+     La regle « les deux cotes finissent a la meme ligne » etait
+     juste ; la maniere de la tenir ne l'etait pas. En coupant
+     l'« apres », on montrait 14 % du site du garage et 26 % de celui
+     du restaurant, et le visiteur se retrouvait bloque au pied du
+     site de 2011 avec huit mille pixels de site neuf jamais vus.
+     Les deux cotes sont maintenant ENTIERS, et le verrou se fait en
+     POURCENTAGE dans la page (D-645). `RAPPORTS` ne sert donc plus a
+     decouper : il reste la parce que `ba-check.mjs § 6` s'en sert
+     pour dire si une reconstitution a change de hauteur. */
   const rapport = RAPPORTS[cle];
-  if (!Number.isFinite(rapport)) {
-    throw new Error(`${cle} : aucun rapport releve. Un parametre illisible doit ARRETER l'outil (piege 30).`);
-  }
   const brut = fs.readFileSync(path.join(ENTREE, f));
   const b64 = brut.toString("base64");
   const res = await page.evaluate(async ({ b64, LARGEUR, QUALITE, rapport }) => {
     const img = new Image();
     img.src = "data:image/png;base64," + b64;
     await img.decode();
-    /* La couture arrondit sa hauteur en pixels CSS puis la multiplie
-       par la densite ; ici on arrondit apres avoir multiplie. Les
-       deux chemins peuvent differer d'un pixel — ce n'est pas une
-       capture trop courte, c'est le meme nombre arrondi deux fois.
-       Au-dela de quatre pixels, en revanche, la capture ne porte pas
-       ce qu'on lui demande et l'outil s'arrete. */
-    const voulu = Math.round(img.naturalWidth * rapport);
-    if (voulu - img.naturalHeight > 4) {
-      throw new Error(`la capture ne fait que ${img.naturalHeight} px : il en faut ${voulu} pour tenir le rapport ${rapport}`);
+    const hSource = img.naturalHeight;
+    const h = Math.round((LARGEUR * hSource) / img.naturalWidth);
+    /* UNE DIMENSION DE WEBP NE PEUT PAS DEPASSER 16 383 px, et rien
+       ne le dit : l'encodeur rend une image tronquee ou vide. On
+       arrete l'outil plutot que de livrer un site coupe en deux. */
+    if (h > 16383) {
+      throw new Error(`${LARGEUR}x${h} : au-dela des 16 383 px qu'un WebP peut porter. Baisser la largeur de sortie.`);
     }
-    const hSource = Math.min(voulu, img.naturalHeight);
-    const h = Math.round(LARGEUR * rapport);
     /* UN `drawImage` QUI DIVISE PAR PLUS DE DEUX D'UN COUP ALIASE.
        On reduit par demi-pas successifs, comme `secteurs-photos.mjs`. */
     let cw = img.naturalWidth, ch = hSource;
@@ -153,15 +157,73 @@ for (const f of sources) {
   R.push({
     cle,
     source: `${res.sourceW}x${res.sourceH}`,
-    rapport,
-    coupeA: res.coupeA,
+    rapportAvant: rapport,
     rendu: `${res.w}x${res.h}`,
     ko: Math.round(bin.length / 1024),
     ecMin: pire.ec,
     fichier: path.relative(RACINE, dest).replace(/\\/g, "/")
   });
+
+  /* --- LES PLANCHES DES SCENES EPINGLEES ---  D-644
+     Une planche est une pile de N fenetres du meme moment de la
+     page, chacune un peu plus avancee dans la transition. Le
+     manifeste sort en `cqw` — centiemes de la largeur du cadre —
+     parce que c'est l'unite dans laquelle le CSS et `main.js`
+     travaillent, et que ca rend le tout independant de la taille
+     du cadre. */
+  const manif = path.join(ENTREE, `${cle}-bandes.json`);
+  const meta = fs.existsSync(manif) ? JSON.parse(fs.readFileSync(manif, "utf8")) : { bandes: [], largeur: 1280 };
+  const enCqw = (px) => +((px / meta.largeur) * 100).toFixed(3);
+  MARQUES[cle] = {
+    apres: { fichier: `images/realisations/apres-${cle}.webp`, w: res.w, h: res.h },
+    hauteurPage: meta.hauteurPage,
+    bandes: []
+  };
+  for (const b of meta.bandes) {
+    const src = path.join(ENTREE, `${cle}-bande${b.index}.png`);
+    if (!fs.existsSync(src)) throw new Error(`${cle} : planche ${b.index} annoncee et absente`);
+    const b64b = fs.readFileSync(src).toString("base64");
+    const rb = await page.evaluate(async ({ b64b, LARGEUR, QUALITE }) => {
+      const img = new Image();
+      img.src = "data:image/png;base64," + b64b;
+      await img.decode();
+      const h = Math.round((LARGEUR * img.naturalHeight) / img.naturalWidth);
+      if (h > 16383) throw new Error(`planche ${LARGEUR}x${h} : au-dela des 16 383 px d'un WebP`);
+      let cw = img.naturalWidth, ch = img.naturalHeight;
+      let s = document.createElement("canvas");
+      s.width = cw; s.height = ch;
+      s.getContext("2d").drawImage(img, 0, 0);
+      while (cw / 2 > LARGEUR) {
+        const nw = Math.round(cw / 2), nh = Math.round(ch / 2);
+        const c2 = document.createElement("canvas");
+        c2.width = nw; c2.height = nh;
+        const x2 = c2.getContext("2d");
+        x2.imageSmoothingQuality = "high";
+        x2.drawImage(s, 0, 0, nw, nh);
+        s = c2; cw = nw; ch = nh;
+      }
+      const c = document.createElement("canvas");
+      c.width = LARGEUR; c.height = h;
+      const x = c.getContext("2d");
+      x.imageSmoothingQuality = "high";
+      x.drawImage(s, 0, 0, cw, ch, 0, 0, LARGEUR, h);
+      return { url: c.toDataURL("image/webp", QUALITE), w: LARGEUR, h };
+    }, { b64b, LARGEUR, QUALITE });
+    const destB = path.join(SORTIE, `apres-${cle}-bande${b.index}.webp`);
+    const binB = Buffer.from(rb.url.split(",")[1], "base64");
+    fs.writeFileSync(destB, binB);
+    MARQUES[cle].bandes.push({
+      fichier: `images/realisations/apres-${cle}-bande${b.index}.webp`,
+      w: rb.w, h: rb.h, n: b.images,
+      y: enCqw(b.yImage), hauteur: enCqw(b.hauteur), course: enCqw(b.coursePage),
+      cls: b.cls
+    });
+    R.push({ cle: `${cle} · bande ${b.index}`, source: "-", rapportAvant: "-", rendu: `${rb.w}x${rb.h}`, ko: Math.round(binB.length / 1024), ecMin: "-", fichier: path.relative(RACINE, destB).replace(/\\/g, "/") });
+  }
 }
 
 await nav.close();
+fs.writeFileSync(path.join(ENTREE, "_marques.json"), JSON.stringify(MARQUES, null, 1));
 console.table(R);
 console.log("TOTAL :", R.reduce((a, b) => a + b.ko, 0), "Ko pour", R.length, "images");
+console.log("manifeste :", path.relative(RACINE, path.join(ENTREE, "_marques.json")).replace(/\\/g, "/"));

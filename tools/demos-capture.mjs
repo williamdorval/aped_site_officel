@@ -402,67 +402,163 @@ for (const cle of aFaire) {
        Les elements FIXES sont masques a partir de la deuxieme
        tuile, sinon la barre du site se repeterait a chaque fenetre. */
     if (ECRAN) {
-      const cibleH = Math.round(LARG * (RAPPORTS[cle] || 0));
-      if (!cibleH) throw new Error(`${cle} : aucun rapport releve dans _rapports.mjs (piege 30)`);
-      /* ON TRAVERSE D'ABORD, ET ON REVIENT.  D-631
-         Les quatre sites revelent leur contenu au defilement et
-         chargent leurs images en differe. Une premiere descente
-         demande tout ; la seconde, celle qui photographie, trouve
-         tout deja peint. */
+      /* ON DESCEND JUSQU'AU PIED DE PAGE, PLUS JUSQU'A LA HAUTEUR DE
+         LA RECONSTITUTION D'EN FACE.  D-643
+         D-632 coupait chaque « apres » au rapport de son « avant »,
+         pour que les deux cotes finissent a la meme ligne. La regle
+         etait juste, la consequence ne l'etait pas : le garage
+         montrait 14 % de son site, le restaurant 26 %, le design
+         32 %. Le visiteur arrivait au pied du site de 2011 et TOUT
+         se bloquait, alors que le site neuf avait encore huit mille
+         pixels a montrer. On perdait la seule preuve qui compte.
+         Les deux cotes sont maintenant photographies ENTIERS et
+         verrouilles en POURCENTAGE dans la page (D-645) : a
+         mi-course d'un cote, on est a mi-course de l'autre, et
+         personne ne bloque personne. */
       const totalPage = await page.evaluate(() => document.body.scrollHeight);
       const pasTraverse = Math.round(HAUT * 0.6);
-      for (let t = 0; t < Math.min(cibleH, totalPage); t += pasTraverse) {
+      for (let t = 0; t < totalPage; t += pasTraverse) {
         await page.mouse.wheel(0, pasTraverse);
         await page.waitForTimeout(200);
       }
       await allerA(page, 0);
       await page.evaluate(async () => {
         const limite = (pr, ms) => Promise.race([pr, new Promise((r) => setTimeout(r, ms))]);
-        await limite(Promise.all([...document.images].map((i) => (i.complete && i.naturalWidth ? null : i.decode().catch(() => null)))), 15000);
+        await limite(Promise.all([...document.images].map((i) => (i.complete && i.naturalWidth ? null : i.decode().catch(() => null)))), 20000);
       });
       await page.waitForTimeout(1500);
       const docH = await page.evaluate(() => document.body.scrollHeight);
-      const prises = [];
-      /* ON DEMANDE 80 % D'UNE FENETRE, PAS UNE FENETRE ENTIERE.  D-633
-         Releve a l'image sur la premiere couture : une BANDE BLANCHE
-         de 147 px entre la tuile 1 et la tuile 2. `allerA` s'arrete
-         a 14 px pres et le defilement pilote de deux des quatre
-         sites avance par bonds — il DEPASSE la cible. Une tuile
-         posee a sa hauteur reelle laisse alors un trou.
-         Un recouvrement de 20 % absorbe le depassement, et la
-         verification ci-dessous refuse la couture si un trou reste :
-         une image trouee ne part JAMAIS en silence. */
+
+      /* --- LES PERMANENTS, RELEVES A y = 0 ---  D-644
+         Un element FIXE au sommet de la page est la barre du site ou
+         un voile decoratif : il doit etre masque a partir de la
+         deuxieme tuile, sinon il se repete a chaque fenetre.
+         Un element qui devient fixe PLUS BAS est tout autre chose :
+         c'est une scene EPINGLEE. La version precedente ne faisait
+         pas la difference et masquait les deux — d'ou la galerie qui
+         disparaissait par endroits et se repetait ailleurs. C'est la
+         cause exacte des « images superposees » relevees par le
+         proprietaire. */
+      const permanents = await page.evaluate(() => {
+        const l = [];
+        let n = 0;
+        for (const el of document.querySelectorAll("body *")) {
+          if (getComputedStyle(el).position !== "fixed") continue;
+          el.setAttribute("data-permanent", "p" + n++);
+          l.push(el.getAttribute("data-permanent"));
+        }
+        return l;
+      });
+
+      /* --- LA DESCENTE : on tuile, et on repere les bandes --- */
       const pasTuile = Math.round(HAUT * 0.8);
+      const prises = [];
+      const bandes = [];
+      let bandeEnCours = null;
       let y = 0;
-      for (let k = 0; k < 40; k++) {
+      let masqueMis = false;
+
+      for (let k = 0; k < 80; k++) {
         const atteintY = await allerA(page, y);
-        if (k === 1) {
+        if (k === 1 && !masqueMis) {
           await page.evaluate(() => {
-            for (const el of document.querySelectorAll("body *")) {
-              if (getComputedStyle(el).position === "fixed") el.style.visibility = "hidden";
-            }
+            for (const el of document.querySelectorAll("[data-permanent]")) el.style.visibility = "hidden";
           });
+          masqueMis = true;
           await page.waitForTimeout(400);
         }
-        await page.waitForTimeout(700);
-        prises.push({ y: atteintY, b64: (await page.screenshot()).toString("base64") });
-        if (atteintY + HAUT >= Math.min(cibleH, docH)) break;
+        await page.waitForTimeout(600);
+
+        /* Une scene epinglee = un element devenu fixe, qui n'etait
+           pas fixe au sommet, et qui couvre une bonne part de la
+           fenetre. Les voiles pleine page sont deja dans les
+           permanents, donc ecartes. */
+        const pin = await page.evaluate(() => {
+          for (const el of document.querySelectorAll("body *")) {
+            if (el.hasAttribute("data-permanent")) continue;
+            if (getComputedStyle(el).position !== "fixed") continue;
+            const r = el.getBoundingClientRect();
+            if (r.height < window.innerHeight * 0.5 || r.width < window.innerWidth * 0.5) continue;
+            if (!el.hasAttribute("data-pin")) el.setAttribute("data-pin", "pin" + Math.round(performance.now()));
+            return { id: el.getAttribute("data-pin"), cls: (el.className || "").toString().slice(0, 50) };
+          }
+          return null;
+        });
+
+        if (pin && bandeEnCours && bandeEnCours.id === pin.id) {
+          /* On est TOUJOURS dans la meme scene epinglee : on ne pose
+             pas de tuile, on note seulement jusqu'ou elle va. */
+          bandeEnCours.finY = atteintY;
+        } else {
+          if (bandeEnCours) { bandes.push(bandeEnCours); bandeEnCours = null; }
+          const b64 = (await page.screenshot()).toString("base64");
+          const t = { b64, yPage: atteintY, bande: null };
+          prises.push(t);
+          if (pin) {
+            /* Premiere fenetre de la scene : elle occupera UNE
+               hauteur de fenetre dans l'image verticale, et sa
+               progression sera rendue a part, en sequence. */
+            bandeEnCours = { id: pin.id, cls: pin.cls, debutY: atteintY, finY: atteintY, tuile: t };
+            t.bande = bandeEnCours;
+          }
+        }
+
+        if (atteintY + HAUT >= docH - 4) break;
         const suivant = atteintY + pasTuile;
         if (suivant <= y) break;
         y = suivant;
       }
+      if (bandeEnCours) bandes.push(bandeEnCours);
+
+      /* --- LES POSITIONS DANS L'IMAGE ---
+         Hors bande, une tuile monte du DEFILEMENT REEL entre elle et
+         la precedente — jamais du pas demande, qu'un defilement
+         pilote depasse (D-633). Une bande, elle, occupe exactement
+         une fenetre quelle que soit sa course : c'est la sequence
+         qui portera le reste. */
+      let yc = 0;
+      for (let i = 0; i < prises.length; i++) {
+        const t = prises[i];
+        if (i > 0) {
+          const p0 = prises[i - 1];
+          yc += p0.bande ? HAUT : Math.max(0, t.yPage - p0.yPage);
+        }
+        t.yImage = yc;
+        if (t.bande) t.bande.yImage = yc;
+      }
+      const dernier = prises[prises.length - 1];
+      const cibleH = dernier.yImage + HAUT;
       tuiles = prises.length;
-      prises.sort((a, b) => a.y - b.y);
-      for (let k = 1; k < prises.length; k++) {
-        const trou = prises[k].y - (prises[k - 1].y + HAUT);
-        if (trou > 0) {
-          throw new Error(`${cle} : la couture laisse un TROU de ${trou} px entre la tuile ${k - 1} (y ${prises[k - 1].y}) ` +
-            `et la tuile ${k} (y ${prises[k].y}). Baisser le pas et reprendre.`);
+      /* Un trou dans la couture arrete l'outil : une image trouee qui
+         part en silence coute une passe complete (D-633). */
+      for (let i = 1; i < prises.length; i++) {
+        const attendu = prises[i - 1].yImage + HAUT;
+        if (prises[i].yImage > attendu) {
+          throw new Error(`${cle} : TROU de ${prises[i].yImage - attendu} px entre les tuiles ${i - 1} et ${i}.`);
         }
       }
-      if (prises[prises.length - 1].y + HAUT < cibleH) {
-        throw new Error(`${cle} : la couture s'arrete a ${prises[prises.length - 1].y + HAUT} px alors qu'il en faut ${cibleH}.`);
+
+      /* --- LES BANDES, EN SEQUENCES JOUABLES ---  D-644
+         Une scene epinglee ne se met pas a plat : a une hauteur
+         donnee elle n'a qu'un seul etat horizontal. On la
+         photographie donc IMAGE PAR IMAGE sur toute sa course, et
+         c'est le defilement du visiteur DANS LE CADRE qui choisira
+         laquelle montrer. La transition qu'il voit est la vraie,
+         prise sur le vrai site. */
+      const IMAGES_BANDE = 10;
+      for (const b of bandes) {
+        b.images = [];
+        const course = Math.max(1, b.finY - b.debutY);
+        for (let i = 0; i < IMAGES_BANDE; i++) {
+          const cible = b.debutY + Math.round((course * i) / (IMAGES_BANDE - 1));
+          await allerA(page, cible);
+          await page.waitForTimeout(420);
+          b.images.push((await page.screenshot()).toString("base64"));
+        }
+        b.course = course;
       }
+
+      /* --- LA COMPOSITION --- */
       const p2 = await ctx.newPage();
       await p2.setContent("<html><body></body></html>");
       const cousu = await p2.evaluate(async ({ prises, cibleH, LARG, DENSITE }) => {
@@ -476,18 +572,48 @@ for (const cle of aFaire) {
           const img = new Image();
           img.src = "data:image/png;base64," + t.b64;
           await img.decode();
-          x.drawImage(img, 0, Math.round(t.y * DENSITE));
+          x.drawImage(img, 0, Math.round(t.yImage * DENSITE));
         }
         return c.toDataURL("image/png");
       }, { prises, cibleH, LARG, DENSITE });
       const fichier = path.join(SORTIE, `${cle}-ecran.png`);
       fs.writeFileSync(fichier, Buffer.from(cousu.split(",")[1], "base64"));
+
+      /* Chaque bande sort en PLANCHE VERTICALE de N fenetres : c'est
+         la forme la plus simple a decouper au `background-position`,
+         et la seule qui ne demande pas de connaitre la mecanique
+         interne du site. */
+      const manifeste = [];
+      for (let bi = 0; bi < bandes.length; bi++) {
+        const b = bandes[bi];
+        const planche = await p2.evaluate(async ({ imgs, LARG, HAUT, DENSITE }) => {
+          const c = document.createElement("canvas");
+          c.width = Math.round(LARG * DENSITE);
+          c.height = Math.round(HAUT * DENSITE * imgs.length);
+          const x = c.getContext("2d");
+          for (let i = 0; i < imgs.length; i++) {
+            const img = new Image();
+            img.src = "data:image/png;base64," + imgs[i];
+            await img.decode();
+            x.drawImage(img, 0, Math.round(HAUT * DENSITE * i));
+          }
+          return c.toDataURL("image/png");
+        }, { imgs: b.images, LARG, HAUT, DENSITE });
+        const fb = path.join(SORTIE, `${cle}-bande${bi}.png`);
+        fs.writeFileSync(fb, Buffer.from(planche.split(",")[1], "base64"));
+        manifeste.push({ index: bi, cls: b.cls, yImage: b.yImage, hauteur: HAUT, images: b.images.length, coursePage: b.course });
+      }
+      fs.writeFileSync(path.join(SORTIE, `${cle}-bandes.json`),
+        JSON.stringify({ cle, largeur: LARG, fenetre: HAUT, hauteurImage: cibleH, hauteurPage: docH, bandes: manifeste }, null, 1));
+
       platitude = await mesurerPlatitude(p2, fichier);
       await p2.close();
       if (platitude.pire.ec < 6) {
         throw new Error(`${cle} : une tranche de la couture est PLATE (ecart-type ${platitude.pire.ec}, moyenne ${platitude.pire.moy}) — ` +
           "une bande n'a pas peint. Reprendre avant de convertir.");
       }
+      console.log(`   ${cle} : image ${LARG}x${cibleH}, ${tuiles} tuiles, ${bandes.length} scene(s) epinglee(s)` +
+        bandes.map((b) => ` [${b.cls.slice(0, 30)} · ${b.course} px de course]`).join(""));
     }
 
     /* La pleine page vient ensuite, et sert de piece de comparaison

@@ -355,37 +355,75 @@ console.log("\n5 · LE DOIGT — le cadre ne piege pas la page");
   await ctx.close();
 }
 
-/* ---------- 6 · LES DEUX COTES FINISSENT A LA MEME LIGNE ----------
-   `demos-webp.mjs` decoupe chaque capture « apres » au RAPPORT de la
-   reconstitution qui lui fait face, et ce rapport est ecrit dans
-   `demos-rapports.mjs`. Si une reconstitution change de hauteur et
-   que personne ne reconvertit, la poignee se met a comparer le pied
-   d'un site avec le milieu de l'autre — sans que rien ne le dise.
-   C'est ici qu'on l'apprend. */
-console.log("\n6 · LE RAPPORT — l'avant et l'apres finissent a la meme ligne");
+/* ---------- 6 · LE VERROU EN POURCENTAGE ----------
+   CE QUE CETTE SECTION MESURAIT, ET POURQUOI CE N'EST PLUS VRAI.
+   Elle exigeait que les deux cotes aient la MEME HAUTEUR : chaque
+   « apres » etait decoupe au rapport de la reconstitution d'en face
+   (D-632). La regle « les deux cotes finissent a la meme ligne »
+   etait juste, la maniere de la tenir ne l'etait pas — on montrait
+   14 % du site du garage et le visiteur se bloquait au pied du site
+   de 2011 avec huit mille pixels jamais vus.
+   Les deux cotes sont maintenant ENTIERS et verrouilles en
+   POURCENTAGE (D-645). On mesure donc la propriete qui compte
+   vraiment : a mi-piste, chacun est a mi-course DE SA PROPRE
+   hauteur ; au bout, chacun est a son pied. Laisser l'ancienne
+   assertion en place l'aurait fait echouer sur un correctif, ou
+   pousse a re-couper les images pour la faire passer. Piege 17. */
+console.log("\n6 · LE VERROU — a mi-chemin d'un cote, a mi-chemin de l'autre");
 {
   const { ctx, p } = await page();
   const paires = { "ba-garage": "garage", "ba-design": "design", "ba-restaurant": "restau", "ba-renovation": "deneigement" };
   for (const id of CARTES) {
     await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
     await p.waitForTimeout(500);
+    const lu = (frac) => p.evaluate(({ i, frac }) => {
+      const a = document.querySelector("#" + i);
+      const v = a.querySelector("[data-ba-vitre]");
+      const s = a.querySelector(".ba-scene");
+      const img = a.querySelector(".ba-shot");
+      v.scrollTop = (v.scrollHeight - v.clientHeight) * frac;
+      return new Promise((res) => requestAnimationFrame(() => requestAnimationFrame(() => {
+        const W = s.clientWidth;
+        const fen = (s.clientHeight / W) * 100;
+        res({
+          yAp: +a.querySelector(".ba-vue--apres .ba-page").style.getPropertyValue("--ba-y") || 0,
+          yAv: +a.querySelector(".ba-vue--avant .ba-page").style.getPropertyValue("--ba-y") || 0,
+          maxAp: (img.naturalHeight / img.naturalWidth) * 100 - fen,
+          maxAv: +getComputedStyle(s).getPropertyValue("--ba-h-avant") || 0
+        });
+      })));
+    }, { i: id, frac });
+
+    const bas = await lu(1);
+    /* AU BOUT : chacun a son pied. Une tolerance de 2 % absorbe le
+       fait qu'une bande epinglee occupe de la piste sans faire
+       avancer l'image. */
+    const resteAp = bas.maxAp ? (1 - bas.yAp / bas.maxAp) * 100 : 0;
+    const resteAv = bas.maxAv ? (1 - bas.yAv / bas.maxAv) * 100 : 0;
+    dire(resteAp < 2, `${id} : au bout, il reste ${resteAp.toFixed(1)} % du site « apres » — le pied de page est atteint`);
+    dire(resteAv < 2, `${id} : au bout, il reste ${resteAv.toFixed(1)} % de la reconstitution`);
+
+    const mi = await lu(0.5);
+    const pAp = mi.maxAp ? (mi.yAp / mi.maxAp) * 100 : 0;
+    const pAv = mi.maxAv ? (mi.yAv / mi.maxAv) * 100 : 0;
+    dire(Math.abs(pAv - 50) < 2, `${id} : a mi-piste, la reconstitution est a ${pAv.toFixed(1)} %`);
+    /* Le cote « apres » peut s'ecarter de la moitie exacte quand une
+       scene epinglee mange de la piste sans faire avancer l'image :
+       c'est voulu, et c'est ce que fait le vrai site. On exige donc
+       seulement qu'il soit franchement engage, jamais bloque. */
+    dire(pAp > 25 && pAp < 75, `${id} : a mi-piste, le site « apres » est a ${pAp.toFixed(1)} %`);
+
+    /* Le rapport de la reconstitution ne sert plus a decouper, mais
+       il reste la reference de `demos-rapports.mjs` : s'il derive,
+       c'est que la reconstitution a change et que les preuves sont
+       a refaire. */
     const m = await p.evaluate((i) => {
       const av = document.querySelector("#" + i + " .ba-vue--avant");
-      const ap = document.querySelector("#" + i + " .ba-vue--apres");
-      const larg = av.getBoundingClientRect().width;
-      return {
-        larg,
-        avant: av.querySelector(".ba-page").scrollHeight,
-        apres: Math.round(ap.getBoundingClientRect().height),
-        pile: Math.round(document.querySelector("#" + i + " .ba-pile").getBoundingClientRect().height)
-      };
+      return { larg: av.getBoundingClientRect().width, avant: av.querySelector(".ba-page").scrollHeight };
     }, id);
     const rapportLu = m.avant / m.larg;
-    const rapportEcrit = RAPPORTS[paires[id]];
-    const derive = Math.abs(rapportLu - rapportEcrit) / rapportEcrit * 100;
-    dire(derive < 3, `${id} : rapport lu ${rapportLu.toFixed(3)} contre ${rapportEcrit} ecrit — derive ${derive.toFixed(1)} %`);
-    const ecartCotes = Math.abs(m.avant - m.apres) / m.pile * 100;
-    dire(ecartCotes < 4, `${id} : les deux cotes se terminent a ${ecartCotes.toFixed(1)} % l'un de l'autre (${m.avant} / ${m.apres})`);
+    const derive = Math.abs(rapportLu - RAPPORTS[paires[id]]) / RAPPORTS[paires[id]] * 100;
+    dire(derive < 3, `${id} : rapport de la reconstitution ${rapportLu.toFixed(3)} contre ${RAPPORTS[paires[id]]} — derive ${derive.toFixed(1)} %`);
   }
   await ctx.close();
 }

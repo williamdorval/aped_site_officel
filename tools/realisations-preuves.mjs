@@ -96,7 +96,10 @@ async function ouvrir(w = 1440, h = 1000) {
       await cadre.screenshot({ path: path.join(OUT, `poignee-${id}-p${String(Math.round(k * 100)).padStart(3, "0")}.png`) });
     }
 
-    /* La descente DANS le cadre, poignee laissee au milieu. */
+    /* LA DESCENTE VA JUSQU'AU PIED DE PAGE DU SITE NEUF.  D-643
+       Huit images du haut au bas, a la molette, poignee au milieu.
+       La derniere doit montrer le PIED du site « apres » : c'est la
+       seule preuve que rien ne bloque plus a mi-chemin. */
     await p.evaluate((i) => {
       const c = document.querySelector("#" + i + " [data-ba-curseur]");
       c.value = 50;
@@ -107,17 +110,84 @@ async function ouvrir(w = 1440, h = 1000) {
     const pageAvant = await p.evaluate(() => Math.round(window.scrollY));
     await p.mouse.move(b.x + b.w * 0.5, b.y + b.h * 0.5);
     const fics = [];
-    const pas = Math.max(60, Math.round(m.course / 5));
-    for (let i = 0; i < 6; i++) {
+    const N = 8;
+    const pas = Math.max(60, Math.round(m.course / (N - 1)));
+    for (let i = 0; i < N; i++) {
       const f = path.join(OUT, `defile-${id}-${i}.png`);
       await cadre.screenshot({ path: f });
       fics.push(f);
       await p.mouse.wheel(0, pas);
-      await p.waitForTimeout(240);
+      await p.waitForTimeout(260);
     }
+    /* On force le dernier pas jusqu'au bout : la molette peut
+       s'arreter a quelques pixels de la fin, et « presque le pied de
+       page » ne prouve rien. */
+    await p.evaluate((i) => { const v = document.querySelector("#" + i + " [data-ba-vitre]"); v.scrollTop = v.scrollHeight; }, id);
+    await p.waitForTimeout(500);
+    await cadre.screenshot({ path: path.join(OUT, `defile-${id}-fin.png`) });
+    const bout = await p.evaluate((i) => {
+      const a = document.querySelector("#" + i);
+      const v = a.querySelector("[data-ba-vitre]");
+      return {
+        auBout: v.scrollTop >= v.scrollHeight - v.clientHeight - 2,
+        yApres: Math.round(+a.querySelector(".ba-vue--apres .ba-page").style.getPropertyValue("--ba-y")),
+        yAvant: Math.round(+a.querySelector(".ba-vue--avant .ba-page").style.getPropertyValue("--ba-y"))
+      };
+    }, id);
     const pageApres = await p.evaluate(() => Math.round(window.scrollY));
     const ecarts = [];
     for (let i = 1; i < fics.length; i++) ecarts.push(+diffStats(lire(fics[i - 1]), lire(fics[i]), 8).pct.toFixed(2));
+
+    /* --- LES SCENES EPINGLEES, IMAGE PAR IMAGE ---  D-644
+       On se pose au debut de la bande et on avance dedans : chaque
+       capture doit differer de la precedente, sinon la transition ne
+       se joue pas. C'est le defaut « les images se superposent » vu
+       par le proprietaire, et c'est la seule facon de prouver qu'il
+       est parti. */
+    const bandes = await p.evaluate((i) => [...document.querySelectorAll("#" + i + " .ba-bande")]
+      .map((el) => (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number)), id);
+    const suiviBandes = [];
+    for (let bi = 0; bi < bandes.length; bi++) {
+      const fb = [];
+      const etats = [];
+      for (let k = 0; k < 8; k++) {
+        const frac = k / 7;
+        /* ON VISE LA POSITION, ON NE LA CHERCHE PAS.
+           Premiere version : une dichotomie qui posait `scrollTop`,
+           emettait un `scroll` de synthese et relisait
+           `--ba-bande-i`. Elle rendait « 0, 9, 0, 9 » — jamais un
+           etat intermediaire. Cause : le rendu est etale sur un
+           `requestAnimationFrame`, donc la relecture immediate
+           tombait toujours sur la valeur d'AVANT. On recalcule donc
+           la piste comme `main.js` la calcule, et on se pose au bon
+           endroit du premier coup. */
+        await p.evaluate(({ i, bi, frac }) => {
+          const a = document.querySelector("#" + i);
+          const v = a.querySelector("[data-ba-vitre]");
+          const s = a.querySelector(".ba-scene");
+          const img = a.querySelector(".ba-shot");
+          const el = a.querySelectorAll(".ba-bande")[bi];
+          const d = (el.getAttribute("data-ba-bande") || "").split(/\s+/).map(Number);
+          const W = s.clientWidth;
+          const fenetre = (s.clientHeight / W) * 100;
+          const hApres = (img.naturalHeight / img.naturalWidth) * 100;
+          const [y, h, , course] = d;
+          const longBande = Math.max(h, course);
+          const finFlux = Math.max(0, hApres - fenetre);
+          const courseTotale = y + longBande + Math.max(0, finFlux - (y + h));
+          const max = v.scrollHeight - v.clientHeight;
+          v.scrollTop = ((y + frac * longBande) / courseTotale) * max;
+        }, { i: id, bi, frac });
+        await p.waitForTimeout(420);
+        const f = path.join(OUT, `bande-${id}-${bi}-${k}.png`);
+        await cadre.screenshot({ path: f });
+        fb.push(f);
+        etats.push(await p.evaluate(({ i, bi }) => +getComputedStyle(document.querySelectorAll("#" + i + " .ba-bande")[bi]).getPropertyValue("--ba-bande-i") || 0, { i: id, bi }));
+      }
+      const eb = [];
+      for (let k = 1; k < fb.length; k++) eb.push(+diffStats(lire(fb[k - 1]), lire(fb[k]), 8).pct.toFixed(2));
+      suiviBandes.push({ index: bi, mesures: bandes[bi], etatsAtteints: etats, ecarts: eb, ecartMinimal: Math.min(...eb) });
+    }
 
     R.blocs[id] = {
       ...m,
@@ -126,7 +196,9 @@ async function ouvrir(w = 1440, h = 1000) {
       poignee: poses,
       ecartsDescente: ecarts,
       ecartMinimal: Math.min(...ecarts),
-      pageDerriere: `${pageAvant} → ${pageApres}`
+      pageDerriere: `${pageAvant} → ${pageApres}`,
+      auBoutDuApres: bout,
+      scenesEpinglees: suiviBandes
     };
   }
   R.erreursConsole = erreurs;
