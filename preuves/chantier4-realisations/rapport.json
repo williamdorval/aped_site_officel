@@ -1,0 +1,220 @@
+{
+  "comparaisons": [
+    {
+      "id": "ba-garage",
+      "pas": [
+        {
+          "vise": 42,
+          "lu": 42
+        },
+        {
+          "vise": 30,
+          "lu": 30
+        },
+        {
+          "vise": 18,
+          "lu": 18
+        },
+        {
+          "vise": 34,
+          "lu": 34
+        },
+        {
+          "vise": 62,
+          "lu": 62
+        },
+        {
+          "vise": 86,
+          "lu": 86
+        }
+      ],
+      "suitLeCurseur": true,
+      "doigt": {
+        "horizontal": 22,
+        "pageABougePendantLHorizontal": 0,
+        "verticalNeCompareRien": true
+      },
+      "clavier": {
+        "avant": 22,
+        "apres": 24,
+        "bouge": true
+      },
+      "curseur": "ew-resize",
+      "ecarts": [
+        48.38,
+        48.31,
+        95.28
+      ],
+      "hauteurs": {
+        "avant": 588,
+        "apres": 934
+      }
+    },
+    {
+      "id": "ba-design",
+      "pas": [
+        {
+          "vise": 42,
+          "lu": 42
+        },
+        {
+          "vise": 30,
+          "lu": 30
+        },
+        {
+          "vise": 18,
+          "lu": 18
+        },
+        {
+          "vise": 34,
+          "lu": 34
+        },
+        {
+          "vise": 62,
+          "lu": 62
+        },
+        {
+          "vise": 86,
+          "lu": 86
+        }
+      ],
+      "suitLeCurseur": true,
+      "doigt": {
+        "horizontal": 22,
+        "pageABougePendantLHorizontal": 0,
+        "verticalNeCompareRien": true
+      },
+      "clavier": {
+        "avant": 22,
+        "apres": 24,
+        "bouge": true
+      },
+      "curseur": "ew-resize",
+      "ecarts": [
+        48.35,
+        48.33,
+        95.27
+      ],
+      "hauteurs": {
+        "avant": 1352,
+        "apres": 934
+      }
+    },
+    {
+      "id": "ba-restaurant",
+      "pas": [
+        {
+          "vise": 42,
+          "lu": 42
+        },
+        {
+          "vise": 30,
+          "lu": 30
+        },
+        {
+          "vise": 18,
+          "lu": 18
+        },
+        {
+          "vise": 34,
+          "lu": 34
+        },
+        {
+          "vise": 62,
+          "lu": 62
+        },
+        {
+          "vise": 86,
+          "lu": 86
+        }
+      ],
+      "suitLeCurseur": true,
+      "doigt": {
+        "horizontal": 22,
+        "pageABougePendantLHorizontal": 0,
+        "verticalNeCompareRien": true
+      },
+      "clavier": {
+        "avant": 22,
+        "apres": 24,
+        "bouge": true
+      },
+      "curseur": "ew-resize",
+      "ecarts": [
+        48.38,
+        48.33,
+        95.31
+      ],
+      "hauteurs": {
+        "avant": 1199,
+        "apres": 934
+      }
+    },
+    {
+      "id": "ba-renovation",
+      "pas": [
+        {
+          "vise": 42,
+          "lu": 42
+        },
+        {
+          "vise": 30,
+          "lu": 30
+        },
+        {
+          "vise": 18,
+          "lu": 18
+        },
+        {
+          "vise": 34,
+          "lu": 34
+        },
+        {
+          "vise": 62,
+          "lu": 62
+        },
+        {
+          "vise": 86,
+          "lu": 86
+        }
+      ],
+      "suitLeCurseur": true,
+      "doigt": {
+        "horizontal": 22,
+        "pageABougePendantLHorizontal": 0,
+        "verticalNeCompareRien": true
+      },
+      "clavier": {
+        "avant": 22,
+        "apres": 24,
+        "bouge": true
+      },
+      "curseur": "ew-resize",
+      "ecarts": [
+        46.54,
+        46.86,
+        91.97
+      ],
+      "hauteurs": {
+        "avant": 2067,
+        "apres": 934
+      }
+    }
+  ],
+  "erreurs": [],
+  "rectanglesVidesDansLApres": 0,
+  "rectanglesVidesDetail": [],
+  "blocsPhotoDansLAvant": 15,
+  "verdict": {
+    "laPoigneeSuitLeCurseurSurLesQuatre": true,
+    "leDoigtCompareALHorizontale": true,
+    "leDoigtNeBloqueJamaisLeDefilement": true,
+    "leGesteVerticalNeCompareRien": true,
+    "leClavierBouge": true,
+    "leCurseurChange": true,
+    "lesTroisPositionsDifferent": true,
+    "lesHuitPagesSontCompletes": true,
+    "aucunPlaceholderDansLApres": true,
+    "aucuneErreurConsole": true
+  }
+}

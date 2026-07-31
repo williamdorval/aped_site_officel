@@ -64,7 +64,7 @@ for (const w of VUES) {
       { sel: ".sec-panier, .sec-toast, .sec-page", pourquoi: "etat de depart d'une animation de maquette, dans un cadre qui rogne" },
       { sel: ".seuil-num, .entree-cran, .odo, .odo-c", pourquoi: "fenetre d'un compteur a crans : elle tient DEUX valeurs et n'en montre qu'une. Le rognage est le mecanisme, pas un defaut" },
       { sel: ".sas-scene", pourquoi: "la scene d'un sas rogne expres : l'arete de grains du volet depasse son bord pour mordre sur ce qu'il avale (D-571)" },
-      { sel: ".ba-vue, .ap-rs-defile, .ap-bloc", pourquoi: "les maquettes avant/apres sont plus hautes que leur cadre PAR CONSTRUCTION : la boucle n'en parcourt qu'une fenetre (RESERVES § Services et Realisations 2026-07-31)" },
+      { sel: ".ba-vue", pourquoi: "les deux cotes d'une comparaison sont plus hauts que leur cadre PAR CONSTRUCTION : la boucle n'en parcourt qu'une fenetre. Les selecteurs `.ap-*` qui figuraient ici sont partis avec les maquettes redessinees, remplacees par des captures des vrais sites (D-617)" },
       { sel: ".v11-defile", pourquoi: "le texte defilant de la maquette 2011 est un marquee diegetique : il deborde parce que les sites de 2011 debordaient (A79e)" }
     ];
     const out = [];

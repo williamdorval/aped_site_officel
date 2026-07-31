@@ -50,6 +50,49 @@ async function page(opts = {}) {
   return { ctx, p };
 }
 
+/* ---------- 0 · LA POIGNEE SE GLISSE-T-ELLE ? ----------
+   CE TEST MANQUAIT, ET SON ABSENCE A COUTE LE DEFAUT LUI-MEME.
+   Tout ce qui suit synthetise un evenement `input` sur le champ :
+   ca valide le clavier, et le clavier SEUL. Le 2026-07-31, un vrai
+   `mouse.down` suivi de huit `mouse.move` a laisse `--ba-p` a 50 du
+   debut a la fin — le glissement etait mort, et ce fichier passait
+   au vert. Piege 17 dans sa forme la plus chere : un test qui
+   verrouille le defaut qu'il devait attraper.
+   On glisse donc pour de vrai, et on exige que la valeur SUIVE le
+   curseur — pas seulement qu'elle bouge.  D-593 */
+console.log("0 · LA POIGNEE — un vrai glissement de souris");
+{
+  const { ctx, p } = await page();
+  for (const id of CARTES) {
+    /* `behavior: "instant"` : la page porte `scroll-behavior: smooth`,
+       donc un `scrollIntoView` par defaut DEFILE ENCORE pendant qu'on
+       releve le rectangle. On visait alors a cote et le glissement
+       semblait ne pas suivre — un faux echec de 69 %. */
+    await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
+    await p.waitForTimeout(800);
+    const b = await p.evaluate((i) => {
+      const r = document.querySelector("#" + i + " .ba-scene").getBoundingClientRect();
+      return { x: r.left, y: r.top, w: r.width, h: r.height };
+    }, id);
+    const lu = () => p.evaluate((i) =>
+      Math.round(+getComputedStyle(document.querySelector("#" + i + " .ba-scene"))
+        .getPropertyValue("--ba-p").trim()), id);
+    const cy = b.y + b.h / 2;
+    await p.mouse.move(b.x + b.w * 0.5, cy);
+    await p.mouse.down();
+    const ecarts = [];
+    for (const k of [0.42, 0.28, 0.16, 0.55, 0.84]) {
+      await p.mouse.move(b.x + b.w * k, cy, { steps: 5 });
+      await p.waitForTimeout(70);
+      ecarts.push(Math.abs((await lu()) - Math.round(k * 100)));
+    }
+    await p.mouse.up();
+    const pire = Math.max.apply(null, ecarts);
+    dire(pire <= 2, `${id} : ecart maximal a la position du curseur ${pire} %`);
+  }
+  await ctx.close();
+}
+
 /* ---------- 1 · LE CURSEUR, TROIS POSITIONS ---------- */
 console.log("1 · LE CURSEUR — trois positions par comparaison");
 {
