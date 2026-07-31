@@ -260,7 +260,16 @@ let echecs = 0;
          le 2026-07-30. Ce qui porte le N1 de la section 02 est
          maintenant l ensemble des quatre noms, lisibles en meme
          temps et sans script. */
-      svc: document.querySelectorAll(".svc-index a").length + " / 4 chantiers nommes",
+      /* CE RELEVE A DEJA POINTE DEUX SELECTEURS MORTS EN UNE
+         JOURNEE — `.svc-index a` le matin, `.svc-plan-tete` l'apres
+         midi — et il rendait « 0 / 4 » sans que rien ne le signale.
+         C'est le piege 17 dans sa forme la plus banale : un test qui
+         passe parce qu'il ne mesure plus rien.
+         `.svc-plan-nom` est le `<h3>` de chaque chantier : il existe
+         a tous les paliers, sous mouvement reduit, et sans une ligne
+         de JavaScript. Si celui-la tombe a zero, c'est que la
+         section a vraiment perdu ses quatre noms. */
+      svc: document.querySelectorAll(".svc-plan-nom").length + " / 4 chantiers nommes",
       curseur: !!document.querySelector(".rail-curseur.is-on"),
       langue: document.querySelectorAll(".mot-encre").length
     };

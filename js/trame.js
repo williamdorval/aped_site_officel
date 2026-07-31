@@ -1,76 +1,14 @@
-/* ============================================================
-   TRAME — L'ARETE QUANTIFIEE
-   ------------------------------------------------------------
-   PHASE 10. Ce fichier ne contient pas un effet : il contient LE
-   PASSAGE, et il n'y en a qu'un.
-
-   D'OU IL VIENT, ET CE QU'ON EN A GARDE.
-   Reference etudiee : le « pixel reveal » de la demo Framer
-   `swisspixelreveal`, relevee par `tools/refs-mesure.mjs`, pas
-   decrite de memoire. Les chiffres, tels que la page les rend :
-
-     · une grille `repeat(25, 1fr)` de 400 tuiles, 25 x 16 ;
-     · chaque tuile fait 57,6 x 56,2 px, en APLAT gris 230,230,230,
-       rayon 0, aucune ombre, aucun degrade ;
-     · le retrait est RADIAL depuis le centre — releve tuile par
-       tuile, rendu en planche dans `tools/_refs/4-pixel-reveal/` ;
-     · 74 paliers discrets, ecart median 20,2 ms entre deux etats ;
-     · duree totale 1 480 ms ;
-     · filme au protocole DevTools : la tuile ne s'EFFACE pas, elle
-       RETRECIT sur son centre. A chaque image le bord reste un
-       carre net. Ce n'est jamais un fondu.
-
-   CE QU'ON PREND : la tuile en aplat, le retrecissement sur le
-   centre, la quantification du front, la possibilite de varier le
-   motif d'un passage a l'autre.
-
-   CE QU'ON JETTE, ET POURQUOI :
-   · 1 480 ms. Une frontiere ne retient pas un visiteur presse.
-     Ici 420 ms au plus, et le passage se termine tout seul.
-   · le motif RADIAL par defaut. Un front qui part du centre n'a
-     pas de sens de lecture, et sur ce site la direction du
-     balayage n'est jamais decorative : elle suit ce qu'elle
-     decouvre. Le radial est donc reserve au seul passage qui n'a
-     pas de sens de lecture — l'arrivee sur la page entiere.
-   · 400 noeuds du DOM. Douze frontieres en feraient 4 800. On
-     dessine dans UN canvas, comme `limaille.js` : une couche de
-     composition, un `fillRect` par tuile, zero noeud.
-
-   QUEL VERBE C'EST — la regle d'admission s'applique ici comme
-   partout. Ce n'est pas un cinquieme verbe :
-     · l'arete franche qui balaye et decouvre une forme deja la,
-       c'est V1 · DEGAGER ;
-     · l'arete n'est pas un trait de regle, c'est une TRAME de
-       grains qui se resorbe, c'est la matiere de V3 · SOUDER.
-   La trame est donc V1 dont l'arete est faite de V3. Les deux
-   verbes existaient ; c'est leur composition qui est neuve.
-
-   CE QU'IL NE FAIT JAMAIS :
-   · il ne cache pas du texte plus longtemps que le passage — le
-     voile est CREE au moment du passage et retire a la fin ;
-   · il n'existe pas dans le CSS : aucun contenu ne depend de lui
-     pour etre lisible, et rien ne demarre a opacite nulle ;
-   · il n'est jamais scrubbe. Une animation scrubbee n'a pas
-     d'etat de repos, et un voile arrete a mi-course est un
-     defaut permanent.
-   ============================================================ */
+/* == TRAME — L'ARETE QUANTIFIEE ==  D-557 */
 
 (function (root) {
   "use strict";
 
   var doc = root.document;
 
-  /* Amortissement critique. Aucun depassement, jamais : la
-     reference se paye un ressort a 7,1 % de depassement (mesure
-     sur la pile de cartes), et c'est exactement ce que la
-     matiere du site refuse. */
+  /* Amortissement critique. Aucun depassement, jamais : la  D-558 */
   function sortie(u) { var v = 1 - u; return 1 - v * v * v; }
 
-  /* Un bruit DETERMINISTE. Deux passages sur la meme frontiere
-     doivent donner exactement la meme trame : une graine, pas un
-     `Math.random()`. C'est la meme discipline que les quinze
-     filets de `seedPositions()` dans `limaille.js` — sans elle,
-     deux franchissements successifs scintillent. */
+  /* Un bruit DETERMINISTE. Deux passages sur la meme frontiere  D-559 */
   function grain(graine, x, y) {
     var n = (x * 374761393 + y * 668265263 + graine * 1274126177) | 0;
     n = (n ^ (n >>> 13)) * 1274126177;
@@ -78,10 +16,7 @@
     return n / 4294967296;
   }
 
-  /* La projection le long de l'axe de LECTURE. Elle n'est pas
-     decorative : `bas` pour une page, un panneau, une capture ;
-     `droite` pour un titre, un libelle, un filet. Le `radial` ne
-     sert qu'a ce qui n'a pas de sens de lecture. */
+  /* La projection le long de l'axe de LECTURE. Elle n'est pas  D-560 */
   var AXES = {
     bas: function (fx, fy) { return fy; },
     haut: function (fx, fy) { return 1 - fy; },
@@ -107,22 +42,12 @@
     return (s.getPropertyValue("--surface-0") || "#dcdedb").trim();
   }
 
-  /* ------------------------------------------------------------
-     UN PASSAGE. `sens` decide de l'axe, `graine` decide de la
-     texture du front, `duree` est le total AFFICHE, pas la duree
-     d'une tuile : une tuile vit `vie` millisecondes et son depart
-     est etale sur le reste. C'est ce qui fait qu'un front avance
-     au lieu que tout parte ensemble.
-     ------------------------------------------------------------ */
+  /* UN PASSAGE. `sens` decide de l'axe, `graine` decide de la  D-561 */
   function passage(el, opt, versLeVide) {
     if (!el || !root.requestAnimationFrame) return null;
     opt = opt || {};
 
-    /* L'ECRAN N'EST PAS UN ELEMENT. `documentElement` mesure
-       TOUTE la page — trente mille pixels de haut sur ce site — et
-       en faire un canvas demanderait 400 Mo de memoire graphique
-       pour peindre une bande de 900 px. Quand la cible est la
-       racine, la boite est la fenetre, et elle ne bouge pas. */
+    /* L'ECRAN N'EST PAS UN ELEMENT. `documentElement` mesure  D-562 */
     var pleinEcran = el === doc.documentElement || opt.pleinEcran;
     var r = pleinEcran
       ? { left: 0, top: 0, width: root.innerWidth, height: root.innerHeight }
@@ -155,11 +80,7 @@
     cv.height = Math.round(r.height * dpr);
     cv.setAttribute("aria-hidden", "true");
     cv.className = "trame-voile";
-    /* CHAQUE VOILE DIT DE QUEL PASSAGE IL EST. Sans ce nom, un
-       verificateur compte des voiles et doit DEVINER lequel
-       manque — c'est arrive : six voiles pour sept passages
-       attendus, et rien pour dire lequel etait absent. Un attribut
-       de plus vaut mieux qu'une deduction. */
+    /* CHAQUE VOILE DIT DE QUEL PASSAGE IL EST. Sans ce nom, un  D-563 */
     if (opt.nom) cv.setAttribute("data-passage", opt.nom);
     cv.style.cssText =
       "position:fixed;left:0;top:0;width:" + r.width + "px;height:" + r.height + "px;" +
@@ -202,11 +123,7 @@
       if (!debut) debut = t;
       var ecoule = t - debut;
 
-      /* La cible peut bouger pendant le passage : une frontiere
-         est declenchee EN DEFILANT. On relit sa boite et on ne
-         touche qu'au `transform` — aucune ecriture qui invalide
-         la mise en page. Un voile plein ecran, lui, est deja fixe :
-         relire la racine chaque image ne dirait rien de neuf. */
+      /* La cible peut bouger pendant le passage : une frontiere  D-564 */
       if (!pleinEcran) {
         var b = el.getBoundingClientRect();
         cv.style.transform = "translate3d(" + b.left + "px," + b.top + "px,0)";
@@ -249,9 +166,7 @@
     return obj;
   }
 
-  /* ------------------------------------------------------------
-     L'API. Deux gestes et leur reciproque, rien d'autre.
-     ------------------------------------------------------------ */
+  /* == L'API. Deux gestes et leur reciproque, rien d'autre. == */
   var API = {
     /* La cible est deja peinte : la trame la recouvre a la
        premiere image, puis se retire. On DEGAGE ce qui est la. */

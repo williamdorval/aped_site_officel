@@ -1,21 +1,6 @@
-/* ============================================================
-   APED AGENCE - Visite virtuelle 360
-   Feuille autonome. Ne redefinit rien du site, ne depend que des
-   jetons de tokens.css. A charger APRES css/vendor/pannellum.css
-   (elle en corrige plusieurs defauts).
+/* == APED AGENCE - Visite virtuelle 360 ==  D-334 */
 
-   Deux dettes connues de Pannellum 2.5.7 sont fermees ici :
-   1. `.pnlm-container { outline: 0 }` supprime l'anneau de focus du
-      conteneur, alors que Pannellum lui pose pourtant `tabIndex = 0`
-      et ecoute les fleches dessus. Sans anneau, la navigation au
-      clavier existe mais est invisible.
-   2. Les points de passage sont des `div` sans etat de focus. On
-      leur rend un anneau, et une forme qui se lit sur une photo.
-   ============================================================ */
-
-/* ------------------------------------------------------------
-   Bloc
-   ------------------------------------------------------------ */
+/* == Bloc == */
 .tour {
   display: grid;
   gap: var(--s-4);
@@ -34,11 +19,7 @@
   .tour-stage { aspect-ratio: 4 / 3; }
 }
 
-/* ------------------------------------------------------------
-   Affiche plate. C'est la seule chose que la section pese avant
-   le clic. `loading="lazy"` est pose dans le markup : cette image
-   ne peut donc jamais devenir l'element LCP de la page.
-   ------------------------------------------------------------ */
+/* Affiche plate. C'est la seule chose que la section pese avant  D-335 */
 .tour-poster {
   position: absolute;
   inset: 0;
@@ -48,17 +29,7 @@
   object-fit: cover;
 }
 
-/* LA PLAQUE D'ENTREE — aplat franc, jamais un degrade.
-   Elle portait un `linear-gradient` sur trois arrets. C'etait le
-   dernier degrade du site, en contradiction frontale avec la
-   direction, et il ne tenait rien : mesure du 2026-07-26, le texte
-   de l'incrustation donnait 1,43:1 sur la photo claire, soit un
-   echec AA franc.
-   Un degrade ne se mesure pas : le contraste depend du pixel de
-   photo qui passe dessous, donc il change d'un panorama a l'autre.
-   Un aplat, lui, est nomme, donc il se mesure une fois pour toutes.
-   La plaque n'occupe plus tout le cadre : elle s'ancre en bas, sur
-   la largeur, et la photo reste entiere au-dessus. */
+/* LA PLAQUE D'ENTREE — aplat franc, jamais un degrade.  D-336 */
 .tour-enter {
   position: absolute;
   inset: auto 0 0 0;
@@ -109,9 +80,7 @@
   line-height: 1.5;
 }
 
-/* ------------------------------------------------------------
-   Conteneur du visionneur
-   ------------------------------------------------------------ */
+/* == Conteneur du visionneur == */
 .tour-view {
   position: absolute;
   inset: 0;
@@ -137,11 +106,7 @@
   outline: var(--focus-w) solid var(--accent-text);
 }
 
-/* Pannellum impose `box-sizing: content-box` a tous ses descendants, et
-   sa feuille est injectee au clic donc APRES celle-ci : a specificite
-   egale c'est elle qui gagne. Il faut donc monter d'un cran, sinon les
-   pastilles du plan mesurent leur largeur + leur padding et debordent
-   du plan. Mesure : 130 px au lieu de 104. */
+/* Pannellum impose `box-sizing: content-box` a tous ses descendants, et  D-337 */
 .pnlm-container .tour-hud,
 .pnlm-container .tour-hud * { box-sizing: border-box; }
 
@@ -154,12 +119,7 @@
 
 .tour-hud > * { pointer-events: auto; }
 
-/* ------------------------------------------------------------
-   Points de passage
-   Pannellum leur donne `pnlm-hotspot pnlm-sprite pnlm-scene` :
-   26 x 26, un rond blanc en sprite, aucun texte. On garde la classe
-   (le module a besoin de `.pnlm-hotspot`) et on remplace la forme.
-   ------------------------------------------------------------ */
+/* Points de passage  D-338 */
 .pnlm-hotspot.tour-hs {
   width: auto;
   height: auto;
@@ -211,9 +171,7 @@
   outline-offset: 2px;
 }
 
-/* ------------------------------------------------------------
-   Commandes
-   ------------------------------------------------------------ */
+/* == Commandes == */
 .tour-ctls {
   position: absolute;
   top: var(--s-3);
@@ -254,12 +212,7 @@
   stroke-linecap: square;
 }
 
-/* ------------------------------------------------------------
-   Plan
-   Trois pieces, murs mitoyens, deux ouvertures. Le SVG ne porte que
-   les murs : les etiquettes sont de vrais boutons, donc leur nom
-   accessible est exactement le texte visible.
-   ------------------------------------------------------------ */
+/* Plan  D-339 */
 .tour-map {
   position: absolute;
   left: var(--s-3);
@@ -329,9 +282,7 @@
   color: var(--accent-ink);
 }
 
-/* ------------------------------------------------------------
-   Chargement et erreurs de Pannellum, remis au format du site.
-   ------------------------------------------------------------ */
+/* == Chargement et erreurs de Pannellum, remis au format du site. == */
 .tour-view .pnlm-load-box,
 .tour-view .pnlm-error-msg {
   width: auto;
@@ -358,9 +309,7 @@
 .tour-view .pnlm-lbar-fill { background: var(--accent); }
 .tour-view .pnlm-lmsg { font-size: var(--fs-8); }
 
-/* ------------------------------------------------------------
-   Texte reserve aux lecteurs d'ecran
-   ------------------------------------------------------------ */
+/* == Texte reserve aux lecteurs d'ecran == */
 .tour-sr {
   position: absolute;
   width: 1px;
@@ -374,17 +323,7 @@
   border: 0;
 }
 
-/* ------------------------------------------------------------
-   Le lien de licence, sous la visite.
-   Dans `.fine`, un lien herite exactement de la couleur, de la
-   graisse et de la fonte du texte qui l'entoure, et le site ne
-   souligne pas les liens par defaut : mesure faite, le lien vers
-   polyhaven.com/license etait rigoureusement indistinguable de la
-   phrase autour (meme rgb(16,18,17), aucun soulignement, meme
-   graisse). C'est le cas d'ecole du critere WCAG 1.4.1 — la seule
-   facon de le reperer aurait ete de promener la souris dessus.
-   Un soulignement suffit et ne coute rien au reste.
-   ------------------------------------------------------------ */
+/* Le lien de licence, sous la visite.  D-340 */
 .tour .fine a {
   color: inherit;
   text-decoration: underline;
@@ -398,11 +337,7 @@
   outline-offset: 2px;
 }
 
-/* ------------------------------------------------------------
-   Mouvement reduit. La derive automatique ne demarre jamais (c'est
-   le module qui le decide), on coupe ici ce qui reste : le fondu
-   d'echange de scene de Pannellum et nos transitions.
-   ------------------------------------------------------------ */
+/* Mouvement reduit. La derive automatique ne demarre jamais (c'est  D-341 */
 @media (prefers-reduced-motion: reduce) {
   .pnlm-hotspot.tour-hs,
   .tour-ctl,

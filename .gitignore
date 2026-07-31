@@ -20,3 +20,9 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# Sorties de mesure dans tools/ — tout ce qui commence par un souligne
+tools/_*
+
+# Sorties du MCP Playwright
+.playwright-mcp/

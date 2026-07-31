@@ -1,16 +1,9 @@
-/* ============================================================
-   APED AGENCE - Logique
-   Aucune dependance. GSAP n'intervient que dans motion.js : si le
-   CDN tombe, les formulaires, les modales et le calculateur
-   fonctionnent quand meme.
-   ============================================================ */
+﻿/* == APED AGENCE - Logique ==  D-352 */
 
 (function () {
   "use strict";
 
-  /* ------------------------------------------------------------
-     Constantes metier. Inchangees.
-     ------------------------------------------------------------ */
+  /* == Constantes metier. Inchangees. == */
   var CONTACT_EMAIL = "dorvalwilliam11@gmail.com";
   var FORM_ENDPOINT = "https://formsubmit.co/ajax/" + CONTACT_EMAIL;
 
@@ -32,43 +25,7 @@
     cadeau: "Documents demandes - site APED"
   };
 
-  /* ============================================================
-     LE BAREME PUBLIE — et ce qui a disparu d'ici.
-
-     Il y avait a cet endroit notre grille reelle : un prix de base
-     par type de projet, et trois series de multiplicateurs pour
-     l'envergure, le niveau de design et le delai. Elle etait
-     lisible par quiconque ouvrait les outils de developpement. Elle
-     donnait bien plus que des prix : les multiplicateurs disent
-     comment on valorise le design par rapport a l'urgence,
-     c'est-a-dire la structure de la marge.
-
-     POURQUOI PAS UNE FONCTION SERVEUR. C'etait la premiere piste, et
-     elle protege moins qu'elle n'en a l'air : les six questions
-     n'offrent que 108 combinaisons. Un concurrent appelle la
-     fonction 108 fois et reconstitue la grille exactement, en
-     quelques minutes. Il faudrait donc y ajouter une limitation de
-     debit sur un point d'entree public et anonyme, plus un
-     hebergement qui execute du code — alors que ce site tient dans
-     un dossier de fichiers et ne fait aujourd'hui aucune requete
-     vers un tiers.
-
-     POURQUOI PAS DES COEFFICIENTS MAQUILLES. Parce que le nombre
-     AFFICHE reste le vrai nombre : quelle que soit la forme sous
-     laquelle on range les coefficients, echantillonner les sorties
-     les redonne. C'est du camouflage, pas de la protection.
-
-     CE QUI EST FAIT : le calcul multiplicatif exact est remplace
-     par un BAREME PUBLIE — cinq fourchettes larges, a bornes
-     rondes, atteintes par un score grossier. Un concurrent qui
-     epuise les 108 combinaisons apprend cinq fourchettes : tres
-     exactement ce que cent-huit prospects apprendraient en soixante
-     secondes chacun. Nos prix de base et nos multiplicateurs, eux,
-     ne sont plus nulle part dans le navigateur.
-
-     Le prix ferme reste dit au premier appel. C'est ce que la page
-     promet, et c'est maintenant vrai jusque dans le code.
-     ============================================================ */
+  /* == LE BAREME PUBLIE — et ce qui a disparu d'ici. ==  D-353 */
   var BAREME = [
     { bas: 2500, haut: 5000 },
     { bas: 5000, haut: 10000 },
@@ -106,23 +63,13 @@
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || doc).querySelectorAll(sel)); };
 
   var fmtMoney = function (n) { return Math.round(n).toLocaleString("fr-CA") + " $"; };
-  /* B7 · LA FAUSSE PRECISION INVITE EXACTEMENT LA CONTESTATION
-     QU'ELLE VEUT EVITER. La section dit elle-meme, sous le detail,
-     que c'est « un ordre de grandeur, pas une soumission » — et le
-     rail affichait « 53 751 », au dollar pres, avant meme que le
-     visiteur ait touche un curseur. Un chiffre arrondi a la centaine
-     et precede de « environ » dit la meme chose et ne promet plus
-     rien qu'on ne puisse tenir. Il stabilise en outre l'odometre :
-     le ressort ne fait plus defiler des unites illisibles. */
+  /* B7 · LA FAUSSE PRECISION INVITE EXACTEMENT LA CONTESTATION  D-354 */
   var fmtImpact = function (n) {
     return "≈ " + (Math.round(n / 100) * 100).toLocaleString("fr-CA") + " $";
   };
   var fmtHours = function (n) { return (Math.round(n * 10) / 10).toLocaleString("fr-CA") + " h"; };
 
-  /* ============================================================
-     Ressort. Sert a l'odometre du calculateur : le chiffre a une
-     masse, il n'interpole pas lineairement.
-     ============================================================ */
+  /* == Ressort. Sert a l'odometre du calculateur : le chiffre a une ==  D-355 */
   function Spring(onFrame, stiffness, damping) {
     this.value = 0;
     this.target = 0;
@@ -164,31 +111,7 @@
     this.raf = requestAnimationFrame(this.step.bind(this));
   };
 
-  /* ============================================================
-     SEQUENCE D'ENTREE — CE QUE LE SCRIPT AJOUTE, ET CE QU'IL
-     N'AJOUTE PAS.
-
-     Le rideau se retire tout seul par une animation CSS : si ce
-     bloc ne s'execute jamais, la page se decouvre quand meme. Le
-     script ne fait donc que TROIS choses que le CSS ne peut pas :
-
-     1. VISER. La plaque doit se rendre au cadre reel du hero, dont
-        la position depend de la largeur de fenetre.
-     2. ATTENDRE. `html.entree-attend` met en pause la derniere
-        tranche de jauge, la remise de la plaque et l'ouverture du
-        rideau, tant que les polices ne sont pas posees et que la
-        limaille du hero n'est pas composee. C'est la vraie fonction
-        de la sequence : elle couvre le chargement reel au lieu de
-        faire semblant. Elle ne peut pas rester bloquee — le
-        garde-fou leve la pause a 2,5 s depuis la navigation, quoi
-        qu'il arrive.
-     3. SAUTER. N'importe quel clic, n'importe quelle touche
-        termine la sequence en 160 ms.
-
-     Et il SORT le rideau du document une fois fini, pour ne pas
-     laisser une couche de composition plein ecran en place pour le
-     reste de la visite.
-     ============================================================ */
+  /* == SEQUENCE D'ENTREE — CE QUE LE SCRIPT AJOUTE, ET CE QU'IL ==  D-356 */
   var entree = $("#entree");
   if (entree) {
     if (!root.classList.contains("entree-on")) {
@@ -202,20 +125,7 @@
         if (entree.parentNode) entree.parentNode.removeChild(entree);
       }, 640);
     } else {
-      /* LA PLAQUE SE REND A LA PLACE DU HERO.
-         Le monogramme du rideau et la plaque de limaille sont la
-         MEME chose a deux moments : le rideau la tient au centre de
-         l'ecran, le hero la tient dans son cadre. On mesure donc le
-         cadre reel et on donne a la plaque le vecteur exact pour s'y
-         rendre. Elle s'efface une fois arrivee, pendant que les
-         grains, eux, sont deja en train de composer APED dessous :
-         le relais se fait sur la matiere, pas sur un fondu.
-
-         GARDE-FOU : la remise part a 640 ms. Si ce script arrive
-         apres, on ne touche a rien — changer la cible d'une
-         animation deja commencee produirait un saut, ce qui est pire
-         qu'un geste generique. Les valeurs de repli du CSS prennent
-         alors le relais. */
+      /* LA PLAQUE SE REND A LA PLACE DU HERO.  D-357 */
       (function viser() {
         if (performance.now() > 600) return;
         var plaque = entree.querySelector(".entree-plaque");
@@ -229,30 +139,8 @@
         plaque.style.setProperty("--entree-dy", Math.round(cy - window.innerHeight / 2) + "px");
       })();
 
-      /* ---------- 2. L'ATTENTE ----------
-         On pose la pause TOUT DE SUITE, sans se demander si elle est
-         necessaire : la lever coute une classe, alors que la poser
-         trop tard ne sert plus a rien — la jauge est deja passee.
-         Elle est levee des que les deux conditions tombent, donc
-         dans le cas normal elle n'aura jamais ete visible. */
-      /* ---------- LA COMPOSITION DU HERO A SA PROPRE VIE ----------
-
-         DEFAUT MESURE LE 2026-07-29 par `tools/accueil-check.mjs`.
-         Les onze pas de la composition etaient d'abord accroches a
-         `html.entree-on`. Or cette classe tombe avec le rideau, vers
-         1,3 s : les cinq rangees de la fiche technique, dont le
-         retard va de 1 140 a 1 420 ms, voyaient donc leur animation
-         ANNULEE en vol et se posaient d'un coup. Releve : les six
-         premiers pas se decouvraient normalement, les cinq suivants
-         n'avaient tout simplement aucune duree.
-
-         Une classe a part, et le probleme n'existe plus : le rideau
-         garde son cycle — il faut qu'il parte tot, c'est un rideau —
-         et la composition garde le sien. Elle ne demarre que si la
-         sequence joue, donc sans script il n'y a pas de plaque du
-         tout et le hero est simplement la ; et elle est retiree une
-         fois finie, pour ne pas laisser onze pseudo-elements
-         composites en place pour le reste de la visite. */
+      /* 2. L'ATTENTE  D-358 */
+      /* LA COMPOSITION DU HERO A SA PROPRE VIE  D-359 */
       var leve = false;
       function lever() {
         if (leve) return;
@@ -260,47 +148,19 @@
         root.classList.remove("entree-attend");
       }
       root.classList.add("entree-attend");
-      /* LES PLAQUES SONT POSEES TOUT DE SUITE, MAIS A L'ARRET.
-
-         DEFAUT VU DANS NOS PROPRES CAPTURES, 2026-07-29.
-         Premiere tentative de correction : poser `compo-hero` a la
-         fin du rideau, pour que les retards partent de la. Mais les
-         quinze bandes ne sortent PAS toutes en meme temps — celles
-         qui couvrent le titre ont `--k` de 1 a 3, donc elles sont
-         parties des 1 072 ms, alors que la derniere, celle qui porte
-         `data-entree-fin` et declenche la suite, ne finit qu'a
-         1 168 ms. Pendant ces ~96 ms, le titre etait nu ; puis la
-         plaque tombait dessus et le recouvrait pour le decouvrir a
-         nouveau. Un CLIGNOTEMENT, c'est-a-dire l'inverse exact de ce
-         qu'on cherche. Releve : `refonte-captures/accueil/sequences/
-         titre/00-1337ms.png` (titre nu) contre `03-1521ms.png`
-         (recouvert).
-
-         La classe est donc posee ICI, avant que le rideau ne
-         decouvre quoi que ce soit, et les animations sont mises a
-         l'ARRET par `compo-attend` jusqu'a la disparition du rideau.
-         Une animation en pause n'avance pas son horloge : les
-         retards partent donc bien de la levee, et le titre n'est
-         jamais nu une seule image. */
+      /* LES PLAQUES SONT POSEES TOUT DE SUITE, MAIS A L'ARRET.  D-360 */
       root.classList.add("compo-hero");
       root.classList.add("compo-attend");
 
       var restent = 2;
       function pret() { if (--restent <= 0) lever(); }
 
-      /* Les polices. `document.fonts.ready` se resout quand toutes
-         celles qui sont DEMANDEES par la page sont chargees. Les
-         trois `woff2` sont en `preload` : dans le cas normal c'est
-         deja fait, et la promesse se resout dans la foulee. */
+      /* Les polices. `document.fonts.ready` se resout quand toutes  D-361 */
       if (doc.fonts && doc.fonts.ready && typeof doc.fonts.ready.then === "function") {
         doc.fonts.ready.then(pret, pret);
       } else { pret(); }
 
-      /* La limaille du hero. `hero.js` pose `is-live` sur l'hote une
-         fois les 25 000 cibles composees ; c'est le poste le plus
-         lourd du chargement et c'est exactement celui qu'il faut
-         couvrir. `is-fallback` compte aussi : le canevas a renonce,
-         il n'y a plus rien a attendre. */
+      /* La limaille du hero. `hero.js` pose `is-live` sur l'hote une  D-362 */
       (function attendreLimaille() {
         var hote = $("#heroPlate");
         if (!hote) { pret(); return; }
@@ -316,35 +176,10 @@
            n'arrive jamais, le garde-fou general tranche. */
       })();
 
-      /* ---------- LE GARDE-FOU ----------
-         2,5 s DEPUIS LA NAVIGATION, pas depuis ici. La difference
-         compte : ce script s'execute deja quelques dizaines de
-         millisecondes apres le depart, et c'est la duree totale vue
-         par le visiteur qui est plafonnee, pas la notre. */
+      /* LE GARDE-FOU  D-363 */
       window.setTimeout(lever, Math.max(0, 2500 - performance.now()));
 
-      /* ---------- 3. LE SAUT ----------
-         N'importe quel clic, n'importe quelle touche. Le rideau
-         porte `pointer-events: none`, donc l'ecouteur va sur la
-         fenetre, en capture : il voit le geste avant que la page
-         dessous s'en serve, et il ne l'empeche pas — un visiteur qui
-         clique sur un bouton pendant la sequence declenche le bouton
-         ET termine la sequence. C'est le comportement juste : il
-         savait ce qu'il visait, le contenu etait deja peint dessous.
-
-         LE SAUT NE SE MEMORISE PLUS, et c'est un defaut corrige.
-         On ecrivait `sessionStorage["aped-entree-saut"] = "1"` ici.
-         Or cet ecouteur voit N'IMPORTE QUEL `pointerdown` et
-         N'IMPORTE QUEL `keydown` — donc un clic sur un bouton du
-         site, et la touche F5 elle-meme. Un seul geste pendant la
-         premiere seconde, et le script en tete de document ne posait
-         plus `entree-on` : ni rideau, ni `compo-hero`, ni composition
-         du hero, pour tout le reste de l'onglet. Releve du
-         2026-07-29 par `tools/diag-accueil.mjs`, quatre rechargements
-         de suite a `<html class="js">`.
-         Sauter reste immediat — c'est le sens de ce geste — mais
-         c'est une decision qui vaut POUR CETTE VUE-LA. Un
-         rechargement est une arrivee, pas la suite de la precedente. */
+      /* 3. LE SAUT  D-364 */
       function sauter() {
         if (root.classList.contains("entree-saut")) return;
         lever();
@@ -355,35 +190,7 @@
       window.addEventListener("pointerdown", sauter, opts);
       window.addEventListener("keydown", sauter, opts);
 
-      /* ---------- LA FIN, ET LE DEPART DE LA COMPOSITION ----------
-         Le rideau lui-meme n'anime plus rien : ce sont ses quinze
-         bandes. On ecoute donc la DERNIERE, celle qui porte le
-         marqueur, et pas le conteneur.
-
-         LA COMPOSITION DEMARRE ICI, ET C'EST TOUT L'INTERET.
-         `compo-hero` etait posee plus haut, au moment ou ce script
-         s'execute. Or une animation CSS demarre son horloge quand
-         elle est DECLAREE : les onze retards partaient donc de
-         l'instant ou `main.js` tourne — c'est-a-dire apres deux
-         `requestAnimationFrame` plus l'injection, un instant qui
-         varie d'une machine a l'autre. Releve du 2026-07-29 : le
-         rideau partait avec +103 ms de decalage sur l'heure ecrite,
-         la composition avec +281 ms. Deux horloges differentes pour
-         deux gestes qui doivent s'enchainer, ca ne peut pas tenir :
-         sur une machine rapide, la composition repassait sous le
-         rideau ; sur une machine lente, elle laissait un trou.
-
-         La classe est maintenant posee a l'instant EXACT ou le
-         rideau disparait. Les `--e` du document ne sont plus des
-         heures depuis la navigation mais des retards depuis
-         l'ouverture — 0 pour le premier pas, ce qui veut dire
-         « tout de suite ». Le passage de l'un a l'autre est
-         deterministe, quelle que soit la machine.
-
-         `fini` garde l'idempotence : cette fonction est appelee par
-         la fin d'animation, par le saut, et par un filet de
-         securite. Poser deux fois la classe ne couterait rien, mais
-         programmer deux fois son retrait, si. */
+      /* LA FIN, ET LE DEPART DE LA COMPOSITION  D-365 */
       var fini = false;
       function finir() {
         root.classList.remove("entree-on");
@@ -394,13 +201,7 @@
         /* LE DEPART. La pause tombe, les onze horloges partent
            ensemble, et `--e:0` veut dire « maintenant ». */
         root.classList.remove("compo-attend");
-        /* 3,2 s de budget. Le dernier geste est la soudure du filet
-           de pied de fiche : retard 1 240 + 300 ms, puis 600 ms de
-           soudure, soit 2 140 ms. Il reste une seconde de marge pour
-           une machine lente. Retirer la classe trop tard ne coute
-           rien — c'est une classe sur `<html>` et plus aucune
-           animation n'y est attachee ; la couper trop tot pose les
-           derniers pas d'un bloc, defaut deja paye une fois. */
+        /* 3,2 s de budget. Le dernier geste est la soudure du filet  D-366 */
         window.setTimeout(function () {
           root.classList.remove("compo-hero");
           root.classList.remove("compo-attend");
@@ -411,224 +212,360 @@
         if (!e.target.hasAttribute || !e.target.hasAttribute("data-entree-fin")) return;
         finir();
       });
-      /* Filet de securite : si l'animation ne se declenche pas du
-         tout (onglet en arriere-plan au chargement, par exemple), on
-         retire le rideau. Cale sur le garde-fou de la pause plus la
-         duree de l'ouverture, sinon il couperait une sequence qui
-         s'allonge legitimement. */
+      /* Filet de securite : si l'animation ne se declenche pas du  D-367 */
       window.setTimeout(finir, Math.max(1800, 2500 - performance.now() + 700));
     }
   }
 
-  /* ============================================================
-     SERVICES — la demonstration se lance d'ici.
+  /* == SECTION 02 · LA PISTE, LE RAIL ET LE PANNEAU ==  D-368 */
 
-     CE QUI A DISPARU LE 2026-07-30. Ce bloc tenait le rail
-     horizontal : le compteur « 01 / 04 », le nom du chantier, la
-     piste native avec accrochage, le clavier et les deux fleches.
-     Les quatre cartes sont maintenant peintes en meme temps dans une
-     grille CSS, et le detail de chacune est un `<details>` natif.
-     Il n'y a donc plus rien a orienter, plus rien a piloter, et plus
-     aucune touche a reimplementer : le navigateur fait tout.
+  /* LA FICHE DE SERVICE N'EST PAS UNE `.modal` — c'est un  D-369 */
+  var ficheOuverte = null;
+  var fermerFiche = function () {};
 
-     `window.APED_SVC` n'existe plus. `js/motion.js` bloc 6, qui
-     l'utilisait pour remplacer le geste « glisser » par
-     « descendre », a ete retire en meme temps.
+  (function svcRail() {
+    var piste = $("[data-svc-piste]");
+    var scene = $("[data-svc-scene]");
+    var rail = $("[data-svc-rail]");
+    if (!piste || !scene || !rail) return;
 
-     CE QUI RESTE ICI, ET POURQUOI ICI. Un seul geste : lancer la
-     visite 360 depuis la carte 03. C'est de l'USAGE, pas de la
-     choregraphie — donc `main.js`, qui s'execute a tous les paliers
-     et sous `prefers-reduced-motion`, jamais `langue.js`, qui
-     s'arrete net.
+    var vitre = rail.parentNode;
+    var plans = $$(".svc-plan", rail);
+    var liens = $$("[data-svc-vers]");
+    var jauge = $("[data-svc-jauge]");
+    var n = plans.length;
+    if (n < 2) return;
 
-     ON NE CONSTRUIT PAS UN SECOND LECTEUR. Le bouton amene a la
-     section 05 et declenche celui qui existe deja. Une seconde
-     instance de Pannellum, ce sont 8,5 Mo de panoramas charges deux
-     fois et un deuxieme moteur pour montrer exactement la meme
-     piece.
-     ============================================================ */
-  (function svcTour() {
-    var depart = $("[data-svc-tour]");
-    var visite = $("#visite");
-    var lanceur = $("[data-tour-start]");
-    if (!depart || !visite || !lanceur) return;
+    /* EST-CE QUE LE RAIL EXISTE ? LA REPONSE EST DANS LE CSS.  D-370 */
+    var estActif = false;
+    var course = 0;     /* distance verticale de la piste, en px */
+    var pas = 0;        /* distance horizontale d'un chantier au suivant */
+    var collant = 0;    /* le `top` effectif du `position: sticky` */
 
-    depart.addEventListener("click", function () {
-      /* On defile d'abord, on declenche ensuite. Declencher avant
-         de defiler ferait charger 2 Mo pendant que le visiteur
-         regarde encore la section Services : il verrait une barre
-         de chargement pour quelque chose qu'il n'a pas sous les
-         yeux. */
-      visite.scrollIntoView({ behavior: reduced.matches ? "auto" : "smooth", block: "start" });
+    var premierArmement = true;
 
-      /* Le clic est programme apres le defilement, mais il ne DEPEND
-         pas de lui : `scrollIntoView` lisse n'a pas d'evenement de
-         fin fiable et un `scrollend` manquant laisserait le bouton
-         mort. Un delai unique, borne, puis on declenche quoi qu'il
-         arrive. Sous mouvement reduit le saut est immediat, donc le
-         delai tombe a une image. */
-      window.setTimeout(function () {
-        /* Si le visiteur a deja ouvert la visite, `tour360.js` a
-           retire le bouton de l'affichage : le declencher une
-           seconde fois relancerait un chargement pour rien. */
-        if (lanceur.isConnected && !lanceur.classList.contains("is-loading")) lanceur.click();
-        /* Le focus suit le regard. Sans ca, la tabulation suivante
-           repart du haut du document et le clavier perd la page. */
-        var vue = $("[data-tour-stage]") || visite;
-        if (vue.hasAttribute && !vue.hasAttribute("tabindex")) vue.setAttribute("tabindex", "-1");
-        try { vue.focus({ preventScroll: true }); } catch (e) {}
-      }, reduced.matches ? 16 : 620);
-    });
-  })();
-  /* ============================================================
-     CADRES DE PROJET — le parcours se demande, il ne s'impose pas.
-
-     Le cadre est INERTE au repos : on voit le haut du site client,
-     immobile et net, parce que c'est ce qui se juge. Il ne se
-     parcourt que sur une intention explicite, et il en accepte
-     trois :
-     · un survol PROLONGE de 520 ms — assez long pour qu'un pointeur
-       qui traverse le cadre en allant ailleurs ne declenche rien ;
-     · un clic, ou Entree et Espace au clavier ;
-     · un defilement fait a l'interieur du cadre, qui prend
-       immediatement le pas sur la lecture automatique.
-
-     Tout passe par `scrollTop`, jamais par un `transform` : c'est
-     la seule facon d'avoir UNE source de verite pour la molette, le
-     doigt, les touches et la lecture automatique. Et comme le
-     defilement natif s'enchaine vers la page une fois la capture au
-     bout, le cadre ne peut pas retenir le visiteur.
-
-     Ce bloc vit dans `main.js` et non dans `motion.js` : sous
-     `prefers-reduced-motion` la lecture automatique se coupe, mais
-     le cadre doit rester parcourable a la main. Perdre le mouvement
-     ne doit jamais faire perdre le contenu.
-     ============================================================ */
-  $$("[data-shot]").forEach(function (cadre) {
-    var boite = cadre.closest(".shot") || cadre;
-    var img = $("img", cadre);
-    var mot = $("[data-shot-mot]", boite);
-    var jauge = $(".shot-jauge b", boite);
-    if (!img) return;
-
-    var actif = false;
-    var raf = 0;
-    var attente = 0;
-    var lecture = false;      /* la lecture automatique tourne-t-elle */
-    var derniereCible = 0;    /* pour distinguer notre defilement du sien */
-
-    function course() { return Math.max(0, cadre.scrollHeight - cadre.clientHeight); }
-
-    function majJauge() {
-      var c = course();
-      if (jauge) jauge.style.transform = "scaleX(" + (c ? cadre.scrollTop / c : 0) + ")";
-    }
-
-    function dire(t) { if (mot) mot.textContent = t; }
-
-    function boucle() {
-      if (!lecture) { raf = 0; return; }
-      var c = course();
-      if (cadre.scrollTop >= c - 0.5) {
-        lecture = false;
-        raf = 0;
-        dire("Fin de la page. Molette pour remonter.");
-        return;
-      }
-      /* 42 px par seconde environ : assez lent pour lire une mise en
-         page, assez vif pour qu'on voie qu'il se passe quelque
-         chose. */
-      derniereCible = cadre.scrollTop + 0.7;
-      cadre.scrollTop = derniereCible;
-      majJauge();
-      raf = requestAnimationFrame(boucle);
-    }
-
-    function activer(auto) {
-      if (actif) return;
-      actif = true;
-      boite.classList.add("is-parcours");
-      if (auto && !reduced.matches) {
-        lecture = true;
-        dire("Parcours en cours · molette pour reprendre la main");
-        if (!raf) raf = requestAnimationFrame(boucle);
+    function relire() {
+      var st = getComputedStyle(scene);
+      var etait = estActif;
+      estActif = st.position === "sticky";
+      collant = parseFloat(st.top) || 0;
+      course = Math.max(0, piste.offsetHeight - scene.offsetHeight);
+      /* LE PAS SE MESURE, IL NE SE CALCULE PAS. `largeur + gap` est  D-371 */
+      pas = plans.length > 1 ? (plans[1].offsetLeft - plans[0].offsetLeft) : 0;
+      if (!estActif) {
+        rail.removeAttribute("data-degage");
+        vitre.scrollLeft = 0;
+        if (jauge) jauge.style.transform = "";
       } else {
-        dire("À vous : molette, doigt ou flèches");
+        /* LA PREMIERE IMAGE NE DOIT DEPENDRE DE PERSONNE.  D-372 */
+        var r0 = piste.getBoundingClientRect();
+        var h0 = window.innerHeight;
+        if (r0.bottom > -h0 * 0.5 && r0.top < h0 * 1.5) enVue = true;
+      }
+      image();
+      /* L'ARRIVEE PAR ANCRE SE JOUE ICI, ET NULLE PART AILLEURS.  D-373 */
+      if (estActif && (!etait || premierArmement)) {
+        premierArmement = false;
+        surAncre();
       }
     }
 
-    function desactiver() {
-      if (!actif) return;
-      actif = false;
-      lecture = false;
-      if (raf) { cancelAnimationFrame(raf); raf = 0; }
-      boite.classList.remove("is-parcours");
-      dire("Survolez pour parcourir");
-      cadre.scrollTo({ top: 0, behavior: reduced.matches ? "auto" : "smooth" });
-      window.setTimeout(majJauge, reduced.matches ? 0 : 420);
+    /* LA CARTE DE PROGRESSION — V2 · S'ALIGNER, arretee d'un  D-374 */
+    var MORT = 0.18;
+
+    function lisser(t) { return t * t * (3 - 2 * t); }
+
+    var actuel = -1;
+
+    function marquer(k) {
+      if (k === actuel) return;
+      actuel = k;
+      /* LE VOILE DES NOMS NAIT AVEC LE PREMIER MARQUAGE, PAS AVANT.  D-375 */
+      rail.setAttribute("data-degage", "");
+      for (var i = 0; i < plans.length; i++) {
+        if (i === k) plans[i].setAttribute("data-actif", "");
+        else plans[i].removeAttribute("data-actif");
+        /* `data-vu` NE SE RETIRE JAMAIS. Le degagement du nom est  D-376 */
+        if (i <= k) plans[i].setAttribute("data-vu", "");
+      }
+      for (var j = 0; j < liens.length; j++) {
+        if (j === k) liens[j].setAttribute("aria-current", "true");
+        else liens[j].removeAttribute("aria-current");
+      }
     }
 
-    /* --- survol prolonge --- */
-    cadre.addEventListener("pointerenter", function (e) {
-      if (e.pointerType !== "mouse") return;
-      attente = window.setTimeout(function () { activer(true); }, 520);
-    });
-    cadre.addEventListener("pointerleave", function (e) {
-      if (e.pointerType !== "mouse") return;
-      window.clearTimeout(attente);
-      desactiver();
+    /* UNE SEULE LECTURE DE MISE EN PAGE PAR IMAGE, ET ELLE VIENT  D-377 */
+    function image() {
+      if (!estActif || !enVue) return;
+      /* LE FILET DE SECURITE. Une geometrie degeneree — course ou  D-378 */
+      if (course <= 0 || pas <= 0) { marquer(n - 1); return; }
+      var haut = piste.getBoundingClientRect().top;
+      var p = (collant - haut) / course;
+      if (p < 0) p = 0; else if (p > 1) p = 1;
+
+      var u = p * (n - 1);
+      var i = Math.floor(u);
+      if (i > n - 2) i = n - 2;
+      var f = u - i;
+      var g = (f - MORT) / (1 - 2 * MORT);
+      if (g < 0) g = 0; else if (g > 1) g = 1;
+      var s = i + lisser(g);
+
+      /* `scrollLeft` ET NON `transform` — voir l'argument en tete du  D-379 */
+      vitre.scrollLeft = s * pas;
+      if (jauge) jauge.style.transform = "scaleX(" + (s / (n - 1)).toFixed(4) + ")";
+      marquer(Math.round(s));
+    }
+
+    /* LE PILOTE. Un ecouteur `scroll` passif, une seule image  D-380 */
+    var enVue = false;
+    var attend = false;
+
+    function surDefilement() {
+      if (attend) return;
+      attend = true;
+      requestAnimationFrame(function () { attend = false; image(); });
+    }
+
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (entrees) {
+        enVue = entrees[0].isIntersecting;
+        image();
+        /* LA MARGE EST GENEREUSE, ET C'EST DELIBERE. A 120 px, une  D-381 */
+      }, { rootMargin: "50% 0px" }).observe(piste);
+    } else {
+      enVue = true;
+    }
+
+    window.addEventListener("scroll", surDefilement, { passive: true });
+
+    /* Le redimensionnement change la course, le pas et la hauteur de  D-382 */
+    var attendR = false;
+    window.addEventListener("resize", function () {
+      if (attendR) return;
+      attendR = true;
+      requestAnimationFrame(function () { attendR = false; relire(); });
+    }, { passive: true });
+
+    /* `differe.css` est injecte APRES le premier rendu : au moment  D-383 */
+    /* L'ARMEMENT — on ESSAIE jusqu'a ce que la feuille differee soit  D-384 */
+    var essais = 0;
+    (function armer() {
+      relire();
+      if (!estActif && essais++ < 40) window.setTimeout(armer, 50);
+    })();
+    window.addEventListener("load", relire);
+    /* `bfcache` rejoue `pageshow` sans rejouer le script. */
+    window.addEventListener("pageshow", relire);
+
+    /* LA VITRE NE DEFILE QUE SUR L'AXE QU'ON PILOTE.  D-385 */
+    vitre.addEventListener("scroll", function () {
+      if (vitre.scrollTop !== 0) vitre.scrollTop = 0;
+    }, { passive: true });
+
+    /* ALLER A UN CHANTIER — on defile la PAGE, et rien d'autre.  D-386 */
+    function allerA(k, doux) {
+      if (!estActif || course <= 0) return;
+      var haut = piste.getBoundingClientRect().top;
+      var y = window.scrollY + haut - collant + (k / (n - 1)) * course;
+      y = Math.round(y);
+      if (doux && !reduced.matches && window.scrollTo) {
+        window.scrollTo({ top: y, behavior: "smooth" });
+      } else {
+        window.scrollTo(0, y);
+      }
+    }
+
+    for (var t = 0; t < liens.length; t++) {
+      (function (a, k) {
+        a.addEventListener("click", function (e) {
+          /* SANS RAIL, ON NE TOUCHE A RIEN. La pile verticale a de  D-387 */
+          if (!estActif) return;
+          e.preventDefault();
+          allerA(k, true);
+          try { history.replaceState(history.state, "", "#" + plans[k].id); } catch (err) {}
+        });
+      })(liens[t], t);
+    }
+
+    /* L'ARRIVEE PAR ANCRE.  D-388 */
+    /* ON VERIFIE L'ATTERRISSAGE, ON NE LE SUPPOSE PAS.  D-389 */
+    var libre = false;
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach(function (nom) {
+      window.addEventListener(nom, function () { libre = true; }, { passive: true, once: true });
     });
 
-    /* --- clic et clavier --- */
-    cadre.addEventListener("click", function () {
-      window.clearTimeout(attente);
-      if (actif) desactiver(); else activer(true);
+    function viser(k) {
+      var essais = 0;
+      (function poser() {
+        if (libre || !estActif || course <= 0 || essais++ > 30) return;
+        var haut = piste.getBoundingClientRect().top;
+        var y = Math.round(window.scrollY + haut - collant + (k / (n - 1)) * course);
+        if (Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y);
+        requestAnimationFrame(poser);
+      })();
+    }
+
+    function surAncre() {
+      var h = location.hash;
+      if (!h || h.indexOf("#svc-0") !== 0) return;
+      for (var i = 0; i < plans.length; i++) {
+        if ("#" + plans[i].id === h) { viser(i); return; }
+      }
+    }
+    window.addEventListener("hashchange", surAncre);
+
+    /* LE FOCUS NE DESYNCHRONISE RIEN.  D-390 */
+    rail.addEventListener("focusin", function (e) {
+      if (!estActif) return;
+      var plan = e.target.closest ? e.target.closest(".svc-plan") : null;
+      if (!plan) return;
+      var k = plans.indexOf(plan);
+      if (k < 0) return;
+      var vb = vitre.getBoundingClientRect();
+      var pb = plan.getBoundingClientRect();
+      if (pb.left >= vb.left - 2 && pb.right <= vb.right + 2) return;
+      allerA(k, false);
     });
-    cadre.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+
+    /* LE CLAVIER — par crans, comme le defilement.  D-391 */
+    var index = $(".svc-index");
+    if (index) {
+      index.addEventListener("keydown", function (e) {
+        if (!estActif) return;
+        var k = actuel < 0 ? 0 : actuel, cible = null;
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") cible = Math.min(n - 1, k + 1);
+        else if (e.key === "ArrowLeft" || e.key === "ArrowUp") cible = Math.max(0, k - 1);
+        else if (e.key === "Home") cible = 0;
+        else if (e.key === "End") cible = n - 1;
+        else return;
         e.preventDefault();
-        if (actif) desactiver(); else activer(true);
-      } else if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "PageDown" || e.key === "PageUp") {
-        /* Les fleches parcourent la capture. On active d'abord, sinon
-           le cadre est en `overflow: hidden` et rien ne bouge. */
-        activer(false);
-        lecture = false;
+        allerA(cible, true);
+        if (liens[cible]) try { liens[cible].focus({ preventScroll: true }); } catch (err) {}
+      });
+    }
+
+    /* == LE PANNEAU DE DETAIL ==  D-392 */
+    var fiches = $$("[data-svc-fiche]", rail);
+
+    function ouvrir(f) {
+      for (var i = 0; i < fiches.length; i++) {
+        if (fiches[i] !== f && fiches[i].open) fiches[i].open = false;
       }
+      ficheOuverte = f;
+      lockScroll();
+      var plan = f.closest(".svc-plan");
+      try { history.pushState({ aped: "svc-fiche" }, "", plan ? "#" + plan.id : location.hash); } catch (e) {}
+    }
+
+    function fermer(f) {
+      if (!f || !f.open) return;
+      var tete = $("summary", f);
+      var net = reduced.matches || doc.documentElement.getAttribute("data-palier") === "2";
+      var fini = function () {
+        f.open = false;
+        f.removeAttribute("data-sortant");
+        if (ficheOuverte === f) ficheOuverte = null;
+        unlockScroll();
+        if (tete) try { tete.focus({ preventScroll: true }); } catch (e) {}
+      };
+      if (net) { fini(); return; }
+      f.setAttribute("data-sortant", "");
+      window.setTimeout(fini, 300);
+    }
+
+    /* Toutes les routes de fermeture passent par ici : c'est ce qui
+       garantit que le bouton Precedent et la touche Echap laissent
+       l'historique dans le meme etat. */
+    fermerFiche = function () {
+      if (!ficheOuverte) return;
+      if (history.state && history.state.aped === "svc-fiche") history.back();
+      else fermer(ficheOuverte);
+    };
+    window.addEventListener("popstate", function () {
+      if (ficheOuverte) fermer(ficheOuverte);
     });
-    cadre.addEventListener("focus", function () { activer(false); });
-    cadre.addEventListener("blur", function () { desactiver(); });
 
-    /* --- le visiteur prend la main --- */
-    cadre.addEventListener("scroll", function () {
-      majJauge();
-      /* Si le defilement ne vient pas de notre boucle, il vient de
-         lui : la lecture automatique s'arrete sans discussion. */
-      if (lecture && Math.abs(cadre.scrollTop - derniereCible) > 2) {
-        lecture = false;
-        dire("À vous : molette, doigt ou flèches");
-      }
-    }, { passive: true });
+    for (var f = 0; f < fiches.length; f++) {
+      (function (fiche) {
+        var tete = $("summary", fiche);
+        if (!tete) return;
+        tete.addEventListener("click", function (e) {
+          if (fiche.open) { e.preventDefault(); fermerFiche(); return; }
+          /* A l'ouverture on laisse le natif poser `open` — le
+             clavier, l'ancre et la recherche dans la page restent
+             intacts — et on s'accroche au tour suivant. */
+          requestAnimationFrame(function () { if (fiche.open) ouvrir(fiche); });
+        });
+        /* LE VOILE EST UN PSEUDO-ELEMENT DE `.svc-porte`, pas du  D-393 */
+        var porte = fiche.parentNode;
+        porte.addEventListener("click", function (e) {
+          if (e.target === porte && fiche.open) fermerFiche();
+        });
+      })(fiches[f]);
+    }
+  })();
 
-    /* Au tactile il n'y a pas de survol : le premier contact active
-       le cadre, et le doigt le parcourt ensuite normalement. */
-    cadre.addEventListener("pointerdown", function (e) {
-      if (e.pointerType === "mouse") return;
-      activer(false);
-    }, { passive: true });
+  /* == SECTION 03 · L'AVANT / APRES ==  D-394 */
+  (function avantApres() {
+    var cadres = $$("[data-ba]");
+    if (!cadres.length) return;
 
-    majJauge();
-  });
+    function palier() {
+      return doc.documentElement.getAttribute("data-palier") || "0";
+    }
 
-  /* ============================================================
-     PARCOURS — compteur d'etape.
+    /* --- 1 · LE PASSAGE --- */
+    for (var i = 0; i < cadres.length; i++) {
+      (function (cadre, k) {
+        cadre.addEventListener("change", function (e) {
+          var cible = e.target;
+          if (!cible || cible.type !== "radio") return;
+          if (reduced.matches || palier() === "2") return;
+          if (!window.APED_TRAME) return;
+          var quoi = cible.getAttribute("data-ba-vue");
+          var vue = $(quoi === "apres" ? ".ba-vue--apres" : ".ba-vue--avant", cadre);
+          if (!vue) return;
+          window.APED_TRAME.degager(vue, {
+            nom: "ba-" + k + "-" + quoi,
+            sens: "droite",
+            /* Une graine FIXE par carte et par sens : `Math.random()`  D-395 */
+            graine: 617 + k * 13 + (quoi === "apres" ? 1 : 0),
+            /* 520 / 240 et non 420 / 190 : releve du 2026-07-30,  D-396 */
+            duree: 520, vie: 240, maille: 44, z: 3
+          });
+        });
+      })(cadres[i], i);
+    }
 
-     Ici et pas dans `motion.js`, pour la meme raison que le rail des
-     services : ce fichier-la ne s'execute pas sous
-     `prefers-reduced-motion`, et « a quelle etape je suis » ne se
-     supprime pas parce que quelqu'un a demande moins de mouvement.
-     Un `IntersectionObserver` suffit : aucun ecouteur de defilement,
-     aucun calcul par image.
-     ============================================================ */
+    /* --- 2 · LA DEMONSTRATION D'OUVERTURE --- */
+    if (reduced.matches || !window.IntersectionObserver) return;
+    var premier = cadres[0];
+    var bouton = $('[data-ba-vue="apres"]', premier);
+    if (!bouton) return;
+    var joue = false;
+
+    /* LE PREMIER GESTE DU VISITEUR ANNULE LA DEMONSTRATION. S'il a
+       deja touche au cran, il a compris ; rejouer par-dessus, ce
+       serait lui reprendre la main sur ce qu'il vient de decider. */
+    premier.addEventListener("change", function () { joue = true; });
+
+    var oeil = new IntersectionObserver(function (entrees) {
+      if (joue || !entrees[0].isIntersecting) return;
+      joue = true;
+      oeil.disconnect();
+      /* 900 ms : le temps que la carte soit franchement dans  D-397 */
+      window.setTimeout(function () {
+        if (bouton.checked) return;
+        bouton.checked = true;
+        /* `checked` par script n'emet AUCUN evenement : le passage  D-398 */
+        bouton.dispatchEvent(new Event("change", { bubbles: true }));
+      }, 900);
+    }, { threshold: 0.55 });
+    oeil.observe(premier);
+  })();
+
+  /* == PARCOURS — compteur d'etape. ==  D-399 */
   (function parcours() {
     var etapes = $$(".parc-etape");
     if (!etapes.length) return;
@@ -665,95 +602,12 @@
     poser(0);
   })();
 
-  /* ============================================================
-     LE CADEAU — QUAND IL PARAIT, ET POURQUOI CE N'EST PLUS CE QUE
-     C'ETAIT.
-
-     LE DEFAUT MESURE. L'ancienne version armait a 12 s, exigeait un
-     defilement de 55 % OU un curseur du calculateur bouge, et
-     n'offrait l'intention de sortie qu'a 25 s. Surtout, elle posait
-     son marqueur dans `localStorage` DES LA PREMIERE OUVERTURE. Un
-     visiteur qui rechargeait la page ne le revoyait donc plus
-     jamais, sur aucune visite, pour toujours. C'est la vraie raison
-     du « il n'apparait presque jamais ».
-
-     CE QUE DISENT LES DONNEES, ET ON LES SUIT MAINTENANT JUSQU'AU
-     BOUT. Trois bases independantes — un milliard, 1,24 milliard et
-     105 millions d'affichages — classent l'intention de sortie
-     DERNIERE de tous les declencheurs mesures : 3,94 % contre
-     6,45 % pour une attente de 11 a 15 secondes chez le premier
-     editeur, 1,8 % contre 2,9 % chez le deuxieme. Le pic est donc
-     une ATTENTE COURTE, et c'est elle qui devient le declencheur
-     principal.
-
-     L'ORDRE, DESORMAIS :
-     1. PRINCIPAL — 11 s de presence, a chaque chargement. Onze,
-        parce que c'est le debut de la fenetre 11-15 s ou le pic est
-        mesure, et parce qu'entre deux valeurs egales on prend la
-        plus courte : le visiteur qui part tot est celui qu'on perd.
-     2. ANTICIPE — un engagement fort avant ces 11 s le fait paraitre
-        LA, au moment chaud. Trois signaux, et seulement trois :
-        · le resultat du calculateur consulte — il a bouge un
-          curseur ET regarde le chiffre ;
-        · la visite 360 ouverte — il est entre dans la demonstration ;
-        · la section Projets atteinte — il regarde les preuves.
-        PLANCHER DE 4 s quand meme : un visiteur qui defile vite
-        atteint Projets en deux secondes, et un popup a la deuxieme
-        seconde est le pire declencheur de tous les jeux de donnees.
-     3. DERNIER RECOURS — l'intention de sortie, et uniquement si
-        rien n'a encore paru. On la garde parce que le brief la
-        nomme, pas parce qu'elle est bonne.
-
-     LA FREQUENCE — DECISION DU PROPRIETAIRE DU SITE, 2026-07-26.
-
-     IL PARAIT A CHAQUE CHARGEMENT, SANS EXCEPTION. Pas une fois par
-     session, pas une fois par jour : chaque fois.
-
-     CE QUI A ETE DIT AVANT DE LE FAIRE, parce que le prochain qui
-     lira ce fichier se demandera si c'est un oubli. Ce n'en est pas
-     un. Les mesures classent le rappel a chaque chargement parmi
-     les motifs les plus mal recus, et redemander une adresse deja
-     donnee dit au visiteur qu'on ne l'a pas ecoute. L'arbitrage a
-     ete pose, l'argument entendu, la decision maintenue. Elle est
-     donc appliquee entierement plutot qu'a moitie — une regle
-     appliquee a moitie est le pire des deux mondes.
-
-     CE QUI RESTE MALGRE « TOUJOURS », et qui n'est pas de la
-     memoire mais de la tenue :
-     · UNE SEULE FOIS PAR CHARGEMENT DE PAGE. `paru` est une
-       variable, pas un stockage : elle meurt avec la page. Deux
-       ouvertures dans la meme page ne seraient pas de l'insistance,
-       ce serait une panne.
-     · JAMAIS PENDANT QU'IL FAIT QUELQUE CHOSE. S'il est dans un
-       champ, ou s'il a touche au calculateur il y a moins de deux
-       secondes, on ne l'interrompt pas : on REPORTE et on retente
-       des qu'il s'arrete. Un popup qui coupe une saisie est percu
-       comme une panne, et « toujours » ne veut pas dire « au pire
-       moment ».
-     · JAMAIS PAR-DESSUS UNE AUTRE COUCHE. Deux surcouches d'un coup
-       et le visiteur ferme les deux sans lire.
-
-     LES ANCIENNES CLES SONT EFFACEES, PAS IGNOREES. `aped-cadeau`
-     et `aped-cadeau-donne` ne veulent plus rien dire : les laisser
-     dans le stockage des visiteurs, c'est preparer le prochain
-     malentendu — on vient d'en payer un.
-
-     LE SEUL SUPPRESSEUR EST UN INSTRUMENT, ET IL PORTE SON NOM.
-     `sessionStorage["aped-sans-popup"]` n'est pas une regle
-     produit : c'est l'interrupteur des trente outils de mesure, qui
-     mesurent autre chose que le popup et ne peuvent pas travailler
-     sous une surcouche. Il s'appelle « sans-popup » et pas
-     « deja-vu » exactement pour qu'on ne le confonde jamais avec
-     une decision de produit.
-     ============================================================ */
+  /* == LE CADEAU — QUAND IL PARAIT, ET POURQUOI CE N'EST PLUS CE QUE ==  D-400 */
   (function cadeau() {
     var boite = $("#cadeau");
     if (!boite || typeof boite.showModal !== "function") return;
 
-    /* Les deux marqueurs de l'ancienne regle sont effaces a chaque
-       chargement. Une cle morte dans le stockage d'un visiteur est
-       une bombe a retardement : c'est exactement ce qui a fait que
-       personne ne voyait le popup. */
+    /* Les deux marqueurs de l'ancienne regle sont effaces a chaque  D-401 */
     try {
       localStorage.removeItem("aped-cadeau");
       localStorage.removeItem("aped-cadeau-donne");
@@ -785,10 +639,7 @@
       return false;
     }
 
-    /* On REPORTE au lieu d'abandonner : c'est la difference entre
-       « pas maintenant » et « jamais ». Au plus dix reprises, une
-       par seconde — au-dela, le visiteur ne s'arrete pas, et
-       insister serait le harceler. */
+    /* On REPORTE au lieu d'abandonner : c'est la difference entre  D-402 */
     function ouvrir(reprises) {
       if (vu || ouvert || paru) return;
       if (performance.now() - depart < PLANCHER) {
@@ -812,10 +663,7 @@
       if (x) x.focus();
     }
 
-    /* LA SORTIE EST LA RECIPROQUE DE L'ENTREE. On pose la classe,
-       on laisse l'animation CSS se terminer, PUIS on ferme. Sans
-       l'attente, `close()` retire l'element de la couche superieure
-       a la premiere image et la reciproque ne se voit jamais. */
+    /* LA SORTIE EST LA RECIPROQUE DE L'ENTREE. On pose la classe,  D-403 */
     function fermer() {
       if (!ouvert || boite.classList.contains("se-retire")) return;
       if (reduced.matches) { boite.close(); return; }
@@ -854,14 +702,7 @@
       var bouton = $(".cadeau-go", form);
       var recu = $(".cadeau-recu", boite);
 
-      /* A3 · LA REMISE N'EST PLUS CACHEE AU DEPART.
-         Elle exigeait une adresse pour deverrouiller ce que le pied de
-         page donne directement — la contradiction « sans courriel »
-         que l'audit du 2026-07-29 a relevee. Les deux liens sont donc
-         visibles des l'ouverture. `hidden = false` reste : il ne coute
-         rien et il protege le jour ou quelque chose d'autre les
-         cacherait. Le focus, lui, garde son sens : apres un envoi, ce
-         qu'on vient de promettre est ce que le clavier atteint. */
+      /* A3 · LA REMISE N'EST PLUS CACHEE AU DEPART.  D-404 */
       function remettre() {
         if (!recu) return;
         recu.hidden = false;
@@ -872,13 +713,7 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         say(etat, "");
-        /* LE CHAMP N'EST PLUS `required`, DONC `validate()` NE PEUT
-           PLUS LE JUGER : sa premiere regle est « pas requis, donc
-           valide », ce qui laisserait passer une adresse vide ou
-           malformee jusqu'au service d'envoi. On valide donc ici, a la
-           main, et seulement parce que le visiteur a demande un envoi
-           par courriel — s'il voulait les guides, il les a deja
-           au-dessus. */
+        /* LE CHAMP N'EST PLUS `required`, DONC `validate()` NE PEUT  D-405 */
         var adresse = champ.value.trim();
         var champBoite = champ.closest(".field");
         var valide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adresse);
@@ -893,28 +728,7 @@
         if (champBoite) markField(champBoite, true);
         if (bouton) setLoading(bouton, true, "Envoi en cours…");
 
-        /* ------------------------------------------------------------
-           CE QUI PART VERS LE VISITEUR, ET CE QUI N'EST PAS POSSIBLE.
-
-           Le service d'envoi utilise par ce site notifie L'AGENCE.
-           Il sait aussi renvoyer un accuse au visiteur — c'est le
-           champ `_autoresponse` — mais c'est du TEXTE : il ne peut
-           pas y joindre deux fichiers de deux megaoctets. Aucun
-           service de formulaire sans serveur ne le peut.
-
-           Les deux documents partent donc vers le visiteur sous
-           forme de LIENS, dans ce message, et ils sont en meme temps
-           remis sur place dans le popup — c'est la remise qui compte,
-           le courriel n'est que la copie qu'il retrouvera plus tard.
-           Dire « les deux PDF arrivent en piece jointe » serait faux ;
-           ce qui est vrai, c'est qu'il les a tout de suite et qu'il
-           les retrouve dans sa boite.
-
-           LES ADRESSES SONT CALCULEES, PAS ECRITES. `new URL(...,
-           location.href)` rend l'adresse absolue reelle du serveur
-           qui sert la page. Une adresse ecrite en dur serait fausse
-           le jour de la mise en ligne, et personne ne s'en
-           apercevrait avant qu'un visiteur clique. */
+        /* CE QUI PART VERS LE VISITEUR, ET CE QUI N'EST PAS POSSIBLE.  D-406 */
         var lien1 = new URL("documents/aped-automatisation.pdf", location.href).href;
         var lien2 = new URL("documents/aped-ia-croissance.pdf", location.href).href;
         var reponse = [
@@ -956,18 +770,7 @@
 
     if (vu) return;
 
-    /* LES DEUX COUVERTURES SONT CHARGEES A L'AVANCE, mais PAS au
-       chargement de la page.
-       Elles pesent 147 Ko a elles deux et ne sont visibles que dans
-       un popup : les mettre sur le chemin critique serait payer
-       cher pour une image que neuf visiteurs sur dix ne verront
-       jamais. Elles portent donc `loading="lazy"`, ce qui les fait
-       arriver APRES l'ouverture — le cadeau s'ouvrirait sur deux
-       cadres vides, ce qui est exactement le contraire de l'effet
-       recherche.
-       On les demande donc trois secondes avant l'ouverture prevue,
-       en arriere-plan, sans rien bloquer. A l'ouverture elles sont
-       dans le cache. */
+    /* LES DEUX COUVERTURES SONT CHARGEES A L'AVANCE, mais PAS au  D-407 */
     window.setTimeout(function () {
       $$(".cadeau-couv", boite).forEach(function (img) {
         var pre = new Image();
@@ -1030,9 +833,7 @@
     }, SORTIE);
   })();
 
-  /* ============================================================
-     Theme. Le basculement est anime, mais jamais au chargement.
-     ============================================================ */
+  /* == Theme. Le basculement est anime, mais jamais au chargement. == */
   var themeToggle = $("#themeToggle");
 
   function labelTheme(next) {
@@ -1053,18 +854,11 @@
     if (metaThemeColor) metaThemeColor.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
     try { localStorage.setItem("aped-theme", next); } catch (e) {}
     window.setTimeout(function () { root.classList.remove("theme-shifting"); }, 560);
-    /* Tout ce qui peint hors CSS doit etre prevenu. Le canvas du hero
-       lit ses trois couleurs dans les tokens : sans cet evenement il
-       gardait celles du theme de depart, ce qui donnait le bloc noir
-       sur ciment clair. Un evenement plutot qu'un appel direct : la
-       barre ne connait pas le hero, et n'a pas a le connaitre. */
+    /* Tout ce qui peint hors CSS doit etre prevenu. Le canvas du hero  D-408 */
     doc.dispatchEvent(new CustomEvent("aped:theme", { detail: { theme: next } }));
   }
 
-  /* Le theme systeme peut changer PENDANT la visite (coucher de
-     soleil sous macOS et Windows). On ne suit ce changement que si le
-     visiteur n'a jamais tranche lui-meme : un choix explicite gagne
-     toujours sur une preference systeme. */
+  /* Le theme systeme peut changer PENDANT la visite (coucher de  D-409 */
   (function suivreSysteme() {
     var mq = window.matchMedia("(prefers-color-scheme: dark)");
     var choisi = null;
@@ -1086,47 +880,7 @@
     else if (mq.addListener) mq.addListener(onChange);
   })();
 
-  /* ------------------------------------------------------------
-     PHASE 10 — LA BASCULE PASSE PAR UNE TRAME, PLUS PAR UN FONDU.
-
-     CE QU'IL Y AVAIT : `document.startViewTransition`. Le
-     navigateur photographie l'avant et l'apres et les FOND l'un
-     dans l'autre. C'est exactement le mot que la direction
-     interdit : rien ne fond ici, tout s'encliquette. C'etait aussi
-     le seul endroit du site ou un fondu avait survecu.
-
-     CE QUE LA REFERENCE 6 DONNE, TRADUIT. Le toggle Framer bascule
-     en `translate 0.3s ease-out` : un etat GLISSE vers l'autre.
-     Chez nous un etat ne glisse pas non plus, il ROULE d'un cran —
-     V4. A l'echelle de la page entiere, le cran est une bande de
-     matiere qui TRAVERSE : la trame couvre dans le sens de
-     lecture, le theme bascule quand elle a couvert, la meme trame
-     se retire dans le meme sens. Derriere la vague, l'autre etat.
-
-     DEUX TEMPS, ET LA MEME GRAINE POUR LES DEUX : c'est la meme
-     matiere qui passe, pas deux voiles differents. 220 + 260 ms.
-
-     ET UN TROISIEME TEMPS QU'ON NE CHOISIT PAS. Changer
-     `data-theme` sur la racine recalcule le style d'un document de
-     trente mille pixels : mesure du jour, 250 a 350 ms de tache,
-     AVEC ET SANS le voile — 256/221/219 ms sans trame contre
-     316/258/231 avec. Ce cout ne vient donc pas d'ici, il etait
-     deja la. `startViewTransition` le cachait sous une photo
-     figee ; on le cache sous la couverture pleine de la trame, au
-     seul instant ou l'ecran est un aplat et ou une pause ne se
-     voit pas. C'est le meme abri, dans notre matiere au lieu d'un
-     fondu. Duree vue par le visiteur, bout en bout : environ
-     750 ms, dont un tiers qu'aucune mise en scene ne supprime.
-
-     LA COULEUR EST CELLE D'ARRIVEE, pas celle de depart. La vague
-     apporte le nouvel etat ; une vague de l'ancienne couleur
-     dirait qu'on revient en arriere.
-
-     CE QUI TIENT SANS ELLE : `applyTheme` est appele dans tous les
-     cas. Sans `trame.js`, sous mouvement reduit, ou si le voile
-     echoue, le theme bascule net — ce qui est le repli correct
-     pour un etat binaire.
-     ------------------------------------------------------------ */
+  /* PHASE 10 — LA BASCULE PASSE PAR UNE TRAME, PLUS PAR UN FONDU.  D-410 */
   function couleurSurface(theme) {
     return theme === "dark" ? "#101211" : "#dcdedb";
   }
@@ -1160,9 +914,7 @@
     });
   }
 
-  /* ============================================================
-     Menu plein ecran
-     ============================================================ */
+  /* == Menu plein ecran == */
   var burger = $("#burger");
   var menu = $("#menu");
 
@@ -1171,10 +923,7 @@
     menu.classList.remove("is-open");
     burger.setAttribute("aria-expanded", "false");
     burger.setAttribute("aria-label", "Ouvrir le menu");
-    /* La fermeture est la RECIPROQUE : l'arete repasse par ou elle
-       est venue. `inverse()` la calcule au lieu de la decider — une
-       reciproque qu'on choisit a la main finit par diverger de son
-       ouverture, et deux idees remplacent une. */
+    /* La fermeture est la RECIPROQUE : l'arete repasse par ou elle  D-411 */
     if (window.APED_TRAME && !reduced.matches) {
       window.APED_TRAME.couvrir(menu, {
         nom: "menu-ferme", sens: window.APED_TRAME.inverse("bas"), graine: 331,
@@ -1194,10 +943,7 @@
     requestAnimationFrame(function () { menu.classList.add("is-open"); });
     burger.setAttribute("aria-expanded", "true");
     burger.setAttribute("aria-label", "Fermer le menu");
-    /* PHASE 10 — le menu est un PANNEAU : il se lit de haut en bas,
-       donc l'arete descend. La trame est un supplement, jamais le
-       mecanisme : la classe `is-open` fait tout le travail utile et
-       le menu s'ouvre a l'identique si le voile n'arrive pas. */
+    /* PHASE 10 — le menu est un PANNEAU : il se lit de haut en bas,  D-412 */
     if (window.APED_TRAME && !reduced.matches) {
       window.APED_TRAME.degager(menu, {
         nom: "menu-ouvre", sens: "bas", graine: 331, duree: 340, vie: 170,
@@ -1222,23 +968,7 @@
     if (wordmark) wordmark.addEventListener("click", closeMenu);
   }
 
-  /* ============================================================
-     PHASE 10 — LE PANNEAU « AJUSTER EN DETAIL », ET LES AUTRES
-     REPLIS DU MEME TYPE.
-
-     Un `<details>` natif bascule d'un coup : le contenu est absent,
-     puis il est la. C'est correct, et ca doit le rester — c'est le
-     seul repli qui marche sans script. Mais « d'un coup » n'est pas
-     la meme chose que « d'un cran » : on ne voit pas D'OU vient ce
-     qui arrive.
-
-     La trame le dit : le panneau se DEGAGE de haut en bas, parce
-     qu'un panneau se lit de haut en bas. A la fermeture, rien —
-     le navigateur retire le contenu dans la meme image et il n'y a
-     pas de reciproque a jouer sur un element qui n'existe plus.
-     Mentir la-dessus demanderait de retarder la fermeture, donc de
-     retenir le visiteur pour une decoration.
-     ============================================================ */
+  /* == PHASE 10 — LE PANNEAU « AJUSTER EN DETAIL », ET LES AUTRES ==  D-413 */
   $$("details.roi-details").forEach(function (repli) {
     repli.addEventListener("toggle", function () {
       if (!repli.open || !window.APED_TRAME || reduced.matches) return;
@@ -1254,10 +984,7 @@
     });
   });
 
-  /* ============================================================
-     Verrou de defilement. La largeur de la barre est compensee,
-     sinon la page saute lateralement a l'ouverture.
-     ============================================================ */
+  /* == Verrou de defilement. La largeur de la barre est compensee, ==  D-414 */
   var scrollLocks = 0;
 
   function lockScroll() {
@@ -1275,9 +1002,7 @@
     doc.body.style.paddingRight = "";
   }
 
-  /* ============================================================
-     Modales : piege de focus, retour au declencheur, Echap.
-     ============================================================ */
+  /* == Modales : piege de focus, retour au declencheur, Echap. == */
   var activeModal = null;
   var lastTrigger = null;
 
@@ -1289,12 +1014,11 @@
     });
   }
 
-  /* Deux calques peuvent capturer le focus : une modale, et le menu plein
-     ecran. Le menu n'etait pas piege : la tabulation sortait de l'overlay
-     et se promenait dans le contenu couvert derriere. Son cycle inclut la
-     barre de nav, qui est au-dessus de lui et porte la croix de fermeture. */
+  /* Deux calques peuvent capturer le focus : une modale, et le menu plein  D-415 */
   function trapList() {
     if (activeModal) return focusablesIn(activeModal);
+    /* La fiche de service est un calque au meme titre qu'une  D-416 */
+    if (ficheOuverte && ficheOuverte.open) return focusablesIn(ficheOuverte);
     if (menu && !menu.hidden) {
       var nav = $(".nav");
       return (nav ? focusablesIn(nav) : []).concat(focusablesIn(menu));
@@ -1326,10 +1050,7 @@
     lockScroll();
     requestAnimationFrame(function () {
       modal.classList.add("is-open");
-      /* PHASE 8 · V1 — le panneau se DEGAGE du haut sous une arete
-         franche. Meme raison que pour les secteurs : ce fichier
-         annonce, `langue.js` choregraphie. Sans lui, le panneau
-         s'ouvre par la transition CSS d'origine. */
+      /* PHASE 8 · V1 — le panneau se DEGAGE du haut sous une arete  D-417 */
       var panneau = modal.querySelector(".modal-panel");
       if (panneau) doc.dispatchEvent(new CustomEvent("aped:modal", { detail: { panneau: panneau } }));
     });
@@ -1367,12 +1088,7 @@
     modal.classList.remove("is-open");
     activeModal = null;
     unlockScroll();
-    /* PHASE 8 · V1 — le panneau se referme par ou il s'est ouvert.
-       Une fermeture qui n'est pas la reciproque de l'ouverture se
-       lit comme un deuxieme evenement, pas comme la fin du
-       premier. Les 380 ms d'attente avant `hidden` existaient
-       deja : la choregraphie tient dans ce budget, elle n'en
-       ajoute pas. */
+    /* PHASE 8 · V1 — le panneau se referme par ou il s'est ouvert.  D-418 */
     var sortant = modal.querySelector(".modal-panel");
     if (sortant && !reduced.matches) {
       doc.dispatchEvent(new CustomEvent("aped:modal-ferme", { detail: { panneau: sortant } }));
@@ -1403,24 +1119,19 @@
   doc.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       if (activeModal) closeModal();
+      /* La fiche vient AVANT le menu et APRES la modale : une
+         modale peut s'ouvrir depuis la fiche (« Démarrer ce
+         chantier »), donc c'est elle qui doit partir la premiere. */
+      else if (ficheOuverte && ficheOuverte.open) fermerFiche();
       else closeMenu();
       return;
     }
     trapFocus(e);
   });
 
-  /* ============================================================
-     Validation. Le focus se pose sur le premier champ en erreur,
-     et l'etat est annonce aux lecteurs d'ecran.
-     ============================================================ */
+  /* == Validation. Le focus se pose sur le premier champ en erreur, ==  D-419 */
   function markField(field, ok) {
-    /* PHASE 8 · V3 — LA SOUDURE NE SE VOIT QUE SUR CE QUI VIENT
-       D'ETRE REPARE.
-       Poser `is-valid` sur tous les champs corrects a chaque
-       validation ferait verdir un formulaire entier d'un coup :
-       huit signaux pour zero information, et le seul qui compte —
-       « celui-la, tu viens de le corriger » — noye dedans. Le filet
-       ne se soude donc que sur un champ qui SORT de l'erreur. */
+    /* PHASE 8 · V3 — LA SOUDURE NE SE VOIT QUE SUR CE QUI VIENT  D-420 */
     if (ok && field.classList.contains("is-invalid")) {
       field.classList.add("is-valid");
       window.setTimeout(function () { field.classList.remove("is-valid"); }, 2400);
@@ -1464,9 +1175,7 @@
     return !firstBad;
   }
 
-  /* ============================================================
-     Envoi
-     ============================================================ */
+  /* == Envoi == */
   function serialize(form) {
     var data = {};
     new FormData(form).forEach(function (value, key) {
@@ -1476,25 +1185,7 @@
     return data;
   }
 
-  /* ------------------------------------------------------------
-     UN 200 N'EST PAS UN ENVOI. C'est un vrai defaut, trouve le
-     2026-07-26 en jouant le parcours complet du popup.
-
-     Le service repond `HTTP 200` avec un corps qui dit l'inverse :
-
-       {"success":"false","message":"This form needs Activation.
-        We've sent you an email containing an 'Activate Form' link."}
-
-     Les deux fonctions ne regardaient que `res.ok`. Les SIX
-     formulaires du site affichaient donc « Demande recue » a un
-     visiteur dont le message n'etait jamais parti. C'est le pire
-     mode d'echec possible : celui ou personne n'apprend rien — ni
-     le visiteur, qui attend un rappel, ni nous, qui ne voyons pas
-     de courriel et croyons que personne n'ecrit.
-
-     On lit maintenant le corps, et on porte le message du service
-     jusqu'a l'appelant pour que l'echec soit lisible.
-     ------------------------------------------------------------ */
+  /* UN 200 N'EST PAS UN ENVOI. C'est un vrai defaut, trouve le  D-421 */
   function lireReponse(res) {
     if (!res.ok) throw new Error("Le service d'envoi a répondu " + res.status + ".");
     return res.json().then(function (data) {
@@ -1550,52 +1241,9 @@
     status.textContent = message;
   }
 
-  /* ============================================================
-     LE REPLI QUI LIVRE VRAIMENT — corrige le risque de veracite le
-     plus grave du site, releve le 2026-07-29.
+  /* == LE REPLI QUI LIVRE VRAIMENT — corrige le risque de veracite le ==  D-422 */
 
-     L'ETAT DES FAITS, MESURE ET NON SUPPOSE. Le point d'entree
-     `https://formsubmit.co/ajax/…` n'a JAMAIS ete active. Verifie ce
-     soir, deux fois, avec et sans en-tete `Referer` :
-
-       HTTP 200
-       {"success":"false","message":"This form needs Activation.
-        We've sent you an email containing an 'Activate Form' link."}
-
-     Le code sait deja lire ce corps et lever — c'est le correctif du
-     2026-07-26, et il tient. Mais savoir qu'un envoi a echoue ne le
-     fait pas arriver. Aujourd'hui, DONC : aucun des six formulaires
-     du site ne livre, et toutes les promesses de delai du site
-     — « 12 h » a sept endroits, « le prochain jour ouvrable », « on
-     confirme la plage par courriel » — reposent sur un message que
-     personne ne recoit. Une promesse de reponse adossee a un canal
-     mort est une faussete, meme si chaque mot est sincere.
-
-     POURQUOI CE REPLI ET PAS AUTRE CHOSE.
-     · Activer FormSubmit demande de cliquer un lien dans la boite du
-       proprietaire. C'est un geste d'une seconde, et je ne peux pas
-       le faire a sa place. Tant qu'il n'est pas fait, il fallait un
-       chemin qui ne depende de PERSONNE.
-     · `mailto:` est le seul canal d'envoi qui ne soit pas une requete
-       vers un tiers. Il tient donc la plaque « 0 · Mouchard, traceur,
-       service exterieur », que `formsubmit.co` entame deja au moment
-       de l'envoi — voir DECISIONS-NUIT.md.
-     · Le repli n'est PAS le chemin par defaut : ouvrir le logiciel de
-       courriel du visiteur est une friction reelle, et beaucoup de
-       postes de bureau n'en ont aucun de configure. L'envoi
-       automatique reste donc l'essai numero un, et il redeviendra
-       silencieux a la seconde ou le lien d'activation sera clique.
-
-     CE QUI EST GARANTI PAR CONSTRUCTION : rien de ce que le visiteur
-     a rempli n'est perdu. Le corps du message est construit a partir
-     du MEME objet que celui qui partait vers le service.
-     ============================================================ */
-
-  /* Les navigateurs et les clients de courriel se coupent quelque
-     part entre 2 000 et 8 000 caracteres selon la plateforme, et le
-     plus bas des deux gagne. On borne donc en dessous du plus bas,
-     et on le DIT dans le message plutot que de tronquer en silence :
-     un texte coupe sans avertissement est pire qu'un texte court. */
+  /* Les navigateurs et les clients de courriel se coupent quelque  D-423 */
   var REPLI_MAX = 1600;
 
   function corpsCourriel(data, avecFichiers) {
@@ -1625,11 +1273,7 @@
       "&body=" + encodeURIComponent(corpsCourriel(data, avecFichiers));
   }
 
-  /* Pose le repli JUSTE APRES le message d'etat, dans le meme parent,
-     et lui donne le focus : celui qui vient de voir un echec doit
-     atteindre la sortie au clavier suivant, pas la chercher.
-     Idempotent — un second echec remplace le premier bouton au lieu
-     d'en empiler deux. */
+  /* Pose le repli JUSTE APRES le message d'etat, dans le meme parent,  D-424 */
   function poserRepli(status, kind, data, avecFichiers) {
     if (!status || !status.parentNode) return;
     var hote = status.parentNode;
@@ -1689,9 +1333,7 @@
     });
   });
 
-  /* ============================================================
-     Calendrier
-     ============================================================ */
+  /* == Calendrier == */
   var calMonth = $("#calMonth");
   var calDays = $("#calDays");
   var calPrev = $("#calPrev");
@@ -1857,9 +1499,7 @@
     });
   }
 
-  /* ============================================================
-     Formulaire projet, 7 etapes
-     ============================================================ */
+  /* == Formulaire projet, 7 etapes == */
   var projectWizard = $("#projectWizard");
   var projectBar = $("#projectBar");
   var projectBack = $("#projectBack");
@@ -2023,9 +1663,7 @@
     projectWizard.addEventListener("submit", function (e) { e.preventDefault(); advance(); });
   }
 
-  /* ============================================================
-     Estimateur, 8 etapes
-     ============================================================ */
+  /* == Estimateur, 8 etapes == */
   var wizard = $("#wizard");
   var wizardBar = $("#wizardBar");
   var answers = {};
@@ -2129,20 +1767,12 @@
           }
         };
 
-        /* L'ETAT DE SORTIE EST CELUI DE L'ETAPE 8, PAS CELUI DU
-           FORMULAIRE. L'etape 7 devient `hidden` des que la fourchette
-           parait : un message pose sur son `.form-status` serait juste
-           et invisible. */
+        /* L'ETAT DE SORTIE EST CELUI DE L'ETAPE 8, PAS CELUI DU  D-425 */
         var sortie = $("#estimateStatus") || status;
         retirerRepli(sortie);
         say(sortie, "");
         sendJson("estimate", payload).then(reveal).catch(function () {
-          /* L'ORDRE COMPTE. On revele d'abord la fourchette — c'est ce
-             que le visiteur est venu chercher, et elle est calculee
-             dans le navigateur, donc elle ne depend d'aucun envoi —
-             puis on offre le repli pour que NOUS aussi recevions la
-             demande. La promesse au visiteur est tenue dans les deux
-             cas ; le repli sert le rappel qu'on lui a promis. */
+          /* L'ORDRE COMPTE. On revele d'abord la fourchette — c'est ce  D-426 */
           reveal();
           say(sortie, "L’envoi automatique n’a pas passé. Envoyez-nous cette estimation d’ici pour qu’on vous rappelle.", "err");
           poserRepli(sortie, "estimate", payload);
@@ -2151,10 +1781,7 @@
     }
   }
 
-  /* ============================================================
-     Calculateur. Le montant alimente aussi l'index de gauche et
-     la barre de navigation.
-     ============================================================ */
+  /* == Calculateur. Le montant alimente aussi l'index de gauche et ==  D-427 */
   var roiSection = $("#calculateur");
 
   if (roiSection) {
@@ -2168,22 +1795,7 @@
     var outAdmin = $("#outAdmin");
     var taskFields = $$(".roi-task", roiSection);
 
-    /* ------------------------------------------------------------
-       LE CURSEUR MAITRE.
-       Onze curseurs, c'etait onze decisions a prendre avant d'avoir
-       un chiffre. Celui-ci en demande UNE : combien d'heures par
-       semaine part en administration. Les huit taches se repartissent
-       ce total en gardant leur melange actuel.
-
-       La repartition se fait a la plus forte moyenne : on plancher
-       chaque part, puis on distribue les unites restantes aux plus
-       grandes parties fractionnaires. La somme des entiers vaut donc
-       EXACTEMENT le total demande, sinon la poignee du curseur et le
-       chiffre affiche a cote se contrediraient.
-
-       Le modele metier n'est pas touche : ce sont les memes huit
-       taches, les memes huit ponderations, la meme formule.
-       ------------------------------------------------------------ */
+    /* LE CURSEUR MAITRE.  D-428 */
     function repartir(total) {
       var inputs = taskFields.map(function (f) { return $("input", f); });
       var vals = inputs.map(function (i) { return Number(i.value); });
@@ -2256,43 +1868,11 @@
         perTask.push({ name: field.dataset.task, saved: h * share });
       });
 
-      /* Le curseur maitre suit toujours la somme des huit taches,
-         sauf pendant qu'il est LUI-MEME en train de la commander :
-         se reecrire au milieu d'un glissement ferait sauter la
-         poignee sous le doigt. */
+      /* Le curseur maitre suit toujours la somme des huit taches,  D-429 */
       if (inAdmin && !depuisMaitre) inAdmin.value = String(Math.min(Number(inAdmin.max), Math.round(totalHours)));
       if (outAdmin) outAdmin.textContent = fmtHours(totalHours);
 
-      /* ----------------------------------------------------------
-         B6 · DEUX POSTES RETIRES DU TOTAL LE 2026-07-29, ET LE
-         DEUXIEME ETAIT UNE FAUTE D'ARITHMETIQUE, PAS SEULEMENT UN
-         DEFAUT DE METHODE.
-
-         Le total valait `direct + errors + uplift`, ou :
-           errors = saved * 60 * 28 * 0.35 * util
-           uplift = rev * 12 * 0.018 * util
-
-         · `uplift` prenait 1,8 % du chiffre d'affaires annuel. Ni le
-           1,8 % ni le `util` n'ont de source, nulle part, et la note
-           de methode affichee sous le detail n'en parlait pas. Un
-           client qui demande « d'ou sortent ces 8 377 dollars ? »
-           n'avait aucune reponse dans la page.
-         · `errors` est plus grave : il monetise UNE SECONDE FOIS les
-           memes heures. `direct` les vend deja au taux du visiteur ;
-           `errors` reprenait les memes `saved` heures, les
-           reconvertissait en minutes hebdomadaires, les valorisait au
-           taux du DOCUMENT (28 la minute annuelle, en dollars) puis
-           en gardait 35 %. Ce n'est pas un second benefice, c'est le
-           premier compte deux fois.
-
-         Les deux pesaient 14 657 sur les 53 751 affiches par defaut,
-         soit 27 % du chiffre vedette. Le total tombe donc a 39 094 —
-         et ces 39 094 se defendent ligne a ligne : des
-         heures mesurees, au taux que le visiteur a lui-meme regle,
-         sur cinquante-deux semaines. C'est le standard que les deux
-         PDF s'imposent deja : « ecrit au plus bas, jamais au plus
-         flatteur ».
-         ---------------------------------------------------------- */
+      /* B6 · DEUX POSTES RETIRES DU TOTAL LE 2026-07-29, ET LE  D-430 */
       var direct = saved * rate * 52;
       var impact = direct;
       var remaining = Math.max(0, totalHours - saved);
@@ -2397,11 +1977,7 @@
       var email = $("#roiEmail").value.trim();
       say(status, "Envoi en cours…");
       retirerRepli(status);
-      /* L'ACCUSE NE CITE PLUS QUE CE QUI EXISTE ENCORE. Il enumerait
-         « erreurs evitees » et « revenus acceleres » : les deux postes
-         ont ete retires du calcul le 2026-07-29 — voir le commentaire
-         de `roiUpdate` — et les deux cles auraient rendu `undefined`
-         dans le corps du courriel envoye au visiteur. */
+      /* L'ACCUSE NE CITE PLUS QUE CE QUI EXISTE ENCORE. Il enumerait  D-431 */
       var chargeRoi = Object.assign({ email: email }, lastRoi, {
         _autoresponse: "Voici votre calcul d'economies APED Agence. Impact annuel estime : " + lastRoi.impact_annuel_total +
           ". Heures recuperees par semaine : " + lastRoi.heures_recuperees_semaine +
@@ -2425,9 +2001,7 @@
     roiUpdate(true);
   }
 
-  /* ============================================================
-     Apercu des secteurs
-     ============================================================ */
+  /* == Apercu des secteurs == */
   var preview = $("#sectorPreview");
   if (preview) {
     /* Les treize maquettes sont clonees depuis leur `<template>` une
@@ -2452,13 +2026,7 @@
         p.classList.toggle("is-on", on);
         if (on && p.dataset.caption) caption.textContent = p.dataset.caption;
       });
-      /* PHASE 8 — LA RECOMPOSITION. Ce fichier ne connait pas GSAP
-         et ne doit pas le connaitre : il tient l'USAGE, pas la
-         choregraphie. Il annonce donc le changement, et `langue.js`
-         le recompose s'il est charge. Si la vague 2 n'est jamais
-         arrivee, ou si le visiteur a demande moins de mouvement,
-         la maquette change quand meme — d'un coup, ce qui est
-         exactement le repli correct. */
+      /* PHASE 8 — LA RECOMPOSITION. Ce fichier ne connait pas GSAP  D-432 */
       if (key !== secteurCourant) {
         secteurCourant = key;
         doc.dispatchEvent(new CustomEvent("aped:secteur", { detail: { cle: key } }));
@@ -2474,15 +2042,7 @@
       pill.addEventListener("focus", run);
     });
 
-    /* ------------------------------------------------------------
-       AU TACTILE IL N'Y A PAS DE SURVOL.
-       Sans ce bloc, un visiteur sur telephone voit toujours la meme
-       maquette : la vitrine ne montre qu'un treizieme d'elle-meme.
-       L'apercu defile donc tout seul, mais UNIQUEMENT quand la
-       section est a l'ecran, jamais sous mouvement reduit, et il
-       s'arrete pour de bon des que le visiteur touche une pastille :
-       a partir de la, c'est son choix qui commande.
-       ------------------------------------------------------------ */
+    /* AU TACTILE IL N'Y A PAS DE SURVOL.  D-433 */
     var coarse = window.matchMedia("(pointer: coarse)");
     if (coarse.matches && !reduced.matches && "IntersectionObserver" in window) {
       var ordre = pills.map(function (p) { return p.dataset.sector; }).filter(Boolean);
@@ -2520,36 +2080,7 @@
     }
   }
 
-  /* ============================================================
-     LE CRAN — V4 du langage de mouvement, et il vit ICI.
-
-     PHASE 8. Un etat ne fond pas dans un autre : il roule d'un
-     cran. C'est la traduction directe de « tout s'encliquette » a
-     l'echelle d'un caractere.
-
-     POURQUOI DANS `main.js` ET PAS DANS `langue.js`. Tous les
-     nombres qui roulent ici sont de l'ORIENTATION : quel chantier
-     je regarde, a quelle etape j'en suis, combien de sections il
-     reste. `langue.js` et `motion.js` s'arretent net sous
-     `prefers-reduced-motion` ; y mettre ces compteurs reviendrait
-     a supprimer l'information pour les gens qui ont justement
-     demande moins de mouvement. Sous mouvement reduit, `rouler()`
-     ecrit le texte d'un coup — le CHIFFRE reste, seul le roulement
-     disparait.
-
-     L'ARBITRAGE ENTRE ODOMETRE ET INTERPOLATION. Les valeurs
-     DISCRETES roulent : 01 → 02 est un cran, il se voit comme un
-     cran. La valeur du calculateur, elle, ne roule PAS : elle est
-     tiree par un ressort, parce qu'elle suit un curseur qu'on
-     bouge en continu. Un odometre sur une valeur qui change
-     soixante fois par seconde ne donne pas soixante crans, il
-     donne du bruit.
-
-     ZERO DECALAGE DE MISE EN PAGE. Le roulement se fait dans une
-     boite de hauteur fixe, en `translateY`, et les compteurs sont
-     tous en Martian Mono : la largeur d'un caractere ne depend pas
-     de sa valeur, donc changer 01 en 12 ne pousse rien.
-     ============================================================ */
+  /* == LE CRAN — V4 du langage de mouvement, et il vit ICI. ==  D-434 */
   function rouler(el, texte) {
     if (!el) return;
     texte = String(texte);
@@ -2596,20 +2127,7 @@
     }
   }
 
-  /* Termine un roulement en cours, sur-le-champ.
-
-     SANS CETTE FONCTION, LE COMPTEUR S'EMPILE. Chaque roulement
-     ajoute un glyphe et programme son retrait 320 ms plus tard. Un
-     defilement rapide traverse cinq sections en moins que ca : les
-     cinq glyphes s'accumulent dans la meme boite, et
-     `textContent` rend « 543210 » la ou le compteur doit rendre
-     « 0 ». Mesure du 2026-07-26 par `tools/verif.mjs`, sur les dix
-     positions de defilement du test du patron de 55 ans.
-
-     Un roulement interrompu se termine donc IMMEDIATEMENT a sa
-     valeur d'arrivee, et le suivant part de la. C'est aussi le
-     comportement juste : quand on saute trois sections d'un coup,
-     on veut voir le dernier cran, pas les trois. */
+  /* Termine un roulement en cours, sur-le-champ.  D-435 */
   function finirRoulement(boite) {
     if (boite._t) { window.clearTimeout(boite._t); boite._t = 0; }
     boite.classList.remove("is-roule");
@@ -2632,25 +2150,7 @@
     finirRoulement(boite);
     var sortant = boite.firstChild;
 
-    /* LE SORTANT DEVIENT UN FANTOME, ET C'EST UNE CORRECTION DE
-       BOGUE MESUREE.
-
-       Pendant les 320 ms du roulement, la boite contient DEUX
-       glyphes : celui qui part et celui qui arrive. Tant que les
-       deux sont du texte, `textContent` les concatene. Mesure du
-       2026-07-26 par `tools/verif.mjs` : le compteur du rail
-       rendait « 87 » au lieu de « 7 » et « 765 » au lieu de « 5 ».
-       Ce n'est pas un defaut d'affichage — l'affichage etait juste,
-       les deux glyphes etant a des positions differentes dans une
-       boite rognee. C'est un defaut d'ACCESSIBILITE : une synthese
-       vocale, une recherche dans la page et tout script de mesure
-       lisaient un nombre qui n'a jamais existe.
-
-       Le glyphe sortant passe donc dans un pseudo-element, via
-       `attr()`. Un pseudo-element n'est ni dans `textContent`, ni
-       dans l'arbre d'accessibilite : il reste visible, il cesse
-       d'etre du texte. La boite ne contient plus qu'une seule
-       valeur lisible a tout instant, la bonne. */
+    /* LE SORTANT DEVIENT UN FANTOME, ET C'EST UNE CORRECTION DE  D-436 */
     if (sortant) {
       sortant.setAttribute("data-c", sortant.textContent);
       sortant.textContent = "";
@@ -2660,10 +2160,7 @@
     entrant.textContent = cible;
     entrant.className = "is-entrant";
     boite.appendChild(entrant);
-    /* Le decalage par rang fait rouler les caracteres de gauche a
-       droite plutot que tous ensemble : c'est ce qui se lit comme
-       un odometre et pas comme un remplacement. Plafonne a 6 rangs
-       pour qu'un libelle long ne traine pas. */
+    /* Le decalage par rang fait rouler les caracteres de gauche a  D-437 */
     boite.style.setProperty("--r", Math.min(rang, 6));
     /* Une image d'attente : sans elle, l'element entrant est ajoute
        et anime dans la meme image, donc le navigateur n'a pas d'etat
@@ -2680,9 +2177,7 @@
 
   window.APED_ROULER = rouler;
 
-  /* ============================================================
-     Index collant. IntersectionObserver, jamais d'ecouteur scroll.
-     ============================================================ */
+  /* == Index collant. IntersectionObserver, jamais d'ecouteur scroll. == */
   var railLinks = $$("#railList a");
   if (railLinks.length && "IntersectionObserver" in window) {
     var byId = {};
@@ -2692,25 +2187,7 @@
     var railLeft = $("#railLeft");
     var currentId = null;
 
-    /* ------------------------------------------------------------
-       N1 · LE CURSEUR DU RAIL — PHASE 8.
-
-       L'entree active se contentait de changer de couleur : d'une
-       section a l'autre, la marque DISPARAISSAIT ici et REPARAISSAIT
-       la. Le visiteur ne voyait donc pas qu'il avait avance d'un
-       cran, il voyait deux etats sans lien.
-
-       Un seul objet glisse maintenant le long du rail, et il porte
-       les DEUX informations que l'index doit donner : sa POSITION
-       dit dans quelle section on est, son REMPLISSAGE dit ou on en
-       est dedans. Deux marques auraient dit la meme chose deux fois
-       et se seraient contredites au moindre desaccord.
-
-       `transform` et `height` seulement, sur un element hors flux :
-       aucune recomposition du rail, aucune lecture forcee.
-       Sous mouvement reduit, la transition CSS est coupee : le
-       curseur saute, mais il est toujours au bon endroit.
-       ------------------------------------------------------------ */
+    /* N1 · LE CURSEUR DU RAIL — PHASE 8.  D-438 */
     var railCurseur = doc.createElement("i");
     railCurseur.className = "rail-curseur";
     railCurseur.setAttribute("aria-hidden", "true");
@@ -2737,30 +2214,7 @@
         if (rule) rule.classList.toggle("is-current", s.id === id);
       });
 
-      /* ------------------------------------------------------------
-         G2 · LE CRAN DE LA FRONTIERE — V4, et il vit ICI, pas dans
-         `langue.js`.
-
-         C'est le geste que les douze frontieres ont en commun avec
-         l'index : le numero du seuil roule d'un cran a l'instant
-         exact ou la section devient courante. « En synchronisation
-         exacte avec le passage » n'est pas une intention, c'est une
-         propriete de construction — les deux sont declenches par le
-         MEME appel, il ne peut pas y avoir de decalage.
-
-         POURQUOI DANS `main.js`. Parce que ce numero dit ou on est.
-         Sous mouvement reduit et a tous les paliers, il reste juste :
-         au repos la bande montre deja la bonne valeur, le cran
-         n'ajoute que le mouvement. C'est la regle du site — perdre
-         le mouvement ne doit jamais faire perdre une information.
-
-         DEUX IMAGES, ET IL EN FAUT DEUX. On pose d'abord la bande
-         sur la cellule du HAUT — le numero qu'on quitte — SANS
-         transition, puis on la relache a l'image suivante. Sans
-         cette attente, le navigateur n'a pas d'etat de depart a
-         interpoler et le cran ne se voit pas. Meme correction que
-         celle de l'odometre du rail, meme raison.
-         ------------------------------------------------------------ */
+      /* G2 · LE CRAN DE LA FRONTIERE — V4, et il vit ICI, pas dans  D-439 */
       if (actif) {
         var sec = doc.getElementById(id);
         var seuil = sec && $("[data-seuil]", sec);
@@ -2793,12 +2247,7 @@
       if (target) observer.observe(target);
     });
 
-    /* ------------------------------------------------------------
-       N1 · progression de lecture, et progression DANS la section
-       courante. Ecrit dans des variables CSS plutot que de toucher
-       au style de mise en page : aucune lecture forcee, aucune
-       recomposition. Une seule mesure par image, sur rAF.
-       ------------------------------------------------------------ */
+    /* N1 · progression de lecture, et progression DANS la section  D-440 */
     var readBar = $("#readBar");
     var ticking = false;
 
@@ -2813,15 +2262,7 @@
         var sec = doc.getElementById(currentId);
         var link = byId[currentId];
         if (sec && link) {
-          /* Fraction de la section REELLEMENT parcourue.
-             L'ancienne formule mesurait la position du haut de section
-             par rapport au milieu de l'ecran : elle saturait a 100 %
-             des qu'on entrait dans une section plus courte que le
-             viewport, donc elle affichait 100 % partout et ne servait
-             a rien. Mesure du 2026-07-25 : 100 % aux trois positions
-             testees. Ici on rapporte le defilement accompli a la
-             course utile de la section, ce qui donne bien 0 a l'entree
-             et 1 a la sortie. */
+          /* Fraction de la section REELLEMENT parcourue.  D-441 */
           var r = sec.getBoundingClientRect();
           var haut = r.top + window.scrollY;
           var course = Math.max(1, sec.offsetHeight - window.innerHeight);
@@ -2846,16 +2287,7 @@
     measure();
   }
 
-  /* ============================================================
-     LA DOUZIEME FRONTIERE — LA CLOTURE.
-
-     Elle n'est pas dans une `<section>`, donc l'index ne la voit
-     pas : elle a son propre declencheur. C'est le dernier cran du
-     site, il roule de 12 a 00, et la boucle se ferme sur la meme
-     plaque que la sequence d'entree.
-     Ici et pas dans `langue.js` pour la meme raison que les onze
-     autres : un cran dit ou on en est, donc il ne se sacrifie pas.
-     ============================================================ */
+  /* == LA DOUZIEME FRONTIERE — LA CLOTURE. ==  D-442 */
   (function cloture() {
     var seuil = $(".seuil--pied");
     if (!seuil || !("IntersectionObserver" in window)) return;

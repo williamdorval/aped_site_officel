@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr-CA" data-theme="light">
 <head>
   <meta charset="UTF-8" />
@@ -15,11 +15,7 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Une seule balise, sans `media`. Les deux precedentes etaient
-       pilotees par prefers-color-scheme : la barre du navigateur restait
-       claire quand on basculait en sombre a la main. Le script ci-dessous
-       la met a la vraie valeur avant le premier rendu, et la bascule la
-       met a jour ensuite. -->
+  <!-- Une seule balise, sans `media`. Les deux precedentes etaient  D-001 -->
   <meta name="theme-color" id="metaThemeColor" content="#dcdedb" />
 
   <link rel="icon" href="images/logo-mark.svg" type="image/svg+xml" />
@@ -29,35 +25,20 @@
   <link rel="preload" href="fonts/chivo-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/martian-latin.woff2" as="font" type="font/woff2" crossorigin />
 
-  <!-- TROIS FEUILLES SUR LE CHEMIN CRITIQUE, PAS QUATRE.
-
-       Mesure du 2026-07-26, par retrait d'un poste a la fois en vol
-       (`node tools/tache-longue.mjs`) : la tache d'avant peinture
-       vaut ~126 ms, et **74 ms viennent de `app.css`**. Le HTML n'y
-       est pour rien : vider le `<template>` des secteurs ou les six
-       modales ne change rien de mesurable.
-
-       `critique.css` ne contient que les regles qui ont une cible
-       REELLEMENT visible sans defiler. Ce n'est pas un tri a la
-       main : `tools/css-critique.mjs` le demande au navigateur, page
-       chargee, et regenere les deux fichiers. Le reste — 69 Ko —
-       part apres la premiere peinture, avec `tour360.css` que rien
-       ne rend visible avant la cinquieme section.
-
-       Le decoupage change l'ORDRE de cascade entre deux regles de
-       meme specificite qui etaient interleavees. C'est le vrai
-       risque, et il est verifie plutot que suppose :
-       `tools/cascade-check.mjs` compare 40 proprietes calculees sur
-       tous les elements de la page, feuille decoupee contre feuille
-       entiere. -->
+  <!-- TROIS FEUILLES SUR LE CHEMIN CRITIQUE, PAS QUATRE.  D-002 -->
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/critique.css" />
 
-  <!-- Le prechargement d'image du hero de Services a saute avec les
-       quatre `service-*.webp` : les ecrans de la section sont
-       desormais construits en markup. Zero octet d'image, zero
-       requete, et la matiere suit le theme. -->
+  <!-- LE SEUL BLOC `<noscript>` DU SITE, ET IL FERME UN DEFAUT  D-003 -->
+  <noscript><style>
+    .ba-scene { display: grid; }
+    .ba-vue { grid-area: 1 / 1; }
+    .ba-cadre:has([data-ba-vue="apres"]:checked) .ba-vue--avant,
+    .ba-cadre:has([data-ba-vue="avant"]:checked) .ba-vue--apres { visibility: hidden; }
+  </style></noscript>
+
+  <!-- Le prechargement d'image du hero de Services a saute avec les  D-004 -->
 
   <script>
     // Pose le theme avant le premier rendu : aucun clignotement.
@@ -74,47 +55,7 @@
       var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduit) d.classList.add("reduced-motion");
 
-      /* SEQUENCE D'ENTREE — la decision se prend AVANT le premier
-         rendu, sinon la page s'affiche puis se fait recouvrir, ce qui
-         est pire que pas de sequence du tout.
-         Ce n'est PAS un preloader : le contenu est deja dans le
-         document et deja peint dessous, la sequence ne retarde aucune
-         ressource et le rideau se retire par une animation CSS pure —
-         si le reste du JavaScript ne se charge jamais, la page se
-         decouvre quand meme.
-
-         CE QUI LA DECLENCHE — ET IL N'Y A PLUS AUCUN DRAPEAU.
-
-         Historique, parce qu'il explique la regle actuelle.
-         · Version 1 : `aped-entree` pose au premier chargement, lu
-           ensuite. Un rechargement ne rejouait RIEN.
-         · Version 2 : on lisait le TYPE DE NAVIGATION, mais on
-           gardait un drapeau `aped-entree-saut` pour ne pas remettre
-           la sequence a qui l'avait sautee. Or ce drapeau etait pose
-           par N'IMPORTE QUEL `pointerdown` ou `keydown` — donc par un
-           clic sur un bouton du site, ou par la touche F5 elle-meme.
-           Releve du 2026-07-29, `tools/diag-accueil.mjs` : un seul
-           clic pendant la premiere seconde, et les QUATRE
-           rechargements suivants rendaient `<html class="js">` — ni
-           `entree-on`, ni `compo-hero`. La composition du hero
-           n'existait plus pour le reste de l'onglet. Un « saut »
-           qu'on n'a pas demande n'est pas un refus, c'est un bug.
-           Pire : `catch (e) { saute = true; }` faisait qu'en
-           navigation privee stricte, ou `sessionStorage` leve, le
-           site n'avait JAMAIS de sequence d'entree.
-
-         Version 3, celle-ci : plus de drapeau du tout. On lit
-         uniquement ce qui s'est passe, qui est une information et
-         pas une supposition :
-           · `navigate` — on arrive sur le site  -> elle joue ;
-           · `reload`   — on rafraichit          -> elle rejoue ;
-           · `back_forward` — retour arriere, ou page restauree du
-             cache de retour -> elle NE joue PAS. C'est la seule
-             « navigation interne » possible sur un site d'une seule
-             page, et la rejouer la serait une punition.
-         Sauter reste possible et instantane — n'importe quel geste
-         termine le rideau en 200 ms — mais le saut ne se MEMORISE
-         plus. Un rechargement est une arrivee, chaque fois. */
+      /* SEQUENCE D'ENTREE — la decision se prend AVANT le premier  D-005 */
       var type = "navigate";
       try {
         var n = performance.getEntriesByType("navigation")[0];
@@ -129,30 +70,10 @@
 
 <a class="skip-link" href="#contenu">Aller au contenu</a>
 
-<!-- ===================== SEQUENCE D'ENTREE =====================
-     N2 · SIGNATURE. Le rideau porte le monogramme, ses quatre filets
-     se posent, puis il se retire vers le haut et la limaille du hero
-     compose APED dans la foulee : c'est la MEME matiere qui arrive.
-     Contraintes tenues :
-     · aucune ressource supplementaire, le monogramme est deja inline ;
-     · `pointer-events: none` en permanence, elle ne bloque jamais un
-       clic, meme pendant qu'elle joue ;
-     · retrait par animation CSS a `forwards`, donc elle se retire
-       meme si aucun script ne s'execute apres ;
-     · absente du document rendu si `prefers-reduced-motion` ou si la
-       session l'a deja vue ;
-     · `aria-hidden`, hors de l'ordre de tabulation, muette. -->
+<!-- SEQUENCE D'ENTREE  D-006 -->
 <div class="entree" id="entree" aria-hidden="true">
-  <!-- LE RIDEAU EST FAIT DE QUINZE FILETS, et le nombre n'est pas
-       arbitraire : `seedPositions()` dans `js/limaille.js` fait
-       partir les grains du hero de QUINZE filets horizontaux. Le
-       rideau s'ouvre donc en la matiere exacte dont le hero se
-       compose. C'est la meme idee, pas deux idees qui se suivent. -->
-  <!-- Les bandes s'ouvrent DEPUIS LE CENTRE : `--k` est la distance
-       au filet du milieu, et c'est elle qui porte le decalage. Une
-       ouverture de haut en bas se lit comme un store qui coince ;
-       une ouverture depuis le centre se lit comme une matiere qu'on
-       ecarte, ce qui est exactement le motif du site. -->
+  <!-- LE RIDEAU EST FAIT DE QUINZE FILETS, et le nombre n'est pas  D-007 -->
+  <!-- Les bandes s'ouvrent DEPUIS LE CENTRE : `—k` est la distance  D-008 -->
   <div class="entree-bandes" aria-hidden="true">
     <i style="--i:0;--k:7" data-entree-fin></i><i style="--i:1;--k:6"></i><i style="--i:2;--k:5"></i>
     <i style="--i:3;--k:4"></i><i style="--i:4;--k:3"></i><i style="--i:5;--k:2"></i><i style="--i:6;--k:1"></i>
@@ -161,39 +82,10 @@
     <i style="--i:12;--k:5"></i><i style="--i:13;--k:6"></i><i style="--i:14;--k:7"></i>
   </div>
 
-  <!-- LA JAUGE. C'est la sequence de chargement, et elle ne compte
-       pas un pourcentage invente : elle se remplit de la meme trame
-       de grains que tous les filets du site, sur toute la largeur,
-       exactement la ou la barre de lecture vivra ensuite. Le premier
-       objet que le visiteur voit est donc deja le vocabulaire du
-       site.
-
-       ELLE SE REMPLIT EN DEUX TEMPS, ET LA COUPURE EST LE POINT DE
-       TOUTE LA SEQUENCE :
-       · 0 -> 620 ms  : 0 a 80 %, sans condition. C'est le temps
-         qu'on s'accorde, il joue toujours ;
-       · 80 -> 100 %  : 180 ms, mais SEULEMENT quand les polices sont
-         posees et que la limaille du hero est composee. Tant que ce
-         n'est pas vrai, `html.entree-attend` met cette seconde
-         moitie en pause — la jauge s'arrete a 80, le compteur
-         s'arrete au meme cran, et le rideau attend avec elle.
-       La sequence sert donc de COUVERTURE AU CHARGEMENT REEL au lieu
-       de faire semblant : ce qui est montre est ce qui se passe. Le
-       garde-fou de 2,5 s leve la pause quoi qu'il arrive. -->
+  <!-- LA JAUGE. C'est la sequence de chargement, et elle ne compte  D-009 -->
   <i class="entree-jauge" aria-hidden="true"></i>
 
-  <!-- LE COMPTEUR — V4 · CRAN. Il ne s'interpole pas : il ROULE,
-       par crans de dix, sur une bande de onze valeurs translatee en
-       `steps()`. Aucun script n'est necessaire pour qu'il roule ; le
-       script ne fait que le mettre en pause avec la jauge, au meme
-       cran, quand le chargement traine.
-
-       DEUX ELEMENTS, ET IL EN FAUT DEUX : `.entree-cran` est la
-       FENETRE qui rogne, `.entree-rouleau` est la BANDE qui defile.
-       Animer la fenetre elle-meme la deplacerait avec son propre
-       rognage, donc rien ne defilerait — c'est exactement le defaut
-       qu'on a mesure : la jauge etait a 62 % et le compteur affichait
-       encore 000, cent pixels plus haut. -->
+  <!-- LE COMPTEUR — V4 · CRAN. Il ne s'interpole pas : il ROULE,  D-010 -->
   <p class="entree-etat" translate="no">
     <span class="entree-lib">Mise en place</span>
     <span class="entree-cran" aria-hidden="true"><i class="entree-rouleau"><b>000</b><b>010</b><b>020</b><b>030</b><b>040</b><b>050</b><b>060</b><b>070</b><b>080</b><b>090</b><b>100</b></i></span>
@@ -209,10 +101,7 @@
     <p class="entree-mot" translate="no">APED<span>Agence</span></p>
   </div>
 
-  <!-- LA SORTIE. Elle est ecrite, discrete, et elle ne sert pas
-       qu'a informer : un visiteur qui sait qu'il peut partir attend
-       plus volontiers. N'importe quel clic ou n'importe quelle
-       touche coupe. -->
+  <!-- LA SORTIE. Elle est ecrite, discrete, et elle ne sert pas  D-011 -->
   <p class="entree-saut-mot" aria-hidden="true">Cliquez pour entrer</p>
 </div>
 
@@ -243,17 +132,8 @@
       <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun" /></svg>
       <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon" /></svg>
     </button>
-    <!-- Le programme de reference est un levier de revenu : il ne
-         peut plus etre enterre en bas de page. Le libelle dit le
-         BENEFICE, pas le nom du programme. Secondaire mais visible,
-         et atteignable sur telephone sans ouvrir le menu. -->
-    <!-- A5 · « JUSQU'A » N'EST PAS UN ORNEMENT, C'EST LA PARTIE VRAIE.
-         Le bouton affichait « Référez, gagnez 5 000 $ ». Le bareme de
-         la modale commence a 500 dollars et n'atteint le plafond de
-         5 000 qu'au dernier palier ;
-         partout ailleurs le site ecrit « jusqu'a 5 000 $ ». L'element
-         le plus visible du site — present sur TOUTES les vues — etait
-         le seul a annoncer le plafond comme un montant plat. -->
+    <!-- Le programme de reference est un levier de revenu : il ne  D-012 -->
+    <!-- A5 · « JUSQU'A » N'EST PAS UN ORNEMENT, C'EST LA PARTIE VRAIE.  D-013 -->
     <button class="btn btn--ghost nav-refer" type="button" data-modal-open="modal-refer">
       Référez, gagnez jusqu’à
       <b class="nav-refer-num">5 000 $</b>
@@ -326,59 +206,18 @@
 
   <!-- ===================== 01 · HERO ===================== -->
   <section class="hero wrap" id="top">
-    <!-- LES ONZE PAS DE LA COMPOSITION.
-
-         `--e` porte le retard en millisecondes, pas un indice : la
-         sequence n'est pas reguliere — 280 ms entre les deux lignes
-         du titre, 80 ms entre deux rangees de fiche — et un indice
-         force une cadence uniforme qu'il faut ensuite corriger a
-         coups d'exceptions.
-
-         L'ORIGINE DE CES RETARDS EST L'OUVERTURE DU RIDEAU, PAS LA
-         NAVIGATION. `main.js` pose `compo-hero` a la fin
-         d'animation de la derniere bande : le premier pas est donc
-         a `--e:0`, c'est-a-dire « des que le rideau a disparu ».
-         Avant le 2026-07-29 ces valeurs etaient des heures depuis
-         la navigation (560 a 1 470 ms) alors que le rideau, qui est
-         un aplat OPAQUE, ne s'ecartait qu'a partir de 801 ms et
-         n'etait retire qu'a 1 250 ms : les trois premiers pas —
-         sur-titre, ligne 1, ligne 2 — se jouaient donc a 0 % de
-         visibilite. Mesure : `tools/diag-accueil2.mjs`, 228
-         echantillons a 60 Hz.
-
-         Tout cela ne vit que sous `html.compo-hero`, en CSS pur :
-         aucun etat de depart n'existe sans la sequence, donc le
-         titre reste candidat au LCP des le premier rendu. -->
-    <!-- LE SUR-TITRE NOMME LES TROIS DOMAINES, PAS LA CATEGORIE.
-         « Agence numérique » ne disait rien qu'un visiteur ne
-         devine deja en arrivant sur le site d'une agence. Les trois
-         mots qui suivent, eux, ecartent immediatement les trois
-         quarts des concurrents : personne ne fait les trois. -->
-    <!-- LES ESPACES INSECABLES NE SONT PAS DE LA COQUETTERIE : a
-         390 px la ligne casse, et sans elles elle cassait AVANT le
-         point median — « · QUÉBEC » se retrouvait seul en tete de
-         seconde ligne, ce qui se lit comme une puce de liste. Liees,
-         les trois dernieres unites tiennent ensemble et la coupe
-         tombe apres « immobilier, ». -->
+    <!-- LES ONZE PAS DE LA COMPOSITION.  D-014 -->
+    <!-- LE SUR-TITRE NOMME LES TROIS DOMAINES, PAS LA CATEGORIE.  D-015 -->
+    <!-- LES ESPACES INSECABLES NE SONT PAS DE LA COQUETTERIE : a  D-016 -->
     <p class="label hero-eyebrow he" style="--e:0">Web, immobilier, automatisation&nbsp;·&nbsp;Québec</p>
 
-    <!-- LA PLAQUE DE LIMAILLE.
-         Le <h1> porte le texte reel : c'est lui que lit un lecteur
-         d'ecran, et c'est lui qui s'affiche si le canvas est
-         indisponible. Le canvas n'est que la matiere. -->
+    <!-- LA PLAQUE DE LIMAILLE.  D-017 -->
     <div class="hero-plate" id="heroPlate" data-accent="masse">
       <h1 class="plate-text" translate="no"><span class="plate-big">APED</span> <span class="plate-small">Agence</span></h1>
       <canvas id="heroCanvas" aria-hidden="true"></canvas>
     </div>
 
-    <!-- LES DEUX LIGNES SONT ECRITES, PAS MESUREES.
-         `motion.js` decoupe les `h2` en lignes reelles apres mise en
-         page : c'est necessaire pour un titre dont on ignore la
-         longueur. Ici la phrase est fixe et connue, donc la coupe
-         est ecrite dans le document — zero mise en page forcee sur
-         le chemin critique, et la coupe ne peut pas tomber au
-         mauvais endroit. L'espace entre les deux boites est un noeud
-         de texte : le nom accessible reste identique au caractere. -->
+    <!-- LES DEUX LIGNES SONT ECRITES, PAS MESUREES.  D-018 -->
     <p class="hero-claim"><span class="ligne he" style="--e:80">On code ce qui fait rouler</span> <span class="ligne he" style="--e:360">votre entreprise.</span></p>
     <p class="hero-sub he" style="--e:580">Site web, boutique en ligne, automatisations, logiciel interne. Rien de gabarit. Le code est à vous.</p>
     <div class="hero-cta rise he" style="--e:740">
@@ -392,69 +231,11 @@
       </button>
     </div>
 
-    <!-- LA COLONNE DROITE DU HERO.
-         Elle portait quatre prix de depart. Ils sont retires : nos
-         tarifs ne sont plus publics.
-         Ce qui les remplace n'est pas du vide, c'est l'autre chiffre
-         qu'un patron de PME cherche au premier ecran — le DELAI. Il
-         est aussi verifiable qu'un prix, il nous engage autant, et il
-         reste un facteur de credibilite au sens du Nielsen Norman
-         Group (divulgation prealable) : on repond a « c'est long ? »
-         avant qu'on la pose, et la ligne de pied repond a « c'est
-         combien ? » sans publier la grille.
-         Chaque filet de rangee s'assemble en grains puis se ressoude :
-         c'est la limaille a l'echelle d'une ligne de fiche (N2).
-         Masquee sous 64em : Services arrive 400 px plus bas sur
-         telephone et repete la meme grille. -->
+    <!-- LA COLONNE DROITE DU HERO.  D-019 -->
     <aside class="hero-fiche" aria-label="Chantiers et délais typiques">
       <p class="label he" style="--e:820">Fiche technique · 2026</p>
-      <!-- LES QUATRE RANGEES SE COMPOSENT, ELLES N'APPARAISSENT PAS.
-           Chaque rangee porte deux gestes du meme pas : son filet se
-           trace en grains puis se ressoude — V3 · SOUDER —, et son
-           libelle se degage sous une arete franche — V1 · DEGAGER.
-           Les filets ne passent PLUS par `motion.js` : sa boucle
-           `[data-section-rule]` les retracait a l'arrivee de GSAP,
-           soit 1,2 s apres, donc une seconde fois et hors sequence.
-           Ils gardent `data-section-rule` pour le filet de section
-           active, mais le fichier de mouvement les saute. -->
-      <!-- ============================================================
-           A1 · A2 · D8 · E1 — LA FICHE EST MAINTENANT LA MEME LISTE
-           QUE SERVICES, DANS LE MEME ORDRE, AVEC LES MEMES NOMS ET LES
-           MEMES DELAIS. Quatre defauts tombent d'un seul coup, et
-           c'etait le seul correctif qui les tuait tous les quatre.
-
-           A1 · LE DELAI D'UN SITE VITRINE AVAIT QUATRE VALEURS dans le
-           meme document : « 1 semaine » ICI, « 2 a 4 semaines » dans
-           Services, « Deux a quatre semaines » dans la FAQ, « 4–6
-           semaines » dans la maquette Secteurs. Ecart de 1 a 6, et
-           c'est la valeur du hero — la PREMIERE chose que le visiteur
-           lit — qui etait la plus flatteuse et la moins defendable. Un
-           client qui a lu 1 semaine et recoit une proposition a 4 a un
-           grief ECRIT.
-
-           A2 · « Automatisation, logiciels et applications — 3
-           semaines » reunissait sous un seul chiffre deux chantiers
-           dont les delais reels differaient d'un FACTEUR QUATRE :
-           l'automatisation est de 1 a 3 semaines, un logiciel de 1 a 3
-           mois. Services et la FAQ disaient les deux ; le hero les
-           moyennait en un nombre qui n'etait vrai pour aucun des deux.
-           Ils sont donc scindes, comme dans Services.
-
-           D8 · « Estimateur pour vos clients » etait un nom de produit
-           interne : un patron de garage ne devine pas que c'est un
-           outil qu'on met sur SON site pour que SES clients se
-           chiffrent. C'etait la seule des quatre lignes qui demandait
-           un decodage — et elle ne correspondait a aucun chantier.
-
-           E1 · TROIS DECOUPAGES DE LA MEME OFFRE COEXISTAIENT dans une
-           seule page : quatre lignes de fiche, quatre chantiers de
-           Services, sept produits sur une plaque. « Immobilier et
-           visibilite locale » etait un chantier entier absent de la
-           fiche ; « Estimateur » etait dans la fiche et dans aucun
-           chantier. Le visiteur ne pouvait pas rapprocher les listes.
-           Il n'en reste plus que deux, et elles ne comptent pas la
-           meme chose : quatre CHANTIERS, sept PRODUITS.
-           ============================================================ -->
+      <!-- LES QUATRE RANGEES SE COMPOSENT, ELLES N'APPARAISSENT PAS.  D-020 -->
+      <!-- A1 · A2 · D8 · E1 — LA FICHE EST MAINTENANT LA MEME LISTE  D-021 -->
       <ol class="fiche-rows">
         <li style="--e:900"><i class="section-rule draw fiche-rule" data-section-rule></i>
           <a class="he" href="#services"><em>01</em><span>Sites web et boutiques</span><b class="num">2 à 4 semaines</b></a></li>
@@ -465,293 +246,22 @@
         <li style="--e:1140"><i class="section-rule draw fiche-rule" data-section-rule></i>
           <a class="he" href="#services"><em>04</em><span>Logiciels et applications</span><b class="num">1 à 3 mois</b></a></li>
       </ol>
-      <!-- LA MENTION EST OBLIGATOIRE, ET SA LONGUEUR AFFAIBLISSAIT CE
-           QU'ELLE DEVAIT PROTEGER.
-           Version precedente : quatre phrases, dont un exemple — « vingt
-           sites commandes la meme semaine ne sortent pas la meme
-           semaine ». L'exemple etait juste, et c'est precisement le
-           probleme : il occupait quatre lignes sous une fiche de
-           quatre, donc il PESAIT autant que la promesse, et une
-           reserve qui pese autant que la promesse se lit comme une
-           excuse.
-           Ce qui doit rester est une seule chose : le chiffre est une
-           estimation, et il bouge avec la charge. Une ligne, en petit
-           corps, entierement lisible — `.fiche-foot` garde son
-           contraste et sa taille. Rien a expliquer, rien a demontrer.
-           Le detail — l'engagement ferme, la date de demarrage — se
-           dit au premier appel, ou il a sa place. -->
+      <!-- LA MENTION EST OBLIGATOIRE, ET SA LONGUEUR AFFAIBLISSAIT CE  D-022 -->
       <p class="fiche-foot he" style="--e:1240"><i class="section-rule draw fiche-rule" data-section-rule></i>Semaines estimées, variables selon la demande et la file d’attente.</p>
     </aside>
+
+    <!-- LE SOCLE — CE QUI RESTE DES HUIT PLAQUES.  D-023 -->
+    <p class="hero-socle he" style="--e:1320">
+      <i class="section-rule draw fiche-rule" data-section-rule></i>
+      <span><b>Réponse en 12 h</b> jours ouvrables</span>
+      <span><b>Un seul interlocuteur</b> du premier appel à la mise en ligne</span>
+      <span><b>Tout vous appartient</b> le code, l’hébergement, l’adresse</span>
+    </p>
   </section>
 
-  <!-- ===================== LES PLAQUES D'ATELIER =====================
-
-       CE QUI A CHANGE, ET POURQUOI.
-
-       La bande de specification alignait quatre cellules a plat sur
-       une seule regle. Elle disait quatre choses, dont une FAUSSE —
-       « 12+ industries deja servies », qu'on n'a pas faites — et une
-       trop abstraite pour un patron de PME — « 0 gabarit achete ».
-
-       Les HUIT plaques ci-dessous ne disent que des faits soutenus
-       ailleurs dans ce meme document, ou verifiables par le visiteur
-       en dix secondes : le delai de reponse (Agence, pied, modale,
-       Parcours, formulaire), le jalon du jour 5 (Agence, engagement
-       04), l'estimation egale a la facture (Agence, engagement 01),
-       l'interlocuteur unique (Agence, `agc-faits`), la propriete
-       complete (Agence engagement 03, FAQ, Parcours), l'absence de
-       mouchard (aucune adresse externe dans le document), les sept
-       metiers (Services, Secteurs, Visite 360, Calculateur) et le
-       Quebec (partout). Aucun prix, ici comme ailleurs.
-
-       QUATRE ONT ETE RETIREES LE 2026-07-29 parce qu'elles etaient
-       fausses ou faibles, et les affirmations correspondantes ont ete
-       corrigees PARTOUT, pas seulement ici : l'heure de formation
-       (Services, Parcours, FAQ) et l'abonnement obligatoire (FAQ).
-       Une faussete dans la FAQ est plus grave que dans le hero —
-       celui qui lit la FAQ est un prospect serieux, et c'est celui-la
-       qui la reproche au telephone.
-
-       LA MISE EN SCENE — V2 · S'ALIGNER.
-
-       Reference etudiee : `fullstack-studio.webflow.io`, dont l'arc
-       de cartes pose des elements a des angles allant de -40° a
-       +47°, chacun a un decalage different, avec un debordement
-       lateral assume (releve : x = -791 px pour une piste de
-       1 422 px). Ce qu'on en garde : l'angle VARIABLE, le decalage
-       vertical qui interdit tout alignement sur un meme axe, la
-       derive a vitesse differenciee, le redressement au passage, la
-       profondeur entre les plans. Ce qu'on jette : le rayon de
-       10 px, les images photographiques, les ressorts mous.
-
-       Chez nous : des plaques d'atelier a angles vifs, rayon 0,
-       posees de travers sur la grille de douze colonnes. La
-       profondeur ne vient pas d'une ombre — il n'y en a aucune sur
-       ce site — mais d'un FILET DE 1 px DECALE en bas a droite, plus
-       une echelle legerement reduite pour les plaques du second
-       plan. Les angles restent SOUS 2° : une plaque dont on ne peut
-       pas lire le chiffre ne sert a rien, et c'est la contrainte qui
-       arbitre, pas le style.
-
-       LE REPOS EST L'ETAT INCLINE. Chaque plaque est faite d'une
-       COQUE — `.plaque`, la case de grille, que la choregraphie
-       fait deriver — et d'un CORPS — `.plaque-corps`, qui porte
-       l'inclinaison. `--ang`, `--dx`, `--dy` et `--z` sont ecrits
-       ici, dans le document : sans script, sous mouvement reduit et
-       a tous les paliers, la composition est exactement celle qu'on
-       voit. La derive de `langue.js` ne fait que MODULER autour,
-       dans une bande bornee — jamais l'opacite, jamais rien qui
-       touche a la lisibilite d'un texte scrubbe.
-       ===================================================== -->
-  <div class="wrap">
-    <!-- PAS DE `data-settle` ICI, ET C'EST DEUX RAISONS QUI SE
-         RENFORCENT.
-
-         1. CE SERAIT LE MEME VERBE DEUX FOIS SUR LE MEME OBJET.
-            `data-settle` fait arriver des blocs DECALES
-            lateralement, en alternance, qui se reprennent : c'est
-            V2 · S'ALIGNER. Or les sept plaques portent deja ce
-            geste, en permanence — `--dx` alterne de signe d'une
-            plaque a l'autre, et la derive les redresse au passage
-            du centre. Poser un second V2 par-dessus, ce n'est pas
-            une signature plus forte, c'est une signature bavarde.
-
-         2. LE ROGNAGE QUI VA AVEC MANGEAIT LE DEBORDEMENT.
-            `[data-settle] { overflow-x: clip }` existe depuis le
-            2026-07-25 pour une bonne raison : l'etat de depart
-            `x: ±26` etendait la page de 6 px sur telephone. Mais il
-            rogne a la boite de la bande, donc il coupait aussi le
-            decalage PERMANENT des plaques : capture du 2026-07-29,
-            « 12 h » rendait « 2 h » et « Québec » perdait sa
-            derniere lettre. Le geste transitoire n'y est plus, le
-            rognage non plus, et le debordement lateral demande par
-            le brief se voit enfin. -->
-    <div class="plaques" data-plaques>
-      <!-- ============================================================
-           HUIT PLAQUES, ET LE CHOIX DE CE QU'ELLES DISENT EST LE
-           TRAVAIL, PAS LEUR MISE EN SCENE.
-
-           CE QUI NE FAIT PAS GROSSE AGENCE, malgre l'intuition : les
-           chiffres de VOLUME. Nombre de clients, annees d'existence,
-           projets livres. Sur un site qu'on ne connait pas, personne
-           ne les croit et personne ne peut les verifier. Ils ne
-           travaillent pas.
-
-           CE QUI FAIT GROSSE AGENCE : le STANDARD. Une maison qui
-           affiche des engagements precis et chiffres donne
-           l'impression d'avoir des PROCESSUS, et une maison qui a des
-           processus est grosse dans la tete du visiteur.
-
-           DEUX REGLES D'ADMISSION, LES DEUX ELIMINATOIRES :
-           1. VRAIE ET DEFENDABLE AU TELEPHONE. Chaque plaque est
-              soutenue ailleurs dans ce meme document — la section
-              Agence, la FAQ, le Parcours — ou verifiable par le
-              visiteur en dix secondes.
-           2. COMPRISE EN TROIS SECONDES PAR UN PATRON DE GARAGE. Une
-              affirmation vraie et techniquement impressionnante qui
-              demande un decodage ne sert a rien. C'est pour ca qu'il
-              n'y a ici ni « décalage de mise en page », ni « requête
-              tierce », ni « WCAG » : ces mots sont du jargon de
-              developpeur, et ce bloc parle la langue du client.
-
-           QUATRE ONT ETE RETIREES LE 2026-07-29 :
-           · « 60 s · Sans donner votre courriel » — FAUX, le courriel
-             est requis pour recevoir l'estimation ;
-           · « 1 h · De formation incluse au lancement » — pas offert ;
-           · « 0 · Abonnement obligatoire » — FAUX, l'hebergement a un
-             cout recurrent ;
-           · « 100 % · Du code vous appartient » — l'idee est bonne, la
-             formulation est plate : elle revient en « Tout ».
-           Et « 0 · Sous-traitance. Vous parlez a la personne qui
-           code » est devenue « 1 · Interlocuteur » : l'absence
-           d'intermediaire est un argument premium, la mention du
-           codeur unique dit la TAILLE et pas le standard.
-           ============================================================ -->
-      <article class="plaque" style="--ang:-3.6deg;--dx:-46px;--dy:0px;--z:1;--v:1">
-        <div class="plaque-corps">
-          <!-- Affiche a cinq endroits du site : Agence, pied de page,
-               modale de contact, Parcours, formulaire. -->
-          <b class="num">12 h</b>
-          <span>Le délai de réponse, jours ouvrables. Souvent moins.</span>
-        </div>
-      </article>
-      <article class="plaque" style="--ang:2.6deg;--dx:14px;--dy:34px;--z:0.97;--v:0.6">
-        <div class="plaque-corps">
-          <!-- Section Agence, engagement 04, avec sa figure : le
-               jalon est pose au jour 5. Un chiffre EXACT fait plus
-               serieux qu'un chiffre rond — « une semaine » se lit
-               comme une approximation, « jour 5 » comme un
-               calendrier. -->
-          <b class="num num--mot">Jour 5</b>
-          <span>Les premières maquettes. Vous voyez avant qu'on code.</span>
-        </div>
-      </article>
-      <article class="plaque" style="--ang:-2.1deg;--dx:42px;--dy:10px;--z:1;--v:0.85">
-        <div class="plaque-corps">
-          <!-- PAS DE COMPTEUR ICI, ET C'EST UN DEFAUT CORRIGE.
-               Avec `data-count`, le repos d'une plaque etait le texte
-               « 0 » : sans script, sous mouvement reduit, ou avant
-               d'arriver a la bande, on lisait le contraire de ce
-               qu'on affirme. L'etat de repos est la valeur vraie.
-
-               LE SIGNE EGAL EST LA FIGURE DE LA SECTION AGENCE,
-               ramenee ici : `Estimation = Facture`. Il ne demande
-               aucun decodage — la phrase dessous le dit en toutes
-               lettres — et c'est la seule plaque du lot qu'un patron
-               repete telle quelle au telephone. -->
-          <b class="num">=</b>
-          <span>Le chiffre du premier appel est celui de la facture.</span>
-        </div>
-      </article>
-      <article class="plaque" style="--ang:3.4deg;--dx:-32px;--dy:22px;--z:0.95;--v:0.7">
-        <div class="plaque-corps">
-          <!-- Remplace « 0 · Sous-traitance ». Dit le standard — un
-               seul responsable de bout en bout, ce que les grosses
-               maisons facturent cher — au lieu de la taille. -->
-          <b class="num">1</b>
-          <span>Interlocuteur, du premier appel à la mise en ligne.</span>
-        </div>
-      </article>
-      <article class="plaque" style="--ang:-2.8deg;--dx:6px;--dy:-10px;--z:0.98;--v:1">
-        <div class="plaque-corps">
-          <!-- Section Agence, engagement 03, mot pour mot, plus la
-               FAQ. Remplace « 100 % · Du code vous appartient » :
-               meme idee, formulation qui met le client en position de
-               force au lieu d'enoncer un pourcentage. -->
-          <b class="num num--mot">Tout</b>
-          <span>Le code, l’hébergement, l’adresse web. Un autre peut reprendre demain.</span>
-        </div>
-      </article>
-      <article class="plaque" style="--ang:4.2deg;--dx:28px;--dy:28px;--z:0.94;--v:0.55">
-        <div class="plaque-corps">
-          <!-- VRAIE ET VERIFIABLE EN DIX SECONDES : aucune adresse
-               externe dans le document, aucun `gtag`, aucun pixel,
-               aucun temoin, aucune police distante. Dit en langue de
-               client — « mouchard », « service exterieur » — et pas
-               en langue de developpeur : « 0 requete tierce » ne veut
-               rien dire pour un patron de garage. -->
-          <b class="num">0</b>
-          <span>Mouchard, traceur, service extérieur. Votre site ne dépend de personne.</span>
-        </div>
-      </article>
-      <article class="plaque" style="--ang:-3deg;--dx:48px;--dy:6px;--z:0.97;--v:0.9">
-        <div class="plaque-corps">
-          <!-- Les sept sont offerts ET demontres sur ce site :
-               Services, Secteurs, Visite 360, Calculateur. La largeur
-               de l'offre signale une structure, et elle est vraie. -->
-          <!-- E1 · « METIERS » COMPTAIT SEPT CHOSES pendant que la
-               fiche technique en comptait quatre et Services quatre :
-               trois decoupages de la meme offre sur un seul ecran. La
-               fiche est maintenant alignee sur Services — quatre
-               chantiers, memes noms, memes delais. Cette plaque garde
-               ses sept, mais elle dit ce qu'elle compte : des PRODUITS,
-               pas des chantiers. Deux listes de granularites
-               differentes ne se contredisent pas ; deux listes qui
-               pretendent compter la meme chose, si. -->
-          <b class="num">7</b>
-          <span>Produits : site, boutique, automatisation, logiciel, application, visite 360, vidéo.</span>
-        </div>
-      </article>
-      <article class="plaque" style="--ang:2.2deg;--dx:-24px;--dy:18px;--z:0.96;--v:0.8">
-        <div class="plaque-corps">
-          <!-- La huitieme est seule sur sa rangee, decalee : elle se
-               lit comme le poincon qu'on frappe en bas d'une piece
-               finie. C'est la seule plaque qui ne dit pas un
-               engagement mais une provenance, et elle ferme le bloc. -->
-          <b class="num num--mot">Québec</b>
-          <span>Conçu, codé et livré ici, du premier trait à la mise en ligne.</span>
-        </div>
-      </article>
-    </div>
-  </div>
 
   <!-- ===================== 02 · SERVICES ===================== -->
-  <!-- LES QUATRE CHANTIERS SONT PEINTS EN MEME TEMPS.
-       Reecrit le 2026-07-30. Detail complet : `CHANTIER-SERVICES.md`.
-
-       CE QU'IL Y AVAIT AVANT, ET POURQUOI IL EST PARTI.
-       Un rail horizontal epingle montrait UNE carte a la fois
-       derriere un compteur « 01 / 04 ». Le raisonnement d'origine
-       n'etait pas mauvais — il argumentait contre une roue, il
-       refusait la rotation automatique, il rendait la piste
-       focalisable au clavier, il coupait la carte suivante au bord
-       pour dire qu'il y en avait d'autres. Tout ca reste vrai. Mais
-       il defendait la bonne execution d'un patron qui, lui, ne tient
-       pas :
-
-       · Erik Runyon, Notre Dame, 315 665 changements de diapositive
-         releves : ~1 % des visiteurs cliquent, et 84 % de ces clics
-         tombent sur la POSITION 1. Les chantiers 02, 03 et 04
-         etaient, en pratique, non publies.
-       · Baymard l'ecrit en exigence : « Avoid having carousel slides
-         as the only or primary route to features or content. »
-       · NN/g, en oculometrie : « a user looking at a filmstrip of
-         product images never glanced at the arrows. » Le garde-fou
-         n° 2 — « le compteur est gros » — repondait a ce constat en
-         grossissant l'INDICATEUR. Or un compteur dit COMBIEN il en
-         manque, jamais QUOI.
-       · Releve dans le DOM rendu des sections de services qui ont pu
-         etre chargees (Linear, Basement, Hello Monday, Locomotive) :
-         zero carrousel, zero onglet, zero `<details>` SUR LA LISTE.
-         Aucun ne fait payer un clic pour connaitre son offre.
-
-       · Et quatre defauts mesures tenaient au pin lui-meme, dont un
-         qui cassait la mise en page a chaque arrivee par ancre — le
-         pin s'armait 284 px trop tot et la scene se teleportait de
-         280 px en une image. `CHANTIER-SERVICES.md § 1`.
-
-       CE QUI TIENT SANS UNE LIGNE DE JAVASCRIPT : tout. La grille
-       est du CSS, l'index est fait de quatre ancres, le detail est
-       un `<details>` natif — donc clavier, lecteur d'ecran et
-       Ctrl+F fonctionnent sans qu'on ecrive quoi que ce soit. Le
-       script n'ajoute que le GLISSEMENT des cartes voisines quand
-       une fiche s'ouvre.
-
-       PLUSIEURS FICHES PEUVENT ETRE OUVERTES A LA FOIS, et c'est le
-       comportement natif qu'on laisse faire : le NN/g le demande
-       explicitement pour les accordeons, et fermer la 01 parce qu'on
-       ouvre la 03 empeche la seule chose qu'un visiteur veut faire
-       ici, comparer deux chantiers. -->
+  <!-- LES QUATRE CHANTIERS DEFILENT PENDANT QU'ON DESCEND.  D-024 -->
   <section id="services">
       <!-- ===== FRONTIERE 02 · 01 vers 02 =====
            G4 : volet (bas). On quitte la matiere brute pour l'offre : seule bascule de fond du haut de page.
@@ -771,582 +281,524 @@
 
     <div class="svc" id="svc">
 
-      <!-- L'INDEX. Il remplace le compteur « 01 / 04 ».
-           Un compteur dit au visiteur COMBIEN il en manque, jamais
-           QUOI. Quatre ancres nommees repondent aux deux questions
-           sur une seule ligne, avant tout defilement, et elles
-           tiennent sans script, sous mouvement reduit et aux trois
-           paliers. C'est le `Jump ahead:` de Hello Monday, qui est
-           la seule chose de tout le releve qui NOMME les quatre
-           avant de les montrer. -->
-      <nav class="svc-index" aria-label="Les quatre chantiers">
-        <a href="#svc-01"><em class="num">01</em>Sites web et boutiques</a>
-        <a href="#svc-02"><em class="num">02</em>Automatisation et IA</a>
-        <a href="#svc-03"><em class="num">03</em>Immobilier et visibilité locale</a>
-        <a href="#svc-04"><em class="num">04</em>Logiciels et applications</a>
-      </nav>
-      <!-- LA RESERVE SUR LES DELAIS EST OBLIGATOIRE ICI, et ce n'est
-           pas de la prudence. Celle du hero vit dans `.fiche-foot`,
-           qui est en `display: none` sous 64em : sur telephone, les
-           quatre delais de cette section sont les SEULS delais
-           affiches du site, et rien ne les qualifiait.
-           `CLAUDE.md` § 12 : ce sont des delais de PRODUCTION, pas
-           des dates de depart — confondre les deux, c'est soit
-           mentir, soit s'excuser, et les separer donne une raison
-           d'appeler tout de suite.
-           CE SONT LES MOTS EXACTS DU HERO. Une meme reserve dite
-           deux fois differemment redevient deux affirmations a
-           comparer. -->
-      <p class="fine svc-reserve">Semaines estimées, variables selon la demande et la file d’attente.</p>
+      <!-- LA PISTE — c'est elle qui porte la COURSE.  D-025 -->
+      <div class="svc-piste" data-svc-piste>
+        <div class="svc-scene" data-svc-scene>
 
-      <div class="svc-grille">
+          <!-- LA VITRE rogne le rail. Le rognage est ici et pas sur  D-026 -->
+          <div class="svc-vitre">
+            <ol class="svc-planche" data-svc-rail>
 
-        <!-- ---------------- 01 ---------------- -->
-        <article class="svc-carte" id="svc-01">
-          <!-- L'ECRAN PORTE UNE VRAIE PHOTOGRAPHIE, et c'est tout le
-               correctif. La case du haut etait une trame de limaille
-               — une decision assumee pour ne pas mentir sur une image
-               absente, mais qui laissait la maquette a l'etat de
-               gabarit. Ce qui fait qu'un site a l'air d'un vrai site,
-               c'est sa photographie ; on y met donc celle que le
-               depot possede deja sous licence Pexels verifiee, celle
-               que la section Secteurs emploie pour la restauration.
-               Meme monde, meme licence, aucun octet de plus. -->
-          <figure class="svc-vue">
-            <div class="svc-cadre">
-            <div class="ecr ecr--site" aria-hidden="true">
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · cendre.ca</span></div>
-              <div class="ecr-page">
-                <div class="ecr-nav"><b>CENDRE</b><span>Menu</span><span>Réserver</span><span>Nous joindre</span></div>
-                <div class="ecr-hero">
-                  <div class="ecr-plaque">
-                    <img src="images/secteurs/restaurant-hero.webp" width="720" height="405" alt="" loading="lazy" decoding="async" fetchpriority="low">
+              <!-- ---------------- 01 ---------------- -->
+              <li class="svc-plan" id="svc-01">
+                <p class="svc-plan-num" aria-hidden="true"><em>01</em></p>
+                <h3 class="svc-plan-nom">Sites web et boutiques</h3>
+                <p class="svc-plan-dit">Un site à vous, que vous changez sans nous.</p>
+                <p class="svc-plan-delai"><b>2 à 4 semaines</b></p>
+
+                <!-- `.svc-porte` RESERVE LA HAUTEUR DU BOUTON. A  D-027 -->
+                <div class="svc-porte">
+                <details class="svc-detail" data-svc-fiche>
+                  <summary class="svc-plus">
+                    <span data-ouvrir>Voir en détail</span><span data-fermer>Fermer</span>
+                    <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+                  </summary>
+                  <div class="svc-detail-in">
+                    <div class="svc-fiche-tete">
+                      <p class="svc-fiche-sur"><em class="num">01</em>Sites web et boutiques</p>
+                      <h4 class="svc-fiche-titre">Un site à vous, que vous changez sans nous.</h4>
+                    </div>
+                    <div class="svc-fiche-corps">
+                      <div class="svc-fiche-dit">
+                        <p class="svc-lead">De la vitrine à la boutique en ligne, on code chaque page pour votre entreprise, et vos textes restent modifiables sans nous appeler.</p>
+                        <p>On part de vos textes, de vos photos et de ce que vos clients demandent le plus souvent. Vous approuvez les maquettes avant qu’une ligne de code s’écrive. Chaque page est ensuite codée à la main : pas de gabarit acheté, rien d’inutile à charger. À la remise, vous recevez les accès, l’adresse web et le code.</p>
+                      </div>
+                      <div class="svc-fiche-cote">
+                        <!-- « CE QUE VOUS RECEVEZ » — ajoute le  D-028 -->
+                        <div class="svc-bloc">
+                          <p class="label">Ce que vous recevez</p>
+                          <ol class="svc-recu">
+                            <li><b>Les pages de votre site</b>, écrites et codées : accueil, services, contact, et celles que votre métier demande.</li>
+                            <li><b>L’adresse web et l’hébergement</b>, ouverts à votre nom, avec les mots de passe.</li>
+                            <li><b>Un écran pour vous</b>, où changer vos textes et vos photos sans nous appeler.</li>
+                          </ol>
+                        </div>
+                        <div class="svc-bloc">
+                          <p class="label">Compris</p>
+                          <ul class="svc-specs">
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un design à vous, pas un gabarit acheté</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement monté au départ, pas vendu en option</li>
+                            <!-- « TESTE SUR TELEPHONE AVANT L'ECRAN  D-029 -->
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Pensé sur téléphone d’abord, l’ordinateur ensuite</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Réservation et paiement en ligne, quand ça s’applique</li>
+                            <!-- CONTRADICTION CORRIGEE LE 2026-07-29 :  D-030 -->
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Mise en ligne incluse, hébergement ouvert à votre nom</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="svc-fiche-pied">
+                      <p class="svc-fiche-delai"><b>2 à 4 semaines</b><span>de production, une fois les textes et les photos reçus.</span></p>
+                      <!-- LE LIBELLE EST CELUI DU HERO ET DE LA  D-031 -->
+                      <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                        Démarrer votre projet
+                        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+                      </button>
+                    </div>
                   </div>
-                  <div class="ecr-hero-txt">
-                    <p class="ecr-kicker">Table du marché · Québec</p>
-                    <p class="ecr-titre">Le menu change<br>chaque semaine.</p>
-                    <span class="ecr-btn">Réserver une table</span>
-                  </div>
+                </details>
                 </div>
-                <div class="ecr-menu">
-                  <p class="ecr-sh">Cette semaine</p>
-                  <div class="ecr-mrow"><b>Tartare de cerf, cassis</b><em>24</em></div>
-                  <div class="ecr-mrow"><b>Flétan, beurre blanc au sapin</b><em>38</em></div>
-                  <div class="ecr-mrow"><b>Onglet vieilli, os à moelle</b><em>41</em></div>
-                  <div class="ecr-mrow"><b>Tarte au sucre, crème crue</b><em>14</em></div>
-                  <i class="ecr-scan"></i>
-                </div>
-              </div>
-            </div>
-            </div>
-            <figcaption class="svc-vue-note">Exemple · pas un vrai client</figcaption>
-          </figure>
+              </li>
 
-          <div class="svc-corps">
-            <p class="label"><em class="num">01</em>Sites web et boutiques</p>
-            <!-- « Un site qui travaille pendant que vous dormez »,
-                 retire le 2026-07-30. C'etait la seule phrase de la
-                 section qui aurait pu vivre sur le site de n'importe
-                 quelle agence, et sa verite etait CONDITIONNELLE :
-                 « travaille » sous-entend « rapporte », donc un
-                 resultat que personne ne controle, et le point 4 de
-                 la meme carte reconnait lui-meme que la reservation
-                 en ligne n'existe que « quand ca s'applique ».
-                 Ce qui reste se constate le jour de la remise. -->
-            <h3>Un site à vous, que vous changez sans nous.</h3>
-            <p class="svc-pied"><b>2 à 4 semaines</b><span>Cinq pages d’accueil plus bas, dessinées et codées ici.</span></p>
+              <!-- ---------------- 02 ---------------- -->
+              <li class="svc-plan" id="svc-02">
+                <p class="svc-plan-num" aria-hidden="true"><em>02</em></p>
+                <h3 class="svc-plan-nom">Automatisation et IA</h3>
+                <p class="svc-plan-dit">Les tâches que personne n’aime faire se font toutes seules.</p>
+                <p class="svc-plan-delai"><b>1 à 3 semaines</b></p>
+                <div class="svc-porte">
+                <details class="svc-detail" data-svc-fiche>
+                  <summary class="svc-plus">
+                    <span data-ouvrir>Voir en détail</span><span data-fermer>Fermer</span>
+                    <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+                  </summary>
+                  <div class="svc-detail-in">
+                    <div class="svc-fiche-tete">
+                      <p class="svc-fiche-sur"><em class="num">02</em>Automatisation et IA</p>
+                      <h4 class="svc-fiche-titre">Les tâches que personne n’aime faire se font toutes seules.</h4>
+                    </div>
+                    <div class="svc-fiche-corps">
+                      <div class="svc-fiche-dit">
+                        <p class="svc-lead">Du formulaire jusqu’à la facture, on relie les outils que vous utilisez déjà, et le travail continue ensuite sans que vous y touchiez.</p>
+                        <p>On regarde d’abord ce que vous refaites chaque semaine à la main : recopier une soumission, relancer un client, préparer une facture. Chaque tâche est chiffrée en minutes avant qu’on branche quoi que ce soit, et vous décidez lesquelles valent la peine. Ce qui est branché tourne ensuite tout seul, et vous gardez le bouton pour l’arrêter.</p>
+                      </div>
+                      <div class="svc-fiche-cote">
+                        <div class="svc-bloc">
+                          <p class="label">Ce que vous recevez</p>
+                          <ol class="svc-recu">
+                            <li><b>La liste de vos tâches répétitives</b>, chiffrée en minutes par semaine, avant qu’on branche quoi que ce soit.</li>
+                            <li><b>Les automatisations que vous avez approuvées</b>, branchées sur les outils que vous avez déjà.</li>
+                            <li><b>Le bouton pour tout arrêter</b>, et le nom de la personne à qui écrire quand ça coince.</li>
+                          </ol>
+                        </div>
+                        <div class="svc-bloc">
+                          <p class="label">Compris</p>
+                          <ul class="svc-specs">
+                            <!-- D1 · « CRM » est un sigle anglais de  D-032 -->
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Vos outils reliés : fichier clients, courriels, comptabilité</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Factures, rappels et suivis qui partent sans vous</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Les demandes reçues sur le site triées et classées en arrivant</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un agent IA qui répond avec vos mots, pas ceux d’un robot d’usine</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="svc-fiche-pied">
+                      <p class="svc-fiche-delai"><b>1 à 3 semaines</b><span>de production. Le calculateur plus bas en donne l’ordre de grandeur.</span></p>
+                      <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                        Démarrer votre projet
+                        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                </details>
+                </div>
+              </li>
+
+              <!-- ---------------- 03 ---------------- -->
+              <li class="svc-plan" id="svc-03">
+                <p class="svc-plan-num" aria-hidden="true"><em>03</em></p>
+                <h3 class="svc-plan-nom">Immobilier et visibilité locale</h3>
+                <p class="svc-plan-dit">Tout est complet quand un client cherche près de chez vous.</p>
+                <p class="svc-plan-delai"><b>1 semaine</b></p>
+                <div class="svc-porte">
+                <details class="svc-detail" data-svc-fiche>
+                  <summary class="svc-plus">
+                    <span data-ouvrir>Voir en détail</span><span data-fermer>Fermer</span>
+                    <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+                  </summary>
+                  <div class="svc-detail-in">
+                    <div class="svc-fiche-tete">
+                      <p class="svc-fiche-sur"><em class="num">03</em>Immobilier et visibilité locale</p>
+                      <!-- C1 · LA PROMESSE DE POSITION GOOGLE,  D-033 -->
+                      <h4 class="svc-fiche-titre">Tout est complet quand un client cherche près de chez vous.</h4>
+                    </div>
+                    <div class="svc-fiche-corps">
+                      <div class="svc-fiche-dit">
+                        <p class="svc-lead">De la fiche Google à la visite virtuelle, on monte ce qui vous représente dans votre quartier, et tout sort à votre nom.</p>
+                        <p>On remplit votre fiche Google au complet : heures, services, photos, zone desservie. La carte de votre zone arrive sur votre site, et une visite virtuelle si le lieu s’y prête. On met en place la façon de demander les avis et d’y répondre, au lieu de les subir. Une semaine suffit parce qu’on ne réinvente rien.</p>
+                      </div>
+                      <div class="svc-fiche-cote">
+                        <div class="svc-bloc">
+                          <p class="label">Ce que vous recevez</p>
+                          <ol class="svc-recu">
+                            <li><b>Votre fiche Google remplie au complet</b> : heures, services, photos, zone desservie.</li>
+                            <li><b>La carte de votre zone sur votre site</b>, et la visite virtuelle si le lieu s’y prête.</li>
+                            <li><b>La façon de demander un avis</b> à un client content, et quoi répondre à un client fâché.</li>
+                          </ol>
+                        </div>
+                        <div class="svc-bloc">
+                          <p class="label">Compris</p>
+                          <ul class="svc-specs">
+                            <!-- « TENUE A JOUR » AVAIT LA FORME EXACTE  D-034 -->
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Votre fiche Google montée et remplie au complet</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Carte et zone de service sur votre site</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Fiches de propriétés et visites virtuelles</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Avis clients gérés, pas subis</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="svc-fiche-pied">
+                      <!-- LE BOUTON « LANCER LA VISITE 360 » EST  D-035 -->
+                      <p class="svc-fiche-delai"><b>1 semaine</b><span>de production. Le lecteur de visite qu’on installe se démontre plus bas.</span></p>
+                      <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                        Démarrer votre projet
+                        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                </details>
+                </div>
+              </li>
+
+              <!-- ---------------- 04 ---------------- -->
+              <li class="svc-plan" id="svc-04">
+                <p class="svc-plan-num" aria-hidden="true"><em>04</em></p>
+                <h3 class="svc-plan-nom">Logiciels et applications</h3>
+                <p class="svc-plan-dit">Quand aucun logiciel du commerce ne fait la job.</p>
+                <p class="svc-plan-delai"><b>1 à 3 mois</b></p>
+                <div class="svc-porte">
+                <details class="svc-detail" data-svc-fiche>
+                  <summary class="svc-plus">
+                    <span data-ouvrir>Voir en détail</span><span data-fermer>Fermer</span>
+                    <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
+                  </summary>
+                  <div class="svc-detail-in">
+                    <div class="svc-fiche-tete">
+                      <p class="svc-fiche-sur"><em class="num">04</em>Logiciels et applications</p>
+                      <h4 class="svc-fiche-titre">Quand aucun logiciel du commerce ne fait la job.</h4>
+                    </div>
+                    <div class="svc-fiche-corps">
+                      <div class="svc-fiche-dit">
+                        <p class="svc-lead">De l’inventaire au portail client, on bâtit l’outil qui vous manque, sur votre façon de travailler, et le code reste à vous.</p>
+                        <p>On écrit d’abord ce que l’outil doit faire, écran par écran, avec vous. Vous approuvez les maquettes avant la première ligne de code. Le code est documenté au fur et à mesure, et il est à vous : ce n’est pas une faveur, c’est ce qui fait qu’un autre développeur peut ouvrir le projet sans nous appeler.</p>
+                      </div>
+                      <div class="svc-fiche-cote">
+                        <div class="svc-bloc">
+                          <p class="label">Ce que vous recevez</p>
+                          <ol class="svc-recu">
+                            <li><b>Le cahier des écrans</b>, fait avec vous, avant la première ligne de code.</li>
+                            <li><b>L’outil livré</b>, avec un compte par personne de votre équipe.</li>
+                            <li><b>Le code et son mode d’emploi</b>, à votre nom : un autre développeur reprend demain matin.</li>
+                          </ol>
+                        </div>
+                        <div class="svc-bloc">
+                          <p class="label">Compris</p>
+                          <ul class="svc-specs">
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Application web ou mobile, portail client, espace membre</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Outils internes : inventaire, horaires, suivi de chantier</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Branché sur ce que vous utilisez déjà</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Maquettes approuvées avant la première ligne de code</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="svc-fiche-pied">
+                      <p class="svc-fiche-delai"><b>1 à 3 mois</b><span>de production, selon le nombre d’écrans arrêtés ensemble.</span></p>
+                      <button class="btn btn--primary" type="button" data-modal-open="modal-start">
+                        Démarrer votre projet
+                        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                </details>
+                </div>
+              </li>
+
+            </ol>
           </div>
 
-          <details class="svc-detail">
-            <summary class="svc-plus">
-              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
-              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
-            </summary>
-            <div class="svc-detail-in">
-              <!-- C2 · C3 — DEUX PROMESSES DE RESULTAT REMPLACEES PAR
-                   LE TRAVAIL QUI LES REND PROBABLES.
-                   « Il se charge avant que la page d'a cote ait fini de
-                   clignoter » etait un superlatif compare a un
-                   concurrent anonyme, sans mesure. « Il se trouve sur
-                   Google » promettait un CLASSEMENT que personne ne
-                   controle. Ce qui reste est vrai et verifiable. -->
-              <p class="svc-lead">De la vitrine à la boutique en ligne, on code chaque page pour votre entreprise, et vos textes restent modifiables sans nous appeler.</p>
-              <p>On part de vos textes, de vos photos et de ce que vos clients demandent le plus souvent. Vous approuvez les maquettes avant qu’une ligne de code s’écrive. Chaque page est ensuite codée à la main : pas de gabarit acheté, rien d’inutile à charger. À la remise, vous recevez les accès, l’adresse web et le code.</p>
-              <ul class="svc-specs">
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un design à vous, pas un gabarit acheté</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Référencement monté au départ, pas vendu en option</li>
-                <!-- « TESTE SUR TELEPHONE AVANT L'ECRAN D'ORDINATEUR »
-                     ETAIT UNE AFFIRMATION QUE LE DEPOT CONTREDIT.
-                     `CLAUDE.md` § 9 : « AUCUNE de ces mesures n'a ete
-                     prise sur un appareil reel », et « aucune session
-                     ne doit ecrire "verifie sur mobile" — ni le
-                     laisser entendre ». Un test annonce au client est
-                     exactement ce que cette ligne interdit.
-                     Ce qui est vrai et se prouve dans le CSS de ce
-                     site meme : les styles de base sont ceux du
-                     telephone, et `@media (min-width: 64em)` vient
-                     par-dessus. C'est un ORDRE DE CONCEPTION, pas un
-                     test. Le jour ou un vrai appareil sera passe,
-                     l'ancienne ligne redevient la meilleure. -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Pensé sur téléphone d’abord, l’ordinateur ensuite</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Réservation et paiement en ligne, quand ça s’applique</li>
-                <!-- CONTRADICTION CORRIGEE LE 2026-07-29 : la FAQ dit
-                     qu'un site en ligne a TOUJOURS un cout
-                     d'hebergement ; cette ligne annoncait l'hebergement
-                     « inclus ». Ce qui est vrai et reste un avantage :
-                     la mise en ligne ne se facture pas en supplement,
-                     et l'hebergement est ouvert AU NOM DU CLIENT. -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Mise en ligne incluse, hébergement ouvert à votre nom</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Textes et photos modifiables par vous, sans nous appeler</li>
-              </ul>
-              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
-                Démarrer ce chantier
-                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-              </button>
-            </div>
-          </details>
-        </article>
+          <!-- L'INDEX — N1 · ORIENTATION, ET IL NE TOMBE A AUCUN PALIER.  D-036 -->
+          <nav class="svc-index" aria-label="Les quatre chantiers">
+            <ol class="svc-index-liste">
+              <li><a href="#svc-01" data-svc-vers="0"><em class="num">01</em><span>Sites web et boutiques</span></a></li>
+              <li><a href="#svc-02" data-svc-vers="1"><em class="num">02</em><span>Automatisation et IA</span></a></li>
+              <li><a href="#svc-03" data-svc-vers="2"><em class="num">03</em><span>Immobilier et visibilité locale</span></a></li>
+              <li><a href="#svc-04" data-svc-vers="3"><em class="num">04</em><span>Logiciels et applications</span></a></li>
+            </ol>
+            <i class="svc-jauge" aria-hidden="true"><b data-svc-jauge></b></i>
+            <!-- LA RESERVE SUR LES DELAIS EST OBLIGATOIRE ICI. Celle du  D-037 -->
+            <p class="fine svc-reserve">Semaines estimées, variables selon la demande et la file d’attente.</p>
+          </nav>
 
-        <!-- ---------------- 02 ---------------- -->
-        <article class="svc-carte" id="svc-02">
-          <!-- LE CABLAGE A ETE RETIRE LE 2026-07-30.
-               Cinq boites reliees par huit fils a angles droits, avec
-               un jeton qui circule : c'est un schema d'ingenieur. Le
-               brief le dit sans detour — « pas un diagramme de
-               developpeur ». Un patron de PME ne lit pas un graphe de
-               noeuds ; il lit une JOURNEE. On garde donc le journal,
-               qui dit ce qui s'est fait et combien d'heures ca rend,
-               et on lui adjoint la photo du commerce a qui ca arrive.
-               Le monde a gauche, ce que le monde a produit tout seul
-               a droite. -->
-          <figure class="svc-vue">
-            <div class="svc-cadre">
-            <div class="ecr ecr--flux" aria-hidden="true">
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · une journée à l’atelier</span></div>
-              <div class="ecr-page ecr-page--jour">
-                <div class="ecr-lieu">
-                  <img src="images/secteurs/garage-hero.webp" width="720" height="405" alt="" loading="lazy" decoding="async" fetchpriority="low">
-                </div>
-                <div class="ecr-journal">
-                  <p class="ecr-sh">Fait sans vous, aujourd’hui</p>
-                  <div class="ecr-ligne"><em>09:04</em><b>Soumission reçue</b></div>
-                  <div class="ecr-ligne"><em>09:04</em><b>Fiche client créée</b></div>
-                  <div class="ecr-ligne"><em>09:05</em><b>Accusé de réception envoyé</b></div>
-                  <div class="ecr-ligne"><em>11:00</em><b>Rappel de rendez-vous livré</b></div>
-                  <div class="ecr-ligne"><em>16:20</em><b>Facture envoyée</b></div>
-                  <div class="ecr-ligne ecr-ligne--somme"><em>—</em><b>3 h 40 non travaillées</b></div>
-                </div>
-              </div>
-            </div>
-            </div>
-            <figcaption class="svc-vue-note">Exemple · pas un vrai client</figcaption>
-          </figure>
-
-          <div class="svc-corps">
-            <p class="label"><em class="num">02</em>Automatisation et IA</p>
-            <h3>Les tâches que personne n’aime faire se font toutes seules.</h3>
-            <!-- « ce que ca vaut CHEZ VOUS » promettait un chiffre
-                 personnel que le calculateur ne pretend pas donner :
-                 il annonce lui-meme « un ordre de grandeur, pas une
-                 soumission ». On reprend ses mots. -->
-            <p class="svc-pied"><b>1 à 3 semaines</b><span>Le calculateur plus bas en donne l’ordre de grandeur.</span></p>
-          </div>
-
-          <details class="svc-detail">
-            <summary class="svc-plus">
-              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
-              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
-            </summary>
-            <div class="svc-detail-in">
-              <!-- « Vous recuperez vos soirees » est parti le
-                   2026-07-30 : c'est une promesse de resultat de VIE,
-                   entierement hors de notre controle, et le seul
-                   endroit de la section qui vendait une emotion
-                   plutot qu'un livrable. « enfin » etait du
-                   remplissage, et la cascade centrale redisait la
-                   figure d'a cote ligne par ligne. -->
-              <p class="svc-lead">Du formulaire jusqu’à la facture, on relie les outils que vous utilisez déjà, et le travail continue ensuite sans que vous y touchiez.</p>
-              <p>On regarde d’abord ce que vous refaites chaque semaine à la main : recopier une soumission, relancer un client, préparer une facture. Chaque tâche est chiffrée en minutes avant qu’on branche quoi que ce soit, et vous décidez lesquelles valent la peine. Ce qui est branché tourne ensuite tout seul, et vous gardez le bouton pour l’arrêter.</p>
-              <ul class="svc-specs">
-                <!-- L'APPEL DE 30 MINUTES EST SORTI DE CE BLOC. Il est
-                     vrai (D21) mais ce n'est pas un livrable du
-                     chantier : c'est un rendez-vous de vente, et il
-                     occupait le premier des quatre points. Il vit
-                     deja en 12 · Contact. Le retirer ne rouvre pas
-                     B8 : B8 reprochait de promettre un diagnostic
-                     inexistant, pas de se taire.
-                     D1 · « CRM » est un sigle anglais de logiciel.
-                     D7 · « modele generique » est du vocabulaire
-                     d'ingenieur pour « des mots d'usine ». -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Vos outils reliés : fichier clients, courriels, comptabilité</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Factures, rappels et suivis qui partent sans vous</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Les demandes reçues sur le site triées et classées en arrivant</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Un agent IA qui répond avec vos mots, pas ceux d’un robot d’usine</li>
-              </ul>
-              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
-                Démarrer ce chantier
-                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-              </button>
-            </div>
-          </details>
-        </article>
-
-        <!-- ---------------- 03 ---------------- -->
-        <article class="svc-carte" id="svc-03">
-          <!-- LA SEULE CARTE QUI PORTE UNE PHOTOGRAPHIE SEULE, ET LA
-               SEULE QUI SE DEMONTRE AU LIEU DE SE DECRIRE.
-
-               Le lecteur 360 n'est PAS reconstruit ici : le bouton
-               amene a la section 05 et declenche celui qui existe
-               deja. Une seconde instance de Pannellum, ce sont
-               8,5 Mo de panoramas et un deuxieme moteur pour montrer
-               exactement la meme piece.
-
-               V7 · L'ETIQUETTE EST OBLIGATOIRE ET ELLE VOYAGE AVEC
-               L'IMAGE. La section 05 dit deja « Ce ne sont pas nos
-               prises de vue » ; la regle de propagation veut que
-               l'image ne puisse pas dire le contraire ailleurs. -->
-          <figure class="svc-vue svc-vue--photo">
-            <div class="svc-cadre">
-            <img
-              src="images/tour/poster.webp"
-              width="1040" height="585"
-              alt="Terrasse pavée d’une maison de campagne blanche : un bassin, une table et des chaises en fer forgé, une grande baie vitrée ouvrant sur le salon."
-              loading="lazy" decoding="async" fetchpriority="low">
-            <button class="svc-tour" type="button" data-svc-tour>
-              <span>Lancer la visite 360</span>
-              <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-            </button>
-            </div>
-            <figcaption class="svc-vue-note">Démo · ce ne sont pas nos photos</figcaption>
-          </figure>
-
-          <div class="svc-corps">
-            <p class="label"><em class="num">03</em>Immobilier et visibilité locale</p>
-            <!-- C1 · LA PROMESSE DE POSITION GOOGLE, RETIREE. « c'est
-                 vous qui sortez » etait une promesse de CLASSEMENT,
-                 inverifiable avant l'achat et demontrable CONTRE nous
-                 apres. Ce qui est vrai et se tient : la mise en place.
-                 Raccourcie de 16 a 11 mots le 2026-07-30 pour tomber
-                 dans le meme palier que les trois autres titres. -->
-            <h3>Tout est complet quand un client cherche près de chez vous.</h3>
-            <p class="svc-pied"><b>1 semaine</b><span>Essayez ci-dessus le lecteur de visite qu’on installe.</span></p>
-          </div>
-
-          <details class="svc-detail">
-            <summary class="svc-plus">
-              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
-              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
-            </summary>
-            <div class="svc-detail-in">
-              <p class="svc-lead">De la fiche Google à la visite virtuelle, on monte ce qui vous représente dans votre quartier, et tout sort à votre nom.</p>
-              <p>On remplit votre fiche Google au complet : heures, services, photos, zone desservie. La carte de votre zone arrive sur votre site, et une visite virtuelle si le lieu s’y prête. On met en place la façon de demander les avis et d’y répondre, au lieu de les subir. Une semaine suffit parce qu’on ne réinvente rien.</p>
-              <ul class="svc-specs">
-                <!-- « TENUE A JOUR » AVAIT LA FORME EXACTE DE
-                     « HEBERGEMENT INCLUS » (constat A4) : un entretien
-                     PERPETUEL et non facture, promis dans un chantier
-                     d'une semaine. La FAQ dit que l'entretien vit
-                     dans un plan mensuel FACULTATIF ; deux sections du
-                     meme document se seraient contredites. Ce qui est
-                     vrai et se constate a la remise : la fiche est
-                     montee et remplie au complet.
-                     « Google Business » est un nom de produit ; le mot
-                     du client, c'est « ma fiche Google ».
-                     La cinquieme puce est partie : « Referencement
-                     dans votre quartier, pas juste au Quebec » disait
-                     ce que la premiere phrase disait deja, avec deux
-                     geographies differentes pour un seul argument. -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Votre fiche Google montée et remplie au complet</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Carte et zone de service sur votre site</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Fiches de propriétés et visites virtuelles</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Avis clients gérés, pas subis</li>
-              </ul>
-              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
-                Démarrer ce chantier
-                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-              </button>
-            </div>
-          </details>
-        </article>
-
-        <!-- ---------------- 04 ---------------- -->
-        <article class="svc-carte" id="svc-04">
-          <figure class="svc-vue">
-            <div class="svc-cadre">
-            <div class="ecr ecr--tableau" aria-hidden="true">
-              <div class="ecr-chrome"><i></i><i></i><i></i><span>Exemple · portail interne</span></div>
-              <div class="ecr-page ecr-page--app">
-                <div class="ecr-flanc">
-                  <b>ATELIER</b>
-                  <span class="is-on">Chantiers</span><span>Inventaire</span><span>Horaires</span><span>Clients</span><span>Rapports</span>
-                </div>
-                <div class="ecr-corps">
-                  <div class="ecr-kpis">
-                    <div class="ecr-kpi"><em>Chantiers actifs</em><b>7</b></div>
-                    <div class="ecr-kpi"><em>Heures cette semaine</em><b>312</b></div>
-                    <div class="ecr-kpi ecr-kpi--accent"><em>Retards</em><b>0</b></div>
-                  </div>
-                  <div class="ecr-graphe">
-                    <i style="--h:42%"></i><i style="--h:68%"></i><i style="--h:54%"></i><i style="--h:88%"></i>
-                    <i style="--h:73%"></i><i style="--h:96%"></i><i style="--h:61%"></i><i style="--h:80%"></i>
-                  </div>
-                  <div class="ecr-table">
-                    <div class="ecr-trow ecr-trow--tete"><span>Chantier</span><span>Étape</span><span>Livraison</span></div>
-                    <div class="ecr-trow"><span>Rue Saint-Vallier</span><span>Finition</span><span>12 nov.</span></div>
-                    <div class="ecr-trow"><span>Boulevard Hamel</span><span>Structure</span><span>03 déc.</span></div>
-                    <div class="ecr-trow"><span>Chemin Sainte-Foy</span><span>Devis</span><span>18 déc.</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
-            <figcaption class="svc-vue-note">Exemple · pas un vrai client</figcaption>
-          </figure>
-
-          <div class="svc-corps">
-            <p class="label"><em class="num">04</em>Logiciels et applications</p>
-            <h3>Quand aucun logiciel du commerce ne fait la job.</h3>
-            <p class="svc-pied"><b>1 à 3 mois</b><span>Un autre développeur peut reprendre demain matin.</span></p>
-          </div>
-
-          <details class="svc-detail">
-            <summary class="svc-plus">
-              <span data-ouvrir>Voir en détail</span><span data-fermer>Replier</span>
-              <svg class="icon" data-ouvrir aria-hidden="true"><use href="#i-plus" /></svg><svg class="icon" data-fermer aria-hidden="true"><use href="#i-minus" /></svg>
-            </summary>
-            <div class="svc-detail-in">
-              <p class="svc-lead">De l’inventaire au portail client, on bâtit l’outil qui vous manque, sur votre façon de travailler, et le code reste à vous.</p>
-              <p>On écrit d’abord ce que l’outil doit faire, écran par écran, avec vous. Vous approuvez les maquettes avant la première ligne de code. Le code est documenté au fur et à mesure, et il est à vous : ce n’est pas une faveur, c’est ce qui fait qu’un autre développeur peut ouvrir le projet sans nous appeler.</p>
-              <ul class="svc-specs">
-                <!-- QUATRE POINTS AU LIEU DE TROIS. C'etait le chantier
-                     le plus long et le plus engageant, et le moins
-                     etoffe : sur une grille ou les quatre cartes se
-                     voient ensemble, la plus courte se lit comme la
-                     moins reflechie. Le point ajoute repond a la seule
-                     vraie peur d'un projet de trois mois — « qu'est-ce
-                     que je vois pendant ce temps-la » — et il est
-                     soutenu par le Parcours (« vous approuvez avant
-                     qu'une ligne de code existe »).
-                     « et le code reste a vous » sort de la puce : il
-                     etait dit DEUX FOIS sur la meme carte, puce et
-                     pied. Il reste au pied, avec les mots exacts
-                     d'Agence 03. -->
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Application web ou mobile, portail client, espace membre</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Outils internes : inventaire, horaires, suivi de chantier</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Branché sur ce que vous utilisez déjà</li>
-                <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>Maquettes approuvées avant la première ligne de code</li>
-              </ul>
-              <button class="btn btn--primary" type="button" data-modal-open="modal-start">
-                Démarrer ce chantier
-                <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-              </button>
-            </div>
-          </details>
-        </article>
-
+        </div>
       </div>
-    </div>
-
-    <!-- POINT DE CAPTURE 2. Il reste SOUS la grille, une fois les
-         quatre chantiers vus. Ce n'est plus la contrainte de hauteur
-         de la scene epinglee qui l'impose — elle a disparu avec le
-         pin — mais l'ordre de lecture : on ne propose une piste de
-         secours qu'a celui qui a deja regarde les quatre. Une
-         cinquieme case dans la grille se lirait, elle, comme un
-         cinquieme chantier. -->
-    <div class="appat svc-appat">
-      <!-- « les treize domaines qu'on couvre » se lisait comme un
-           compte de secteurs SERVIS, et il entrait en conflit avec les
-           douze metiers de la section Secteurs. Les treize domaines
-           sont ceux du DOCUMENT — c'est ce que dit la note du
-           calculateur, « 42 pages, 13 domaines ». On le dit donc du
-           document.
-
-           UN BOUTON, UN DOCUMENT — corrige le 2026-07-30.
-           La phrase vendait DEUX documents et 91 pages ; le bouton
-           juste dessous en telecharge UN, de 42 pages. Pire, la
-           structure annoncee — « treize domaines, tache par tache,
-           avec le temps et l'argent » — est celle du guide 1 SEUL :
-           sa couverture ecrit « 24 taches · 13 domaines », tandis que
-           le guide 2 s'annonce « 12 usages · 8 protocoles · 42
-           sources » et n'est organise par domaines nulle part.
-           Chaque chiffre est maintenant celui du document que ce
-           bouton-la remet. Le pied de page, lui, a ses deux liens :
-           c'est la qu'on peut parler des deux guides. -->
-      <p><b>Vous hésitez entre deux chantiers ?</b> Notre guide sur l’automatisation chiffre 24 tâches dans 13 domaines d’activité, avec le temps et l’argent que chacune coûte. 42 pages, gratuit, sans courriel.</p>
-      <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
-        Voir ce qui s’automatise dans votre métier
-        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-      </a>
     </div>
   </section>
 
-  <!-- ===================== 03 · PROJETS LIVRÉS ===================== -->
-  <!-- LE CADRE NE DEFILE PLUS TOUT SEUL.
-
-       Avant, la capture du site client defilait dans son cadre au
-       rythme de la page : le visiteur ne l'avait pas demande, il ne
-       pouvait ni l'arreter ni la reprendre, et le haut du site —
-       c'est-a-dire ce qui se juge — n'etait net qu'une fraction de
-       seconde. Un mouvement qu'on subit n'est pas une demonstration,
-       c'est du bruit.
-
-       Maintenant le cadre est INERTE au repos : on voit le haut du
-       site, immobile et net. Il ne se parcourt que sur une intention
-       explicite du visiteur, et il en accepte trois :
-       · un survol PROLONGE, 520 ms, assez long pour qu'un pointeur
-         qui traverse le cadre ne declenche rien ;
-       · un clic, ou Entree et Espace au clavier ;
-       · un defilement a l'interieur du cadre.
-
-       CE QUI PORTE LE MOUVEMENT EST `scrollTop`, PAS UN `transform`.
-       Une seule source de verite : la molette, le doigt, les
-       touches, la barre de defilement et la lecture automatique
-       ecrivent tous dans la meme valeur. Le defilement natif
-       s'enchaine de lui-meme vers la page quand la capture est au
-       bout, donc le cadre ne peut jamais retenir le visiteur — c'est
-       la difference entre une zone qu'on parcourt et un piege. -->
+  <!-- ===================== 03 · AVANT / APRES ===================== -->
+  <!-- CE QUI ETAIT ICI, ET POURQUOI C'EST PARTI.  D-038 -->
   <section id="realisations">
       <!-- ===== FRONTIERE 03 · 02 vers 03 =====
-           G4 : relais-compteur (droite). Les services promettent, les projets prouvent : le meme compteur change de sujet.
+           G4 : degager (bas). Les services promettent, la demonstration montre.
            G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="02" data-vers="03" data-dress="clair" data-verbe="degager" data-sens="bas" data-cible=".project:first-of-type .shot">
+      <div class="seuil" data-seuil data-de="02" data-vers="03" data-dress="clair" data-verbe="degager" data-sens="bas" data-cible=".ba:first-of-type .ba-cadre">
         <div class="wrap seuil-in">
           <div class="section-rule draw seuil-filet" data-section-rule></div>
-          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>02</span><span>03</span></span></b><span class="seuil-nom">Projets</span></p>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>02</span><span>03</span></span></b><span class="seuil-nom">Démonstrations</span></p>
         </div>
       </div>
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
-        <!-- A9 · DEUX AFFIRMATIONS RETIREES, ET C'EST L'ARBITRAGE DU
-             PROPRIETAIRE DU 2026-07-29.
-             « Des sites en ligne, pas des maquettes » et « Cinq
-             projets livres » affirmaient une livraison qu'un visiteur
-             ne peut pas verifier : les cinq cadres sont des captures
-             `webp` statiques, aucun n'est LIE a une adresse en ligne.
-             Une affirmation de livraison sans lien vers le livrable
-             est la plus facile a demolir de toutes — il suffit de
-             demander l'adresse.
-             Ce qui reste est entierement vrai et se constate a
-             l'ecran : la page est entiere, elle est a nous, et le
-             visiteur la parcourt. Le jour ou les cinq adresses
-             existent, on met le lien sur chaque cadre et
-             l'affirmation revient — en preuve, cette fois. -->
-        <h2>Cinq pages d’accueil, dessinées et codées ici.</h2>
-        <p>Chaque cadre contient la page entière, du haut jusqu’au pied — pas une vignette. Elle ne bouge pas toute seule : survolez le cadre, ou cliquez dedans, et vous la parcourez à votre rythme.</p>
+        <h2>Ce qu’on voit encore. Ce que ça devient.</h2>
+        <!-- LA PHRASE D'HONNETETE EST LE CHAPO, PAS UNE NOTE DE BAS  D-039 -->
+        <p>Trois démonstrations, dessinées et codées ici pour ce site. <b>Ce ne sont pas des mandats livrés, et aucune de ces entreprises n’existe.</b> Ce sont deux versions du même commerce : celle qu’on trouve encore, et celle qu’on code.</p>
       </div>
     </div>
 
-    <div class="wrap">
+    <div class="wrap ba-liste">
 
-      <article class="project">
-        <figure class="shot">
-          <p class="shot-count" aria-hidden="true"><b>01</b><span>/ 05</span></p>
-          <div class="shot-vue" data-shot tabindex="0" role="group"
-               aria-label="Page d’accueil du site Cendre. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
-            <img src="images/real-restaurant.webp" width="900" height="9195" alt="Page d’accueil complète du site du restaurant Cendre" loading="lazy" />
-          </div>
-          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
-          <i class="shot-jauge" aria-hidden="true"><b></b></i>
-        </figure>
-        <div class="project-meta">
-          <p class="project-num num" aria-hidden="true">01</p>
-          <h3>Cendre</h3>
-          <p>Le menu change chaque semaine. Le personnel le modifie sans nous appeler.</p>
-          <dl class="project-facts" data-souder>
-            <div><dt>Secteur</dt><dd>Restauration</dd></div>
-            <div><dt>Livrable</dt><dd>Site vitrine et réservation</dd></div>
-            <div><dt>Ce que ça règle</dt><dd>Le menu se met à jour depuis le téléphone du chef, en salle.</dd></div>
-          </dl>
+      <!-- ================= 01 · GARAGE ================= -->
+      <article class="ba" id="ba-garage">
+        <div class="ba-tete">
+          <p class="ba-num"><em class="num">01</em><span>Garage et mécanique générale</span></p>
+          <p class="ba-etiq">Démonstration · entreprise fictive</p>
         </div>
+
+        <div class="ba-cadre" data-ba>
+          <!-- LE CRAN. Deux `<input type="radio">` natifs : les  D-040 -->
+          <div class="ba-cran" role="radiogroup" aria-label="Version affichée du site de garage">
+            <input class="sr-only" type="radio" name="ba-garage" id="ba-garage-avant" data-ba-vue="avant" checked>
+            <label for="ba-garage-avant"><b>Avant</b><span>comme on en voit encore</span></label>
+            <input class="sr-only" type="radio" name="ba-garage" id="ba-garage-apres" data-ba-vue="apres">
+            <label for="ba-garage-apres"><b>Après</b><span>ce qu’on livre</span></label>
+          </div>
+
+          <div class="ba-scene">
+            <!-- ---------- AVANT ---------- -->
+            <div class="ba-vue ba-vue--avant">
+              <div class="v11">
+                <table class="v11-page" role="presentation">
+                  <tr><td colspan="2" class="v11-banniere">
+                    <span class="v11-nom">Garage &amp; M&eacute;canique G&eacute;n&eacute;rale</span>
+                    <span class="v11-slogan">Votre satisfaction, notre priorit&eacute;&nbsp;!</span>
+                  </td></tr>
+                  <tr><td colspan="2" class="v11-onglets">
+                    <span class="v11-onglet v11-on">Accueil</span><span class="v11-onglet">Services</span><span class="v11-onglet">Promotions</span><span class="v11-onglet">&Eacute;quipe</span><span class="v11-onglet">Nous joindre</span>
+                  </td></tr>
+                  <tr>
+                    <td class="v11-cote">
+                      <p class="v11-menu-t">Menu</p>
+                      <p class="v11-lien">&raquo; Vidange d&rsquo;huile</p>
+                      <p class="v11-lien">&raquo; Freins</p>
+                      <p class="v11-lien">&raquo; Silencieux</p>
+                      <p class="v11-lien">&raquo; Inspection</p>
+                      <div class="v11-compteur"><b>Visiteurs</b><i>0&nbsp;0&nbsp;4&nbsp;7&nbsp;2&nbsp;3</i></div>
+                      <div class="v11-badges"><i>Valid<br>XHTML&nbsp;1.0</i><i>Valid<br>CSS</i></div>
+                      <p class="v11-mini">Meilleure vue en 1024&times;768<br>avec Internet Explorer 7</p>
+                    </td>
+                    <td class="v11-corps">
+                      <!-- LE TEXTE DEFILANT. `<marquee>` est obsolete  D-041 -->
+                      <p class="v11-defile"><span>*** SP&Eacute;CIAL PNEUS D&rsquo;HIVER *** Prenez rendez-vous d&egrave;s maintenant *** SP&Eacute;CIAL PNEUS D&rsquo;HIVER ***</span></p>
+                      <h1 class="v11-h1">Bienvenue sur notre site&nbsp;!</h1>
+                      <div class="v11-photo" role="presentation"></div>
+                      <p class="v11-p">Depuis 1989, notre &eacute;quipe de m&eacute;caniciens qualifi&eacute;s partage sa passion du travail bien fait avec sa client&egrave;le. Dans le domaine depuis d&eacute;j&agrave; 30 ans, nous offrons un service professionnel et courtois &agrave; des prix comp&eacute;titifs. N&rsquo;h&eacute;sitez pas &agrave; communiquer avec nous pour de plus amples renseignements concernant nos services de m&eacute;canique g&eacute;n&eacute;rale, nos promotions saisonni&egrave;res ainsi que nos forfaits d&rsquo;entretien pr&eacute;ventif.</p>
+                      <!-- LE MARQUEUR EST LA CONTRADICTION, PAS LE  D-042 -->
+                      <div class="v11-promo"><b>PROMOTION HIVERNALE</b><br>V&eacute;rification d&eacute;taill&eacute;e &mdash; rabais de 20&nbsp;%</div>
+                      <div class="v11-promo"><b>PROMOTION M&Eacute;CANIQUE</b><br>V&eacute;rification d&eacute;taill&eacute;e &mdash; rabais de 20&nbsp;%</div>
+                      <!-- L'ARTEFACT D'ENCODAGE EST LE MARQUEUR LE  D-043 -->
+                      <p class="v11-p v11-p--casse">Heures d&rsquo;ouverture&nbsp;: lundi au vendredi, 8h00 &agrave; 17h00. Ferm&eacute; les jours f&eacute;ri&eacute;s. Service de m&#65533;canique g&#65533;n&#65533;rale sur rendez-vous seulement.</p>
+                      <p class="v11-tel">T&eacute;l&eacute;phone&nbsp;: (000) 000-0000</p>
+                    </td>
+                  </tr>
+                  <tr><td colspan="2" class="v11-pied">
+                    &copy; 2011 Garage &amp; M&eacute;canique G&eacute;n&eacute;rale &nbsp;|&nbsp; <span class="v11-a">garage_mecanique@hotmail.com</span> &nbsp;|&nbsp; Derni&egrave;re mise &agrave; jour&nbsp;: 14 mars 2011<br>
+                    Site r&eacute;alis&eacute; par <span class="v11-a">infoweb@sympatico.ca</span>
+                  </td></tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- ---------- APRES ---------- -->
+            <div class="ba-vue ba-vue--apres">
+              <div class="ap ap--garage">
+                <div class="ap-nav"><b>Garage et mécanique générale</b><span>Services · Équipe · Nous joindre</span></div>
+                <div class="ap-corps">
+                  <p class="ap-sur">Mécanique générale · Sur rendez-vous</p>
+                  <h3 class="ap-titre">Votre véhicule vous est rendu le jour même.</h3>
+                  <!-- LE TELEPHONE EST LE PREMIER OBJET DE LA PAGE,  D-044 -->
+                  <p class="ap-tel"><span>Appeler</span><b>000 000-0000</b></p>
+                  <div class="ap-faits">
+                    <div><b>Ouvert</b><span>Lun–ven 8 h – 17 h</span></div>
+                    <div><b>Rendez-vous</b><span>En ligne, 24 h sur 24</span></div>
+                    <div><b>Estimation</b><span>Écrite, avant les travaux</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LES TROIS ECARTS. Chacun se VERIFIE en basculant le cran  D-045 -->
+        <ol class="ba-ecart" data-souder>
+          <li><b>Le numéro se compose d’un doigt.</b> Avant, il est écrit en petit, au bas d’un tableau.</li>
+          <li><b>Les heures sont au premier écran.</b> Avant, il faut les chercher dans un paragraphe justifié.</li>
+          <li><b>La page tient dans un téléphone.</b> Avant, 960 px fixes : on zoome et on glisse.</li>
+        </ol>
       </article>
 
-      <article class="project">
-        <figure class="shot">
-          <p class="shot-count" aria-hidden="true"><b>02</b><span>/ 05</span></p>
-          <div class="shot-vue" data-shot tabindex="0" role="group"
-               aria-label="Page d’accueil du site Pneus Mécanique. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
-            <img src="images/real-pneus.webp" width="900" height="6141" alt="Page d’accueil complète de la boutique Pneus Mécanique" loading="lazy" />
-          </div>
-          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
-          <i class="shot-jauge" aria-hidden="true"><b></b></i>
-        </figure>
-        <div class="project-meta">
-          <p class="project-num num" aria-hidden="true">02</p>
-          <h3>Pneus Mécanique</h3>
-          <p>Recherche par véhicule, panier, paiement. Le catalogue vit dans leur inventaire.</p>
-          <dl class="project-facts" data-souder>
-            <div><dt>Secteur</dt><dd>Commerce en ligne</dd></div>
-            <div><dt>Livrable</dt><dd>Boutique et recherche par véhicule</dd></div>
-            <div><dt>Ce que ça règle</dt><dd>La bonne référence de pneu se trouve par véhicule, sans appeler.</dd></div>
-          </dl>
+      <!-- ================= 02 · RESTAURANT ================= -->
+      <article class="ba" id="ba-restaurant">
+        <div class="ba-tete">
+          <p class="ba-num"><em class="num">02</em><span>Restaurant de quartier</span></p>
+          <p class="ba-etiq">Démonstration · entreprise fictive</p>
         </div>
+
+        <div class="ba-cadre" data-ba>
+          <div class="ba-cran" role="radiogroup" aria-label="Version affichée du site de restaurant">
+            <input class="sr-only" type="radio" name="ba-restaurant" id="ba-restaurant-avant" data-ba-vue="avant" checked>
+            <label for="ba-restaurant-avant"><b>Avant</b><span>comme on en voit encore</span></label>
+            <input class="sr-only" type="radio" name="ba-restaurant" id="ba-restaurant-apres" data-ba-vue="apres">
+            <label for="ba-restaurant-apres"><b>Après</b><span>ce qu’on livre</span></label>
+          </div>
+
+          <div class="ba-scene">
+            <div class="ba-vue ba-vue--avant">
+              <div class="v11 v11--resto">
+                <table class="v11-page" role="presentation">
+                  <tr><td colspan="2" class="v11-banniere">
+                    <span class="v11-nom v11-nom--script">Restaurant de quartier</span>
+                    <span class="v11-slogan">Cuisine maison depuis 1994</span>
+                  </td></tr>
+                  <tr><td colspan="2" class="v11-onglets">
+                    <span class="v11-onglet v11-on">Accueil</span><span class="v11-onglet">Menu</span><span class="v11-onglet">Photos</span><span class="v11-onglet">R&eacute;servations</span><span class="v11-onglet">Livre d&rsquo;or</span>
+                  </td></tr>
+                  <tr>
+                    <td class="v11-corps" colspan="2">
+                      <h1 class="v11-h1">Bienvenue&nbsp;!</h1>
+                      <div class="v11-photo v11-photo--resto" role="presentation"></div>
+                      <p class="v11-p">C&rsquo;est avec plaisir que nous vous accueillons dans notre &eacute;tablissement familial. Notre chef vous propose une cuisine du march&eacute; renouvel&eacute;e au fil des saisons, dans une ambiance chaleureuse et conviviale. Nous vous invitons &agrave; consulter notre menu ci-dessous et &agrave; nous t&eacute;l&eacute;phoner pour r&eacute;server votre table.</p>
+                      <!-- LE MENU EN PDF EST LE DEFAUT CENTRAL DE  D-046 -->
+                      <p class="v11-pdf"><span class="v11-a">&#128196; Cliquez ici pour t&eacute;l&eacute;charger notre menu (PDF, 4.2 Mo)</span></p>
+                      <p class="v11-p v11-p--centre"><b>R&Eacute;SERVATIONS&nbsp;: (000) 000-0000</b></p>
+                      <p class="v11-mini v11-mini--centre">Ce site est optimis&eacute; pour une r&eacute;solution de 1024&times;768<br>Vous avez besoin de Flash Player pour voir le diaporama</p>
+                      <div class="v11-flash">Contenu Flash non disponible</div>
+                    </td>
+                  </tr>
+                  <tr><td colspan="2" class="v11-pied">
+                    &copy; 2010 Restaurant de quartier &nbsp;|&nbsp; <span class="v11-a">resto2010@videotron.ca</span><br>
+                    Nombre de visiteurs&nbsp;: 0&nbsp;1&nbsp;2&nbsp;9&nbsp;4&nbsp;4
+                  </td></tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="ba-vue ba-vue--apres">
+              <div class="ap ap--resto">
+                <div class="ap-nav"><b>Restaurant de quartier</b><span>Menu · Réserver · Nous trouver</span></div>
+                <div class="ap-corps">
+                  <p class="ap-sur">Cuisine du marché · Table de 2 à 8</p>
+                  <h3 class="ap-titre">Le menu de la semaine, sur la page.</h3>
+                  <!-- LE MENU EST LA CHOSE POUR LAQUELLE ON VIENT.
+                       Il est donc le premier bloc, en toutes lettres,
+                       date — et pas un PDF de 4 Mo a telecharger. -->
+                  <div class="ap-menu">
+                    <p class="ap-menu-t">Semaine du 27 juillet</p>
+                    <dl>
+                      <div><dt>Entrée</dt><dd>Velouté de courge, huile de graines</dd></div>
+                      <div><dt>Plat</dt><dd>Truite de l’Estrie, beurre blanc</dd></div>
+                      <div><dt>Dessert</dt><dd>Tarte aux bleuets, crème épaisse</dd></div>
+                    </dl>
+                    <p class="ap-menu-p">Changé chaque lundi, depuis la salle.</p>
+                  </div>
+                  <p class="ap-cta"><span>Réserver une table</span><b>en ligne</b></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ol class="ba-ecart" data-souder>
+          <li><b>Le menu est sur la page.</b> Avant, c’est un PDF de 4 Mo à télécharger.</li>
+          <li><b>Une table se réserve sans appeler.</b> Avant, il n’y a qu’un numéro de téléphone.</li>
+          <li><b>Le menu se change depuis la salle.</b> Avant, il faut rappeler celui qui a fait le site.</li>
+        </ol>
       </article>
 
-      <article class="project">
-        <figure class="shot">
-          <p class="shot-count" aria-hidden="true"><b>03</b><span>/ 05</span></p>
-          <div class="shot-vue" data-shot tabindex="0" role="group"
-               aria-label="Page d’accueil du site Atelier Méridien. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
-            <img src="images/real-carrosserie.webp" width="900" height="8861" alt="Page d’accueil complète du site Atelier Méridien" loading="lazy" />
-          </div>
-          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
-          <i class="shot-jauge" aria-hidden="true"><b></b></i>
-        </figure>
-        <div class="project-meta">
-          <p class="project-num num" aria-hidden="true">03</p>
-          <h3>Atelier Méridien</h3>
-          <p>Les soumissions arrivent avec les photos du dommage.</p>
-          <dl class="project-facts" data-souder>
-            <div><dt>Secteur</dt><dd>Carrosserie</dd></div>
-            <div><dt>Livrable</dt><dd>Vitrine et demande de soumission</dd></div>
-            <div><dt>Ce que ça règle</dt><dd>Le chiffrage se fait sur photo, avant que le véhicule entre.</dd></div>
-          </dl>
+      <!-- ================= 03 · DENEIGEMENT ================= -->
+      <article class="ba" id="ba-deneigement">
+        <div class="ba-tete">
+          <p class="ba-num"><em class="num">03</em><span>Déneigement résidentiel</span></p>
+          <p class="ba-etiq">Démonstration · entreprise fictive</p>
         </div>
-      </article>
 
-      <article class="project">
-        <figure class="shot">
-          <p class="shot-count" aria-hidden="true"><b>04</b><span>/ 05</span></p>
-          <div class="shot-vue" data-shot tabindex="0" role="group"
-               aria-label="Page d’accueil du site MV Déneigement. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
-            <img src="images/real-neige.webp" width="900" height="5486" alt="Page d’accueil complète du site MV Déneigement" loading="lazy" />
+        <div class="ba-cadre" data-ba>
+          <div class="ba-cran" role="radiogroup" aria-label="Version affichée du site de déneigement">
+            <input class="sr-only" type="radio" name="ba-deneigement" id="ba-deneigement-avant" data-ba-vue="avant" checked>
+            <label for="ba-deneigement-avant"><b>Avant</b><span>comme on en voit encore</span></label>
+            <input class="sr-only" type="radio" name="ba-deneigement" id="ba-deneigement-apres" data-ba-vue="apres">
+            <label for="ba-deneigement-apres"><b>Après</b><span>ce qu’on livre</span></label>
           </div>
-          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
-          <i class="shot-jauge" aria-hidden="true"><b></b></i>
-        </figure>
-        <div class="project-meta">
-          <p class="project-num num" aria-hidden="true">04</p>
-          <h3>MV Déneigement</h3>
-          <p>Le client entre son adresse, voit si le territoire est couvert, et s’inscrit.</p>
-          <dl class="project-facts" data-souder>
-            <div><dt>Secteur</dt><dd>Déneigement</dd></div>
-            <div><dt>Livrable</dt><dd>Site de service et inscription</dd></div>
-            <div><dt>Ce que ça règle</dt><dd>La carte répond avant l’appel : le client voit si son adresse est couverte.</dd></div>
-          </dl>
-        </div>
-      </article>
 
-      <article class="project">
-        <figure class="shot">
-          <p class="shot-count" aria-hidden="true"><b>05</b><span>/ 05</span></p>
-          <div class="shot-vue" data-shot tabindex="0" role="group"
-               aria-label="Page d’accueil du site Studio Norden. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
-            <img src="images/real-interieur.webp" width="900" height="8593" alt="Page d’accueil complète du site Studio Norden" loading="lazy" />
+          <div class="ba-scene">
+            <div class="ba-vue ba-vue--avant">
+              <div class="v11 v11--neige">
+                <table class="v11-page" role="presentation">
+                  <tr><td colspan="2" class="v11-banniere">
+                    <span class="v11-nom">D&Eacute;NEIGEMENT R&Eacute;SIDENTIEL</span>
+                    <span class="v11-slogan">Rapide &middot; Fiable &middot; &Eacute;conomique</span>
+                  </td></tr>
+                  <tr><td colspan="2" class="v11-onglets">
+                    <span class="v11-onglet v11-on">Accueil</span><span class="v11-onglet">Tarifs</span><span class="v11-onglet">Territoire</span><span class="v11-onglet">Contrat</span><span class="v11-onglet">Contact</span>
+                  </td></tr>
+                  <tr>
+                    <td class="v11-corps" colspan="2">
+                      <p class="v11-defile"><span>*** IL RESTE DES PLACES POUR LA SAISON *** T&Eacute;L&Eacute;PHONEZ AVANT LE 15 OCTOBRE *** IL RESTE DES PLACES ***</span></p>
+                      <h1 class="v11-h1">D&eacute;neigement r&eacute;sidentiel et commercial</h1>
+                      <p class="v11-p">Notre entreprise dessert la r&eacute;gion depuis plus de quinze ans. Nous offrons un service de d&eacute;neigement rapide et professionnel &agrave; des tarifs des plus comp&eacute;titifs. Notre &eacute;quipement moderne et notre &eacute;quipe exp&eacute;riment&eacute;e nous permettent de r&eacute;pondre &agrave; vos besoins en tout temps durant la saison hivernale.</p>
+                      <!-- LE TERRITOIRE EN LISTE DE RUES : c'est le  D-047 -->
+                      <p class="v11-p"><b>TERRITOIRE DESSERVI&nbsp;:</b> rue des Ormes, rue du Moulin, rue Sainte-Anne, avenue des Pins, rue Principale (num&eacute;ros pairs seulement), rang Saint-Charles, rue de la Fabrique, avenue du Parc, rue Notre-Dame Est, rue Notre-Dame Ouest, chemin du Lac, rue des &Eacute;rables, rue Laurier, avenue Bourassa, rue du Coteau, rang Double, rue Papineau, avenue Victoria, rue Sainte-Famille, rue Champlain.</p>
+                      <p class="v11-p v11-p--centre"><b>POUR UNE SOUMISSION&nbsp;: (000) 000-0000</b><br>Laissez votre message, nous vous rappellerons dans les 48 heures ouvrables.</p>
+                      <div class="v11-badges v11-badges--large"><i>Valid<br>XHTML&nbsp;1.0</i><i>Valid<br>CSS</i><i>Best<br>viewed<br>1024&times;768</i></div>
+                    </td>
+                  </tr>
+                  <tr><td colspan="2" class="v11-pied">
+                    &copy; 2012 D&eacute;neigement r&eacute;sidentiel &nbsp;|&nbsp; <span class="v11-a">deneigement2012@hotmail.com</span><br>
+                    Ce site a &eacute;t&eacute; visit&eacute; 0&nbsp;0&nbsp;9&nbsp;8&nbsp;1&nbsp;2 fois depuis le 3 novembre 2009
+                  </td></tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="ba-vue ba-vue--apres">
+              <div class="ap ap--neige">
+                <div class="ap-nav"><b>Déneigement résidentiel</b><span>Territoire · Saison · Contact</span></div>
+                <div class="ap-corps">
+                  <p class="ap-sur">Saison complète · Contrat en ligne</p>
+                  <h3 class="ap-titre">Votre adresse est-elle couverte&nbsp;?</h3>
+                  <!-- LA QUESTION QUE LE VISITEUR SE POSE EST LA  D-048 -->
+                  <div class="ap-champ" role="presentation">
+                    <span class="ap-champ-lab">Votre adresse</span>
+                    <span class="ap-champ-val">148, rue des Ormes</span>
+                    <span class="ap-champ-btn">Vérifier</span>
+                  </div>
+                  <p class="ap-reponse"><b>Couverte.</b> Passage garanti avant 7 h.</p>
+                  <div class="ap-faits">
+                    <div><b>Inscription</b><span>En ligne, à 3 h du matin s’il le faut</span></div>
+                    <div><b>Territoire</b><span>Sur une carte, pas une liste de rues</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
-          <i class="shot-jauge" aria-hidden="true"><b></b></i>
-        </figure>
-        <div class="project-meta">
-          <p class="project-num num" aria-hidden="true">05</p>
-          <h3>Studio Norden</h3>
-          <p>Un portfolio qui laisse les photos respirer.</p>
-          <dl class="project-facts" data-souder>
-            <div><dt>Secteur</dt><dd>Design intérieur</dd></div>
-            <div><dt>Livrable</dt><dd>Portfolio et prise de contact</dd></div>
-            <div><dt>Ce que ça règle</dt><dd>Une nouvelle réalisation se publie sans nous appeler.</dd></div>
-          </dl>
         </div>
+
+        <ol class="ba-ecart" data-souder>
+          <li><b>On voit si son adresse est couverte.</b> Avant, il faut lire vingt noms de rue.</li>
+          <li><b>L’inscription se fait à 3 h du matin.</b> Avant, on laisse un message et on attend 48 h.</li>
+          <li><b>La page tient dans un téléphone.</b> Avant, 960 px fixes : on zoome et on glisse.</li>
+        </ol>
       </article>
 
     </div>
@@ -1366,11 +818,7 @@
     <div class="wrap band-loose">
       <div class="head" style="margin-top: var(--s-6);">
         <h2>Le style change selon le métier.</h2>
-        <!-- B2 · LE COMPTE ETAIT FAUX DE UN, ET C'EST LE TREIZIEME QUI
-             LE FAUSSAIT : « Votre industrie ici » est un emplacement
-             VIDE, pas un metier. Douze est le chiffre vrai, et le
-             treizieme se dit mieux comme une invitation que comme une
-             unite de compte. -->
+        <!-- B2 · LE COMPTE ETAIT FAUX DE UN, ET C'EST LE TREIZIEME QUI  D-049 -->
         <p>Douze métiers, douze aperçus — et le vôtre s’ajoute. Chacun montre la fonction qui fait la différence dans ce métier-là. Survolez ou tabulez pour voir, cliquez si c’est le bon.</p>
       </div>
 
@@ -1410,40 +858,10 @@
 
         </div>
 
-        <!-- LES TREIZE APERÇUS.
-             Ce ne sont plus des captures : ce sont des maquettes
-             construites en HTML et CSS. Trois raisons, dans l'ordre
-             d'importance.
-             1. Les douze images precedentes etaient des visuels de
-                banque, reduits 4 a 5 fois et recadres par
-                `object-fit: cover` : on n'y lisait rien et le
-                treizieme secteur n'avait rien du tout.
-             2. Une maquette construite est VRAIE : c'est du vrai
-                markup, mis en page pour de vrai, et elle bouge pour
-                de vrai. Elle ne peut pas se deformer.
-             3. Treize archetypes de mise en page differents dans une
-                seule langue visuelle demontrent exactement ce que la
-                section affirme : le style change selon le metier.
-             Chaque maquette montre LA fonction qui compte dans ce
-             metier-la. L'animation ne tourne que sur la maquette
-             active, et jamais sous `prefers-reduced-motion`.
-             Elles sont decoratives : la legende porte la description,
-             elle est en region polie et s'annonce au focus. -->
+        <!-- LES TREIZE APERÇUS.  D-050 -->
         <figure class="sector-preview" id="sectorPreview">
           <div class="mock-stage" id="mockStage" aria-hidden="true"></div>
-          <!-- LES TREIZE MAQUETTES VIVENT DANS UN `<template>`.
-               Leur markup pese 9 Ko et 240 elements. Dans le
-               document, il coutait une passe de style et de mise en
-               page au chargement pour n'en montrer qu'une seule :
-               mesure du 2026-07-25, la tache d'analyse du document
-               passait de 122 a 141 ms rien qu'a cause d'elles. Le
-               contenu d'un `<template>` est analyse mais jamais
-               rendu ni style : le cout tombe a zero, et le markup
-               reste ecrit ici, relisible, plutot que fabrique en
-               chaines de caracteres dans un script.
-               Sans JavaScript il n'y a donc pas d'apercu — mais la
-               legende, qui porte la description de ce qu'on
-               construit pour chaque secteur, elle, reste. -->
+          <!-- LES TREIZE MAQUETTES VIVENT DANS UN `<template>`.  D-051 -->
           <template id="tplSecteurs">
 
   <!-- 01 · RESTAURATION — la carte imprimee et l'heure de table -->
@@ -1820,16 +1238,7 @@
         <span class="sec-kicker">Votre industrie ici</span>
         <b class="sec-titre sec-titre--xl">On part de la matière, pas d’un gabarit.</b>
         <p>Les grains arrivent dispersés et s’assemblent. Votre site se construit à partir de ce que vous faites vraiment — pas d’un thème acheté et repeint.</p>
-        <!-- B1 · TROIS CORRECTIFS DANS TROIS CELLULES.
-             « 13 secteurs couverts » : le treizieme est un
-             emplacement vide, et « couverts » affirme en plus qu'ils
-             ont ete SERVIS. Douze, et « prepares » — montrer un
-             apercu est vrai, avoir servi le secteur ne l'est pas
-             encore.
-             « 4–6 semaines » etait la QUATRIEME valeur du site pour
-             le delai d'un site : le hero disait 1 semaine, Services
-             et la FAQ disent 2 a 4. On aligne sur la valeur
-             defendable, celle que Services engage. -->
+        <!-- B1 · TROIS CORRECTIFS DANS TROIS CELLULES.  D-052 -->
         <div class="sec-mat-data">
           <div><b>12</b><em>métiers préparés</em></div>
           <div><b>0</b><em>gabarit réutilisé</em></div>
@@ -1903,15 +1312,7 @@
         </div>
       </div>
 
-      <!-- D3 · D4 — LA MENTION LEGALE RESTE, LE JARGON PART DEVANT.
-           « 2048 px puis 4096 px » disait la mecanique et jamais le
-           benefice. « Pannellum 2.5.7 (MIT) » et « CC0 » sont
-           necessaires — l'attribution est honnete et on la garde,
-           c'est meme la seule chose du site qui avoue ce qu'elle ne
-           doit pas — mais un numero de version et deux licences
-           logicielles ne sont pas un argument de vente.
-           On separe donc les deux : d'abord ce qu'un patron de garage
-           comprend en trois secondes, ensuite les credits, en note. -->
+      <!-- D3 · D4 — LA MENTION LEGALE RESTE, LE JARGON PART DEVANT.  D-053 -->
       <p class="fine">
         La pièce s’ouvre tout de suite, puis se précise d’elle-même. Tout est hébergé chez nous :
         votre visite ne dépend d’aucun service extérieur.
@@ -1958,12 +1359,7 @@
         <button type="button" data-preset="perso" aria-pressed="true">À ma main</button>
       </div>
 
-      <!-- LES DEUX CHIFFRES, AVANT TOUTE INTERACTION.
-           Ils sont calcules et poses au premier rendu, sur des
-           valeurs par defaut plausibles : le visiteur comprend ce que
-           la section lui propose sans toucher a rien. Deux chiffres,
-           pas huit : les heures qu'il perd et ce que ca lui coute.
-           Le reste du detail existe encore, replie. -->
+      <!-- LES DEUX CHIFFRES, AVANT TOUTE INTERACTION.  D-054 -->
       <div class="roi-verdict">
         <div class="roi-vcell">
           <span class="label">Heures récupérées par semaine</span>
@@ -1991,13 +1387,7 @@
             <div class="roi-top"><label for="inRate">Ce que vous coûte une heure de main-d’œuvre</label><output class="num" id="outRate" for="inRate">42 $</output></div>
             <input type="range" id="inRate" min="15" max="120" value="42" />
           </div>
-          <!-- LE CURSEUR MAITRE.
-               Onze curseurs demandaient au visiteur de faire lui-meme
-               la ventilation de son administration avant d'obtenir un
-               chiffre. Celui-ci demande UN total et repartit les huit
-               taches en gardant leurs proportions actuelles. Le modele
-               a huit taches ponderees est intact : c'est la meme
-               formule, on a seulement change la porte d'entree. -->
+          <!-- LE CURSEUR MAITRE.  D-055 -->
           <div class="roi-field">
             <div class="roi-top"><label for="inAdmin">Heures par semaine sur l’administration</label><output class="num" id="outAdmin" for="inAdmin">26 h</output></div>
             <input type="range" id="inAdmin" min="0" max="80" value="26" />
@@ -2084,10 +1474,7 @@
             <p class="form-status" role="status" aria-live="polite"></p>
           </form>
 
-          <!-- POINT DE CAPTURE 1, le moins intrusif des trois : le
-               visiteur vient de voir SON chiffre, et le document qui
-               explique d'ou il sort arrive exactement a la question
-               qu'il se pose. Aucune interruption, aucune couche. -->
+          <!-- POINT DE CAPTURE 1, le moins intrusif des trois : le  D-056 -->
           <div class="appat" style="margin-top: var(--s-5);">
             <p><b>D’où sort ce chiffre ?</b> La méthode complète est dans notre document sur l’automatisation : 42 pages, 13 domaines, chaque chiffre avec sa source.</p>
             <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
@@ -2101,19 +1488,7 @@
                combien ; celui qui veut verifier la methode ouvre. -->
           <details class="roi-details roi-details--panel">
             <summary>Le détail du calcul<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-            <!-- B6 · DEUX LIGNES RETIREES LE 2026-07-29.
-                 « Erreurs manuelles évitées » et « Revenus gagnés,
-                 réponse plus rapide » pesaient 14 657 sur les
-                 53 751 affichés, soit 27 % du chiffre vedette, et
-                 aucune des deux n'avait de méthode publiée. La
-                 première comptait en outre une seconde fois les mêmes
-                 heures que « Heures facturables rendues » — voir le
-                 commentaire de `js/main.js`. Ce qui reste se défend
-                 ligne à ligne devant un client.
-                 E2 · LA NOTE DONNAIT DEUX TAUX HORAIRES EN MÊME TEMPS
-                 sans dire lequel produisait le montant : 35 dans le
-                 texte, 42 sur le curseur juste au-dessus. Elle dit
-                 maintenant lequel calcule quoi. -->
+            <!-- B6 · DEUX LIGNES RETIREES LE 2026-07-29.  D-057 -->
             <div class="roi-rows">
               <div><span>Jours de travail récupérés par an</span><b id="roiDays">0</b></div>
               <div><span>Ça équivaut à combien d’employés</span><b id="roiFte">0</b></div>
@@ -2140,48 +1515,13 @@
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
         <h2>À la main contre automatisé.</h2>
-        <!-- B5 · « OBSERVEES CHEZ DES PME » NE CITAIT RIEN.
-             Observees chez qui, combien, quand ? Le Calculateur juste
-             au-dessus cite sa methode ; le Comparatif affichait des
-             chiffres plus agressifs et aucune source. Or la source
-             existe et elle est publique : le document sur
-             l'automatisation, ou chaque chiffre porte la sienne. On
-             renvoie donc a ce qui existe deja. Et le « diagnostic »
-             est devenu l'appel de 30 minutes, comme partout ailleurs
-             dans le site — voir Services 02. -->
+        <!-- B5 · « OBSERVEES CHEZ DES PME » NE CITAIT RIEN.  D-058 -->
         <p>Six tâches tirées de notre document sur l’automatisation, où chaque chiffre porte sa source. Les vôtres sortiront de l’appel.</p>
       </div>
 
-      <!-- LE SCHEMA. Il manquait, et c'est lui qui porte la section.
-
-           Les six pistes par tache disent COMBIEN. Elles ne disent
-           pas ce que ca fait a une journee, et c'est pourtant la
-           seule question qu'un patron se pose. Le schema pose donc
-           les deux journees sur LE MEME AXE de huit heures, l'une
-           sous l'autre, et rend l'ecart comme un pont qui enjambe la
-           difference. On ne compare plus deux nombres : on voit un
-           trou.
-
-           Test a passer : comprendre l'ecart SANS lire un chiffre.
-           Il est tenu parce que la seule chose qui se voit d'abord,
-           c'est la longueur de deux traits sur une meme regle.
-
-           Lisible a l'arret : les barres sont a leur longueur finale
-           dans le document. L'animation ne fait que les tracer. -->
+      <!-- LE SCHEMA. Il manquait, et c'est lui qui porte la section.  D-059 -->
       <div class="ecart" data-ecart>
-        <!-- A8 · LE CADRE ETAIT LA FAUSSETE, PAS LE TABLEAU.
-             « Une journee de huit heures, part passee sur
-             l'administration » affirmait qu'une PME passe 91,7 % de
-             sa journee en administration : il resterait quarante
-             minutes pour faire le metier. Personne ne le croit, et un
-             patron de garage le contredit en une phrase.
-             Le tableau detaille, lui, est arithmetiquement JUSTE :
-             440 min a la main, 104 min automatisees, ecart 336 min =
-             5 h 36, verifie ligne a ligne. Et ces 440 minutes sont
-             celles d'une ENTREPRISE, toutes personnes confondues —
-             jamais celles d'un seul employe. On retire donc le cadre
-             et on garde la mesure : l'axe reste une regle de huit
-             heures, il n'affirme plus une proportion de journee. -->
+        <!-- A8 · LE CADRE ETAIT LA FAUSSETE, PAS LE TABLEAU.  D-060 -->
         <p class="label">Six tâches d’administration, chronométrées bout à bout, pour toute l’entreprise</p>
 
         <div class="ecart-corps">
@@ -2223,14 +1563,7 @@
         <p class="sr-only">Ces six tâches d’administration, chronométrées bout à bout pour toute l’entreprise : sept heures vingt à la main, une heure quarante-quatre une fois automatisé. L’écart est de cinq heures trente-six par jour.</p>
       </div>
 
-      <!-- LE DETAIL, TACHE PAR TACHE.
-           Une seule piste par ligne : le trait attenue est le temps
-           actuel, la portion d'accent est ce qui RESTE une fois
-           automatise. L'ecart est ce qui depasse, donc il n'y a
-           aucune soustraction a faire.
-           L'echelle a ete reduite : les quatre colonnes tenaient sur
-           18 rem de libelle et un chiffre en corps de titre, ce qui
-           debordait des 1280 px. -->
+      <!-- LE DETAIL, TACHE PAR TACHE.  D-061 -->
       <p class="label ecart-sous">Le détail, tâche par tâche</p>
       <div class="vs" id="vsTable">
         <div class="vs-row" data-manual="60" data-auto="15" style="--m:60%;--a:15%">
@@ -2293,44 +1626,7 @@
   </section>
 
   <!-- ===================== 07 · PROCESSUS ===================== -->
-  <!-- LE PARCOURS D'ATELIER.
-
-       Le brief dit « un chemin qui serpente, qui part sur le côté »,
-       et il pose aussitôt la contrainte qui gouverne : « le visiteur
-       doit toujours savoir à quelle étape il est et combien il en
-       reste. Un chemin animé où on se perd est pire que quatre
-       colonnes statiques. »
-
-       Les deux se contredisent si on les prend au pied de la lettre.
-       Un chemin qui part vraiment sur le côté, à gauche puis à
-       droite, oblige l'oeil à chercher la suite à chaque étape : on
-       gagne un effet et on perd le fil. L'arbitrage retenu :
-
-       · un FIL VERTICAL unique, toujours au même endroit, qui se
-         remplit au défilement. Sa portion pleine EST la progression,
-         donc l'orientation ne peut pas mentir ;
-       · les quatre stations s'accrochent dessus par un embranchement
-         à angle droit, et leur RETRAIT alterne. Le chemin serpente
-         donc réellement, mais autour d'un axe qui, lui, ne bouge
-         jamais ;
-       · un nodule carré par station, numéroté, posé SUR le fil : le
-         numéro n'est pas à côté du chemin, il est dedans ;
-       · un compteur « étape N sur 4 » et « il en reste K » en tête,
-         mis à jour au défilement.
-
-       LE FIL EST FAIT DE RECTANGLES EN `scaleY`, PAS D'UN TRACE SVG.
-       C'est un choix mesuré : seuls `opacity` et `transform` restent
-       sur le compositeur, alors qu'un `stroke-dashoffset` repeint le
-       tracé à chaque image. Et le plugin de tracé SVG traîne deux
-       défauts documentés — calcul de longueur faux sous Firefox,
-       rendu épais des contours de `<rect>` sous iOS — qui touchent
-       exactement l'exigence « net au pixel » de ce projet.
-
-       Chaque station porte un COMPOSANT qui se construit à l'écran :
-       la fiche d'appel s'écrit, la maquette s'assemble en limaille,
-       le code se pose ligne par ligne, le site passe en ligne. Ce
-       n'est pas de la décoration : chaque composant montre ce que
-       l'étape produit. -->
+  <!-- LE PARCOURS D'ATELIER.  D-062 -->
   <section id="processus">
       <!-- ===== FRONTIERE 08 · 07 vers 08 =====
            G4 : aligner (droite). Une methode, ce sont des pieces qui se mettent en ligne.
@@ -2377,16 +1673,7 @@
                 <p class="vis-l"><em>Clientèle</em><i></i></p>
                 <p class="vis-l"><em>Ce qui bloque</em><i></i></p>
                 <p class="vis-l"><em>Échéance</em><i></i></p>
-                <!-- C6 · LES 12 H SONT LE DELAI DE REPONSE, PAS CELUI
-                     D'UNE PROPOSITION. Partout ailleurs — hero, Agence,
-                     FAQ, Contact, Parcours, modales — « 12 h » est le
-                     delai de reponse, et le Contact precise que cette
-                     reponse peut etre « des questions s'il en manque,
-                     OU directement une proposition ». La figure
-                     transformait ce conditionnel en engagement ferme
-                     de livrable. Le texte de l'etape, lui, dit
-                     correctement qu'on repart avec une proposition
-                     ecrite : il n'y a rien a lui retirer. -->
+                <!-- C6 · LES 12 H SONT LE DELAI DE REPONSE, PAS CELUI  D-063 -->
                 <p class="vis-sortie"><b>Réponse</b><s>12 h</s></p>
               </div>
             </figure>
@@ -2404,10 +1691,7 @@
               <p class="parc-livre"><i></i>Ce que vous recevez <b>les maquettes, écran et téléphone</b></p>
             </div>
 
-            <!-- La maquette s'assemble en limaille : les blocs
-                 arrivent dispersés et se reprennent à leur place.
-                 C'est le motif du hero à l'échelle d'une mise en
-                 page — la même idée, pas une idée de plus. -->
+            <!-- La maquette s'assemble en limaille : les blocs  D-064 -->
             <figure class="parc-vis vis--maq" aria-hidden="true">
               <div class="vis-tete"><b>Maquette · v3</b><em>Approuvée</em></div>
               <div class="vis-corps vis-grille">
@@ -2435,21 +1719,12 @@
               <div class="vis-corps">
                 <div class="vis-code">
                   <p><em>01</em><span class="c-k">section</span> <span class="c-n">accueil</span></p>
-                  <!-- D5 · « grille 12 colonnes » est une notion de
-                       mise en page INTERNE : elle ne decrit aucun
-                       livrable que le client puisse reconnaitre, alors
-                       que la figure est censee lui montrer ce qu'il
-                       verra de l'avancement. -->
+                  <!-- D5 · « grille 12 colonnes » est une notion de  D-065 -->
                   <p><em>02</em><span class="c-k">galerie</span> <span class="c-n">photos intégrées</span></p>
                   <p><em>03</em><span class="c-k">panier</span> <span class="c-a">branché</span></p>
                   <p><em>04</em><span class="c-k">paiement</span> <span class="c-a">testé</span></p>
                 </div>
-                <!-- D6 · « Tests passés — 24 / 24 » cumulait deux
-                     defauts : le client ne sait pas ce qu'est un test
-                     automatise, ni pourquoi 24, ni ce qui arriverait a
-                     23 ; et le 24 etait invente, donc invérifiable.
-                     Ce qui reste dit la meme chose sans chiffre a
-                     defendre. -->
+                <!-- D6 · « Tests passés — 24 / 24 » cumulait deux  D-066 -->
                 <p class="vis-sortie"><b>Vérifications</b><s>faites</s></p>
               </div>
             </figure>
@@ -2463,10 +1738,7 @@
           <div class="parc-corps">
             <div class="parc-txt">
               <h3>On met en ligne</h3>
-              <!-- « une heure de formation » retire le 2026-07-29 :
-                   ce n'est pas offert. Ce qui reste tient : la remise
-                   des acces est un fait, le delai de reponse est
-                   affiche a cinq endroits du site. -->
+              <!-- « une heure de formation » retire le 2026-07-29 :  D-067 -->
               <p>Mise en ligne, remise de tous les accès, et on répond encore après la facture. Le code, l’hébergement et l’adresse web sont à vous : un autre développeur peut reprendre demain matin.</p>
               <p class="parc-livre"><i></i>Ce que vous recevez <b>les clés, le code, et une réponse en 12 h</b></p>
             </div>
@@ -2490,27 +1762,7 @@
   </section>
 
   <!-- ===================== 08 · AGENCE ===================== -->
-  <!-- QUATRE ENGAGEMENTS, ET LA PREUVE DE CHACUN.
-
-       C'etaient quatre blocs de texte poses sur le fond. Les
-       arguments etaient bons, ils ne MONTRAIENT rien : un visiteur
-       qui lit « le prix est dit au depart » sur un site d'agence
-       lit la meme phrase que sur tous les autres sites d'agence.
-       Ce qui distingue, ce n'est pas la promesse, c'est sa preuve.
-
-       Chaque engagement porte donc un objet qui le demontre :
-       · le prix, deux barres de MEME longueur, estimation et
-         facture, avec le signe egal au milieu ;
-       · l'accord, une case qui se coche avant que le chantier
-         s'ouvre ;
-       · la propriete, une remise de cles ou les trois lignes
-         basculent a votre nom ;
-       · la vitesse, une semaine graduee ou les maquettes tombent
-         le cinquieme jour.
-
-       Aucun montant nulle part : la preuve du premier engagement
-       est que les deux barres sont EGALES, pas ce qu'elles valent.
-       C'est plus fort, et ca ne publie pas notre grille. -->
+  <!-- QUATRE ENGAGEMENTS, ET LA PREUVE DE CHACUN.  D-068 -->
   <section id="apropos">
       <!-- ===== FRONTIERE 09 · 08 vers 09 =====
            G4 : souder (droite). La methode se termine, on signe : un filet unique se soude sur toute la largeur.
@@ -2603,29 +1855,7 @@
   </section>
 
   <!-- ===================== 09 · RÉFÉRENCE ===================== -->
-  <!-- DEUX CORRECTIONS, ET LA SECONDE EST STRATEGIQUE.
-
-       1. LE FOND. Le bloc etait en `--surface-inverse`, c'est-a-dire
-          « l'inverse du theme ». En clair, ca donnait le seul aplat
-          fonce de la page, ce qui etait l'intention. En SOMBRE, ca
-          donnait un aplat CLAIR au milieu d'un site sombre : le bloc
-          criait, et pas dans le bon sens. La section est maintenant
-          sombre dans les deux themes — en clair par inversion, en
-          sombre par elevation de surface.
-
-       2. LA GRILLE DE COMMISSIONS EST RETIREE. Elle disait au
-          visiteur comment le montant se calcule, donc elle
-          l'invitait a calculer : « ce projet vaut 10 000, je touche
-          500 ». Le montant qui attire est le PLAFOND, pas le
-          barème. On garde donc « jusqu'à 5 000 $ », qui est vrai, et
-          le detail se revele dans le formulaire, apres que le
-          visiteur a manifeste son interet. C'est aussi ce qui evite
-          de publier notre structure de prix : un barème de
-          commissions par tranche de contrat la donne en creux.
-
-       Le mecanisme en trois temps ne se contente plus d'etre
-       decrit : chaque temps porte l'objet qui le prouve. Le texto
-       part, la signature se trace, le virement tombe. -->
+  <!-- DEUX CORRECTIONS, ET LA SECONDE EST STRATEGIQUE.  D-069 -->
   <section id="reference">
       <!-- ===== FRONTIERE 10 · 09 vers 10 =====
            G4 : relais-montant (droite). Le seul argument de la section est un chiffre : il roule d'un cran.
@@ -2644,10 +1874,7 @@
           <p style="margin-top: var(--s-4);">Un nom et un numéro suffisent. Vous n’avez aucune vente à faire, aucun suivi à donner, et rien à avancer.</p>
         </div>
 
-        <!-- Le plafond est un bloc a lui, dans la colonne de droite :
-             en le laissant dans l'en-tete, la moitie droite de la
-             premiere rangee restait vide — la « colonne morte » que
-             cette section avait deja eue une fois. -->
+        <!-- Le plafond est un bloc a lui, dans la colonne de droite :  D-070 -->
         <p class="referral-max">
           <span class="label">Jusqu’à</span>
           <b class="num">5 000 $</b>
@@ -2716,19 +1943,11 @@
       </div>
     <div class="wrap band-loose">
       <div class="faq-grid" style="margin-top: var(--s-6);">
-        <!-- La colonne de gauche etait un en-tete collant de 140 px
-             dans une colonne de 835 : 700 px de vide sans intention,
-             juste au moment ou le visiteur a une question sans
-             reponse. Elle porte maintenant la sortie de secours. -->
+        <!-- La colonne de gauche etait un en-tete collant de 140 px  D-071 -->
         <div class="faq-head head">
           <p class="head-index">9 questions</p>
           <h2>Questions fréquentes.</h2>
-          <!-- B3 · « LES NEUF QU'ON NOUS POSE LE PLUS » affirmait un
-               historique de questions recues qu'un visiteur ne peut pas
-               verifier, et qu'une maison jeune ne peut pas demontrer si
-               on le lui demande. Les neuf reponses, elles, sont bonnes
-               et ne perdent rien : c'est l'affirmation de VOLUME qui
-               disparait, pas le contenu. -->
+          <!-- B3 · « LES NEUF QU'ON NOUS POSE LE PLUS » affirmait un  D-072 -->
           <p>Neuf questions, et la vraie réponse à chacune.</p>
           <div class="faq-aside">
             <p class="label">Votre question n’y est pas</p>
@@ -2756,10 +1975,7 @@
           </details>
           <details class="faq-item">
             <summary>Est-ce qu’on peut modifier le site nous-mêmes ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-            <!-- « la formation est incluse au lancement » retire le
-                 2026-07-29 : ce n'est pas offert. Ce qui reste est
-                 une propriete du produit, verifiable par le client le
-                 jour de la remise, et non une promesse de service. -->
+            <!-- « la formation est incluse au lancement » retire le  D-073 -->
             <p>Oui. Vous changez vos textes et vos photos vous-mêmes, sans passer par nous et sans surcoût.</p>
           </details>
           <details class="faq-item">
@@ -2768,32 +1984,12 @@
           </details>
           <details class="faq-item">
             <summary>Le site nous appartient à 100 % ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-            <!-- CORRIGE LE 2026-07-29. Cette reponse disait « aucun
-                 abonnement obligatoire pour garder le site en ligne ».
-                 C'etait FAUX : un site en ligne a toujours un cout
-                 d'hebergement. On separe donc les deux choses que
-                 l'ancienne phrase confondait — le cout technique, qui
-                 est reel, modeste et annonce d'avance, et l'abonnement
-                 A L'AGENCE, qui lui n'existe pas. Dit comme ca, c'est
-                 plus fort que l'ancienne version : elle promettait
-                 l'impossible, celle-ci nomme la seule chose qui
-                 compte pour le client. -->
+            <!-- CORRIGE LE 2026-07-29. Cette reponse disait « aucun  D-074 -->
             <p>Oui. Le code, l’hébergement et l’adresse web sont à votre nom : un autre développeur peut reprendre demain matin. Un site en ligne a toujours un coût d’hébergement — le vôtre est modeste, il vous est annoncé avant la signature, et vous pouvez le payer directement au fournisseur si vous préférez. Ce qui n’existe pas ici, c’est l’abonnement à l’agence qu’il faut payer pour garder l’accès à son propre site.</p>
           </details>
           <details class="faq-item">
             <summary>Quelles technologies utilisez-vous ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-            <!-- D2 · V4 — L'ORDRE ETAIT INVERSE, ET LA LISTE ETAIT
-                 INCOMPLETE.
-                 La vraie reponse — un autre developpeur reprend le code
-                 demain matin — arrivait apres quatre noms de
-                 technologies et se noyait dedans. Pire : ce site-ci est
-                 en HTML, CSS et JavaScript sans cadriciel ni etape de
-                 compilation, donc la vitrine ne demontrait AUCUNE des
-                 quatre. Un prospect technique, ou un concurrent, le
-                 voit en trente secondes.
-                 On met donc le benefice devant, et on nomme la
-                 fourchette reelle — ce qui rend la reponse verifiable
-                 sur ce site meme au lieu de contredite par lui. -->
+            <!-- D2 · V4 — L'ORDRE ETAIT INVERSE, ET LA LISTE ETAIT  D-075 -->
             <p>Des technologies courantes, choisies pour qu’un autre développeur reprenne le code demain matin sans vous appeler. Selon le projet : HTML, CSS et JavaScript quand le site doit être le plus rapide possible — c’est le cas de celui que vous lisez ; React, Next.js, Node.js ou Python quand il faut une application. Rien d’exotique, rien qui vous enferme.</p>
           </details>
           <details class="faq-item">
@@ -2810,34 +2006,7 @@
   </section>
 
   <!-- ===================== 11 · CONTACT ===================== -->
-  <!-- CE QUI MANQUAIT : LE DECLIC.
-
-       La composition etait juste — cinq entrees, trois poids — mais
-       elle etait muette. Un patron de PME devant cinq portes ne
-       choisit pas : il remet a plus tard. Trois choses ont ete
-       ajoutees, et chacune repond a une hesitation precise.
-
-       1. « LAQUELLE ? » L'entree principale n'est plus simplement
-          plus grande, elle est en MINIUM PLEIN. C'est le seul aplat
-          d'accent de toute la page hors boutons, et il est ici
-          parce que c'est ici que le visiteur peut agir sur la
-          matiere — la regle d'accent du projet, appliquee a la
-          lettre. Les quatre autres descendent franchement d'un cran.
-
-       2. « ET APRES ? » Une frise de trois temps dit ce qui se passe
-          une fois le message parti, avec les delais. L'inconnu
-          d'apres l'envoi est ce qui retient le doigt au-dessus du
-          bouton.
-
-       3. « CA M'ENGAGE A QUOI ? » La reassurance etait la, elle
-          reste, et elle gagne une quatrieme ligne : ce qu'on ne
-          fait PAS. Dire ce qu'on ne fera pas vaut plus qu'une
-          promesse de plus.
-
-       LES ETATS DE SURVOL SONT FRANCS : la tuile monte d'une
-       surface, son filet d'accent se compose en grains depuis la
-       gauche, et la fleche s'encliquette de six pixels. Aucune
-       ombre, aucun agrandissement : rien ne flotte. -->
+  <!-- CE QUI MANQUAIT : LE DECLIC.  D-076 -->
   <section id="contact">
       <!-- ===== FRONTIERE 12 · 11 vers 12 =====
            G4 : degager (bas). Un panneau se lit de haut en bas : la tuile de contact se degage dans ce sens.
@@ -2851,15 +2020,7 @@
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
         <h2>Cinq façons de nous joindre.</h2>
-        <!-- B4 · E3 — UNE STATISTIQUE INVENTEE SUR NOTRE PROPRE
-             TRAFIC, ET UN COMPTE QUI NE FERMAIT PLUS.
-             « la bonne dans neuf cas sur dix » : personne ne peut la
-             produire si un client la conteste, et elle n'ajoutait
-             rien — le classement visuel dit deja laquelle est
-             recommandee. En la retirant, « le dixieme » disparait
-             aussi, et c'etait lui qui refermait le compte de cinq. La
-             sixieme voie — l'adresse courriel, en bas de section —
-             est donc nommee ici : cinq cartes, plus l'adresse. -->
+        <!-- B4 · E3 — UNE STATISTIQUE INVENTEE SUR NOTRE PROPRE  D-077 -->
         <p>La première est celle qu’on recommande. Les quatre autres sont là pour les cas particuliers — et l’adresse courriel est en bas de page si vous préférez écrire.</p>
       </div>
 
@@ -2924,13 +2085,7 @@
             <span class="num">01</span>
             <strong>On le lit</strong>
             <span>Une vraie personne, pas un accusé de réception automatique.</span>
-            <!-- A6 · « LE JOUR MEME » EST INTENABLE ET SE CONTREDIT A
-                 TROIS LIGNES D'ECART. Un message depose a 23 h ou le
-                 samedi ne peut pas etre lu le jour meme, et l'etape 02
-                 juste dessous annonce « sous 12 h ouvrables ». Le
-                 delai affiche partout ailleurs dans le site est
-                 « 12 h ouvrables » : on aligne, et la promesse
-                 redevient tenable un dimanche soir. -->
+            <!-- A6 · « LE JOUR MEME » EST INTENABLE ET SE CONTREDIT A  D-078 -->
             <b class="suite-delai">le prochain jour ouvrable</b>
           </li>
           <li>
@@ -2966,10 +2121,7 @@
   </section>
 
   <!-- ===================== PIED DE PAGE ===================== -->
-  <!-- ===== FRONTIERE 12 · 12 vers le pied =====
-     G4 : volet + cran (bas). La boucle se ferme sur la plaque de
-     l'entree : le monogramme revient, roule d'un cran, et c'est le
-     dernier mouvement du site. -->
+  <!-- FRONTIERE 12 · 12 vers le pied  D-079 -->
 <div class="seuil seuil--pied" data-seuil data-de="12" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
   <div class="wrap seuil-in">
     <div class="section-rule draw seuil-filet" data-section-rule></div>
@@ -3022,11 +2174,7 @@
         </nav>
       </div>
     </div>
-    <!-- PHASE 8 · V1 — LA DERNIERE PLAQUE. Le monogramme geant du
-         pied ne s'affichait pas, il etait la. Il se DEGAGE
-         maintenant du bas, sous la meme arete franche que tout le
-         reste : la page s'ouvre sur une plaque de limaille qui se
-         compose, elle se ferme sur la meme plaque qu'on degage. -->
+    <!-- PHASE 8 · V1 — LA DERNIERE PLAQUE. Le monogramme geant du  D-080 -->
     <p class="footer-mega" aria-hidden="true" translate="no" data-degage="haut">APED</p>
     <div class="wrap footer-legal">
       <span>© 2026 APED Agence. Tous droits réservés.</span>
@@ -3036,69 +2184,14 @@
 
 </main>
 
-<!-- ===================== LE CADEAU =====================
-     UN SEUL POPUP SUR TOUT LE SITE, sur `<dialog>` natif avec
-     `showModal()`. Ce n'est pas un detail d'outillage : le natif
-     fournit gratuitement le piege de focus, l'inertie du reste de
-     la page, la fermeture par Echap et la couche superieure — donc
-     aucun conflit de `z-index` possible.
-
-     CE QUI A CHANGE, ET POURQUOI, LE 2026-07-26.
-
-     1. IL Y AVAIT TROP DE CHOSES A LIRE. L'ancienne version tenait
-        un titre de quatre lignes, un paragraphe de quatre lignes,
-        deux puces, DEUX boutons de telechargement, un champ, un
-        libelle de champ long et un lien de refus. Neuf objets a
-        trier. Un popup se lit en deux secondes ou il se ferme : le
-        visiteur ne comprenait pas ce qu'on lui offrait, et il avait
-        raison de ne pas comprendre.
-
-     2. IL Y AVAIT TROIS ACTIONS CONCURRENTES. Telecharger le
-        premier, telecharger le second, envoyer son courriel. Trois
-        appels a l'action dans un encart de deux secondes ne font
-        pas trois chances : ils font une hesitation. Il n'y en a
-        plus qu'UNE, et le benefice est dans son libelle.
-
-     3. LE CADEAU NE SE VOYAIT PAS. Deux etiquettes de texte
-        tenaient lieu de documents. On montre maintenant les VRAIES
-        couvertures, rendues depuis la source des PDF par
-        `tools/couvertures.mjs` : elles ne peuvent pas se
-        desynchroniser du document livre.
-
-     CE QUI N'A PAS CHANGE : le cadeau reste un cadeau. Les deux
-     documents partent par courriel ET sont telechargeables sur
-     place a la seconde ou l'adresse est donnee — meme si l'envoi
-     echoue. Ils sont aussi en clair dans le pied de page, sans
-     aucun courriel. Le champ sert a rester en contact, pas a ouvrir
-     la porte.
-
-     UN SEUL CHAMP. Au-dela de trois champs, le jeu de donnees de
-     reference mesure une chute de 2,2 % a 1,5 %. On demande le
-     courriel, rien d'autre : pas de nom, pas d'entreprise, pas de
-     telephone.
-
-     LA MISE EN SCENE EST EN CSS, PAS EN GSAP. Le popup peut
-     s'ouvrir a la onzieme seconde, donc apres la seconde vague de
-     scripts — mais il peut aussi s'ouvrir sur un engagement fort
-     AVANT elle. Une entree qui dependrait de GSAP apparaitrait
-     alors sans mise en scene une fois sur dix. En CSS, elle joue
-     toujours, a tous les paliers.
-     · ENTREE : V1 · DEGAGER, arete franche de haut en bas — un
-       panneau se lit de haut en bas. Jamais un fondu.
-     · LES COUVERTURES : V2 · S'ALIGNER, elles arrivent decalees en
-       alternance et se reprennent. Aucun depassement.
-     · SORTIE : la RECIPROQUE, l'arete repasse par ou elle est
-       venue. -->
+<!-- LE CADEAU  D-081 -->
 <dialog class="cadeau" id="cadeau" aria-labelledby="cadeauTitre">
   <div class="cadeau-in">
     <button class="cadeau-x btn-icon" type="button" data-cadeau-non aria-label="Fermer">
       <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
     </button>
 
-    <!-- LE VISUEL. Deux vraies couvertures, decalees comme deux
-         pieces posees l'une sur l'autre sur un banc. `width` et
-         `height` sont ecrits : aucun decalage de mise en page
-         possible pendant que l'image arrive. -->
+    <!-- LE VISUEL. Deux vraies couvertures, decalees comme deux  D-082 -->
     <div class="cadeau-vue" aria-hidden="true">
       <img class="cadeau-couv cadeau-couv--1" src="images/doc-automatisation.webp"
            width="560" height="725" alt="" loading="lazy" decoding="async" />
@@ -3107,26 +2200,7 @@
     </div>
 
     <div class="cadeau-dire">
-      <!-- CE QU'ON DIT, ET DANS QUEL ORDRE ON LE DIT.
-
-           1. L'ETIQUETTE dit GRATUIT et SANS COMPTE. C'est la
-              premiere objection d'un patron de PME, on la leve avant
-              qu'elle se forme.
-           2. LE TITRE FAIT TROIS MOTS. « C'est pour vous. » Il n'y a
-              rien a decoder. On a ecarte « Bravo, vous avez recu un
-              cadeau » : le visiteur n'a rien accompli — il a laisse
-              une page ouverte onze secondes — et le feliciter est ce
-              qui se lit le plus vite comme de la manipulation. Sur un
-              site dont la voix est « le prix est dit au premier
-              appel », ca affaiblit exactement ce qu'on veut renforcer.
-           3. LA FICHE porte les chiffres bruts. C'est l'idiome du
-              site — la fiche technique du hero, le compteur des
-              chantiers, le bareme — et c'est ce qui rend la chose
-              IMPRESSIONNANTE sans un seul adjectif. « 24 taches
-              chiffrees » dit plus que « guide complet et detaille ».
-           4. UNE LIGNE de benefice. Ce qu'il pourra faire, pas ce
-              qu'il y a dedans.
-           Puis un champ, un bouton, une reassurance, une sortie. -->
+      <!-- CE QU'ON DIT, ET DANS QUEL ORDRE ON LE DIT.  D-083 -->
       <p class="label cadeau-eyebrow">Cadeau &middot; Gratuit &middot; Sans compte</p>
       <h2 id="cadeauTitre">C&rsquo;est pour vous.</h2>
 
@@ -3138,34 +2212,7 @@
 
       <p class="cadeau-lead">Ce que vous pouvez arr&ecirc;ter de faire &agrave; la main, ce que &ccedil;a vous co&ucirc;te aujourd&rsquo;hui, et par o&ugrave; commencer.</p>
 
-      <!-- ============================================================
-           A3 · C4 · C5 — LE COURRIEL N'EST PLUS UN PEAGE, ET L'ORDRE
-           DES DEUX BLOCS A ETE INVERSE.
-
-           CE QUI ETAIT FAUX. Le pied de page, Services et le
-           Calculateur offrent LES DEUX MEMES documents « gratuits et
-           sans courriel » — et les liens du pied pointent bien
-           directement sur les PDF. Ce popup, lui, exigeait une adresse
-           (`required`) pour la meme chose, derriere le libelle
-           « Recevoir mes deux guides ». C'est exactement la faute que
-           le proprietaire venait de retirer du hero — « 60 s · Sans
-           donner votre courriel » —, deplacee ici. Un visiteur qui lit
-           le popup puis le pied trouve deux reponses differentes a la
-           meme question, et c'est la contradiction la plus facile a
-           opposer parce qu'elle tient sur un seul ecran.
-
-           CE QUI EST FAIT. Les deux guides sont TELECHARGEABLES TOUT DE
-           SUITE, sans rien donner. La remise n'est donc plus cachee :
-           elle vient AVANT le formulaire, parce que l'ordre visuel EST
-           la promesse. Le courriel devient une commodite — retrouver
-           les guides plus tard — et le bouton d'envoi est secondaire.
-
-           C5 · « Desabonnement en un clic » promettait un mecanisme qui
-           doit exister le jour ou quelqu'un l'utilise, et il
-           contredisait la ligne « jamais de liste d'envoi non
-           demandee » de la section Contact : un desabonnement suppose
-           un abonnement. Il n'y a pas de liste d'envoi. On le dit.
-           ============================================================ -->
+      <!-- A3 · C4 · C5 — LE COURRIEL N'EST PLUS UN PEAGE, ET L'ORDRE  D-084 -->
       <div class="cadeau-recu">
         <a class="btn btn--primary" href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">
           Guide 1 &middot; Automatisation
@@ -3430,19 +2477,7 @@
       <div class="step" data-pstep="4" hidden>
         <p class="step-q">Budget et échéancier.</p>
         <div class="form-row">
-          <!-- LES FOURCHETTES CHIFFREES ONT SAUTE, et ce n'etait pas
-               un oubli du premier nettoyage : ce champ demandait le
-               budget DU VISITEUR, donc il ne publiait pas nos prix
-               directement. Mais une liste « moins de 5 000 $ / 5 000
-               a 15 000 / 15 000 a 50 000 / plus de 50 000 » dit en
-               creux entre quelles bornes nos projets tombent, et
-               elle est lisible par n'importe qui en ouvrant la
-               modale. C'est exactement « un montant qui revele
-               notre structure de prix ».
-               Ce qui la remplace qualifie mieux, d'ailleurs : savoir
-               si l'enveloppe est deja votee compte plus que son
-               montant, et le montant se dit de vive voix au premier
-               appel. -->
+          <!-- LES FOURCHETTES CHIFFREES ONT SAUTE, et ce n'etait pas  D-085 -->
           <div class="field">
             <label for="prBudget">Où en êtes-vous côté budget ?</label>
             <select id="prBudget" name="budget" required>
@@ -3672,18 +2707,7 @@
 
       <details class="faq-item">
         <summary>Voir la grille de commissions<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-        <!-- B9 · CINQ BORNES AMBIGUES DANS LE SEUL ENGAGEMENT
-             FINANCIER CHIFFRE DU SITE ENVERS UN TIERS.
-             L'ancienne redaction disait « 500 de 1 000 a 10 000,
-             700 de 10 000 a 30 000 », en dollars : a un contrat de
-             EXACTEMENT 10 000, la commission valait 500 ou 700 sans
-             qu'on puisse trancher. Idem a 30 000, 50 000, 80 000 et
-             100 000. Une ambiguite dans un engagement ecrit se regle
-             en faveur de celui a qui on l'a promis — l'ecrire
-             explicitement ne coute donc rien et supprime la dispute.
-             Les bornes sont maintenant fermees d'un seul cote, et le
-             plancher — rien n'etait prevu sous 1 000 — est nomme au
-             lieu d'etre un silence. -->
+        <!-- B9 · CINQ BORNES AMBIGUES DANS LE SEUL ENGAGEMENT  D-086 -->
         <p>Commission versée uniquement lorsque le contrat est signé, selon sa valeur : de 1 000 $ à 9 999 $ → 500 $ · de 10 000 $ à 29 999 $ → 700 $ · de 30 000 $ à 49 999 $ → 1 500 $ · de 50 000 $ à 79 999 $ → 3 000 $ · de 80 000 $ à 99 999 $ → 4 000 $ · 100 000 $ et plus → 5 000 $. Sous 1 000 $, il n’y a pas de commission.</p>
       </details>
 
@@ -3799,13 +2823,7 @@
           <span id="priceLow">0</span> $ à <span id="priceHigh">0</span> <span id="priceSuite">$</span>
         </p>
         <p class="roi-note">Ordre de grandeur, calculé sur vos réponses. C’est une fourchette publiée, pas un devis : le prix ferme est dit au premier appel, et c’est celui de la facture.</p>
-        <!-- L'ETAT DE L'ENVOI VIT ICI, ET C'EST UN DEFAUT CORRIGE.
-             La fourchette s'affiche a l'etape 8 ; le `.form-status` du
-             formulaire, lui, vit a l'etape 7, qui devient `hidden` a ce
-             moment-la. Un message d'echec pose la-bas — et le bouton de
-             repli avec lui — etait donc invisible exactement quand il
-             servait. C'est le meme genre de piege qu'un test qui
-             verrouille son defaut : tout etait juste, sauf l'endroit. -->
+        <!-- L'ETAT DE L'ENVOI VIT ICI, ET C'EST UN DEFAUT CORRIGE.  D-087 -->
         <p class="form-status" id="estimateStatus" role="status" aria-live="polite"></p>
         <button class="btn btn--primary" type="button" data-modal-switch="modal-booking" style="justify-self:start">
           Réserver un appel
@@ -3817,75 +2835,18 @@
   </div>
 </div>
 
-<!-- GSAP auto-heberge : aucune requete tierce sur toute la page, donc
-     aucune panne de CDN possible et rien a preconnecter.
-
-     LES SCRIPTS NE SONT PLUS SUR LE CHEMIN DU PREMIER RENDU.
-     Mesure du 2026-07-25 : en `defer`, l'analyse du document et
-     l'evaluation des 112 Ko de GSAP et ScrollTrigger formaient une
-     tache de 222 ms qui s'executait AVANT que le navigateur ait
-     l'occasion de peindre. Resultat : LCP a 588 ms pour une cible de
-     300, alors que le texte etait pret depuis longtemps.
-
-     Ils sont donc injectes apres deux images, c'est-a-dire apres que
-     la page a ete peinte au moins une fois. `async = false` sur des
-     balises injectees garantit l'ORDRE d'execution tout en laissant
-     les huit fichiers se telecharger en parallele.
-
-     Ce n'est pas un pari : la page est concue pour etre complete
-     sans script. Sans eux, le texte est la, les liens marchent, les
-     formulaires se soumettent normalement, et `html.js` n'est jamais
-     pose donc rien n'est masque en attendant une animation. -->
+<!-- GSAP auto-heberge : aucune requete tierce sur toute la page, donc  D-088 -->
 <script>
   (function () {
-    /* DEUX VAGUES, ET L'ORDRE EST L'ARGUMENT.
-
-       Les huit fichiers partaient ensemble : leur evaluation formait
-       UNE tache de 51 ms apres la peinture. Mesure du 2026-07-26,
-       liste complete des taches longues : `109ms@39 · 51ms@257`.
-
-       Vague 1 — la MATIERE et l'USAGE. La plaque du hero, la
-       bascule de theme, le rail des services, les cadres de projet,
-       le popup, les six formulaires, l'orientation. Tout ce avec
-       quoi le visiteur peut AGIR.
-       Vague 2 — la CHOREGRAPHIE. Les 112 Ko de GSAP et
-       ScrollTrigger, plus les animations, la pointe et la visite.
-
-       Le site devient donc utilisable avant que la bibliotheque
-       d'animation soit meme demandee, et chaque vague est sa propre
-       tache : deux taches courtes valent mieux qu'une longue, parce
-       que le navigateur peut repondre a un clic entre les deux.
-
-       L'ordre INTERNE de chaque vague reste garanti par
-       `async = false`. `hero.js` a besoin de `limaille.js`,
-       `motion.js` a besoin de GSAP : les deux dependances restent
-       dans la meme vague que ce dont elles dependent. */
+    /* DEUX VAGUES, ET L'ORDRE EST L'ARGUMENT.  D-089 */
     var vagues = [
-      /* `trame.js` — le moteur de passage de la phase 10 — est en
-         vague 1 et PAS en vague 2, pour la meme raison que
-         `limaille.js` : il ne depend de rien, il pese moins de 6 Ko,
-         et deux de ses usages — la bascule de theme et le menu — se
-         declenchent au premier clic, donc potentiellement AVANT que
-         GSAP soit meme demande. Le mettre en vague 2 rendrait ces
-         deux passages absents une fois sur dix. */
+      /* `trame.js` — le moteur de passage de la phase 10 — est en  D-090 */
       ["js/limaille.js", "js/trame.js", "js/main.js", "js/hero.js"],
-      /* `langue.js` — le langage de mouvement de la phase 8 — arrive
-         APRES `motion.js` et pour la meme raison que lui : il ne
-         contient que de la choregraphie, il depend de GSAP, et il
-         s'arrete net sous `prefers-reduced-motion`. Tout ce qui
-         porte une information — odometres, curseur du rail, filet
-         de section active — est reste dans `main.js`, vague 1. */
+      /* `langue.js` — le langage de mouvement de la phase 8 — arrive  D-091 */
       ["js/vendor/gsap.min.js", "js/vendor/ScrollTrigger.min.js",
        "js/motion.js", "js/langue.js", "js/pointe.js", "js/tour360.js"]
     ];
-    /* LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.
-       Les treize apercus vivent dans un `<template>` et ne sont
-       poses dans le document que par `js/main.js` : sans script, il
-       n'y a pas d'apercu, donc ces 55 Ko de CSS n'ont rien a styler.
-       Les lire avant le premier rendu retardait le rendu pour du
-       contenu qui n'existait pas encore. Ils partent donc apres la
-       premiere peinture, comme les scripts, et bien avant que le
-       visiteur atteigne la section. */
+    /* LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.  D-092 */
     function poserVague(liste, apres) {
       var reste = liste.length;
       for (var i = 0; i < liste.length; i++) {
@@ -3901,20 +2862,7 @@
       }
     }
 
-    /* LA VAGUE 2 ATTEND QUE LE VISITEUR BOUGE.
-
-       La choregraphie ne sert a rien tant que personne ne defile :
-       toutes ses animations sont declenchees par le defilement, et
-       depuis que les etats de depart ont quitte le CSS, plus rien
-       n'est cache en l'attendant. Ses 51 ms d'evaluation sortent
-       donc du chargement pour aller se placer dans un moment ou le
-       visiteur n'attend rien.
-
-       Trois declencheurs, le premier qui vient gagne : un
-       defilement, un mouvement de pointeur, une touche. Plus une
-       echeance de 1,2 s pour le cas ou personne ne touche a rien —
-       il faut que la page finisse de se construire meme devant un
-       visiteur immobile. */
+    /* LA VAGUE 2 ATTEND QUE LE VISITEUR BOUGE.  D-093 */
     function differerVague2() {
       var fait = false;
       var gestes = ["scroll", "pointerdown", "pointermove", "keydown", "touchstart"];
@@ -3933,10 +2881,7 @@
     }
 
     function injecter() {
-      /* L'ORDRE EST CELUI DE LA CASCADE : `differe.css` d'abord,
-         parce qu'il est la suite de `critique.css` ; puis les deux
-         feuilles de section, qui ne surchargent que leurs propres
-         classes. */
+      /* L'ORDRE EST CELUI DE LA CASCADE : `differe.css` d'abord,  D-094 */
       ["css/differe.css", "css/secteurs.css", "css/tour360.css"].forEach(function (href) {
         var f = document.createElement("link");
         f.rel = "stylesheet";

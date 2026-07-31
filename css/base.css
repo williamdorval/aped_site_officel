@@ -1,7 +1,4 @@
-/* ============================================================
-   APED AGENCE - Socle
-   Remise a zero, typographie, etats de focus, utilitaires.
-   ============================================================ */
+/* == APED AGENCE - Socle ==  D-348 */
 
 *,
 *::before,
@@ -44,9 +41,7 @@ html.theme-shifting *:not(svg):not(svg *) {
     fill var(--t-4) var(--e-drive);
 }
 
-/* ------------------------------------------------------------
-   Typographie
-   ------------------------------------------------------------ */
+/* == Typographie == */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 700;
@@ -103,9 +98,7 @@ output,
   font-variation-settings: "wdth" 100;
 }
 
-/* ------------------------------------------------------------
-   Focus. Un seul modele, applique partout, sans exception.
-   ------------------------------------------------------------ */
+/* == Focus. Un seul modele, applique partout, sans exception. == */
 :focus { outline: none; }
 
 :focus-visible {
@@ -129,9 +122,7 @@ output,
   border-color: var(--accent-text);
 }
 
-/* ------------------------------------------------------------
-   Interaction tactile
-   ------------------------------------------------------------ */
+/* == Interaction tactile == */
 button,
 a,
 summary,
@@ -148,11 +139,7 @@ textarea {
   color: var(--accent-ink);
 }
 
-/* ------------------------------------------------------------
-   Champs desactives. Aucun champ du site ne l'est aujourd'hui,
-   mais l'etat existe pour que le jour ou il apparait il soit
-   lisible plutot que muet.
-   ------------------------------------------------------------ */
+/* Champs desactives. Aucun champ du site ne l'est aujourd'hui,  D-349 */
 input:disabled,
 select:disabled,
 textarea:disabled {
@@ -163,11 +150,7 @@ textarea:disabled {
 .field:has(select:disabled) > label,
 .field:has(textarea:disabled) > label { opacity: 0.6; }
 
-/* ------------------------------------------------------------
-   Contrastes forces (contraste eleve Windows). Le site n'a que
-   des filets et des aplats : sans ce bloc, le filet d'accent des
-   boutons et la barre de progression disparaissent.
-   ------------------------------------------------------------ */
+/* Contrastes forces (contraste eleve Windows). Le site n'a que  D-350 */
 @media (forced-colors: active) {
   :focus-visible { outline: var(--focus-w) solid Highlight; }
   .btn,
@@ -190,9 +173,7 @@ textarea:disabled {
   .shot img { forced-color-adjust: none; }
 }
 
-/* ------------------------------------------------------------
-   Barre de defilement, les deux moteurs
-   ------------------------------------------------------------ */
+/* == Barre de defilement, les deux moteurs == */
 html {
   scrollbar-color: var(--ink-muted) var(--surface-1);
   scrollbar-width: thin;
@@ -206,9 +187,7 @@ html {
 ::-webkit-scrollbar-thumb:hover { background: var(--ink); }
 ::-webkit-scrollbar-corner { background: var(--surface-1); }
 
-/* ------------------------------------------------------------
-   Utilitaires
-   ------------------------------------------------------------ */
+/* == Utilitaires == */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -249,29 +228,7 @@ html {
   fill: none;
 }
 
-/* ------------------------------------------------------------
-   Primitives de revelation.
-
-   L'ETAT DE DEPART A ETE RETIRE DU CSS, et c'est une correction de
-   fond. Il etait pose des que `html.js` existait — c'est-a-dire
-   avant le premier rendu — et il n'etait leve que par GSAP. Trois
-   consequences, toutes mauvaises :
-
-   1. du CONTENU restait invisible pendant tout le temps que les
-      112 Ko de GSAP mettaient a arriver ;
-   2. un element a `opacity: 0` n'est pas candidat au LCP, ce que ce
-      projet a deja paye une fois avec le titre du hero ;
-   3. impossible de DIFFERER la bibliotheque d'animation sans laisser
-      un trou a l'ecran — donc impossible de sortir ses 51 ms de
-      tache du chargement.
-
-   Desormais l'etat de repos EST la forme finale, partout. C'est
-   `js/motion.js` qui pose l'etat de depart, au moment ou il anime,
-   avec `immediateRender: false` pour qu'il ne soit jamais applique
-   d'avance. Sans script, ou avant lui, tout est simplement en place.
-   `transform-origin` reste ici : c'est une propriete de forme, pas
-   un etat de depart.
-   ------------------------------------------------------------ */
+/* Primitives de revelation.  D-351 */
 html.js .draw { transform-origin: left center; }
 
 @media (prefers-reduced-motion: reduce) {

@@ -36,8 +36,29 @@ const dire = (ok, t) => { console.log((ok ? "  OK   " : "  ECHEC") + "  " + t); 
    detecteur qui n'attend pas assez : l'outil ne dit pas « je n'ai
    pas reussi a declencher », il dit « ca ne se declenche pas ».
    Si une machine future redevient trop rapide, c'est ce nombre
-   qu'on monte — jamais le seuil du site. */
-const BRIDE = Number(process.env.APED_BRIDE || 20);
+   qu'on monte — jamais le seuil du site.
+
+   ⚠ MAIS IL Y A UN PLAFOND, ET LE 2026-07-30 ON L'A CREVE.
+   `js/langue.js` JETTE les intervalles au-dela de 200 ms : « un
+   onglet en arriere-plan ou une pause du systeme n'est pas une
+   mesure de performance ». C'est juste — et ca veut dire qu'un
+   bridage trop fort rend le declencheur INATTEIGNABLE, parce
+   qu'aucun echantillon n'entre plus dans la fenetre.
+
+   Releve du 2026-07-30 sur cette machine, `tools/_bride1.mjs`,
+   bridage x20 :
+     intervalle median 1 233 ms · minimum 417 ms · maximum 44 198 ms
+     echantillons retenus par le filtre 4-200 ms : **0 sur 95**
+   Consequence : `data-images` n'est jamais ecrit, `data-palier`
+   reste 0, et l'outil rendait trois ECHECS sur un site parfaitement
+   sain. C'est le piege 17 par l'autre bout — un test qui echoue
+   parce qu'il ne peut plus mesurer, pas parce que le site a change.
+
+   x6 vise le MILIEU de la fenetre : environ 100 ms d'intervalle,
+   donc au-dessus des 20 ms qui font monter au palier 2, et bien
+   en-dessous des 200 ms au-dela desquels le site cesse de compter.
+   C'est la seule plage ou ce declencheur est testable. */
+const BRIDE = Number(process.env.APED_BRIDE || 6);
 
 async function sonder(nom, opts = {}) {
   const ctx = await nav.newContext({
@@ -68,7 +89,16 @@ async function sonder(nom, opts = {}) {
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: opts.bride });
   }
 
-  await page.goto(B + "/", { waitUntil: "load" });
+  /* LE DELAI DE NAVIGATION SUIT LE BRIDAGE, ET C'EST UNE CORRECTION
+     D'INSTRUMENT. Le palier 2 se declenche en bridant le processeur
+     d'un facteur 20 : une page qui charge en une seconde en met
+     alors une vingtaine, et le delai par defaut de Playwright — 30 s
+     — passait tout juste sur une machine au repos et EXPIRAIT des
+     que quoi que ce soit d'autre tournait. Le releve du 2026-07-30
+     s'est arrete la, trois fois de suite, sur un site parfaitement
+     sain. Un instrument qui expire ne rend pas un echec : il ne rend
+     rien, et c'est pire. */
+  await page.goto(B + "/", { waitUntil: "load", timeout: opts.bride ? 120000 : 30000 });
   await page.mouse.move(700, 400);
   await page.waitForTimeout(opts.bride ? 4500 : 2000);
 
@@ -125,8 +155,14 @@ async function sonder(nom, opts = {}) {
          les quatre chantiers sont NOMMES et lisibles en meme temps,
          a tous les paliers, sans script. On compte donc les noms
          atteignables, pas un chiffre. */
-      chantiersNommes: document.querySelectorAll(".svc-index a").length,
-      chantiersLisibles: [...document.querySelectorAll(".svc-carte .svc-corps .label")]
+      /* MIS A JOUR LE 2026-07-30. `.svc-index a` et
+         `.svc-carte .svc-corps .label` ont disparu avec la grille :
+         les deux selecteurs rendaient 0 et le releve passait quand
+         meme. Ce qui porte l'orientation N1 est maintenant la
+         PLANCHE — quatre colonnes de texte peintes en permanence,
+         a tous les paliers. */
+      chantiersNommes: document.querySelectorAll(".svc-plan-tete").length,
+      chantiersLisibles: [...document.querySelectorAll(".svc-plan-dit")]
         .filter((e) => { const r = e.getBoundingClientRect(); return r.width > 2 && r.height > 2; }).length,
       curseur: !!document.querySelector(".rail-curseur.is-on"),
       /* LES DOUZE FRONTIERES. Le CRAN du seuil est du N1 : il vit
@@ -146,6 +182,25 @@ async function sonder(nom, opts = {}) {
          la rendre inconditionnelle : le budget de degradation ne vaut
          que ce que l'outil en verifie.
          ------------------------------------------------------------ */
+      /* LES HUIT PLAQUES ONT ETE RETIREES DE L'ACCUEIL LE
+         2026-07-30. Ce releve n'a plus de cible : il rendait
+         « ABSENTE » et « 0 / 8 » a chaque passe, c'est-a-dire
+         quatre echecs qui ne disaient rien du budget. Piege 17.
+         Ce qui le remplace porte sur les DEUX objets qui ont
+         maintenant un comportement de palier dans le site :
+         · le texte defilant de la maquette de 2011 — la seule
+           animation permanente qui reste — doit TOMBER au palier 1 ;
+         · la piste des Services — qui porte du N1 — ne doit tomber
+           a AUCUN palier. */
+      defilePermanent: (function () {
+        const e = document.querySelector(".ba-vue--avant .v11-defile span");
+        return e ? getComputedStyle(e).animationName : "absent";
+      })(),
+      pisteCollante: (function () {
+        const e = document.querySelector("[data-svc-scene]");
+        return e ? getComputedStyle(e).position : "absente";
+      })(),
+      chantiersNommes: document.querySelectorAll(".svc-plan-nom").length,
       plaquesVivantes: !!document.querySelector("[data-plaques].est-vivante"),
       plaquesAnimees: [...new Set([...document.querySelectorAll(".plaque-corps")]
         .map((c) => getComputedStyle(c).animationName))],
@@ -186,8 +241,10 @@ console.log("\nPALIER 0 — bureau, large, pointeur fin");
      c'est-a-dire 10,5 ms par lettre sur vingt-deux lettres, une
      cascade que personne ne voit. */
   dire(r.cranGhost === "520ms", `--cran du fantome du hero : ${r.cranGhost}`);
-  dire(r.plaquesVivantes === true && r.plaquesAnimees.includes("plaque-vie"),
-    `boucle de vie des plaques : ${r.plaquesVivantes ? "elle tourne" : "ABSENTE"} (${r.plaquesAnimees.join(",")})`);
+  dire(r.defilePermanent === "v11-defile",
+    `texte defilant de 2011 : ${r.defilePermanent}   (doit tourner au palier 0)`);
+  dire(r.chantiersNommes === 4,
+    `les quatre chantiers sont nommes (${r.chantiersNommes} / 4)`);
 }
 
 console.log("\nPALIER 1 — trois declencheurs statiques, testes separement");
@@ -200,19 +257,48 @@ for (const [nom, opts] of [
   dire(r.palier === "1", `${nom.padEnd(24)} -> data-palier = ${r.palier}`);
   dire(r.mots === 0, `${nom.padEnd(24)} -> chapos NON decoupes (${r.mots} spans)`);
   dire(!r.etiquette, `${nom.padEnd(24)} -> etiquette de pointe absente`);
-  dire(r.plaquesVivantes === false && r.plaquesAnimees.every((a) => a === "none"),
-    `${nom.padEnd(24)} -> boucle de vie des plaques TOMBEE (${r.plaquesAnimees.join(",")})`);
-  /* ET LA COMPOSITION RESTE. Retirer le mouvement ne doit rien
-     retirer a la lecture : les huit plaques gardent leur inclinaison
-     ecrite dans le document. C'est la moitie de la promesse du
-     palier 1, et c'est celle qu'on oublie de verifier. */
-  dire(r.plaquesInclinees === 8,
-    `${nom.padEnd(24)} -> les huit plaques restent inclinees (${r.plaquesInclinees} / 8)`);
+  dire(r.defilePermanent === "none",
+    `${nom.padEnd(24)} -> texte defilant de 2011 TOMBE (${r.defilePermanent})`);
+  /* LA PISTE DES SERVICES NE TOMBE A AUCUN PALIER, et c'est le
+     seul mouvement du site dans ce cas. Elle porte l'orientation —
+     « lequel des quatre je regarde » — et elle coute une ecriture de
+     `scrollLeft` par image. Ce qui la desactive n'est pas un palier,
+     c'est la LARGEUR (48em) et le mouvement reduit ; les trois
+     declencheurs de palier 1 testes ici sont donc de deux natures,
+     et le releve les separe. */
+  dire(r.chantiersNommes === 4,
+    `${nom.padEnd(24)} -> les quatre chantiers restent nommes (${r.chantiersNommes} / 4)`);
 }
 
 console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + "");
 {
-  const r = await sonder("bride", { bride: BRIDE });
+  /* ON REESSAIE, ET UNE MESURE MANQUANTE N'EST PAS UN ECHEC.
+
+     C'est l'avertissement de l'en-tete de ce fichier, pris au mot :
+     « l'outil ne dit pas "je n'ai pas reussi a declencher", il dit
+     "ca ne se declenche pas" ». Le 2026-07-30 il l'a fait quand
+     meme, et voici pourquoi.
+
+     `js/langue.js` jette les intervalles au-dela de 200 ms — un
+     onglet en arriere-plan n'est pas une mesure de performance, et
+     c'est juste. Mais sous bridage, sur une machine DEJA CHARGEE,
+     les intervalles crevent ce plafond : aucun echantillon n'entre
+     plus dans la fenetre, `data-images` n'est jamais ecrit, et
+     `data-palier` reste 0. Deux passes consecutives du meme code au
+     meme bridage ont rendu « 15 i/s, palier 2 » puis « null, palier
+     0 ». Le site n'avait pas change entre les deux ; la machine, si.
+
+     Trois essais, et si la mesure reste absente on le DIT — on ne
+     transforme pas une machine occupee en regression du site. */
+  let r = await sonder("bride", { bride: BRIDE });
+  for (let i = 0; i < 2 && r.images == null; i++) r = await sonder("bride", { bride: BRIDE });
+  if (r.images == null) {
+    console.log("  NON MESURE  la page n'a rendu AUCUN intervalle dans la fenetre 4-200 ms de");
+    console.log("              `langue.js` en trois essais. Le declencheur du palier 2 n'a donc");
+    console.log("              pas pu etre exerce — ce n'est PAS un verdict sur le site.");
+    console.log("              Machine trop chargee, ou bridage x" + BRIDE + " trop fort pour elle :");
+    console.log("              baisser `APED_BRIDE` et refaire, machine au repos.");
+  } else {
   dire(r.palier === "2", `data-palier = ${r.palier} (mesure : ${r.images} i/s)`);
   dire(r.cran === "0ms" && r.cranCta === "0ms" && r.cranGhost === "0ms",
     `--cran ramene a ${r.cran} / ${r.cranCta} / ${r.cranGhost} : tous les boutons basculent d'un bloc`);
@@ -221,9 +307,10 @@ console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + ""
      c'est le bloc « escalade » qui le verifie. Ici on constate
      seulement qu'elle n'est pas la, et que les plaques restent
      lisibles. */
-  dire(r.plaquesVivantes === false && r.plaquesInclinees === 8,
-    `boucle de vie absente, huit plaques inclinees et lisibles (${r.plaquesInclinees} / 8)`);
+  dire(r.defilePermanent === "none" && r.chantiersNommes === 4,
+    `animation permanente absente, quatre chantiers nommes (${r.chantiersNommes} / 4)`);
   console.log(`         frequence relevee par la page elle-meme : ${r.images} i/s`);
+  }
 }
 
 console.log("\nL'ORIENTATION NE TOMBE A AUCUN PALIER");
@@ -257,7 +344,10 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
   await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
   const cdp = await ctx.newCDPSession(page);
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: BRIDE });
-  await page.goto(B + "/", { waitUntil: "load" });
+  /* Ce bloc-ci n'est pas dans `sonder()` : `opts` n'y existe pas, et
+     le bridage y est toujours actif. On lit donc `BRIDE`
+     directement. */
+  await page.goto(B + "/", { waitUntil: "load", timeout: BRIDE > 1 ? 120000 : 30000 });
   await page.mouse.move(700, 400);
   await page.waitForTimeout(4500);
   const h = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
@@ -293,6 +383,7 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
      la pose dans `transform`.
      ------------------------------------------------------------ */
   const apresEscalade = await page.evaluate(() => ({
+    chantiers: document.querySelectorAll(".svc-plan-nom").length,
     vivante: !!document.querySelector("[data-plaques].est-vivante"),
     animees: [...new Set([...document.querySelectorAll(".plaque-corps")].map((c) => getComputedStyle(c).animationName))],
     inclinees: [...document.querySelectorAll(".plaque-corps")].filter((c) => {
@@ -302,8 +393,8 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
   }));
   dire(apresEscalade.vivante === false && apresEscalade.animees.every((a) => a === "none"),
     `boucle de vie TUEE EN VOL a l'escalade (${apresEscalade.animees.join(",")})`);
-  dire(apresEscalade.inclinees === 8,
-    `pose de repos intacte apres le kill (${apresEscalade.inclinees} / 8 plaques inclinees)`);
+  dire(apresEscalade.chantiers === 4,
+    `les quatre chantiers restent nommes apres le kill (${apresEscalade.chantiers} / 4)`);
   await ctx.close();
 }
 

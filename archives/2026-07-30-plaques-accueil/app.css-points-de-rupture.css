@@ -1,0 +1,93 @@
+﻿/* --- app.css 4869-4871 : 640 px --- */
+/* --- 640 px : les plaques passent en deux colonnes --- */
+@media (min-width: 40em) {
+  .plaques { grid-template-columns: repeat(2, 1fr); gap: var(--s-5) var(--s-4); --incl: 0.78; --ecart: 0.42; }
+
+/* --- app.css 5022-5108 : 64em, la grille de douze colonnes --- */
+  /* ------------------------------------------------------------
+     LA COMPOSITION DES SEPT PLAQUES — grille de douze colonnes.
+
+     Trois plaques larges en premier plan, quatre plus etroites
+     derriere. Aucune ne partage son decalage vertical avec une
+     autre : c'est ce qui interdit a l'oeil de retrouver une regle
+     et ce qui fait la difference avec une bande de statistiques.
+     Les spans sont ecrits ici et non dans le document : c'est de la
+     mise en page, et elle change avec la largeur.
+     ------------------------------------------------------------ */
+  .plaques {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: var(--s-6);
+    /* LE BAS EST PLUS EPAIS QUE LE HAUT, ET C'EST UNE MESURE.
+       La huitieme plaque — « Québec », celle qui ferme le bloc et
+       qui est posee le plus bas — sortait du hero et MORDAIT sur le
+       seuil de la section 02 : 28 a 38 px selon la largeur, releve
+       le 2026-07-30 par `tools/plaques-debord.mjs` sur une fenetre
+       de 12 s, donc plus d'une demi-periode du cycle le plus lent
+       (10,6 s) — piege 24. Une seule pose prise au hasard dans la
+       boucle ne prouve rien.
+       C'est la meme correction que celle des 60 -> 76 px lateraux :
+       c'est la BANDE qui se plie a la signature, jamais la
+       signature qu'on rogne, et surtout jamais la section d'en
+       dessous qu'on decale. 48 + 40 = 88, soit le pire debord
+       mesure plus une marge. Porte a 96 px apres controle : a
+       1024 les 88 px ne laissaient que 2 px, et 2 px ne sont pas une
+       marge, c'est une coincidence. */
+    padding-block: var(--s-7) 96px;
+    /* LA MARGE DE DEBORDEMENT EST PRISE SUR LA BANDE, PAS SUR LA
+       PAGE — et c'est un debordement mesure, pas une precaution.
+
+       Sans ce rembourrage, la colonne 1 commence au bord du `wrap`
+       et la colonne 12 s'y termine : le decalage de -26 px de la
+       premiere plaque et celui de +28 px de la derniere sortaient
+       donc du `wrap`. Tant que la fenetre est plus large que la
+       largeur maximale du `wrap`, la marge exterieure les absorbe ;
+       des que la fenetre se resserre, elle n'existe plus. Mesure du
+       2026-07-29 par `tools/deborde.mjs`, A/B contre la version
+       d'avant : `scrollWidth` 1283 pour 1280, et 1025 pour 1024,
+       alors que 1440 et 1920 ne bougeaient pas. Le defaut
+       n'apparaissait qu'aux DEUX largeurs intermediaires, ce qui est
+       exactement le genre de chose qu'on ne voit pas a l'oeil.
+
+       Le rembourrage retrecit la grille de 60 px de chaque cote :
+       les plaques debordent de leur colonne comme demande, et ce
+       debordement retombe dans le rembourrage au lieu d'agrandir la
+       page. Le filet du haut et celui du bas, eux, sont sur la boite
+       de bordure : ils gardent la largeur du `wrap`, donc ils
+       restent alignes avec toutes les autres regles du site.
+
+       DE 34 A 60 PX, ET C'EST UNE CONSEQUENCE. Les decalages sont
+       passes de +-28 px a +-48 px et les angles de 2° a 4,2° : sous
+       2°, une inclinaison ne se percoit tout simplement pas — c'est
+       le constat qui a ouvert ce chantier. Une plaque de 300 px
+       tournee de 4,2° gagne environ 5 px de largeur apparente ;
+       48 + 5 + une marge de securite tombent a 60. Verifie par
+       `tools/deborde.mjs` a neuf largeurs, pas estime.
+
+       DE 60 A 76 PX LE 2026-07-29, ET C'EST LA BOUCLE DE VIE QUI LE
+       DEMANDE. Elle ajoute +-6 px de course laterale permanente et
+       +-1,15° de battement, soit environ 7 px de plus au pire moment
+       du cycle. Les 60 px n'avaient qu'environ 7 px de marge : la
+       boucle les mangeait exactement. On elargit donc le rembourrage
+       au lieu de rogner la boucle — c'est la bande qui se plie a la
+       signature, jamais l'inverse. Verifie aux phases EXTREMES du
+       cycle, pas a un instant quelconque : une seule mesure prise au
+       hasard dans une boucle de sept secondes ne prouve rien. */
+    padding-inline: 76px;
+    --incl: 1;
+    --ecart: 1;
+  }
+  .plaques > :nth-child(1) { grid-column: 1 / span 4; }
+  .plaques > :nth-child(2) { grid-column: 5 / span 4; }
+  .plaques > :nth-child(3) { grid-column: 9 / span 4; }
+  .plaques > :nth-child(4) { grid-column: 1 / span 3; }
+  .plaques > :nth-child(5) { grid-column: 4 / span 3; }
+  .plaques > :nth-child(6) { grid-column: 7 / span 3; }
+  .plaques > :nth-child(7) { grid-column: 10 / span 3; }
+  /* LA HUITIEME EST SEULE SUR SA RANGEE, ET DECALEE DES DEUX BORDS.
+     Trois larges, quatre etroites, puis une : la suite ne se devine
+     pas, et c'est exactement ce qui distingue une composition d'une
+     bande de statistiques. Elle porte « Québec » — la seule plaque
+     qui dise une provenance et non un engagement — et elle se lit
+     comme le poincon qu'on frappe en bas d'une piece finie. */
+  .plaques > :nth-child(8) { grid-column: 4 / span 5; }

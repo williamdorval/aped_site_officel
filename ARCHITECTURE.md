@@ -5,12 +5,30 @@ contient**, et **ce qu'il ne contient pas** — cette dernière colonne est la
 plus utile, parce que la moitié des erreurs sur ce projet consistent à
 modifier le bon comportement dans le mauvais fichier.
 
-Les numéros de ligne sont ceux de l'état du dépôt au 2026-07-29 (commit
-`cd5c758`). Ils dérivent dès qu'on édite : traitez-les comme des repères,
-pas comme des adresses.
+**Quand lire ce fichier :** quand tu sais ce que tu veux changer mais
+pas dans quel fichier. Il dit **où**, pas **pourquoi** (`DECISIONS.md`)
+ni **quelle ligne** (`SECTIONS.md`).
 
-Ce fichier ne remplace pas `CLAUDE.md` (les règles) ni les `PHASE-*.md`
-(les arbitrages et les mesures). Il dit **où**, pas **pourquoi**.
+## Table
+
+- [1 · Où vais-je ?](#1--où-vais-je-)
+- [2 · Les deux vagues de scripts](#2--les-deux-vagues-de-scripts)
+- [3 · `index.html`](#3--indexhtml)
+- [4 · Les feuilles de style](#4--les-feuilles-de-style)
+- [5 · Le JavaScript](#5--le-javascript)
+- [6 · `tools/` — la mesure](#6--tools--la-mesure)
+- [7 · Documentation](#7--documentation)
+- [8 · Le reste](#8--le-reste)
+- [9 · Points à surveiller](#9--points-à-surveiller-relevés-en-dressant-cette-carte)
+
+> **AUCUN NUMÉRO DE LIGNE DANS CE FICHIER.** Il en portait 121 au
+> 2026-07-29 ; au 2026-07-30 ils étaient **tous faux**, les fichiers
+> ayant maigri d'un tiers. Ils ont été retirés, pas réparés : une
+> adresse fausse coûte plus cher que pas d'adresse. Les seules plages de
+> lignes du dépôt vivent dans `SECTIONS.md`, où **une machine les
+> génère et les vérifie**. Partout ailleurs le repère est le
+> **sélecteur**, le **nom de fonction** ou la **bannière de bloc**
+> `/* == TITRE == */` — trois choses qui ne périment pas.
 
 ---
 
@@ -18,25 +36,25 @@ Ce fichier ne remplace pas `CLAUDE.md` (les règles) ni les `PHASE-*.md`
 
 | Je veux modifier… | J'ouvre | Attention |
 |---|---|---|
-| **Le contenu d'une section** (texte, chiffres, libellés) | `index.html`, à la plage de la section (§ 3) | Les 13 aperçus de secteur sont dans un `<template>` (l. 1053–1452) posé par `main.js`. Les 7 plaques de l'accueil sont l. 391–520. |
-| **Un style** | `css/app.css` **et rien d'autre** | Puis `node tools/css-critique.mjs` pour régénérer `critique.css` + `differe.css`, puis `node tools/cascade-check.mjs` (doit rendre 0 écart). Éditer `critique.css` ou `differe.css` = travail perdu au prochain build. |
+| **Le contenu d'une section** (texte, chiffres, libellés) | `index.html`, à la plage donnée par `SECTIONS.md` | Les 13 aperçus de secteur sont dans un `<template>` posé par `main.js`. **Les plaques de l'accueil n'existent plus** — voir `archives/2026-07-30-plaques-accueil/`. Et lire la règle de propagation : une correction de véracité se fait **partout, en une fois**. |
+| **Un style** | `css/app.css` **et rien d'autre** | Puis `node tools/css-critique.mjs`, puis `node tools/cascade-check.mjs` (doit rendre 0 écart). Éditer `critique.css` ou `differe.css` = travail perdu au prochain build. |
 | **Le style d'un aperçu de secteur** | `css/secteurs.css` | Feuille séparée, injectée par JS. Ne pas la fusionner dans `app.css` : elle style du contenu qui n'existe pas sans script. |
 | **Le style de la visite 360** | `css/tour360.css` | Charge après `css/vendor/pannellum.css`, qu'elle corrige. |
-| **Une animation de chargement** (séquence d'entrée, composition du hero) | `index.html` l. 121–210 (markup) + `css/app.css` §11b l. 1221–1612 (rideau) et l. 2086–2224 (composition du hero) + `js/main.js` l. 156–351 (allongement / saut) | Le rideau se retire par animation CSS `forwards` : il part même si aucun script ne s'exécute. Le JS ne fait qu'**allonger** et permettre de **sauter**. |
-| **Une animation de scroll** | `js/motion.js` (les 14 chorégraphies numérotées) ou `js/langue.js` (les 4 verbes, les 12 frontières) | Les deux s'arrêtent net sous `prefers-reduced-motion` et exigent GSAP. Ils partent en **vague 2**. Ne jamais y mettre d'orientation. |
+| **Une animation de chargement** (séquence d'entrée, composition du hero) | markup dans `index.html` sous `#entree` · CSS bloc `11b. SEQUENCE D'ENTREE` et `12. HERO` · JS bloc `SEQUENCE D'ENTREE` de `main.js` | Le rideau se retire par animation CSS `forwards` : il part même si aucun script ne s'exécute. Le JS ne fait qu'**allonger** et permettre de **sauter**. |
+| **Une animation de scroll** | `js/motion.js` (les chorégraphies numérotées) ou `js/langue.js` (les 4 verbes, les 12 frontières) | Les deux s'arrêtent net sous `prefers-reduced-motion` et exigent GSAP. Ils partent en **vague 2**. Ne jamais y mettre d'orientation. |
 | **Le passage entre deux états** (frontière, thème, menu, modale, pièce de visite) | `js/trame.js` — API `APED_TRAME.degager / .couvrir / .inverse / .tout_arreter` | Un seul mécanisme, décliné. Les appelants sont dans `main.js`, `langue.js`, `tour360.js`. |
-| **Un état de survol** | `css/app.css` §4 (l. 511–673) pour les boutons, l. 4700–5410 pour les micro-états V1–V4 | Mesurer avec `node tools/contraste-survol.mjs` : `theme-check` ne voit que les états posés, pas les images intermédiaires. |
-| **L'orientation** (compteurs, odomètres, filet de section active, curseur du rail, cran des frontières) | **`js/main.js` uniquement** | Jamais dans `motion.js` ni `langue.js` — ils ne s'exécutent pas sous mouvement réduit. `main.js` s'exécute toujours et part en vague 1. Blocs concernés : rail l. 352–443, parcours l. 583–628, cran l. 2298–2457, index collant l. 2458–2623. |
-| **Le thème clair / sombre** | `css/tokens.css` (les jetons), `js/main.js` l. 971–1100 (la bascule), `index.html` l. 62–115 (pose du thème avant le 1ᵉʳ rendu) | La bascule passe par `APED_TRAME`, plus par `startViewTransition` (qui était un fondu). Vérifier avec `node tools/theme-check.mjs`. |
-| **Une modale** | `index.html` l. 2655–3272 (les 6 modales) + `js/main.js` l. 1216–1349 (focus, Échap, retour au déclencheur) + `css/app.css` §10 l. 1076–1166 | Le popup cadeau est à part : `<dialog>` natif, markup l. 2517–2654, logique `main.js` l. 629–970, style §11c l. 1613–1920. |
-| **Une mesure / une preuve** | `tools/*.mjs` (§ 6) | `node tools/serve.mjs 8099` d'abord. Poser `sessionStorage aped-sans-popup=1` dans tout outil qui clique. |
-| **La logique métier** (prix, formulaires, calendrier, calculateur) | `js/main.js` l. 1350–2202 | Zéro dépendance. Si GSAP ne charge jamais, tout ça fonctionne quand même. |
+| **Un état de survol** | `css/app.css` bloc `4. BOUTONS`, puis les blocs `V1`…`V4` des micro-états | Mesurer avec `node tools/contraste-survol.mjs` : `theme-check` ne voit que les états posés, pas les images intermédiaires. |
+| **L'orientation** (compteurs, odomètres, filet de section active, curseur du rail, cran des frontières) | **`js/main.js` uniquement** — blocs `N1 · LE CURSEUR DU RAIL`, `PARCOURS`, `LE CRAN`, `Index collant` | Jamais dans `motion.js` ni `langue.js` : ils ne s'exécutent pas sous mouvement réduit. `main.js` s'exécute toujours et part en vague 1. |
+| **Le thème clair / sombre** | `css/tokens.css` (les jetons) · `js/main.js` bloc `Theme.` · le script en ligne du `<head>` (pose du thème avant le 1ᵉʳ rendu) | La bascule passe par `APED_TRAME`, plus par `startViewTransition` (qui était un fondu). Vérifier avec `node tools/theme-check.mjs`. |
+| **Une modale** | les six `#modal-*` de `index.html` · `js/main.js` bloc `Modales` · `css/app.css` bloc `10. MODALES` | Le popup cadeau est à part : `<dialog>` natif, logique dans le bloc `LE CADEAU` de `main.js`, style dans `11c. LE CADEAU`. |
+| **Une mesure / une preuve** | `tools/*.mjs`, catalogués dans `MESURES.md` | `node tools/serve.mjs 8099` d'abord, **et vérifier que le port est libre**. Poser `sessionStorage aped-sans-popup=1` dans tout outil qui clique. |
+| **La logique métier** (prix, formulaires, calendrier, calculateur) | `js/main.js` | Zéro dépendance. Si GSAP ne charge jamais, tout ça fonctionne quand même. |
 
 ---
 
 ## 2 · LES DEUX VAGUES DE SCRIPTS
 
-Le bloc en ligne de `index.html` (l. 3273–3390) injecte tout après **deux
+Le bloc en ligne de `index.html`  injecte tout après **deux
 `requestAnimationFrame`** — donc après la première peinture. Il n'y a plus
 aucun `<script defer>` en bas de page.
 
@@ -70,125 +88,120 @@ les dépendances restent dans la même vague que ce dont elles dépendent
 
 ---
 
-## 3 · `index.html` — 3 392 lignes, 198 Ko
+## 3 · `index.html`
 
 Page unique. Contient **tout** le contenu du site : douze sections, six
 modales, le popup cadeau, le pied, et le `<template>` des treize aperçus.
 
-### Table des matières
+> **Les plages de lignes des douze sections vivent dans `SECTIONS.md`**,
+> où elles sont **générées** par `node tools/plages.mjs` et vérifiables
+> par `node tools/plages.mjs verifier`. Elles ne sont pas recopiées ici :
+> une adresse écrite à deux endroits dérive à l'un des deux.
 
-| Lignes | Zone |
+### L'ordre du document, par sélecteur
+
+| Zone | Ce qu'elle porte |
 |---|---|
-| **1–116** | `<head>` — meta, OG, `theme-color` (une seule balise, sans `media`), favicon, préchargement des 3 woff2, puis **trois** feuilles sur le chemin critique : `tokens.css`, `base.css`, `critique.css`. |
-| 62–115 | Script en ligne, **avant le premier rendu** : pose `html.js`, lit `localStorage aped-theme`, pose `data-theme` + la couleur de barre, pose `reduced-motion`, et **décide de la séquence d'entrée** en lisant `performance.getEntriesByType("navigation")[0].type`. |
-| 117–120 | Ouverture `<body>`, lien d'évitement. |
-| **121–207** | **Séquence d'entrée** `#entree` : 15 filets (`--k` = distance au filet du milieu), jauge en deux temps, compteur à crans (`.entree-cran` = fenêtre, `.entree-rouleau` = bande), cadre à 4 équerres, plaque monogramme SVG, mot de sortie. `aria-hidden`, `pointer-events: none`. |
-| 208–210 | Sprite SVG des icônes, en ligne, `display: none`. Aucune requête tierce. |
-| 215 | Barre de lecture `.read-progress` / `#readBar`. |
-| **217–251** | `<header class="nav">` — wordmark, `.nav-links` (l. 222), bouton thème, CTA. |
-| **254–278** | Menu plein écran `#menu`, `hidden` au repos. |
-| **281–305** | Index collant `<aside class="rail" id="rail">` + `#railList`. |
-| **307–2515** | `<main class="shell" id="contenu">`. |
-| 310–389 | **01 · Hero** — `#top`. `#heroPlate` / `#heroCanvas` (l. 326–328), fiche technique `.hero-fiche` (l. 366–388). |
-| 391–520 | **Les sept plaques d'atelier** — `.plaques[data-plaques]` l. 461. Coque `.plaque` + corps `.plaque-corps`. |
-| 560–807 | **02 · Services** — rail horizontal épinglé. Seuil l. 564. |
-| 834–964 | **03 · Projets livrés** — séquence pleine largeur. Seuil l. 838. |
-| 967–1457 | **04 · Secteurs** — `#demos`. Seuil l. 971 · panier `.sec-panier` l. 1107 · **`<template id="tplSecteurs">` l. 1053–1452** (les 13 maquettes, jamais dans le DOM sans `main.js`). |
-| 1461–1516 | **05 · Visite 360** — `#visite`. Seuil l. 1465. Affiche plate en `loading="lazy"` ; rien d'autre ne part avant le clic. |
-| 1519–1701 | **06 · Calculateur** — `#calculateur`. Seuil l. 1523. |
-| 1704–1844 | **07 · Comparatif** — `#comparatif`. Seuil l. 1708. |
-| 1885–2016 | **08 · Processus** — `#processus`. Seuil l. 1889. |
-| 2040–2129 | **09 · Agence** — `#apropos`. Seuil l. 2044. |
-| 2155–2230 | **10 · Référence** — `#reference`. Seuil l. 2159. |
-| 2233–2304 | **11 · Questions** — `#faq`. Seuil l. 2237. |
-| 2335–2444 | **12 · Contact** — `#contact`. Seuil l. 2339. |
-| 2451–2457 | **Seuil du pied** — `.seuil--pied`, la treizième frontière. |
-| **2458–2513** | `<footer class="footer">`. ⚠️ **Il est à l'intérieur de `<main>`** (voir § 8, points à surveiller). |
-| 2515 | `</main>`. |
-| **2517–2654** | **Le cadeau** — `<dialog class="cadeau" id="cadeau">` l. 2570. `<dialog>` natif : piège de focus, inertie, Échap et couche supérieure gratuits. |
-| **2655–3272** | **Les six modales** : `#modal-start` (2658), `#modal-booking` (2691), `#modal-project` (2777), `#modal-urgent` (2992), `#modal-refer` (3037), `#modal-estimate` (3142). Toutes en `role="dialog" aria-modal="true" hidden`. |
-| **3273–3390** | **Bloc d'injection des scripts** — les deux vagues (§ 2). |
+| `<head>` | meta, OG, `theme-color` (une seule balise, sans `media`), favicon, préchargement des 3 woff2, puis **trois** feuilles sur le chemin critique : `tokens.css`, `base.css`, `critique.css`. Plus le **seul `<noscript>` du site**, qui supplée `differe.css` pour le cran avant / après |
+| script en ligne du `<head>` | **avant le premier rendu** : pose `html.js`, lit `localStorage aped-theme`, pose `data-theme` + la couleur de barre, pose `reduced-motion`, et **décide de la séquence d'entrée** en lisant `performance.getEntriesByType("navigation")[0].type` |
+| `#entree` | **séquence d'entrée** : 15 filets (`--k` = distance au filet du milieu), jauge en deux temps, compteur à crans (`.entree-cran` = fenêtre, `.entree-rouleau` = bande), cadre à 4 équerres, plaque monogramme SVG, mot de sortie. `aria-hidden`, `pointer-events: none` |
+| sprite SVG | icônes en ligne, `display: none`. Aucune requête tierce |
+| `.read-progress` / `#readBar` | barre de lecture |
+| `<header class="nav">` | wordmark, `.nav-links`, bouton thème, CTA |
+| `#menu` | menu plein écran, `hidden` au repos |
+| `<aside class="rail" id="rail">` + `#railList` | index collant |
+| `<main class="shell" id="contenu">` | les douze sections, dans l'ordre du rail — voir `SECTIONS.md` |
+| `<footer class="footer">` | ⚠️ **à l'intérieur de `<main>`** : il perd son rôle `contentinfo`. Voir `RESERVES.md` |
+| `<dialog class="cadeau" id="cadeau">` | le popup cadeau. `<dialog>` natif : piège de focus, inertie, Échap et couche supérieure gratuits |
+| `#modal-start` · `#modal-booking` · `#modal-project` · `#modal-urgent` · `#modal-refer` · `#modal-estimate` | les six modales, toutes en `role="dialog" aria-modal="true" hidden` |
+| bloc d'injection des scripts | les deux vagues — voir § 2 |
 
 ### Les treize seuils, tels qu'ils sont écrits dans le document
 
 Chaque seuil porte `data-seuil`, `data-de`, `data-vers`, `data-dress`,
 `data-verbe`, `data-sens`, et parfois `data-cible`.
 
-| Ligne | de → vers | `dress` | `verbe` (G4) | `sens` | `cible` |
-|---|---|---|---|---|---|
-| 564 | 01 → 02 | **encre** | volet | bas | — |
-| 838 | 02 → 03 | clair | degager | bas | `.project:first-of-type .shot` |
-| 971 | 03 → 04 | clair | aligner | droite | `.sector-group` |
-| 1465 | 04 → 05 | **encre** | volet | bas | — |
-| 1523 | 05 → 06 | **encre** | volet | **haut** | — |
-| 1708 | 06 → 07 | clair | aligner | droite | `.vs-row` |
-| 1889 | 07 → 08 | clair | aligner | droite | `.parc-etape` |
-| 2044 | 08 → 09 | clair | souder | droite | — |
-| 2159 | 09 → 10 | clair | cran | droite | `.referral-max .num` |
-| 2237 | 10 → 11 | clair | degager | droite | `.faq-item` |
-| 2339 | 11 → 12 | clair | degager | bas | `.cell` |
-| 2451 | 12 → 00 | **encre** | volet | bas | `.footer-mark` |
+| de → vers | `dress` | `verbe` (G4) | `sens` | `cible` |
+|---|---|---|---|---|
+| 01 → 02 | **encre** | volet | bas | — |
+| 02 → 03 | clair | degager | bas | `.ba:first-of-type .ba-cadre` |
+| 03 → 04 | clair | aligner | droite | `.sector-group` |
+| 04 → 05 | **encre** | volet | bas | — |
+| 05 → 06 | **encre** | volet | **haut** | — |
+| 06 → 07 | clair | aligner | droite | `.vs-row` |
+| 07 → 08 | clair | aligner | droite | `.parc-etape` |
+| 08 → 09 | clair | souder | droite | — |
+| 09 → 10 | clair | cran | droite | `.referral-max .num` |
+| 10 → 11 | clair | degager | droite | `.faq-item` |
+| 11 → 12 | clair | degager | bas | `.cell` |
+| 12 → 00 | **encre** | volet | bas | `.footer-mark` |
 
-Les quatre bandes d'encre sont donc celles qui **entrent** en 02, en 05,
-en 06 et dans le **pied** (`data-de="12"`). `CLAUDE.md` les désigne par
-« 02, 05, 06, 12 » : le « 12 » y est le seuil qui part de 12, c'est-à-dire
-celui du pied.
+Les quatre bandes d'encre sont celles qui **entrent** en 02, en 05, en 06
+et dans le **pied** (`data-de="12"`).
 
 ### Ce que `index.html` ne contient PAS
 
 - **Aucun `<script defer>` ni `<script src>` statique.** Tout est injecté
-  (l. 3273). Remettre un `defer` ramène le défaut mesuré : tâche de 222 ms
-  avant peinture, LCP à 588 ms.
+ . Remettre un `defer` ramène le défaut mesuré : tâche de 222 ms
+ avant peinture, LCP à 588 ms.
 - **Aucun état de départ d'animation.** L'état au repos du markup est la
-  forme **finale**. C'est `motion.js` / `langue.js` qui posent le départ,
-  avec `immediateRender: false`.
+ forme **finale**. C'est `motion.js` / `langue.js` qui posent le départ,
+ avec `immediateRender: false`.
 - **Aucune requête tierce** : icônes en sprite inline, polices auto-hébergées,
-  GSAP auto-hébergé, Pannellum auto-hébergé.
+ GSAP auto-hébergé, Pannellum auto-hébergé.
 - **Les treize aperçus ne sont pas dans le DOM** — ils sont dans un
-  `<template>`, analysé mais non rendu, posé par `main.js`.
+ `<template>`, analysé mais non rendu, posé par `main.js`.
 
 ---
 
 ## 4 · Les feuilles de style
 
-### `css/app.css` — 5 479 lignes, 227 Ko — **LA SOURCE UNIQUE**
+### `css/app.css` — **LA SOURCE UNIQUE**
 
 Mise en page, composants, sections, micro-états, budget de dégradation.
 
-| Lignes | Bloc |
-|---|---|
-| 7–41 | 1. Grille (les filets verticaux bordent toujours une colonne pleine) |
-| 42–287 | 1bis. **Les douze seuils** — seuil clair (144), seuil d'encre (151), G4 soudure longue (185), palier 2 (210), `content-visibility: auto` sur les sections hors écran (219–287) |
-| 288–332 | 2. En-tête de section |
-| 333–510 | 3. Navigation |
-| 511–673 | 4. Boutons |
-| 674–717 | 4b. La pointe |
-| 718–821 | 5. Index collant |
-| 822–872 | 6. Menu plein écran |
-| 873–891 | 7. Plaque |
-| 892–1034 | 8. Champs |
-| 1035–1075 | 9. Curseurs |
-| 1076–1166 | 10. Modales |
-| 1167–1220 | 11. Calendrier |
-| **1221–1612** | **11b. Séquence d'entrée** — compteur V4 (1461), le saut (1564), mouvement réduit (1584) |
-| 1613–1920 | 11c. Le cadeau — entrée V1 haut→bas (1645), les deux couvertures (1686), les 7 objets (1753), points de capture (1881) |
-| 1921–2224 | **12. Hero** — plaque de limaille (1941), fiche technique (2027), **composition du hero, 11 pas sous `html.compo-hero` (2086–2224)** |
-| 2225–2355 | 13. **Les plaques d'atelier** |
-| 2356–2825 | 14. Services — rail horizontal, les 4 écrans (2494), leur mouvement (2745) |
-| 2826–2976 | 15. Projets livrés |
-| 2977–3125 | 16. Secteurs — les 13 maquettes (3031), surchargées ensuite par `secteurs.css` |
-| 3126–3269 | 17. Calculateur — le verdict (3131) |
-| 3270–3442 | 18. Comparatif — schéma de l'écart (3273) |
-| 3443–3644 | 19. Processus — les 4 composants (3566) |
-| 3645–3740 | 20. À propos — les 4 preuves (3695) |
-| 3741–3873 | 21. Référence — bloc sombre dans **les deux** thèmes |
-| 3874–3913 | 22. FAQ |
-| 3914–4122 | 23. Contact — « ce qui arrive après » (4034) |
-| 4123–4199 | 24. Pied de page |
-| **4200–4368** | **25. Page 404** — le style du fichier `404.html` vit ici |
-| 4369–4669 | 26. Points de rupture — dont la grille 12 colonnes des 7 plaques (4531), transparence réduite (4648), mouvement réduit (4660) |
-| **4670–5410** | **Phase 8 — les micro-états** : lettres V4 (4700), durée du balayage (4773), les 2 CTA du hero (4912), odomètre (4975), curseur du rail N1 (5016), séparateurs V3 (5058), liens V3 (5107), étiquette de la pointe (5162), pastilles de secteur (5194), validation de champ (5226), bascule de thème (5251), mouvement réduit (5261), bourgeon (5292), popup cadeau (5316), les 3 issues d'un envoi (5333), question fréquente (5366), cadre de projet (5388) |
-| **5411–5479** | **Le budget de dégradation, moitié CSS** : `:root[data-palier="1"]` (5427), `:root[data-palier="2"]` (5448) |
+> **Les plages de lignes ne sont pas recopiées ici.** Celles des blocs de
+> section vivent dans `SECTIONS.md`, générées par `node tools/plages.mjs`.
+> Le repère durable d'un bloc est sa **bannière** : chaque bloc s'ouvre
+> par `/* == TITRE == */`, et un titre qui commence par un numéro est un
+> bloc de section. `grep -n "^/\* == " css/app.css` rend la table des
+> matières à jour, toujours.
+
+| Bloc — la bannière est le repère, `grep "== 14. SERVICES"` |
+|---|
+| 1. GRILLE |
+| 1bis. LES DOUZE SEUILS — LES FRONTIERES DE SECTION |
+| 2. EN-TETE DE SECTION |
+| 3. NAVIGATION |
+| 4. BOUTONS |
+| 4b. LA POINTE — declinaison de la signature au curseur |
+| 5. INDEX COLLANT |
+| 6. MENU PLEIN ECRAN |
+| 7. PLAQUE |
+| 8. CHAMPS |
+| 9. CURSEURS |
+| 10. MODALES |
+| 11. CALENDRIER |
+| 11b. SEQUENCE D'ENTREE |
+| 11c. LE CADEAU — un seul popup, en `<dialog>` natif |
+| 12. HERO - plaque typographique |
+| 14. SERVICES — LA PISTE, LA SCENE ET LE RAIL |
+| 15. AVANT / APRES — trois demonstrations, zero image |
+| 16. SECTEURS - trois groupes, pas treize lignes filetees |
+| 17. CALCULATEUR - deux moities, le resultat vit a droite |
+| 18. COMPARATIF - deux barres nues par tache |
+| 19. PROCESSUS - le parcours d'atelier |
+| 20. A PROPOS - trio asymetrique, jamais trois colonnes egales |
+| 21. REFERENCE - le bloc sombre, dans LES DEUX themes |
+| 22. FAQ - deux colonnes, accordeon |
+| 23. CONTACT - cinq cellules pour cinq entrees, aucune vide |
+| 24. PIED DE PAGE |
+| 25. PAGE 404 - index deraille |
+| 26. POINTS DE RUPTURE |
+
+Après les blocs numérotés viennent, dans l'ordre : la phase 8 (les
+micro-états, un sous-bloc par état), puis le budget de dégradation
+(`:root[data-palier="1"]` et `="2"`).
 
 **Ne contient pas** : le socle (`base.css`), les jetons (`tokens.css`),
 les 13 aperçus de secteur détaillés (`secteurs.css`), la visite
@@ -255,14 +268,14 @@ Moteur de champ de grains. **Le motif signature.** Aucune dépendance,
 aucun WebGL : écriture directe dans un `ImageData`, un seul `putImageData`
 par image.
 
-| Lignes | Zone |
-|---|---|
-| 1–43 | En-tête : le motif, et les 4 écarts assumés avec la référence |
-| 45–82 | Utilitaires couleur (`pack` ABGR little-endian, `mix`), bruit déterministe `pseudo()` — jamais `Math.random()` |
-| 83–203 | Constructeur `Limaille(canvas, opt)` |
-| 204–406 | `compose(draw, bands)` — échantillonnage du texte, seuil alpha **170** (pas 128 : à 128 on ramasse l'anticrénelage et chaque lettre reçoit un halo), `seedPositions()` et ses **quinze filets** |
-| 407–521 | Intégration semi-implicite, ressort **critiquement amorti** (ζ = 1, aucun dépassement possible), verrou au repos à 1/3 de pixel |
-| 522–569 | Rendu — un seul `putImageData` par image ; arrêt complet quand tous les grains sont verrouillés |
+| Zone |
+|---|
+| En-tête : le motif, et les 4 écarts assumés avec la référence |
+| Utilitaires couleur (`pack` ABGR little-endian, `mix`), bruit déterministe `pseudo` — jamais `Math.random` |
+| Constructeur `Limaille(canvas, opt)` |
+| `compose(draw, bands)` — échantillonnage du texte, seuil alpha **170** (pas 128 : à 128 on ramasse l'anticrénelage et chaque lettre reçoit un halo), `seedPositions` et ses **quinze filets** |
+| Intégration semi-implicite, ressort **critiquement amorti** (ζ = 1, aucun dépassement possible), verrou au repos à 1/3 de pixel |
+| Rendu — un seul `putImageData` par image ; arrêt complet quand tous les grains sont verrouillés |
 
 Expose `window.Limaille`.
 **Ne contient pas** : le contenu du hero (c'est `hero.js`), ni aucune
@@ -275,17 +288,17 @@ Une grille de tuiles en aplat recouvre une cible **déjà peinte**, puis
 chaque tuile rétrécit sur son centre. Un canvas, un `fillRect` par tuile,
 zéro nœud du DOM.
 
-| Lignes | Zone |
-|---|---|
-| 1–56 | En-tête : la référence mesurée (`swisspixelreveal`), ce qu'on garde, ce qu'on jette, **quel verbe c'est** (V1 dont l'arête est faite de V3) |
-| 63–110 | Amortissement `sortie(u)` et bruit **déterministe** `grain(graine, x, y)` — une graine, jamais `Math.random()`, sinon deux passages successifs scintillent |
-| 111–252 | Un passage : `sens` décide de l'axe, `graine` décide du motif |
-| 253–280 | L'API — `APED_TRAME.degager(el, opts)` · `.couvrir(el, opts)` · `.inverse(sens)` · `.tout_arreter()`. Chaque voile porte `data-passage`. |
+| Zone |
+|---|
+| En-tête : la référence mesurée (`swisspixelreveal`), ce qu'on garde, ce qu'on jette, **quel verbe c'est** (V1 dont l'arête est faite de V3) |
+| Amortissement `sortie(u)` et bruit **déterministe** `grain(graine, x, y)` — une graine, jamais `Math.random`, sinon deux passages successifs scintillent |
+| Un passage : `sens` décide de l'axe, `graine` décide du motif |
+| L'API — `APED_TRAME.degager(el, opts)` · `.couvrir(el, opts)` · `.inverse(sens)` · `.tout_arreter`. Chaque voile porte `data-passage`. |
 
 **Ne contient pas** : la décision de *quand* passer. Ses appelants sont
-`main.js` (thème l. 1073–1100, menu l. 1116–1145, panneau l. 1182–1194),
-`langue.js` (frontières l. 482 et 514, panneau l. 1413) et `tour360.js`
-(l. 435). Il n'existe **pas dans le CSS** : aucun contenu ne dépend de lui
+`main.js` (thème , menu , panneau ),
+`langue.js` (frontières et 514, panneau ) et `tour360.js`
+. Il n'existe **pas dans le CSS** : aucun contenu ne dépend de lui
 pour être lisible.
 
 ### `js/main.js` — 2 652 lignes, 114 Ko — **vague 1** — *s'exécute toujours*
@@ -293,31 +306,31 @@ pour être lisible.
 La logique. **Aucune dépendance.** Si GSAP ne charge jamais, tout ce qui est
 ici fonctionne. C'est aussi le seul fichier où vit **l'orientation**.
 
-| Lignes | Zone |
-|---|---|
-| 1–34 | Constantes métier : `CONTACT_EMAIL`, `FORM_ENDPOINT` (FormSubmit), `BOOKING` (jours, créneaux, préavis 24 h, horizon 42 j), `SUBJECTS` |
-| 35–110 | **Le barème publié** — et l'explication de ce qui en a été retiré (la vraie grille de prix, qui était lisible dans les outils de développement) |
-| 111–155 | Ressort — sert à l'odomètre du calculateur |
-| **156–351** | **Séquence d'entrée** — ce que le script ajoute : l'**allongement** (`html.entree-attend`, l. 266) jusqu'à `document.fonts.ready` + `#heroPlate.is-live`, plafond 2,5 s ; le **saut** ; la pose de `html.compo-hero` (l. 267) et son retrait (l. 263) |
-| **352–443** | **Rail des services — orientation N1.** Expose `window.APED_SVC` (l. 405) |
-| 444–582 | Cadres de projet — le site client ne défile pas tout seul |
-| **583–628** | Parcours — compteur d'étape |
-| 629–970 | **Le cadeau** — quand il paraît, la fréquence, et l'interrupteur `sessionStorage aped-sans-popup` réservé aux instruments (l. 702) |
-| 971–1100 | **Thème** — jamais animé au chargement. La bascule passe par la **trame** (l. 1027–1100), plus par `startViewTransition` |
-| 1101–1162 | Menu plein écran + sa réciproque par trame |
-| 1163–1194 | Panneau « Ajuster en détail » et les autres replis du même type |
-| 1195–1215 | Verrou de défilement, largeur de barre compensée |
-| 1216–1349 | Modales — piège de focus, retour au déclencheur, Échap |
-| 1350–1404 | Validation — focus sur le premier champ en erreur |
-| 1405–1513 | Envoi |
-| 1514–1679 | Calendrier |
-| 1680–1843 | Formulaire projet, 7 étapes |
-| 1844–1957 | Estimateur, 8 étapes |
-| 1958–2202 | Calculateur — le montant alimente aussi l'index de gauche |
-| 2203–2297 | Aperçu des secteurs — **c'est ici que le `<template>` est posé dans le DOM** |
-| **2298–2457** | **LE CRAN — V4 du langage de mouvement, et il vit ICI.** Expose `window.APED_ROULER` (l. 2456). C'est le G2 des douze frontières, celui qui ne tombe à aucun palier. |
-| **2458–2623** | **Index collant** — `IntersectionObserver`, jamais d'écouteur `scroll` |
-| **2624–fin** | **La douzième frontière — la clôture** |
+| Zone |
+|---|
+| Constantes métier : `CONTACT_EMAIL`, `FORM_ENDPOINT` (FormSubmit), `BOOKING` (jours, créneaux, préavis 24 h, horizon 42 j), `SUBJECTS` |
+| **Le barème publié** — et l'explication de ce qui en a été retiré (la vraie grille de prix, qui était lisible dans les outils de développement) |
+| Ressort — sert à l'odomètre du calculateur |
+| **Séquence d'entrée** — ce que le script ajoute : l'**allongement** (`html.entree-attend`, ) jusqu'à `document.fonts.ready` + `#heroPlate.is-live`, plafond 2,5 s ; le **saut** ; la pose de `html.compo-hero`  et son retrait |
+| **Rail des services — orientation N1.** Expose `window.APED_SVC` |
+| Cadres de projet — le site client ne défile pas tout seul |
+| Parcours — compteur d'étape |
+| **Le cadeau** — quand il paraît, la fréquence, et l'interrupteur `sessionStorage aped-sans-popup` réservé aux instruments |
+| **Thème** — jamais animé au chargement. La bascule passe par la **trame** , plus par `startViewTransition` |
+| Menu plein écran + sa réciproque par trame |
+| Panneau « Ajuster en détail » et les autres replis du même type |
+| Verrou de défilement, largeur de barre compensée |
+| Modales — piège de focus, retour au déclencheur, Échap |
+| Validation — focus sur le premier champ en erreur |
+| Envoi |
+| Calendrier |
+| Formulaire projet, 7 étapes |
+| Estimateur, 8 étapes |
+| Calculateur — le montant alimente aussi l'index de gauche |
+| Aperçu des secteurs — **c'est ici que le `<template>` est posé dans le DOM** |
+| **LE CRAN — V4 du langage de mouvement, et il vit ICI.** Expose `window.APED_ROULER` . C'est le G2 des douze frontières, celui qui ne tombe à aucun palier. |
+| **Index collant** — `IntersectionObserver`, jamais d'écouteur `scroll` |
+| **La douzième frontière — la clôture** |
 
 **Ne contient pas** : aucune animation qui dépend de GSAP, aucune
 chorégraphie de défilement. Inversement, **rien de ce qui est ici ne doit
@@ -329,13 +342,13 @@ mouvement réduit.
 La plaque du hero. Deux mots, en permanence : « APED » très gros, « Agence »
 dessous. Aucun carrousel, aucun morph.
 
-| Lignes | Zone |
-|---|---|
-| 32–81 | **Politique d'accent** — le minium est la matière, pas un souligneur. `RATIOS.masse = { grand: 0.12, petit: 0.96 }` |
-| 82–123 | Composition, mesurée |
-| 124–306 | Hauteur réellement occupée, rotation comprise |
-| 307–365 | Cycle de vie — pose `#heroPlate.is-live`, que la séquence d'entrée attend |
-| 366–455 | Recoloration à la bascule de thème |
+| Zone |
+|---|
+| **Politique d'accent** — le minium est la matière, pas un souligneur. `RATIOS.masse = { grand: 0.12, petit: 0.96 }` |
+| Composition, mesurée |
+| Hauteur réellement occupée, rotation comprise |
+| Cycle de vie — pose `#heroPlate.is-live`, que la séquence d'entrée attend |
+| Recoloration à la bascule de thème |
 
 Sort immédiatement si `window.Limaille` est absent.
 
@@ -345,24 +358,24 @@ Les chorégraphies liées au défilement. Chaque animation porte son **niveau
 N1 / N2 / N3** en commentaire. `transform` et `opacity` uniquement, aucun
 écouteur `scroll`.
 
-| Lignes | Animation |
-|---|---|
-| 20–28 | **Sortie anticipée** : sans GSAP ou sous mouvement réduit → `html.reduced-motion`, tous les `[data-count]` prennent leur valeur finale, et le fichier s'arrête. |
-| 35 | 1. Entrée du hero |
-| 61 | 2. Compression du titre |
-| **87** | **3. Filets de section — N1 + N2.** C'est le **G1** des frontières : le filet se soude dès `top 97%`, il annonce la section avant qu'elle arrive |
-| 134 | 4. Montée des blocs |
-| 164 | 5. Compteurs de la bande de spécification |
-| 188 | 6. Le rail des services — N1 + N2 (consomme `window.APED_SVC`, l. 216) |
-| 292 | 7. Défilement interne des captures de projet |
-| 350 · 381 | 8. Ligne du processus · 8bis. Les 4 composants du parcours |
-| 415 · 438 | 9. Piste du comparatif · 9bis. Le schéma de l'écart |
-| 464 | 10. Titres de section |
-| 553 | 11. Blocs qui se reprennent |
-| 577 | 12. Frise du processus, défilement latéral |
-| 591 | 12bis. Les 4 preuves de l'agence |
-| 622 · 662 | 13. Programme de référence · 13bis. « Ce qui arrive après » |
-| 677 | 14. Recalcul après chargement des images |
+| Animation |
+|---|
+| **Sortie anticipée** : sans GSAP ou sous mouvement réduit → `html.reduced-motion`, tous les `[data-count]` prennent leur valeur finale, et le fichier s'arrête. |
+| 1. Entrée du hero |
+| 2. Compression du titre |
+| **3. Filets de section — N1 + N2.** C'est le **G1** des frontières : le filet se soude dès `top 97%`, il annonce la section avant qu'elle arrive |
+| 4. Montée des blocs |
+| 5. Compteurs de la bande de spécification |
+| 6. Le rail des services — N1 + N2 (consomme `window.APED_SVC`, ) |
+| 7. Défilement interne des captures de projet |
+| 8. Ligne du processus · 8bis. Les 4 composants du parcours |
+| 9. Piste du comparatif · 9bis. Le schéma de l'écart |
+| 10. Titres de section |
+| 11. Blocs qui se reprennent |
+| 12. Frise du processus, défilement latéral |
+| 12bis. Les 4 preuves de l'agence |
+| 13. Programme de référence · 13bis. « Ce qui arrive après » |
+| 14. Recalcul après chargement des images |
 
 **Ne contient pas** : l'orientation (elle est dans `main.js`), les quatre
 verbes (ils sont dans `langue.js`), et **aucun scrub d'opacité sur un
@@ -372,27 +385,27 @@ d'état de repos.
 ### `js/langue.js` — 1 546 lignes, 71 Ko — **vague 2**, après `motion.js`
 
 **Les quatre verbes**, et le **budget de dégradation**. S'arrête net
-(l. 61) sans GSAP ou sous mouvement réduit.
+ sans GSAP ou sous mouvement réduit.
 
-| Lignes | Zone |
-|---|---|
-| 1–48 | En-tête : V1 DÉGAGER · V2 S'ALIGNER · V3 SOUDER · V4 CRAN, et la règle d'admission |
-| **66–150** | **Le budget de dégradation** — pose `root.setAttribute("data-palier", …)` l. 129 et 140 ; palier 1 statique (largeur < 64em · `pointer: coarse` · `hardwareConcurrency` ≤ 4 · `deviceMemory` ≤ 4), palier 2 mesuré |
-| 152–200 | La mesure : on n'échantillonne **que** pendant un défilement réel — médiane sur 90 images, seuil 50 i/s |
-| 201–250 | Le travail préparatoire (découpage de texte) se fait pendant les **temps morts** |
-| 251–288 | 0. FLIP maison |
-| **289–609** | **0bis. Les douze frontières** — franchissement lu à l'intersection (341), la **trame** (395–438), le nom comme libellé toujours gauche→droite (439), palier 2 (457) |
-| 610–808 | 1. Les lettres — V4 · CRAN, sur tous les boutons. Décalage suivant la **position**, pas l'indice (731) |
-| 809–926 | 2. Les mots — V1 · DÉGAGER, sur les chapôs (le poste le plus cher, il tombe au palier 1) |
-| 927–1014 | 3. DÉGAGER — révélation par masque net. Le voile de grains a été **coupé** (979) |
-| 1015–1056 | 4. SOUDER — les filets de liaison |
-| 1057–1277 | 5. Les secteurs — 5a recomposition, un seul chemin de code (1140) · 5b la pile (1166) · 5c parallaxe à la pointe, bornée, pointeur fin seul (1260) |
-| 1278–1304 | 6. Vitesses différenciées — N3, bureau seulement |
-| 1305–1342 | 7. La FAQ — V2, et c'est du FLIP |
-| 1343–1382 | 8. L'étiquette de la pointe — V4 |
-| 1383–1438 | 9. Les modales — V1 |
-| 1439–1539 | 10. Les sept plaques d'atelier — V2 · S'ALIGNER (la dérive ; le palier 1 la retire, l'inclinaison reste) |
-| 1540–fin | 11. Recalcul |
+| Zone |
+|---|
+| En-tête : V1 DÉGAGER · V2 S'ALIGNER · V3 SOUDER · V4 CRAN, et la règle d'admission |
+| **Le budget de dégradation** — pose `root.setAttribute("data-palier", …)` et 140 ; palier 1 statique (largeur < 64em · `pointer: coarse` · `hardwareConcurrency` ≤ 4 · `deviceMemory` ≤ 4), palier 2 mesuré |
+| La mesure : on n'échantillonne **que** pendant un défilement réel — médiane sur 90 images, seuil 50 i/s |
+| Le travail préparatoire (découpage de texte) se fait pendant les **temps morts** |
+| 0. FLIP maison |
+| **0bis. Les douze frontières** — franchissement lu à l'intersection, la **trame**, le nom comme libellé toujours gauche→droite, palier 2 |
+| 1. Les lettres — V4 · CRAN, sur tous les boutons. Décalage suivant la **position**, pas l'indice |
+| 2. Les mots — V1 · DÉGAGER, sur les chapôs (le poste le plus cher, il tombe au palier 1) |
+| 3. DÉGAGER — révélation par masque net. Le voile de grains a été **coupé** |
+| 4. SOUDER — les filets de liaison |
+| 5. Les secteurs — 5a recomposition, un seul chemin de code · 5b la pile · 5c parallaxe à la pointe, bornée, pointeur fin seul |
+| 6. Vitesses différenciées — N3, bureau seulement |
+| 7. La FAQ — V2, et c'est du FLIP |
+| 8. L'étiquette de la pointe — V4 |
+| 9. Les modales — V1 |
+| 10. Les sept plaques d'atelier — V2 · S'ALIGNER (la dérive ; le palier 1 la retire, l'inclinaison reste) |
+| 11. Recalcul |
 
 **Ne contient pas** : l'orientation, le cran des frontières (G2, dans
 `main.js`), la matière (`limaille.js`), le mécanisme de passage
@@ -411,14 +424,14 @@ désactivée sous `prefers-reduced-motion`, suivi en direct ; **aucun
 Visite virtuelle 360, module autonome. Moteur Pannellum 2.5.7 (MIT)
 auto-hébergé.
 
-| Lignes | Zone |
-|---|---|
-| 1–34 | En-tête : règle de charge (rien ne part avant le clic), progressif 2K → 4K, accessibilité |
-| 35–104 | Le plan — repère 240 × 140, `PLAN_SVG` (l. 62) ; les rectangles et les murs sortent des **mêmes** coordonnées |
-| 105–139 | `PIECES` (salon, chambre, terrasse — Lythwood Lodge), `HFOV_MIN` 55 / `HFOV_MAX` 118 |
-| 140–177 | Utilitaires + `charger(url, css)` : chargement d'une ressource une seule fois pour toute la page |
-| 178–534 | `demarrer(bloc, index)` — la scène, les points de passage rééquipés un par un (`tabindex`, `role`, nom accessible, clavier — Pannellum les fabrique en `div` nus), et le passage d'une pièce à l'autre **par la trame** (l. 435) |
-| 535–fin | `init()` |
+| Zone |
+|---|
+| En-tête : règle de charge (rien ne part avant le clic), progressif 2K → 4K, accessibilité |
+| Le plan — repère 240 × 140, `PLAN_SVG`  ; les rectangles et les murs sortent des **mêmes** coordonnées |
+| `PIECES` (salon, chambre, terrasse — Lythwood Lodge), `HFOV_MIN` 55 / `HFOV_MAX` 118 |
+| Utilitaires + `charger(url, css)` : chargement d'une ressource une seule fois pour toute la page |
+| `demarrer(bloc, index)` — la scène, les points de passage rééquipés un par un (`tabindex`, `role`, nom accessible, clavier — Pannellum les fabrique en `div` nus), et le passage d'une pièce à l'autre **par la trame** |
+| `init` |
 
 **Ne déclenche aucun téléchargement au chargement de la page** : ni le
 moteur, ni les panoramas. Avant le clic, la section ne pèse que son affiche
@@ -447,7 +460,7 @@ impressions.
 | Outil | Ce qu'il rend comme preuve |
 |---|---|
 | `serve.mjs` | Serveur statique minimal, zéro dépendance. `node tools/serve.mjs [port]`. |
-| `cine.mjs` | **Bibliothèque, pas un test.** `filmer / planche / cadence / plancheFenetre` via `Page.startScreencast` du protocole DevTools : une image à chaque peinture, horodatée. Existe parce que `page.screenshot()` coûte 120 à 950 ms et **rate** une transition. |
+| `cine.mjs` | **Bibliothèque, pas un test.** `filmer / planche / cadence / plancheFenetre` via `Page.startScreencast` du protocole DevTools : une image à chaque peinture, horodatée. Existe parce que `page.screenshot` coûte 120 à 950 ms et **rate** une transition. |
 | `vue.mjs` | Une capture ciblée d'une section : `node tools/vue.mjs #contact [largeur] [thème] [décalage]`. |
 
 ### Preuves de comportement
@@ -541,19 +554,48 @@ impressions.
 
 ## 7 · Documentation
 
-| Fichier | Rôle | Ce qu'on y trouve |
-|---|---|---|
-| **`CLAUDE.md`** (32 Ko) | **Les règles.** À lire avant toute modification. | La signature, les 4 verbes, les 12 frontières, la trame, l'accueil, la séquence d'entrée, le budget de dégradation (3 paliers), la hiérarchie N1/N2/N3, la politique d'accent, les 5 règles de structure, le design stack et sa table de routage de skills, la config MCP. |
-| `PHASE-6.md` (27 Ko) | Les 8 points du client + 17 défauts trouvés en propre. | Hero coupé, colonne droite, projets, 13 secteurs, calculateur, contact/référence, 7 animations, mesures, 15 techniques de recherche, réserves. |
-| `PHASE-7.md` (27 Ko) | Les douze chantiers. | Retrait de tous les prix publics, séquence d'entrée, hero en mode clair, arbitrage rail/roue des services, cadres de projet, schéma de l'écart, mesures, phase 7B. |
-| `PHASE-8.md` (58 Ko) | **Le langage de mouvement complet.** | La décision qui gouverne tout (§ 0), 41 techniques et leur traduction (§ 1), les 4 moments qui comptent (§ 2), l'inventaire complet (§ 3), les chiffres (§ 4), ce qui a été écarté (§ 5), **les 5 pièges d'instrument (§ 6)**, réserves, budget mobile (§ 7bis). |
-| `PHASE-9.md` (20 Ko) | Séquence d'entrée, douze frontières, cadeau. | § 0 la découverte : **aucun formulaire de ce site n'a jamais livré**. § 1 pourquoi personne ne voyait la séquence. **§ 2 la table des douze frontières et l'argument de chacune.** § 3 le cadeau. **§ 4 les 6 pièges d'instrument.** |
-| `PHASE-10.md` (21 Ko) | Les passages. | § 0 les 3 défauts trouvés en mesurant (dont la 13ᵉ frontière invisible depuis toujours), § 1 les six références, § 2 la trame et son verbe, § 3 l'inventaire des passages, § 4 l'échelon de palier ajouté, § 5 les pièges d'instrument, § 6 les chiffres avant/après. |
-| `REFONTE-CHECKLIST.md` (41 Ko) | **Journal des phases 4 et 5.** Reste la référence pour tout ce que 6–10 n'ont pas touché. | Phase 5 (la signature), phase 4 (bilan de clôture) : décompte, comptage des sections, copie, pages, blocs, sections, modales, composants, tokens, animations, logique métier, violations. ⚠️ Deux lignes y sont périmées depuis la phase 7, signalées dans le fichier. |
-| `DESIGN-STACK.md` (9 Ko) | L'état du stack de skills design. | Ce qui est gardé (niveau 1, 5 skills), ce qui a été retiré et pourquoi, ce qui est hors périmètre ici, le poids en contexte mesuré, les problèmes MCP. |
-| `AUDIT-150.md` (13 Ko) | Audit par « auditeur externe hostile ». | Score brut, récapitulatif, les déclinaisons de la signature (9/12), **ce que l'auditeur a trouvé que moi non**, les 10 failles, les faux positifs débusqués, ce qui est impossible à mettre à ● et pourquoi. |
-| `SPEC-VISITE-360.md` (13 Ko) | Spécification de dépôt, à destination du client. | Quoi fournir par pièce, les douze pièces et leurs liaisons, le tableau à remplir, le plan, ce qui sera fait à réception. Le pipeline est construit et testé ; rien n'a été touché dans la visite actuelle. |
-| **`ARCHITECTURE.md`** | Ce fichier. La carte. | Il dit **où**. Les autres disent **pourquoi**. |
+### Vivants — à la racine
+
+| Fichier | Quand le lire |
+|---|---|
+| **`CLAUDE.md`** | toujours : c'est l'aiguilleur. Les interdits, les seuils, les 4 verbes, les 29 erreurs déjà commises, et la table « si tu travailles sur X, lis Y » |
+| **`SECTIONS.md`** | une demande nomme une section. **Seul document du dépôt qui porte des numéros de ligne**, et ils sont générés par `node tools/plages.mjs` |
+| **`ARCHITECTURE.md`** | ce fichier. Tu sais quoi changer, pas où |
+| **`ANIMATIONS.md`** | avant de toucher à un mouvement. Une ligne par animation, avec son verbe et son verrou |
+| **`DECISIONS.md`** | avant de renverser un choix. Plus l'index de `decisions/`, un fichier par fichier source |
+| **`MESURES.md`** | avant d'annoncer un chiffre, ou pour choisir un outil |
+| **`PIEGES.md`** | une mesure rend un verdict surprenant. 29 faux verdicts déjà payés |
+| **`RESERVES.md`** | avant d'écrire « vérifié » |
+| **`DESIGN-STACK.md`** | quels skills charger, et lesquels sont hors périmètre |
+
+### `decisions/` — le pourquoi du code
+
+Un fichier par fichier source, 566 entrées. Chaque entrée porte un
+identifiant `D-nnn` qui figure **aussi dans le code**, sur une ligne :
+`grep D-042` trouve les deux bouts. Ne se lit jamais en entier.
+
+### `archives/rapports/` — l'historique
+
+| Fichier | Ce qu'il garde |
+|---|---|
+| `archives/rapports/CHANTIER-SERVICES-REALISATIONS.md` | 2026-07-30 après-midi : le retrait des huit plaques, la piste collante (dont **le défaut de peinture qu'aucune sonde du DOM ne voyait**), les trois avant/après en markup, le registre des marqueurs de 2008-2012 avec leurs captures Wayback, 13 décisions |
+| `archives/rapports/CHANTIER-SERVICES.md` | 2026-07-30 matin. **Remplacé en partie par le précédent** |
+| `archives/rapports/AUDIT-VERACITE.md` | les 36 affirmations fausses ou invérifiables du 2026-07-29, et le traitement de chacune |
+| `archives/rapports/DECISIONS-NUIT.md` | les 31 arbitrages pris sans le propriétaire dans la nuit du 29 au 30 |
+| `archives/rapports/RECHERCHE-ACCUEIL.md` | les deux références mesurées dans un vrai navigateur, et l'état de l'art, en chiffres |
+| `archives/rapports/PHASE-8.md` | le langage de mouvement complet : 41 techniques, les 4 moments, l'inventaire |
+| `archives/rapports/PHASE-9.md` | séquence d'entrée, table des douze frontières et l'argument de chacune, le cadeau |
+| `archives/rapports/PHASE-10.md` | les passages : la trame, son verbe, l'inventaire, l'échelon de palier ajouté |
+| `archives/rapports/PHASE-6.md` · `archives/rapports/PHASE-7.md` | les 8 points du client et 17 défauts · les douze chantiers |
+| `archives/rapports/REFONTE-CHECKLIST.md` | journal des phases 4 et 5. Deux lignes y sont périmées, signalées dans le fichier |
+| `archives/rapports/AUDIT-150.md` | audit par « auditeur externe hostile » : ce qu'il a trouvé que moi non |
+| `archives/rapports/SPEC-VISITE-360.md` | spécification de dépôt à destination du client. Le pipeline est construit et testé |
+
+### `archives/outils-perimes/`
+
+`services-check.mjs`, `projets-check.mjs`, `plaques-vie.mjs`,
+`plaques-debord.mjs` — quatre outils dont **aucune cible n'existe plus**.
+Ils passaient au vert sur du vide : le piège 17.
 
 ---
 
@@ -561,7 +603,8 @@ impressions.
 
 | Fichier / dossier | Rôle |
 |---|---|
-| **`404.html`** (159 lignes) | Page introuvable, `noindex`. **Elle charge `css/app.css` en entier**, pas le couple critique/différé : trois `<link>` en tête (`tokens`, `base`, `app`). Même script en ligne de thème que `index.html`, mais **sans** la décision de séquence d'entrée. Contient l'index complet des 12 sections en liens `index.html#…` (l. 80–92), avec une ligne « déraillée ». Son style vit dans `css/app.css` § 25 (l. 4200–4368). |
+| **`archives/`** | **Ajouté le 2026-07-30.** Ce qui a été retiré du site, avec l'argument et les mesures. Trois dossiers, chacun avec son `README.md` : `2026-07-30-plaques-accueil/` (markup, CSS, JS, et le registre des huit affirmations), `2026-07-30-services-images/` (les 4 `.webp` **et `svc-images.mjs`, qui porte leur licence** — une provenance ne survit pas dans un binaire), `2026-07-30-projets-images/` (les 5 `real-*.webp` sans licence, l'ancienne section 03, et les trois blocs de JS morts). **Rien n'y est supprimé : tout y est recollable.** |
+| **`404.html`** (159 lignes) | Page introuvable, `noindex`. **Elle charge `css/app.css` en entier**, pas le couple critique/différé : trois `<link>` en tête (`tokens`, `base`, `app`). Même script en ligne de thème que `index.html`, mais **sans** la décision de séquence d'entrée. Contient l'index complet des 12 sections en liens `index.html#…` , avec une ligne « déraillée ». Son style vit dans `css/app.css` § 25 . |
 | **`package.json`** | `devDependencies` uniquement : `playwright`, `gsap`, `puppeteer-core`, `shadcn`, `@tabler/icons`. **Aucune dépendance de production, aucun script de build déclaré.** GSAP est copié dans `js/vendor/`, il n'est pas résolu depuis `node_modules` à l'exécution. Les icônes Tabler sont la source du sprite inline. |
 | **`components.json`** | Config shadcn. Cible un projet **React + Tailwind** (`css/styles.css`, alias `components/ui`) qui **n'existe pas ici**. Sert uniquement à donner au MCP `shadcn` la liste des registries : `@magic-ui`, `@aceternity`, `@kokonutui`, `@kibo-ui`. `shadcn add` n'écrit pas de code utilisable sur ce site vanilla — le MCP sert à **chercher et lire**, puis à porter à la main. |
 | **`.mcp.json`** | Un seul serveur, au niveau projet : `shadcn` via `npx shadcn@latest mcp`. Le serveur `playwright` est configuré au niveau utilisateur, pas ici. |
@@ -576,22 +619,22 @@ impressions.
 
 ## 9 · Points à surveiller, relevés en dressant cette carte
 
-1. **`<footer class="footer">` (l. 2458–2513) est à l'intérieur de
-   `<main class="shell">` (l. 307–2515).** Un `<footer>` descendant de
-   `<main>` perd son rôle de repère `contentinfo` dans l'arbre
-   d'accessibilité. À confirmer avec l'arbre a11y de Playwright avant de
-   déplacer quoi que ce soit — le seuil du pied (l. 2451) est juste
-   au-dessus et sortir le `<footer>` déplacerait aussi la treizième
-   frontière.
+1. **`<footer class="footer">`  est à l'intérieur de
+ `<main class="shell">` .** Un `<footer>` descendant de
+ `<main>` perd son rôle de repère `contentinfo` dans l'arbre
+ d'accessibilité. À confirmer avec l'arbre a11y de Playwright avant de
+ déplacer quoi que ce soit — le seuil du pied  est juste
+ au-dessus et sortir le `<footer>` déplacerait aussi la treizième
+ frontière.
 
 2. **`404.html` charge `app.css` entier alors qu'`index.html` charge le
-   couple découpé.** Ce n'est pas forcément un défaut (la 404 n'a pas de
-   budget de LCP), mais ça veut dire que la 404 est le seul endroit du
-   dépôt où `app.css` est servi tel quel — et donc le seul endroit qui ne
-   régresserait pas si `css-critique.mjs` cassait quelque chose.
+ couple découpé.** Ce n'est pas forcément un défaut (la 404 n'a pas de
+ budget de LCP), mais ça veut dire que la 404 est le seul endroit du
+ dépôt où `app.css` est servi tel quel — et donc le seul endroit qui ne
+ régresserait pas si `css-critique.mjs` cassait quelque chose.
 
 3. **`components.json` décrit un projet qui n'existe pas.** Les chemins
-   (`css/styles.css`, `components/ui`, `js/utils`, `js/lib`, `js/hooks`)
-   ne correspondent à aucun fichier du dépôt. C'est volontaire — le fichier
-   ne sert qu'à alimenter le MCP en registries — mais un outil qui le lit
-   au pied de la lettre se trompera.
+ (`css/styles.css`, `components/ui`, `js/utils`, `js/lib`, `js/hooks`)
+ ne correspondent à aucun fichier du dépôt. C'est volontaire — le fichier
+ ne sert qu'à alimenter le MCP en registries — mais un outil qui le lit
+ au pied de la lettre se trompera.

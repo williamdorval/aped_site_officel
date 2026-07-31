@@ -1,0 +1,170 @@
+﻿  <!-- ===================== 03 · PROJETS LIVRÉS ===================== -->
+  <!-- LE CADRE NE DEFILE PLUS TOUT SEUL.
+
+       Avant, la capture du site client defilait dans son cadre au
+       rythme de la page : le visiteur ne l'avait pas demande, il ne
+       pouvait ni l'arreter ni la reprendre, et le haut du site —
+       c'est-a-dire ce qui se juge — n'etait net qu'une fraction de
+       seconde. Un mouvement qu'on subit n'est pas une demonstration,
+       c'est du bruit.
+
+       Maintenant le cadre est INERTE au repos : on voit le haut du
+       site, immobile et net. Il ne se parcourt que sur une intention
+       explicite du visiteur, et il en accepte trois :
+       · un survol PROLONGE, 520 ms, assez long pour qu'un pointeur
+         qui traverse le cadre ne declenche rien ;
+       · un clic, ou Entree et Espace au clavier ;
+       · un defilement a l'interieur du cadre.
+
+       CE QUI PORTE LE MOUVEMENT EST `scrollTop`, PAS UN `transform`.
+       Une seule source de verite : la molette, le doigt, les
+       touches, la barre de defilement et la lecture automatique
+       ecrivent tous dans la meme valeur. Le defilement natif
+       s'enchaine de lui-meme vers la page quand la capture est au
+       bout, donc le cadre ne peut jamais retenir le visiteur — c'est
+       la difference entre une zone qu'on parcourt et un piege. -->
+  <section id="realisations">
+      <!-- ===== FRONTIERE 03 · 02 vers 03 =====
+           G4 : relais-compteur (droite). Les services promettent, les projets prouvent : le meme compteur change de sujet.
+           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
+      <div class="seuil" data-seuil data-de="02" data-vers="03" data-dress="clair" data-verbe="degager" data-sens="bas" data-cible=".project:first-of-type .shot">
+        <div class="wrap seuil-in">
+          <div class="section-rule draw seuil-filet" data-section-rule></div>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>02</span><span>03</span></span></b><span class="seuil-nom">Projets</span></p>
+        </div>
+      </div>
+    <div class="wrap band">
+      <div class="head" style="margin-top: var(--s-6);">
+        <!-- A9 · DEUX AFFIRMATIONS RETIREES, ET C'EST L'ARBITRAGE DU
+             PROPRIETAIRE DU 2026-07-29.
+             « Des sites en ligne, pas des maquettes » et « Cinq
+             projets livres » affirmaient une livraison qu'un visiteur
+             ne peut pas verifier : les cinq cadres sont des captures
+             `webp` statiques, aucun n'est LIE a une adresse en ligne.
+             Une affirmation de livraison sans lien vers le livrable
+             est la plus facile a demolir de toutes — il suffit de
+             demander l'adresse.
+             Ce qui reste est entierement vrai et se constate a
+             l'ecran : la page est entiere, elle est a nous, et le
+             visiteur la parcourt. Le jour ou les cinq adresses
+             existent, on met le lien sur chaque cadre et
+             l'affirmation revient — en preuve, cette fois. -->
+        <h2>Cinq pages d’accueil, dessinées et codées ici.</h2>
+        <p>Chaque cadre contient la page entière, du haut jusqu’au pied — pas une vignette. Elle ne bouge pas toute seule : survolez le cadre, ou cliquez dedans, et vous la parcourez à votre rythme.</p>
+      </div>
+    </div>
+
+    <div class="wrap">
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>01</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Cendre. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-restaurant.webp" width="900" height="9195" alt="Page d’accueil complète du site du restaurant Cendre" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">01</p>
+          <h3>Cendre</h3>
+          <p>Le menu change chaque semaine. Le personnel le modifie sans nous appeler.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Restauration</dd></div>
+            <div><dt>Livrable</dt><dd>Site vitrine et réservation</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>Le menu se met à jour depuis le téléphone du chef, en salle.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>02</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Pneus Mécanique. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-pneus.webp" width="900" height="6141" alt="Page d’accueil complète de la boutique Pneus Mécanique" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">02</p>
+          <h3>Pneus Mécanique</h3>
+          <p>Recherche par véhicule, panier, paiement. Le catalogue vit dans leur inventaire.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Commerce en ligne</dd></div>
+            <div><dt>Livrable</dt><dd>Boutique et recherche par véhicule</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>La bonne référence de pneu se trouve par véhicule, sans appeler.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>03</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Atelier Méridien. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-carrosserie.webp" width="900" height="8861" alt="Page d’accueil complète du site Atelier Méridien" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">03</p>
+          <h3>Atelier Méridien</h3>
+          <p>Les soumissions arrivent avec les photos du dommage.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Carrosserie</dd></div>
+            <div><dt>Livrable</dt><dd>Vitrine et demande de soumission</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>Le chiffrage se fait sur photo, avant que le véhicule entre.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>04</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site MV Déneigement. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-neige.webp" width="900" height="5486" alt="Page d’accueil complète du site MV Déneigement" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">04</p>
+          <h3>MV Déneigement</h3>
+          <p>Le client entre son adresse, voit si le territoire est couvert, et s’inscrit.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Déneigement</dd></div>
+            <div><dt>Livrable</dt><dd>Site de service et inscription</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>La carte répond avant l’appel : le client voit si son adresse est couverte.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure class="shot">
+          <p class="shot-count" aria-hidden="true"><b>05</b><span>/ 05</span></p>
+          <div class="shot-vue" data-shot tabindex="0" role="group"
+               aria-label="Page d’accueil du site Studio Norden. Entrée ou Espace pour la parcourir, flèches pour se déplacer.">
+            <img src="images/real-interieur.webp" width="900" height="8593" alt="Page d’accueil complète du site Studio Norden" loading="lazy" />
+          </div>
+          <p class="shot-etat" aria-hidden="true"><i></i><span data-shot-mot>Survolez pour parcourir</span></p>
+          <i class="shot-jauge" aria-hidden="true"><b></b></i>
+        </figure>
+        <div class="project-meta">
+          <p class="project-num num" aria-hidden="true">05</p>
+          <h3>Studio Norden</h3>
+          <p>Un portfolio qui laisse les photos respirer.</p>
+          <dl class="project-facts" data-souder>
+            <div><dt>Secteur</dt><dd>Design intérieur</dd></div>
+            <div><dt>Livrable</dt><dd>Portfolio et prise de contact</dd></div>
+            <div><dt>Ce que ça règle</dt><dd>Une nouvelle réalisation se publie sans nous appeler.</dd></div>
+          </dl>
+        </div>
+      </article>
+
+    </div>
+  </section>

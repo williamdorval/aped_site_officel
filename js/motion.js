@@ -1,11 +1,4 @@
-/* ============================================================
-   APED AGENCE - Mouvement
-   Chaque animation ci-dessous a une raison, ecrite au-dessus d'elle.
-   Aucune n'est la pour faire joli.
-
-   Regles tenues partout : transform et opacity uniquement, aucun
-   ecouteur scroll, tout se coupe sous prefers-reduced-motion.
-   ============================================================ */
+﻿/* == APED AGENCE - Mouvement ==  D-495 */
 
 (function () {
   "use strict";
@@ -31,45 +24,11 @@
 
   var ease = "power3.out";
 
-  /* ------------------------------------------------------------
-     1. Entree du hero.
-     Raison : hierarchie. La plaque, la phrase d'accroche et le
-     sous-titre sont deja la au premier rendu ; seuls les boutons
-     montent.
+  /* 1. Entree du hero.  D-496 */
+  /* LE HERO NE S'ANIME PLUS DU TOUT.  D-497 */
 
-     MESURE DU 2026-07-25, ET C'EST LA RAISON DE CE CHANGEMENT :
-     `.hero-claim` portait la classe `.rise`, donc `opacity: 0`
-     jusqu'a ce que GSAP la releve. Un element a opacite nulle N'EST
-     PAS candidat au LCP : le plus grand element de la page n'etait
-     donc compte qu'a la fin de son animation, et le LCP tombait a
-     620 ms au lieu du premier rendu. Une animation d'entree qui
-     retarde la mesure du premier contenu utile ne retarde pas que la
-     mesure : elle retarde la LECTURE. Le titre ne s'anime plus.
-     ------------------------------------------------------------ */
-  /* LE HERO NE S'ANIME PLUS DU TOUT.
-     Le titre avait deja ete retire de l'animation en phase 6 : un
-     element a opacite nulle n'est pas candidat au LCP. Les boutons
-     suivent aujourd'hui, pour la meme raison poussee d'un cran —
-     leur etat de depart obligeait a charger GSAP avant le premier
-     ecran, donc a garder ses 51 ms de tache sur le chemin du
-     chargement. Rien de ce qui est visible au premier ecran ne
-     depend plus de la bibliotheque d'animation.
-     Ce qu'on perd : une montee de 620 ms sur deux boutons.
-     Ce qu'on gagne : la choregraphie entiere sort du chargement. */
-
-  /* ------------------------------------------------------------
-     2. Compression du titre.
-     Raison : storytelling. L'axe de largeur d'Archivo passe de 125
-     a 78 pendant que le hero sort. Le titre se comprime
-     physiquement, comme une plaque qu'on met sous presse. C'est le
-     moment signature de la page.
-     ------------------------------------------------------------ */
-  /* La plaque de limaille repond au defilement : quand le hero sort,
-     le champ se relache et les grains montent legerement, comme une
-     plaque qu'on souleve du banc. Un seul foyer d'attention : le
-     mouvement est faible et s'arrete des que la plaque est sortie.
-     C'est la meme matiere que le sillon du pointeur, pilotee par une
-     autre force. */
+  /* 2. Compression du titre.  D-498 */
+  /* La plaque de limaille repond au defilement : quand le hero sort,  D-499 */
   var hero = $(".hero");
   var plate = $("#heroPlate");
   if (hero && plate && window.matchMedia("(min-width: 48em)").matches) {
@@ -83,43 +42,19 @@
     );
   }
 
-  /* ------------------------------------------------------------
-     3. Filets de section — N1 (orientation) + N2 (signature).
-     Raison : hierarchie ET signature. Le filet annonce qu'une bande
-     commence, donc il oriente. Et il ne se contente pas de se
-     tracer : il s'assemble en grains de la gauche vers la droite,
-     puis se RESSOUDE en trait plein. C'est la limaille du hero a
-     l'echelle d'un filet, et c'est reconnaissable comme la meme
-     idee sans etre une copie.
-     ------------------------------------------------------------ */
-  /* LES CINQ FILETS DE LA FICHE TECHNIQUE SONT EXCLUS, et c'est la
-     consequence directe de la composition d'entree.
-     Ils se soudent maintenant DANS la sequence, en CSS, au rythme
-     de `--e`. Les laisser ici les faisait retracer une seconde fois
-     a l'arrivee de GSAP — soit 1,2 s apres, hors tempo, sur un
-     objet deja pose. Ils gardent `data-section-rule` : l'attribut
-     sert aussi au filet de section active, qui vit dans `main.js`. */
+  /* 3. Filets de section — N1 (orientation) + N2 (signature).  D-500 */
+  /* LES CINQ FILETS DE LA FICHE TECHNIQUE SONT EXCLUS, et c'est la  D-501 */
   $$("[data-section-rule]").forEach(function (rule) {
     if (rule.classList.contains("fiche-rule")) return;
     gsap.fromTo(rule, { scaleX: 0 }, {
       scaleX: 1,
       duration: 0.72,
       ease: "power2.inOut",
-      /* L'etat de depart n'est plus dans le CSS : il est pose ICI, et
-         `immediateRender: false` garantit qu'il ne l'est qu'au
-         moment ou le filet entre en scene. Sinon la bibliotheque,
-         chargee tard, effacerait d'un coup douze filets deja
-         visibles pour les retracer. */
+      /* L'etat de depart n'est plus dans le CSS : il est pose ICI, et  D-502 */
       immediateRender: false,
       scrollTrigger: {
         trigger: rule,
-        /* G1 · ANNONCER. Un filet de seuil part des qu'il ENTRE dans
-           l'ecran — 97 % — et pas a 88 % comme les autres. La
-           difference fait tout le geste demande : le filet de la
-           section suivante se trace AVANT qu'elle arrive, donc il
-           l'annonce au lieu de la souligner. Les filets qui ne sont
-           pas des seuils gardent 88 % : eux soulignent, c'est leur
-           role. */
+        /* G1 · ANNONCER. Un filet de seuil part des qu'il ENTRE dans  D-503 */
         start: rule.closest("[data-seuil]") ? "top 97%" : "top 88%",
         once: true,
         onEnter: function () {
@@ -130,12 +65,7 @@
     });
   });
 
-  /* ------------------------------------------------------------
-     4. Montee des blocs.
-     Raison : storytelling. Les elements arrivent dans l'ordre de
-     lecture plutot que tous ensemble. Decalage court : c'est une
-     fiche technique, pas un generique de film.
-     ------------------------------------------------------------ */
+  /* 4. Montee des blocs.  D-504 */
   var groups = [];
   $$(".rise").forEach(function (el) {
     if (el.closest(".hero")) return;
@@ -160,11 +90,7 @@
       });
   });
 
-  /* ------------------------------------------------------------
-     5. Compteurs de la bande de specification.
-     Raison : feedback. Un chiffre qui se pose vaut mieux qu'un
-     chiffre deja pose : il signale qu'il a ete mesure.
-     ------------------------------------------------------------ */
+  /* 5. Compteurs de la bande de specification.  D-505 */
   $$("[data-count]").forEach(function (el) {
     var target = Number(el.dataset.count);
     var suffix = el.dataset.suffix || "";
@@ -184,75 +110,9 @@
     });
   });
 
-  /* ------------------------------------------------------------
-     7. Defilement interne des captures de projet.
-     Raison : storytelling. Chaque image est la page d'accueil
-     complete du site livre. Elle defile du haut jusqu'en bas
-     pendant que la bande traverse l'ecran : le visiteur voit le
-     site entier sans quitter la page.
-     ------------------------------------------------------------ */
-  /* HISTORIQUE DES DEUX ERREURS, mesurees toutes les deux.
 
-     Phase 3 : plage de 1 075 px, l'image filait a 2,74 px pour 1 px
-     de doigt. Trop rapide, illisible.
-
-     Phase 5 : bande EPINGLEE, plage de 3 200 px par projet pour
-     derouler la page cliente jusqu'en bas. Lisible, mais la section
-     passait a 20 588 px, soit 60 % de la hauteur totale du site, et
-     traverser un seul projet coutait 4 044 px de defilement. Corriger
-     la vitesse en allongeant la course a produit le defaut inverse.
-
-     PHASE 6 — l'arbitrage est ailleurs : on n'a pas besoin de voir la
-     page cliente EN ENTIER. Ce qui se juge, c'est le haut. Donc :
-     · le pin saute. Il coutait 3 200 px par projet et c'est lui, pas
-       la vitesse, qui donnait la sensation de ne plus avancer ;
-     · la course de l'image est plafonnee a 0,9 hauteur de cadre, soit
-       le premier ecran du site client plus un peu de la suite ;
-     · la plage de defilement est la traversee NATURELLE de la bande,
-       donc elle n'ajoute pas un seul pixel a la page.
-     Resultat mesure plus bas dans REFONTE-CHECKLIST.md. */
-  /* LE DEFILEMENT INTERNE A ETE RETIRE, ET C'EST LE CHANTIER.
-     Il etait pilote par la position de la page : la capture bougeait
-     sans que le visiteur l'ait demande, il ne pouvait ni l'arreter
-     ni la reprendre, et le HAUT du site — ce qui se juge — n'etait
-     net qu'une fraction de seconde. Un mouvement qu'on subit n'est
-     pas une demonstration.
-     Le parcours vit maintenant dans `js/main.js`, sur `scrollTop`,
-     et il ne demarre que sur intention : survol prolonge, clic,
-     Entree, ou defilement dans le cadre. Il fallait qu'il soit dans
-     `main.js` parce que ce fichier-ci ne s'execute pas sous
-     `prefers-reduced-motion` : perdre le mouvement ne doit jamais
-     faire perdre l'acces au contenu.
-
-     Ce qui reste ici est la seule chose qui appartient vraiment a la
-     choregraphie : N2 · la capture ne s'affiche pas d'un bloc, elle
-     se decouvre du haut vers le bas comme une page qui se charge.
-     380 ms, une seule fois, le cadre garde sa place, donc aucun
-     decalage de mise en page. */
-  $$(".shot").forEach(function (frame) {
-    var bande = frame.closest(".project") || frame;
-    gsap.fromTo(frame,
-      { clipPath: "inset(0 0 100% 0)" },
-      {
-        clipPath: "inset(0 0 0% 0)",
-        duration: 0.38,
-        ease: "power2.out",
-        scrollTrigger: { trigger: bande, start: "top 82%", once: true }
-      }
-    );
-  });
-
-  /* ------------------------------------------------------------
-     8. Ligne du processus.
-     Raison : storytelling. La ligne se trace d'etape en etape :
-     elle represente le projet qui avance.
-     ------------------------------------------------------------ */
-  /* LE FIL SE REMPLIT, station par station, et sa portion pleine
-     EST la progression : l'orientation ne peut pas mentir parce
-     qu'elle n'est pas un indicateur pose a cote du mouvement, elle
-     est le mouvement lui-meme.
-     Etat au repos = fil plein. Sans script, le parcours se lit
-     entier : c'est un chemin, pas une animation. */
+  /* 8. Ligne du processus.  D-506 */
+  /* LE FIL SE REMPLIT, station par station, et sa portion pleine  D-507 */
   $$(".parc-etape").forEach(function (etape) {
     var fil = $(".parc-fil b", etape);
     var branche = $(".parc-branche", etape);
@@ -273,16 +133,7 @@
     }
   });
 
-  /* ------------------------------------------------------------
-     8bis. LES QUATRE COMPOSANTS DU PARCOURS — N2.
-     Chacun se CONSTRUIT a l'ecran, et chacun montre ce que son
-     etape produit : la fiche d'appel s'ecrit ligne par ligne, la
-     maquette s'assemble en limaille — les blocs arrivent decales et
-     se reprennent, exactement le motif du hero a l'echelle d'une
-     mise en page —, le code se pose, le site passe en ligne.
-     Une seule fois, jamais en boucle : ce sont des preuves, pas des
-     animations d'attente.
-     ------------------------------------------------------------ */
+  /* 8bis. LES QUATRE COMPOSANTS DU PARCOURS — N2.  D-508 */
   $$(".parc-vis").forEach(function (vis) {
     var etape = vis.closest(".parc-etape") || vis;
     var tl = gsap.timeline({ scrollTrigger: { trigger: etape, start: "top 68%", once: true } });
@@ -307,20 +158,8 @@
     if (live) tl.fromTo(live, { scale: 0.7, opacity: 0.2 }, { scale: 1, opacity: 1, duration: 0.28, ease: "power4.out", immediateRender: false }, "-=0.12");
   });
 
-  /* ------------------------------------------------------------
-     9. Piste du comparatif — N2.
-     Raison : feedback, et surtout LECTURE. Le trait du temps actuel
-     se trace en premier, puis le trait d'accent le recouvre sur la
-     part qui reste une fois automatise. Ce qui depasse est l'ecart :
-     le visiteur n'a aucune soustraction a faire, il la VOIT se
-     faire. Une piste au lieu de deux, un geste au lieu d'un tableau.
-     ------------------------------------------------------------ */
-  /* Les LONGUEURS ne sont plus posees ici : elles sont dans le
-     markup, en variables CSS. Ce script ne fait plus que TRACER, et
-     c'est la difference entre un tableau qui a besoin de JavaScript
-     pour exister et un tableau qui a besoin de JavaScript pour
-     s'animer. Sans script, les six pistes sont deja a leur
-     longueur. */
+  /* 9. Piste du comparatif — N2.  D-509 */
+  /* Les LONGUEURS ne sont plus posees ici : elles sont dans le  D-510 */
   $$(".vs-row").forEach(function (row) {
     var barM = $('[data-bar="manual"]', row);
     var barA = $('[data-bar="auto"]', row);
@@ -330,15 +169,7 @@
       .fromTo(barA, { scaleX: 0 }, { scaleX: 1, duration: 0.42, ease: "power3.out" }, "-=0.18");
   });
 
-  /* ------------------------------------------------------------
-     9bis. LE SCHEMA DE L'ECART — N2.
-     Les deux journees se tracent l'une apres l'autre sur la meme
-     regle, puis le pont enjambe la difference. L'ordre porte
-     l'argument : d'abord ce que ca coute, ensuite ce que ca
-     deviendrait, et seulement apres, ce qu'on recupere.
-     Etat au repos = forme finale : le schema est lisible a l'arret,
-     sans script et sous mouvement reduit.
-     ------------------------------------------------------------ */
+  /* 9bis. LE SCHEMA DE L'ECART — N2.  D-511 */
   var ecart = $("[data-ecart]");
   if (ecart) {
     var barres = $$(".ecart-barre", ecart);
@@ -356,25 +187,14 @@
     }
   }
 
-  /* ------------------------------------------------------------
-     10. Titres de section — N2.
-     Raison : signature. Le titre ne se tape pas lettre par lettre et
-     ne se devoile pas mot par mot : il se DECOUVRE d'un balayage
-     ligne par ligne, comme la matiere qu'on degage. 60 ms d'ecart,
-     300 ms au total : le texte est lisible avant que l'oeil ait fini
-     d'arriver dessus. C'est la limite que ce site s'impose — un
-     titre qu'il faut attendre pour lire est un titre casse.
-     ------------------------------------------------------------ */
+  /* 10. Titres de section — N2.  D-512 */
   function couperEnLignes(el) {
     var mots = el.textContent.split(/\s+/).filter(Boolean);
     if (mots.length < 2) return null;
     el.textContent = "";
     var frag = document.createDocumentFragment();
     mots.forEach(function (m, i) {
-      /* L'espace est un noeud de texte ENTRE les boites, jamais
-         dedans : dans une boite `inline-block` il ne se replie pas
-         en fin de ligne et decale le premier mot de la ligne
-         suivante. Le texte accessible reste identique au caractere. */
+      /* L'espace est un noeud de texte ENTRE les boites, jamais  D-513 */
       if (i) frag.appendChild(document.createTextNode(" "));
       var s = document.createElement("span");
       s.className = "mot";
@@ -382,16 +202,7 @@
       frag.appendChild(s);
     });
     el.appendChild(frag);
-    /* Les mots sont regroupes par LIGNE reelle, mesuree apres mise en
-       page, puis CHAQUE LIGNE EST ENVELOPPEE dans une boite.
-
-       Ce dernier point n'est pas cosmetique. Sans enveloppe, le
-       balayage s'appliquait a chaque mot separement : a mi-course, on
-       lisait « selo  le métie » — des mots coupes en plein milieu
-       d'une lettre. Capture du 2026-07-25 sur telephone. Une lettre
-       tronquee ne se lit pas comme un balayage, elle se lit comme un
-       bug d'affichage, et c'est exactement le reproche fait au reste
-       du site. Avec l'enveloppe, c'est la LIGNE qui se decouvre. */
+    /* Les mots sont regroupes par LIGNE reelle, mesuree apres mise en  D-514 */
     var lignes = [], courante = null, y = null;
     $$(".mot", el).forEach(function (s) {
       var t = Math.round(s.getBoundingClientRect().top);
@@ -407,11 +218,7 @@
         if (i) b.appendChild(document.createTextNode(" "));
         b.appendChild(m);
       });
-      /* Une espace entre les boites de ligne. Elle ne se voit pas —
-         les boites sont en bloc — mais sans elle le texte accessible
-         devient « Le style changeselon le metier ». Le titre lu par
-         une synthese vocale doit etre le meme, au caractere pres,
-         que celui qui est affiche. */
+      /* Une espace entre les boites de ligne. Elle ne se voit pas —  D-515 */
       bloc.appendChild(b);
       bloc.appendChild(document.createTextNode(" "));
       return b;
@@ -421,12 +228,7 @@
     return boites;
   }
 
-  /* Le decoupage est PARESSEUX, un titre a la fois, au moment ou il
-     entre par le bas. Fait a l'initialisation pour les dix titres
-     d'un coup, il coutait dix mises en page forcees dans la tache de
-     demarrage — mesure : la premiere tache longue passait de 216 a
-     plus de 300 ms. Ici chaque titre paie sa propre mesure, hors du
-     chemin critique, et jamais deux dans la meme image. */
+  /* Le decoupage est PARESSEUX, un titre a la fois, au moment ou il  D-516 */
   $$(".head h2").forEach(function (titre) {
     ScrollTrigger.create({
       trigger: titre,
@@ -445,13 +247,7 @@
     });
   });
 
-  /* ------------------------------------------------------------
-     11. Blocs qui se reprennent — N2.
-     Raison : signature. Les blocs n'arrivent pas tous du bas : ils
-     arrivent DECALES lateralement, en alternance, et se reprennent
-     a leur place. C'est le meme geste que les grains du hero quand
-     la pointe les relache, a l'echelle d'un bloc de mise en page.
-     ------------------------------------------------------------ */
+  /* 11. Blocs qui se reprennent — N2.  D-517 */
   $$("[data-settle]").forEach(function (parent) {
     var items = $$(":scope > *", parent);
     items.forEach(function (el, i) {
@@ -469,29 +265,10 @@
     });
   });
 
-  /* ------------------------------------------------------------
-     12. Frise du processus — N2, defilement lateral.
-     Raison : storytelling. La ligne ne se trace pas a cote des
-     etapes : elle les POUSSE en place. Chaque etape entre par la
-     gauche au moment ou la ligne l'atteint, donc le mouvement
-     lateral porte l'information « le projet avance », il ne decore
-     pas. Aucun pin, aucun detournement du defilement.
-     ------------------------------------------------------------ */
-  /* La frise horizontale a ete remplacee par le parcours vertical
-     de la section 8 : elle poussait les quatre etapes lateralement,
-     ce qui portait bien l'information « le projet avance », mais
-     elle ne pouvait pas repondre a « a quelle etape suis-je ». Le
-     fil, lui, y repond par construction. */
+  /* 12. Frise du processus — N2, defilement lateral.  D-518 */
+  /* La frise horizontale a ete remplacee par le parcours vertical  D-519 */
 
-  /* ------------------------------------------------------------
-     12bis. LES QUATRE PREUVES DE L'AGENCE — N2.
-     Chaque preuve se fabrique au moment ou on la lit. Les deux
-     barres du prix partent ENSEMBLE et arrivent ENSEMBLE : c'est
-     leur egalite qui est l'argument, donc elles ne peuvent pas se
-     tracer l'une apres l'autre.
-     Etat au repos = preuve finie : elles se lisent toutes sans
-     script et sous mouvement reduit.
-     ------------------------------------------------------------ */
+  /* 12bis. LES QUATRE PREUVES DE L'AGENCE — N2.  D-520 */
   $$(".agc-eng").forEach(function (eng) {
     var tl = gsap.timeline({ scrollTrigger: { trigger: eng, start: "top 78%", once: true } });
 
@@ -514,13 +291,7 @@
     if (jours.length) tl.fromTo(jours, { scaleY: 0 }, { scaleY: 1, duration: 0.28, stagger: 0.07, ease: "power2.out" });
   });
 
-  /* ------------------------------------------------------------
-     13. Programme de reference — N2.
-     Raison : preuve. Le filet qui relie les trois temps se trace en
-     grains d'un temps a l'autre : c'est le dossier qui avance. Puis
-     les six barres du bareme se posent, de la plus courte a la plus
-     longue, et la derniere va jusqu'au bord.
-     ------------------------------------------------------------ */
+  /* 13. Programme de reference — N2.  D-521 */
   var filetRef = $(".referral-line b");
   if (filetRef) {
     gsap.fromTo(filetRef, { scaleX: 0 }, {
@@ -529,48 +300,8 @@
       scrollTrigger: { trigger: ".referral-steps", start: "top 82%", end: "bottom 62%", scrub: 0.5 }
     });
   }
-  /* Les trois PREUVES. Le bareme en regle graduee a ete retire —
-     il apprenait au visiteur a calculer vers le bas. Ce qui reste
-     est le mecanisme : le texto part, la signature se trace, le
-     virement tombe. Etat au repos = preuve finie. */
-  /* ============================================================
-     `immediateRender: false` SUR ONZE TWEENS — CORRECTIF DU
-     2026-07-30, ET C'EST LA REGLE 0bis QUI N'AVAIT PAS ETE APPLIQUEE
-     JUSQU'AU BOUT.
-
-     CE QUI A ETE MESURE. `tools/contraste-arret.mjs`, 61 positions
-     d'arret : sept elements de TEXTE restaient a 0,10 ou 0,12
-     d'opacite, definitivement, chez un visiteur qui defile
-     normalement. Les trois etats du programme de reference
-     — « Envoyé », « Signé », « Encaissé » —, la bulle de texto, les
-     deux lignes d'avis, et la ligne de suite du parcours. Contrastes
-     releves : 1,15:1 a 1,36:1. Illisible, et permanent.
-
-     POURQUOI. Un `fromTo` dans une timeline rend son etat de DEPART
-     immediatement, a la creation de la timeline — c'est le
-     comportement par defaut de GSAP, et c'est ce qu'on veut pour une
-     revelation. Mais la revelation n'arrivait jamais : la section 10
-     est loin dans le document, et les sections traversees portent
-     `content-visibility: auto`. A la creation, leur hauteur RESERVEE
-     n'est pas leur hauteur reelle, donc la position de declenchement
-     calculee par ScrollTrigger tombait a cote. Le declencheur ne
-     partait pas, et le texte restait a son etat de depart pour
-     toujours. Attendre plus longtemps n'y changeait rien : il n'y
-     avait rien a attendre.
-
-     CE QU'ON FAIT, ET CE QU'ON NE FAIT PAS. On applique la regle
-     0bis : l'etat de repos est la forme FINALE, et l'etat de depart
-     n'est pose qu'au moment ou l'animation part. Un declencheur qui
-     ne part pas ne coute alors plus qu'une animation manquante, au
-     lieu de coûter la lisibilite. Ce n'est PAS un correctif de la
-     cause — les positions de declenchement restent perimees par
-     `content-visibility`, et c'est note comme ouvert dans CLAUDE.md.
-     C'est le correctif du DEGAT, et il est complet : le meme outil
-     rend maintenant zero.
-
-     A/B en worktree contre le commit precedent : 8 echecs avant, 0
-     apres, meme densite d'echantillonnage.
-     ============================================================ */
+  /* Les trois PREUVES. Le bareme en regle graduee a ete retire —  D-522 */
+  /* == `immediateRender: false` SUR ONZE TWEENS — CORRECTIF DU ==  D-523 */
   $$(".ref-preuve").forEach(function (preuve) {
     var tl = gsap.timeline({ scrollTrigger: { trigger: preuve, start: "top 84%", once: true } });
 
@@ -592,12 +323,7 @@
     if (etat) tl.fromTo(etat, { opacity: 0.1 }, { opacity: 1, duration: 0.24, ease: "power2.out", immediateRender: false }, "-=0.06");
   });
 
-  /* ------------------------------------------------------------
-     13bis. « Ce qui arrive apres » — N2.
-     Le filet traverse les trois temps au defilement, exactement
-     comme celui du programme de reference : c'est le meme geste
-     pour la meme idee — un dossier qui avance d'un temps a l'autre.
-     ------------------------------------------------------------ */
+  /* 13bis. « Ce qui arrive apres » — N2.  D-524 */
   var filetSuite = $(".suite-fil b");
   if (filetSuite) {
     gsap.fromTo(filetSuite, { scaleX: 0 }, {
@@ -607,11 +333,7 @@
     });
   }
 
-  /* ------------------------------------------------------------
-     14. Recalcul apres chargement des images.
-     Les captures de projet mesurent plusieurs milliers de pixels :
-     tant qu'elles ne sont pas chargees, leur hauteur est fausse.
-     ------------------------------------------------------------ */
+  /* 14. Recalcul apres chargement des images.  D-525 */
   window.addEventListener("load", function () { ScrollTrigger.refresh(); });
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { ScrollTrigger.refresh(); });

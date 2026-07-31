@@ -1,0 +1,278 @@
+﻿/* ============================================================
+   13. LES PLAQUES D'ATELIER
+   Remplacent la bande de specification, qui alignait quatre
+   cellules a plat sur une seule regle.
+
+   TROIS REGLES QUI NE SE NEGOCIENT PAS :
+
+   1. LE REPOS EST L'ETAT INCLINE, ET IL VIT DANS UNE COQUE.
+      Chaque plaque est faite de DEUX boites : `.plaque`, la case de
+      grille, que GSAP fait deriver ; et `.plaque-corps`, la plaque
+      elle-meme, qui porte l'inclinaison ecrite dans le document.
+      La composition existe donc sans script, sous mouvement reduit
+      et a tous les paliers ; la derive s'ajoute par-dessus.
+
+      POURQUOI DEUX BOITES ET PAS LES PROPRIETES INDIVIDUELLES.
+      Premiere version : une seule boite, avec `rotate`, `translate`
+      et `scale` — les proprietes individuelles de transformation —
+      pour laisser `transform` libre a GSAP. Elle ne tient pas :
+      GSAP, quand il prend la main sur les transformations d'un
+      element, ECRIT `rotate: none; translate: none; scale: none`
+      dessus pour eviter d'entrer en conflit avec elles. Releve du
+      2026-07-29 : les sept plaques rendaient `rotate: "none"` alors
+      que `--ang` valait bien `-1.7deg`. L'inclinaison de repos etait
+      donc effacee des que la choregraphie arrivait, et elle ne
+      reapparaissait qu'aux paliers ou GSAP ne touche a rien — c'est
+      exactement l'incoherence qu'on cherchait a eviter.
+
+   2. L'ANGLE RESTE SOUS 2°. La reference etudiee va jusqu'a 47°,
+      mais elle incline des PHOTOS. Une plaque dont on ne peut pas
+      lire le chiffre ne sert a rien.
+
+   3. LA PROFONDEUR EST UN FILET, PAS UNE OMBRE. `::after` ne tire
+      que deux aretes — droite et basse — decalees de 9 px. C'est
+      exactement la trace qu'une plaque laisse sur un banc, et ca
+      reste du trait de 1 px comme tout le reste du site.
+   ============================================================ */
+.plaques {
+  border-block: var(--rule-w) solid var(--rule-strong);
+  padding-block: var(--s-6);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-4);
+  /* LE DEBORDEMENT EST CONTROLE PAR LA GOUTTIERE, PAS PAR UN
+     ROGNAGE — ET C'EST UN CORRECTIF, PAS UN OUBLI.
+
+     Premiere version : `overflow-x: clip` sur cette bande, pour
+     garantir qu'aucun pixel de plaque ne puisse ajouter une barre
+     de defilement horizontale. Capture du 2026-07-29 : le « 1 » de
+     « 12 h » et le « c » de « Québec » etaient coupes net. Le
+     garde-fou rognait exactement le debordement lateral que le
+     brief demandait, et `overflow-clip-margin` ne le rattrape pas
+     quand les deux axes n'ont pas la meme valeur.
+
+     Le vrai garde-fou est ailleurs, et il est plus simple : la
+     colonne 1 commence au bord INTERIEUR du `wrap`, qui a une
+     gouttiere. Un decalage de 28 px tombe donc dans cette
+     gouttiere, pas hors de l'ecran — et le coefficient `--ecart`
+     le divise encore par trois sur telephone, la ou la gouttiere
+     est la plus etroite. Ce n'est pas un raisonnement, c'est un
+     relevé : `tools/accueil-check.mjs cadre` mesure la largeur du
+     document contre celle de la vue a onze largeurs, de 320 a
+     1920 px. Rien a rogner tant qu'il rend zero.
+
+     L'AMPLEUR DE LA COMPOSITION EST UN COEFFICIENT, PAS UNE SERIE
+     D'EXCEPTIONS.
+
+     Le brief demandait de REPENSER la disposition sur telephone, pas
+     de la retrecir : sept plaques inclinees sur un ecran etroit se
+     chevauchent et deviennent illisibles. Mais `--ang` et `--dx`
+     sont poses EN LIGNE dans le document, donc aucune regle de
+     feuille ne peut les corriger — une declaration en ligne gagne
+     toujours. Les deux coefficients ci-dessous, eux, sont poses sur
+     le CONTENEUR et heritent : ils multiplient l'inclinaison et les
+     decalages sans jamais avoir a les redeclarer.
+     LES DEUX COEFFICIENTS NE SE VALENT PAS, ET LE PARTAGE A CHANGE.
+     `--incl` porte l'INCLINAISON, qui est la signature et qui ne
+     coute presque rien en largeur : une plaque de 110 px de haut
+     tournee de 2,3° ne gagne que 2 px. `--ecart` porte la
+     TRANSLATION, qui coute sa valeur pleine et qui sort dans la
+     gouttiere. Quand les angles sont passes de 2° a 4,2° et les
+     decalages de 28 a 48 px, `tools/deborde.mjs` a rendu 395 > 390
+     et 435 > 430 : cinq pixels de trop, aux deux largeurs les plus
+     etroites, et nulle part ailleurs. On monte donc l'inclinaison
+     et on baisse la translation — la signature se voit MIEUX
+     qu'avant sur telephone, et la page ne deborde plus. */
+  --incl: 0.55;
+  --ecart: 0.16;
+  /* SIX PIXELS DE CHAQUE COTE, ET C'EST LA MEME LOGIQUE QU'A 64em.
+     A 320 et 360 px, `tools/deborde.mjs` rendait 321 > 320 et
+     361 > 360 : un pixel, aux deux largeurs les plus etroites
+     seulement. La cause n'est pas le decalage seul mais la HAUTEUR
+     des plaques — une phrase plus longue fait une plaque plus haute,
+     et une boite plus haute inclinee du meme angle deborde
+     davantage sur les cotes. Le rembourrage encaisse ce que la
+     gouttiere ne prend plus. */
+  padding-inline: 6px;
+}
+/* LA COQUE. Elle ne se voit pas : elle occupe la case de grille et
+   c'est elle que GSAP fait deriver. Elle ne porte aucune
+   transformation propre, donc GSAP peut y ecrire ce qu'il veut. */
+.plaque { display: grid; }
+
+/* LA PLAQUE. Tout le visuel, et l'inclinaison de repos. */
+.plaque-corps {
+  position: relative;
+  padding: var(--s-5) var(--s-4);
+  display: grid;
+  gap: var(--s-2);
+  align-content: start;
+  /* `--surface-2` s'appelle « plaque claire » dans les jetons, et
+     ce n'est pas un hasard. Premiere version avec `--surface-1` :
+     la phrase en `--ink-muted` tombait a 4,41:1, sous le seuil AA,
+     dans les vingt-huit releves du theme clair. Mesure du
+     2026-07-29 par `tools/accueil-check.mjs`. Sur `--surface-2`
+     elle vaut 6,26:1 en clair et 5,70:1 en sombre. */
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--rule-strong);
+  height: 100%;
+  transform:
+    translate(calc(var(--dx, 0px) * var(--ecart)), calc(var(--dy, 0px) * var(--ecart)))
+    rotate(calc(var(--ang, 0deg) * var(--incl)))
+    scale(calc(1 - (1 - var(--z, 1)) * var(--ecart)));
+}
+/* Le filet decale — ce qui remplace l'ombre portee de la
+   reference. Deux aretes seulement : un rectangle entier tracerait
+   deux traits EN TRAVERS de la plaque. */
+.plaque-corps::after {
+  content: "";
+  position: absolute;
+  inset: 9px -10px -10px 9px;
+  border-right: var(--rule-w) solid var(--rule);
+  border-bottom: var(--rule-w) solid var(--rule);
+  pointer-events: none;
+}
+.plaque-corps .num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variation-settings: "wdth" var(--wdth-wide);
+  font-variant-numeric: tabular-nums;
+}
+/* « Québec » n'est pas un chiffre : il ne prend ni les chiffres
+   tabulaires ni la meme taille, sinon il pousse la plaque a la
+   ligne sur ecran etroit. */
+.plaque-corps .num--mot { font-size: clamp(1.75rem, 3.4vw, 2.5rem); letter-spacing: -0.02em; }
+.plaque-corps span { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); line-height: 1.5; }
+
+/* ============================================================
+   13bis. LA BOUCLE DE VIE DES PLAQUES — ajoutee le 2026-07-29.
+
+   LE DEFAUT QU'ELLE CORRIGE. La derive au defilement existait deja,
+   et elle est juste : 121 a 220 px d'amplitude, redressement complet
+   au centre de l'ecran. Mais un `scrub` n'avance que pendant qu'on
+   defile. Des qu'on s'arrete de lire pour regarder, la bande entiere
+   se fige — huit plaques inclinees, parfaitement immobiles. Ce
+   n'etait pas un choix, c'etait une consequence non vue.
+
+   QUEL VERBE, PARCE QUE LA REGLE D'ADMISSION L'EXIGE.
+   · LA DERIVE est V2 · S'ALIGNER. Chaque cycle revient EXACTEMENT a
+     la pose ecrite dans le document — la derniere image d'etape vaut
+     la premiere, au caractere — et chaque segment porte une courbe
+     sinusoidale sans depassement. La plaque ne part pas et ne revient
+     pas ailleurs : elle tire sur son alignement et le reprend. C'est
+     la meme idee que le hero, a l'echelle d'une respiration.
+   · L'ARRET ET LA REPRISE sont V4 · CRAN. `animation-play-state:
+     paused` gele la valeur courante SANS aucune interpolation : il
+     n'existe aucun etat intermediaire entre « ca bouge » et « c'est
+     arrete ». C'est la definition meme du cran, et c'est ce que le
+     brief demandait — franc, pas mou. Un amortissement de sortie
+     aurait ete plus « joli » et aurait rate le point.
+
+   OU ELLE VIT, ET POURQUOI PAS AILLEURS. Sur `.plaque-corps`, via
+   les proprietes INDIVIDUELLES `translate` et `rotate` — jamais via
+   `transform`, qui porte deja la pose de repos sur cette meme boite.
+   La chaine CSS applique `translate`, puis `rotate`, puis `scale`,
+   puis `transform` : la boucle se COMPOSE donc par-dessus la pose au
+   lieu de l'ecraser. Et GSAP ne touche jamais cette boite — il anime
+   la coque `.plaque` — donc son habitude d'ecrire `rotate: none` sur
+   ce qu'il prend en main ne peut pas nous atteindre. Trois boites
+   auraient ete la solution naive ; deux suffisent parce que les
+   proprietes individuelles et `transform` ne se disputent pas.
+
+   L'AMPLITUDE EST BORNEE PAR LA GOUTTIERE, PAS PAR LE GOUT.
+   `--vie-y` vaut 12 px et ne coute rien en largeur. `--vie-x` vaut
+   6 px, et c'est le chiffre contraint : les decalages de repos vont
+   deja jusqu'a 48 px et l'inclinaison en ajoute environ 5. Le
+   rembourrage de la bande a 64em a donc ete porte de 60 a 76 px pour
+   absorber la nouvelle course — verifie par `tools/deborde.mjs` et
+   par `accueil-check cadre`, aux phases extremes de la boucle, pas
+   a un instant quelconque.
+   `--vie-a` vaut 1,15deg, donc 2,3° de battement : au-dessus du seuil
+   de 2° sous lequel, mesure sur ce site, une inclinaison ne se
+   percoit pas.
+
+   POURQUOI ELLE TOMBE AU PALIER 1. Une animation PERMANENTE est le
+   poste le plus cher du site par definition : elle ne s'arrete
+   jamais. Sur un telephone, elle brule de la batterie pour un effet
+   qui n'apporte aucune orientation — exactement le critere de chute.
+   Elle rejoint donc la derive au meme palier : les plaques restent
+   inclinees, decalees et lisibles, on ne perd que le mouvement.
+   `est-vivante` est posee par `js/langue.js`, qui ne s'execute pas du
+   tout sous mouvement reduit et sort tout de suite hors palier 0.
+
+   TROIS VERROUS D'ARRET, ET AUCUN N'EST DECORATIF :
+   1. le survol d'une plaque arrete TOUTE la bande. Pas seulement
+      celle qu'on survole : on survole pour LIRE, et une plaque
+      immobile a cote de sept qui bougent est plus difficile a lire
+      qu'une bande entiere arretee ;
+   2. `[data-repos]` quand la bande sort de l'ecran — pose par un
+      `IntersectionObserver` ;
+   3. `[data-repos]` quand l'onglet est cache — `visibilitychange`.
+   Les deux derniers partagent le meme attribut : un seul selecteur,
+   deux causes, et aucune facon que l'un annule l'autre.
+
+   `!important` N'EST PAS UNE PARESSE ICI. `animation` est un
+   RACCOURCI : il remet `animation-play-state` a `running`. Ce piege a
+   deja rendu inoperantes la pause du rideau ET celle de la
+   composition du hero sans que rien ne le signale. Les regles de
+   pause portent donc `!important`, et ce commentaire est la pour que
+   personne ne le retire en croyant nettoyer.
+   ============================================================ */
+@keyframes plaque-vie {
+  0%   { translate: 0 0; rotate: 0deg; }
+  25%  { translate: calc(var(--vie-x) * -1) var(--vie-y); rotate: var(--vie-a); }
+  50%  { translate: var(--vie-x) calc(var(--vie-y) * -1); rotate: calc(var(--vie-a) * -1); }
+  75%  { translate: var(--vie-x) calc(var(--vie-y) * 0.55); rotate: calc(var(--vie-a) * 0.45); }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+.plaques {
+  /* Les trois amplitudes suivent les MEMES coefficients que la pose
+     de repos : sur un ecran etroit la composition se resserre, et la
+     boucle avec elle. Elle n'y tourne pas — palier 1 — mais si un
+     jour elle y tournait, elle serait deja a l'echelle. */
+  --vie-x: calc(6px * var(--ecart));
+  --vie-y: calc(12px * var(--ecart));
+  --vie-a: calc(1.15deg * var(--incl));
+}
+.plaques.est-vivante .plaque-corps {
+  /* LA DUREE VIENT DE `--v`, la vitesse propre deja ecrite dans le
+     document : de 7 s pour la plus rapide a 10,6 s pour la plus
+     lente. C'est ce DECALAGE entre voisines qui se lit, plus encore
+     que la course de chacune — le meme raisonnement que pour la
+     derive au defilement. Courbe sinusoidale symetrique : chaque
+     segment part et arrive a l'arret, donc ca respire au lieu de
+     glisser. */
+  animation: plaque-vie calc(7s + (1 - var(--v, 1)) * 8s) cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+/* LES PHASES SONT DESYNCHRONISEES A LA MAIN, ET C'EST OBLIGATOIRE.
+   Deux plaques partagent `--v: 1` — la premiere et la cinquieme :
+   meme duree, donc meme phase, donc deux plaques qui bougent comme
+   une seule piece. Un retard NEGATIF demarre l'animation deja
+   engagee, sans rien faire attendre. Les valeurs ne sont pas
+   regulieres : une progression arithmetique se rattrape a l'oeil. */
+.plaques.est-vivante > :nth-child(1) .plaque-corps { animation-delay: -0.4s; }
+.plaques.est-vivante > :nth-child(2) .plaque-corps { animation-delay: -3.1s; }
+.plaques.est-vivante > :nth-child(3) .plaque-corps { animation-delay: -6.4s; }
+.plaques.est-vivante > :nth-child(4) .plaque-corps { animation-delay: -1.7s; }
+.plaques.est-vivante > :nth-child(5) .plaque-corps { animation-delay: -4.9s; }
+.plaques.est-vivante > :nth-child(6) .plaque-corps { animation-delay: -8.2s; }
+.plaques.est-vivante > :nth-child(7) .plaque-corps { animation-delay: -2.3s; }
+.plaques.est-vivante > :nth-child(8) .plaque-corps { animation-delay: -5.6s; }
+
+/* LES TROIS VERROUS. Voir le commentaire ci-dessus pour `!important`. */
+.plaques.est-vivante:has(.plaque:hover) .plaque-corps,
+.plaques.est-vivante:focus-within .plaque-corps,
+.plaques.est-vivante[data-repos] .plaque-corps {
+  animation-play-state: paused !important;
+}
+
+/* CEINTURE ET BRETELLES. `langue.js` ne s'execute pas sous mouvement
+   reduit, donc `est-vivante` ne peut pas y etre posee — mais une
+   regle qui depend d'un fichier pour ne pas s'appliquer est une
+   regle fragile. Celle-ci ne depend de rien. */
+@media (prefers-reduced-motion: reduce) {
+  .plaques .plaque-corps { animation: none !important; }
+}

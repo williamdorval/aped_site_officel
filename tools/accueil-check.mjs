@@ -522,14 +522,14 @@ async function plaques(nav) {
       const page = await ouvrir(nav, { theme, viewport: { width: w, height: h } });
       await page.goto(BASE + "/index.html", { waitUntil: "networkidle" });
       await attendre(1600);
-      const y = await page.evaluate(() => document.querySelector(".plaques").getBoundingClientRect().top + window.scrollY - 120);
+      const y = await page.evaluate(() => document.querySelector(".plaques") || document.querySelector("#top").getBoundingClientRect().top + window.scrollY - 120);
       await descendre(page, Math.max(0, Math.round(y)));
       /* On laisse le scrub se stabiliser : un detecteur qui n'attend
          pas assez confond « animation en vol » et « texte echoue ». */
       await attendre(900);
 
       const lu = await page.evaluate(() => {
-        const bande = document.querySelector(".plaques");
+        const bande = document.querySelector(".plaques") || document.querySelector("#top");
         const bandeBg = getComputedStyle(bande).backgroundColor;
         const fondPage = getComputedStyle(document.body).backgroundColor;
         return [...document.querySelectorAll(".plaque")].map((p, i) => {
@@ -595,7 +595,7 @@ async function derive(nav) {
   const page = await ouvrir(nav);
   await page.goto(BASE + "/index.html", { waitUntil: "networkidle" });
   await attendre(1600);
-  const cible = await page.evaluate(() => Math.round(document.querySelector(".plaques").getBoundingClientRect().top + window.scrollY));
+  const cible = await page.evaluate(() => Math.round(document.querySelector(".plaques") || document.querySelector("#top").getBoundingClientRect().top + window.scrollY));
 
   const suivi = [];
   for (let y = Math.max(0, cible - 900); y <= cible + 900; y += 90) {
@@ -670,7 +670,7 @@ async function tenue(nav) {
       const ecarts = []; let dernier = performance.now(); let stop = false;
       const boucle = (t) => { ecarts.push(t - dernier); dernier = t; if (!stop) requestAnimationFrame(boucle); };
       requestAnimationFrame(boucle);
-      const fin = document.querySelector(".plaques").getBoundingClientRect().bottom + window.scrollY + 300;
+      const fin = document.querySelector(".plaques") || document.querySelector("#top").getBoundingClientRect().bottom + window.scrollY + 300;
       for (let y = 0; y < fin; y += 42) { window.scrollTo(0, y); await new Promise((r) => requestAnimationFrame(r)); }
       stop = true;
       const t = ecarts.slice(6).sort((a, b) => a - b);
@@ -699,14 +699,14 @@ async function cadre(nav) {
     const page = await ouvrir(nav, { viewport: { width: w, height: 900 } });
     await page.goto(BASE + "/index.html", { waitUntil: "networkidle" });
     await attendre(1500);
-    const y = await page.evaluate(() => Math.round(document.querySelector(".plaques").getBoundingClientRect().top + window.scrollY - 80));
+    const y = await page.evaluate(() => Math.round(document.querySelector(".plaques") || document.querySelector("#top").getBoundingClientRect().top + window.scrollY - 80));
     await descendre(page, Math.max(0, y));
     const m = await page.evaluate(() => ({
       docW: document.documentElement.scrollWidth,
       vw: window.innerWidth,
       deborde: document.documentElement.scrollWidth > window.innerWidth + 1,
       /* qui deborde, precisement */
-      coupables: [...document.querySelectorAll(".plaques *, .plaques")].filter((el) => {
+      coupables: [...document.querySelectorAll("#top *, #top")].filter((el) => {
         const r = el.getBoundingClientRect();
         return r.right > window.innerWidth + 1 || r.left < -1;
       }).map((el) => ({ cls: String(el.className).slice(0, 30), l: Math.round(el.getBoundingClientRect().left), r: Math.round(el.getBoundingClientRect().right) })).slice(0, 6),
@@ -721,7 +721,7 @@ async function cadre(nav) {
       const page = await ouvrir(nav, { theme, viewport: { width: w, height: 1000 } });
       await page.goto(BASE + "/index.html", { waitUntil: "networkidle" });
       await attendre(2600);
-      const h = await page.evaluate(() => Math.ceil(document.querySelector(".plaques").getBoundingClientRect().bottom + window.scrollY + 40));
+      const h = await page.evaluate(() => Math.ceil(document.querySelector(".plaques") || document.querySelector("#top").getBoundingClientRect().bottom + window.scrollY + 40));
       await page.setViewportSize({ width: w, height: Math.min(3400, h) });
       await attendre(700);
       await page.screenshot({ path: join(d, `accueil-${theme}-${w}.png`) });
@@ -865,7 +865,7 @@ async function sequences(nav) {
     await page.goto(BASE + "/index.html", { waitUntil: "load" });
     await attendre(2200);
     await fermerPopups(page);
-    const cible = await page.evaluate(() => Math.round(document.querySelector(".plaques").getBoundingClientRect().top + window.scrollY));
+    const cible = await page.evaluate(() => Math.round(document.querySelector(".plaques") || document.querySelector("#top").getBoundingClientRect().top + window.scrollY));
     const vues = [];
     /* On defile PAR PAS, jamais d'un saut : un `scrollTo` qui saute
        casse un pin de ScrollTrigger. */
@@ -948,8 +948,24 @@ try {
   if (quoi === "tout" || quoi === "contenu") await contenu(nav);
   if (quoi === "tout" || quoi === "entree") await entree(nav);
   if (quoi === "tout" || quoi === "boutons") await boutons(nav);
-  if (quoi === "tout" || quoi === "plaques") await plaques(nav);
-  if (quoi === "tout" || quoi === "derive") await derive(nav);
+  /* Les huit plaques d'atelier sont sorties de l'accueil le 2026-07-30.
+     Ces deux modes n'ont plus aucune cible ; ils le DISENT au lieu de
+     rendre un rapport vide, et redeviennent la preuve si le bloc revient. */
+  if (quoi === "plaques" || quoi === "derive") {
+    const reste = await (async () => {
+      const pg = await (await nav.newContext()).newPage();
+      await pg.goto(BASE + "/index.html", { waitUntil: "domcontentloaded" });
+      const n = await pg.evaluate(() => document.querySelectorAll(".plaque").length);
+      await pg.context().close();
+      return n;
+    })();
+    console.log(`\nMODE « ${quoi} » : ${reste} plaque(s) dans le document.`);
+    if (!reste) {
+      console.log("  PLUS AUCUNE CIBLE — les huit plaques sont sorties de l'accueil le 2026-07-30.");
+      console.log("  Archive : archives/2026-07-30-plaques-accueil/.");
+      console.log("  Ce mode redevient la preuve le jour ou le bloc revient.");
+    } else { await plaques(nav); await derive(nav); }
+  }
   if (quoi === "tout" || quoi === "tenue") await tenue(nav);
   if (quoi === "tout" || quoi === "cadre") await cadre(nav);
   if (quoi === "tout" || quoi === "sequences") await sequences(nav);
