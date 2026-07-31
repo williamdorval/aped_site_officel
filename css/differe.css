@@ -1443,14 +1443,14 @@ html.js .svc-fiche[data-ouvert],
   container-type: inline-size;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border: var(--rule-w) solid var(--rule-strong);
   background: var(--surface-2);
   isolation: isolate;
   /* LA POSITION DE REPOS EST 50, ET C'EST UNE DECISION.  D-504 */
   --ba-p: 50;
   /* La scene ENTIERE est attrapable, et le glissement y est pilote  D-593
-     au pointeur. `pan-y` rend le geste vertical a la page : on
-     compare a l'horizontale, on lit a la verticale. */
+     au pointeur. `pan-y` rend le geste vertical A LA VITRE : on
+     compare a l'horizontale, on DEFILE a la verticale, et la page
+     derriere ne bouge pas tant qu'on est dedans (D-628). */
   touch-action: pan-y;
   cursor: ew-resize;
 }
@@ -1487,19 +1487,57 @@ html.js .svc-fiche[data-ouvert],
   --rule-strong: rgb(16 18 17 / 0.38);
   --rule-accent: #c8371b;
 }
-.ba-vue { position: absolute; inset: 0; overflow: hidden; }
+/* == LE CADRE DEVIENT UN PETIT ECRAN, ET ON DEFILE DEDANS. ==  D-628
+   Ce qu'on montrait etait un GROS PLAN sur un morceau de page : on
+   ne voyait jamais le site. Un visiteur ne peut pas juger un site
+   dont il ne voit qu'un fragment agrandi.
+   Maintenant chaque comparaison est un ecran — un cadre, une barre
+   d'adresse, et la page dedans, a l'echelle d'un ecran. Le visiteur
+   DEFILE lui-meme, a son rythme, des deux cotes a la fois : les
+   deux vues vivent dans la MEME vitre, donc elles ne peuvent pas se
+   desynchroniser.
+   La boucle automatique disparait avec ce chantier. Elle existait
+   pour montrer ce qu'une fenetre fixe ne pouvait pas montrer ; la
+   main du visiteur le fait mieux, et c'est une animation permanente
+   de moins au budget des paliers. */
+.ba-vitre {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Le geste ne remonte pas a la page pendant qu'on est dedans. Le
+     visiteur reprend la page en touchant a cote du cadre. */
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+/* LA PILE EST UNE GRILLE D'UNE SEULE CASE, ET C'EST LA CORRECTION.  D-632
+   Premiere version de ce chantier : l'apres en flux, l'avant en
+   `position: absolute; inset: 0`. Consequence mesuree, invisible au
+   code : la pile prenait la hauteur de la SEULE image apres — une
+   fenetre exactement — donc `scrollHeight - clientHeight = 0` sur les
+   quatre. La vitre etait bien defilante et n'avait RIEN a defiler,
+   pendant que l'avant, haut de 540 a 1 903 px, se faisait couper a
+   286. Un cadre vide qui passait au vert dans la lecture du code.
+   Deux enfants dans la meme case de grille : la rangee prend la
+   hauteur du PLUS GRAND des deux, sans un chiffre magique et sans
+   JavaScript. Les deux cotes montent ensemble, donc ils ne peuvent
+   pas se desynchroniser.
+   Piege 26 : une grille fait un element anonyme de chaque noeud de
+   TEXTE — les noeuds d'espaces seuls n'en font pas, et il n'y a rien
+   d'autre entre les deux vues que des commentaires. */
+.ba-pile { display: grid; }
+.ba-vue { grid-area: 1 / 1; min-width: 0; overflow: hidden; background: var(--surface-0); }
 /* L'APRES EST LA COUCHE DU DESSOUS, ENTIERE. L'AVANT EST ROGNE PAR  D-505 */
-.ba-vue--avant { z-index: 2; clip-path: inset(0 calc((100 - var(--ba-p)) * 1%) 0 0); }
+.ba-vue--avant {
+  z-index: 2;
+  clip-path: inset(0 calc((100 - var(--ba-p)) * 1%) 0 0);
+}
 /* LA PAGE — 1000 px de maquette rendus a la largeur du cadre. */
 .ba-page {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  min-height: 118cqw;
+  position: relative;
   background: var(--surface-0);
   color: var(--ink);
-  --ba-course: 48cqw;
-  will-change: transform;
 }
 /* L'APRES EST UNE CAPTURE DU VRAI SITE, PLUS UNE MAQUETTE.  D-617
    Les quatre « apres » etaient redessines a la main dans notre
@@ -1507,15 +1545,12 @@ html.js .svc-fiche[data-ouvert],
    trois d'entre eux portaient des rectangles gris a la place des
    photos — des placeholders, dans une section dont le sujet est la
    preuve. Ce sont maintenant les quatre projets reels, servis par
-   leur propre serveur et photographies a 760 px de large en densite
-   2, coordonnees masquees a la prise de vue.
-   L'image est cadree sur UNE fenetre, 1140 x 713, soit exactement  D-627
-   les 62,5 cqw du cadre : il n'y a plus rien a faire defiler de ce
-   cote. C'est un choix, pas une economie — le vieux site est un long
-   defile d'encombrement, le neuf le dit en un ecran. La boucle
-   interne ne tourne donc plus que sur l'AVANT, et c'est une
-   animation permanente de moins. */
-.ba-page--shot { min-height: 0; background: none; animation: none !important; }
+   leur propre serveur et photographies a 1 280 px de large — la
+   largeur d'un ecran d'ordinateur —, coordonnees masquees a la
+   prise de vue. Chaque capture est decoupee au RAPPORT de la
+   reconstitution qui lui fait face, pour que les deux cotes
+   finissent a la meme ligne.  D-628 */
+.ba-page--shot { min-height: 0; background: none; }
 .ba-shot { display: block; width: 100%; height: auto; }
 /* UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.  D-619
    Des que l'apres est devenu une capture, le glissement s'est
@@ -1527,15 +1562,42 @@ html.js .svc-fiche[data-ouvert],
    sur la selection de texte des reconstitutions. */
 .ba-scene { user-select: none; -webkit-user-select: none; }
 .ba-shot { -webkit-user-drag: none; }
-@keyframes ba-defile {
-  0%, 5%   { transform: translateY(0); }
-  50%, 55% { transform: translateY(calc(var(--ba-course) * -1)); }
-  100%     { transform: translateY(0); }
+/* == LA BARRE D'ADRESSE — c'est elle qui dit « c'est un ecran ». ==
+   Meme grammaire que les maquettes de Secteurs : trois carres, un
+   domaine en mono, un filet dessous. Rayon 0, aucune ombre. */
+.ba-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+  padding: 0.7em 0.9em;
+  background: var(--surface-0);
+  border-bottom: var(--rule-w) solid var(--rule-strong);
+  font-family: var(--font-data);
+  font-size: clamp(6px, 2.1cqw, 11px);
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
 }
-.ba-scene[data-vif] .ba-page { animation: ba-defile 34s var(--e-drive) infinite; }
-/* LA PAUSE EXIGE `!important` — `animation` est un raccourci et il  D-507 */
-.ba-scene:hover .ba-page,
-.ba-scene:focus-within .ba-page { animation-play-state: paused !important; }
+.ba-chrome i {
+  flex: 0 0 auto;
+  width: 0.6em;
+  height: 0.6em;
+  background: var(--rule-strong);
+}
+.ba-chrome span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ba-chrome em { margin-left: auto; font-style: normal; white-space: nowrap; }
+/* Le cadre porte la requete de conteneur : la barre se met a
+   l'echelle de l'ecran, comme la page dedans. */
+.ba-cadre {
+  container-type: inline-size;
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-2);
+}
 /* LES DEUX ETIQUETTES SONT PERMANENTES.  D-508 */
 .ba-etq {
   position: absolute;
@@ -1592,6 +1654,17 @@ html.js .svc-fiche[data-ouvert],
   -webkit-appearance: none;
   appearance: none;
   cursor: ew-resize;
+  /* LE CHAMP NE PREND PLUS LE POINTEUR.  D-629
+     Il est etire sur toute la scene. Tant qu'il le captait, la
+     molette au-dessus de lui cherchait un conteneur defilant parmi
+     SES ancetres — la scene, qui rogne sans defiler — et remontait
+     donc a la PAGE : le cadre ne defilait jamais, c'est la page
+     derriere qui bougeait. Le pointeur passe maintenant a la vitre,
+     qui est le conteneur defilant, et le glissement de la poignee
+     est de toute facon pilote sur la scene (D-593). Le champ reste
+     pour le clavier et pour `aria-valuetext` ; `pointer-events` ne
+     touche ni au parcours de tabulation ni au focus. */
+  pointer-events: none;
   /* Le doigt garde le defilement vertical de la page, et donne  D-511 */
   touch-action: pan-y;
 }
@@ -1631,7 +1704,14 @@ html:not(.js) .ba-trait { display: none; }
 /* La derniere ligne de la section : l'honnetete, en fine, une fois. */
 .ba-fin { margin: 0; color: var(--ink-muted); }
 @media (min-width: 56em) {
-.ba-grille { grid-template-columns: 1fr 1fr; gap: var(--s-9) var(--s-7); }
+.ba-grille {
+    grid-template-columns: repeat(2, minmax(0, 30rem));
+    justify-content: center;
+    gap: var(--s-9) var(--s-9);
+  }
+}
+@media (min-width: 90em) {
+.ba-grille { gap: var(--s-9) var(--s-10, 6rem); }
 }
 /* == L'APRES — LES QUATRE MAQUETTES SONT PARTIES. ==  D-617
    246 lignes de regles `.ap-*` vivaient ici pour dessiner a la main
@@ -1689,7 +1769,22 @@ html:not(.js) .ba-trait { display: none; }
    seul span, que le navigateur bride deja hors ecran. */
 .v11-defile span { animation: v11-defile 16s linear infinite; }
 .v11-h1 { margin: 0 0 1.4cqw; font-family: "Arial Black", Arial, sans-serif; font-size: 2.4cqw; color: #1b3d6d; }
-.v11-photo { height: 16cqw; margin-bottom: 1.4cqw; background: #9aa7b4; background-image: repeating-linear-gradient(45deg, #93a1af 0 1.2cqw, #a3b0bd 1.2cqw 2.4cqw); border: 3px double #7a8794; }
+/* LES BLOCS PHOTO DES RECONSTITUTIONS SONT DE VRAIES PHOTOS.  D-634
+   Ils etaient vingt-quatre rectangles gris, et c'etait defendu comme
+   du contenu d'epoque. Le proprietaire les lit comme des
+   PLACEHOLDERS — et il a raison : dans une section dont le sujet est
+   la preuve, un carre vide ne dit pas « le vieux site etait
+   mauvais », il dit « le travail n'est pas fini ».
+   Chaque famille de blocs tire d'une COLONNE de tuiles, une seule
+   requete pour six vignettes. Fabrique par `tools/avant-photos.mjs`,
+   qui porte l'adresse et la licence de chaque piece — Poly Haven CC0
+   ou Pexels, aucune marque, aucun visage, aucun logo. */
+.v11-photo {
+  height: 16cqw;
+  margin-bottom: 1.4cqw;
+  background: #9aa7b4 url("../images/realisations/avant-garage.webp") center / cover no-repeat;
+  border: 3px double #7a8794;
+}
 .v11-p { margin: 0 0 1.4cqw; text-align: justify; font-size: 1.1cqw; }
 .v11-p--centre { text-align: center; }
 .v11-p--casse { color: #333; }
@@ -1839,18 +1934,28 @@ html:not(.js) .ba-trait { display: none; }
   border-color: #adb5bc;
   box-shadow: 0 0.2cqw 0.7cqw rgb(16 24 32 / 0.13);
 }
+/* SIX INTERIEURS DIFFERENTS, UNE SEULE REQUETE.  D-634
+   La colonne fait six tuiles carrees empilees ; `600%` de hauteur de
+   fond met une tuile par vignette, et le rang se choisit au
+   pourcentage. Six photos DISTINCTES, parce que c'est un repertoire :
+   chaque entreprise y met la sienne, et c'est justement ce qui rend
+   la page indistincte. */
 .ba-vue--avant .ann-vig {
   flex: 0 0 14cqw;
   height: 14cqw;
   border-radius: 0.5cqw;
-  background-image: linear-gradient(155deg, #eaedef 0%, #d7dde1 100%);
+  background-color: #dfe3e6;
+  background-image: url("../images/realisations/avant-design.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 600%;
+  background-position: 0 0%;
   border: 1px solid #e2e6e9;
 }
-.ba-vue--avant .ann-item:nth-child(2) .ann-vig { background-image: linear-gradient(155deg, #e6e9eb 0%, #cfd6da 100%); }
-.ba-vue--avant .ann-item:nth-child(3) .ann-vig { background-image: linear-gradient(155deg, #edeeef 0%, #dadfe2 100%); }
-.ba-vue--avant .ann-item:nth-child(4) .ann-vig { background-image: linear-gradient(155deg, #e8ebed 0%, #d3d9dd 100%); }
-.ba-vue--avant .ann-item:nth-child(5) .ann-vig { background-image: linear-gradient(155deg, #eceeef 0%, #d8dee1 100%); }
-.ba-vue--avant .ann-item:nth-child(6) .ann-vig { background-image: linear-gradient(155deg, #e4e8ea 0%, #ccd3d8 100%); }
+.ba-vue--avant .ann-item:nth-child(2) .ann-vig { background-position: 0 20%; }
+.ba-vue--avant .ann-item:nth-child(3) .ann-vig { background-position: 0 40%; }
+.ba-vue--avant .ann-item:nth-child(4) .ann-vig { background-position: 0 60%; }
+.ba-vue--avant .ann-item:nth-child(5) .ann-vig { background-position: 0 80%; }
+.ba-vue--avant .ann-item:nth-child(6) .ann-vig { background-position: 0 100%; }
 .ba-vue--avant .ann-corps {
   display: flex;
   flex-direction: column;
@@ -2121,11 +2226,14 @@ html:not(.js) .ba-trait { display: none; }
 .gab .gab-btn--large { display: block; width: 100%; padding: 1.6cqw; font-size: 1.5cqw; }
 /* -- 3 · le carrousel plein cadre, voile à 50 %, pastilles, flèches -- */
 .gab .gab-carr { position: relative; height: 38cqw; overflow: hidden; background: #39434f; }
+/* LE GABARIT ACHETE MONTRE DU STOCK, ET DU STOCK EST UNE PHOTO.
+   Une maison en construction sous « REALISEZ LA MAISON DE VOS
+   REVES » : c'est exactement ce qu'un gabarit livre, et le voile a
+   50 % par-dessus est deja la pour le titre.  D-634 */
 .gab .gab-carr-photo {
   position: absolute;
   inset: 0;
-  background-color: #6d7a86;
-  background-image: linear-gradient(148deg, #939daa 0%, #5d6a77 52%, #333d49 100%);
+  background: #6d7a86 url("../images/realisations/avant-renov-ban.webp") center / cover no-repeat;
 }
 .gab .gab-carr-voile {
   position: absolute;
@@ -2253,8 +2361,7 @@ html:not(.js) .ba-trait { display: none; }
 .gab .gab-apropos-img {
   height: 21cqw;
   border-radius: 8px;
-  background-color: #8d97a3;
-  background-image: linear-gradient(135deg, #a8b1bc 0%, #6d7884 58%, #4c5661 100%);
+  background: #8d97a3 url("../images/realisations/avant-renov-apropos.webp") center / cover no-repeat;
   box-shadow: 0 4px 16px rgb(22 35 60 / 0.16);
 }
 .gab .gab-h3 {
@@ -2274,15 +2381,25 @@ html:not(.js) .ba-trait { display: none; }
   background: #ffffff;
   box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
 }
+/* SIX CARTES DE SERVICE, SIX PHOTOS DE STOCK.  D-634
+   Le gabarit annonce du deneigement et decrit des cuisines : la
+   contradiction est le sujet du bloc, elle est deja dans le texte.
+   Les images restent ce qu'un gabarit livre — cuisine, salle de
+   bain, salon, chantier, combles, terrasse — et c'est ce
+   decalage-la qui se lit. */
 .gab .gab-svc-i {
   height: 9.5cqw;
   background-color: #8d97a3;
-  background-image: linear-gradient(135deg, #9ba5b1 0%, #626e7a 100%);
+  background-image: url("../images/realisations/avant-renov-svc.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 600%;
+  background-position: 0 0%;
 }
-.gab .gab-svc-c:nth-child(2) .gab-svc-i { background-image: linear-gradient(135deg, #a6afba 0%, #6d7985 100%); }
-.gab .gab-svc-c:nth-child(3) .gab-svc-i { background-image: linear-gradient(135deg, #94a0ac 0%, #58646f 100%); }
-.gab .gab-svc-c:nth-child(5) .gab-svc-i { background-image: linear-gradient(135deg, #a1abb6 0%, #667281 100%); }
-.gab .gab-svc-c:nth-child(6) .gab-svc-i { background-image: linear-gradient(135deg, #8f9aa6 0%, #5c6773 100%); }
+.gab .gab-svc-c:nth-child(2) .gab-svc-i { background-position: 0 20%; }
+.gab .gab-svc-c:nth-child(3) .gab-svc-i { background-position: 0 40%; }
+.gab .gab-svc-c:nth-child(4) .gab-svc-i { background-position: 0 60%; }
+.gab .gab-svc-c:nth-child(5) .gab-svc-i { background-position: 0 80%; }
+.gab .gab-svc-c:nth-child(6) .gab-svc-i { background-position: 0 100%; }
 .gab .gab-svc-b { padding: 2cqw 2cqw 2.4cqw; }
 .gab .gab-svc-b b {
   display: block;
@@ -2320,17 +2437,26 @@ html:not(.js) .ba-trait { display: none; }
 .gab .gab-pq-l b { color: #ffffff; }
 /* -- 8 · six vignettes de réalisations -- */
 .gab .gab-real { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2cqw; }
+/* LES SIX REALISATIONS SUIVENT LEURS SIX LEGENDES, DANS L'ORDRE :
+   cuisine · salle de bain · sous-sol · agrandissement · toiture ·
+   facade. Une vignette qui contredit sa legende est une faute qu'un
+   visiteur voit sans savoir la nommer.  D-634 */
 .gab .gab-real-v i {
   display: block;
   height: 11cqw;
   border-radius: 6px;
   background-color: #8d97a3;
-  background-image: linear-gradient(140deg, #a3adb8 0%, #616d79 100%);
+  background-image: url("../images/realisations/avant-renov-real.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 600%;
+  background-position: 0 0%;
   box-shadow: 0 2px 9px rgb(22 35 60 / 0.14);
 }
-.gab .gab-real-v:nth-child(2) i { background-image: linear-gradient(140deg, #97a2ae 0%, #57626d 100%); }
-.gab .gab-real-v:nth-child(4) i { background-image: linear-gradient(140deg, #aab3be 0%, #6b7783 100%); }
-.gab .gab-real-v:nth-child(5) i { background-image: linear-gradient(140deg, #909ba7 0%, #5b6672 100%); }
+.gab .gab-real-v:nth-child(2) i { background-position: 0 20%; }
+.gab .gab-real-v:nth-child(3) i { background-position: 0 40%; }
+.gab .gab-real-v:nth-child(4) i { background-position: 0 60%; }
+.gab .gab-real-v:nth-child(5) i { background-position: 0 80%; }
+.gab .gab-real-v:nth-child(6) i { background-position: 0 100%; }
 .gab .gab-real-v span { display: block; margin-top: 0.9cqw; color: #8b95a4; font-size: 1.2cqw; text-align: center; }
 /* -- 9 · les témoignages : le seul serif italique de la maquette -- */
 .gab .gab-temo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqw; }
@@ -2592,40 +2718,18 @@ html:not(.js) .ba-trait { display: none; }
   overflow: hidden;
   height: 15cqw;
   padding-bottom: 1.6cqw;
+  /* LA BANNIERE EST UNE VRAIE PHOTOGRAPHIE.  D-634
+     Elle etait dessinee : trois aplats et une trame pour figurer une
+     rive, plus deux pseudo-elements pour figurer une auberge. Le
+     dessin tenait, mais il restait un dessin — et la legende juste
+     dessous dit « Photo d'illustration de la categorie ». Une
+     legende qui annonce une photo au-dessus d'un degrade est
+     exactement le genre de detail qui trahit une reconstitution.
+     Le voile sombre reste : il porte le nom en blanc. */
   background:
-    linear-gradient(rgba(8, 22, 32, .42) 0%, rgba(8, 22, 32, 0) 42%, rgba(8, 22, 32, .55) 100%),
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, .04) 0 0.1cqw, transparent 0.1cqw 0.8cqw),
-    linear-gradient(#3f6076 0%, #7fa1ac 46%, #cbb182 47%, #9a7850 72%, #4c3a27 100%);
-}
-/* LA RIVE D'EN FACE, PUIS L'AUBERGE. Les deux sont absolument
-   positionnees, donc elles ne deviennent PAS des elements de la
-   boite flexible qui porte le nom. Sans ces deux couches, l'aplat
-   reste un degrade abstrait — et il faut qu'il se lise comme une
-   PHOTOGRAPHIE pour que la legende en dessous fasse son effet. */
-.tou .tou-ban-ph::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 5.5cqw;
-  height: 1.8cqw;
-  background: repeating-linear-gradient(90deg, #24382a 0 0.9cqw, #324c39 0.9cqw 2.1cqw, #1d2f23 2.1cqw 2.8cqw);
-  opacity: .92;
-}
-.tou .tou-ban-ph::after {
-  content: "";
-  position: absolute;
-  left: 11cqw;
-  top: 3.2cqw;
-  width: 19cqw;
-  height: 4cqw;
-  background-image:
-    repeating-linear-gradient(90deg, transparent 0 1.9cqw, rgba(255, 216, 148, .9) 1.9cqw 3cqw),
-    linear-gradient(#5a4029 0%, #33241a 100%);
-  background-size: 100% 1.3cqw, 100% 100%;
-  background-position: 0 1.7cqw, 0 0;
-  background-repeat: no-repeat;
-  box-shadow: 0 0.4cqw 1.2cqw rgba(0, 0, 0, .4);
+    linear-gradient(rgba(8, 22, 32, .34) 0%, rgba(8, 22, 32, 0) 42%, rgba(8, 22, 32, .62) 100%),
+    url("../images/realisations/avant-resto-ban.webp") center / cover no-repeat,
+    #4c3a27;
 }
 .tou .tou-ban-nom {
   position: relative;
@@ -2920,13 +3024,20 @@ html:not(.js) .ba-trait { display: none; }
   background: #fff;
   box-shadow: 0 0.2cqw 0.6cqw rgba(18, 60, 89, .11);
 }
+/* QUATRE SALLES, PAS QUATRE ASSIETTES : un annuaire montre le LIEU.
+   Meme colonne de tuiles que les vignettes de l'annuaire, quatre
+   rangs cette fois.  D-634 */
 .tou .tou-vig-ph {
   height: 9cqw;
-  background: linear-gradient(#8fa8b6 0%, #b9a279 46%, #7a6144 100%);
+  background-color: #7a6144;
+  background-image: url("../images/realisations/avant-resto-vig.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 400%;
+  background-position: 0 0%;
 }
-.tou .tou-vig-ph--b { background: linear-gradient(#a8b9c4 0%, #d0c2a4 46%, #8a7a5e 100%); }
-.tou .tou-vig-ph--c { background: linear-gradient(#7d95a6 0%, #a68b6a 46%, #5f4b34 100%); }
-.tou .tou-vig-ph--d { background: linear-gradient(#9fb4bd 0%, #c4b393 46%, #6f5c41 100%); }
+.tou .tou-vig-ph--b { background-position: 0 33.333%; }
+.tou .tou-vig-ph--c { background-position: 0 66.667%; }
+.tou .tou-vig-ph--d { background-position: 0 100%; }
 .tou .tou-vig b {
   padding: 1cqw 1.1cqw 0;
   font-size: 1.3cqw;
@@ -3004,12 +3115,43 @@ html:not(.js) .ba-trait { display: none; }
   padding-top: 1.6cqw;
   border-top: 1px solid rgba(255, 255, 255, .15);
 }
+/* LA BANDE DES PARTENAIRES N'EST PAS UNE PHOTO, ET NE PEUT PAS EN
+   ETRE UNE : ce sont des LOGOS. On n'en invente pas — un faux logo
+   dans une reconstitution est exactement le genre de chose qui
+   ressemble a une vraie marque. On pose donc la silhouette qu'un
+   pied de page d'annuaire montre : une pastille et un mot,
+   detrempes. Ca se lit « logos de partenaires en gris », pas
+   « cinq boites vides ».  D-634 */
 .tou .tou-parts i {
+  position: relative;
   width: 12cqw;
   height: 4cqw;
   border-radius: 0.4cqw;
-  background: rgba(255, 255, 255, .11);
+  background: rgba(255, 255, 255, .07);
 }
+.tou .tou-parts i::before {
+  content: "";
+  position: absolute;
+  left: 1cqw;
+  top: 1.05cqw;
+  width: 1.9cqw;
+  height: 1.9cqw;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .30);
+}
+.tou .tou-parts i::after {
+  content: "";
+  position: absolute;
+  left: 3.5cqw;
+  top: 1.5cqw;
+  width: 7.2cqw;
+  height: 1cqw;
+  border-radius: 0.2cqw;
+  background: rgba(255, 255, 255, .22);
+}
+.tou .tou-parts i:nth-child(2)::after { width: 5.4cqw; }
+.tou .tou-parts i:nth-child(3)::after { width: 6.6cqw; }
+.tou .tou-parts i:nth-child(5)::after { width: 5.9cqw; }
 .tou .tou-copy {
   display: flex;
   justify-content: space-between;

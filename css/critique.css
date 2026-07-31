@@ -1242,21 +1242,6 @@ html.entree-saut .hero-fiche .fiche-rule,
 /* V1 · DEGAGER — LE NOM SE DECOUVRE QUAND SON CHANTIER ARRIVE.  D-198 */
 @keyframes svc-degage-nom { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 }
-/* V1 · DEGAGER, SENS BAS — la page se decouvre sous l'arete du  D-506 */
-/* LES DEUX TEMPS D'ARRET PASSENT DE 9 % A 5 %.  D-621
-   Ils duraient 3,06 s sur une boucle de 34 s. Tant que l'apres
-   etait une maquette, ses mouvements INTERIEURS occupaient ce
-   temps-la ; c'est maintenant une capture, une image fixe, et
-   pendant trois secondes plus rien ne bougeait du tout. Un arret
-   est voulu — il faut un temps pour lire la page avant qu'elle
-   glisse — mais il doit rester plus court que l'intervalle auquel
-   on l'echantillonne, sinon « rien ne bouge » devient un etat
-   qu'on peut photographier deux fois de suite. */
-@keyframes ba-defile {
-  0%, 5%   { transform: translateY(0); }
-  50%, 55% { transform: translateY(calc(var(--ba-course) * -1)); }
-  100%     { transform: translateY(0); }
-}
 @keyframes v11-defile { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .tou :where(p, dl, dt, dd, ul, ol, li, figure) { margin: 0; padding: 0; }
 .tou :where(ul, ol) { list-style: none; }

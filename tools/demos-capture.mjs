@@ -36,13 +36,63 @@ import net from "node:net";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { RAPPORTS } from "./demos-rapports.mjs";
+
+/* UNE CAPTURE UNIFORME N'EST PAS UNE CAPTURE.  D-614 / piege 40
+   Un des quatre sites a deja rendu une bande entierement noire, et
+   rien ne l'a dit. On mesure l'etalement des valeurs PAR TRANCHES :
+   une moyenne d'ensemble cache une image riche en haut et vide en
+   bas — c'est exactement ce qui est arrive le 2026-07-31. */
+async function mesurerPlatitude(p2, fichier) {
+  return p2.evaluate(async (u) => {
+    const img = new Image();
+    img.src = u;
+    await img.decode();
+    const c = document.createElement("canvas");
+    const L = 380;
+    c.width = L;
+    c.height = Math.min(Math.round((L * img.height) / img.width), 6000);
+    const x = c.getContext("2d");
+    x.imageSmoothingQuality = "high";
+    x.drawImage(img, 0, 0, img.width, img.height, 0, 0, c.width, c.height);
+    const tranches = [];
+    const T = 8;
+    for (let t = 0; t < T; t++) {
+      const y0 = Math.floor((c.height * t) / T);
+      const y1 = Math.floor((c.height * (t + 1)) / T);
+      const d = x.getImageData(0, y0, c.width, Math.max(1, y1 - y0)).data;
+      let s = 0, s2 = 0, n = 0;
+      for (let i = 0; i < d.length; i += 4) {
+        const l = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+        s += l; s2 += l * l; n++;
+      }
+      const m = s / n;
+      tranches.push({ t, moy: +m.toFixed(1), ec: +Math.sqrt(Math.max(0, s2 / n - m * m)).toFixed(1) });
+    }
+    return { tranches, pire: tranches.reduce((a, b) => (b.ec < a.ec ? b : a)) };
+  }, "data:image/png;base64," + fs.readFileSync(fichier).toString("base64"));
+}
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const SORTIE = path.join(ICI, "_demos");
 fs.mkdirSync(SORTIE, { recursive: true });
 
-const LARG = 760;
-const HAUT = 1425;
+/* DEUX CADRAGES, ET LE SECOND EST CELUI QUI PART EN PAGE.  D-631
+   `760 x 1425` etait la largeur d'une TABLETTE. Les quatre sites y
+   rendent leur mise en page etroite : un titre par ligne, des cartes
+   empilees, une typographie de 60 px. Reduit dans un cadre de 460 px,
+   ca ne se lit pas comme un site, ca se lit comme un GROS PLAN — le
+   defaut principal releve par le proprietaire.
+   `--ecran` photographie donc a `1280 x 800`, la fenetre d'un
+   ordinateur de bureau : c'est la composition en colonnes, la barre
+   de navigation entiere, la hierarchie complete. Reduite dans le
+   meme cadre, elle se lit comme un ECRAN. Densite 1,5 et non 2 : la
+   sortie fait 820 px de large, une densite 2 ne servirait qu'a
+   tripler le poids de la capture intermediaire. */
+const ECRAN = process.argv.includes("--ecran");
+const LARG = ECRAN ? 1280 : 760;
+const HAUT = ECRAN ? 800 : 1425;
+const DENSITE = ECRAN ? 1.5 : 2;
 
 const PROJETS = {
   garage: {
@@ -82,16 +132,23 @@ const PROJETS = {
     dossier: "C:/Users/tiwil/APED-AGENCY/restau",
     cmd: ["run", "dev", "--", "-p", "3102"],
     port: 3102,
-    /* CE SITE-LA NE SE DEFILE PAS AVANT SA PHOTO.  D-620
-       Il rend son heros parfaitement au chargement, et NOIR PLEIN
-       des qu'on l'a fait defiler d'un pixel — quatre passes a
-       chercher ailleurs (le port, le lissage, le masquage, la
-       densite) avant de mesurer ca. Son heros tient de toute facon
-       dans la premiere fenetre : le nom en pleine masse arrive a
-       1 080 px sur 1 425. On le photographie donc SANS BOUGER, et
-       la boucle interne de la comparaison va chercher le reste. */
+    /* LE « HEROS QUI NOIRCIT AU DEFILEMENT » N'EXISTE PAS.  D-635
+       D-620 disait : ce site rend son heros au chargement et NOIR
+       PLEIN des qu'on l'a fait defiler d'un pixel, « reproduit a
+       chaque essai ». Il a donc ete photographie sans bouger
+       (`fixe: true`), et la cause n'a jamais ete cherchee.
+       Remesure du 2026-07-31 : 26 paliers de 600 px, ecart-type de
+       luminance releve a chaque palier, plus une pleine page. AUCUNE
+       image plate — le minimum est 22,8, le seuil de platitude est 3.
+       La vraie cause etait D-618 / piege 40 : le selecteur de
+       masquage `[class*="cursor"]` attrapait `cursor-none`, que ce
+       site pose sur son enveloppe, et masquait LA PAGE ENTIERE. Elle
+       a ete corrigee ; `fixe` est un contournement qui lui a survecu
+       et qui, lui, empechait de photographier autre chose que la
+       premiere fenetre. Il tombe.
+       Lecon, et c'est la troisieme fois : quand on contourne au lieu
+       de chercher, le contournement reste apres le correctif. */
     depart: 0,
-    fixe: true,
     masques: [
       [/Le Devoir/g, "Quotidien national"],
       [/Tastet/g, "Guide gourmand"],
@@ -185,7 +242,7 @@ for (const cle of aFaire) {
   try {
     await attendrePort(p.port);
     const nav = await chromium.launch();
-    const ctx = await nav.newContext({ viewport: { width: LARG, height: HAUT }, deviceScaleFactor: 2 });
+    const ctx = await nav.newContext({ viewport: { width: LARG, height: HAUT }, deviceScaleFactor: DENSITE });
     const page = await ctx.newPage();
     const manquantes = [];
     page.on("requestfailed", (r) => manquantes.push(r.url().slice(0, 80)));
@@ -321,14 +378,124 @@ for (const cle of aFaire) {
       return { total: tout.length, vides: tout.filter((i) => !i.naturalWidth).length };
     });
     await page.waitForTimeout(1200);
-    const cadre = path.join(SORTIE, `${cle}-cadre.png`);
-    await page.screenshot({ path: cadre });
+    let platitude = null;
+    let tuiles = 0;
+    if (!ECRAN) {
+      const cadre = path.join(SORTIE, `${cle}-cadre.png`);
+      await page.screenshot({ path: cadre });
+    }
+
+    /* ON NE PHOTOGRAPHIE PLUS EN `fullPage` : ON COUD.  D-633
+       Releve a l'image le 2026-07-31 : la capture pleine page d'un
+       des quatre sites portait une BANDE BLANCHE de 1 500 px au
+       milieu. Cause : ce site epingle une galerie qui defile a
+       l'horizontale. `fullPage` etire le document a sa hauteur
+       totale et prend une seule image — l'espaceur de la scene
+       epinglee est bien la, son contenu est reste en haut, et le
+       reste est du vide. Aucune sonde du DOM ne pouvait le voir :
+       c'est un defaut de PEINTURE (piege 25).
+       On prend donc une image par fenetre, en descendant comme un
+       visiteur, et on les coud a leur position REELLE de
+       defilement. Une scene epinglee y apparait autant de fois
+       qu'elle occupe de fenetres, avec sa progression horizontale
+       a chaque fois — c'est exactement ce que le visiteur voit.
+       Les elements FIXES sont masques a partir de la deuxieme
+       tuile, sinon la barre du site se repeterait a chaque fenetre. */
+    if (ECRAN) {
+      const cibleH = Math.round(LARG * (RAPPORTS[cle] || 0));
+      if (!cibleH) throw new Error(`${cle} : aucun rapport releve dans _rapports.mjs (piege 30)`);
+      /* ON TRAVERSE D'ABORD, ET ON REVIENT.  D-631
+         Les quatre sites revelent leur contenu au defilement et
+         chargent leurs images en differe. Une premiere descente
+         demande tout ; la seconde, celle qui photographie, trouve
+         tout deja peint. */
+      const totalPage = await page.evaluate(() => document.body.scrollHeight);
+      const pasTraverse = Math.round(HAUT * 0.6);
+      for (let t = 0; t < Math.min(cibleH, totalPage); t += pasTraverse) {
+        await page.mouse.wheel(0, pasTraverse);
+        await page.waitForTimeout(200);
+      }
+      await allerA(page, 0);
+      await page.evaluate(async () => {
+        const limite = (pr, ms) => Promise.race([pr, new Promise((r) => setTimeout(r, ms))]);
+        await limite(Promise.all([...document.images].map((i) => (i.complete && i.naturalWidth ? null : i.decode().catch(() => null)))), 15000);
+      });
+      await page.waitForTimeout(1500);
+      const docH = await page.evaluate(() => document.body.scrollHeight);
+      const prises = [];
+      /* ON DEMANDE 80 % D'UNE FENETRE, PAS UNE FENETRE ENTIERE.  D-633
+         Releve a l'image sur la premiere couture : une BANDE BLANCHE
+         de 147 px entre la tuile 1 et la tuile 2. `allerA` s'arrete
+         a 14 px pres et le defilement pilote de deux des quatre
+         sites avance par bonds — il DEPASSE la cible. Une tuile
+         posee a sa hauteur reelle laisse alors un trou.
+         Un recouvrement de 20 % absorbe le depassement, et la
+         verification ci-dessous refuse la couture si un trou reste :
+         une image trouee ne part JAMAIS en silence. */
+      const pasTuile = Math.round(HAUT * 0.8);
+      let y = 0;
+      for (let k = 0; k < 40; k++) {
+        const atteintY = await allerA(page, y);
+        if (k === 1) {
+          await page.evaluate(() => {
+            for (const el of document.querySelectorAll("body *")) {
+              if (getComputedStyle(el).position === "fixed") el.style.visibility = "hidden";
+            }
+          });
+          await page.waitForTimeout(400);
+        }
+        await page.waitForTimeout(700);
+        prises.push({ y: atteintY, b64: (await page.screenshot()).toString("base64") });
+        if (atteintY + HAUT >= Math.min(cibleH, docH)) break;
+        const suivant = atteintY + pasTuile;
+        if (suivant <= y) break;
+        y = suivant;
+      }
+      tuiles = prises.length;
+      prises.sort((a, b) => a.y - b.y);
+      for (let k = 1; k < prises.length; k++) {
+        const trou = prises[k].y - (prises[k - 1].y + HAUT);
+        if (trou > 0) {
+          throw new Error(`${cle} : la couture laisse un TROU de ${trou} px entre la tuile ${k - 1} (y ${prises[k - 1].y}) ` +
+            `et la tuile ${k} (y ${prises[k].y}). Baisser le pas et reprendre.`);
+        }
+      }
+      if (prises[prises.length - 1].y + HAUT < cibleH) {
+        throw new Error(`${cle} : la couture s'arrete a ${prises[prises.length - 1].y + HAUT} px alors qu'il en faut ${cibleH}.`);
+      }
+      const p2 = await ctx.newPage();
+      await p2.setContent("<html><body></body></html>");
+      const cousu = await p2.evaluate(async ({ prises, cibleH, LARG, DENSITE }) => {
+        const c = document.createElement("canvas");
+        c.width = Math.round(LARG * DENSITE);
+        c.height = Math.round(cibleH * DENSITE);
+        const x = c.getContext("2d");
+        x.fillStyle = "#ffffff";
+        x.fillRect(0, 0, c.width, c.height);
+        for (const t of prises) {
+          const img = new Image();
+          img.src = "data:image/png;base64," + t.b64;
+          await img.decode();
+          x.drawImage(img, 0, Math.round(t.y * DENSITE));
+        }
+        return c.toDataURL("image/png");
+      }, { prises, cibleH, LARG, DENSITE });
+      const fichier = path.join(SORTIE, `${cle}-ecran.png`);
+      fs.writeFileSync(fichier, Buffer.from(cousu.split(",")[1], "base64"));
+      platitude = await mesurerPlatitude(p2, fichier);
+      await p2.close();
+      if (platitude.pire.ec < 6) {
+        throw new Error(`${cle} : une tranche de la couture est PLATE (ecart-type ${platitude.pire.ec}, moyenne ${platitude.pire.moy}) — ` +
+          "une bande n'a pas peint. Reprendre avant de convertir.");
+      }
+    }
 
     /* La pleine page vient ensuite, et sert de piece de comparaison
        avec le projet source — pas a alimenter la page. Elle coute
        cher (30 000 px de haut, plusieurs minutes) : `--sans-plein`
-       la saute quand on ne refait qu'un cadrage. */
-    if (!SANS_PLEIN) {
+       la saute quand on ne refait qu'un cadrage. Elle ne sert plus a
+       alimenter la page depuis D-633 : c'est la couture qui livre. */
+    if (!ECRAN && !SANS_PLEIN) {
       const total = await page.evaluate(() => document.body.scrollHeight);
       const pas = Math.round(HAUT * 0.6);
       for (let y = atteint; y < total; y += pas) {
@@ -339,11 +506,12 @@ for (const cle of aFaire) {
       await page.screenshot({ path: path.join(SORTIE, `${cle}-plein.png`), fullPage: true });
     }
     R.push({
-      cle, depart, atteint, images: images.total - images.vides + "/" + images.total, departEcrit: p.depart, hauteurPage: masquage.hauteur, espacesReparés: espaces,
+      cle, depart, atteint, tuiles, images: images.total - images.vides + "/" + images.total, hauteurPage: masquage.hauteur, espacesReparés: espaces,
       masques: masquage.faits.filter((f) => f.touches).length + "/" + masquage.faits.length,
       sansEffet: masquage.faits.filter((f) => !f.touches).map((f) => f.motif),
       boitesMasquees: masquage.masquees,
-      requetesEchouees: manquantes.length
+      requetesEchouees: manquantes.length,
+      platitude: platitude ? `ec min ${platitude.pire.ec} sur ${platitude.tranches.length} tranches` : "—"
     });
     await nav.close();
   } finally {
