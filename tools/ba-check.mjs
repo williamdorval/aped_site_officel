@@ -8,17 +8,27 @@
                        « Visible, sinon ca ne compte pas. »
    2 · LE CLAVIER      fleches, Home, End — et `aria-valuetext` doit
                        dire autre chose qu'un nombre nu.
-   3 · LA BOUCLE       cinq captures de la maquette qui defile, et
-                       l'ecart entre deux consecutives.
-   4 · L'ARRET         hors du viewport, au survol, sous mouvement
-                       reduit et au palier 2.
-   5 · SANS SCRIPT     le partage est a 50 % et la poignee ne
-                       s'affiche pas — rien d'inerte a glisser.
+   3 · LA VITRE        la molette posee DANS le cadre fait descendre
+                       le site qui est dedans — six captures, l'ecart
+                       entre deux consecutives, et la page derriere
+                       qui ne bouge pas.
+   4 · LA COHABITATION defiler ne deplace pas la poignee, glisser la
+                       poignee ne deplace pas le cadre. Les deux sens.
+   5 · LE DOIGT        le cadre rend le chainage aux pointeurs
+                       grossiers : personne ne reste coince.
+   6 · LE RAPPORT      l'avant et l'apres finissent a la meme ligne,
+                       et le chiffre lu est celui qui a servi a
+                       decouper les captures.
+   7 · L'ARRET         mouvement reduit, palier 2 — et on peut
+                       toujours descendre dans le cadre.
+   8 · SANS SCRIPT     le cadre est retire, les quatre titres
+                       restent, aucun pave descriptif ne revient.
    ============================================================ */
 import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 import { decodePNG, diffStats } from "./_png.mjs";
+import { RAPPORTS } from "./demos-rapports.mjs";
 
 const PORT = process.argv[2] || "8123";
 const BASE = `http://127.0.0.1:${PORT}/index.html`;
@@ -170,80 +180,271 @@ console.log("\n2 · LE CLAVIER");
   await ctx.close();
 }
 
-/* ---------- 3 · LA BOUCLE DE DEFILEMENT ---------- */
-console.log("\n3 · LA BOUCLE — cinq captures et l'ecart entre deux consecutives");
+/* ---------- 3 · LA VITRE — ON DEFILE DANS LE CADRE ----------
+   CE QUE CETTE SECTION REMPLACE, ET POURQUOI.
+   Elle mesurait une BOUCLE automatique : la maquette glissait toute
+   seule et on verifiait que ca bougeait. La boucle est partie avec le
+   chantier du 2026-07-31 — elle existait pour montrer ce qu'une
+   fenetre fixe ne pouvait pas montrer, et la main du visiteur le fait
+   mieux. Laisser l'ancienne section en place l'aurait fait echouer
+   sur une absence VOULUE, ou pire, aurait pousse a remettre la boucle
+   pour faire passer le test. Piege 17.
+   Ce qu'on mesure maintenant est ce qu'on veut vraiment : une molette
+   posee DANS le cadre fait descendre le site qui est dedans, sans
+   que la page derriere bouge d'un pixel. Cinq captures et l'ecart
+   entre deux consecutives — regle B, « visible, sinon ca ne compte
+   pas ». */
+console.log("\n3 · LA VITRE — la molette fait descendre le site DANS le cadre");
 {
   const { ctx, p } = await page();
-  await p.evaluate(() => document.getElementById("ba-garage").scrollIntoView({ block: "center" }));
-  await p.waitForTimeout(600);
-  const vif = await p.evaluate(() => document.querySelector("#ba-garage .ba-scene").hasAttribute("data-vif"));
-  dire(vif, "la scene visible porte `data-vif`");
-  const fics = [];
-  for (let i = 0; i < 5; i++) {
-    const f = path.join(OUT, `boucle-${i}.png`);
-    await (await p.$("#ba-garage .ba-scene")).screenshot({ path: f });
-    fics.push(f);
-    await p.waitForTimeout(2400);
-  }
-  let mini = 100;
-  for (let i = 1; i < fics.length; i++) {
-    const d = diffStats(lire(fics[i - 1]), lire(fics[i]), 8).pct;
-    if (d < mini) mini = d;
-    console.log(`         ${i - 1} → ${i} : ${d.toFixed(2)} %`);
-  }
-  dire(mini > 0.4, `ecart minimal entre deux images : ${mini.toFixed(2)} % — le mouvement se voit`);
+  for (const id of CARTES) {
+    await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
+    await p.waitForTimeout(700);
+    const b = await p.evaluate((i) => {
+      const r = document.querySelector("#" + i + " .ba-scene").getBoundingClientRect();
+      const v = document.querySelector("#" + i + " [data-ba-vitre]");
+      return { x: r.left, y: r.top, w: r.width, h: r.height, course: v.scrollHeight - v.clientHeight };
+    }, id);
+    dire(b.course > 120, `${id} : ${b.course} px a defiler dans le cadre`);
 
-  await p.hover("#ba-garage .ba-scene");
-  await p.waitForTimeout(420);
-  const t1 = await p.evaluate(() => getComputedStyle(document.querySelector("#ba-garage .ba-page")).animationPlayState);
-  dire(t1 === "paused", `au survol : animation-play-state = ${t1}`);
+    const pageAvant = await p.evaluate(() => Math.round(window.scrollY));
+    await p.mouse.move(b.x + b.w * 0.5, b.y + b.h * 0.5);
+    const fics = [];
+    const pas = Math.max(60, Math.round(b.course / 5));
+    for (let i = 0; i < 6; i++) {
+      const f = path.join(OUT, `vitre-${id}-${i}.png`);
+      await (await p.$("#" + id + " .ba-scene")).screenshot({ path: f });
+      fics.push(f);
+      await p.mouse.wheel(0, pas);
+      await p.waitForTimeout(220);
+    }
+    const pageApres = await p.evaluate(() => Math.round(window.scrollY));
+    const dedans = await p.evaluate((i) => Math.round(document.querySelector("#" + i + " [data-ba-vitre]").scrollTop), id);
 
-  await p.evaluate(() => window.scrollTo(0, 0));
-  await p.waitForTimeout(800);
-  const t2 = await p.evaluate(() => document.querySelector("#ba-garage .ba-scene").hasAttribute("data-vif"));
-  dire(!t2, "hors du viewport : `data-vif` retire");
+    let mini = 100;
+    const ecarts = [];
+    for (let i = 1; i < fics.length; i++) {
+      const d = diffStats(lire(fics[i - 1]), lire(fics[i]), 8).pct;
+      ecarts.push(d.toFixed(2));
+      if (d < mini) mini = d;
+    }
+    console.log(`         ecarts : ${ecarts.join(" · ")} %`);
+    dire(mini > 0.8, `${id} : ecart minimal entre deux images ${mini.toFixed(2)} % — la descente se voit`);
+    dire(dedans > 100, `${id} : le cadre a descendu de ${dedans} px`);
+    /* LA PAGE DERRIERE NE BOUGE PAS. C'est la moitie de la demande :
+       « ON PEUT SCROLLER DEDANS SOI-MEME, sans que la page derriere
+       bouge ». Une tolerance de 2 px absorbe l'arrondi du defilement
+       doux, rien de plus. */
+    dire(Math.abs(pageApres - pageAvant) <= 2,
+      `${id} : la page derriere n'a pas bouge (${pageAvant} → ${pageApres})`);
+  }
   await ctx.close();
 }
 
-/* ---------- 4 · MOUVEMENT REDUIT ET PALIER 2 ---------- */
-console.log("\n4 · L'ARRET — mouvement reduit, palier 2");
+/* ---------- 4 · LA COHABITATION — c'est le vrai risque ----------
+   Glisser la poignee et defiler dans le site sont deux gestes sur le
+   MEME rectangle. Ils se battent si l'un capte ce qui appartient a
+   l'autre — c'est deja arrive une fois : le champ `range`, etire sur
+   toute la scene, prenait le pointeur, et la molette cherchait un
+   conteneur defilant parmi SES ancetres. Elle n'en trouvait pas et
+   remontait a la page : le cadre ne defilait jamais (D-629).
+   On exige donc les deux sens : defiler ne deplace pas la poignee, et
+   glisser la poignee ne deplace pas le cadre. */
+console.log("\n4 · LA COHABITATION — poignee et defilement sur le meme rectangle");
+{
+  const { ctx, p } = await page();
+  for (const id of CARTES) {
+    await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
+    await p.waitForTimeout(700);
+    const b = await p.evaluate((i) => {
+      const r = document.querySelector("#" + i + " .ba-scene").getBoundingClientRect();
+      return { x: r.left, y: r.top, w: r.width, h: r.height };
+    }, id);
+    const lu = () => p.evaluate((i) => ({
+      part: Math.round(+getComputedStyle(document.querySelector("#" + i + " .ba-scene")).getPropertyValue("--ba-p").trim()),
+      haut: Math.round(document.querySelector("#" + i + " [data-ba-vitre]").scrollTop)
+    }), id);
+
+    /* a · on pose la poignee a 20 %, puis on defile : elle ne bouge pas */
+    await p.mouse.move(b.x + b.w * 0.5, b.y + b.h * 0.5);
+    await p.mouse.down();
+    await p.mouse.move(b.x + b.w * 0.20, b.y + b.h * 0.5, { steps: 6 });
+    await p.mouse.up();
+    await p.waitForTimeout(120);
+    const a1 = await lu();
+    await p.mouse.wheel(0, 240);
+    await p.waitForTimeout(260);
+    const a2 = await lu();
+    dire(Math.abs(a1.part - 20) <= 2, `${id} : la poignee se pose a ${a1.part} %`);
+    dire(a2.haut > a1.haut + 40, `${id} : le cadre descend malgre la poignee deplacee (${a1.haut} → ${a2.haut})`);
+    dire(a2.part === a1.part, `${id} : defiler ne deplace pas la poignee (${a1.part} → ${a2.part})`);
+
+    /* b · puis on reglisse la poignee : le cadre ne remonte pas */
+    await p.mouse.move(b.x + b.w * 0.20, b.y + b.h * 0.5);
+    await p.mouse.down();
+    await p.mouse.move(b.x + b.w * 0.78, b.y + b.h * 0.5, { steps: 8 });
+    await p.mouse.up();
+    await p.waitForTimeout(140);
+    const a3 = await lu();
+    dire(Math.abs(a3.part - 78) <= 2, `${id} : la poignee glisse encore apres le defilement (${a3.part} %)`);
+    dire(Math.abs(a3.haut - a2.haut) <= 4, `${id} : glisser la poignee ne deplace pas le cadre (${a2.haut} → ${a3.haut})`);
+
+    for (const v of [4, 50, 96]) {
+      await p.evaluate(([i, val]) => {
+        const c = document.querySelector("#" + i + " [data-ba-curseur]");
+        c.value = val;
+        c.dispatchEvent(new Event("input", { bubbles: true }));
+      }, [id, v]);
+      await p.waitForTimeout(200);
+      await (await p.$("#" + id + " .ba-scene")).screenshot({ path: path.join(OUT, `cohab-${id}-${String(v).padStart(3, "0")}.png`) });
+    }
+  }
+  await ctx.close();
+}
+
+/* ---------- 5 · LE DOIGT NE SE FAIT PAS PIEGER ----------
+   `overscroll-behavior: contain` est juste a la molette et FAUX au
+   doigt : une fois le cadre au bout, le geste ne passe plus a la
+   page, et sur un telephone le cadre occupe presque toute la
+   largeur. On rend donc le chainage aux pointeurs grossiers.
+   RESERVE, et elle est entiere : `pointer: coarse` emule sous
+   Chromium n'est pas un telephone. On mesure la PROPRIETE, pas le
+   geste — c'est tout ce que ce poste peut prouver. */
+console.log("\n5 · LE DOIGT — le cadre ne piege pas la page");
+{
+  const ctx = await nav.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    hasTouch: true,
+    isMobile: true,
+    colorScheme: "light"
+  });
+  await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  const p = await ctx.newPage();
+  await p.goto(BASE, { waitUntil: "networkidle" });
+  await p.waitForTimeout(1200);
+  await p.evaluate(() => document.getElementById("ba-garage").scrollIntoView({ block: "center", behavior: "instant" }));
+  await p.waitForTimeout(600);
+  const m = await p.evaluate(() => {
+    const v = document.querySelector("#ba-garage [data-ba-vitre]");
+    const s = document.querySelector("#ba-garage .ba-scene");
+    return {
+      chainage: getComputedStyle(v).overscrollBehaviorY,
+      tactScene: getComputedStyle(s).touchAction,
+      tactChamp: getComputedStyle(document.querySelector("#ba-garage [data-ba-curseur]")).touchAction,
+      course: v.scrollHeight - v.clientHeight
+    };
+  });
+  dire(m.chainage === "auto", `pointeur grossier : le chainage revient (${m.chainage})`);
+  dire(m.tactScene === "pan-y", `la scene laisse le geste vertical (${m.tactScene})`);
+  dire(m.tactChamp === "pan-y", `le champ laisse le geste vertical (${m.tactChamp})`);
+  dire(m.course > 60, `il reste ${m.course} px a defiler dans le cadre a 390 px`);
+  /* LA PRISE DE LA POIGNEE EST LA SEULE SURFACE QUI REFUSE LE
+     DEFILEMENT.  D-640 Sans `touch-action: none` dessus, la vitre
+     revendique le geste des le premier deplacement et la poignee se
+     fige apres un pas : mesure du 2026-07-31, `--ba-p` 50 → 42. */
+  const prise = await p.evaluate(() => {
+    const cs = getComputedStyle(document.querySelector("#ba-garage .ba-trait"), "::after");
+    const csb = getComputedStyle(document.querySelector("#ba-garage .ba-trait"), "::before");
+    return { apres: cs.touchAction, avant: csb.touchAction, larg: cs.width, evAp: cs.pointerEvents };
+  });
+  dire(prise.apres === "none", `la colonne de prise refuse le defilement (${prise.apres})`);
+  dire(prise.avant === "none", `le bouton de la poignee aussi (${prise.avant})`);
+  dire(prise.evAp === "auto", `et elle recoit bien le pointeur (${prise.evAp})`);
+  await (await p.$("#ba-garage")).screenshot({ path: path.join(OUT, "doigt-390.png") });
+  await ctx.close();
+}
+
+/* ---------- 6 · LES DEUX COTES FINISSENT A LA MEME LIGNE ----------
+   `demos-webp.mjs` decoupe chaque capture « apres » au RAPPORT de la
+   reconstitution qui lui fait face, et ce rapport est ecrit dans
+   `demos-rapports.mjs`. Si une reconstitution change de hauteur et
+   que personne ne reconvertit, la poignee se met a comparer le pied
+   d'un site avec le milieu de l'autre — sans que rien ne le dise.
+   C'est ici qu'on l'apprend. */
+console.log("\n6 · LE RAPPORT — l'avant et l'apres finissent a la meme ligne");
+{
+  const { ctx, p } = await page();
+  const paires = { "ba-garage": "garage", "ba-design": "design", "ba-restaurant": "restau", "ba-renovation": "deneigement" };
+  for (const id of CARTES) {
+    await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
+    await p.waitForTimeout(500);
+    const m = await p.evaluate((i) => {
+      const av = document.querySelector("#" + i + " .ba-vue--avant");
+      const ap = document.querySelector("#" + i + " .ba-vue--apres");
+      const larg = av.getBoundingClientRect().width;
+      return {
+        larg,
+        avant: av.querySelector(".ba-page").scrollHeight,
+        apres: Math.round(ap.getBoundingClientRect().height),
+        pile: Math.round(document.querySelector("#" + i + " .ba-pile").getBoundingClientRect().height)
+      };
+    }, id);
+    const rapportLu = m.avant / m.larg;
+    const rapportEcrit = RAPPORTS[paires[id]];
+    const derive = Math.abs(rapportLu - rapportEcrit) / rapportEcrit * 100;
+    dire(derive < 3, `${id} : rapport lu ${rapportLu.toFixed(3)} contre ${rapportEcrit} ecrit — derive ${derive.toFixed(1)} %`);
+    const ecartCotes = Math.abs(m.avant - m.apres) / m.pile * 100;
+    dire(ecartCotes < 4, `${id} : les deux cotes se terminent a ${ecartCotes.toFixed(1)} % l'un de l'autre (${m.avant} / ${m.apres})`);
+  }
+  await ctx.close();
+}
+
+/* ---------- 7 · L'ARRET — mouvement reduit et palier 2 ----------
+   Il n'y a plus de boucle a arreter : le mouvement est celui du
+   visiteur, et un mouvement demande ne se coupe pas sous
+   `prefers-reduced-motion`. Ce qu'on verifie, c'est qu'il ne reste
+   AUCUNE animation en vol dans le cadre, et que le texte defilant de
+   la maquette de 2011 — lui, une vraie animation permanente —
+   s'arrete en restant lisible. */
+console.log("\n7 · L'ARRET — mouvement reduit, palier 2");
 {
   const { ctx, p } = await page({ reduit: true });
-  await p.evaluate(() => document.getElementById("ba-garage").scrollIntoView({ block: "center" }));
+  await p.evaluate(() => document.getElementById("ba-garage").scrollIntoView({ block: "center", behavior: "instant" }));
   await p.waitForTimeout(700);
   const m = await p.evaluate(() => {
-    const pg = document.querySelector("#ba-garage .ba-page");
     const df = document.querySelector("#ba-garage .v11-defile span");
+    const enVol = [...document.querySelectorAll("#ba-garage *")]
+      .filter((e) => getComputedStyle(e).animationName !== "none").length;
     return {
-      page: getComputedStyle(pg).animationName,
+      enVol,
       defile: df ? getComputedStyle(df).animationName : "—",
       pad: df ? getComputedStyle(df).paddingLeft : "—",
       partage: getComputedStyle(document.querySelector("#ba-garage .ba-scene")).getPropertyValue("--ba-p").trim(),
+      course: (() => { const v = document.querySelector("#ba-garage [data-ba-vitre]"); return v.scrollHeight - v.clientHeight; })()
     };
   });
-  dire(m.page === "none", `la page ne defile plus (${m.page})`);
+  dire(m.enVol === 0, `aucune animation en vol dans le cadre (${m.enVol})`);
   dire(m.defile === "none", `le texte defilant s'arrete (${m.defile})`);
   dire(m.pad === "0px", `et il reste LISIBLE a l'arret : padding-left = ${m.pad}`);
   dire(m.partage === "50", `le partage reste a 50 : ${m.partage}`);
+  /* L'INFORMATION NE DEPEND JAMAIS DE L'ANIMATION : sous mouvement
+     reduit on peut toujours descendre dans le cadre, a la molette
+     comme au clavier. */
+  dire(m.course > 120, `on peut toujours descendre dans le cadre : ${m.course} px`);
   await ctx.close();
 
   const { ctx: c2, p: p2 } = await page();
   await p2.evaluate(() => document.documentElement.setAttribute("data-palier", "2"));
-  await p2.evaluate(() => document.getElementById("ba-garage").scrollIntoView({ block: "center" }));
+  await p2.evaluate(() => document.getElementById("ba-garage").scrollIntoView({ block: "center", behavior: "instant" }));
   await p2.waitForTimeout(520);
-  const n = await p2.evaluate(() => getComputedStyle(document.querySelector("#ba-garage .ba-page")).animationName);
-  dire(n === "none", `palier 2 : la boucle tombe (${n})`);
+  const n = await p2.evaluate(() => {
+    const v = document.querySelector("#ba-garage [data-ba-vitre]");
+    return { course: v.scrollHeight - v.clientHeight };
+  });
+  dire(n.course > 120, `palier 2 : le cadre defile toujours (${n.course} px)`);
   await c2.close();
 }
 
-/* ---------- 5 · SANS SCRIPT ---------- */
-console.log("\n5 · SANS SCRIPT");
+/* ---------- 8 · SANS SCRIPT ---------- */
+console.log("\n8 · SANS SCRIPT");
 {
   const { ctx, p } = await page({ js: false });
   const s = await p.evaluate(() => ({
     cadre: getComputedStyle(document.querySelector("#ba-garage .ba-cadre")).display,
     note: getComputedStyle(document.querySelector(".ba-sans")).display,
-    legendes: document.querySelectorAll(".ba-dit").length,
+    tetes: document.querySelectorAll("#realisations .ba-tete").length,
+    pavés: document.querySelectorAll("#realisations .ba-dit, #realisations .ba-fin").length,
     avant: !!document.querySelector("#ba-garage .ba-vue--avant"),
     apres: !!document.querySelector("#ba-garage .ba-vue--apres"),
   }));
@@ -252,7 +453,12 @@ console.log("\n5 · SANS SCRIPT");
      ce qu'elles disent reste lisible en mots. */
   dire(s.cadre === "none", `le cadre est retire (${s.cadre})`);
   dire(s.note === "block", `la ligne de repli s'affiche (${s.note})`);
-  dire(s.legendes === 4, `les quatre legendes restent lues : ${s.legendes}`);
+  dire(s.tetes === 4, `les quatre titres de comparaison restent lus : ${s.tetes}`);
+  /* LES PAVES DESCRIPTIFS SONT PARTIS, ET CE TEST LES EMPECHE DE
+     REVENIR. « Les gens ne lisent pas, ils regardent » — arbitrage du
+     proprietaire, 2026-07-31. Le sous-titre de section porte deja la
+     seule mention necessaire : entreprises fictives, pas des mandats. */
+  dire(s.pavés === 0, `aucun pave descriptif sous les comparaisons : ${s.pavés}`);
   dire(s.avant && s.apres, "les deux maquettes restent dans le document");
   await (await p.$(".ba-grille")).screenshot({ path: path.join(OUT, "sans-script.png") });
   await ctx.close();

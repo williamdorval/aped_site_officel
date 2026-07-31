@@ -2815,11 +2815,25 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Le geste ne remonte pas a la page pendant qu'on est dedans. Le
-     visiteur reprend la page en touchant a cote du cadre. */
+  /* A LA MOLETTE, LE GESTE NE REMONTE PAS A LA PAGE : sans ca, la
+     page saute des que le cadre arrive au bout, et on perd sa place
+     dans la comparaison. */
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--rule-strong) transparent;
+}
+/* AU DOIGT, C'EST L'INVERSE — ET C'EST UN PIEGE EVITE.  D-636
+   `contain` empeche le CHAINAGE : une fois le cadre au bout, le
+   geste ne passe pas a la page. A la molette c'est ce qu'on veut. Au
+   doigt, non : un pouce qui se pose sur le cadre ne peut plus faire
+   descendre la page, et il n'a aucun moyen de le savoir. Sur un
+   telephone le cadre occupe presque toute la largeur, donc le pouce
+   y tombe souvent.
+   On rend donc le chainage aux pointeurs grossiers : le cadre defile
+   d'abord, la page prend le relais au bout. Personne ne reste
+   coince. */
+@media (pointer: coarse) {
+  .ba-vitre { overscroll-behavior: auto; }
 }
 /* LA PILE EST UNE GRILLE D'UNE SEULE CASE, ET C'EST LA CORRECTION.  D-632
    Premiere version de ce chantier : l'apres en flux, l'avant en
@@ -2911,20 +2925,28 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   background: var(--surface-2);
 }
 
-/* LES DEUX ETIQUETTES SONT PERMANENTES.  D-508 */
+/* LES DEUX ETIQUETTES SONT PERMANENTES.  D-508
+   ELLES VIVENT DANS LA BARRE D'ADRESSE, PAS SUR LA PAGE.  D-638
+   Elles etaient posees dans les coins hauts de la scene, donc
+   par-dessus la barre de navigation des deux sites — releve a
+   l'image le 2026-07-31 : « APRES » couvrait le bouton d'appel a
+   l'action du site neuf, sur les quatre comparaisons.
+   Le cadre a maintenant une barre d'adresse, et une barre d'adresse
+   est de l'espace mort par construction : c'est la qu'elles vont.
+   Le cadre y gagne deux fois — rien n'est plus couvert, et
+   l'etiquette se lit comme le libelle d'un onglet. */
 .ba-etq {
-  position: absolute;
-  top: 0;
-  z-index: 3;
-  padding: 0.35rem 0.7rem;
+  flex: 0 0 auto;
+  padding: 0.25em 0.7em;
   font-family: var(--font-data);
-  font-size: var(--fs-8);
+  font-size: 1em;
+  font-weight: 400;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   pointer-events: none;
 }
-.ba-etq--a { left: 0; background: var(--ink); color: var(--surface-0); }
-.ba-etq--b { right: 0; background: var(--accent); color: var(--accent-ink); }
+.ba-etq--a { margin-right: 0.2em; background: var(--ink); color: var(--surface-0); }
+.ba-etq--b { margin-left: auto; background: var(--accent); color: var(--accent-ink); }
 
 /* LE TRAIT ET LA PRISE. L'arete est un filet de 1 px en minium :  D-509 */
 .ba-trait {
@@ -2937,6 +2959,24 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   background: var(--accent);
   pointer-events: none;
 }
+/* LE BOUTON DE LA POIGNEE PREND LE DOIGT, ET LUI SEUL.  D-640
+   Ce qui a casse, et pourquoi ca ne pouvait pas tenir : le
+   glissement etait pilote sur TOUTE la scene, en `touch-action:
+   pan-y`. Tant que la scene ne defilait pas, `pan-y` n'avait rien a
+   faire defiler et le navigateur laissait passer le geste
+   horizontal. Depuis que la vitre defile, il PREND le geste des le
+   premier deplacement : `pointercancel`, et la poignee se fige apres
+   un seul pas. Mesure du 2026-07-31 : `--ba-p` va de 50 a 42 et
+   s'arrete, sur les quatre comparaisons.
+   Les deux gestes se disputent le meme rectangle, et au doigt ils ne
+   peuvent pas gagner tous les deux. On tranche par la SURFACE :
+   partout dans le cadre, le doigt DEFILE ; sur le bouton de la
+   poignee, large de 2,75 rem et haut de tout le cadre, il COMPARE.
+   `touch-action: none` sur ce seul element, donc le navigateur ne
+   revendique rien tant que le doigt est dessus.
+   A la souris, rien ne change : la molette defile, le glissement
+   compare, et ils ne se croisent jamais. */
+.ba-trait { --ba-prise: 2.75rem; }
 .ba-trait::before {
   content: "‹ ›";
   position: absolute;
@@ -2945,14 +2985,49 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   transform: translate(-50%, -50%);
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--ba-prise);
+  height: var(--ba-prise);
   background: var(--accent);
   color: var(--accent-ink);
   font-family: var(--font-data);
   font-size: var(--fs-7);
   letter-spacing: 0.06em;
   white-space: nowrap;
+}
+/* LA PRISE VA DU HAUT EN BAS DU CADRE. Un bouton de 44 px au milieu
+   d'un ecran de 286 px se rate au doigt ; la colonne entiere, non.
+   Elle est transparente : ce qu'on voit reste le filet et son
+   bouton. */
+.ba-trait::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: var(--ba-prise);
+  transform: translateX(-50%);
+}
+/* LA PRISE S'ALLUME DES QU'UN DOIGT EXISTE SUR LA MACHINE.  D-641
+   `any-pointer: coarse`, pas `pointer: coarse` : un portable tactile
+   annonce un pointeur PRIMAIRE fin, et sous `pointer: coarse` la
+   prise ne s'y serait jamais allumee — le doigt n'aurait eu aucun
+   moyen de deplacer la poignee sur ces machines-la. Un controle mort
+   coute plus cher qu'un reglage imparfait.
+   Ce que ca coutait, et qui est corrige a cote : le filet vit dans
+   la SCENE, pas dans la vitre, donc son ancetre defilant est la
+   PAGE. La molette posee dessus faisait descendre la page au lieu du
+   cadre — et la poignee est au milieu au repos, exactement la ou une
+   souris se pose. Mesure du 2026-07-31 : les cinq ecarts de la
+   descente tombes a 0,00 % sur les quatre comparaisons, la page
+   deplacee de 330 a 590 px. `main.js` renvoie desormais la molette a
+   la vitre depuis ce filet ; les deux gestes tiennent ensemble. */
+@media (any-pointer: coarse) {
+  .ba-trait::before,
+  .ba-trait::after {
+    pointer-events: auto;
+    touch-action: none;
+    cursor: ew-resize;
+  }
 }
 
 /* LA POIGNEE EST UN `input[type=range]` NATIF, ET C'EST TOUT  D-510 */
@@ -2993,13 +3068,22 @@ html:not(.js) .ba-poignee,
 html:not(.js) .ba-trait { display: none; }
 
 /* == LA LEGENDE — un titre court, une ligne, jamais un paragraphe. ==  D-513 */
+/* LA MENTION PASSE TOUJOURS A LA LIGNE, ET CE N'EST PAS UN DETAIL.
+   En `flex-wrap`, elle restait a cote du titre quand celui-ci etait
+   court et tombait dessous quand il etait long : sur une rangee de
+   deux, une legende faisait une ligne et sa voisine deux, donc les
+   deux cadres ne s'alignaient plus par le bas. Releve a l'image le
+   2026-07-31 entre « Carrosserie et peinture » et « Design interieur
+   residentiel ». Elle passe donc a la ligne dans les quatre cas :
+   une regularite vaut mieux qu'une economie de place.  D-637 */
 .ba-tete {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: baseline;
   gap: var(--s-2) var(--s-3);
   margin: 0;
 }
+.ba-tete span { grid-column: 2; }
 .ba-tete .num {
   font-style: normal;
   font-family: var(--font-data);
@@ -3034,8 +3118,18 @@ html:not(.js) .ba-trait { display: none; }
     gap: var(--s-9) var(--s-9);
   }
 }
+/* SUR UN GRAND ECRAN, LE CADRE PREND LA PLACE QU'IL Y A.
+   30 rem sur une fenetre de 1920 laissait 400 px de vide de chaque
+   cote et rendait la section timide : les quatre ecrans devenaient
+   des timbres. On monte a 33 rem au-dela de 90em — la rangee tient
+   toujours dans une fenetre de 1080, mesure. En dessous, rien ne
+   change : c'est la largeur qui avait ete reduite pour de bonnes
+   raisons.  D-637 */
 @media (min-width: 90em) {
-  .ba-grille { gap: var(--s-9) var(--s-10, 6rem); }
+  .ba-grille {
+    grid-template-columns: repeat(2, minmax(0, 33rem));
+    gap: var(--s-9) var(--s-10, 6rem);
+  }
 }
 
 /* == L'APRES — LES QUATRE MAQUETTES SONT PARTIES. ==  D-617

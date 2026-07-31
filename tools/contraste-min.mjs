@@ -46,11 +46,29 @@ for (const theme of ["light", "dark"]) {
     }
     /* Le fond REEL : on remonte jusqu'a la premiere surface opaque.
        Mesurer contre le fond declare de l'element donnerait le ratio
-       d'une couleur qui n'est peinte nulle part. */
+       d'une couleur qui n'est peinte nulle part.
+
+       UN FOND EN `background-image` N'EST PAS UN FOND ABSENT.  D-639
+       Cette remontee ne regardait que `background-color`. Or une
+       surface peut etre peinte par un DEGRADE ou une IMAGE, et sa
+       `background-color` reste alors `transparent` : la remontee
+       passait au travers et allait chercher le blanc d'un ancetre
+       trois niveaux plus haut. Resultat le 2026-07-31 : du texte
+       blanc sur une barre bleue en degrade rendait « 1:1 » — le pire
+       verdict possible sur du texte parfaitement lisible. Mesure aux
+       PIXELS PEINTS du meme texte : 6,65:1.
+       Un faux 1:1 ne coute pas qu'une ligne de rapport. Il noie les
+       vrais echecs, et il pousse a « corriger » du code sain.
+       On rend donc `null` : non calculable depuis les styles
+       calcules, a mesurer a l'image. Ce qui n'est pas calculable ne
+       compte pas comme un echec, et ne compte pas comme un succes
+       non plus — c'est dit a part. */
     function fond(el) {
       let n = el;
       while (n && n !== document.documentElement) {
-        const c = rgb(getComputedStyle(n).backgroundColor);
+        const cs = getComputedStyle(n);
+        if (cs.backgroundImage && cs.backgroundImage !== "none") return null;
+        const c = rgb(cs.backgroundColor);
         if (c && c.a >= 0.95) return c.c;
         n = n.parentElement;
       }
@@ -59,7 +77,7 @@ for (const theme of ["light", "dark"]) {
     const out = {};
     for (const sec of document.querySelectorAll("section[id], footer, dialog")) {
       const id = sec.id || sec.tagName.toLowerCase();
-      let min = 99, quoi = "", px = 0;
+      let min = 99, quoi = "", px = 0, horsCalcul = 0;
       for (const el of sec.querySelectorAll("*")) {
         if (el.closest("[aria-hidden='true'], template")) continue;
         const t = [...el.childNodes]
@@ -72,18 +90,20 @@ for (const theme of ["light", "dark"]) {
         if (!r.width || !r.height) continue;
         const fg = rgb(cs.color);
         if (!fg) continue;
-        const l1 = lum(fg.c), l2 = lum(fond(el));
+        const bg = fond(el);
+        if (bg === null) { horsCalcul++; continue; }
+        const l1 = lum(fg.c), l2 = lum(bg);
         const ct = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
         if (ct < min) { min = ct; quoi = t.slice(0, 36); px = Math.round(parseFloat(cs.fontSize)); }
       }
-      if (min < 99) out[id] = { min: Math.round(min * 100) / 100, quoi, px };
+      if (min < 99) out[id] = { min: Math.round(min * 100) / 100, quoi, px, horsCalcul };
     }
     return out;
   });
 
   console.log(`\n--- ${theme === "light" ? "CLAIR" : "SOMBRE"} ---`);
   for (const [k, v] of Object.entries(parSection)) {
-    console.log(`  ${k.padEnd(14)} ${String(v.min).padStart(6)}:1  ${String(v.px).padStart(3)}px  « ${v.quoi} »`);
+    console.log(`  ${k.padEnd(14)} ${String(v.min).padStart(6)}:1  ${String(v.px).padStart(3)}px  « ${v.quoi} »` + (v.horsCalcul ? `   [${v.horsCalcul} hors calcul : fond en image ou degrade, a mesurer a l'image]` : ""));
   }
   await ctx.close();
 }

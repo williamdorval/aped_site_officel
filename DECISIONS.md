@@ -444,3 +444,28 @@ un dossier par chantier, avec le `rapport.json` qui les accompagne.
 | D-623 | Les écouteurs se demandent au moteur, pas à une heuristique d'attributs : quatre faux verdicts sur quatre |
 | D-624 | Ce qui reste sans écouteur détectable **se fait cliquer**. La question posée est « est-ce que ce bouton mène quelque part » : c'est par le clic qu'on y répond |
 | D-625 | Ce qui tombe au palier 1 reste tombé aux paliers 2 et 3. Le sélecteur ne visait que « 1 », et l'animation permanente se remettait à tourner sur la machine la plus serrée des trois |
+
+### Le cadre navigable — D-628 à D-639
+
+Chantier du 2026-07-31, section 03 · Réalisations. Arbitrages du
+propriétaire : les blocs gris sont des placeholders, il faut les
+remplir ; les chiffres des démonstrations restent ; le texte
+descriptif part — « les gens ne lisent pas, ils regardent ».
+
+| ID | Décision |
+|---|---|
+| D-628 | Le cadre devient un petit écran : barre d'adresse, page dedans, et le visiteur descend lui-même. La boucle automatique disparaît — la main du visiteur fait mieux, et c'est une animation permanente de moins au budget des paliers |
+| D-629 | Le champ `range` ne prend plus le pointeur. Étiré sur toute la scène, il captait la molette, qui cherchait alors un conteneur défilant parmi SES ancêtres et remontait à la page |
+| D-630 | Deux comparaisons par rangée, largeur bornée, grille centrée. Elles prenaient toute la colonne et le rythme vertical agressait |
+| D-631 | Les quatre sites sont rephotographiés à **1 280 px**, la largeur d'un écran de bureau. 760 px était la largeur d'une tablette : réduite dans un cadre de 460, cette mise en page se lit comme un gros plan. Ça ne se corrigeait pas en recadrant |
+| D-632 | La pile est une grille d'une seule case : la rangée prend la hauteur du plus grand des deux. Sans ça, `scrollHeight − clientHeight` valait 0 et la vitre n'avait rien à faire défiler. Voir `PIEGES.md § 43` |
+| D-633 | On coud une image par fenêtre au lieu d'un `fullPage` : une scène épinglée rendait 1 500 px de blanc. Recouvrement de 20 %, et un trou arrête l'outil. Voir `PIEGES.md § 44` |
+| D-634 | Les vingt-quatre blocs photo des reconstitutions portent de vraies photographies, tirées de colonnes de tuiles — une requête pour six vignettes. Licences dans `tools/avant-photos.mjs`. La bande des partenaires reçoit une silhouette, pas un faux logo |
+| D-635 | Le contournement `fixe: true` de `restau` tombe : le défaut qu'il évitait n'existe pas. Voir `PIEGES.md § 46` |
+| D-636 | `overscroll-behavior` repasse à `auto` sous `pointer: coarse`. `contain` est juste à la molette et faux au doigt : sur un téléphone le cadre occupe presque toute la largeur, et le pouce y reste coincé |
+| D-637 | La mention passe toujours à la ligne sous le titre, et le cadre monte à 33 rem au-delà de 90em. Deux légendes de longueurs différentes désalignaient les deux cadres d'une rangée par le bas |
+| D-638 | Les étiquettes AVANT / APRÈS vivent dans la barre d'adresse. Posées dans les coins de la scène, elles couvraient la barre de navigation des deux sites — dont le bouton d'appel à l'action du site neuf, sur les quatre comparaisons |
+| D-639 | `contraste-min.mjs` s'arrête aussi sur un `background-image` et rend « non calculable ». Il annonçait 1:1 sur du texte mesuré à 6,65:1 aux pixels peints. Voir `PIEGES.md § 45` |
+| D-640 | Au doigt, les deux gestes se disputent le même rectangle et ils ne peuvent pas gagner tous les deux. On tranche par la **surface** : la colonne de la poignée compare (`touch-action: none`), tout le reste du cadre défile. Sans ça, la vitre revendique le geste dès le premier déplacement — `pointercancel`, poignée figée à 42 % après un seul pas |
+| D-641 | La prise de la poignée s'allume sous `any-pointer: coarse` (pas `pointer: coarse` — un portable tactile annonce un pointeur primaire fin), et `main.js` renvoie la molette posée dessus à la vitre. Le filet vit dans la scène, pas dans la vitre : sa molette faisait descendre la **page**, et les cinq écarts de la descente sont tombés à 0,00 % |
+| D-642 | Seule la **première séquence tactile d'une page** aboutit sous Playwright. Le défaut suit le rang, pas la comparaison — vérifié dans les deux sens. `realisations-check` ne juge donc plus que la première ; `tools/ba-doigt.mjs` prouve les quatre, une page neuve chacune |

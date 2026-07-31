@@ -32,7 +32,9 @@
       "doigt": {
         "horizontal": 22,
         "pageABougePendantLHorizontal": 0,
-        "verticalNeCompareRien": true
+        "verticalNeCompareRien": true,
+        "defileDansLeCadre": 135,
+        "pageABougePendantLeVertical": 0
       },
       "clavier": {
         "avant": 22,
@@ -41,13 +43,13 @@
       },
       "curseur": "ew-resize",
       "ecarts": [
-        48.38,
-        48.31,
-        95.28
+        47.98,
+        49.75,
+        96.08
       ],
       "hauteurs": {
-        "avant": 588,
-        "apres": 312
+        "avant": 541,
+        "apres": 541
       }
     },
     {
@@ -82,7 +84,9 @@
       "doigt": {
         "horizontal": 22,
         "pageABougePendantLHorizontal": 0,
-        "verticalNeCompareRien": true
+        "verticalNeCompareRien": true,
+        "defileDansLeCadre": 135,
+        "pageABougePendantLeVertical": 0
       },
       "clavier": {
         "avant": 22,
@@ -91,13 +95,13 @@
       },
       "curseur": "ew-resize",
       "ecarts": [
-        48.37,
-        48.11,
-        95.07
+        49.77,
+        49.79,
+        97.91
       ],
       "hauteurs": {
-        "avant": 1352,
-        "apres": 312
+        "avant": 1246,
+        "apres": 1247
       }
     },
     {
@@ -130,24 +134,26 @@
       ],
       "suitLeCurseur": true,
       "doigt": {
-        "horizontal": 22,
+        "horizontal": 42,
         "pageABougePendantLHorizontal": 0,
-        "verticalNeCompareRien": true
+        "verticalNeCompareRien": true,
+        "defileDansLeCadre": 135,
+        "pageABougePendantLeVertical": 0
       },
       "clavier": {
-        "avant": 22,
-        "apres": 24,
+        "avant": 42,
+        "apres": 44,
         "bouge": true
       },
       "curseur": "ew-resize",
       "ecarts": [
-        48.34,
-        48.33,
-        95.26
+        49.69,
+        49.8,
+        97.84
       ],
       "hauteurs": {
-        "avant": 1199,
-        "apres": 312
+        "avant": 1106,
+        "apres": 1106
       }
     },
     {
@@ -180,36 +186,39 @@
       ],
       "suitLeCurseur": true,
       "doigt": {
-        "horizontal": 22,
+        "horizontal": 42,
         "pageABougePendantLHorizontal": 0,
-        "verticalNeCompareRien": true
+        "verticalNeCompareRien": true,
+        "defileDansLeCadre": 135,
+        "pageABougePendantLeVertical": 0
       },
       "clavier": {
-        "avant": 22,
-        "apres": 24,
+        "avant": 42,
+        "apres": 44,
         "bouge": true
       },
       "curseur": "ew-resize",
       "ecarts": [
-        47.95,
-        47.34,
-        93.8
+        34.37,
+        31.94,
+        64.45
       ],
       "hauteurs": {
-        "avant": 2067,
-        "apres": 312
+        "avant": 1903,
+        "apres": 1903
       }
     }
   ],
   "erreurs": [],
   "rectanglesVidesDansLApres": 0,
   "rectanglesVidesDetail": [],
-  "blocsPhotoDansLAvant": 15,
+  "blocsPhotoDansLAvant": 25,
   "verdict": {
     "laPoigneeSuitLeCurseurSurLesQuatre": true,
     "leDoigtCompareALHorizontale": true,
     "leDoigtNeBloqueJamaisLeDefilement": true,
     "leGesteVerticalNeCompareRien": true,
+    "leDoigtHorsPriseFaitDescendreLeCadre": true,
     "leClavierBouge": true,
     "leCurseurChange": true,
     "lesTroisPositionsDifferent": true,

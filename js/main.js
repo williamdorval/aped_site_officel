@@ -712,6 +712,37 @@
         var idPointeur = null;
         var pese = null;
 
+        /* LA MOLETTE POSEE SUR LA PRISE DOIT DESCENDRE DANS LE CADRE,
+           PAS DANS LA PAGE.  D-641
+           La prise de la poignee est une colonne de 2,75 rem, large
+           assez pour un doigt. Elle vit dans la SCENE, pas dans la
+           vitre : son ancetre defilant est donc la PAGE. Mesure du
+           2026-07-31, molette posee au milieu — la ou la poignee se
+           trouve au repos, donc la ou une souris se pose : les cinq
+           ecarts de la descente sont tombes a 0,00 % sur les quatre
+           comparaisons, et la page a bouge de 330 a 590 px. Le
+           correctif d'un geste avait casse l'autre.
+           On renvoie donc la molette a la vitre a la main. Onze
+           lignes, et les deux gestes tiennent sur toutes les
+           machines — y compris un portable tactile, ou le pointeur
+           fin et le doigt cohabitent sur le meme ecran.
+           `passive: false` parce qu'on refuse le defilement de la
+           page ; sans script, la prise n'existe pas du tout
+           (`html:not(.js) .ba-trait { display: none }`) et la vitre
+           defile nativement partout. */
+        var vitre = $("[data-ba-vitre]", cadre);
+        var trait = $(".ba-trait", cadre);
+        if (vitre && trait) {
+          trait.addEventListener("wheel", function (e) {
+            var avant = vitre.scrollTop;
+            vitre.scrollTop = avant + e.deltaY;
+            /* On ne retient l'evenement que si la vitre a vraiment
+               bouge : au bout de sa course, la page reprend la main
+               comme n'importe quel conteneur qui a fini de defiler. */
+            if (vitre.scrollTop !== avant) e.preventDefault();
+          }, { passive: false });
+        }
+
         function valeurEn(clientX) {
           var r = scene.getBoundingClientRect();
           if (!r.width) return null;
@@ -779,18 +810,15 @@
       })(cadres[i]);
     }
 
-    /* --- 2 · LE DEFILEMENT DES MAQUETTES NE TOURNE QUE DANS LE  D-533 */
-    if (window.IntersectionObserver) {
-      var oeil = new IntersectionObserver(function (entrees) {
-        for (var j = 0; j < entrees.length; j++) {
-          if (entrees[j].isIntersecting) entrees[j].target.setAttribute("data-vif", "");
-          else entrees[j].target.removeAttribute("data-vif");
-        }
-      }, { threshold: 0.25 });
-      for (var k = 0; k < scenes.length; k++) oeil.observe(scenes[k]);
-    } else {
-      for (var m = 0; m < scenes.length; m++) scenes[m].setAttribute("data-vif", "");
-    }
+    /* --- 2 · L'OEIL QUI ALLUMAIT LA BOUCLE EST RETIRE ---  D-628
+       Il posait `data-vif` sur chaque scene visible, et `data-vif`
+       commandait la boucle de defilement des maquettes (D-533). La
+       boucle est partie avec ce chantier : le cadre est devenu un
+       petit ecran dans lequel le visiteur descend lui-meme.
+       Verifie avant la coupe : plus une seule regle de `app.css` ne
+       lit `data-vif`. Un observateur qui ne commande plus rien reste
+       un observateur qui tourne — a chaque entree de scene, sur
+       quatre scenes — et un piege pour la prochaine lecture. */
 
     /* --- 3 · LA DEMONSTRATION D'OUVERTURE ---  D-534 */
     /* SANS ELLE, LE VISITEUR NE SAIT PAS QUE CA SE GLISSE. La  D-535 */

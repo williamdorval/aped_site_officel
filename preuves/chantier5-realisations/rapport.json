@@ -1,0 +1,142 @@
+{
+  "pris": "2026-07-31",
+  "blocs": {
+    "ba-garage": {
+      "cadre": "460x323",
+      "vitre": "458x286",
+      "pile": 540,
+      "course": 254,
+      "avant": 540,
+      "apres": 540,
+      "rapportEcrit": 1.179,
+      "rapportLu": 1.179,
+      "poignee": [
+        2,
+        50,
+        98
+      ],
+      "ecartsDescente": [
+        52.97,
+        40.33,
+        29.34,
+        29.02,
+        13.43
+      ],
+      "ecartMinimal": 13.43,
+      "pageDerriere": "4139 → 4139"
+    },
+    "ba-design": {
+      "cadre": "460x323",
+      "vitre": "458x286",
+      "pile": 1246,
+      "course": 960,
+      "avant": 1246,
+      "apres": 1246,
+      "rapportEcrit": 2.721,
+      "rapportLu": 2.721,
+      "poignee": [
+        2,
+        50,
+        98
+      ],
+      "ecartsDescente": [
+        65.47,
+        47.84,
+        60.92,
+        59.34,
+        66.47
+      ],
+      "ecartMinimal": 47.84,
+      "pageDerriere": "4139 → 4139"
+    },
+    "ba-restaurant": {
+      "cadre": "460x323",
+      "vitre": "458x286",
+      "pile": 1105,
+      "course": 819,
+      "avant": 1105,
+      "apres": 1105,
+      "rapportEcrit": 2.413,
+      "rapportLu": 2.413,
+      "poignee": [
+        2,
+        50,
+        98
+      ],
+      "ecartsDescente": [
+        61.02,
+        28.86,
+        31.64,
+        61.57,
+        79.59
+      ],
+      "ecartMinimal": 28.86,
+      "pageDerriere": "4643 → 4643"
+    },
+    "ba-renovation": {
+      "cadre": "460x323",
+      "vitre": "458x286",
+      "pile": 1903,
+      "course": 1617,
+      "avant": 1903,
+      "apres": 1903,
+      "rapportEcrit": 4.155,
+      "rapportLu": 4.155,
+      "poignee": [
+        2,
+        50,
+        98
+      ],
+      "ecartsDescente": [
+        78.53,
+        75.36,
+        59.99,
+        62.61,
+        59.3
+      ],
+      "ecartMinimal": 59.3,
+      "pageDerriere": "4643 → 4643"
+    }
+  },
+  "rangees": {
+    "1280": {
+      "basRangee": 406,
+      "fenetre": 800,
+      "tientDansLaFenetre": true
+    },
+    "1440": {
+      "basRangee": 448,
+      "fenetre": 900,
+      "tientDansLaFenetre": true
+    },
+    "1920": {
+      "basRangee": 495,
+      "fenetre": 1080,
+      "tientDansLaFenetre": true
+    }
+  },
+  "gris": {
+    "ba-garage": {
+      "n": 0,
+      "restants": []
+    },
+    "ba-design": {
+      "n": 0,
+      "restants": []
+    },
+    "ba-restaurant": {
+      "n": 2,
+      "restants": [
+        "tou-logo-i",
+        "tou-carte-rues"
+      ]
+    },
+    "ba-renovation": {
+      "n": 1,
+      "restants": [
+        "gab-carr-voile"
+      ]
+    }
+  },
+  "erreursConsole": []
+}

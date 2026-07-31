@@ -266,19 +266,33 @@ personne ne les a corrigés à la source :
    Trois endroits sur l'accueil. La capture le répare à la prise de
    vue avec `white-space: pre-wrap` — donc **la capture est plus juste
    que le site**, ce qui n'est pas tenable si le site part en ligne.
-2. **`restau` — le héros devient noir dès qu'on a fait défiler la page
-   d'un pixel** dans une fenêtre pilotée. Reproduit à chaque essai.
-   Contourné en photographiant sans bouger. Cause non cherchée.
+2. **FERMÉE le 2026-07-31 — `restau`, « le héros devient noir dès
+   qu'on défile ».** Le défaut n'existe pas, et n'existait
+   probablement plus quand la réserve a été écrite. Remesuré :
+   26 paliers de 600 px, écart-type de luminance relevé à chaque
+   palier, plus une pleine page. **Aucune image plate — le minimum
+   est 22,8 pour un seuil de platitude de 3.** La vraie cause était
+   le piège 40 : le sélecteur de masquage `[class*="cursor"]`
+   attrapait `cursor-none`, que ce site pose sur son enveloppe, et
+   masquait la page entière. Elle a été corrigée ; le contournement
+   `fixe: true` lui a survécu et empêchait de photographier autre
+   chose que la première fenêtre. Il est retiré.
+   **Ce qu'il faut en retenir, et c'est la troisième fois : quand on
+   contourne au lieu de chercher, le contournement reste après le
+   correctif et personne ne le sait.**
 
-### Les chiffres invérifiables des sites de démonstration
+### FERMÉE le 2026-07-31 — les chiffres des sites de démonstration
 
-Les captures montrent, entre autres, « 12 000+ véhicules », « 98 % »,
-« 120+ projets livrés », « 5 000+ clients ». Ce sont les contenus de
-démonstrations d'entreprises qui n'existent pas, et la ligne
-d'honnêteté sous les quatre comparaisons le dit. Mais un visiteur qui
-ne lit pas cette ligne voit des chiffres. **À trancher par le
-propriétaire** : les neutraliser à la capture comme les coordonnées,
-ou les laisser.
+Les captures montrent « 12 000+ véhicules », « 98 % », « 120+ projets
+livrés », « 5 000+ clients ». **Arbitrage du propriétaire : ils
+restent.** Le raisonnement, et il tient : ce sont des entreprises
+fictives, annoncées comme telles par le sous-titre de la section —
+« Quatre démonstrations, entreprises fictives — pas des mandats
+livrés ». Un chiffre à l'intérieur d'une démonstration étiquetée fait
+partie de la fiction. **Ce n'est pas une affirmation d'APED**, et
+aucune des quatre questions de véracité ne s'y applique : APED
+n'affirme pas que 12 000 véhicules sont passés quelque part, APED
+montre à quoi ressemble un site qu'elle sait coder.
 
 ### Le tracteur du site de déneigement porte une marque réelle
 
@@ -286,15 +300,74 @@ La photo du héros montre un tracteur identifiable. Ce n'est pas une
 fausse recommandation — c'est un objet dans une photo — mais aucun
 masquage textuel ne peut l'atteindre.
 
-### Les blocs photo gris des reconstitutions « avant »
+### FERMÉE le 2026-07-31 — les blocs photo gris des « avant »
 
-Quinze rectangles gris subsistent du côté AVANT des comparaisons
-(`.v11-photo`, `.gab-carr-photo`, `.gab-svc-i`). C'est un choix : un
-site de 2011 et un gabarit acheté ont des blocs photo génériques, et
-les reconstituer sans eux serait les flatter. `realisations-check.mjs`
-les compte à part et ne juge que le côté APRÈS, où il n'en reste
-aucun. **Si le propriétaire les trouve trop proches d'un placeholder,
-il faut les remplir d'une trame.**
+Il y en avait **vingt-quatre**, pas quinze : garage 1, design 6,
+restaurant 10, rénovation 13. Le compte de la réserve précédente
+était faux parce qu'il ne listait que trois classes.
+
+Ils étaient défendus ici même comme du contenu d'époque. **Le
+propriétaire les lit comme des placeholders, et il a raison :** un
+« avant » incomplet ne prouve pas que le vieux site était mauvais, il
+donne l'impression que le travail n'est pas fini. Dans une section
+dont le sujet est la preuve, c'est le pire endroit possible pour un
+carré vide.
+
+Ils portent maintenant de vraies photographies sous licence écrite —
+Poly Haven (CC0) et Pexels —, aucune marque lisible, aucun visage
+identifiable, aucun logo. `tools/avant-photos.mjs` porte l'adresse et
+la licence de chaque pièce, **et la raison de chaque cadrage écarté**.
+Vérifié à l'image sur les quatre reconstitutions rendues en pleine
+hauteur : `preuves/chantier5-realisations/avant-*.png`.
+
+**Trois blocs subsistent, et aucun n'est une photo** : le carré du
+logo de l'office (c'est un logo), le plan de rues schématique (c'est
+une carte), et le voile sombre posé PAR-DESSUS la photo du héros du
+gabarit. La bande des cinq partenaires du pied de page porte
+maintenant une silhouette de logo détrempée — **on n'invente pas de
+faux logos**, un faux logo dans une reconstitution ressemble trop à
+une vraie marque.
+
+### OUVERTES PAR LE CHANTIER DU CADRE NAVIGABLE — 2026-07-31
+
+**« La page entière dedans » a été lu comme « le site à l'échelle d'un
+écran, et on descend dedans ».** Le cadre montre une fenêtre de
+navigateur de 1 280 px réduite à 460, pas les 10 000 px du site tenus
+dans 286 px de haut. Les deux lectures de la demande sont possibles ;
+la seconde rendrait la composition illisible et interdirait de
+défiler, ce que la même demande exige. **Si le propriétaire voulait la
+première, il faut le dire — c'est une autre section, pas un réglage.**
+
+**La hauteur de chaque « après » est celle de la reconstitution d'en
+face**, pas celle du vrai site : 1,18 · 2,72 · 2,41 · 4,16 fois la
+largeur du cadre, contre 8 à 9 pour les pages réelles. Raison : une
+comparaison n'a de sens que si les deux côtés finissent à la même
+ligne, sinon la poignée compare le pied d'un site avec le milieu de
+l'autre. **Conséquence assumée : le garage ne montre que son héros et
+sa première section**, parce que son « avant » de 2011 n'était pas
+plus long. `ba-check.mjs § 6` refuse une dérive de plus de 3 %.
+
+**Le doigt n'a pas été essayé.** `overscroll-behavior` passe à `auto`
+sous `pointer: coarse` pour que le cadre ne piège pas le défilement de
+la page. **C'est la PROPRIÉTÉ qui est mesurée, pas le geste** — la
+réserve qui domine tout ce projet s'applique en entier ici :
+Chromium sous Playwright avec `hasTouch` n'est pas un téléphone.
+
+**Le contraste des reconstitutions n'est pas celui du site.** La fiche
+d'office de tourisme descend à 1,77:1 sur ses chevrons de fil
+d'Ariane, à 5 px. C'est un site médiocre de 2019 reconstitué : sa
+médiocrité est le sujet. Les quatre blocs « avant » portent
+`role="img"` et une description complète, donc une technologie
+d'assistance reçoit une image décrite et jamais ce texte-là. **Ça
+reste une exception argumentée à « 0 échec de contraste », pas un
+zéro.**
+
+**`cls-source.mjs` relève 0,0017 sur 34 décalages** quand il pilote la
+page ; `accueil-check.mjs tenue`, l'instrument du seuil, relève **0**.
+Les deux ne mesurent pas la même chose — le premier compte aussi ce
+qui bouge pendant une interaction. Le plus gros décalage isolé vaut
+0,00031. **Aucun des deux chiffres n'est faux ; c'est le mot « CLS »
+qui désigne deux mesures.**
 
 ### FormSubmit n'est toujours pas activé
 

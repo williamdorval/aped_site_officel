@@ -93,3 +93,30 @@ c'est par le clic qu'on y répond.
 Les mesures de performance ne produisent pas d'image et vivent dans
 `MESURES.md` : LCP, CLS, images par seconde, contraste, débordement,
 paliers de dégradation, formulaires.
+
+---
+
+## Chantier 5 · Le cadre navigable — `chantier5-realisations/`
+
+`node tools/serve.mjs 8123` puis
+`node tools/realisations-preuves.mjs 8123`
+Le verdict chiffré vient de `node tools/ba-check.mjs 8123`.
+
+| Ce qu'il faut voir | Fichiers |
+|---|---|
+| Le cadre au repos : un petit écran, la page dedans à l'échelle d'un écran de bureau, l'adresse et les deux étiquettes sur la barre | `repos-ba-*.png` |
+| La poignée à gauche, au milieu, à droite — **glissée à la souris**, pas simulée | `poignee-ba-*-p002/050/098.png` |
+| La descente **dans** le cadre : six images, l'écart de pixels entre deux consécutives dans `rapport.json` | `defile-ba-*-0..5.png` |
+| Deux comparaisons complètes d'un seul regard, avec l'air autour, à trois largeurs | `rangee-1280/1440/1920.png` |
+| Les quatre reconstitutions **entières**, hors cadre — c'est là qu'on vérifie qu'il ne reste aucun rectangle gris | `avant-ba-*.png` |
+
+`rapport.json` donne, pour chacune des quatre : la taille du cadre, la
+hauteur de la pile, **la course à défiler**, la hauteur de l'avant et
+celle de l'après (elles doivent être égales), le rapport lu contre le
+rapport écrit dans `demos-rapports.mjs`, les trois positions atteintes
+par la poignée, les cinq écarts de la descente, et **la position de la
+page derrière avant et après** — elle ne doit pas avoir bougé.
+
+**Ce qu'aucune de ces images ne prouve :** le geste au doigt. La
+propriété `overscroll-behavior` est mesurée, le pouce ne l'est pas.
+`RESERVES.md` le dit en entier.

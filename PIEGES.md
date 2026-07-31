@@ -569,3 +569,117 @@ unique dans le code JavaScript ; elle ne l'était pas dans le CSS.
 
 **Correctif :** un palier coupe pour lui ET pour tous ceux d'après.
 Les trois valeurs sont écrites dans le sélecteur.
+
+### 43 · Un cadre qui défile peut n'avoir rien à faire défiler
+
+`overflow-y: auto` était en place, `overscroll-behavior: contain`
+aussi, la barre de défilement se déclarait — et `scrollHeight −
+clientHeight` valait **0 sur les quatre cadres**. La couche du dessous
+était en flux et donnait sa hauteur à la pile ; elle faisait
+exactement une fenêtre. La couche du dessus, haute de 540 à 1 903 px,
+se faisait couper à 286 en `position: absolute; inset: 0`.
+
+Aucune lecture du code ne le montre : chaque ligne est correcte
+séparément. **Un conteneur défilant se vérifie par sa COURSE
+mesurée, `scrollHeight − clientHeight`, jamais par la présence de
+`overflow`.**
+
+**Correctif :** empiler dans une grille d'une seule case. La rangée
+prend la hauteur du plus grand des deux enfants, sans chiffre magique
+et sans JavaScript.
+
+### 44 · `fullPage` ne photographie pas une scène épinglée
+
+La capture pleine page d'un site qui épingle une galerie horizontale
+rendait **1 500 px de BLANC** au milieu. `fullPage` étire le document
+à sa hauteur totale et prend une seule image : l'espaceur de la scène
+épinglée est bien là, son contenu est resté en haut, le reste est du
+vide. C'est un défaut de PEINTURE, donc invisible à toute sonde du
+DOM (piège 25).
+
+**Correctif :** une image par fenêtre, en descendant comme un
+visiteur, cousues à leur position réelle de défilement. Deux
+conséquences à ne pas oublier :
+- **demander 80 % d'une fenêtre à chaque pas**, jamais 100 % — un
+  défilement piloté DÉPASSE la cible, et une tuile posée à sa hauteur
+  réelle laisse alors un trou. Premier essai : 147 px de blanc ;
+- **masquer les éléments `position: fixed` à partir de la deuxième
+  tuile**, sinon la barre du site se répète à chaque fenêtre ;
+- **et refuser la couture** si un trou subsiste. Une image trouée qui
+  part en silence coûte une passe complète.
+
+### 45 · Un fond en dégradé n'est pas un fond absent
+
+`contraste-min.mjs` remontait les ancêtres à la recherche de la
+première `background-color` opaque. Une surface peinte par un
+**dégradé** ou une **image** garde une `background-color`
+transparente : la remontée passait au travers et allait chercher le
+blanc trois niveaux plus haut. Verdict rendu : **1:1 sur du texte
+blanc parfaitement lisible.** Mesure aux pixels peints du même
+texte : **6,65:1**.
+
+Un faux 1:1 ne coûte pas qu'une ligne de rapport. **Il noie les vrais
+échecs et il pousse à « corriger » du code sain.**
+
+**Correctif :** s'arrêter aussi sur `background-image`, et rendre
+« non calculable » plutôt qu'un chiffre inventé. Ce qui n'est pas
+calculable depuis les styles se mesure **à l'image**, et ne compte ni
+comme échec ni comme succès.
+
+### 46 · Un contournement survit toujours au correctif
+
+« Le héros de `restau` devient noir dès qu'on défile d'un pixel,
+reproduit à chaque essai. » Le site a donc été photographié sans
+bouger, et la cause n'a jamais été cherchée. La vraie cause était le
+piège 40 — un sélecteur de masquage qui effaçait la page entière —
+trouvée et corrigée **le même jour, ailleurs**. Le contournement, lui,
+est resté : il interdisait de photographier autre chose que la
+première fenêtre, et personne ne le savait.
+
+Remesure : 26 paliers, écart-type de luminance à chacun, plus une
+pleine page. **Aucune image plate.** Le défaut n'existe pas.
+
+**Règle :** un contournement s'écrit avec la date et la mesure qui le
+justifie, et se **remesure** dès que la zone est retouchée. Sinon il
+devient une contrainte que plus personne ne peut expliquer.
+
+### 47 · Rendre un conteneur défilant peut tuer un glissement qui marchait
+
+`touch-action: pan-y` sur la scène laissait passer le glissement
+horizontal **tant qu'aucun descendant ne défilait** : `pan-y` n'avait
+rien à faire défiler, donc le navigateur ne revendiquait jamais le
+geste. Le jour où le cadre est devenu un écran dans lequel on descend,
+il l'a revendiqué au premier déplacement — `pointercancel`, et la
+poignée s'est figée à 42 % après un seul pas, au doigt seulement.
+
+**La souris ne le voit pas** : elle n'a pas de geste ambigu, la
+molette défile et le glissement compare. C'est un défaut qui
+n'apparaît que sur la moitié des périphériques, et le test qui le
+couvrait est devenu faux au lieu d'échouer — il partait du milieu de
+la scène, là où le contrat a changé.
+
+**Correctif :** trancher par la surface, pas par la direction. Une
+colonne de 2,75 rem centrée sur le filet, en `touch-action: none`,
+compare ; tout le reste du cadre défile. Et **mesurer les deux sens** —
+un test qui ne prouve que le glissement laisse passer un cadre qui ne
+défile plus.
+
+### 48 · L'injection tactile ne se remet pas entre deux gestes
+
+Sous Playwright, **seule la première séquence tactile d'une page
+aboutit** : les suivantes s'arrêtent après un pas. Le défaut suit le
+**rang**, pas l'élément — en parcourant les quatre comparaisons dans
+l'ordre inverse, c'est la dernière qui passe et les trois autres qui
+échouent.
+
+Quatre hypothèses fausses payées avant de le voir : la comparaison
+elle-même, l'empilement des sessions CDP, un défilement en vol, un
+`touchCancel` manquant. **Aucune ne tient** — ni la session unique, ni
+le cancel explicite, ni une seconde d'attente ne changent le relevé.
+
+**Correctif :** une page neuve par geste, et l'outil qui enchaîne ne
+juge que son premier. Un `touchCancel` envoyé sans toucher actif fait
+d'ailleurs échouer l'appel : `Must send a TouchStart first`.
+
+**Et une leçon de plus :** quand un défaut suit le RANG d'une boucle
+et jamais son contenu, ce n'est pas la page qu'il faut regarder.

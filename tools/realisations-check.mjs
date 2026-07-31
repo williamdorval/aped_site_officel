@@ -36,7 +36,8 @@ const TAG = process.argv[3] || "";
 const BASE = `http://127.0.0.1:${PORT}/`;
 const SORTIE = path.join(RACINE, "preuves", "chantier4-realisations" + (TAG ? "-" + TAG : ""));
 fs.mkdirSync(SORTIE, { recursive: true });
-const IDS = ["ba-garage", "ba-design", "ba-restaurant", "ba-renovation"];
+const IDS_BASE = ["ba-garage", "ba-design", "ba-restaurant", "ba-renovation"];
+const IDS = process.env.BA_ORDRE === "inverse" ? [...IDS_BASE].reverse() : IDS_BASE;
 
 function ecart(a, b) {
   const d = diffStats(lire(fs, a), lire(fs, b));
@@ -65,6 +66,12 @@ await page.evaluate(() => {
   document.querySelectorAll(".ba-page").forEach((p) => { p.style.animation = "none"; p.style.transform = "none"; });
 });
 
+/* UNE SEULE SESSION CDP POUR TOUTE LA PASSE.  D-642
+   Elle etait creee DANS la boucle, donc quatre sessions vivantes sur
+   la meme page a la fin. C'est de l'hygiene, pas le correctif : la
+   session unique n'a rien change au releve. Le vrai constat est
+   ecrit plus bas, la ou il porte. */
+const cdp = await ctx.newCDPSession(page);
 const R = { comparaisons: [], erreurs };
 
 for (const id of IDS) {
@@ -92,28 +99,73 @@ for (const id of IDS) {
   await page.mouse.up();
   const suit = pas.every((e) => Math.abs(e.lu - e.vise) <= 2);
 
-  /* --- LE DOIGT : horizontal compare, vertical defile --- */
+  /* --- LE DOIGT : LA PRISE COMPARE, LE RESTE DU CADRE DEFILE ---
+     CE QUE CE BLOC MESURAIT AVANT, ET POURQUOI CA NE TIENT PLUS.
+     Il partait du MILIEU de la scene et exigeait que le geste
+     horizontal compare. C'etait juste tant que la scene ne defilait
+     pas : `touch-action: pan-y` n'avait alors rien a faire defiler,
+     et le navigateur laissait passer l'horizontale.
+     Depuis que le cadre est un ecran dans lequel on descend, la
+     vitre defile — et le navigateur REVENDIQUE le geste des le
+     premier deplacement : `pointercancel`, poignee figee apres un
+     seul pas. Mesure du 2026-07-31 : `--ba-p` va de 50 a 42 et
+     s'arrete, sur les quatre.
+     Les deux gestes se disputent le meme rectangle et, au doigt, ils
+     ne peuvent pas gagner tous les deux. On a tranche par la
+     SURFACE (D-640) : la colonne de la poignee compare, tout le
+     reste du cadre defile. C'est ce contrat-la qu'on mesure
+     maintenant — dans les DEUX sens, sinon on ne prouve que la
+     moitie.  D-640 */
+  /* a · le doigt POSE SUR LA PRISE compare a l'horizontale.
+     SEULE LA PREMIERE SEQUENCE TACTILE D'UNE PAGE ABOUTIT.  D-642
+     Constat du 2026-07-31, et il a coute quatre hypotheses fausses
+     avant d'etre pris pour ce qu'il est : les gestes tactiles qui
+     suivent le premier s'arretent apres un pas. Ce n'est ni la
+     comparaison — en ordre inverse, c'est la renovation qui passe et
+     les trois autres qui echouent, donc le defaut suit le RANG — ni
+     l'empilement des sessions CDP, ni un defilement en vol : ni la
+     session unique, ni le `touchCancel`, ni une seconde d'attente
+     n'y changent quoi que ce soit. L'injection tactile ne se remet
+     pas, voila tout.
+     Ce qui est mesure ici vaut donc pour la PREMIERE comparaison. Le
+     reste est prouve par `tools/ba-doigt.mjs`, qui rejoue le meme
+     geste sur une PAGE NEUVE par comparaison et rend 0 % d'ecart sur
+     les quatre. On ne fait pas dire a un instrument ce qu'il ne peut
+     pas mesurer. */
+  await page.waitForTimeout(700);
+  const departPrise = await page.evaluate((id) => {
+    const t = document.querySelector("#" + id + " .ba-trait").getBoundingClientRect();
+    return { x: Math.round(t.left + t.width / 2), y: Math.round(t.top + t.height / 2) };
+  }, id);
   const yAvant = await page.evaluate(() => Math.round(window.scrollY));
-  const cdp = await ctx.newCDPSession(page);
-  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: boite.x + boite.w * 0.5, y: cy }] });
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: departPrise.x, y: departPrise.y }] });
   for (const k of [0.42, 0.32, 0.22]) {
-    await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: boite.x + boite.w * k, y: cy }] });
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: boite.x + boite.w * k, y: departPrise.y }] });
     await new Promise((r) => setTimeout(r, 70));
   }
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  await new Promise((r) => setTimeout(r, 250));
   const doigtHorizontal = Math.round(await lire2());
   const pageABougePendantLHorizontal = (await page.evaluate(() => Math.round(window.scrollY))) - yAvant;
 
+  /* b · le doigt pose AILLEURS fait descendre le cadre, et ne
+     deplace pas la poignee d'un pour cent. */
+  await page.evaluate((id) => { document.querySelector("#" + id + " [data-ba-vitre]").scrollTop = 0; }, id);
+  await page.waitForTimeout(150);
   const yAvant2 = await page.evaluate(() => Math.round(window.scrollY));
-  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: boite.x + boite.w * 0.5, y: cy }] });
+  const loinDeLaPrise = boite.x + boite.w * (doigtHorizontal < 50 ? 0.86 : 0.14);
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: loinDeLaPrise, y: cy + boite.h * 0.3 }] });
   for (const d of [40, 90, 150]) {
-    await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: boite.x + boite.w * 0.5, y: cy - d }] });
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: loinDeLaPrise, y: cy + boite.h * 0.3 - d }] });
     await new Promise((r) => setTimeout(r, 70));
   }
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-  await page.waitForTimeout(400);
+  await new Promise((r) => setTimeout(r, 250));
+  await page.waitForTimeout(500);
   const apresVertical = Math.round(await lire2());
+  const dedans = await page.evaluate((id) => Math.round(document.querySelector("#" + id + " [data-ba-vitre]").scrollTop), id);
   const verticalNeCompareRien = apresVertical === doigtHorizontal;
+  const pageABougePendantLeVertical = (await page.evaluate(() => Math.round(window.scrollY))) - yAvant2;
 
   /* --- LE CLAVIER --- */
   await page.evaluate((id) => document.querySelector("#" + id + " [data-ba-curseur]").focus(), id);
@@ -168,7 +220,7 @@ for (const id of IDS) {
 
   R.comparaisons.push({
     id, pas, suitLeCurseur: suit,
-    doigt: { horizontal: doigtHorizontal, pageABougePendantLHorizontal, verticalNeCompareRien },
+    doigt: { horizontal: doigtHorizontal, pageABougePendantLHorizontal, verticalNeCompareRien, defileDansLeCadre: dedans, pageABougePendantLeVertical },
     clavier: { avant: avantClavier, apres: apresClavier, bouge: apresClavier !== avantClavier },
     curseur, ecarts, hauteurs
   });
@@ -213,9 +265,24 @@ R.blocsPhotoDansLAvant = await page.evaluate(() => {
 
 R.verdict = {
   laPoigneeSuitLeCurseurSurLesQuatre: R.comparaisons.every((c) => c.suitLeCurseur),
-  leDoigtCompareALHorizontale: R.comparaisons.every((c) => c.doigt.horizontal <= 40),
+  /* LE GLISSEMENT AU DOIGT N EST PLUS JUGE ICI, ET C EST L OUTIL
+     QUI A TORT, PAS LA PAGE.  D-642
+     Cette passe enchaine plusieurs gestes tactiles sur la MEME page.
+     Releve du 2026-07-31, verifie dans les deux sens de parcours :
+     seule la PREMIERE sequence tactile d une page aboutit — les
+     suivantes s arretent apres un pas, quelle que soit la
+     comparaison. En ordre inverse, c'est la renovation qui passe et
+     les trois autres qui echouent : le defaut suit le RANG, pas la
+     comparaison. Un `touchCancel` explicite et une seconde d'attente
+     n'y changent rien.
+     On ne fait donc plus dire a cet outil ce qu'il ne peut pas
+     mesurer. `tools/ba-doigt.mjs` rejoue le meme geste sur une PAGE
+     NEUVE par comparaison, et rend 0 % d'ecart sur les quatre.
+     On garde ici la premiere, qui elle est fiable. */
+  leDoigtCompareALHorizontale: R.comparaisons[0].doigt.horizontal <= 40,
   leDoigtNeBloqueJamaisLeDefilement: R.comparaisons.every((c) => c.doigt.pageABougePendantLHorizontal === 0),
-  leGesteVerticalNeCompareRien: R.comparaisons.every((c) => c.doigt.verticalNeCompareRien),
+  leGesteVerticalNeCompareRien: R.comparaisons[0].doigt.verticalNeCompareRien,
+  leDoigtHorsPriseFaitDescendreLeCadre: R.comparaisons.every((c) => c.doigt.defileDansLeCadre > 60),
   leClavierBouge: R.comparaisons.every((c) => c.clavier.bouge),
   leCurseurChange: R.comparaisons.every((c) => c.curseur === "ew-resize"),
   lesTroisPositionsDifferent: R.comparaisons.every((c) => c.ecarts[0] > 8 && c.ecarts[1] > 8 && c.ecarts[2] > 40),
