@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Karine Deschamps-Fortier · Courtier immobilier résidentiel · Val-des-Ormes</title>
+<meta name="description" content="Inscriptions résidentielles à Val-des-Ormes et dans les secteurs limitrophes. Plan d'étage coté, visite 360 et suivi écrit sur chaque propriété inscrite.">
+<link rel="icon" href="data:,">
+<style>
+/* ==========================================================================
+   Ancrage Immobilier — feuille unique. Aucune ressource externe.
+   Conçue pour une fenêtre de 1280 px.
+   ========================================================================== */
+
+:root{
+  --pin:#16352a;
+  --pin-fonce:#0d2119;
+  --pin-clair:#2d5544;
+  --creme:#f4f0e6;
+  --creme-2:#eae3d4;
+  --papier:#fffdf8;
+  --encre:#1a1e1b;
+  --gris:#5c6862;
+  --gris-clair:#8d968f;
+  --laiton:#a3762f;
+  --laiton-clair:#c9a25c;
+  --brique:#8c4030;
+  --ligne:#ded6c5;
+  --ligne-sombre:#2f4c40;
+  --mur:#2b3b33;
+  --sol:#fbf8f1;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,"Liberation Mono",monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--papier);
+  color:var(--encre);
+  font:400 1.0625rem/1.65 var(--sans);
+  font-kerning:normal;
+  text-rendering:optimizeLegibility;
+}
+img{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3,h4{margin:0;font-weight:400;font-family:var(--serif);letter-spacing:-.012em;line-height:1.12}
+p{margin:0 0 1.05em}
+p:last-child{margin-bottom:0}
+ul{margin:0;padding:0;list-style:none}
+table{border-collapse:collapse;width:100%}
+:focus-visible{outline:2px solid var(--laiton);outline-offset:2px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.section{padding:104px 0}
+.section--serre{padding:76px 0}
+.fond-creme{background:var(--creme)}
+.fond-papier{background:var(--papier)}
+.fond-pin{background:var(--pin);color:var(--creme)}
+.fond-pin h2,.fond-pin h3{color:var(--papier)}
+
+/* --- titres de section ------------------------------------------------- */
+.tete{
+  display:grid;grid-template-columns:1fr 420px;gap:56px;align-items:end;
+  padding-bottom:26px;margin-bottom:52px;border-bottom:1px solid var(--ligne);
+}
+.fond-pin .tete{border-bottom-color:var(--ligne-sombre)}
+.sur{
+  display:block;font:600 .7rem/1 var(--sans);letter-spacing:.2em;
+  text-transform:uppercase;color:var(--laiton);margin:0 0 16px;
+}
+.fond-pin .sur{color:var(--laiton-clair)}
+.tete h2{font-size:2.4rem}
+.tete p{color:var(--gris);font-size:1rem;margin:0}
+.fond-pin .tete p{color:#b9c7bf}
+.tete--seul{grid-template-columns:1fr}
+
+/* --- boutons ------------------------------------------------------------ */
+.btn{
+  display:inline-block;padding:14px 26px;font:600 .82rem/1 var(--sans);
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  border:1px solid transparent;cursor:pointer;white-space:nowrap;
+}
+.btn-plein{background:var(--laiton);color:#fff8ea;border-color:var(--laiton)}
+.btn-plein:hover{background:#8d6425;border-color:#8d6425}
+.btn-vide{background:transparent;color:inherit;border-color:currentColor}
+.btn-vide:hover{background:rgba(0,0,0,.06)}
+.fond-pin .btn-vide:hover{background:rgba(255,255,255,.09)}
+.btn-sombre{background:var(--pin);color:var(--creme);border-color:var(--pin)}
+.btn-sombre:hover{background:var(--pin-fonce)}
+
+/* --- bandeau d'annonce -------------------------------------------------- */
+.annonce{background:var(--pin-fonce);color:#c3d1c9;font-size:.8rem;letter-spacing:.02em}
+.annonce .wrap{display:flex;justify-content:space-between;align-items:center;height:38px}
+.annonce b{color:var(--creme);font-weight:600}
+.annonce span+span{margin-left:22px}
+.annonce a{text-decoration:none}
+.annonce a:hover{color:var(--laiton-clair)}
+
+/* --- navigation --------------------------------------------------------- */
+.barre{
+  position:sticky;top:0;z-index:60;background:var(--papier);
+  border-bottom:1px solid var(--ligne);
+}
+.barre .wrap{display:flex;align-items:center;gap:26px;height:82px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-marque{
+  width:34px;height:34px;background:var(--pin);position:relative;flex:none;
+}
+.logo-marque::before{
+  content:"";position:absolute;left:8px;top:8px;width:18px;height:18px;
+  border:2px solid var(--laiton-clair);transform:rotate(45deg);
+}
+.logo-marque::after{
+  content:"";position:absolute;left:16px;top:4px;width:2px;height:26px;background:var(--creme);
+}
+.logo-nom{font:400 1.1rem/1.15 var(--serif);letter-spacing:-.015em;display:block;white-space:nowrap}
+.logo-sous{font:600 .58rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--laiton);display:block;margin-top:5px}
+.menu{display:flex;gap:21px;margin-left:auto}
+.menu a{
+  text-decoration:none;font:500 .855rem/1 var(--sans);color:var(--encre);
+  padding:6px 0;border-bottom:2px solid transparent;white-space:nowrap;
+}
+.menu a:hover{border-bottom-color:var(--laiton)}
+.barre-droite{display:flex;align-items:center;gap:20px}
+.tel-nav{font:600 .95rem/1 var(--mono);letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.tel-nav small{display:block;font:600 .56rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--gris-clair);margin-bottom:5px}
+
+/* --- héros -------------------------------------------------------------- */
+.heros{background:var(--pin);color:var(--creme);padding:82px 0 96px;position:relative;overflow:hidden}
+.heros .wrap{display:grid;grid-template-columns:1fr 500px;gap:64px;align-items:center}
+.heros h1{font-size:3.35rem;color:var(--papier);margin:0 0 22px;letter-spacing:-.02em}
+.heros-lead{font-size:1.09rem;color:#c6d3cb;max-width:52ch;margin-bottom:34px}
+.heros-actions{display:flex;gap:14px;margin-bottom:44px}
+.heros-faits{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--ligne-sombre)}
+.heros-faits div{padding:22px 22px 0 0}
+.heros-faits div+div{padding-left:24px;border-left:1px solid var(--ligne-sombre)}
+.heros-faits b{display:block;font:400 1.5rem/1 var(--serif);color:var(--laiton-clair);margin-bottom:8px}
+.heros-faits span{font-size:.82rem;color:#a9b9b0;line-height:1.45;display:block}
+.heros-photo{position:relative}
+.heros-photo img{width:100%;height:420px;object-fit:cover}
+.heros-photo::after{
+  content:"";position:absolute;inset:-16px -16px 16px 16px;border:1px solid var(--pin-clair);z-index:-1;
+}
+.heros-legende{
+  position:absolute;left:0;bottom:-1px;background:var(--pin-fonce);color:#c3d1c9;
+  font:500 .72rem/1 var(--sans);letter-spacing:.06em;padding:11px 15px;
+}
+.heros-legende b{color:var(--laiton-clair);font-weight:600}
+
+/* --- carte de recherche ------------------------------------------------- */
+.recherche-hors{background:var(--pin);padding-bottom:0}
+.recherche{
+  background:var(--papier);border:1px solid var(--ligne);margin-top:-52px;position:relative;z-index:5;
+  box-shadow:0 1px 0 rgba(0,0,0,.04);
+}
+.recherche-haut{display:flex;align-items:baseline;gap:14px;padding:20px 28px 0}
+.recherche-haut h2{font-size:1.22rem}
+.recherche-haut span{font-size:.83rem;color:var(--gris)}
+.recherche form{display:grid;grid-template-columns:1.15fr 1fr .8fr 1fr auto;gap:0;padding:18px 28px 24px}
+.champ{padding-right:22px;border-right:1px solid var(--ligne)}
+.champ:nth-child(4){border-right:0}
+.champ+.champ{padding-left:22px}
+.champ label{display:block;font:600 .62rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--gris);margin-bottom:9px}
+.champ select{
+  width:100%;border:0;border-bottom:1px solid var(--encre);background:transparent;
+  font:400 .96rem/1.3 var(--sans);color:var(--encre);padding:5px 0 8px;
+}
+.recherche .btn{align-self:end;margin-left:22px;padding:15px 30px}
+.recherche-bas{
+  display:flex;gap:8px;align-items:center;padding:14px 28px;border-top:1px solid var(--ligne);
+  background:var(--creme);font-size:.83rem;color:var(--gris);
+}
+.recherche-bas a{color:var(--pin);text-decoration:none;border-bottom:1px solid var(--ligne);padding-bottom:1px}
+.recherche-bas a:hover{border-bottom-color:var(--laiton)}
+.recherche-bas span{margin:0 4px;color:var(--gris-clair)}
+
+/* --- bande de faits ----------------------------------------------------- */
+.faits{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ligne)}
+.faits div{padding:32px 30px}
+.faits div+div{border-left:1px solid var(--ligne)}
+.faits b{display:block;font:400 1.85rem/1 var(--serif);color:var(--pin);margin-bottom:12px}
+.faits strong{display:block;font:600 .68rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--laiton);margin-bottom:14px}
+.faits p{font-size:.9rem;color:var(--gris);margin:0}
+
+/* --- grille d'inscriptions ---------------------------------------------- */
+.grille-biens{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.bien{background:var(--papier);border:1px solid var(--ligne);display:flex;flex-direction:column}
+.bien-photo{position:relative;overflow:hidden}
+.bien-photo img{width:100%;height:218px;object-fit:cover}
+.statut{
+  position:absolute;top:0;left:0;background:var(--pin);color:var(--creme);
+  font:600 .64rem/1 var(--sans);letter-spacing:.15em;text-transform:uppercase;padding:9px 13px;
+}
+.st-offre{background:var(--laiton);color:#2a1e08}
+.st-vendu{background:var(--encre);color:var(--creme)}
+.p360{
+  position:absolute;right:10px;bottom:10px;background:rgba(13,33,25,.88);color:var(--creme);
+  font:600 .6rem/1 var(--sans);letter-spacing:.14em;padding:7px 10px;border:1px solid rgba(201,162,92,.6);
+}
+.bien-corps{padding:22px 22px 0;flex:1}
+.bien-prix{font:400 1.62rem/1 var(--serif);color:var(--pin);font-variant-numeric:tabular-nums;display:block;margin-bottom:10px}
+.bien h3{font-size:1.02rem;font-family:var(--sans);font-weight:600;letter-spacing:0;line-height:1.4}
+.bien-secteur{font:500 .76rem/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--laiton);margin:12px 0 0;display:block}
+.bien-specs{display:flex;margin:18px 0 0;border-top:1px solid var(--ligne)}
+.bien-specs li{flex:1;padding:14px 0 16px;text-align:left}
+.bien-specs li+li{padding-left:14px;border-left:1px solid var(--ligne)}
+.bien-specs b{display:block;font:600 .98rem/1 var(--mono);margin-bottom:5px}
+.bien-specs span{font:500 .64rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--gris-clair)}
+.bien-bas{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 22px;border-top:1px solid var(--ligne);background:var(--creme);
+}
+.bien-bas a{font:600 .74rem/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--pin)}
+.bien-bas a:hover{color:var(--laiton)}
+.bien-bas em{font-style:normal;font:500 .74rem/1 var(--sans);color:var(--gris)}
+
+.bien--large{grid-column:span 2;flex-direction:row}
+.bien--large .bien-photo{width:52%;flex:none}
+.bien--large .bien-photo img{height:100%;min-height:330px}
+.bien--large .bien-droite{display:flex;flex-direction:column;flex:1}
+.bien--large .bien-corps{padding:28px 28px 0}
+.bien--large .bien-prix{font-size:2.05rem}
+.bien--large h3{font-size:1.2rem}
+.bien--large .bien-desc{font-size:.9rem;color:var(--gris);margin:14px 0 0}
+
+.sous-grille{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:34px;padding-top:26px;border-top:1px solid var(--ligne);
+}
+.sous-grille p{font-size:.88rem;color:var(--gris);margin:0;max-width:66ch}
+
+/* --- fiche vedette ------------------------------------------------------ */
+.fiche-tete{display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:end;margin-bottom:38px}
+.fiche-tete h2{font-size:2.5rem;margin:14px 0 12px}
+.fiche-adr{font-size:.95rem;color:var(--gris)}
+.fiche-prix{text-align:right}
+.fiche-prix b{display:block;font:400 2.7rem/1 var(--serif);color:var(--pin);font-variant-numeric:tabular-nums}
+.fiche-prix span{display:block;font-size:.82rem;color:var(--gris);margin-top:10px}
+.fiche-etiquettes{display:flex;gap:8px;justify-content:flex-end;margin-bottom:16px}
+.etq{font:600 .62rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:8px 11px;border:1px solid var(--ligne);color:var(--gris)}
+.etq-vente{background:var(--pin);border-color:var(--pin);color:var(--creme)}
+.etq-360{background:var(--laiton);border-color:var(--laiton);color:#2a1e08}
+
+.galerie{display:grid;grid-template-columns:1fr 232px;gap:16px;margin-bottom:52px}
+.galerie-grande{position:relative}
+.galerie-grande img{width:100%;height:452px;object-fit:cover}
+.galerie-col{display:grid;grid-template-rows:repeat(3,1fr);gap:16px}
+.galerie-vignette{position:relative}
+.galerie-vignette img{width:100%;height:140px;object-fit:cover}
+.cap{
+  position:absolute;left:0;bottom:0;background:rgba(13,33,25,.86);color:var(--creme);
+  font:500 .72rem/1.2 var(--sans);padding:8px 11px;max-width:92%;
+}
+.galerie-compte{
+  position:absolute;right:0;top:0;background:var(--papier);color:var(--encre);
+  font:600 .66rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;padding:10px 13px;
+}
+
+.fiche-grille{display:grid;grid-template-columns:1fr 400px;gap:56px;margin-bottom:56px}
+.fiche-texte h3{font-size:1.5rem;margin-bottom:16px}
+.fiche-texte p{color:var(--gris);font-size:1rem}
+.fiche-texte p strong{color:var(--encre);font-weight:600}
+
+.tabl{border:1px solid var(--ligne);margin-top:30px}
+.tabl caption{
+  text-align:left;font:600 .68rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--laiton);padding:16px 18px;border-bottom:1px solid var(--ligne);background:var(--creme);
+}
+.tabl th,.tabl td{padding:12px 18px;text-align:left;font-size:.9rem;border-bottom:1px solid var(--ligne)}
+.tabl tr:last-child th,.tabl tr:last-child td{border-bottom:0}
+.tabl th{font-weight:500;color:var(--gris);width:44%}
+.tabl td{font-family:var(--mono);font-size:.86rem;font-variant-numeric:tabular-nums}
+.tabl--deux{display:grid;grid-template-columns:1fr 1fr;gap:0}
+
+.encart{border:1px solid var(--ligne);background:var(--creme);padding:26px}
+.encart+.encart{margin-top:20px}
+.encart h4{font:600 .68rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--laiton);margin-bottom:18px}
+.lignes{font-size:.92rem}
+.lignes li{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid var(--ligne)}
+.lignes li:last-child{border-bottom:0}
+.lignes span{color:var(--gris)}
+.lignes b{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lignes .total{border-top:2px solid var(--encre);border-bottom:0;padding-top:13px;margin-top:4px}
+.liste-coches li{position:relative;padding:8px 0 8px 26px;font-size:.92rem;color:var(--gris)}
+.liste-coches li::before{
+  content:"";position:absolute;left:2px;top:15px;width:9px;height:5px;
+  border-left:2px solid var(--laiton);border-bottom:2px solid var(--laiton);transform:rotate(-45deg);
+}
+.liste-croix li::before{
+  content:"";position:absolute;left:3px;top:16px;width:10px;height:2px;background:var(--brique);
+  border:0;transform:none;
+}
+.deux-listes{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+</style>
+<style>
+/* --- plan d'étage composé ----------------------------------------------- */
+.bloc-plan{display:grid;grid-template-columns:1fr 350px;gap:48px;border-top:1px solid var(--ligne);padding-top:46px}
+.plan-cadre{background:var(--creme);border:1px solid var(--ligne);padding:62px 34px 26px;position:relative;align-self:start}
+.plan{display:flex;align-items:flex-start}
+.plan-maison{
+  flex:1;position:relative;background:var(--mur);padding:5px;
+  display:grid;grid-template-columns:repeat(12,1fr);
+  grid-template-rows:96px 86px 58px 104px;gap:5px;
+  grid-template-areas:
+    "salon salon salon salon salon salon cuis cuis cuis cuis cuis cuis"
+    "salon salon salon salon salon salon sam  sam  sam  sam  sam  sam"
+    "hall  hall  corr  corr  corr  corr  corr corr corr corr sdeau sdeau"
+    "chp   chp   chp   chp   sdb   sdb   ch2  ch2  ch2  ch3  ch3   ch3";
+}
+.piece{background:var(--sol);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:4px}
+.piece b{font:600 .58rem/1.15 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--encre)}
+.piece i{font:400 .58rem/1.4 var(--mono);font-style:normal;color:var(--gris);margin-top:5px}
+.piece u{font:400 .55rem/1 var(--mono);text-decoration:none;color:var(--gris-clair);margin-top:2px}
+.piece--min b{font-size:.5rem;letter-spacing:.04em}
+.piece--min i{font-size:.5rem}
+.a-salon{grid-area:salon}.a-cuis{grid-area:cuis}.a-sam{grid-area:sam}
+.a-hall{grid-area:hall}.a-corr{grid-area:corr}.a-sdeau{grid-area:sdeau}
+.a-chp{grid-area:chp}.a-sdb{grid-area:sdb}.a-ch2{grid-area:ch2}.a-ch3{grid-area:ch3}
+.a-corr{background:#f2eee5}
+.porte{position:absolute;background:var(--sol);z-index:3}
+.porte-h{height:11px;width:34px;margin-top:-3px}
+.porte-v{width:11px;height:34px;margin-left:-3px}
+.entree{position:absolute;left:0;width:5px;height:42px;background:var(--laiton);z-index:4}
+.arc{position:absolute;width:34px;height:34px;border-top:1px dashed #9aa79f;border-right:1px dashed #9aa79f;border-radius:0 100% 0 0;z-index:3}
+.fen{position:absolute;background:var(--sol);z-index:3}
+.fen-h{height:5px;border-top:1px solid var(--laiton);border-bottom:1px solid var(--laiton)}
+.fen-v{width:5px;border-left:1px solid var(--laiton);border-right:1px solid var(--laiton)}
+.plan-garage{
+  width:152px;height:250px;flex:none;background:var(--mur);padding:5px;position:relative;
+}
+.garage-int{
+  height:100%;background:
+    repeating-linear-gradient(45deg,var(--sol) 0 7px,#efeade 7px 8px);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8px;
+}
+.garage-int b{font:600 .58rem/1.2 var(--sans);letter-spacing:.09em;text-transform:uppercase}
+.garage-int i{font:400 .58rem/1.4 var(--mono);font-style:normal;color:var(--gris);margin-top:5px}
+.porte-garage{position:absolute;right:0;top:52px;width:5px;height:146px;background:repeating-linear-gradient(to bottom,var(--laiton) 0 8px,var(--creme) 8px 12px);z-index:3}
+.plan-nord{position:absolute;right:34px;top:18px;text-align:center;z-index:4;display:flex;align-items:center;gap:8px}
+.plan-nord i{display:block;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:15px solid var(--pin);margin:0}
+.plan-nord span{font:600 .6rem/1 var(--sans);letter-spacing:.1em;color:var(--pin)}
+.plan-echelle{display:flex;align-items:center;gap:10px;margin-top:22px}
+.echelle-barre{display:flex;height:8px;width:120px;border:1px solid var(--encre)}
+.echelle-barre i{flex:1}
+.echelle-barre i:nth-child(odd){background:var(--encre)}
+.plan-echelle span{font:500 .68rem/1 var(--mono);color:var(--gris)}
+.plan-legende{display:flex;gap:22px;margin-top:14px;flex-wrap:wrap}
+.plan-legende li{display:flex;align-items:center;gap:8px;font:500 .68rem/1 var(--sans);color:var(--gris)}
+.lg{width:16px;height:6px;flex:none}
+.lg-mur{background:var(--mur)}
+.lg-porte{background:var(--laiton)}
+.lg-fen{background:var(--sol);border-top:1px solid var(--laiton);border-bottom:1px solid var(--laiton);height:5px}
+.plan-note{font-size:.82rem;color:var(--gris);margin-top:20px;padding-top:16px;border-top:1px solid var(--ligne)}
+
+/* --- visite 360 ---------------------------------------------------------- */
+.visionneuse{position:relative;border:1px solid var(--pin-clair);background:var(--pin-fonce)}
+.visionneuse>img{width:100%;height:420px;object-fit:cover;display:block}
+.v-chip{
+  position:absolute;top:14px;left:14px;background:rgba(13,33,25,.9);border:1px solid rgba(201,162,92,.55);
+  color:var(--creme);font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:9px 12px;
+}
+.v-point{position:absolute;width:26px;height:26px;border-radius:50%;border:2px solid var(--laiton-clair);background:rgba(255,253,248,.28)}
+.v-point::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--laiton-clair)}
+.v-etiq{
+  position:absolute;background:rgba(255,253,248,.94);color:var(--encre);white-space:nowrap;
+  font:600 .66rem/1 var(--sans);letter-spacing:.04em;padding:7px 10px;
+}
+.v-boussole{
+  position:absolute;left:16px;bottom:62px;width:64px;height:64px;border-radius:50%;
+  border:1px solid rgba(246,240,230,.5);background:rgba(13,33,25,.72);
+}
+.v-boussole span{position:absolute;left:50%;transform:translateX(-50%);top:5px;font:600 .58rem/1 var(--sans);color:var(--creme)}
+.v-boussole i{
+  position:absolute;left:50%;top:14px;margin-left:-5px;width:0;height:0;
+  border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:20px solid var(--laiton-clair);
+}
+.v-boussole u{position:absolute;left:50%;bottom:14px;margin-left:-5px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:20px solid rgba(246,240,230,.35)}
+.v-barre{
+  position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;
+  background:rgba(13,33,25,.9);border-top:1px solid var(--pin-clair);padding:11px 14px;
+}
+.v-barre b{font:600 .62rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--laiton-clair);margin-right:6px}
+.v-piece{font:500 .74rem/1 var(--sans);color:#cfdcd4;border:1px solid var(--pin-clair);padding:7px 11px}
+.v-piece--on{background:var(--creme);color:var(--pin-fonce);border-color:var(--creme);font-weight:600}
+.v-glisser{margin-left:auto;font:500 .72rem/1 var(--sans);color:#9db0a6;letter-spacing:.04em}
+.v-legende{font-size:.8rem;color:#9db0a6;margin-top:14px}
+.trois-col{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;margin-top:56px}
+.trois-col h3{font-size:1.22rem;margin-bottom:14px;padding-top:18px;border-top:1px solid var(--ligne-sombre)}
+.trois-col p{font-size:.92rem;color:#b9c7bf}
+.fond-papier .trois-col h3{border-top-color:var(--ligne)}
+.fond-papier .trois-col p,.fond-creme .trois-col p{color:var(--gris)}
+
+/* --- étapes -------------------------------------------------------------- */
+.etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--ligne);background:var(--papier)}
+.etape{padding:30px 28px 32px;border-right:1px solid var(--ligne);border-bottom:1px solid var(--ligne)}
+.etape:nth-child(3n){border-right:0}
+.etape:nth-child(n+4){border-bottom:0}
+.etape-num{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.etape-num b{font:400 1.9rem/1 var(--serif);color:var(--laiton)}
+.etape-num i{flex:1;height:1px;background:var(--ligne);font-style:normal}
+.etape h3{font-size:1.1rem;font-family:var(--sans);font-weight:600;letter-spacing:0;margin-bottom:12px}
+.etape p{font-size:.9rem;color:var(--gris)}
+.etape-quoi{
+  display:block;margin-top:16px;padding-top:14px;border-top:1px dotted var(--ligne);
+  font:500 .78rem/1.5 var(--sans);color:var(--pin);
+}
+.etape-quoi b{font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:.62rem;color:var(--laiton);display:block;margin-bottom:5px}
+
+.deux-col{display:grid;grid-template-columns:1fr 380px;gap:56px;align-items:start}
+.deux-col--inv{grid-template-columns:380px 1fr}
+
+/* --- échéancier ---------------------------------------------------------- */
+.echeancier{border:1px solid var(--ligne);background:var(--papier);padding:28px 30px 24px}
+.eche-axe{position:relative;height:22px;margin-left:190px;border-bottom:1px solid var(--ligne);margin-bottom:14px}
+.eche-axe span{position:absolute;top:0;font:500 .66rem/1 var(--mono);color:var(--gris-clair);transform:translateX(-50%)}
+.eche-ligne{display:flex;align-items:center;height:34px}
+.eche-ligne b{width:190px;flex:none;font:500 .82rem/1.2 var(--sans);padding-right:18px;color:var(--encre)}
+.eche-piste{position:relative;flex:1;height:100%}
+.eche-piste::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--ligne)}
+.eche-bar{position:absolute;top:50%;transform:translateY(-50%);height:14px;background:var(--pin)}
+.eche-bar--acc{background:var(--laiton)}
+.eche-bar--fin{background:var(--brique)}
+.eche-ligne{height:42px}
+.eche-ligne b{display:flex;flex-direction:column;justify-content:center}
+.eche-ligne b i{font:500 .66rem/1 var(--mono);font-style:normal;color:var(--gris-clair);margin-top:5px}
+.eche-note{font-size:.8rem;color:var(--gris);margin-top:18px;padding-top:14px;border-top:1px solid var(--ligne)}
+
+/* --- graphiques ---------------------------------------------------------- */
+.duo-graph{display:grid;grid-template-columns:1.15fr 1fr;gap:44px}
+.graph{border:1px solid var(--ligne);background:var(--papier);padding:26px 28px 22px}
+.graph h3{font-size:1.12rem;font-family:var(--sans);font-weight:600;letter-spacing:0;margin-bottom:4px}
+.graph-sous{font-size:.8rem;color:var(--gris);margin-bottom:26px}
+.colonnes{position:relative;height:238px;display:flex;align-items:flex-end;gap:16px;padding-left:44px;border-bottom:1px solid var(--encre)}
+.grille-h{position:absolute;left:44px;right:0;top:0;bottom:0;pointer-events:none}
+.grille-h i{position:absolute;left:0;right:0;height:1px;background:var(--ligne)}
+.grille-h b{position:absolute;left:-44px;transform:translateY(-50%);font:500 .64rem/1 var(--mono);color:var(--gris-clair)}
+.col-barre{flex:1;position:relative;background:var(--pin);display:flex;justify-content:center}
+.col-barre--fort{background:var(--laiton)}
+.col-barre b{position:absolute;top:-22px;font:600 .74rem/1 var(--mono);color:var(--encre);white-space:nowrap}
+.moyenne{position:absolute;left:44px;right:0;border-top:1px dashed var(--brique);z-index:2}
+.moyenne span{position:absolute;right:0;top:-17px;background:var(--papier);font:600 .62rem/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--brique);padding:2px 4px}
+.colonnes-noms{display:flex;gap:16px;padding-left:44px;margin-top:10px}
+.colonnes-noms span{flex:1;text-align:center;font:500 .66rem/1.3 var(--sans);color:var(--gris)}
+.barres-h li{display:flex;align-items:center;height:36px;gap:12px}
+.barres-h b{width:150px;flex:none;font:500 .78rem/1.2 var(--sans);text-align:right;color:var(--gris)}
+.barres-h .piste{flex:1;position:relative;height:16px;background:var(--creme-2)}
+.barres-h .piste i{position:absolute;left:0;top:0;bottom:0;background:var(--pin-clair)}
+.barres-h em{font:600 .76rem/1 var(--mono);font-style:normal;width:56px;text-align:right}
+.graph-note{font-size:.78rem;color:var(--gris-clair);margin-top:20px;padding-top:14px;border-top:1px solid var(--ligne)}
+.tabl-marche{margin-top:44px;border:1px solid var(--ligne);background:var(--papier)}
+.tabl-marche th,.tabl-marche td{padding:14px 20px;font-size:.88rem;text-align:right;border-bottom:1px solid var(--ligne)}
+.tabl-marche th:first-child,.tabl-marche td:first-child{text-align:left}
+.tabl-marche thead th{
+  font:600 .64rem/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--laiton);
+  background:var(--creme);vertical-align:bottom;
+}
+.tabl-marche tbody th{font-weight:600;font-size:.9rem}
+.tabl-marche td{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tabl-marche tbody tr:last-child th,.tabl-marche tbody tr:last-child td{border-bottom:0}
+.neg{color:var(--brique)}
+.pos{color:var(--pin-clair)}
+</style>
+<style>
+/* --- carte de quartier --------------------------------------------------- */
+.bloc-quartiers{display:grid;grid-template-columns:1fr 388px;gap:48px;align-items:start}
+.carte{
+  position:relative;height:560px;border:1px solid var(--ligne);
+  background:
+    repeating-linear-gradient(to right,rgba(0,0,0,.028) 0 1px,transparent 1px 40px),
+    repeating-linear-gradient(to bottom,rgba(0,0,0,.028) 0 1px,transparent 1px 40px),
+    #efe9dc;
+  overflow:hidden;
+}
+.riviere{position:absolute;left:-8%;top:86%;width:120%;height:26px;background:#cfdcda;transform:rotate(-4deg);border-top:1px solid #b9cbc8;border-bottom:1px solid #b9cbc8}
+.parc{position:absolute;background:#d8e0c9;border:1px solid #c3cfb2}
+.parc span{position:absolute;left:10px;top:8px;font:600 .64rem/1.2 var(--sans);color:#4d5c3d;letter-spacing:.04em}
+.rue{position:absolute;background:#e2dac7;border-top:1px solid #d2c9b3;border-bottom:1px solid #d2c9b3}
+.rue-h{height:14px;left:0;right:0}
+.rue-v{width:14px;top:0;bottom:0;border:0;border-left:1px solid #d2c9b3;border-right:1px solid #d2c9b3}
+.rue--maj{background:#dcd2bb;height:20px}
+.rue--maj.rue-v{width:20px;height:auto}
+.rue-nom{position:absolute;font:500 .62rem/1 var(--sans);color:#8a7f66;letter-spacing:.06em;background:#efe9dc;padding:2px 5px;white-space:nowrap;z-index:2}
+.rue-nom--v{transform:rotate(-90deg);transform-origin:left top}
+.poi{position:absolute;display:flex;align-items:center;gap:7px;z-index:4}
+.poi i{width:11px;height:11px;flex:none;background:var(--pin);border:2px solid var(--papier);outline:1px solid var(--pin)}
+.poi--laiton i{background:var(--laiton);outline-color:var(--laiton)}
+.poi span{font:600 .66rem/1 var(--sans);color:var(--encre);background:rgba(255,253,248,.9);padding:4px 6px;white-space:nowrap}
+.secteur-badge{
+  position:absolute;z-index:3;background:var(--pin);color:var(--creme);
+  font:600 .62rem/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:8px 11px;
+}
+.secteur-badge b{color:var(--laiton-clair);margin-right:7px;font-weight:700}
+.cercle-marche{
+  position:absolute;width:196px;height:196px;border:1px dashed var(--laiton);border-radius:50%;z-index:2;
+}
+.cercle-marche span{
+  position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);background:var(--creme);
+  font:600 .6rem/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--laiton);padding:4px 7px;white-space:nowrap;
+}
+.carte-echelle{position:absolute;right:14px;bottom:14px;background:rgba(255,253,248,.92);padding:8px 10px;display:flex;align-items:center;gap:9px;z-index:5}
+.carte-echelle span{font:500 .64rem/1 var(--mono);color:var(--gris)}
+.carte-legende{display:flex;gap:26px;margin-top:16px;flex-wrap:wrap}
+.carte-legende li{display:flex;align-items:center;gap:8px;font:500 .74rem/1 var(--sans);color:var(--gris)}
+.carte-legende i{width:12px;height:12px;flex:none}
+.i-pin{background:var(--pin)}.i-laiton{background:var(--laiton)}
+.i-parc{background:#d8e0c9;border:1px solid #c3cfb2}
+.i-riv{background:#cfdcda;border:1px solid #b9cbc8}
+.grille-quartiers{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:34px}
+.quartier{border:1px solid var(--ligne);padding:22px 24px;background:var(--papier);display:flex;flex-direction:column}
+.quartier p{flex:1}
+.quartier-tete{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:12px}
+.quartier h3{font-size:1.15rem;font-family:var(--sans);font-weight:600;letter-spacing:0}
+.quartier-prix{font:600 .84rem/1 var(--mono);color:var(--laiton);white-space:nowrap}
+.quartier p{font-size:.87rem;color:var(--gris);margin-bottom:14px}
+.quartier-faits{display:flex;gap:0;border-top:1px solid var(--ligne);padding-top:12px}
+.quartier-faits li{flex:1;font:500 .7rem/1.35 var(--sans);color:var(--gris)}
+.quartier-faits li+li{padding-left:12px;border-left:1px solid var(--ligne);margin-left:12px}
+.quartier-faits b{display:block;font:600 .95rem/1 var(--mono);color:var(--encre);margin-bottom:5px}
+
+/* --- formulaire ---------------------------------------------------------- */
+.bloc-form{display:grid;grid-template-columns:1fr 392px;gap:56px;align-items:start}
+.form-carte{background:var(--papier);color:var(--encre);border:1px solid var(--ligne);padding:34px 36px 36px}
+.form-grille{display:grid;grid-template-columns:1fr 1fr;gap:22px 26px}
+.champ-l{display:flex;flex-direction:column}
+.champ-l--large{grid-column:span 2}
+.champ-l label{font:600 .64rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--gris);margin-bottom:9px}
+.champ-l input,.champ-l select,.champ-l textarea{
+  border:1px solid var(--ligne);background:var(--sol);padding:12px 13px;
+  font:400 .95rem/1.4 var(--sans);color:var(--encre);width:100%;
+}
+.champ-l textarea{resize:vertical;min-height:96px}
+.champ-l input::placeholder{color:var(--gris-clair)}
+.form-bas{display:flex;align-items:center;gap:22px;margin-top:28px;padding-top:24px;border-top:1px solid var(--ligne)}
+.form-bas p{font-size:.78rem;color:var(--gris);margin:0}
+.consent{display:flex;gap:11px;align-items:flex-start;margin-top:24px;font-size:.82rem;color:var(--gris)}
+.consent input{margin:3px 0 0;flex:none;width:15px;height:15px}
+.form-cote h3{font-size:1.6rem;margin-bottom:18px}
+.form-cote p{color:#c6d3cb;font-size:.95rem}
+.form-cote .liste-coches li{color:#c6d3cb}
+.form-cote .liste-coches li::before{border-color:var(--laiton-clair)}
+.rappel{border:1px solid var(--ligne-sombre);padding:20px 22px;margin-top:26px}
+.rappel b{display:block;font:600 .64rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--laiton-clair);margin-bottom:10px}
+.rappel p{font-size:.86rem;margin:0;color:#b9c7bf}
+
+/* --- FAQ ----------------------------------------------------------------- */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--ligne)}
+.faq-item{padding:30px 34px 32px;border-bottom:1px solid var(--ligne)}
+.faq-item:nth-child(odd){border-right:1px solid var(--ligne);padding-left:0}
+.faq-item:nth-child(even){padding-right:0}
+.faq-item h3{font-size:1.16rem;margin-bottom:12px;display:flex;gap:14px}
+.faq-item h3 i{font:600 .68rem/1.9 var(--mono);font-style:normal;color:var(--laiton);flex:none}
+.faq-item p{font-size:.92rem;color:var(--gris);padding-left:32px}
+
+/* --- bandeau contact ------------------------------------------------------ */
+.contact{border:1px solid var(--ligne);border-left:4px solid var(--laiton);background:var(--creme);display:grid;grid-template-columns:1fr 330px;gap:56px;padding:44px 48px;align-items:center}
+.contact h2{font-size:2rem;margin-bottom:14px}
+.contact p{color:var(--gris);margin:0;max-width:60ch}
+.contact-coord li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--ligne);font-size:.88rem}
+.contact-coord li:last-child{border-bottom:0}
+.contact-coord span{color:var(--gris)}
+.contact-coord b{font-family:var(--mono);font-weight:600}
+.contact-coord a{text-decoration:none;border-bottom:1px solid var(--laiton)}
+
+/* --- pied de page --------------------------------------------------------- */
+.pied{background:var(--pin-fonce);color:#a9b9b0;padding:72px 0 0;font-size:.88rem}
+.pied-haut{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1.2fr;gap:44px;padding-bottom:52px;border-bottom:1px solid var(--ligne-sombre)}
+.pied h4{font:600 .64rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--laiton-clair);margin-bottom:20px}
+.pied li{margin-bottom:11px}
+.pied a{text-decoration:none}
+.pied a:hover{color:var(--creme)}
+.pied-marque .logo-nom{color:var(--papier)}
+.pied-marque p{font-size:.86rem;margin-top:18px;max-width:34ch}
+.pied-permis{display:inline-block;margin-top:16px;border:1px solid var(--ligne-sombre);padding:9px 12px;font:600 .68rem/1 var(--mono);color:var(--creme);letter-spacing:.08em}
+.pied-bas{padding:26px 0 34px;font-size:.78rem;line-height:1.7;color:#7e908a}
+.pied-bas p{max-width:none}
+.pied-bas b{color:#a9b9b0;font-weight:600}
+.pied-mentions{display:grid;grid-template-columns:1fr 1fr;gap:34px;padding:26px 0;border-bottom:1px solid var(--ligne-sombre)}
+.pied-mentions p{font-size:.78rem;line-height:1.65;color:#7e908a;margin:0}
+
+/* --- mesure de secours (le site est conçu pour 1280 px) ------------------- */
+@media (max-width:1080px){
+  .heros .wrap,.fiche-grille,.bloc-plan,.bloc-quartiers,.bloc-form,.deux-col,.deux-col--inv,.duo-graph,.fiche-tete,.contact{grid-template-columns:1fr}
+  .grille-biens,.etapes,.trois-col,.faits{grid-template-columns:repeat(2,1fr)}
+  .bien--large{grid-column:span 2;flex-direction:column}
+  .bien--large .bien-photo{width:100%}
+  .pied-haut{grid-template-columns:repeat(2,1fr)}
+  .recherche form{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ====================== BANDEAU + NAVIGATION ====================== -->
+<div class="annonce">
+  <div class="wrap">
+    <div><span>Val-des-Ormes et les cinq secteurs limitrophes</span><span>Bureau ouvert du lundi au samedi</span></div>
+    <div><span>Évaluation gratuite, sans engagement</span><span><b><a href="tel:0000000000">000&nbsp;000-0000</a></b></span></div>
+  </div>
+</div>
+
+<header class="barre">
+  <div class="wrap">
+    <a class="logo" href="#accueil">
+      <span class="logo-marque" aria-hidden="true"></span>
+      <span>
+        <span class="logo-nom">Karine Deschamps-Fortier</span>
+        <span class="logo-sous">Ancrage Immobilier</span>
+      </span>
+    </a>
+    <nav class="menu" aria-label="Navigation principale">
+      <a href="#inscriptions">Inscriptions</a>
+      <a href="#vedette">Vedette</a>
+      <a href="#visite">Visite 360</a>
+      <a href="#vendre">Vendre</a>
+      <a href="#acheter">Acheter</a>
+      <a href="#quartiers">Quartiers</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <div class="barre-droite">
+      <a class="tel-nav" href="tel:0000000000"><small>Sans frais</small>000&nbsp;000-0000</a>
+      <a class="btn btn-sombre" href="#evaluation">Évaluation gratuite</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== HÉROS ============================== -->
+<section class="heros" id="accueil">
+  <div class="wrap">
+    <div>
+      <span class="sur">Courtier immobilier résidentiel · Permis 0000</span>
+      <h1>Vendre ou acheter sans jamais rester dans le noir.</h1>
+      <p class="heros-lead">Karine Deschamps-Fortier, courtier immobilier résidentiel depuis 2011. Chaque propriété que j'inscris part avec un plan d'étage coté, une visite 360 et un rapport de suivi écrit, chaque semaine, sans que vous ayez à le demander.</p>
+      <div class="heros-actions">
+        <a class="btn btn-plein" href="#inscriptions">Voir les inscriptions</a>
+        <a class="btn btn-vide" href="#evaluation">Faire évaluer ma propriété</a>
+      </div>
+      <div class="heros-faits">
+        <div>
+          <b>14 ans</b>
+          <span>De pratique dans le même territoire, sans interruption.</span>
+        </div>
+        <div>
+          <b>6 secteurs</b>
+          <span>Val-des-Ormes et cinq secteurs voisins. Rien en dehors.</span>
+        </div>
+        <div>
+          <b>Permis 0000</b>
+          <span>Vérifiable auprès de l'organisme provincial d'encadrement.</span>
+        </div>
+      </div>
+    </div>
+    <div class="heros-photo">
+      <img src="../../images/secteurs/immobilier-hero.webp" width="720" height="405" alt="Salon d'une propriété inscrite : poêle à bois, portes-fenêtres donnant sur la pelouse arrière." fetchpriority="high" decoding="async" style="object-position:50% 60%">
+      <span class="heros-legende"><b>412, chemin du Vieux-Moulin</b> · Val-des-Ormes · 649 000 $</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= CARTE DE RECHERCHE ====================== -->
+<div class="recherche-hors">
+  <div class="wrap">
+    <div class="recherche">
+      <div class="recherche-haut">
+        <h2>Chercher dans les inscriptions</h2>
+        <span>Dix propriétés actives et récemment vendues, mises à jour à chaque changement de statut.</span>
+      </div>
+      <form action="#inscriptions" method="get">
+        <div class="champ">
+          <label for="r-secteur">Secteur</label>
+          <select id="r-secteur" name="secteur">
+            <option>Tous les secteurs</option>
+            <option>Val-des-Ormes</option>
+            <option>Coteau-Bélanger</option>
+            <option>Secteur nord</option>
+            <option>Plateau-des-Cèdres</option>
+            <option>Le Vieux-Rang</option>
+            <option>Rivière-aux-Trembles</option>
+          </select>
+        </div>
+        <div class="champ">
+          <label for="r-type">Type de propriété</label>
+          <select id="r-type" name="type">
+            <option>Tous les types</option>
+            <option>Plain-pied</option>
+            <option>Maison à étages</option>
+            <option>Cottage</option>
+            <option>Jumelé</option>
+            <option>Copropriété</option>
+            <option>Fermette</option>
+            <option>Terrain</option>
+          </select>
+        </div>
+        <div class="champ">
+          <label for="r-ch">Chambres</label>
+          <select id="r-ch" name="chambres">
+            <option>Peu importe</option>
+            <option>1 et plus</option>
+            <option>2 et plus</option>
+            <option>3 et plus</option>
+            <option>4 et plus</option>
+          </select>
+        </div>
+        <div class="champ">
+          <label for="r-prix">Tranche de prix</label>
+          <select id="r-prix" name="prix">
+            <option>Toutes les tranches</option>
+            <option>Moins de 300 000 $</option>
+            <option>300 000 $ à 450 000 $</option>
+            <option>450 000 $ à 600 000 $</option>
+            <option>600 000 $ à 800 000 $</option>
+            <option>800 000 $ et plus</option>
+          </select>
+        </div>
+        <button class="btn btn-plein" type="submit">Chercher</button>
+      </form>
+      <div class="recherche-bas">
+        Raccourcis :
+        <a href="#inscriptions">Tout ce qui est à vendre</a><span>·</span>
+        <a href="#inscriptions">Avec visite 360</a><span>·</span>
+        <a href="#inscriptions">Offre acceptée</a><span>·</span>
+        <a href="#inscriptions">Vendues récemment</a><span>·</span>
+        <a href="#evaluation">Recevoir les nouveautés par courriel</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================== BANDE DE FAITS ========================= -->
+<section class="section section--serre fond-papier">
+  <div class="wrap">
+    <div class="faits">
+      <div>
+        <strong>Depuis 2011</strong>
+        <b>Une seule région</b>
+        <p>Première inscription en février 2011, au même endroit. Je ne prends pas de mandat en dehors des six secteurs : je ne sais pas vendre ce que je ne connais pas.</p>
+      </div>
+      <div>
+        <strong>Permis 0000</strong>
+        <b>Courtier résidentiel</b>
+        <p>Permis en règle, détenu à titre de courtier immobilier résidentiel, encadré par l'organisme provincial de surveillance du courtage. Le numéro se vérifie en ligne en une minute.</p>
+      </div>
+      <div>
+        <strong>Sur chaque fiche</strong>
+        <b>Plan et visite 360</b>
+        <p>Plan d'étage coté, superficies tirées du rôle d'évaluation, visite 360 sur les inscriptions marquées. Un acheteur qui se déplace sait déjà à quoi s'attendre.</p>
+      </div>
+      <div>
+        <strong>Chaque vendredi</strong>
+        <b>Un suivi écrit</b>
+        <p>Visites effectuées, commentaires reçus, ce qui bloque, ce que je propose de changer. Écrit, daté, envoyé par courriel. Vous n'avez jamais à courir après le compte rendu.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ========================== INSCRIPTIONS =========================== -->
+<section class="section fond-creme" id="inscriptions">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Inscriptions en cours</span>
+        <h2>Dix propriétés, et ce qu'il y a derrière chaque chiffre</h2>
+      </div>
+      <p>Les superficies habitables excluent toujours le sous-sol, même aménagé. C'est la seule façon de comparer deux maisons sans se raconter d'histoires. Les mesures proviennent du rôle d'évaluation municipale et doivent être validées par un certificat de localisation.</p>
+    </div>
+
+    <div class="grille-biens">
+
+      <!-- 1 -->
+      <article class="bien bien--large">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-hero.webp" width="720" height="405" loading="lazy" decoding="async" alt="Salon avec poêle à bois et grandes portes-fenêtres sur la cour arrière." style="object-position:50% 55%">
+          <span class="statut">À vendre</span>
+          <span class="p360">Visite 360</span>
+        </div>
+        <div class="bien-droite">
+          <div class="bien-corps">
+            <span class="bien-prix">649 000 $</span>
+            <h3>412, chemin du Vieux-Moulin</h3>
+            <span class="bien-secteur">Val-des-Ormes · Plain-pied 2004</span>
+            <p class="bien-desc">Sous-sol pleine hauteur aménagé, garage double attenant, terrain de 8 200 pi² sans voisin arrière. Toiture refaite en 2019, fenestration PVC de 2015. Puits artésien et fosse septique conformes, attestation à l'appui.</p>
+            <ul class="bien-specs">
+              <li><b>3</b><span>Chambres</span></li>
+              <li><b>2</b><span>S. de bain</span></li>
+              <li><b>1 640</b><span>Pi² habit.</span></li>
+              <li><b>8 200</b><span>Pi² terrain</span></li>
+            </ul>
+          </div>
+          <div class="bien-bas">
+            <a href="#vedette">Voir la fiche complète</a>
+            <em>Nº d'inscription 4 021 118</em>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-3.webp" width="240" height="240" loading="lazy" decoding="async" alt="Séjour lumineux, fenestration pleine hauteur donnant sur un terrain gazonné." style="object-position:50% 42%">
+          <span class="statut">À vendre</span>
+          <span class="p360">Visite 360</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">789 000 $</span>
+          <h3>15, croissant des Aubépines</h3>
+          <span class="bien-secteur">Plateau-des-Cèdres · À étages 2016</span>
+          <ul class="bien-specs">
+            <li><b>4</b><span>Chambres</span></li>
+            <li><b>3</b><span>Salles de bain</span></li>
+            <li><b>2 410</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#evaluation">Demander une visite</a><em>Nº 4 018 442</em></div>
+      </article>
+
+      <!-- 3 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-2.webp" width="240" height="240" loading="lazy" decoding="async" alt="Terrasse en pavé uni devant la maison, muret de pierre et pelouse entretenue." style="object-position:50% 50%">
+          <span class="statut">À vendre</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">524 900 $</span>
+          <h3>87, rue des Bouleaux-Blancs</h3>
+          <span class="bien-secteur">Coteau-Bélanger · Cottage 1998</span>
+          <ul class="bien-specs">
+            <li><b>4</b><span>Chambres</span></li>
+            <li><b>2</b><span>Salles de bain</span></li>
+            <li><b>1 980</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#evaluation">Demander une visite</a><em>Nº 4 020 706</em></div>
+      </article>
+
+      <!-- 4 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-1.webp" width="240" height="240" loading="lazy" decoding="async" alt="Chambre avec deux lits simples, lampe de chevet allumée et cadres au mur." style="object-position:50% 50%">
+          <span class="statut st-offre">Offre acceptée</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">439 000 $</span>
+          <h3>230, montée du Cormier</h3>
+          <span class="bien-secteur">Rivière-aux-Trembles · Plain-pied 1976</span>
+          <ul class="bien-specs">
+            <li><b>2</b><span>Chambres</span></li>
+            <li><b>1</b><span>Salle de bain</span></li>
+            <li><b>1 180</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#acheter">Être averti si ça retombe</a><em>Nº 4 016 903</em></div>
+      </article>
+
+      <!-- 5 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-hero.webp" width="720" height="405" loading="lazy" decoding="async" alt="Coin salon meublé, plafond avec luminaire en fer forgé et grandes fenêtres." style="object-position:18% 70%">
+          <span class="statut">À vendre</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">365 000 $</span>
+          <h3>6-B, rue de la Draveuse</h3>
+          <span class="bien-secteur">Le Vieux-Rang · Copropriété 2011</span>
+          <ul class="bien-specs">
+            <li><b>2</b><span>Chambres</span></li>
+            <li><b>1</b><span>Salle de bain</span></li>
+            <li><b>940</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#evaluation">Demander une visite</a><em>Nº 4 021 550</em></div>
+      </article>
+
+      <!-- 6 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-2.webp" width="240" height="240" loading="lazy" decoding="async" alt="Cour arrière avec allée pavée, muret et bâtiment principal en arrière-plan." style="object-position:22% 32%">
+          <span class="statut">À vendre</span>
+          <span class="p360">Visite 360</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">875 000 $</span>
+          <h3>1104, rang du Grand-Brûlé</h3>
+          <span class="bien-secteur">Secteur nord · Fermette 1932, rénovée 2019</span>
+          <ul class="bien-specs">
+            <li><b>5</b><span>Chambres</span></li>
+            <li><b>2</b><span>Salles de bain</span></li>
+            <li><b>2 780</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#evaluation">Demander une visite</a><em>Nº 4 014 287</em></div>
+      </article>
+
+      <!-- 7 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-3.webp" width="240" height="240" loading="lazy" decoding="async" alt="Séjour avec fauteuils clairs et fenêtres donnant sur la verdure." style="object-position:72% 55%">
+          <span class="statut st-vendu">Vendu</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">612 000 $</span>
+          <h3>48, impasse des Perdrix</h3>
+          <span class="bien-secteur">Plateau-des-Cèdres · Jumelé 2008</span>
+          <ul class="bien-specs">
+            <li><b>3</b><span>Chambres</span></li>
+            <li><b>2</b><span>Salles de bain</span></li>
+            <li><b>1 520</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#marche">Vendu en 26 jours</a><em>Nº 4 009 331</em></div>
+      </article>
+
+      <!-- 8 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-1.webp" width="240" height="240" loading="lazy" decoding="async" alt="Chambre avec literie blanche, table de nuit et gravures encadrées." style="object-position:38% 72%">
+          <span class="statut st-vendu">Vendu</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">289 000 $</span>
+          <h3>320, avenue Ferland Ouest</h3>
+          <span class="bien-secteur">Secteur nord · Copropriété 2014</span>
+          <ul class="bien-specs">
+            <li><b>1</b><span>Chambre</span></li>
+            <li><b>1</b><span>Salle de bain</span></li>
+            <li><b>720</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#marche">Vendu en 19 jours</a><em>Nº 4 011 774</em></div>
+      </article>
+
+      <!-- 9 -->
+      <article class="bien bien--large">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-hero.webp" width="720" height="405" loading="lazy" decoding="async" alt="Grande pièce de séjour avec foyer, fauteuils et sortie sur le jardin." style="object-position:82% 45%">
+          <span class="statut st-offre">Offre acceptée</span>
+        </div>
+        <div class="bien-droite">
+          <div class="bien-corps">
+            <span class="bien-prix">559 000 $</span>
+            <h3>77, rue du Coteau-Vert</h3>
+            <span class="bien-secteur">Val-des-Ormes · Cottage 1989</span>
+            <p class="bien-desc">Offre acceptée le 12 du mois, conditionnelle à l'inspection et au financement. La promesse d'achat tient jusqu'à la levée des conditions : je continue de noter les visiteurs intéressés au cas où elle tomberait.</p>
+            <ul class="bien-specs">
+              <li><b>3</b><span>Chambres</span></li>
+              <li><b>2</b><span>S. de bain</span></li>
+              <li><b>1 720</b><span>Pi² habit.</span></li>
+              <li><b>6 400</b><span>Pi² terrain</span></li>
+            </ul>
+          </div>
+          <div class="bien-bas">
+            <a href="#acheter">Me mettre sur la liste d'attente</a>
+            <em>Nº d'inscription 4 019 025</em>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10 -->
+      <article class="bien">
+        <div class="bien-photo">
+          <img src="../../images/secteurs/immobilier-2.webp" width="240" height="240" loading="lazy" decoding="async" alt="Façade arrière avec terrasse pavée, muret bas et grands arbres." style="object-position:78% 62%">
+          <span class="statut st-vendu">Vendu</span>
+        </div>
+        <div class="bien-corps">
+          <span class="bien-prix">698 000 $</span>
+          <h3>9, chemin des Quatre-Vents</h3>
+          <span class="bien-secteur">Coteau-Bélanger · Plain-pied 2012</span>
+          <ul class="bien-specs">
+            <li><b>3</b><span>Chambres</span></li>
+            <li><b>2</b><span>Salles de bain</span></li>
+            <li><b>1 810</b><span>Pi² habitables</span></li>
+          </ul>
+        </div>
+        <div class="bien-bas"><a href="#marche">Vendu en 31 jours</a><em>Nº 4 007 612</em></div>
+      </article>
+
+    </div>
+
+    <div class="sous-grille">
+      <p>Une propriété disparaît de cette page seulement une fois l'acte signé chez le notaire. Tant qu'une transaction n'est pas conclue, elle reste affichée avec son vrai statut — c'est plus utile qu'une page qui ne montre que les succès.</p>
+      <a class="btn btn-sombre" href="#evaluation">Recevoir les nouvelles inscriptions</a>
+    </div>
+  </div>
+</section>
+<!-- ========================= PROPRIÉTÉ VEDETTE ======================= -->
+<section class="section fond-papier" id="vedette">
+  <div class="wrap">
+    <div class="fiche-tete">
+      <div>
+        <span class="sur">Propriété vedette</span>
+        <h2>412, chemin du Vieux-Moulin</h2>
+        <p class="fiche-adr">Val-des-Ormes, secteur des Ormes-Sud · Plain-pied 2004 · Nº d'inscription 4 021 118 · Diffusée sur le service inter-agences</p>
+      </div>
+      <div class="fiche-prix">
+        <div class="fiche-etiquettes">
+          <span class="etq etq-vente">À vendre</span>
+          <span class="etq etq-360">Visite 360</span>
+          <span class="etq">Libre 60 jours</span>
+        </div>
+        <b>649 000 $</b>
+        <span>Taxe de mutation à prévoir par l'acheteur après la vente</span>
+      </div>
+    </div>
+
+    <div class="galerie">
+      <div class="galerie-grande">
+        <img src="../../images/secteurs/immobilier-hero.webp" width="720" height="405" loading="lazy" decoding="async" alt="Salon principal : poêle à bois sur socle, portes-fenêtres alignées sur la cour arrière, mobilier clair." style="object-position:50% 55%">
+        <span class="cap">Salon principal — poêle à bois certifié, sortie directe sur la terrasse</span>
+        <span class="galerie-compte">1 / 34 photos</span>
+      </div>
+      <div class="galerie-col">
+        <div class="galerie-vignette">
+          <img src="../../images/secteurs/immobilier-3.webp" width="240" height="240" loading="lazy" decoding="async" alt="Séjour secondaire avec fenestration sur trois faces." style="object-position:50% 45%">
+          <span class="cap">Séjour, exposition sud</span>
+        </div>
+        <div class="galerie-vignette">
+          <img src="../../images/secteurs/immobilier-1.webp" width="240" height="240" loading="lazy" decoding="async" alt="Chambre secondaire meublée de deux lits simples." style="object-position:50% 50%">
+          <span class="cap">Chambre 2</span>
+        </div>
+        <div class="galerie-vignette">
+          <img src="../../images/secteurs/immobilier-2.webp" width="240" height="240" loading="lazy" decoding="async" alt="Terrasse en pavé uni, muret bas et cour gazonnée sans voisin arrière." style="object-position:50% 55%">
+          <span class="cap">Terrasse et cour arrière</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche-grille">
+      <div class="fiche-texte">
+        <h3>Ce que le propriétaire précédent a fait, et ce qui reste à faire</h3>
+        <p>Un plain-pied de 2004 sur dalle de béton coulé, tenu par les mêmes propriétaires depuis la construction. <strong>La toiture a été refaite au complet en 2019</strong> — bardeau d'asphalte 35 ans, facture et garantie transférable disponibles. Les fenêtres ont été remplacées en 2015, PVC à triple scellement, sauf les deux du garage qui sont d'origine.</p>
+        <p>Ce qui reste à prévoir, et je préfère le dire tout de suite : <strong>le revêtement de plancher du sous-sol arrive à la fin de sa vie utile</strong> et la thermopompe murale du salon a 11 ans. Ni l'un ni l'autre n'empêche d'habiter, mais un acheteur qui budgète 12 000 $ sur trois ans ne se fera pas surprendre.</p>
+        <p>Le terrain de 8 200 pi² donne sur une bande boisée qui appartient à la municipalité : <strong>aucune construction possible à l'arrière</strong>, ce qui est écrit au zonage et vérifiable au bureau municipal. C'est la raison principale pour laquelle cette maison se vend plus cher que sa voisine de même superficie.</p>
+
+        <table class="tabl">
+          <caption>Caractéristiques principales</caption>
+          <tbody>
+            <tr><th>Type de propriété</th><td>Plain-pied détaché, un seul niveau habitable</td></tr>
+            <tr><th>Année de construction</th><td>2004</td></tr>
+            <tr><th>Superficie habitable</th><td>1 640 pi² (152,4 m²), sous-sol exclu</td></tr>
+            <tr><th>Superficie du sous-sol aménagé</th><td>1 180 pi² (109,6 m²), pleine hauteur</td></tr>
+            <tr><th>Superficie du terrain</th><td>8 200 pi² (761,8 m²), irrégulier</td></tr>
+            <tr><th>Chambres</th><td>3 au rez-de-chaussée, 1 possible au sous-sol</td></tr>
+            <tr><th>Salles de bain</th><td>1 salle de bain complète, 1 salle d'eau</td></tr>
+            <tr><th>Stationnement</th><td>Garage double attenant, 4 places en cour</td></tr>
+            <tr><th>Fondation</th><td>Béton coulé, drain français refait en 2017</td></tr>
+            <tr><th>Toiture</th><td>Bardeau d'asphalte, refaite en 2019</td></tr>
+            <tr><th>Chauffage</th><td>Plinthes électriques, thermopompe murale, poêle à bois</td></tr>
+            <tr><th>Eau et égout</th><td>Puits artésien, fosse septique conforme (attestation 2023)</td></tr>
+            <tr><th>Zonage</th><td>Résidentiel unifamilial, bande boisée municipale à l'arrière</td></tr>
+            <tr><th>Occupation</th><td>60 jours après la signature chez le notaire</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <div class="encart">
+          <h4>Taxes et évaluation</h4>
+          <ul class="lignes">
+            <li><span>Taxes municipales (année courante)</span><b>3 412 $</b></li>
+            <li><span>Taxes scolaires</span><b>268 $</b></li>
+            <li><span>Électricité (moyenne des 3 dernières années)</span><b>2 180 $</b></li>
+            <li><span>Assurance habitation (indicatif)</span><b>1 040 $</b></li>
+            <li class="total"><span>Coût annuel à prévoir</span><b>6 900 $</b></li>
+          </ul>
+        </div>
+
+        <div class="encart">
+          <h4>Rôle d'évaluation municipale</h4>
+          <ul class="lignes">
+            <li><span>Terrain</span><b>118 400 $</b></li>
+            <li><span>Bâtiment</span><b>402 600 $</b></li>
+            <li class="total"><span>Évaluation totale</span><b>521 000 $</b></li>
+          </ul>
+          <p style="font-size:.8rem;color:var(--gris);margin-top:16px">L'évaluation municipale sert à calculer les taxes. Elle est établie tous les trois ans et suit le marché avec du retard : elle ne dit pas ce que vaut la maison aujourd'hui.</p>
+        </div>
+
+        <div class="encart">
+          <h4>Inclusions et exclusions</h4>
+          <div class="deux-listes">
+            <div>
+              <p style="font:600 .68rem/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pin);margin-bottom:6px">Inclus</p>
+              <ul class="liste-coches">
+                <li>Stores et toiles de toutes les pièces</li>
+                <li>Luminaires, sauf celui de la salle à manger</li>
+                <li>Lave-vaisselle encastré (2021)</li>
+                <li>Poêle à bois avec certificat de conformité</li>
+                <li>Thermopompe murale du salon</li>
+                <li>Remise de jardin 10 × 12</li>
+                <li>Ouvre-porte de garage et deux télécommandes</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font:600 .68rem/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--brique);margin-bottom:6px">Exclus</p>
+              <ul class="liste-coches liste-croix">
+                <li>Laveuse, sécheuse et congélateur</li>
+                <li>Luminaire de la salle à manger</li>
+                <li>Rideaux du salon (les tringles restent)</li>
+                <li>Cabanon à bois près de la haie</li>
+                <li>Plants du potager surélevé</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="encart" style="background:var(--papier)">
+          <h4>Documents remis avant l'offre</h4>
+          <ul class="liste-coches">
+            <li>Déclarations du vendeur remplies et signées</li>
+            <li>Certificat de localisation de 2016, mis à jour en cours</li>
+            <li>Comptes de taxes municipales et scolaires</li>
+            <li>Factures de la toiture, du drain et des fenêtres</li>
+            <li>Attestation de conformité de l'installation septique</li>
+            <li>Analyse d'eau du puits, moins de 12 mois</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------- PLAN D'ÉTAGE ------------------------- -->
+    <div class="bloc-plan">
+      <div class="plan-cadre">
+        <div class="plan-nord" aria-hidden="true"><i></i><span>N</span></div>
+        <div class="plan" role="img" aria-label="Plan coté du rez-de-chaussée : salon 4,88 sur 5,49 mètres, cuisine 3,66 sur 4,27 mètres, salle à manger 3,35 sur 3,66 mètres, hall d'entrée, corridor, salle d'eau, chambre principale 3,96 sur 4,27 mètres, salle de bains, chambre 2, chambre 3, et garage double attenant de 6,10 sur 6,71 mètres.">
+          <div class="plan-maison">
+            <div class="piece a-salon"><b>Salon</b><i>4,88 m × 5,49 m</i><u>16'0" × 18'0"</u></div>
+            <div class="piece a-cuis"><b>Cuisine</b><i>3,66 m × 4,27 m</i><u>12'0" × 14'0"</u></div>
+            <div class="piece a-sam"><b>Salle à manger</b><i>3,35 m × 3,66 m</i><u>11'0" × 12'0"</u></div>
+            <div class="piece a-hall piece--min"><b>Hall</b><i>2,13 × 1,83</i></div>
+            <div class="piece a-corr piece--min"><b>Corridor</b><i>1,22 m de largeur</i></div>
+            <div class="piece a-sdeau piece--min"><b>S. d'eau</b><i>1,52 × 1,83</i></div>
+            <div class="piece a-chp"><b>Chambre principale</b><i>3,96 m × 4,27 m</i><u>13'0" × 14'0"</u></div>
+            <div class="piece a-sdb piece--min"><b>S. de bains</b><i>2,44 × 3,05</i></div>
+            <div class="piece a-ch2"><b>Chambre 2</b><i>3,05 m × 3,35 m</i></div>
+            <div class="piece a-ch3"><b>Chambre 3</b><i>2,74 m × 3,35 m</i></div>
+
+            <!-- ouvertures intérieures -->
+            <span class="porte porte-v" style="left:50%;top:38px"></span>
+            <span class="porte porte-v" style="left:50%;top:134px"></span>
+            <span class="porte porte-h" style="left:4%;top:192px"></span>
+            <span class="porte porte-h" style="left:62%;top:192px"></span>
+            <span class="porte porte-h" style="left:14%;top:255px"></span>
+            <span class="porte porte-h" style="left:37%;top:255px"></span>
+            <span class="porte porte-h" style="left:57%;top:255px"></span>
+            <span class="porte porte-h" style="left:79%;top:255px"></span>
+            <span class="porte porte-v" style="left:83.3%;top:212px"></span>
+            <span class="porte porte-v" style="left:16.7%;top:210px"></span>
+
+            <!-- porte d'entrée -->
+            <span class="entree" style="top:206px"></span>
+            <span class="arc" style="left:8px;top:208px"></span>
+
+            <!-- fenêtres extérieures -->
+            <span class="fen fen-h" style="top:0;left:8%;width:12%"></span>
+            <span class="fen fen-h" style="top:0;left:26%;width:12%"></span>
+            <span class="fen fen-h" style="top:0;left:56%;width:12%"></span>
+            <span class="fen fen-h" style="top:0;left:76%;width:12%"></span>
+            <span class="fen fen-v" style="left:0;top:22px;height:54px"></span>
+            <span class="fen fen-v" style="left:0;top:282px;height:58px"></span>
+            <span class="fen fen-v" style="right:0;top:282px;height:58px"></span>
+            <span class="fen fen-h" style="bottom:0;left:6%;width:14%"></span>
+            <span class="fen fen-h" style="bottom:0;left:36%;width:8%"></span>
+            <span class="fen fen-h" style="bottom:0;left:55%;width:13%"></span>
+            <span class="fen fen-h" style="bottom:0;left:78%;width:14%"></span>
+          </div>
+
+          <div class="plan-garage">
+            <div class="garage-int">
+              <b>Garage double</b>
+              <i>6,10 m × 6,71 m</i>
+              <i>20'0" × 22'0"</i>
+            </div>
+            <span class="porte-garage" aria-hidden="true"></span>
+            <span class="porte porte-v" style="left:0;top:186px"></span>
+          </div>
+        </div>
+
+        <div class="plan-echelle">
+          <span class="echelle-barre" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>0 — 2 m — 4 m</span>
+        </div>
+        <ul class="plan-legende">
+          <li><i class="lg lg-mur"></i>Mur</li>
+          <li><i class="lg lg-porte"></i>Porte d'entrée et porte de garage</li>
+          <li><i class="lg lg-fen"></i>Fenêtre</li>
+          <li>Rez-de-chaussée seulement — le sous-sol a son propre plan</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 style="font-size:1.5rem;margin-bottom:16px">Le plan coté, sur chaque inscription</h3>
+        <p style="color:var(--gris);font-size:.95rem">Un acheteur qui regarde des photos ne sait pas si son sofa passe. Un plan coté répond à la question avant la visite, et il élimine les déplacements inutiles — pour lui comme pour le vendeur qui doit sortir de chez lui.</p>
+        <p style="color:var(--gris);font-size:.95rem">Les cotes sont prises sur place au télémètre laser, mur à mur, et arrondies au centimètre. Elles ne remplacent pas un certificat de localisation, qui est le seul document qui fait foi devant le notaire.</p>
+
+        <table class="tabl">
+          <caption>Surfaces par niveau</caption>
+          <tbody>
+            <tr><th>Rez-de-chaussée</th><td>1 640 pi²</td></tr>
+            <tr><th>Sous-sol aménagé</th><td>1 180 pi²</td></tr>
+            <tr><th>Garage attenant</th><td>441 pi²</td></tr>
+            <tr><th>Terrasse arrière</th><td>320 pi²</td></tr>
+            <tr><th>Terrain</th><td>8 200 pi²</td></tr>
+          </tbody>
+        </table>
+        <p class="plan-note">Le plan du sous-sol, celui du garage et le relevé des ouvertures sont remis en PDF à toute personne qui demande une visite. Aucun formulaire à remplir pour les obtenir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- =========================== VISITE 360 ============================ -->
+<section class="section fond-pin" id="visite">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Visite virtuelle</span>
+        <h2>La visite avant la visite</h2>
+      </div>
+      <p>Offerte sur les inscriptions marquées du repère 360. On entre par la porte d'en avant, on tourne dans chaque pièce, on ressort par la terrasse. Rien n'est coupé au montage : ce qui est laid est là aussi.</p>
+    </div>
+
+    <div class="visionneuse">
+      <img src="../../images/secteurs/immobilier-hero.webp" width="720" height="405" loading="lazy" decoding="async" alt="Vue panoramique du salon telle qu'elle apparaît dans la visite virtuelle." style="object-position:50% 48%">
+      <span class="v-chip">412, chemin du Vieux-Moulin · Rez-de-chaussée</span>
+      <span class="v-point" style="left:26%;top:44%"></span>
+      <span class="v-etiq" style="left:calc(26% + 34px);top:calc(44% - 2px)">Aller à la cuisine</span>
+      <span class="v-point" style="left:63%;top:52%"></span>
+      <span class="v-etiq" style="left:calc(63% + 34px);top:calc(52% - 2px)">Poêle à bois — certificat 2023</span>
+      <span class="v-point" style="left:44%;top:70%"></span>
+      <span class="v-etiq" style="left:calc(44% + 34px);top:calc(70% - 2px)">Sortie sur la terrasse</span>
+      <span class="v-boussole" aria-hidden="true"><span>N</span><i></i><u></u></span>
+      <div class="v-barre">
+        <b>Pièces</b>
+        <span class="v-piece v-piece--on">Salon</span>
+        <span class="v-piece">Cuisine</span>
+        <span class="v-piece">Salle à manger</span>
+        <span class="v-piece">Chambre principale</span>
+        <span class="v-piece">Sous-sol</span>
+        <span class="v-piece">Terrasse</span>
+        <span class="v-glisser">Glisser pour regarder autour ←→</span>
+      </div>
+    </div>
+    <p class="v-legende">Illustration de l'interface. La visite se lance en plein écran depuis la fiche de la propriété, sans téléchargement et sans compte à créer.</p>
+
+    <div class="trois-col">
+      <div>
+        <h3>Ce que ça montre</h3>
+        <p>La hauteur réelle des plafonds, la largeur des corridors, ce qu'on voit par chaque fenêtre et à quelle distance est le voisin. Les quatre choses qu'une photo grand-angle déforme systématiquement.</p>
+      </div>
+      <div>
+        <h3>Ce que ça évite</h3>
+        <p>Des visites de courtoisie qui font sortir une famille de chez elle un samedi matin pour rien. Sur les inscriptions avec visite 360, les visiteurs qui se déplacent sont déjà décidés à 80 %.</p>
+      </div>
+      <div>
+        <h3>Ce que ça ne remplace pas</h3>
+        <p>L'odeur, le bruit de la rue à 17 h, la pente du terrain sous les pieds. Personne n'achète une maison sans y être entré, et je ne vous le proposerai jamais.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== ACCOMPAGNEMENT VENDEUR ===================== -->
+<section class="section fond-creme" id="vendre">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Vous vendez</span>
+        <h2>Six étapes, et vous savez toujours à laquelle on est rendu</h2>
+      </div>
+      <p>De la première visite d'évaluation jusqu'à la remise des clés. À chaque étape, ce qui est produit est un document que vous gardez, pas une promesse verbale.</p>
+    </div>
+
+    <div class="deux-col">
+      <div class="etapes">
+        <div class="etape">
+          <div class="etape-num"><b>01</b><i></i></div>
+          <h3>Évaluation et prix demandé</h3>
+          <p>Visite complète, mesures au laser, relevé des travaux faits et à faire. Comparaison avec les ventes conclues des 12 derniers mois dans un rayon serré — pas les prix demandés, les prix payés.</p>
+          <span class="etape-quoi"><b>Ce que vous recevez</b>Un rapport écrit avec la fourchette de prix et les cinq comparables qui la justifient.</span>
+        </div>
+        <div class="etape">
+          <div class="etape-num"><b>02</b><i></i></div>
+          <h3>Préparation de la propriété</h3>
+          <p>Ce qui se règle avant les photos : les petites réparations qui coûtent 200 $ et se voient sur chaque image, le désencombrement pièce par pièce, l'entrée et la façade.</p>
+          <span class="etape-quoi"><b>Ce que vous recevez</b>Une liste de tâches priorisée, avec ce qui rapporte et ce qui ne rapporte rien.</span>
+        </div>
+        <div class="etape">
+          <div class="etape-num"><b>03</b><i></i></div>
+          <h3>Photos, plan et visite 360</h3>
+          <p>Une demi-journée sur place : 30 à 40 photos, le plan coté de chaque niveau, la visite 360 et les prises de vue extérieures aux deux meilleures heures de la journée.</p>
+          <span class="etape-quoi"><b>Ce que vous recevez</b>Les fichiers en pleine résolution, à vous, même si le mandat se termine.</span>
+        </div>
+        <div class="etape">
+          <div class="etape-num"><b>04</b><i></i></div>
+          <h3>Mise en marché</h3>
+          <p>Fiche descriptive rédigée sans superlatif inutile, diffusion sur le service inter-agences, panneau, avis aux courtiers du secteur et aux acheteurs déjà inscrits sur ma liste d'attente.</p>
+          <span class="etape-quoi"><b>Ce que vous recevez</b>La fiche à relire et à corriger avant qu'elle sorte. Rien n'est publié sans votre accord.</span>
+        </div>
+        <div class="etape">
+          <div class="etape-num"><b>05</b><i></i></div>
+          <h3>Visites et suivi écrit</h3>
+          <p>Je suis présente à chaque visite. Les commentaires des visiteurs sont notés tels quels, y compris ceux qui font mal — c'est ce qui permet d'ajuster avant de perdre trois mois.</p>
+          <span class="etape-quoi"><b>Ce que vous recevez</b>Un compte rendu écrit chaque vendredi, même les semaines sans visite.</span>
+        </div>
+        <div class="etape">
+          <div class="etape-num"><b>06</b><i></i></div>
+          <h3>Offre, conditions, notaire</h3>
+          <p>Analyse de chaque promesse d'achat : le prix, mais aussi les conditions, les délais et la solidité du financement. Puis le suivi de l'inspection et l'envoi du dossier au notaire.</p>
+          <span class="etape-quoi"><b>Ce que vous recevez</b>Un tableau comparatif si plusieurs offres arrivent, et mon avis écrit sur chacune.</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="encart" style="background:var(--papier)">
+          <h4>Compris dans le mandat</h4>
+          <ul class="liste-coches">
+            <li>Séance photo professionnelle</li>
+            <li>Plan d'étage coté de tous les niveaux</li>
+            <li>Visite virtuelle 360</li>
+            <li>Rédaction de la fiche descriptive</li>
+            <li>Diffusion sur le service inter-agences</li>
+            <li>Panneau et affiche de visite libre</li>
+            <li>Présence à toutes les visites</li>
+            <li>Compte rendu écrit hebdomadaire</li>
+            <li>Analyse des promesses d'achat</li>
+            <li>Suivi jusqu'à la signature notariée</li>
+          </ul>
+        </div>
+        <div class="encart">
+          <h4>Ce qui reste à votre charge</h4>
+          <ul class="liste-coches liste-croix">
+            <li>Le certificat de localisation à jour</li>
+            <li>Les frais de quittance hypothécaire</li>
+            <li>Les réparations convenues après l'inspection</li>
+            <li>Le déménagement et le nettoyage final</li>
+          </ul>
+          <p style="font-size:.82rem;color:var(--gris);margin-top:16px">Ces frais existent avec n'importe quel courtier. Les afficher d'avance évite la mauvaise surprise deux jours avant le notaire.</p>
+        </div>
+        <a class="btn btn-sombre" style="display:block;text-align:center;margin-top:20px" href="#evaluation">Demander une évaluation</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ====================== ACCOMPAGNEMENT ACHETEUR ==================== -->
+<section class="section fond-papier" id="acheter">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Vous achetez</span>
+        <h2>Trois choses réglées avant que je vous montre quoi que ce soit</h2>
+      </div>
+      <p>Représenter un acheteur, ce n'est pas ouvrir des portes. C'est l'empêcher de tomber en amour avec une maison qu'il ne peut pas financer, ou dont le sous-sol prend l'eau depuis 2011.</p>
+    </div>
+
+    <div class="deux-col">
+      <div>
+        <div class="etapes" style="grid-template-columns:repeat(3,1fr)">
+          <div class="etape" style="border-bottom:0">
+            <div class="etape-num"><b>01</b><i></i></div>
+            <h3>Le budget réel, pas le montant préautorisé</h3>
+            <p>La banque autorise un montant. Ce montant ne tient pas compte des taxes, du chauffage, de l'assurance ni des 8 000 $ de frais de départ. On calcule le vrai coût mensuel avant de sortir.</p>
+          </div>
+          <div class="etape" style="border-bottom:0">
+            <div class="etape-num"><b>02</b><i></i></div>
+            <h3>Les secteurs, du plus cher au plus tranquille</h3>
+            <p>Six secteurs, six réalités : le temps de trajet le matin, l'école qui dessert la rue, le déneigement, la collecte. On élimine ensemble avant de visiter, pas après.</p>
+          </div>
+          <div class="etape" style="border-bottom:0;border-right:0">
+            <div class="etape-num"><b>03</b><i></i></div>
+            <h3>La liste des non-négociables</h3>
+            <p>Trois éléments sur lesquels vous ne céderez pas, et trois sur lesquels vous pouvez céder. Écrit, signé, relu à chaque visite. C'est ce qui empêche un coup de cœur de coûter 40 000 $.</p>
+          </div>
+        </div>
+
+        <div class="echeancier" style="margin-top:34px">
+          <h3 style="font-size:1.25rem;font-family:var(--sans);font-weight:600;letter-spacing:0;margin-bottom:6px">De la première visite aux clés</h3>
+          <p style="font-size:.86rem;color:var(--gris);margin-bottom:26px">Échéancier typique d'une transaction résidentielle sans complication particulière. Les délais se négocient : ils sont écrits dans la promesse d'achat, jamais laissés au hasard.</p>
+
+          <div class="eche-axe" aria-hidden="true">
+            <span style="left:0">Jour 0</span>
+            <span style="left:25%">15</span>
+            <span style="left:50%">30</span>
+            <span style="left:75%">45</span>
+            <span style="left:100%">60</span>
+          </div>
+
+          <div class="eche-ligne">
+            <b>Préautorisation<i>jours 0 à 7</i></b>
+            <span class="eche-piste"><i class="eche-bar" style="left:0;width:11.7%"></i></span>
+          </div>
+          <div class="eche-ligne">
+            <b>Visites ciblées<i>jours 5 à 28</i></b>
+            <span class="eche-piste"><i class="eche-bar" style="left:8.3%;width:38.3%"></i></span>
+          </div>
+          <div class="eche-ligne">
+            <b>Promesse d'achat<i>jours 28 à 31</i></b>
+            <span class="eche-piste"><i class="eche-bar eche-bar--acc" style="left:46.7%;width:5%"></i></span>
+          </div>
+          <div class="eche-ligne">
+            <b>Inspection préachat<i>jours 31 à 41</i></b>
+            <span class="eche-piste"><i class="eche-bar" style="left:51.7%;width:16.7%"></i></span>
+          </div>
+          <div class="eche-ligne">
+            <b>Financement final<i>jours 33 à 50</i></b>
+            <span class="eche-piste"><i class="eche-bar" style="left:55%;width:28.3%"></i></span>
+          </div>
+          <div class="eche-ligne">
+            <b>Dossier chez le notaire<i>jours 48 à 58</i></b>
+            <span class="eche-piste"><i class="eche-bar" style="left:80%;width:16.7%"></i></span>
+          </div>
+          <div class="eche-ligne">
+            <b>Signature et clés<i>jours 58 à 60</i></b>
+            <span class="eche-piste"><i class="eche-bar eche-bar--fin" style="left:96.7%;width:3.3%"></i></span>
+          </div>
+
+          <p class="eche-note">Une condition d'inspection court normalement sur 10 jours ouvrables, une condition de financement sur 15 à 20. Si le vendeur exige moins, c'est négociable — et s'il refuse de négocier, c'est une information en soi.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="encart">
+          <h4>À avoir en main avant de visiter</h4>
+          <ul class="liste-coches">
+            <li>Lettre de préautorisation datée de moins de 90 jours</li>
+            <li>Preuve de mise de fonds et provenance des sommes</li>
+            <li>Deux dernières déclarations de revenus</li>
+            <li>Talons de paie ou états financiers si travailleur autonome</li>
+            <li>Pièce d'identité valide</li>
+            <li>Nom du notaire si vous en avez déjà un</li>
+          </ul>
+        </div>
+        <div class="encart" style="background:var(--papier)">
+          <h4>Ce que je vérifie avant l'offre</h4>
+          <ul class="liste-coches">
+            <li>Le certificat de localisation et ses irrégularités</li>
+            <li>Le zonage et ce qui peut se construire autour</li>
+            <li>L'historique de la propriété au registre foncier</li>
+            <li>Les déclarations du vendeur, ligne par ligne</li>
+            <li>Les taxes réelles, pas celles de l'ancien rôle</li>
+            <li>Les servitudes, droits de passage et empiètements</li>
+          </ul>
+        </div>
+        <div class="encart" style="border-left:4px solid var(--laiton)">
+          <h4>Combien ça vous coûte</h4>
+          <p style="font-size:.92rem;color:var(--gris);margin:0">Un acheteur qui achète une propriété inscrite avec un courtier ne verse rien de plus au moment de l'achat : la rétribution du courtage est prévue au contrat de courtage du vendeur. Les frais qui vous reviennent sont ceux du notaire, de l'inspecteur, de l'évaluateur si la banque l'exige, et la taxe de mutation qui arrive quelques semaines après la vente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ======================== LE MARCHÉ EN CHIFFRES ==================== -->
+<section class="section fond-creme" id="marche">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Le marché, secteur par secteur</span>
+        <h2>Les chiffres qui décident du prix demandé</h2>
+      </div>
+      <p>Relevés du service inter-agences pour le territoire couvert, sur les 90 derniers jours. Ce sont des ventes conclues, pas des prix affichés. Chiffres arrondis, fournis à titre indicatif.</p>
+    </div>
+
+    <div class="duo-graph">
+      <div class="graph">
+        <h3>Prix médian au pied carré habitable</h3>
+        <p class="graph-sous">Maisons unifamiliales détachées, sous-sol exclu du calcul</p>
+        <div class="colonnes">
+          <div class="grille-h" aria-hidden="true">
+            <i style="top:0"></i><b style="top:0">400 $</b>
+            <i style="top:25%"></i><b style="top:25%">300 $</b>
+            <i style="top:50%"></i><b style="top:50%">200 $</b>
+            <i style="top:75%"></i><b style="top:75%">100 $</b>
+          </div>
+          <div class="col-barre col-barre--fort" style="height:83.7%"><b>335 $</b></div>
+          <div class="col-barre" style="height:78%"><b>312 $</b></div>
+          <div class="col-barre" style="height:67%"><b>268 $</b></div>
+          <div class="col-barre" style="height:60.2%"><b>241 $</b></div>
+          <div class="col-barre" style="height:56.5%"><b>226 $</b></div>
+          <div class="col-barre" style="height:49.5%"><b>198 $</b></div>
+          <div class="moyenne" style="bottom:65.7%"><span>Moyenne 263 $</span></div>
+        </div>
+        <div class="colonnes-noms">
+          <span>Plateau-des-Cèdres</span>
+          <span>Val-des-Ormes</span>
+          <span>Coteau-Bélanger</span>
+          <span>Secteur nord</span>
+          <span>Le Vieux-Rang</span>
+          <span>Rivière-aux-Trembles</span>
+        </div>
+        <p class="graph-note">Un écart de 137 $ le pied carré entre le secteur le plus cher et le moins cher, à qualité de construction comparable. Ce n'est pas la maison qui coûte cher, c'est l'endroit où elle est posée.</p>
+      </div>
+
+      <div class="graph">
+        <h3>Délai de vente médian</h3>
+        <p class="graph-sous">Du jour de la mise en marché à l'offre acceptée, en jours</p>
+        <ul class="barres-h">
+          <li><b>Plateau-des-Cèdres</b><span class="piste"><i style="width:36.7%"></i></span><em>22 j</em></li>
+          <li><b>Val-des-Ormes</b><span class="piste"><i style="width:48.3%"></i></span><em>29 j</em></li>
+          <li><b>Coteau-Bélanger</b><span class="piste"><i style="width:56.7%"></i></span><em>34 j</em></li>
+          <li><b>Secteur nord</b><span class="piste"><i style="width:68.3%"></i></span><em>41 j</em></li>
+          <li><b>Le Vieux-Rang</b><span class="piste"><i style="width:76.7%"></i></span><em>46 j</em></li>
+          <li><b>Rivière-aux-Trembles</b><span class="piste"><i style="width:96.7%"></i></span><em>58 j</em></li>
+        </ul>
+        <p class="graph-note">Une propriété correctement évaluée dès le premier jour se vend dans le premier tiers de cette fourchette. Une propriété surévaluée de 8 % passe le double du temps sur le marché, puis se vend sous sa valeur : le marché la note comme «&nbsp;quelque chose ne va pas&nbsp;».</p>
+      </div>
+    </div>
+
+    <table class="tabl-marche">
+      <caption class="sur" style="text-align:left;padding:18px 20px 0">Les 90 derniers jours, secteur par secteur</caption>
+      <thead>
+        <tr>
+          <th scope="col">Secteur</th>
+          <th scope="col">Inscriptions actives</th>
+          <th scope="col">Ventes conclues</th>
+          <th scope="col">Délai médian</th>
+          <th scope="col">Prix médian</th>
+          <th scope="col">Écart au prix demandé</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Plateau-des-Cèdres</th><td>14</td><td>21</td><td>22 j</td><td>712 000 $</td><td class="pos">+0,4 %</td></tr>
+        <tr><th scope="row">Val-des-Ormes</th><td>26</td><td>33</td><td>29 j</td><td>589 000 $</td><td class="neg">−1,2 %</td></tr>
+        <tr><th scope="row">Coteau-Bélanger</th><td>19</td><td>17</td><td>34 j</td><td>498 000 $</td><td class="neg">−2,4 %</td></tr>
+        <tr><th scope="row">Secteur nord</th><td>31</td><td>16</td><td>41 j</td><td>412 000 $</td><td class="neg">−3,1 %</td></tr>
+        <tr><th scope="row">Le Vieux-Rang</th><td>12</td><td>6</td><td>46 j</td><td>377 000 $</td><td class="neg">−4,8 %</td></tr>
+        <tr><th scope="row">Rivière-aux-Trembles</th><td>17</td><td>7</td><td>58 j</td><td>341 000 $</td><td class="neg">−6,2 %</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================ QUARTIERS ============================ -->
+<section class="section fond-papier" id="quartiers">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Les six secteurs</span>
+        <h2>Ce qu'il y a autour, à pied et en auto</h2>
+      </div>
+      <p>Schéma des services du noyau villageois de Val-des-Ormes. Les distances sont mesurées depuis l'intersection du boulevard des Ormes et du chemin du Vieux-Moulin.</p>
+    </div>
+
+    <div class="bloc-quartiers">
+      <div>
+        <div class="carte" role="img" aria-label="Carte schématique du noyau villageois : boulevard des Ormes d'est en ouest, chemin du Vieux-Moulin du nord au sud, école primaire et école secondaire, épicerie, pharmacie, aréna, clinique, deux parcs, la rivière aux Trembles au sud, et un rayon de dix minutes de marche autour de l'intersection principale.">
+          <!-- rues -->
+          <span class="rue rue-h" style="top:22%"></span>
+          <span class="rue rue-h rue--maj" style="top:52%"></span>
+          <span class="rue rue-h" style="top:80%"></span>
+          <span class="rue rue-v" style="left:14%"></span>
+          <span class="rue rue-v rue--maj" style="left:38%"></span>
+          <span class="rue rue-v" style="left:68%"></span>
+
+          <!-- parcs et rivière -->
+          <span class="parc" style="left:70%;top:26%;width:28%;height:24%"><span>Parc-nature des Ormes</span></span>
+          <span class="parc" style="left:70%;top:58%;width:28%;height:15%"><span>Terrains sportifs</span></span>
+          <span class="riviere"></span>
+
+          <!-- noms de rues -->
+          <span class="rue-nom" style="left:70%;top:53.2%">Boulevard des Ormes</span>
+          <span class="rue-nom" style="left:44%;top:23.2%">Rue Ferland Ouest</span>
+          <span class="rue-nom rue-nom--v" style="left:calc(38% + 3px);top:74%">Chemin du Vieux-Moulin</span>
+          <span class="rue-nom" style="left:20%;top:89%">Rivière aux Trembles</span>
+
+          <!-- rayon de marche -->
+          <span class="cercle-marche" style="left:6%;top:8%"><span>10 minutes à pied</span></span>
+
+          <!-- points d'intérêt -->
+          <span class="poi" style="left:16%;top:12%"><i></i><span>Bibliothèque municipale</span></span>
+          <span class="poi" style="left:41%;top:4%"><i></i><span>École secondaire du Coteau</span></span>
+          <span class="poi" style="left:1%;top:26%"><i></i><span>Clinique médicale</span></span>
+          <span class="poi" style="left:16%;top:36%"><i></i><span>École primaire des Ormes</span></span>
+          <span class="poi poi--laiton" style="left:41%;top:26%"><i></i><span>Arrêt d'autobus express</span></span>
+          <span class="poi" style="left:41%;top:38%"><i></i><span>Épicerie et pharmacie</span></span>
+          <span class="poi" style="left:16%;top:62%"><i></i><span>Centre de la petite enfance</span></span>
+          <span class="poi" style="left:41%;top:56%"><i></i><span>Aréna et piscine</span></span>
+          <span class="poi poi--laiton" style="left:41%;top:70%"><i></i><span>Halte et piste cyclable</span></span>
+
+          <!-- secteurs -->
+          <span class="secteur-badge" style="left:1%;top:2%"><b>1</b>Val-des-Ormes</span>
+          <span class="secteur-badge" style="right:1%;top:2%"><b>2</b>Plateau-des-Cèdres</span>
+          <span class="secteur-badge" style="left:1%;top:80%"><b>3</b>Le Vieux-Rang</span>
+          <span class="secteur-badge" style="right:1%;top:88%"><b>4</b>Rivière-aux-Trembles</span>
+
+          <span class="carte-echelle" style="left:38%;right:auto">
+            <span class="echelle-barre" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            <span>0 — 500 m</span>
+          </span>
+        </div>
+        <ul class="carte-legende">
+          <li><i class="i-pin"></i>Service ou institution</li>
+          <li><i class="i-laiton"></i>Transport et loisirs</li>
+          <li><i class="i-parc"></i>Parc et espace vert</li>
+          <li><i class="i-riv"></i>Cours d'eau</li>
+        </ul>
+        <p style="font-size:.82rem;color:var(--gris);margin-top:18px;padding-top:16px;border-top:1px solid var(--ligne)">Schéma indicatif, dessiné à l'échelle approximative. Il sert à situer les services les uns par rapport aux autres, pas à mesurer un terrain : pour ça, il y a le certificat de localisation.</p>
+      </div>
+
+      <div>
+        <div class="encart" style="background:var(--papier)">
+          <h4>Distances depuis le noyau villageois</h4>
+          <ul class="lignes">
+            <li><span>École primaire des Ormes</span><b>8 min à pied</b></li>
+            <li><span>École secondaire du Coteau</span><b>4 min en auto</b></li>
+            <li><span>Épicerie et pharmacie</span><b>6 min à pied</b></li>
+            <li><span>Arrêt d'autobus express</span><b>3 min à pied</b></li>
+            <li><span>Clinique médicale</span><b>9 min à pied</b></li>
+            <li><span>Aréna et piscine</span><b>12 min à pied</b></li>
+            <li><span>Entrée de l'autoroute</span><b>7 min en auto</b></li>
+            <li><span>Hôpital le plus près</span><b>24 min en auto</b></li>
+          </ul>
+        </div>
+        <div class="encart">
+          <h4>Ce que la municipalité fournit</h4>
+          <ul class="lignes">
+            <li><span>Collecte des ordures</span><b>Aux 2 semaines</b></li>
+            <li><span>Recyclage et compost</span><b>Chaque semaine</b></li>
+            <li><span>Déneigement des rues</span><b>Inclus aux taxes</b></li>
+            <li><span>Déneigement des entrées</span><b>À vos frais</b></li>
+            <li><span>Aqueduc et égout</span><b>Selon le secteur</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="grille-quartiers">
+        <article class="quartier">
+          <div class="quartier-tete">
+            <h3>Val-des-Ormes</h3>
+            <span class="quartier-prix">589 000 $ médian</span>
+          </div>
+          <p>Le noyau. Bungalows des années 70 sur grands terrains, entrecoupés de constructions récentes en infill. Tout se fait à pied à partir du boulevard, ce qui explique l'écart de prix avec le Vieux-Rang à trois kilomètres.</p>
+          <ul class="quartier-faits">
+            <li><b>2</b>Écoles primaires, une secondaire</li>
+            <li><b>8 min</b>À pied de l'épicerie</li>
+            <li><b>22 min</b>Vers le centre-ville en auto</li>
+          </ul>
+        </article>
+
+        <article class="quartier">
+          <div class="quartier-tete">
+            <h3>Plateau-des-Cèdres</h3>
+            <span class="quartier-prix">712 000 $ médian</span>
+          </div>
+          <p>Développement de 2010 à aujourd'hui, maisons à étages sur terrains de 6 000 à 9 000 pi². Rues en boucle, aucun transit, et le parc-nature au bout. C'est le secteur le plus cher et le plus rapide à vendre.</p>
+          <ul class="quartier-faits">
+            <li><b>1</b>École primaire neuve</li>
+            <li><b>4 min</b>De l'accès à l'autoroute</li>
+            <li><b>Aucun</b>Trottoir sur les rues en boucle</li>
+          </ul>
+        </article>
+
+        <article class="quartier">
+          <div class="quartier-tete">
+            <h3>Le Vieux-Rang</h3>
+            <span class="quartier-prix">377 000 $ médian</span>
+          </div>
+          <p>Maisons d'avant 1960, quelques-unes centenaires, sur des terrains longs et étroits hérités du découpage agricole. Puits et fosses septiques dans la moitié des cas : il faut lire les attestations avant de faire une offre.</p>
+          <ul class="quartier-faits">
+            <li><b>12 min</b>De l'école primaire en auto</li>
+            <li><b>1</b>Passage d'autobus scolaire</li>
+            <li><b>50 %</b>Des maisons hors réseau d'aqueduc</li>
+          </ul>
+        </article>
+
+        <article class="quartier">
+          <div class="quartier-tete">
+            <h3>Rivière-aux-Trembles</h3>
+            <span class="quartier-prix">341 000 $ médian</span>
+          </div>
+          <p>Le secteur le plus abordable, et le plus lent à vendre. Une partie des terrains touche la zone inondable cartographiée : elle est publique, je la vérifie systématiquement avant de vous laisser déposer une offre.</p>
+          <ul class="quartier-faits">
+            <li><b>58 j</b>Délai de vente médian</li>
+            <li><b>Zone</b>Inondable à vérifier au cas par cas</li>
+            <li><b>31 min</b>Vers le centre-ville en auto</li>
+          </ul>
+        </article>
+    </div>
+  </div>
+</section>
+<!-- ====================== ÉVALUATION GRATUITE ======================== -->
+<section class="section fond-pin" id="evaluation">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Évaluation gratuite</span>
+        <h2>Savoir ce que vaut votre maison, même si vous ne vendez pas cette année</h2>
+      </div>
+      <p>Une visite d'une heure, un rapport écrit dans les trois jours ouvrables. Aucun engagement, aucun contrat à signer sur place, et je ne rappelle pas trois fois par mois.</p>
+    </div>
+
+    <div class="bloc-form">
+      <form class="form-carte" action="#evaluation" method="post">
+        <div class="form-grille">
+          <div class="champ-l">
+            <label for="f-nom">Nom complet</label>
+            <input id="f-nom" name="nom" type="text" placeholder="Prénom et nom" required>
+          </div>
+          <div class="champ-l">
+            <label for="f-tel">Téléphone</label>
+            <input id="f-tel" name="telephone" type="tel" placeholder="000 000-0000">
+          </div>
+          <div class="champ-l">
+            <label for="f-courriel">Courriel</label>
+            <input id="f-courriel" name="courriel" type="email" placeholder="courriel@exemple.ca" required>
+          </div>
+          <div class="champ-l">
+            <label for="f-adresse">Adresse de la propriété</label>
+            <input id="f-adresse" name="adresse" type="text" placeholder="Numéro et rue">
+          </div>
+          <div class="champ-l">
+            <label for="f-secteur">Secteur</label>
+            <select id="f-secteur" name="secteur">
+              <option>Val-des-Ormes</option>
+              <option>Coteau-Bélanger</option>
+              <option>Secteur nord</option>
+              <option>Plateau-des-Cèdres</option>
+              <option>Le Vieux-Rang</option>
+              <option>Rivière-aux-Trembles</option>
+              <option>Ailleurs — à valider</option>
+            </select>
+          </div>
+          <div class="champ-l">
+            <label for="f-type">Type de propriété</label>
+            <select id="f-type" name="type">
+              <option>Plain-pied</option>
+              <option>Maison à étages</option>
+              <option>Cottage</option>
+              <option>Jumelé ou en rangée</option>
+              <option>Copropriété</option>
+              <option>Fermette ou terrain</option>
+            </select>
+          </div>
+          <div class="champ-l">
+            <label for="f-annee">Année de construction</label>
+            <input id="f-annee" name="annee" type="text" inputmode="numeric" placeholder="Approximative, c'est correct">
+          </div>
+          <div class="champ-l">
+            <label for="f-superficie">Superficie habitable</label>
+            <input id="f-superficie" name="superficie" type="text" placeholder="En pieds carrés, sous-sol exclu">
+          </div>
+          <div class="champ-l">
+            <label for="f-echeance">Quand pensez-vous vendre&nbsp;?</label>
+            <select id="f-echeance" name="echeance">
+              <option>Dans les 3 prochains mois</option>
+              <option>Dans 3 à 12 mois</option>
+              <option>Dans 1 à 3 ans</option>
+              <option>Je veux juste savoir la valeur</option>
+            </select>
+          </div>
+          <div class="champ-l">
+            <label for="f-visite">Moment qui vous convient</label>
+            <select id="f-visite" name="visite">
+              <option>En semaine, le jour</option>
+              <option>En semaine, en soirée</option>
+              <option>Le samedi</option>
+              <option>À convenir par téléphone</option>
+            </select>
+          </div>
+          <div class="champ-l champ-l--large">
+            <label for="f-message">Ce que je devrais savoir avant de passer</label>
+            <textarea id="f-message" name="message" placeholder="Travaux récents, sinistre déjà réglé, servitude, locataire en place, animal dans la maison… Tout ce qui change l'analyse."></textarea>
+          </div>
+        </div>
+
+        <label class="consent" for="f-consent">
+          <input id="f-consent" name="consentement" type="checkbox" required>
+          <span>J'accepte d'être contacté au sujet de cette demande. Mes coordonnées ne servent qu'à ça : elles ne sont ni revendues, ni versées à une liste d'envoi sans mon accord.</span>
+        </label>
+
+        <div class="form-bas">
+          <button class="btn btn-plein" type="submit">Demander l'évaluation</button>
+          <p>Réponse par téléphone dans les 24 heures ouvrables. Si vous préférez écrire directement : <a href="mailto:courriel@exemple.ca" style="color:var(--pin)">courriel@exemple.ca</a></p>
+        </div>
+      </form>
+
+      <div class="form-cote">
+        <h3>Ce que contient le rapport</h3>
+        <ul class="liste-coches">
+          <li>La fourchette de prix réaliste, en dollars, pas en «&nbsp;autour de&nbsp;»</li>
+          <li>Les cinq ventes conclues qui servent de comparables, avec leurs adresses</li>
+          <li>Les écarts entre votre propriété et chacune d'elles</li>
+          <li>Ce qui fait monter le prix chez vous, et ce qui le retient</li>
+          <li>Les travaux qui se rentabilisent avant la mise en vente, et ceux qui ne se rentabilisent jamais</li>
+          <li>Le délai de vente probable selon le prix visé</li>
+          <li>L'estimation du montant net qui vous reste après remboursement et frais</li>
+        </ul>
+
+        <div class="rappel">
+          <b>Ce n'est pas une évaluation agréée</b>
+          <p>Un rapport de courtier sert à fixer un prix demandé. Il ne remplace pas le rapport d'un évaluateur agréé, exigé par certaines institutions financières et par les tribunaux. Si c'est ce qu'il vous faut, je vous le dis et je vous réfère.</p>
+        </div>
+
+        <div class="rappel">
+          <b>Déjà en contrat avec un autre courtier&nbsp;?</b>
+          <p>Ne remplissez pas ce formulaire. Un contrat de courtage exclusif en cours vous lie, et une double sollicitation peut vous coûter une double rétribution. Attendez l'échéance : c'est votre intérêt, pas le mien.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== FAQ ============================== -->
+<section class="section fond-creme" id="faq">
+  <div class="wrap">
+    <div class="tete">
+      <div>
+        <span class="sur">Questions fréquentes</span>
+        <h2>Les huit questions qu'on me pose à chaque première rencontre</h2>
+      </div>
+      <p>Les réponses ci-dessous décrivent la pratique courante au Québec pour une transaction résidentielle ordinaire. Votre situation peut différer : c'est exactement pour ça qu'on se parle avant de signer quoi que ce soit.</p>
+    </div>
+
+    <div class="faq">
+      <div class="faq-item">
+        <h3><i>01</i>Combien de temps ça prend, vendre&nbsp;?</h3>
+        <p>Dans les six secteurs couverts, le délai médian entre la mise en marché et l'offre acceptée va de 22 à 58 jours selon l'endroit. Il faut ensuite compter de 45 à 60 jours de plus pour les conditions et la signature chez le notaire. Une propriété correctement évaluée dès le premier jour se vend dans le premier tiers de la fourchette de son secteur.</p>
+      </div>
+      <div class="faq-item">
+        <h3><i>02</i>Quels documents rassembler avant de mettre en vente&nbsp;?</h3>
+        <p>Le certificat de localisation le plus récent, les comptes de taxes municipales et scolaires, le relevé hypothécaire, les factures des travaux majeurs des dix dernières années, les attestations de conformité de l'installation septique et du puits s'il y a lieu, et la déclaration de copropriété si c'est un condo. Manquant : le certificat de localisation est celui qui retarde le plus de transactions.</p>
+      </div>
+      <div class="faq-item">
+        <h3><i>03</i>L'inspection préachat est-elle obligatoire&nbsp;?</h3>
+        <p>Non, aucune loi ne l'impose. Mais renoncer à l'inspection pour rendre une offre plus attirante revient à acheter sans savoir ce qu'il y a derrière les murs, et ça se retourne contre l'acheteur autant que contre le vendeur si un vice apparaît. Je recommande une inspection avec un inspecteur détenteur d'une assurance responsabilité, et je fournis trois noms sans en tirer quoi que ce soit.</p>
+      </div>
+      <div class="faq-item">
+        <h3><i>04</i>Faut-il être préautorisé avant de visiter&nbsp;?</h3>
+        <p>Oui, et pas seulement pour la forme. La préautorisation fixe votre budget réel, elle bloque un taux pendant 90 à 120 jours, et elle rend votre offre crédible quand deux promesses d'achat arrivent le même soir. Une offre sans préautorisation passe en deuxième, à prix égal, à peu près toujours.</p>
+      </div>
+      <div class="faq-item">
+        <h3><i>05</i>Que se passe-t-il entre l'offre acceptée et le notaire&nbsp;?</h3>
+        <p>Les conditions se lèvent une à une : inspection, financement final, examen des documents, parfois la vente de la propriété actuelle de l'acheteur. Chaque condition a une date d'échéance écrite dans la promesse d'achat. Une fois toutes les conditions levées, le dossier part chez le notaire, qui vérifie les titres et prépare l'acte. Comptez de 45 à 60 jours au total.</p>
+      </div>
+      <div class="faq-item">
+        <h3><i>06</i>Qui paie le notaire, l'inspecteur, l'arpenteur&nbsp;?</h3>
+        <p>L'acheteur choisit et paie le notaire, ainsi que l'inspection préachat et l'évaluation exigée par sa banque. Le vendeur paie le certificat de localisation à jour et les frais de quittance de son hypothèque. La taxe de mutation — la «&nbsp;taxe de bienvenue&nbsp;» — est facturée à l'acheteur par la municipalité quelques semaines après la vente : elle surprend encore beaucoup de monde.</p>
+      </div>
+      <div class="faq-item">
+        <h3><i>07</i>Faut-il rénover avant de vendre&nbsp;?</h3>
+        <p>Rarement au complet, souvent un peu. La peinture, l'éclairage, les poignées, le calfeutrage et l'entrée extérieure se rentabilisent presque toujours. Une cuisine neuve à 40 000 $ ne se récupère pratiquement jamais au prix de vente : l'acheteur qui la voulait autrement la refera. Je passe pièce par pièce et je vous dis où arrêter.</p>
+      </div>
+      <div class="faq-item">
+        <h3><i>08</i>Puis-je acheter avant d'avoir vendu&nbsp;?</h3>
+        <p>Oui, avec une promesse d'achat conditionnelle à la vente de votre propriété actuelle. Le vendeur garde alors le droit de continuer à recevoir des offres et de vous donner un délai court pour vous décider. C'est une position moins forte, mais elle évite deux hypothèques en même temps. On regarde les deux scénarios avec des chiffres avant de choisir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- =========================== CONTACT ============================== -->
+<section class="section section--serre fond-papier" id="contact">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <span class="sur">Prendre rendez-vous</span>
+        <h2>On se parle vingt minutes, et vous saurez déjà quoi faire</h2>
+        <p>Que vous soyez à six mois de vendre, en train de comparer deux secteurs ou simplement curieux de savoir où en est votre valeur : appelez. Il n'y a pas de présentation en douze diapositives au bout du fil.</p>
+      </div>
+      <ul class="contact-coord">
+        <li><span>Téléphone</span><b><a href="tel:0000000000">000 000-0000</a></b></li>
+        <li><span>Courriel</span><b><a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></b></li>
+        <li><span>Bureau</span><b>Adresse sur demande</b></li>
+        <li><span>Disponibilités</span><b>Lundi au samedi</b></li>
+        <li><span>Permis</span><b>0000</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== PIED DE PAGE ========================== -->
+<footer class="pied">
+  <div class="wrap">
+    <div class="pied-haut">
+      <div class="pied-marque">
+        <span class="logo">
+          <span class="logo-marque" aria-hidden="true"></span>
+          <span>
+            <span class="logo-nom">Karine Deschamps-Fortier</span>
+            <span class="logo-sous">Ancrage Immobilier</span>
+          </span>
+        </span>
+        <p>Courtier immobilier résidentiel à Val-des-Ormes et dans les cinq secteurs limitrophes. En pratique depuis 2011.</p>
+        <span class="pied-permis">Permis 0000</span>
+      </div>
+
+      <div>
+        <h4>Inscriptions</h4>
+        <ul>
+          <li><a href="#inscriptions">Tout ce qui est à vendre</a></li>
+          <li><a href="#inscriptions">Avec visite 360</a></li>
+          <li><a href="#inscriptions">Offre acceptée</a></li>
+          <li><a href="#inscriptions">Vendues récemment</a></li>
+          <li><a href="#vedette">Propriété vedette</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#vendre">Accompagnement vendeur</a></li>
+          <li><a href="#acheter">Accompagnement acheteur</a></li>
+          <li><a href="#evaluation">Évaluation gratuite</a></li>
+          <li><a href="#visite">Visite virtuelle 360</a></li>
+          <li><a href="#marche">Le marché en chiffres</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Secteurs</h4>
+        <ul>
+          <li><a href="#quartiers">Val-des-Ormes</a></li>
+          <li><a href="#quartiers">Plateau-des-Cèdres</a></li>
+          <li><a href="#quartiers">Coteau-Bélanger</a></li>
+          <li><a href="#quartiers">Secteur nord</a></li>
+          <li><a href="#quartiers">Le Vieux-Rang</a></li>
+          <li><a href="#quartiers">Rivière-aux-Trembles</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Rejoindre</h4>
+        <ul>
+          <li><a href="tel:0000000000">000 000-0000</a></li>
+          <li><a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></li>
+          <li>Adresse sur demande</li>
+          <li>Du lundi au samedi</li>
+          <li><a href="#faq">Questions fréquentes</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pied-mentions">
+      <p>Karine Deschamps-Fortier, courtier immobilier résidentiel, permis 0000. Membre de la bannière Ancrage Immobilier, agence immobilière indépendante et autonome. Pratique encadrée par l'organisme provincial de surveillance du courtage immobilier et couverte par une police d'assurance responsabilité professionnelle. Inscriptions diffusées sur le service inter-agences.</p>
+      <p>Les renseignements affichés — superficies, années de construction, taxes, évaluations municipales — proviennent du rôle d'évaluation et des déclarations du vendeur. Ils sont fournis à titre indicatif, sans garantie, et doivent être vérifiés par l'acheteur et son notaire. Les prix demandés peuvent changer sans préavis. Les délais et statistiques de marché portent sur le territoire couvert et ne constituent pas une promesse de résultat.</p>
+    </div>
+
+    <div class="pied-bas">
+      <p><b>Site de démonstration.</b> L'agence, la bannière, le courtier, les propriétés, les adresses, les numéros d'inscription et les données de marché présentés sur cette page sont fictifs et servent uniquement à illustrer une mise en page destinée au courtage immobilier. Le téléphone, le courriel et le numéro de permis sont des valeurs de remplacement. Aucune transaction ne peut être conclue à partir de cette page.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

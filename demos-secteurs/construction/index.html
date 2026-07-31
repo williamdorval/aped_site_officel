@@ -1,0 +1,1679 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Construction Lattier — Entrepreneur général, Rive-Nord et Basses-Laurentides</title>
+<meta name="description" content="Entrepreneur général en construction et rénovation résidentielle. Agrandissement, cuisine, salle de bain, sous-sol, toiture et fondation, dans un rayon de 45 km autour de Sainte-Thérèse.">
+<style>
+/* ======================================================================
+   CONSTRUCTION LATTIER — feuille unique
+   Matières : papier, encre, ambre de sécurité, bleu de plan.
+   Aucun coin arrondi, aucune ombre, aucun dégradé de fondu.
+   Les seules trames sont des hachures de dessin technique.
+   ====================================================================== */
+
+:root{
+  --encre:#15181b;
+  --encre-2:#22272c;
+  --encre-3:#333a41;
+  --gris:#5c666e;
+  --gris-clair:#8c959c;
+  --papier:#f7f4ef;
+  --papier-2:#eee9e0;
+  --papier-3:#e2dbcd;
+  --trait:#cdc4b3;
+  --trait-faible:#e0d9cb;
+  --trait-sombre:#3c434a;
+  --ambre:#e08a12;
+  --ambre-vif:#f5ac2b;
+  --ambre-fonce:#8a4f08;
+  --bleu:#2f4b5c;
+  --bleu-clair:#587a8e;
+
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono","Consolas","Liberation Mono",monospace;
+  --serif:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+
+  --hach-isolant:repeating-linear-gradient(-45deg,#cdc3b1 0 1px,transparent 1px 7px);
+  --hach-sol:repeating-linear-gradient(45deg,#b5a892 0 1px,transparent 1px 6px);
+  --hach-beton:repeating-linear-gradient(45deg,#9aa6ad 0 1px,transparent 1px 5px);
+  --hach-bois:repeating-linear-gradient(90deg,#c9b48c 0 1px,transparent 1px 6px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--papier);
+  color:var(--encre);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.7;
+  font-weight:400;
+  text-rendering:optimizeLegibility;
+}
+img{display:block;max-width:100%}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ambre);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+
+/* ---------- ossature ---------- */
+.env{max-width:1160px;margin:0 auto;padding:0 32px}
+section{scroll-margin-top:16px}
+.bloc{padding:96px 0}
+.bloc--court{padding:64px 0}
+.bloc--papier2{background:var(--papier-2)}
+.bloc--encre{background:var(--encre);color:var(--papier)}
+.bloc--encre a{color:var(--papier)}
+
+/* ---------- typographie ---------- */
+.sur-titre{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ambre-fonce);font-weight:600;
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;
+}
+.sur-titre::before{content:"";width:26px;height:3px;background:var(--ambre);flex:none}
+.bloc--encre .sur-titre,.heros .sur-titre,.pied .sur-titre{color:var(--ambre-vif)}
+h1,h2,h3,h4{font-weight:800;letter-spacing:-.02em;line-height:1.12}
+h2{font-size:40px;max-width:20ch}
+h3{font-size:21px;letter-spacing:-.01em}
+h4{font-size:15.5px;letter-spacing:0}
+.chapeau{font-family:var(--serif);font-size:19.5px;line-height:1.62;color:var(--encre-2);max-width:62ch}
+.bloc--encre .chapeau,.heros .chapeau{color:#cfc9bf}
+.tete-section{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:end;margin-bottom:52px}
+.tete-section .chapeau{padding-bottom:4px}
+p+p{margin-top:14px}
+.petit{font-size:13.5px;line-height:1.6;color:var(--gris)}
+.bloc--encre .petit,.heros .petit{color:var(--gris-clair)}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase}
+.legende{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gris);margin-top:10px}
+.bloc--encre .legende{color:var(--gris-clair)}
+
+/* ---------- boutons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:15px 24px;border:1px solid var(--encre);background:var(--encre);color:var(--papier);
+  font-weight:700;font-size:14.5px;letter-spacing:.01em;text-decoration:none;cursor:pointer;
+  transition:background .12s linear,color .12s linear,border-color .12s linear;
+}
+.btn:hover{background:var(--encre-3);border-color:var(--encre-3)}
+.btn--ambre{background:var(--ambre);border-color:var(--ambre);color:var(--encre)}
+.btn--ambre:hover{background:var(--ambre-vif);border-color:var(--ambre-vif);color:var(--encre)}
+.btn--vide{background:transparent;color:var(--encre);border-color:var(--encre)}
+.btn--vide:hover{background:var(--encre);color:var(--papier)}
+.bloc--encre .btn--vide,.heros .btn--vide{color:var(--papier);border-color:#5b636a}
+.bloc--encre .btn--vide:hover,.heros .btn--vide:hover{background:var(--papier);color:var(--encre);border-color:var(--papier)}
+.btn::after{content:"";width:14px;height:1px;background:currentColor;flex:none}
+
+/* ---------- marque ---------- */
+.marque{width:36px;height:36px;background:var(--encre);position:relative;flex:none}
+.marque::before{
+  content:"";position:absolute;inset:7px;background:var(--ambre);
+  clip-path:polygon(50% 0,100% 46%,100% 70%,50% 24%,0 70%,0 46%);
+}
+.marque--clair{background:var(--ambre)}
+.marque--clair::before{background:var(--encre)}
+.mot{display:flex;align-items:center;gap:12px;text-decoration:none}
+.mot b{display:block;font-size:19px;font-weight:800;letter-spacing:.06em;line-height:1}
+.mot span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:var(--gris);margin-bottom:3px}
+/* ---------- entête ---------- */
+.barre-haut{background:var(--encre);color:#cdc6bb;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.barre-haut .env{display:flex;align-items:center;justify-content:space-between;height:38px}
+.barre-haut b{color:var(--ambre-vif);font-weight:600}
+.barre-haut ul{display:flex;gap:26px;list-style:none}
+.entete{background:var(--papier);border-bottom:1px solid var(--trait)}
+.entete .env{display:flex;align-items:center;justify-content:space-between;height:82px;gap:32px}
+.nav{display:flex;align-items:center;gap:28px;list-style:none;margin-left:auto}
+.nav a{
+  text-decoration:none;font-size:14px;font-weight:600;color:var(--encre-2);
+  padding:6px 0;border-bottom:2px solid transparent;transition:border-color .12s linear,color .12s linear;
+}
+.nav a:hover{border-bottom-color:var(--ambre);color:var(--encre)}
+.entete .btn{padding:12px 20px;font-size:13.5px}
+
+/* ---------- héros ---------- */
+.heros{background:var(--encre);color:var(--papier);padding:74px 0 78px;position:relative}
+.heros::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--ambre)}
+.heros-grille{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.heros h1{font-size:53px;line-height:1.06;letter-spacing:-.03em;margin:16px 0 22px}
+.heros h1 em{font-style:normal;color:var(--ambre-vif)}
+.heros p.intro{font-family:var(--serif);font-size:19px;line-height:1.62;color:#c9c3b9;max-width:50ch}
+.heros-actions{display:flex;gap:14px;margin-top:30px;align-items:center;flex-wrap:wrap}
+.heros-tel{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris-clair);border-left:1px solid #454c53;padding-left:18px;margin-left:6px}
+.heros-tel b{display:block;font-family:var(--sans);font-size:17px;letter-spacing:0;text-transform:none;color:var(--papier);margin-top:2px}
+.heros-photo{position:relative;border:1px solid #3a4046}
+.heros-photo img{width:100%;height:394px;object-fit:cover;object-position:50% 45%}
+.cartouche{
+  position:absolute;left:0;bottom:0;background:var(--encre);border-top:1px solid #3a4046;border-right:1px solid #3a4046;
+  display:flex;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris-clair);
+}
+.cartouche div{padding:10px 16px;border-right:1px solid #3a4046}
+.cartouche div:last-child{border-right:0}
+.cartouche b{display:block;color:var(--papier);font-size:11px;letter-spacing:.06em;margin-top:3px}
+.heros-bas{margin-top:26px;border-top:1px solid #33393f;display:grid;grid-template-columns:1fr 1fr}
+.heros-bas div{padding:20px 22px 22px;border-right:1px solid #33393f;border-bottom:1px solid #33393f}
+.heros-bas div:nth-child(2n){border-right:0}
+.heros-bas div:nth-last-child(-n+2){border-bottom:0}
+.heros-bas b{display:block;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--ambre-vif);line-height:1.1}
+.heros-bas span{display:block;font-size:13px;color:#b3aca2;margin-top:6px;line-height:1.5}
+
+/* ---------- bandeau de faits ---------- */
+.faits{background:var(--papier-3);border-bottom:1px solid var(--trait)}
+.faits .env{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.faits div{padding:22px 26px;border-right:1px solid var(--trait);display:flex;gap:14px;align-items:flex-start}
+.faits div:first-child{padding-left:0}
+.faits div:last-child{border-right:0;padding-right:0}
+.faits i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ambre-fonce);padding-top:3px}
+.faits p{font-size:13.5px;line-height:1.55;color:var(--encre-2)}
+.faits strong{display:block;font-size:14.5px;margin-bottom:2px}
+
+/* ---------- plan de territoire ---------- */
+.territoire{display:grid;grid-template-columns:660px 1fr;gap:48px;align-items:start}
+.plan-terr{
+  position:relative;height:430px;background:var(--papier);border:1px solid var(--trait);
+  background-image:linear-gradient(to right,var(--trait-faible) 0 1px,transparent 1px),
+                   linear-gradient(to bottom,var(--trait-faible) 0 1px,transparent 1px);
+  background-size:20px 20px;
+}
+.zone{position:absolute;border:1px dashed var(--bleu-clair);left:50%;top:50%;transform:translate(-50%,-50%)}
+.zone b{
+  position:absolute;top:-9px;left:14px;background:var(--papier);padding:0 6px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--bleu);font-weight:600;
+}
+.z1{width:150px;height:110px}
+.z2{width:340px;height:236px}
+.z3{width:540px;height:352px}
+.ville{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ville::before{content:"";width:7px;height:7px;background:var(--encre-2);flex:none}
+.ville span{font-size:11.5px;color:var(--encre-2);font-weight:600;letter-spacing:.01em}
+.ville--loin span{color:var(--gris);font-weight:500}
+.siege{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px}
+.siege::before,.siege::after{content:"";position:absolute;background:var(--ambre-fonce)}
+.siege::before{left:50%;top:0;width:1px;height:100%;margin-left:-.5px}
+.siege::after{top:50%;left:0;height:1px;width:100%;margin-top:-.5px}
+.siege i{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:11px;height:11px;background:var(--ambre)}
+.siege b{
+  position:absolute;left:50%;top:36px;transform:translateX(-50%);font-size:12.5px;font-weight:800;
+  white-space:nowrap;letter-spacing:-.01em;background:var(--papier);padding:0 6px;
+}
+.echelle{position:absolute;left:16px;bottom:9px;display:flex;align-items:flex-end;gap:0;background:var(--papier);padding:2px 4px}
+.echelle i{width:44px;height:8px;border:1px solid var(--encre-2);font-style:normal}
+.echelle i:nth-child(odd){background:var(--encre-2)}
+.echelle b{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;margin-left:8px;color:var(--gris);font-weight:600}
+.nord{position:absolute;right:16px;top:14px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--bleu)}
+.nord i{display:block;width:0;height:0;margin:0 auto 4px;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:15px solid var(--bleu)}
+.liste-villes{columns:2;column-gap:32px;list-style:none;margin-top:22px;border-top:1px solid var(--trait);padding-top:18px}
+.liste-villes li{font-size:14px;padding:5px 0;break-inside:avoid;display:flex;gap:9px;align-items:baseline}
+.liste-villes li::before{content:"";width:6px;height:6px;background:var(--ambre);flex:none;transform:translateY(-1px)}
+.encadre{border:1px solid var(--trait);border-left:3px solid var(--ambre);padding:20px 22px;background:var(--papier)}
+.encadre h4{margin-bottom:7px}
+/* ---------- services ---------- */
+.grille-serv{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--trait);border:1px solid var(--trait)}
+.serv{background:var(--papier);padding:26px 24px 24px;display:flex;flex-direction:column}
+.serv h3{margin:16px 0 8px;font-size:18.5px}
+.serv p{font-size:14px;line-height:1.6;color:var(--gris);min-height:118px}
+.serv ul{list-style:none;margin:14px 0 18px;border-top:1px solid var(--trait-faible);padding-top:12px}
+.serv li{font-size:13.5px;padding:3px 0 3px 15px;position:relative;color:var(--encre-2)}
+.serv li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:1px;background:var(--ambre)}
+.serv-pied{margin-top:auto;border-top:1px solid var(--trait-faible);padding-top:12px;display:flex;justify-content:space-between;gap:10px}
+.serv-pied span{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);line-height:1.5}
+.serv-pied b{display:block;color:var(--encre);font-family:var(--sans);font-size:12.5px;letter-spacing:0;text-transform:none;font-weight:700;margin-top:2px}
+
+/* glyphes de service, dessinés en CSS */
+.gl{width:46px;height:46px;position:relative;border:1px solid var(--encre);flex:none}
+.gl::before,.gl::after{content:"";position:absolute}
+.gl-agr::before{left:7px;top:14px;width:16px;height:18px;border:2px solid var(--encre)}
+.gl-agr::after{left:23px;top:19px;width:15px;height:13px;border:2px dashed var(--ambre-fonce);border-left:0}
+.gl-cui::before{left:8px;top:11px;width:30px;height:8px;background:var(--encre)}
+.gl-cui::after{left:8px;top:25px;width:30px;height:10px;border:2px solid var(--encre);border-top:3px solid var(--ambre-fonce)}
+.gl-sdb::before{left:9px;top:22px;width:28px;height:13px;border:2px solid var(--encre);border-top:0}
+.gl-sdb::after{left:20px;top:9px;width:2px;height:13px;background:var(--ambre-fonce)}
+.gl-sous::before{left:6px;top:22px;width:34px;height:14px;border:2px solid var(--encre);background:var(--hach-beton)}
+.gl-sous::after{left:6px;top:15px;width:34px;height:3px;background:var(--ambre-fonce)}
+.gl-toit::before{left:6px;top:27px;width:20px;height:2px;background:var(--encre);transform:rotate(-32deg);transform-origin:left center}
+.gl-toit::after{right:6px;top:27px;width:20px;height:2px;background:var(--encre);transform:rotate(32deg);transform-origin:right center}
+.gl-fond::before{left:19px;top:11px;width:8px;height:20px;background:var(--encre)}
+.gl-fond::after{left:8px;top:31px;width:30px;height:5px;background:var(--ambre-fonce)}
+.gl-char::before{left:10px;top:9px;width:2px;height:28px;background:var(--encre)}
+.gl-char::after{left:11px;top:10px;width:27px;height:2px;background:var(--ambre-fonce);transform:rotate(46deg);transform-origin:left top}
+.gl-char i{position:absolute;left:34px;top:9px;width:2px;height:28px;background:var(--encre)}
+.gl-ouv::before{left:9px;top:9px;width:28px;height:28px;border:2px solid var(--encre)}
+.gl-ouv::after{left:22px;top:9px;width:2px;height:28px;background:var(--ambre-fonce)}
+.gl i{font-style:normal}
+
+/* ---------- chantiers ---------- */
+.chantier-vedette{border:1px solid #3a4046;background:var(--encre-2);margin-bottom:28px}
+.cv-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:26px 30px;border-bottom:1px solid #3a4046}
+.cv-tete h3{font-size:28px;letter-spacing:-.02em;margin-top:8px;max-width:24ch}
+.cv-tete .mono{color:var(--ambre-vif)}
+.cv-corps{display:grid;grid-template-columns:420px 1fr;gap:0}
+.cv-photo{border-right:1px solid #3a4046}
+.cv-photo img{width:100%;height:100%;min-height:430px;object-fit:cover;object-position:40% 50%}
+.cv-texte{padding:28px 30px}
+.cv-texte h4{margin-bottom:12px;font-size:13px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ambre-vif);font-weight:600}
+.travaux{list-style:none;columns:2;column-gap:34px;margin-bottom:24px}
+.travaux li{font-size:14px;line-height:1.55;padding:0 0 11px 18px;position:relative;break-inside:avoid;color:#ded9d1}
+.travaux li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:2px;background:var(--ambre)}
+.fiche{width:100%;border-collapse:collapse;border-top:1px solid #3a4046}
+.fiche th,.fiche td{text-align:left;padding:10px 0;border-bottom:1px solid #3a4046;font-size:13.5px;vertical-align:top}
+.fiche th{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--gris-clair);font-weight:600;width:172px;padding-top:12px}
+.fiche td{color:#e4dfd7}
+.grille-chantiers{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+.ch{border:1px solid #3a4046;background:var(--encre-2);display:flex;flex-direction:column}
+.ch-img{border-bottom:1px solid #3a4046;position:relative}
+.ch-img img{width:100%;height:196px;object-fit:cover}
+.ch-num{position:absolute;left:0;top:0;background:var(--ambre);color:var(--encre);font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:5px 10px;font-weight:700}
+.ch-corps{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1}
+.ch-corps h3{font-size:19px;margin-bottom:10px}
+.ch-corps p{font-size:14px;color:#c8c2b9;line-height:1.6}
+.ch-meta{display:flex;flex-wrap:wrap;gap:0;margin-top:18px;border-top:1px solid #3a4046}
+.ch-meta div{padding:12px 16px 0 0;margin-right:16px;border-right:1px solid #3a4046;padding-right:16px}
+.ch-meta div:last-child{border-right:0;margin-right:0;padding-right:0}
+.ch-meta span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris-clair)}
+.ch-meta b{display:block;font-size:13.5px;margin-top:3px;color:var(--papier)}
+
+/* coupe de fondation dessinée en CSS, en place d'une photo */
+.coupe-fond{height:196px;position:relative;background:var(--papier);overflow:hidden}
+.cf-sol{position:absolute;left:0;right:0;top:38%;bottom:0;background:var(--hach-sol);background-color:var(--papier-2);border-top:1.5px solid var(--encre-2)}
+.cf-mur{position:absolute;left:46%;top:14%;bottom:26%;width:26px;background:var(--hach-beton);background-color:#dfe3e5;border:1px solid var(--encre-2)}
+.cf-semelle{position:absolute;left:calc(46% - 20px);bottom:16%;width:66px;height:15px;background:var(--hach-beton);background-color:#dfe3e5;border:1px solid var(--encre-2)}
+.cf-memb{position:absolute;left:calc(46% - 4px);top:38%;bottom:26%;width:3px;background:var(--ambre)}
+.cf-drain{position:absolute;left:calc(46% - 40px);bottom:17%;width:15px;height:15px;background:var(--encre-2)}
+.cf-pierre{position:absolute;left:calc(46% - 52px);bottom:16%;width:40px;height:17px;border:1px solid var(--encre-2);background:var(--hach-bois);background-color:#e7e1d4}
+.cf-leg{
+  position:absolute;left:9px;top:9px;font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--bleu);line-height:1.9;
+}
+.cf-leg span{display:flex;align-items:center;gap:6px}
+.cf-leg i{width:9px;height:9px;flex:none;font-style:normal}
+.cf-titre{position:absolute;right:8px;top:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);text-align:right;line-height:1.5}
+/* ---------- feuille de plan ---------- */
+.feuille{
+  background:var(--papier);color:var(--encre);border:1px solid var(--trait);margin:30px;
+  display:grid;grid-template-columns:600px 1fr;
+}
+.feuille-plan{
+  position:relative;min-height:470px;border-right:1px solid var(--trait);
+  background-image:linear-gradient(to right,var(--trait-faible) 0 1px,transparent 1px),
+                   linear-gradient(to bottom,var(--trait-faible) 0 1px,transparent 1px);
+  background-size:20px 20px;
+}
+.feuille-notes{padding:26px 28px;display:flex;flex-direction:column}
+.feuille-notes h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ambre-fonce);margin-bottom:14px;font-weight:600}
+.notes{list-style:none;margin-bottom:22px}
+.notes li{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--trait-faible);font-size:13.5px;line-height:1.55}
+.notes li b{
+  flex:none;width:20px;height:20px;border:1px solid var(--encre);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;margin-top:1px;
+}
+.bloc-titre{margin-top:auto;border:1px solid var(--encre);display:grid;grid-template-columns:1fr 1fr}
+.bloc-titre div{padding:9px 12px;border-right:1px solid var(--trait);border-bottom:1px solid var(--trait)}
+.bloc-titre div:nth-child(odd){border-right:0}
+.bloc-titre div:nth-last-child(-n+2){border-bottom:0}
+.bloc-titre .large{grid-column:1/-1;border-right:0;background:var(--encre);color:var(--papier)}
+.bloc-titre span{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--gris)}
+.bloc-titre .large span{color:var(--gris-clair)}
+.bloc-titre b{display:block;font-size:12.5px;font-weight:700;margin-top:2px;letter-spacing:.01em}
+
+.mur-ex{position:absolute;left:14px;top:52px;width:44px;height:360px;background:var(--hach-sol);background-color:var(--papier-2);border:1px solid var(--encre-2)}
+.mur-ex b{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);writing-mode:vertical-rl;
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--encre-2);
+}
+.agr{position:absolute;left:58px;top:52px;width:461px;height:360px;border:3px solid var(--encre);background:var(--papier)}
+.piece{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gris);text-align:center;line-height:1.7}
+.piece b{display:block;font-family:var(--sans);font-size:13px;letter-spacing:.02em;color:var(--encre);font-weight:700}
+.cloison{position:absolute;border-left:1px dashed var(--gris-clair)}
+.ilot{position:absolute;background:var(--hach-bois);background-color:var(--papier-2);border:1.5px solid var(--encre-2)}
+.compt{position:absolute;background:var(--papier-2);border:1.5px solid var(--encre-2)}
+.ouv{position:absolute;background:var(--papier)}
+.ouv::after{content:"";position:absolute;background:var(--bleu)}
+.ouv.h{height:3px}
+.ouv.h::after{left:0;right:0;top:1px;height:1px}
+.ouv.v{width:3px}
+.ouv.v::after{top:0;bottom:0;left:1px;width:1px}
+.poutre{position:absolute;border-left:3px dashed var(--ambre-fonce)}
+.rep{
+  position:absolute;width:19px;height:19px;background:var(--papier);border:1px solid var(--encre);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;
+}
+.cote{position:absolute;background:var(--bleu)}
+.cote.h{height:1px}
+.cote.v{width:1px}
+.cote.h::before,.cote.h::after{content:"";position:absolute;top:-6px;width:1px;height:13px;background:var(--bleu);transform:rotate(45deg)}
+.cote.h::before{left:0}
+.cote.h::after{right:0}
+.cote.v::before,.cote.v::after{content:"";position:absolute;left:-6px;width:13px;height:1px;background:var(--bleu);transform:rotate(45deg)}
+.cote.v::before{top:0}
+.cote.v::after{bottom:0}
+.cote b{
+  position:absolute;left:50%;top:-9px;transform:translateX(-50%);background:var(--papier);padding:0 7px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--bleu);font-weight:600;white-space:nowrap;
+}
+.cote.v b{left:auto;top:50%;right:-7px;transform:translateY(-50%) rotate(-90deg);transform-origin:center}
+.nord-plan{position:absolute;left:14px;top:12px;text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--bleu)}
+.nord-plan i{display:block;width:0;height:0;margin:0 auto 3px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:13px solid var(--bleu)}
+.ech-plan{position:absolute;right:14px;bottom:12px;font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--gris)}
+
+/* ---------- échéancier ---------- */
+.gantt{border:1px solid var(--trait);background:var(--papier)}
+.g-ligne{display:grid;grid-template-columns:288px 1fr;border-bottom:1px solid var(--trait-faible);align-items:center}
+.g-ligne:last-child{border-bottom:0}
+.g-ligne.g-tete{border-bottom:1px solid var(--trait);background:var(--papier-2)}
+.g-ligne.g-phase{background:var(--papier-2)}
+.g-lab{padding:9px 18px 9px 20px;font-size:13.5px;line-height:1.4;border-right:1px solid var(--trait);display:flex;gap:11px;align-items:baseline}
+.g-lab i{font-style:normal;font-family:var(--mono);font-size:9.5px;color:var(--gris);flex:none;width:16px}
+.g-phase .g-lab{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ambre-fonce);font-weight:600;padding-top:11px;padding-bottom:11px}
+.g-piste{
+  position:relative;height:34px;
+  background-image:linear-gradient(to right,var(--trait-faible) 0 1px,transparent 1px);
+  background-size:calc(100% / 21) 100%;
+}
+.g-tete .g-piste{height:30px;background-image:none}
+.g-phase .g-piste{background-image:none}
+.g-bar{position:absolute;top:9px;height:16px;background:var(--bleu);display:flex;align-items:center}
+.g-bar.b-chantier{background:var(--encre)}
+.g-bar.b-fin{background:var(--ambre)}
+.g-tick{position:absolute;top:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--gris);transform:translateX(-50%);white-space:nowrap}
+.g-jalon{position:absolute;top:8px;width:15px;height:15px;background:var(--ambre);border:1px solid var(--encre);transform:translateX(-50%) rotate(45deg)}
+.g-jalon-lab{position:absolute;top:6px;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--encre-2);white-space:nowrap;font-weight:600}
+.g-jalon-lab.fin{left:auto;right:14px}
+.g-legende{display:flex;gap:26px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.g-legende span{display:flex;align-items:center;gap:8px}
+.g-legende i{width:22px;height:9px;background:var(--bleu);font-style:normal}
+.g-legende i.c2{background:var(--encre)}
+.g-legende i.c3{background:var(--ambre)}
+.g-legende i.c4{width:11px;height:11px;background:var(--ambre);border:1px solid var(--encre);transform:rotate(45deg)}
+
+/* ---------- tableaux ---------- */
+.tab{width:100%;border-collapse:collapse;background:var(--papier);border:1px solid var(--trait)}
+.tab th,.tab td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--trait-faible);vertical-align:top;font-size:14px;line-height:1.55}
+.tab thead th{
+  background:var(--encre);color:var(--papier);font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;border-bottom:0;padding:12px 18px;
+}
+.tab tbody tr:last-child td,.tab tbody tr:last-child th{border-bottom:0}
+.tab tbody th{font-weight:700;font-size:14px;width:230px;color:var(--encre)}
+.tab td .mono,.tab th .mono{display:block;color:var(--gris);margin-top:3px;font-weight:400}
+.tab .vers{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ambre-fonce);font-weight:600;width:180px}
+/* ---------- coupe de mur ---------- */
+.coupe{background:var(--papier);border:1px solid var(--trait);padding:34px 36px 30px}
+.coupe-corps{display:grid;grid-template-columns:1fr 400px;gap:44px;align-items:start}
+.mur{position:relative}
+.mur-bandes{display:flex;height:392px;border:1px solid var(--encre)}
+.mur-bandes div{position:relative;border-right:1px solid var(--encre-2)}
+.mur-bandes div:last-child{border-right:0}
+.mur-bandes b{
+  position:absolute;left:50%;top:9px;transform:translateX(-50%);width:20px;height:20px;background:var(--encre);color:var(--papier);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;
+}
+.m1{width:8%;background:#cfd4d6}
+.m2{width:10%;background:var(--hach-bois);background-color:#e9dfc9}
+.m3{width:3%;background:var(--bleu-clair)}
+.m4{width:13%;background:var(--hach-isolant);background-color:#e0d6c2}
+.m5{width:52%;background:var(--hach-isolant);background-color:var(--papier-2)}
+.m5 i{position:absolute;top:0;bottom:0;width:11px;background:var(--hach-bois);background-color:#e5d3ad;border-left:1px solid var(--encre-2);border-right:1px solid var(--encre-2)}
+.m6{width:3%;background:var(--ambre)}
+.m7{width:11%;background:var(--papier-3)}
+.mur-ext,.mur-int{position:absolute;top:-24px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gris)}
+.mur-ext{left:0}
+.mur-int{right:0}
+.mur-cote{position:relative;margin-top:26px;height:1px}
+.legende-mur{list-style:none}
+.legende-mur li{display:flex;gap:13px;padding:9px 0;border-bottom:1px solid var(--trait-faible);font-size:13.5px;line-height:1.5}
+.legende-mur li b{
+  flex:none;width:20px;height:20px;background:var(--encre);color:var(--papier);display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;margin-top:1px;
+}
+.legende-mur li span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--gris);margin-top:2px}
+.chiffre-r{display:flex;gap:0;margin-top:22px;border:1px solid var(--encre)}
+.chiffre-r div{padding:14px 18px;border-right:1px solid var(--trait);flex:1}
+.chiffre-r div:last-child{border-right:0}
+.chiffre-r b{display:block;font-size:21px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+.chiffre-r span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gris);margin-top:3px}
+
+/* ---------- inclus / non inclus ---------- */
+.deux-listes{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--trait);border:1px solid var(--trait)}
+.liste-b{background:var(--papier);padding:30px 32px 34px}
+.liste-b.non{background:var(--papier-2)}
+.liste-b h3{margin-bottom:6px}
+.liste-b>p{font-size:13.5px;color:var(--gris);margin-bottom:18px;line-height:1.6}
+.liste-b ul{list-style:none}
+.liste-b li{display:flex;gap:13px;padding:11px 0;border-top:1px solid var(--trait-faible);font-size:14.5px;line-height:1.5}
+.liste-b li::before{content:"";flex:none;width:11px;height:11px;background:var(--ambre);margin-top:6px}
+.liste-b.non li::before{background:transparent;border:1px solid var(--gris)}
+.liste-b li span{display:block;font-size:13px;color:var(--gris);margin-top:2px}
+
+/* ---------- garanties ---------- */
+.grille-gar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#3a4046;border:1px solid #3a4046}
+.gar{background:var(--encre-2);padding:26px 26px 28px}
+.gar .mono{color:var(--ambre-vif);display:block;margin-bottom:12px}
+.gar h3{font-size:18px;margin-bottom:9px}
+.gar p{font-size:14px;color:#c4bfb6;line-height:1.6}
+.gar .num{
+  display:inline-block;margin-top:14px;border:1px solid var(--ambre);color:var(--ambre-vif);
+  font-family:var(--mono);font-size:12px;letter-spacing:.1em;padding:6px 12px;
+}
+.exiger{margin-top:28px;border:1px solid #3a4046;padding:28px 30px;display:grid;grid-template-columns:300px 1fr;gap:38px;align-items:start}
+.exiger ol{list-style:none;counter-reset:x;columns:2;column-gap:38px}
+.exiger li{counter-increment:x;position:relative;padding:0 0 12px 34px;font-size:14px;line-height:1.55;color:#ded9d1;break-inside:avoid}
+.exiger li::before{
+  content:counter(x,decimal-leading-zero);position:absolute;left:0;top:0;font-family:var(--mono);font-size:11px;
+  color:var(--ambre-vif);font-weight:700;
+}
+
+/* ---------- formulaire ---------- */
+.soum{display:grid;grid-template-columns:1fr 348px;gap:36px;align-items:start}
+form{background:var(--papier);border:1px solid var(--trait);padding:32px 34px 34px}
+fieldset{border:0;margin-bottom:26px}
+legend{
+  font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ambre-fonce);
+  font-weight:600;padding-bottom:12px;width:100%;border-bottom:1px solid var(--trait);margin-bottom:18px;
+}
+.rangee{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.rangee.trois{grid-template-columns:1fr 1fr 1fr}
+.champ{margin-bottom:16px;display:flex;flex-direction:column}
+.champ label,.champ>span.lab{font-size:12.5px;font-weight:700;margin-bottom:6px;letter-spacing:.01em}
+.champ .aide{font-size:11.5px;color:var(--gris);font-weight:400;margin-top:5px;line-height:1.45}
+input[type=text],input[type=tel],input[type=email],input[type=number],select,textarea{
+  width:100%;border:1px solid var(--trait);background:#fff;padding:11px 12px;font-size:14px;color:var(--encre);
+}
+input:hover,select:hover,textarea:hover{border-color:var(--gris-clair)}
+textarea{min-height:104px;resize:vertical;line-height:1.6}
+.select-hab{position:relative;display:block}
+.select-hab select{appearance:none;-webkit-appearance:none;padding-right:34px}
+.select-hab::after{
+  content:"";position:absolute;right:14px;top:16px;width:8px;height:8px;
+  border-right:2px solid var(--encre);border-bottom:2px solid var(--encre);transform:rotate(45deg);pointer-events:none;
+}
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--trait);border:1px solid var(--trait)}
+.cases label{
+  display:flex;align-items:center;gap:11px;background:#fff;padding:11px 14px;font-size:13.5px;font-weight:500;
+  cursor:pointer;margin:0;
+}
+.cases input{width:15px;height:15px;accent-color:var(--ambre);flex:none;margin:0}
+.radios{display:flex;flex-direction:column;gap:9px}
+.radios label{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;font-weight:500;margin:0;line-height:1.45}
+.radios input{margin-top:3px;accent-color:var(--ambre);flex:none}
+.consent{display:flex;gap:11px;align-items:flex-start;border-top:1px solid var(--trait);padding-top:20px;font-size:13px;color:var(--gris);line-height:1.55}
+.consent input{margin-top:3px;accent-color:var(--ambre);flex:none;width:15px;height:15px}
+.envoi{display:flex;align-items:center;gap:22px;margin-top:22px;flex-wrap:wrap}
+.envoi .petit{max-width:38ch}
+.aside-soum{border:1px solid var(--trait);background:var(--papier);padding:28px 28px 30px}
+.etapes-suite{list-style:none;counter-reset:e;margin:18px 0 26px}
+.etapes-suite li{counter-increment:e;position:relative;padding:0 0 20px 44px;border-left:1px solid var(--trait);margin-left:13px}
+.etapes-suite li:last-child{border-left-color:transparent;padding-bottom:0}
+.etapes-suite li::before{
+  content:counter(e);position:absolute;left:-13px;top:0;width:26px;height:26px;background:var(--encre);color:var(--papier);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;
+}
+.etapes-suite b{display:block;font-size:14.5px;margin-bottom:3px}
+.etapes-suite span{display:block;font-size:13px;color:var(--gris);line-height:1.55}
+.etapes-suite i{
+  display:block;font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ambre-fonce);margin-top:5px;
+}
+.coord{border-top:1px solid var(--trait);padding-top:20px}
+.coord dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);margin-bottom:2px}
+.coord dd{font-size:15px;font-weight:700;margin-bottom:14px}
+.coord dd:last-child{margin-bottom:0}
+
+/* ---------- questions ---------- */
+.faq{columns:2;column-gap:44px}
+.q{break-inside:avoid;margin-bottom:26px;padding-bottom:24px;border-bottom:1px solid var(--trait)}
+.q h3{font-size:17px;margin-bottom:9px;display:flex;gap:11px;align-items:baseline}
+.q h3 i{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--ambre-fonce);flex:none}
+.q p{font-size:14.5px;line-height:1.65;color:var(--encre-2)}
+.q p+p{margin-top:9px}
+
+/* ---------- appel final ---------- */
+.appel{background:var(--ambre);color:var(--encre);padding:56px 0}
+.appel .env{display:flex;align-items:center;justify-content:space-between;gap:44px}
+.appel h2{font-size:34px;max-width:22ch}
+.appel p{font-size:15px;margin-top:10px;max-width:52ch;color:#3d2a06}
+.appel .btn{background:var(--encre);border-color:var(--encre);color:var(--papier)}
+.appel-actions{display:flex;gap:16px;align-items:center;flex:none}
+
+/* ---------- pied ---------- */
+.pied{background:var(--encre);color:#b8b2a8;padding:66px 0 0}
+.pied-grille{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:44px;padding-bottom:44px;border-bottom:1px solid #33393f}
+.pied h4{color:var(--papier);font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;margin-bottom:16px;font-weight:600}
+.pied ul{list-style:none}
+.pied li{padding:5px 0;font-size:13.5px}
+.pied a{text-decoration:none;border-bottom:1px solid transparent;transition:border-color .12s linear,color .12s linear}
+.pied a:hover{color:var(--ambre-vif);border-bottom-color:var(--ambre-vif)}
+.pied .mot b{color:var(--papier)}
+.pied .mot span{color:var(--gris-clair)}
+.pied-desc{font-size:13.5px;line-height:1.65;margin-top:18px;max-width:34ch}
+.pied-rbq{display:inline-block;margin-top:16px;border:1px solid #454c53;padding:8px 12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ambre-vif)}
+.pied-bas{display:flex;justify-content:space-between;gap:32px;padding:22px 0 28px;font-size:12px;color:var(--gris-clair);line-height:1.6}
+.pied-bas p{max-width:62ch}
+.heures{list-style:none}
+.heures li{display:flex;justify-content:space-between;gap:14px;font-size:13px;padding:4px 0;border-bottom:1px solid #2a2f34}
+.heures li:last-child{border-bottom:0}
+.heures b{color:var(--papier);font-weight:600}
+
+</style>
+</head>
+<body>
+<div class="barre-haut">
+  <div class="env">
+    <span>Entrepreneur général · Licence <b>RBQ 0000-0000-00</b></span>
+    <ul>
+      <li>Rive-Nord et Basses-Laurentides</li>
+      <li>Lundi au vendredi, 7 h à 17 h</li>
+      <li><b>000 000-0000</b></li>
+    </ul>
+  </div>
+</div>
+
+<header class="entete">
+  <div class="env">
+    <a class="mot" href="#accueil">
+      <span class="marque"></span>
+      <span><span>Construction</span><b>LATTIER</b></span>
+    </a>
+    <ul class="nav">
+      <li><a href="#chantiers">Chantiers</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#processus">Processus</a></li>
+      <li><a href="#inclus">Ce qui est inclus</a></li>
+      <li><a href="#garanties">Garanties</a></li>
+      <li><a href="#questions">Questions</a></li>
+    </ul>
+    <a class="btn btn--ambre" href="#soumission">Demander une soumission</a>
+  </div>
+</header>
+
+<section class="heros" id="accueil">
+  <div class="env">
+    <div class="heros-grille">
+      <div>
+        <p class="sur-titre">Entrepreneur général en résidentiel</p>
+        <h1>On monte des agrandissements et des rénovations majeures qui passent&nbsp;<em>l’hiver</em>.</h1>
+        <p class="intro">Construction Lattier est un entrepreneur général établi à Sainte-Thérèse depuis 2009. On prend le chantier au complet — de la coupe du solage au dernier joint de gypse — dans un rayon de 45&nbsp;km sur la Rive-Nord et dans les Basses-Laurentides. Un chargé de projet, un échéancier signé, des quittances à chaque versement.</p>
+        <div class="heros-actions">
+          <a class="btn btn--ambre" href="#soumission">Demander une soumission</a>
+          <a class="btn btn--vide" href="#chantiers">Voir nos chantiers</a>
+          <span class="heros-tel">Parler à quelqu’un<b>000 000-0000</b></span>
+        </div>
+      </div>
+      <div>
+        <div class="heros-photo">
+          <img src="../../images/secteurs/construction-hero.webp" width="720" height="405" alt="Chantier résidentiel en cours : charpente de bois montée, panneaux de revêtement posés, bois d’œuvre empilé au sol." fetchpriority="high" decoding="async">
+          <div class="cartouche">
+            <div>Chantier<b>Agrandissement + cuisine</b></div>
+            <div>Secteur<b>Rosemère</b></div>
+            <div>Étape<b>Charpente, semaine 4</b></div>
+          </div>
+        </div>
+        <div class="heros-bas">
+          <div><b>2009</b><span>Année de fondation de l’entreprise</span></div>
+          <div><b>168</b><span>Chantiers résidentiels livrés depuis l’ouverture</span></div>
+          <div><b>3</b><span>Chantiers menés de front, jamais plus</span></div>
+          <div><b>5 ans</b><span>De garantie écrite sur notre main-d’œuvre</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faits">
+  <div class="env">
+    <div><i>01</i><p><strong>Licence RBQ 0000-0000-00</strong>Catégories 1.1.1 et 1.2 — bâtiments résidentiels et rénovation.</p></div>
+    <div><i>02</i><p><strong>Employés à l’année</strong>Onze personnes sur la paie, pas d’équipe montée à la pièce.</p></div>
+    <div><i>03</i><p><strong>Un seul interlocuteur</strong>Le chargé de projet qui vous a visité est celui qui suit le chantier.</p></div>
+    <div><i>04</i><p><strong>Contrat écrit, toujours</strong>Devis descriptif, échéancier, versements liés à des jalons.</p></div>
+  </div>
+</section>
+
+<section class="bloc" id="territoire">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Territoire desservi</p>
+        <h2>Quarante-cinq kilomètres, et on s’y tient.</h2>
+      </div>
+      <p class="chapeau">Un chantier trop loin, ça se paie en heures de route, en oublis de matériel et en journées perdues. On a tracé un rayon autour de Sainte-Thérèse et on ne le franchit pas sans une bonne raison.</p>
+    </div>
+    <div class="territoire">
+      <div>
+        <div class="plan-terr">
+          <div class="nord"><i></i>N</div>
+          <div class="zone z1"><b>15 km</b></div>
+          <div class="zone z2"><b>30 km</b></div>
+          <div class="zone z3"><b>45 km</b></div>
+
+          <div class="siege"><i></i><b>Sainte-Thérèse</b></div>
+
+          <div class="ville" style="left:47%;top:33%"><span>Blainville</span></div>
+          <div class="ville" style="left:60%;top:41%"><span>Lorraine</span></div>
+          <div class="ville" style="left:65%;top:60%"><span>Rosemère</span></div>
+          <div class="ville" style="left:29%;top:62%"><span>Boisbriand</span></div>
+          <div class="ville" style="left:70%;top:64%"><span>Bois-des-Filion</span></div>
+          <div class="ville" style="left:52%;top:22%"><span>Sainte-Anne-des-Plaines</span></div>
+          <div class="ville" style="left:27%;top:29%"><span>Mirabel</span></div>
+          <div class="ville ville--loin" style="left:18%;top:18%"><span>Saint-Jérôme</span></div>
+          <div class="ville" style="left:76%;top:47%"><span>Terrebonne</span></div>
+          <div class="ville ville--loin" style="left:86%;top:38%"><span>Mascouche</span></div>
+          <div class="ville" style="left:26%;top:70%"><span>Saint-Eustache</span></div>
+          <div class="ville ville--loin" style="left:13%;top:68%"><span>Deux-Montagnes</span></div>
+          <div class="ville" style="left:45%;top:85%"><span>Laval — secteurs nord</span></div>
+          <div class="ville ville--loin" style="left:80%;top:80%"><span>Repentigny</span></div>
+
+          <div class="echelle"><i></i><i></i><i></i><b>0 &nbsp;— &nbsp;10 &nbsp;— &nbsp;20 &nbsp;— &nbsp;30 km</b></div>
+        </div>
+        <p class="legende">Schéma du territoire · le repère orange est le siège, à Sainte-Thérèse · positions approximatives · les trois zones donnent le temps de route, pas une frontière</p>
+      </div>
+      <div>
+        <div class="encadre">
+          <h4>Au-delà de 45 km</h4>
+          <p class="petit">On regarde le projet au cas par cas, et seulement s’il est assez gros pour justifier le déplacement de l’équipe et des livraisons. Si on ne peut pas le faire correctement, on le dit tout de suite plutôt que d’étirer un échéancier.</p>
+        </div>
+        <ul class="liste-villes">
+          <li>Sainte-Thérèse</li>
+          <li>Blainville</li>
+          <li>Boisbriand</li>
+          <li>Rosemère</li>
+          <li>Lorraine</li>
+          <li>Bois-des-Filion</li>
+          <li>Sainte-Anne-des-Plaines</li>
+          <li>Terrebonne</li>
+          <li>Mascouche</li>
+          <li>Mirabel</li>
+          <li>Saint-Jérôme</li>
+          <li>Saint-Eustache</li>
+          <li>Deux-Montagnes</li>
+          <li>Laval, secteurs nord</li>
+          <li>Repentigny</li>
+          <li>Saint-Colomban</li>
+        </ul>
+        <p class="petit" style="margin-top:16px">MRC de Thérèse-De Blainville, de La Rivière-du-Nord, des Moulins et de Deux-Montagnes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="bloc bloc--papier2" id="services">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Ce qu’on fait</p>
+        <h2>Huit types de chantiers, et rien d’autre.</h2>
+      </div>
+      <p class="chapeau">On ne fait pas de commercial, pas de multilogement neuf, pas de piscine creusée. Ce qu’on fait, on le fait toutes les semaines depuis 2009, et c’est pour ça que nos échéanciers tiennent.</p>
+    </div>
+    <div class="grille-serv">
+
+      <article class="serv">
+        <span class="gl gl-agr"></span>
+        <h3>Agrandissement</h3>
+        <p>Rallonge arrière, ajout d’un étage, garage attenant. La partie la plus exigeante d’un agrandissement, c’est le raccord avec l’existant.</p>
+        <ul>
+          <li>Fondation sur semelle ou pieux vissés</li>
+          <li>Retrait de mur porteur, poutre d’acier ou LVL</li>
+          <li>Raccord de toiture et de revêtement</li>
+          <li>Reprise de la ventilation et du panneau électrique</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>10 à 18 semaines</b></span><span>Permis<b>Toujours</b></span></div>
+      </article>
+
+      <article class="serv">
+        <span class="gl gl-cui"></span>
+        <h3>Cuisine</h3>
+        <p>Du simple remplacement d’armoires jusqu’à l’ouverture complète sur la salle à manger, avec déplacement de la plomberie et du filage.</p>
+        <ul>
+          <li>Ouverture de mur, portante ou non</li>
+          <li>Plomberie et drainage de l’îlot</li>
+          <li>Circuits dédiés et hotte à évacuation</li>
+          <li>Pose d’armoires, comptoirs et dosseret</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>4 à 7 semaines</b></span><span>Permis<b>Selon la structure</b></span></div>
+      </article>
+
+      <article class="serv">
+        <span class="gl gl-sdb"></span>
+        <h3>Salle de bain</h3>
+        <p>On démolit jusqu’aux montants. C’est le seul moyen de voir l’état du sous-plancher et de la plomberie avant de refermer.</p>
+        <ul>
+          <li>Membrane d’étanchéité sous la céramique</li>
+          <li>Renforcement du plancher si baignoire lourde</li>
+          <li>Ventilateur raccordé à l’extérieur, pas au grenier</li>
+          <li>Douche de plain-pied avec pente coulée</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>3 à 5 semaines</b></span><span>Permis<b>Rarement</b></span></div>
+      </article>
+
+      <article class="serv">
+        <span class="gl gl-sous"></span>
+        <h3>Sous-sol</h3>
+        <p>Aire familiale, chambre, salle d’eau, bureau. Avant de finir un sous-sol, on règle d’abord l’humidité — jamais l’inverse.</p>
+        <ul>
+          <li>Diagnostic d’humidité et d’infiltration</li>
+          <li>Isolation des murs de fondation en continu</li>
+          <li>Fenêtre de sortie conforme pour une chambre</li>
+          <li>Insonorisation du plafond et des divisions</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>7 à 11 semaines</b></span><span>Permis<b>Souvent</b></span></div>
+      </article>
+
+      <article class="serv">
+        <span class="gl gl-toit"></span>
+        <h3>Toiture</h3>
+        <p>Bardeaux, membrane élastomère sur toit plat, réfection de débords. On ouvre toujours une section avant de chiffrer le reste.</p>
+        <ul>
+          <li>Remplacement du support de toit abîmé</li>
+          <li>Membrane de protection en rive et en noue</li>
+          <li>Ventilation de l’entretoit calculée, pas devinée</li>
+          <li>Solins de cheminée et de mur refaits</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>2 à 4 semaines</b></span><span>Permis<b>Selon la ville</b></span></div>
+      </article>
+
+      <article class="serv">
+        <span class="gl gl-fond"></span>
+        <h3>Fondation et drainage</h3>
+        <p>Fissures actives, solage qui suinte, drain bouché. On excave, on répare, on imperméabilise et on remet le terrain en état.</p>
+        <ul>
+          <li>Excavation et mise à nu du mur de fondation</li>
+          <li>Injection de fissures ou reprise en sous-œuvre</li>
+          <li>Drain français neuf avec membrane géotextile</li>
+          <li>Puisard, pompe et raccord au bon endroit</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>3 à 6 semaines</b></span><span>Permis<b>Souvent</b></span></div>
+      </article>
+
+      <article class="serv">
+        <span class="gl gl-char"><i></i></span>
+        <h3>Charpente et structure</h3>
+        <p>Mur porteur à retirer, plancher qui plie, ferme de toit à modifier. Tout ce qui touche la structure passe par un ingénieur.</p>
+        <ul>
+          <li>Plans et calculs scellés par un ingénieur</li>
+          <li>Poutre d’acier ou LVL, colonnes et semelles</li>
+          <li>Étaiement temporaire pendant les travaux</li>
+          <li>Renfort de solives et reprise de portée</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>2 à 5 semaines</b></span><span>Permis<b>Toujours</b></span></div>
+      </article>
+
+      <article class="serv">
+        <span class="gl gl-ouv"></span>
+        <h3>Ouvertures et revêtement</h3>
+        <p>Portes, fenêtres, fenêtres de toit et revêtement extérieur. Une fenêtre mal solinée coule dans le mur pendant dix ans avant de paraître.</p>
+        <ul>
+          <li>Agrandissement d’ouverture et nouveau linteau</li>
+          <li>Solins, membrane et pente d’appui</li>
+          <li>Revêtement de fibrociment, bois ou acier</li>
+          <li>Lattage ventilé derrière le parement</li>
+        </ul>
+        <div class="serv-pied"><span>Durée type<b>1 à 4 semaines</b></span><span>Permis<b>Selon la ville</b></span></div>
+      </article>
+
+    </div>
+    <p class="petit" style="margin-top:20px">Les durées indiquées sont celles de nos chantiers réalisés, du premier jour de démolition à la remise des clés. Elles excluent le temps de plans et de permis, qui est traité à part dans le <a href="#processus" style="color:var(--ambre-fonce);font-weight:600">processus de chantier</a>.</p>
+  </div>
+</section>
+<section class="bloc bloc--encre" id="chantiers">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Chantiers livrés</p>
+        <h2>Cinq chantiers, avec ce qui a vraiment été fait dessus.</h2>
+      </div>
+      <p class="chapeau">Pas de galerie d’ambiance. Pour chaque chantier&nbsp;: le type de travaux, le secteur, la durée réelle du premier au dernier jour, et la liste de ce qu’on a exécuté. C’est ce qui permet de comparer une soumission à une autre.</p>
+    </div>
+
+    <article class="chantier-vedette">
+      <div class="cv-tete">
+        <div>
+          <p class="mono">Chantier 01 · Livré en août 2025</p>
+          <h3>Agrandissement arrière de 32 m² et cuisine ouverte</h3>
+        </div>
+        <a class="btn btn--vide" href="#soumission">Un projet semblable&nbsp;?</a>
+      </div>
+      <div class="cv-corps">
+        <div class="cv-photo">
+          <img src="../../images/secteurs/construction-hero.webp" width="720" height="405" alt="Agrandissement en construction : charpente montée, panneaux de revêtement posés et fermes de toit en place." loading="lazy" decoding="async" style="object-position:62% 50%">
+        </div>
+        <div class="cv-texte">
+          <h4>Ce qui a été fait</h4>
+          <ul class="travaux">
+            <li>Excavation, semelles isolées et dalle sur sol isolée sous la dalle</li>
+            <li>Charpente 2×6 à 400 mm c/c, fermes de toit sur mesure</li>
+            <li>Retrait du mur porteur arrière sur 4 300 mm, poutre LVL de 3 plis</li>
+            <li>Raccord de toiture sur la pente existante, noue membranée</li>
+            <li>Six ouvertures neuves, dont une porte-patio de 2 400 mm</li>
+            <li>Revêtement de fibrociment sur lattage ventilé</li>
+            <li>Plomberie et drainage d’îlot amenés avant la coulée</li>
+            <li>Panneau électrique porté à 200 A, ventilateur récupérateur de chaleur</li>
+          </ul>
+          <table class="fiche">
+            <tr><th scope="row">Type de travaux</th><td>Agrandissement sur dalle + réaménagement complet de la cuisine</td></tr>
+            <tr><th scope="row">Secteur</th><td>Rosemère</td></tr>
+            <tr><th scope="row">Durée du chantier</th><td>14 semaines — du 5 mai au 8 août 2025</td></tr>
+            <tr><th scope="row">Équipe</th><td>1 chargé de projet, 4 charpentiers, sous-traitants en plomberie, électricité et béton</td></tr>
+            <tr><th scope="row">Structure</th><td>Plans et calculs scellés par un ingénieur, étaiement temporaire pendant la reprise</td></tr>
+            <tr><th scope="row">Permis</th><td>Délivré par la Ville deux semaines avant l’ouverture du chantier</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="feuille">
+        <div class="feuille-plan">
+          <div class="nord-plan"><i></i>N</div>
+
+          <div class="mur-ex"><b>Maison existante</b></div>
+          <div class="agr"></div>
+
+          <div class="cloison" style="left:260px;top:52px;height:360px"></div>
+          <div class="compt" style="left:61px;top:92px;width:43px;height:250px"></div>
+          <div class="ilot" style="left:160px;top:190px;width:72px;height:173px"></div>
+
+          <div class="ouv v" style="left:516px;top:145px;height:173px"></div>
+          <div class="ouv h" style="left:320px;top:52px;width:130px"></div>
+          <div class="ouv h" style="left:130px;top:409px;width:108px"></div>
+          <div class="poutre" style="left:58px;top:110px;height:240px"></div>
+
+          <div class="piece" style="left:58px;top:106px;width:202px">Cuisine<b>14,0 m²</b></div>
+          <div class="piece" style="left:260px;top:196px;width:259px">Salle à manger<b>18,0 m²</b></div>
+
+          <div class="rep" style="left:66px;top:96px">1</div>
+          <div class="rep" style="left:486px;top:216px">2</div>
+          <div class="rep" style="left:132px;top:266px">3</div>
+          <div class="rep" style="left:70px;top:378px">4</div>
+
+          <div class="cote h" style="left:58px;top:30px;width:461px"><b>6 400</b></div>
+          <div class="cote h" style="left:58px;top:434px;width:202px"><b>2 800</b></div>
+          <div class="cote h" style="left:260px;top:434px;width:259px"><b>3 600</b></div>
+          <div class="cote v" style="left:555px;top:52px;height:360px"><b>5 000</b></div>
+
+          <div class="ech-plan">Cotes en millimètres · plan simplifié</div>
+        </div>
+        <div class="feuille-notes">
+          <h4>Notes de chantier</h4>
+          <ol class="notes">
+            <li><b>1</b><span>Mur porteur arrière retiré sur 4 300 mm et repris par une poutre LVL de 3 plis, appuyée sur colonnes et semelles isolées. Plans scellés par un ingénieur en structure.</span></li>
+            <li><b>2</b><span>Porte-patio de 2 400 mm alignée sur la terrasse existante, seuil abaissé pour un passage de plain-pied.</span></li>
+            <li><b>3</b><span>Îlot de 2 400 × 1 000 mm. Drain, alimentation et circuits dédiés amenés dans la dalle avant la coulée — après, c’est du marteau-piqueur.</span></li>
+            <li><b>4</b><span>Dalle sur sol avec isolant continu de R-10 sous le béton et pare-humidité scellé aux fondations.</span></li>
+          </ol>
+          <div class="bloc-titre">
+            <div class="large"><span>Entrepreneur général</span><b>CONSTRUCTION LATTIER INC. — RBQ 0000-0000-00</b></div>
+            <div><span>Projet</span><b>Agrandissement + cuisine</b></div>
+            <div><span>Secteur</span><b>Rosemère</b></div>
+            <div><span>Feuille</span><b>A-101 · plan simplifié</b></div>
+            <div><span>Émis</span><b>Août 2025</b></div>
+          </div>
+        </div>
+      </div>
+    </article>
+    <div class="grille-chantiers">
+
+      <article class="ch">
+        <div class="ch-img">
+          <span class="ch-num">Chantier 02</span>
+          <img src="../../images/secteurs/construction-hero.webp" width="720" height="405" alt="Charpente de toit et fermes montées sur une structure de bois, vue de l’extérieur." loading="lazy" decoding="async" style="object-position:50% 22%">
+        </div>
+        <div class="ch-corps">
+          <h3>Toiture complète et reprise de la charpente du garage</h3>
+          <p>Le support de toit était pourri sur toute la pente nord, sous une ventilation d’entretoit bouchée depuis des années. On a remplacé 22 feuilles de support, refait les débords, doublé deux fermes fendues, puis reposé les bardeaux avec membrane en rive et en noue. Les évents de toit ont été recalculés et le soffite débloqué.</p>
+          <div class="ch-meta">
+            <div><span>Secteur</span><b>Blainville</b></div>
+            <div><span>Durée</span><b>3 semaines</b></div>
+            <div><span>Livré</span><b>Septembre 2025</b></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ch">
+        <div class="ch-img">
+          <span class="ch-num">Chantier 03</span>
+          <img src="../../images/secteurs/construction-2.webp" width="240" height="240" alt="Empilement de bois d’œuvre fraîchement scié, prêt à être monté." loading="lazy" decoding="async" style="object-position:30% 62%">
+        </div>
+        <div class="ch-corps">
+          <h3>Sous-sol non fini transformé en aire familiale et salle d’eau</h3>
+          <p>Deux fissures actives réparées et un mur de fondation asséché avant de poser quoi que ce soit. Isolation continue sur toute la hauteur, divisions insonorisées, salle d’eau complète avec broyeur, fenêtre de sortie conforme dans la chambre du fond, et un plancher flottant sur membrane. Le panneau électrique a été relocalisé dans le local mécanique.</p>
+          <div class="ch-meta">
+            <div><span>Secteur</span><b>Boisbriand</b></div>
+            <div><span>Durée</span><b>9 semaines</b></div>
+            <div><span>Livré</span><b>Mars 2025</b></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ch">
+        <div class="ch-img">
+          <span class="ch-num">Chantier 04</span>
+          <img src="../../images/secteurs/construction-1.webp" width="240" height="240" alt="Détail de colombages et d’entretoises mis à nu pendant une démolition intérieure." loading="lazy" decoding="async" style="object-position:88% 28%">
+        </div>
+        <div class="ch-corps">
+          <h3>Salle de bain principale mise à nu et refaite au complet</h3>
+          <p>Démolition jusqu’aux montants. Le sous-plancher était gonflé sous la baignoire&nbsp;: on l’a remplacé et renforcé avant de couler la pente de la douche de plain-pied. Membrane d’étanchéité sur toute l’aire mouillée, drain linéaire, ventilateur raccordé jusqu’à l’extérieur, plomberie et circuits refaits du panneau jusqu’à la pièce.</p>
+          <div class="ch-meta">
+            <div><span>Secteur</span><b>Lorraine</b></div>
+            <div><span>Durée</span><b>4 semaines</b></div>
+            <div><span>Livré</span><b>Novembre 2024</b></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ch">
+        <div class="ch-img">
+          <span class="ch-num">Chantier 05</span>
+          <div class="coupe-fond" role="img" aria-label="Coupe technique d’une reprise de fondation : mur de béton excavé, membrane d’étanchéité sur la face extérieure, drain perforé posé au niveau de la semelle et enrobé de pierre nette et de géotextile.">
+            <div class="cf-sol"></div>
+            <div class="cf-pierre"></div>
+            <div class="cf-semelle"></div>
+            <div class="cf-mur"></div>
+            <div class="cf-memb"></div>
+            <div class="cf-drain"></div>
+            <div class="cf-leg">
+              <span><i style="background:#dfe3e5;border:1px solid var(--encre-2)"></i>Mur de fondation</span>
+              <span><i style="background:var(--ambre)"></i>Membrane d’étanchéité</span>
+              <span><i style="background:var(--encre-2)"></i>Drain perforé 100 mm</span>
+              <span><i style="background:#e7e1d4;border:1px solid var(--encre-2)"></i>Pierre nette + géotextile</span>
+            </div>
+            <div class="cf-titre">Coupe type<br>Reprise de fondation</div>
+          </div>
+        </div>
+        <div class="ch-corps">
+          <h3>Reprise de fondation, imperméabilisation et drain français</h3>
+          <p>Excavation sur trois côtés jusqu’à la semelle. Deux fissures injectées à l’époxy, mur nettoyé, réparé et membranisé sur toute la hauteur enfouie. Drain perforé neuf posé au niveau de la semelle, enrobé de pierre nette et de géotextile, raccordé à un puisard avec pompe et clapet. Remblai par couches compactées et pente refaite à s’éloigner du mur.</p>
+          <div class="ch-meta">
+            <div><span>Secteur</span><b>Sainte-Thérèse</b></div>
+            <div><span>Durée</span><b>5 semaines</b></div>
+            <div><span>Livré</span><b>Juin 2024</b></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <p class="petit" style="margin-top:22px">Les photos montrent des étapes de chantier, pas des pièces finies&nbsp;: c’est là que le travail se juge. Les durées sont comptées du premier jour de démolition à la remise des clés, déficiences corrigées.</p>
+  </div>
+</section>
+<section class="bloc" id="processus">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Processus de chantier</p>
+        <h2>Vingt et une semaines, découpées à l’avance.</h2>
+      </div>
+      <p class="chapeau">Voici l’échéancier d’un agrandissement type, celui du chantier 01. Les six semaines avant l’ouverture comptent autant que les quatorze autres&nbsp;: c’est là que se décide si le chantier va tenir ses dates.</p>
+    </div>
+
+    <div class="gantt">
+      <div class="g-ligne g-tete">
+        <div class="g-lab"><i></i>Semaine de chantier</div>
+        <div class="g-piste">
+          <span class="g-tick" style="--d:0;left:calc(var(--d)*100%/21)">S-6</span>
+          <span class="g-tick" style="--d:2;left:calc(var(--d)*100%/21)">S-4</span>
+          <span class="g-tick" style="--d:4;left:calc(var(--d)*100%/21)">S-2</span>
+          <span class="g-tick" style="--d:6;left:calc(var(--d)*100%/21)">S0</span>
+          <span class="g-tick" style="--d:8;left:calc(var(--d)*100%/21)">S2</span>
+          <span class="g-tick" style="--d:10;left:calc(var(--d)*100%/21)">S4</span>
+          <span class="g-tick" style="--d:12;left:calc(var(--d)*100%/21)">S6</span>
+          <span class="g-tick" style="--d:14;left:calc(var(--d)*100%/21)">S8</span>
+          <span class="g-tick" style="--d:16;left:calc(var(--d)*100%/21)">S10</span>
+          <span class="g-tick" style="--d:18;left:calc(var(--d)*100%/21)">S12</span>
+          <span class="g-tick" style="--d:20;left:calc(var(--d)*100%/21)">S14</span>
+        </div>
+      </div>
+
+      <div class="g-ligne g-phase">
+        <div class="g-lab">Avant l’ouverture du chantier</div>
+        <div class="g-piste">
+          <span class="g-jalon" style="--d:5;left:calc(var(--d)*100%/21)"></span>
+          <span class="g-jalon-lab" style="--d:5;left:calc(var(--d)*100%/21 + 13px)">Permis délivré</span>
+        </div>
+      </div>
+
+      <div class="g-ligne">
+        <div class="g-lab"><i>01</i>Visite sur place, relevé et soumission détaillée</div>
+        <div class="g-piste"><span class="g-bar" style="--d:0;--l:2;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>02</i>Révision ligne par ligne, contrat et échéancier signés</div>
+        <div class="g-piste"><span class="g-bar" style="--d:2;--l:1;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>03</i>Plans de construction et calculs scellés par l’ingénieur</div>
+        <div class="g-piste"><span class="g-bar" style="--d:3;--l:1;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>04</i>Dépôt de la demande de permis et suivi avec la Ville</div>
+        <div class="g-piste"><span class="g-bar" style="--d:3;--l:2;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>05</i>Commandes à long délai&nbsp;: fenêtres, poutres, armoires</div>
+        <div class="g-piste"><span class="g-bar" style="--d:5;--l:2;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+
+      <div class="g-ligne g-phase">
+        <div class="g-lab">Chantier ouvert</div>
+        <div class="g-piste">
+          <span class="g-jalon" style="--d:11;left:calc(var(--d)*100%/21)"></span>
+          <span class="g-jalon-lab" style="--d:11;left:calc(var(--d)*100%/21 + 13px)">Hors d’air</span>
+          <span class="g-jalon" style="--d:21;left:calc(var(--d)*100%/21)"></span>
+          <span class="g-jalon-lab fin">Remise des clés</span>
+        </div>
+      </div>
+
+      <div class="g-ligne">
+        <div class="g-lab"><i>06</i>Ouverture&nbsp;: protection des lieux, conteneur, sécurité</div>
+        <div class="g-piste"><span class="g-bar b-chantier" style="--d:6;--l:1;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>07</i>Démolition, excavation, semelles et dalle</div>
+        <div class="g-piste"><span class="g-bar b-chantier" style="--d:6;--l:2;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>08</i>Charpente, toiture, portes et fenêtres</div>
+        <div class="g-piste"><span class="g-bar b-chantier" style="--d:8;--l:3;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>09</i>Plomberie, électricité et ventilation — le brut</div>
+        <div class="g-piste"><span class="g-bar b-chantier" style="--d:11;--l:2;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>10</i>Isolation, pare-vapeur et inspections avant fermeture</div>
+        <div class="g-piste"><span class="g-bar b-chantier" style="--d:13;--l:1;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>11</i>Gypse, tirage de joints, sablage et peinture</div>
+        <div class="g-piste"><span class="g-bar b-chantier" style="--d:14;--l:3;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>12</i>Planchers, armoires, céramique et finition</div>
+        <div class="g-piste"><span class="g-bar b-chantier" style="--d:17;--l:3;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+      <div class="g-ligne">
+        <div class="g-lab"><i>13</i>Préfinale, déficiences, nettoyage et remise des clés</div>
+        <div class="g-piste"><span class="g-bar b-fin" style="--d:20;--l:1;left:calc(var(--d)*100%/21);width:calc(var(--l)*100%/21)"></span></div>
+      </div>
+    </div>
+
+    <div class="g-legende">
+      <span><i></i>Avant l’ouverture</span>
+      <span><i class="c2"></i>Travaux sur place</span>
+      <span><i class="c3"></i>Livraison</span>
+      <span><i class="c4"></i>Jalon lié à un versement ou à une inspection</span>
+    </div>
+
+    <p class="chapeau" style="margin:44px auto 0;text-align:center;max-width:44ch;font-size:22px;border-top:1px solid var(--trait);border-bottom:1px solid var(--trait);padding:28px 0">« Un échéancier tient parce que les commandes sont parties avant l’ouverture. Pas parce que l’équipe travaille plus vite. »</p>
+
+    <h3 style="margin:56px 0 8px;font-size:26px">Les six jalons, et ce qu’on attend de vous à chacun</h3>
+    <p class="petit" style="margin-bottom:24px;max-width:80ch">Les versements sont liés à des jalons atteints et vérifiables, jamais à des dates du calendrier. Si le chantier prend du retard, le versement attend le jalon.</p>
+    <table class="tab">
+      <thead>
+        <tr><th scope="col">Jalon</th><th scope="col">Ce qu’on fait</th><th scope="col">Ce qu’on attend de vous</th><th scope="col">Versement</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Signature du contrat<span class="mono">Semaine -4</span></th>
+          <td>On remet le devis descriptif, l’échéancier, le calendrier des versements et la procédure de changement.</td>
+          <td>Relire au complet et poser vos questions avant de signer. Une question posée avant la signature ne coûte rien.</td>
+          <td class="vers">Versement 1 · à la signature</td>
+        </tr>
+        <tr>
+          <th scope="row">Permis délivré<span class="mono">Semaine -1</span></th>
+          <td>On monte le dossier, on le dépose et on répond aux demandes de la Ville jusqu’à la délivrance.</td>
+          <td>Signer la demande comme propriétaire. Les frais de la Ville vous sont facturés au coût, sans majoration.</td>
+          <td class="vers">Aucun versement</td>
+        </tr>
+        <tr>
+          <th scope="row">Hors d’air<span class="mono">Semaine 4</span></th>
+          <td>Toiture, portes et fenêtres posées. Le bâtiment est fermé, la météo n’a plus de prise sur l’intérieur.</td>
+          <td>Visite de chantier avec le chargé de projet. Choix finaux de céramique, de couleurs et de quincaillerie.</td>
+          <td class="vers">Versement 2</td>
+        </tr>
+        <tr>
+          <th scope="row">Inspection avant fermeture<span class="mono">Semaine 7</span></th>
+          <td>Isolation et pare-vapeur inspectés, plomberie et filage photographiés avant la pose du gypse.</td>
+          <td>Rien d’obligatoire, mais venez voir&nbsp;: c’est la dernière fois que les murs sont ouverts.</td>
+          <td class="vers">Aucun versement</td>
+        </tr>
+        <tr>
+          <th scope="row">Fin de la finition<span class="mono">Semaine 13</span></th>
+          <td>Planchers, armoires, céramique et peinture terminés. On fait notre propre inspection avant la vôtre.</td>
+          <td>Faire le tour avec nous. On écrit ensemble la liste de déficiences, point par point, pièce par pièce.</td>
+          <td class="vers">Versement 3</td>
+        </tr>
+        <tr>
+          <th scope="row">Remise des clés<span class="mono">Semaine 14</span></th>
+          <td>Déficiences corrigées, nettoyage complet, quittances des fournisseurs et sous-traitants, garanties en dossier.</td>
+          <td>Accepter la livraison par écrit, une fois la liste de déficiences vidée.</td>
+          <td class="vers">Solde final</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="bloc bloc--papier2" id="mur">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Comment c’est monté</p>
+        <h2>Ce qu’il y a dans un mur qu’on ferme.</h2>
+      </div>
+      <p class="chapeau">Un mur d’agrandissement, de l’extérieur vers l’intérieur. Vous ne le reverrez jamais une fois le gypse posé — c’est justement pour ça qu’on vous le montre avant.</p>
+    </div>
+
+    <div class="coupe">
+      <div class="coupe-corps">
+        <div class="mur">
+          <span class="mur-ext">Extérieur</span>
+          <span class="mur-int">Intérieur</span>
+          <div class="mur-bandes">
+            <div class="m1"><b>1</b></div>
+            <div class="m2"><b>2</b></div>
+            <div class="m3"><b>3</b></div>
+            <div class="m4"><b>4</b></div>
+            <div class="m5"><b>5</b><i style="left:0"></i><i style="right:0"></i></div>
+            <div class="m6"><b>6</b></div>
+            <div class="m7"><b>7</b></div>
+          </div>
+          <div class="mur-cote">
+            <div class="cote h" style="left:0;right:0;top:0"><b>≈ 206 mm</b></div>
+          </div>
+          <p class="legende">Coupe horizontale · épaisseurs proportionnelles · hachures selon la matière</p>
+          <div class="chiffre-r">
+            <div><b>≈ 206 mm</b><span>Épaisseur totale du mur</span></div>
+            <div><b>≈ R-22</b><span>Valeur isolante effective</span></div>
+            <div><b>400 mm</b><span>Entraxe des colombages</span></div>
+          </div>
+        </div>
+        <div>
+          <ol class="legende-mur">
+            <li><b>1</b><div>Déclin de fibrociment<span>8 mm · joints ventilés</span></div></li>
+            <li><b>2</b><div>Fourrures de bois traité<span>19 mm · lame d’air drainante derrière le parement</span></div></li>
+            <li><b>3</b><div>Membrane pare-intempérie<span>Chevauchements scellés, ruban sur tous les joints</span></div></li>
+            <li><b>4</b><div>Panneau isolant de fibre de bois<span>25 mm · R-3,6 en continu, coupe le pont thermique</span></div></li>
+            <li><b>5</b><div>Ossature 2×6 et isolant en laine<span>Colombages à 400 mm c/c · R-22 entre les montants</span></div></li>
+            <li><b>6</b><div>Pare-vapeur<span>Polyéthylène 6 mil · joints, prises et pourtours scellés</span></div></li>
+            <li><b>7</b><div>Panneau de gypse<span>12,7 mm · joints tirés en trois passes, sablés</span></div></li>
+          </ol>
+          <p class="petit" style="margin-top:16px">C’est le panneau isolant continu à l’extérieur (4) qui fait la différence en janvier&nbsp;: sans lui, chaque colombage devient une bande froide dans le mur. Le montage exact est écrit dans le devis descriptif que vous signez.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:380px 1fr;gap:36px;margin-top:28px;align-items:stretch">
+      <div style="border:1px solid var(--trait)">
+        <img src="../../images/secteurs/construction-2.webp" width="240" height="240" alt="Bois d’œuvre trié et empilé sur le chantier avant le montage de l’ossature." loading="lazy" decoding="async" style="width:100%;height:250px;object-fit:cover;object-position:60% 40%">
+      </div>
+      <div class="encadre" style="background:var(--papier);display:flex;flex-direction:column;justify-content:center">
+        <h4>Le bois arrive trié, et il reste couvert</h4>
+        <p class="petit" style="margin-top:8px">On commande la charpente d’un seul coup et on la fait livrer la veille du montage. Le bois est empilé sur des dormants, à l’écart du sol, et bâché tant qu’il n’est pas monté. Une pile de bois qui passe trois semaines dans la pluie, ça se voit dans les planchers deux ans plus tard.</p>
+        <p class="petit" style="margin-top:12px">Les pièces croches ou fendues sont retournées au fournisseur, pas posées «&nbsp;dans un mur qui ne paraît pas&nbsp;». C’est écrit dans notre commande&nbsp;: le tri se fait à la réception, devant le camion.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bloc" id="inclus">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Transparence</p>
+        <h2>Ce qui est inclus, et ce qui ne l’est pas.</h2>
+      </div>
+      <p class="chapeau">Deux soumissions qui ne contiennent pas les mêmes choses ne se comparent pas. Voici, mot pour mot, ce que nos contrats couvrent — et ce qu’ils ne couvrent pas.</p>
+    </div>
+    <div class="deux-listes">
+      <div class="liste-b">
+        <h3>Compris dans nos contrats</h3>
+        <p>Sans supplément, sur tous nos chantiers, écrit noir sur blanc au devis.</p>
+        <ul>
+          <li><div>Un chargé de projet attitré<span>Le même du premier appel jusqu’à la fin de la garantie.</span></div></li>
+          <li><div>Plans de construction et coordination de l’ingénieur<span>Y compris les révisions demandées par la Ville.</span></div></li>
+          <li><div>Montage complet du dossier de permis<span>On le dépose et on fait le suivi jusqu’à la délivrance.</span></div></li>
+          <li><div>Protection des lieux<span>Planchers, escaliers, mobilier et cloison anti-poussière scellée.</span></div></li>
+          <li><div>Conteneur, disposition des débris et échafaudage<span>Vidé aussi souvent que nécessaire, jamais laissé plein la fin de semaine.</span></div></li>
+          <li><div>Coordination de tous les sous-traitants<span>Plomberie, électricité, béton, bardeaux — c’est nous qui les gérons.</span></div></li>
+          <li><div>Réunion de chantier hebdomadaire<span>Avec un compte rendu écrit et des photos de la semaine.</span></div></li>
+          <li><div>Nettoyage en fin de journée et grand ménage à la livraison<span>Balayage quotidien, aspirateur à filtre à la fermeture des murs.</span></div></li>
+          <li><div>Liste de déficiences et correction<span>Écrite avec vous, corrigée avant le solde final.</span></div></li>
+          <li><div>Quittances, garanties de fabricants et attestations<span>Remises en dossier à la remise des clés.</span></div></li>
+        </ul>
+      </div>
+      <div class="liste-b non">
+        <h3>Non compris, sauf mention au devis</h3>
+        <p>Ces postes existent sur bien des chantiers. On préfère les nommer avant plutôt que de les découvrir en cours de route.</p>
+        <ul>
+          <li><div>Frais de permis et de la Ville<span>Facturés au coût, sur pièce, sans majoration.</span></div></li>
+          <li><div>Certificat de localisation et travaux d’arpenteur-géomètre<span>Exigés par certaines villes pour un agrandissement.</span></div></li>
+          <li><div>Test et retrait d’amiante ou de vermiculite<span>Test obligatoire avant démolition dans une maison d’avant 1990.</span></div></li>
+          <li><div>Décontamination du sol et disposition spéciale<span>Découverte en cours d’excavation.</span></div></li>
+          <li><div>Déplacement d’une entrée électrique ou d’un service municipal<span>Les délais des services publics ne nous appartiennent pas.</span></div></li>
+          <li><div>Réparation de vices cachés mis au jour<span>Structure pourrie, filage non conforme, moisissure derrière un mur.</span></div></li>
+          <li><div>Électroménagers, mobilier et éclairage décoratif<span>On les installe, on ne les fournit pas.</span></div></li>
+          <li><div>Aménagement paysager, pavage et clôtures<span>Le terrain est remblayé, nivelé et ensemencé, rien de plus.</span></div></li>
+          <li><div>Travaux dans les pièces existantes hors portée<span>Peinture, planchers ou moulures ailleurs dans la maison.</span></div></li>
+          <li><div>Mise aux normes non exigée par le permis<span>On la signale, on la chiffre, et vous décidez.</span></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="encadre" style="margin-top:26px">
+      <h4>Et si un imprévu sort du mur&nbsp;?</h4>
+      <p class="petit">On arrête, on photographie, on documente et on vous appelle la journée même. Vous recevez un avenant écrit avec la description des travaux et le délai qu’ils ajoutent à l’échéancier. Rien ne repart tant que l’avenant n’est pas signé des deux côtés. C’est plus lent une journée, et ça évite une chicane trois mois plus tard.</p>
+    </div>
+  </div>
+</section>
+<section class="bloc bloc--encre" id="garanties">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Licences, assurances et garanties</p>
+        <h2>Les papiers, avant les belles paroles.</h2>
+      </div>
+      <p class="chapeau">Tout ce qui suit est vérifiable sur pièce. On remet chaque document au dossier avant l’ouverture du chantier, sans qu’il faille le demander deux fois.</p>
+    </div>
+    <div class="grille-gar">
+      <article class="gar">
+        <span class="mono">01 · Licence</span>
+        <h3>Licence d’entrepreneur général</h3>
+        <p>Catégories 1.1.1 et 1.2 — bâtiments résidentiels et travaux de rénovation. La licence est au nom de l’entreprise et son état se vérifie en ligne auprès de l’organisme qui la délivre.</p>
+        <span class="num">RBQ 0000-0000-00</span>
+      </article>
+      <article class="gar">
+        <span class="mono">02 · Assurance</span>
+        <h3>Responsabilité civile en vigueur</h3>
+        <p>Une attestation d’assurance à jour, émise par notre assureur et non par nous, vous est remise avant le premier coup de marteau. Demandez-la à tout entrepreneur, et refusez une copie qui date de deux ans.</p>
+        <span class="num">Attestation au dossier</span>
+      </article>
+      <article class="gar">
+        <span class="mono">03 · Santé et sécurité</span>
+        <h3>Employés et sous-traitants inscrits</h3>
+        <p>Nos employés et nos sous-traitants sont inscrits auprès de la commission des normes, de l’équité, de la santé et de la sécurité du travail. L’attestation de conformité vous est fournie sur demande, pour chaque corps de métier.</p>
+        <span class="num">Attestation sur demande</span>
+      </article>
+      <article class="gar">
+        <span class="mono">04 · Contrat</span>
+        <h3>Contrat écrit, avenants écrits</h3>
+        <p>Devis descriptif poste par poste, échéancier daté, calendrier des versements liés à des jalons, et procédure de changement. Aucun travail supplémentaire n’est exécuté avant la signature de l’avenant correspondant.</p>
+        <span class="num">Signé des deux côtés</span>
+      </article>
+      <article class="gar">
+        <span class="mono">05 · Quittances</span>
+        <h3>Quittances à chaque versement</h3>
+        <p>À chaque versement, on remet les quittances des fournisseurs et des sous-traitants payés. C’est ce qui vous protège d’une hypothèque légale de la construction inscrite sur votre maison pour une facture qu’on aurait laissée traîner.</p>
+        <span class="num">À chaque versement</span>
+      </article>
+      <article class="gar">
+        <span class="mono">06 · Garantie</span>
+        <h3>Cinq ans écrits sur la main-d’œuvre</h3>
+        <p>Notre garantie couvre la main-d’œuvre pendant cinq ans, structure comprise. Les garanties de fabricants sur les matériaux vous sont remises en dossier à la livraison, avec les numéros de lot et les dates d’achat.</p>
+        <span class="num">5 ans · main-d’œuvre</span>
+      </article>
+    </div>
+
+    <div class="exiger">
+      <div>
+        <p class="sur-titre">À vérifier partout</p>
+        <h3 style="font-size:23px;line-height:1.2">Ce qu’il faut exiger de n’importe quel entrepreneur, nous compris</h3>
+        <p class="petit" style="margin-top:12px">Si un entrepreneur hésite sur un seul de ces points, ce n’est pas une question de personnalité. C’est une question de dossier.</p>
+      </div>
+      <ol>
+        <li>Le numéro de licence, écrit sur la soumission, pas juste dit au téléphone.</li>
+        <li>L’attestation d’assurance responsabilité, datée de moins d’un an.</li>
+        <li>L’attestation de conformité en santé et sécurité du travail.</li>
+        <li>Un devis descriptif poste par poste, pas un montant global sur une ligne.</li>
+        <li>La liste écrite de ce qui n’est pas inclus.</li>
+        <li>Un échéancier daté, avec la date d’ouverture et la date de livraison.</li>
+        <li>Des versements liés à des jalons atteints, jamais à des dates fixes.</li>
+        <li>Les quittances des fournisseurs, remises à chaque versement.</li>
+        <li>La procédure écrite en cas d’imprévu ou de changement en cours de route.</li>
+        <li>Le nom de la personne qui sera sur le chantier, et son numéro direct.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="bloc bloc--papier2" id="soumission">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Soumission</p>
+        <h2>Dites-nous ce que vous voulez faire.</h2>
+      </div>
+      <p class="chapeau">Plus le formulaire est rempli, plus la visite est utile. On ne chiffre jamais un projet par téléphone&nbsp;: on se déplace, on mesure, on regarde le solage et l’entretoit, et on écrit une soumission détaillée.</p>
+    </div>
+
+    <div class="soum">
+      <form action="#soumission" method="post">
+        <fieldset>
+          <legend>1 · Vos coordonnées</legend>
+          <div class="rangee">
+            <div class="champ"><label for="nom">Nom complet</label><input type="text" id="nom" name="nom" autocomplete="name"></div>
+            <div class="champ"><label for="tel">Téléphone</label><input type="tel" id="tel" name="telephone" autocomplete="tel" placeholder="000 000-0000"></div>
+          </div>
+          <div class="rangee">
+            <div class="champ"><label for="courriel">Courriel</label><input type="email" id="courriel" name="courriel" autocomplete="email" placeholder="vous@exemple.ca"></div>
+            <div class="champ">
+              <label for="ville">Municipalité du projet</label>
+              <span class="select-hab">
+                <select id="ville" name="municipalite">
+                  <option>Sainte-Thérèse</option><option>Blainville</option><option>Boisbriand</option>
+                  <option>Rosemère</option><option>Lorraine</option><option>Bois-des-Filion</option>
+                  <option>Sainte-Anne-des-Plaines</option><option>Terrebonne</option><option>Mascouche</option>
+                  <option>Mirabel</option><option>Saint-Jérôme</option><option>Saint-Eustache</option>
+                  <option>Deux-Montagnes</option><option>Laval, secteurs nord</option><option>Repentigny</option>
+                  <option>Autre municipalité</option>
+                </select>
+              </span>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2 · Le projet</legend>
+          <div class="rangee">
+            <div class="champ">
+              <label for="type">Type de projet principal</label>
+              <span class="select-hab">
+                <select id="type" name="type">
+                  <option>Agrandissement</option><option>Cuisine</option><option>Salle de bain</option>
+                  <option>Sous-sol</option><option>Toiture</option><option>Fondation et drainage</option>
+                  <option>Charpente et structure</option><option>Portes, fenêtres et revêtement</option>
+                  <option>Plusieurs travaux à la fois</option><option>Je ne sais pas encore</option>
+                </select>
+              </span>
+            </div>
+            <div class="champ">
+              <label for="echeance">Échéance souhaitée</label>
+              <span class="select-hab">
+                <select id="echeance" name="echeance">
+                  <option>Dès que possible</option>
+                  <option>Dans les 3 prochains mois</option>
+                  <option>Automne 2026</option>
+                  <option>Hiver 2026-2027</option>
+                  <option>Printemps 2027</option>
+                  <option>Je m’informe pour plus tard</option>
+                </select>
+              </span>
+            </div>
+          </div>
+          <div class="champ">
+            <span class="lab" id="lab-travaux">Travaux envisagés — cochez tout ce qui s’applique</span>
+            <div class="cases" role="group" aria-labelledby="lab-travaux">
+              <label><input type="checkbox" name="travaux" value="demolition"> Démolition intérieure</label>
+              <label><input type="checkbox" name="travaux" value="excavation"> Excavation ou fondation</label>
+              <label><input type="checkbox" name="travaux" value="structure"> Retrait d’un mur porteur</label>
+              <label><input type="checkbox" name="travaux" value="toiture"> Toiture ou charpente de toit</label>
+              <label><input type="checkbox" name="travaux" value="ouvertures"> Portes et fenêtres</label>
+              <label><input type="checkbox" name="travaux" value="revetement"> Revêtement extérieur</label>
+              <label><input type="checkbox" name="travaux" value="plomberie"> Plomberie déplacée</label>
+              <label><input type="checkbox" name="travaux" value="electricite"> Électricité ou panneau</label>
+              <label><input type="checkbox" name="travaux" value="isolation"> Isolation et étanchéité</label>
+              <label><input type="checkbox" name="travaux" value="finition"> Finition intérieure complète</label>
+            </div>
+          </div>
+          <div class="champ">
+            <label for="enveloppe">Enveloppe budgétaire</label>
+            <span class="select-hab">
+              <select id="enveloppe" name="enveloppe">
+                <option>À discuter — je n’ai pas encore d’idée</option>
+                <option>À discuter — j’ai une enveloppe en tête</option>
+                <option>À discuter — enveloppe fixée par un financement approuvé</option>
+                <option>À discuter — je compare plusieurs entrepreneurs</option>
+              </select>
+            </span>
+            <span class="aide">On n’affiche aucun montant sur ce site et on n’en demande pas ici. La discussion se fait en rencontre, une fois le projet mesuré.</span>
+          </div>
+          <div class="champ">
+            <label for="descr">Décrivez le projet dans vos mots</label>
+            <textarea id="descr" name="description" placeholder="Ex. : on veut agrandir la cuisine vers la cour arrière d’environ 5 mètres, ouvrir le mur du fond et refaire la salle de bain du haut en même temps."></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>3 · Le bâtiment</legend>
+          <div class="rangee trois">
+            <div class="champ"><label for="annee">Année de construction</label><input type="text" id="annee" name="annee" inputmode="numeric" placeholder="Ex. : 1978"></div>
+            <div class="champ">
+              <label for="batiment">Type de bâtiment</label>
+              <span class="select-hab">
+                <select id="batiment" name="batiment">
+                  <option>Bungalow</option><option>Cottage à étages</option><option>Plain-pied</option>
+                  <option>Maison jumelée</option><option>Maison en rangée</option><option>Chalet</option>
+                </select>
+              </span>
+            </div>
+            <div class="champ"><label for="superficie">Superficie approximative</label><input type="text" id="superficie" name="superficie" placeholder="Ex. : 1 400 pi²"></div>
+          </div>
+          <div class="rangee">
+            <div class="champ">
+              <span class="lab" id="lab-plans">Avez-vous déjà des plans&nbsp;?</span>
+              <div class="radios" role="radiogroup" aria-labelledby="lab-plans">
+                <label><input type="radio" name="plans" value="ingenieur"> Oui, des plans scellés par un ingénieur ou un architecte</label>
+                <label><input type="radio" name="plans" value="esquisse"> Oui, une esquisse ou un croquis à main levée</label>
+                <label><input type="radio" name="plans" value="non"> Non, rien pour l’instant</label>
+              </div>
+            </div>
+            <div class="champ">
+              <span class="lab" id="lab-porteur">Le projet touche-t-il un mur porteur&nbsp;?</span>
+              <div class="radios" role="radiogroup" aria-labelledby="lab-porteur">
+                <label><input type="radio" name="porteur" value="oui"> Oui, on veut ouvrir ou retirer un mur</label>
+                <label><input type="radio" name="porteur" value="non"> Non, aucune structure touchée</label>
+                <label><input type="radio" name="porteur" value="inconnu"> Je ne sais pas — c’est à vérifier sur place</label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset style="margin-bottom:0">
+          <legend>4 · Comment vous joindre</legend>
+          <div class="rangee">
+            <div class="champ">
+              <span class="lab" id="lab-joindre">Moyen préféré</span>
+              <div class="radios" role="radiogroup" aria-labelledby="lab-joindre">
+                <label><input type="radio" name="joindre" value="tel"> Téléphone</label>
+                <label><input type="radio" name="joindre" value="courriel"> Courriel</label>
+                <label><input type="radio" name="joindre" value="texto"> Message texte</label>
+              </div>
+            </div>
+            <div class="champ">
+              <label for="moment">Meilleur moment pour vous appeler</label>
+              <span class="select-hab">
+                <select id="moment" name="moment">
+                  <option>En avant-midi, 7 h à 12 h</option>
+                  <option>En après-midi, 12 h à 17 h</option>
+                  <option>En début de soirée, 17 h à 19 h</option>
+                  <option>N’importe quand</option>
+                </select>
+              </span>
+              <span class="aide">On rappelle dans un délai d’un jour ouvrable. Si personne ne vous a rappelé, c’est qu’il y a eu une erreur&nbsp;: rappelez-nous.</span>
+            </div>
+          </div>
+          <label class="consent"><input type="checkbox" name="consentement" value="oui"> J’accepte d’être contacté au sujet de ma demande. Aucune information n’est transmise à un tiers, et il n’y a pas d’infolettre à ce formulaire.</label>
+          <div class="envoi">
+            <button class="btn btn--ambre" type="submit">Envoyer la demande</button>
+            <span class="petit">Vous préférez parler à quelqu’un&nbsp;? <strong style="color:var(--encre)">000 000-0000</strong>, du lundi au vendredi, 7 h à 17 h.</span>
+          </div>
+        </fieldset>
+      </form>
+
+      <aside class="aside-soum">
+        <p class="sur-titre">Ce qui arrive ensuite</p>
+        <ol class="etapes-suite">
+          <li><b>On vous rappelle</b><span>Pour comprendre le projet et vérifier qu’il entre dans ce qu’on fait. Si ce n’est pas pour nous, on vous le dit tout de suite.</span><i>1 jour ouvrable</i></li>
+          <li><b>Visite sur place</b><span>On mesure, on regarde le solage, l’entretoit, le panneau électrique et l’état de la structure. Prévoyez de 30 à 45 minutes.</span><i>Dans les 2 semaines</i></li>
+          <li><b>Soumission détaillée</b><span>Un devis descriptif poste par poste, la liste des exclusions et un échéancier daté. Pas un montant sur une ligne.</span><i>5 à 10 jours ouvrables</i></li>
+          <li><b>Rencontre de révision</b><span>On la relit avec vous, ligne par ligne. Vous repartez avec la version écrite, que vous signiez ou non.</span><i>À votre rythme</i></li>
+        </ol>
+        <div class="coord" style="padding-bottom:22px">
+          <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ambre-fonce);margin-bottom:12px">À avoir sous la main pour la visite</h4>
+          <ul style="list-style:none">
+            <li style="font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--trait-faible);display:flex;gap:11px"><span style="width:9px;height:9px;background:var(--ambre);flex:none;margin-top:6px"></span>Le certificat de localisation, si vous l’avez</li>
+            <li style="font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--trait-faible);display:flex;gap:11px"><span style="width:9px;height:9px;background:var(--ambre);flex:none;margin-top:6px"></span>Les plans d’origine de la maison, même incomplets</li>
+            <li style="font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--trait-faible);display:flex;gap:11px"><span style="width:9px;height:9px;background:var(--ambre);flex:none;margin-top:6px"></span>Les dates des derniers travaux majeurs&nbsp;: toiture, fenêtres, panneau électrique</li>
+            <li style="font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--trait-faible);display:flex;gap:11px"><span style="width:9px;height:9px;background:var(--ambre);flex:none;margin-top:6px"></span>Vos photos d’inspiration, s’il y en a</li>
+            <li style="font-size:13.5px;padding:7px 0;display:flex;gap:11px"><span style="width:9px;height:9px;background:var(--ambre);flex:none;margin-top:6px"></span>Un accès au sous-sol, à l’entretoit et au panneau électrique</li>
+          </ul>
+        </div>
+        <dl class="coord">
+          <dt>Téléphone</dt><dd>000 000-0000</dd>
+          <dt>Courriel</dt><dd>courriel@exemple.ca</dd>
+          <dt>Bureau</dt><dd>Adresse sur demande</dd>
+          <dt>Heures</dt><dd>Lundi au vendredi, 7 h à 17 h</dd>
+        </dl>
+        <p class="petit" style="margin-top:18px;border-top:1px solid var(--trait);padding-top:16px">On ne chiffre pas un projet par téléphone. Une soumission écrite sans visite, c’est une estimation qui va changer — et c’est toujours vous qui payez la différence.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+<section class="bloc" id="questions">
+  <div class="env">
+    <div class="tete-section">
+      <div>
+        <p class="sur-titre">Questions de propriétaires</p>
+        <h2>Les douze questions qu’on nous pose à chaque visite.</h2>
+      </div>
+      <p class="chapeau">Ce sont de vraies questions, posées sur de vrais perrons. Les réponses sont les nôtres&nbsp;; elles ne valent pas pour tous les entrepreneurs, et c’est justement pour ça qu’il faut les poser à chacun.</p>
+    </div>
+    <div class="faq">
+
+      <article class="q">
+        <h3><i>01</i>Dans combien de temps pouvez-vous commencer&nbsp;?</h3>
+        <p>Notre carnet se remplit de 8 à 14 semaines d’avance, et davantage pour un chantier d’été signé au printemps. Une salle de bain se glisse plus facilement qu’un agrandissement, qui demande une plage complète. Le jour où on signe, vous repartez avec une date d’ouverture écrite au contrat.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>02</i>Qui s’occupe du permis&nbsp;?</h3>
+        <p>Nous montons le dossier complet&nbsp;: plans, implantation, formulaires, réponses aux questions de l’inspecteur. Le permis est toutefois délivré au propriétaire — c’est la règle dans nos villes — alors vous signez la demande et les frais vous sont facturés au coût, sur pièce.</p>
+        <p>Comptez de deux à six semaines selon la municipalité et la période de l’année. On ne casse pas un mur avant de l’avoir en main.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>03</i>Est-ce que je peux rester dans la maison&nbsp;?</h3>
+        <p>Dans la grande majorité des cas, oui. On isole la zone de travail avec une cloison anti-poussière scellée et on garde un accès pour vous. Les exceptions&nbsp;: les quelques jours de sablage de joints, et la période sans eau chaude ou sans cuisine, qu’on vous annonce d’avance au calendrier.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>04</i>Comment se font les paiements&nbsp;?</h3>
+        <p>Par versements liés à des jalons atteints et vérifiables&nbsp;: signature, fermeture de la charpente, fin de la finition, puis solde à la livraison. Jamais à des dates du calendrier. Si le chantier prend une semaine de retard, le versement attend le jalon, pas l’inverse.</p>
+        <p>Et à chaque versement, vous recevez les quittances des fournisseurs et sous-traitants payés.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>05</i>Qu’arrive-t-il si vous trouvez un imprévu&nbsp;?</h3>
+        <p>On arrête, on photographie, on documente et on vous appelle la journée même. Vous recevez un avenant écrit avec la description des travaux et l’effet sur l’échéancier. Rien ne repart avant qu’il soit signé des deux côtés.</p>
+        <p>Les imprévus les plus fréquents chez nous&nbsp;: solives entaillées par un ancien plombier, filage sans boîte de jonction, sous-plancher gonflé sous une baignoire, et champignon derrière un revêtement mal soliné.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>06</i>Est-ce que vous sous-traitez&nbsp;?</h3>
+        <p>La plomberie, l’électricité, le béton et les bardeaux, oui. Toujours les mêmes équipes, licenciées et assurées, avec qui on travaille depuis des années. La charpente, la démolition, l’isolation, le gypse et la finition sont faits par nos employés. La coordination reste chez nous dans tous les cas.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>07</i>Travaillez-vous l’hiver&nbsp;?</h3>
+        <p>Oui, et une bonne partie de nos sous-sols et de nos salles de bain se font entre décembre et mars. L’excavation et le béton se planifient autrement&nbsp;: on chauffe, on protège, on coule avec des additifs adaptés. Certaines étapes extérieures se déplacent au printemps, et c’est écrit à l’échéancier dès le départ.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>08</i>Et l’amiante ou la vermiculite&nbsp;?</h3>
+        <p>Dans une maison construite avant 1990, on fait tester avant toute démolition&nbsp;: plâtre, tuiles de plancher, colle, isolant d’entretoit. Si le test est positif, le retrait est confié à une firme spécialisée et le chantier s’ajuste. Ce n’est jamais inclus d’avance, parce qu’on ne peut pas le deviner.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>09</i>Qui nettoie&nbsp;?</h3>
+        <p>Nous. Conteneur sur place vidé aussi souvent que nécessaire, balayage en fin de journée, aspirateur à filtre au moment de fermer les murs, et grand ménage complet avant la remise des clés. Un chantier sale, c’est un chantier mal organisé — pas juste un chantier malpropre.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>10</i>Combien de chantiers menez-vous en même temps&nbsp;?</h3>
+        <p>Trois au maximum, jamais plus, avec un chargé de projet par chantier. C’est ce qui nous permet de garder une équipe sur place tous les jours plutôt que de faire tourner les gars d’une adresse à l’autre. C’est aussi pour ça que notre carnet se remplit d’avance.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>11</i>Et si je veux changer quelque chose en cours de route&nbsp;?</h3>
+        <p>C’est permis et ça arrive souvent. On chiffre le changement, on écrit l’effet sur l’échéancier, vous signez l’avenant, et on exécute. Le seul changement qui coûte cher, c’est celui qu’on demande après coup&nbsp;: déplacer un drain d’îlot après la coulée de la dalle, par exemple.</p>
+      </article>
+
+      <article class="q">
+        <h3><i>12</i>Que couvre exactement votre garantie&nbsp;?</h3>
+        <p>Cinq ans sur notre main-d’œuvre, structure comprise, à compter de la date d’acceptation écrite de la livraison. Les matériaux sont couverts par la garantie de leur fabricant, dont les documents vous sont remis en dossier. Un appel de garantie est retourné dans les deux jours ouvrables.</p>
+        <p>La garantie ne couvre pas l’usure normale, un défaut d’entretien, ni un dommage causé par des travaux exécutés par quelqu’un d’autre après notre passage.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="appel">
+  <div class="env">
+    <div>
+      <h2>Un projet pour 2026&nbsp;? C’est maintenant qu’on en parle.</h2>
+      <p>Les chantiers d’agrandissement de la belle saison se signent l’hiver d’avant, parce qu’il faut compter les plans, le permis et les commandes à long délai. Un appel de quinze minutes suffit pour savoir si ça vaut une visite.</p>
+    </div>
+    <div class="appel-actions">
+      <a class="btn" href="#soumission">Demander une soumission</a>
+      <span class="mono" style="font-size:12px;letter-spacing:.08em">000 000-0000</span>
+    </div>
+  </div>
+</section>
+
+<footer class="pied">
+  <div class="env">
+    <div class="pied-grille">
+      <div>
+        <a class="mot" href="#accueil">
+          <span class="marque marque--clair"></span>
+          <span><span>Construction</span><b>LATTIER</b></span>
+        </a>
+        <p class="pied-desc">Entrepreneur général en construction et rénovation résidentielle sur la Rive-Nord et dans les Basses-Laurentides depuis 2009.</p>
+        <span class="pied-rbq">RBQ 0000-0000-00</span>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Agrandissement</a></li>
+          <li><a href="#services">Cuisine</a></li>
+          <li><a href="#services">Salle de bain</a></li>
+          <li><a href="#services">Sous-sol</a></li>
+          <li><a href="#services">Toiture</a></li>
+          <li><a href="#services">Fondation et drainage</a></li>
+          <li><a href="#services">Charpente et structure</a></li>
+          <li><a href="#services">Ouvertures et revêtement</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>L’entreprise</h4>
+        <ul>
+          <li><a href="#chantiers">Chantiers livrés</a></li>
+          <li><a href="#processus">Processus de chantier</a></li>
+          <li><a href="#mur">Comment c’est monté</a></li>
+          <li><a href="#inclus">Ce qui est inclus</a></li>
+          <li><a href="#garanties">Licences et garanties</a></li>
+          <li><a href="#questions">Questions fréquentes</a></li>
+          <li><a href="#territoire">Territoire desservi</a></li>
+          <li><a href="#soumission">Demander une soumission</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Nous joindre</h4>
+        <ul>
+          <li>Téléphone&nbsp;: <a href="tel:0000000000">000 000-0000</a></li>
+          <li>Courriel&nbsp;: <a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></li>
+          <li>Bureau&nbsp;: adresse sur demande</li>
+          <li>Sainte-Thérèse (Québec)</li>
+        </ul>
+        <h4 style="margin-top:22px">Heures</h4>
+        <ul class="heures">
+          <li><span>Lundi au jeudi</span><b>7 h – 17 h</b></li>
+          <li><span>Vendredi</span><b>7 h – 15 h</b></li>
+          <li><span>Samedi et dimanche</span><b>Fermé</b></li>
+          <li><span>Urgence de chantier</span><b>En tout temps</b></li>
+        </ul>
+      </div>
+    </div>
+    <div class="pied-bas">
+      <p>© 2026 Construction Lattier inc. — Entrepreneur général, licence RBQ 0000-0000-00. Territoire desservi&nbsp;: MRC de Thérèse-De Blainville, de La Rivière-du-Nord, des Moulins et de Deux-Montagnes.</p>
+      <p style="text-align:right;max-width:38ch">Site de démonstration. Construction Lattier est une entreprise fictive&nbsp;: le nom, le numéro de licence, les coordonnées et les chantiers présentés ont été inventés pour illustrer une mise en page.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -163,6 +163,22 @@ const PROJETS = {
     ],
     retirer: []
   },
+  /* ---------- LES SITES DE SECTEUR ----------  D-653
+     Des fichiers STATIQUES du depot, servis par `tools/serve.mjs`.
+     Rien a demarrer, rien a masquer : ils sont ecrits ici, donc les
+     coordonnees y sont deja neutres et aucune marque reelle n'y
+     figure. Ce qui vaut pour eux, c'est le reste de la chaine — la
+     couture par tuiles, la detection des scenes epinglees, le refus
+     d'une capture plate. */
+  "secteur-construction": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/construction/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+  "secteur-immobilier": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/immobilier/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+
   deneigement: {
     dossier: "C:/Users/tiwil/APED-AGENCY/MV-deneigement",
     cmd: ["run", "dev", "--", "-p", "3103"],
@@ -227,18 +243,28 @@ const R = [];
 
 for (const cle of aFaire) {
   const p = PROJETS[cle];
-  console.log(`\n=== ${cle} — demarrage sur ${p.port} ===`);
-  /* Piege 19 : un serveur deja debout fait echouer le tien en
-     SILENCE. Ici les zombies gardaient le port en IPv6 sans plus
-     repondre a rien : on nettoie avant, systematiquement. */
-  await new Promise((r) => {
-    const t = spawn(`for /f "tokens=5" %a in ('netstat -ano ^| findstr :${p.port} ^| findstr LISTENING') do taskkill /F /PID %a`, { shell: true, stdio: "ignore" });
-    t.on("close", () => setTimeout(r, 1500));
-    t.on("error", () => r());
-  });
+  /* UN SITE DE SECTEUR N'A PAS DE SERVEUR A DEMARRER.  D-653
+     Les quatre « apres » sont des projets vivants : il faut lever
+     leur `npm run dev` et attendre le port. Les sites de secteur,
+     eux, sont des fichiers STATIQUES du depot — `tools/serve.mjs`
+     les sert deja. On saute donc tout le demarrage, et SURTOUT le
+     nettoyage de port : tuer ce qui ecoute sur 8099 fermerait le
+     serveur du site lui-meme, en pleine passe. */
+  const statique = !!p.statique;
+  console.log(`\n=== ${cle} — ${statique ? "fichier statique sur " + p.port : "demarrage sur " + p.port} ===`);
+  if (!statique) {
+    /* Piege 19 : un serveur deja debout fait echouer le tien en
+       SILENCE. Ici les zombies gardaient le port en IPv6 sans plus
+       repondre a rien : on nettoie avant, systematiquement. */
+    await new Promise((r) => {
+      const t = spawn(`for /f "tokens=5" %a in ('netstat -ano ^| findstr :${p.port} ^| findstr LISTENING') do taskkill /F /PID %a`, { shell: true, stdio: "ignore" });
+      t.on("close", () => setTimeout(r, 1500));
+      t.on("error", () => r());
+    });
+  }
   /* `shell: true` : sous Windows, Node 24 refuse de lancer un `.cmd`
      sans passer par l'interpreteur (EINVAL). */
-  const serveur = spawn("npm " + p.cmd.join(" "), { cwd: p.dossier, stdio: "ignore", shell: true });
+  const serveur = statique ? null : spawn("npm " + p.cmd.join(" "), { cwd: p.dossier, stdio: "ignore", shell: true });
   try {
     await attendrePort(p.port);
     const nav = await chromium.launch();
@@ -246,7 +272,7 @@ for (const cle of aFaire) {
     const page = await ctx.newPage();
     const manquantes = [];
     page.on("requestfailed", (r) => manquantes.push(r.url().slice(0, 80)));
-    await page.goto(`http://localhost:${p.port}/`, { waitUntil: "networkidle", timeout: 120000 });
+    await page.goto(`http://localhost:${p.port}${p.chemin || "/"}`, { waitUntil: "networkidle", timeout: 120000 });
     await page.waitForTimeout(4500);
 
     /* On defile comme un visiteur : les revelations se jouent
@@ -811,9 +837,11 @@ for (const cle of aFaire) {
     });
     await nav.close();
   } finally {
-    try { process.kill(serveur.pid); } catch (e) {}
-    spawn("cmd", ["/c", `for /f "tokens=5" %a in ('netstat -ano ^| findstr :${p.port} ^| findstr LISTENING') do taskkill /F /PID %a`], { shell: true, stdio: "ignore" });
-    await new Promise((r) => setTimeout(r, 1500));
+    if (serveur) {
+      try { process.kill(serveur.pid); } catch (e) {}
+      spawn("cmd", ["/c", `for /f "tokens=5" %a in ('netstat -ano ^| findstr :${p.port} ^| findstr LISTENING') do taskkill /F /PID %a`], { shell: true, stdio: "ignore" });
+      await new Promise((r) => setTimeout(r, 1500));
+    }
   }
 }
 

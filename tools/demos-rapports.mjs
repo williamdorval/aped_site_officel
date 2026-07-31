@@ -11,7 +11,11 @@
    Une comparaison avant / apres n'a de sens que si les deux cotes
    finissent a la meme ligne : sinon la poignee compare, a une hauteur
    donnee, le pied d'un site avec le milieu de l'autre.  D-632 */
+/* Les sites de secteur n'ont pas de reconstitution en face : leur
+   rapport ne sert qu'a la borne de securite de la conversion. */
 export const RAPPORTS = {
+  "secteur-construction": 0,
+  "secteur-immobilier": 0,
   garage: 1.179,
   design: 2.721,
   restau: 2.413,
