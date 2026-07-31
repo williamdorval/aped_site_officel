@@ -25,6 +25,11 @@
                        toujours descendre dans le cadre.
    8 · SANS SCRIPT     le cadre est retire, les quatre titres
                        restent, aucun pave descriptif ne revient.
+   9 · LES IMAGES      chaque tuile, chaque planche et chaque fond
+                       CSS charge vraiment : `complete`,
+                       `naturalWidth > 0`, et des dimensions RENDUES
+                       non nulles. Une image declaree n'est pas une
+                       image chargee.
    ============================================================ */
 import { chromium } from "playwright";
 import fs from "node:fs";
@@ -382,15 +387,27 @@ console.log("\n6 · LE VERROU — a mi-chemin d'un cote, a mi-chemin de l'autre"
       const a = document.querySelector("#" + i);
       const v = a.querySelector("[data-ba-vitre]");
       const s = a.querySelector(".ba-scene");
-      const img = a.querySelector(".ba-shot");
+      const pageAp = a.querySelector(".ba-vue--apres .ba-page");
       v.scrollTop = (v.scrollHeight - v.clientHeight) * frac;
       return new Promise((res) => requestAnimationFrame(() => requestAnimationFrame(() => {
         const W = s.clientWidth;
         const fen = (s.clientHeight / W) * 100;
+        /* LA HAUTEUR DU COTE « APRES » SE MESURE DANS LE DOCUMENT.  D-649
+           Elle se lisait sur le rapport naturel de `.ba-shot`. Depuis
+           que l'« apres » est une PILE DE TUILES (D-648), cette
+           balise-la n'est plus que la PREMIERE tuile : 1 100 px sur
+           6 916. La mesure rendait donc un maximum six fois trop
+           petit, et l'assertion « au bout, il ne reste rien »
+           passait pour une mauvaise raison — `yAp / maxAp` valait
+           plus de 1, le reste sortait NEGATIF, et « negatif < 2 » est
+           vrai. Un test vert sur un calcul faux, exactement ce que
+           le piege 17 decrit.
+           On lit maintenant la meme chose que `main.js` : la hauteur
+           rendue de la pile. */
         res({
-          yAp: +a.querySelector(".ba-vue--apres .ba-page").style.getPropertyValue("--ba-y") || 0,
+          yAp: +pageAp.style.getPropertyValue("--ba-y") || 0,
           yAv: +a.querySelector(".ba-vue--avant .ba-page").style.getPropertyValue("--ba-y") || 0,
-          maxAp: (img.naturalHeight / img.naturalWidth) * 100 - fen,
+          maxAp: (pageAp.scrollHeight / W) * 100 - fen,
           maxAv: +getComputedStyle(s).getPropertyValue("--ba-h-avant") || 0
         });
       })));
@@ -583,6 +600,94 @@ console.log("\n8 · SANS SCRIPT");
   dire(s.pavés === 0, `aucun pave descriptif sous les comparaisons : ${s.pavés}`);
   dire(s.avant && s.apres, "les deux maquettes restent dans le document");
   await (await p.$(".ba-grille")).screenshot({ path: path.join(OUT, "sans-script.png") });
+  await ctx.close();
+}
+
+/* ---------- 9 · TOUTES LES IMAGES ARRIVENT VRAIMENT ----------  D-649
+   CE TEST MANQUAIT, ET SON ABSENCE A COUTE LA REGRESSION ELLE-MEME.
+   Le 2026-07-31, les quatre « apres » ont affiche leur TEXTE
+   ALTERNATIF a la place des sites, et tout ce fichier passait au
+   vert : rien n'y verifiait qu'une image CHARGE. Il mesurait des
+   ecarts de pixels entre deux captures — deux captures de texte
+   alternatif different aussi.
+   « Une image declaree n'est pas une image chargee. » On descend
+   donc chaque cadre jusqu'au bout, en laissant le pilote translater
+   les tuiles dans le champ, et on exige de CHACUNE :
+     · `complete` et `naturalWidth > 0` — le fichier est arrive et
+       s'est decode ;
+     · une largeur et une hauteur RENDUES non nulles — elle occupe
+       vraiment de la place.
+   Et on fait la meme chose pour les fonds des reconstitutions
+   « avant », qui sont des images CSS : une `background-image` qui
+   404 ne se voit nulle part ailleurs. */
+console.log("\n9 · LES IMAGES — chargees, decodees, et rendues");
+{
+  const { ctx, p } = await page();
+  const ko = [];
+  p.on("response", (r) => { if (/images\//.test(r.url()) && r.status() !== 200) ko.push(r.url().split("/").pop() + " → " + r.status()); });
+
+  for (const id of CARTES) {
+    await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
+    await p.waitForTimeout(500);
+    /* On descend en suivant le rendu : les tuiles n'entrent dans le
+       champ que TRANSLATEES par le pilote, pas par le defilement de
+       la vitre. Un `scrollTop` pose d'un coup les sauterait. */
+    await p.evaluate(async (i) => {
+      const v = document.querySelector("#" + i + " [data-ba-vitre]");
+      const max = v.scrollHeight - v.clientHeight;
+      const pas = Math.max(120, v.clientHeight * 0.6);
+      for (let y = 0; y <= max; y += pas) {
+        v.scrollTop = y;
+        await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 90)));
+      }
+      v.scrollTop = max;
+      await new Promise((r) => setTimeout(r, 250));
+    }, id);
+    await p.waitForTimeout(1200);
+
+    const m = await p.evaluate((i) => {
+      const a = document.querySelector("#" + i);
+      const tuiles = [...a.querySelectorAll(".ba-shot")].map((im) => {
+        const r = im.getBoundingClientRect();
+        return { src: im.getAttribute("src").split("/").pop(), charge: im.complete && im.naturalWidth > 0, w: Math.round(r.width), h: Math.round(r.height) };
+      });
+      const bandes = [...a.querySelectorAll(".ba-bande img")].map((im) => {
+        const r = im.getBoundingClientRect();
+        return { src: im.getAttribute("src").split("/").pop(), charge: im.complete && im.naturalWidth > 0, w: Math.round(r.width), h: Math.round(r.height) };
+      });
+      /* LES FONDS DES RECONSTITUTIONS SONT DES IMAGES CSS. Elles ne
+         passent par aucun `<img>`, donc aucune sonde du DOM ne les
+         voit manquer. On releve les adresses et on ira les demander. */
+      const fonds = new Set();
+      for (const el of a.querySelectorAll(".ba-vue--avant *")) {
+        const bi = getComputedStyle(el).backgroundImage;
+        const mm = bi && bi.match(/url\("?([^")]+)"?\)/);
+        if (mm) fonds.add(mm[1]);
+      }
+      return { tuiles, bandes, fonds: [...fonds] };
+    }, id);
+
+    const tuilesKO = m.tuiles.filter((t) => !t.charge);
+    const platesT = m.tuiles.filter((t) => t.charge && (t.w < 10 || t.h < 4));
+    dire(m.tuiles.length > 0, `${id} : ${m.tuiles.length} tuiles declarees du cote « apres »`);
+    dire(tuilesKO.length === 0, `${id} : toutes les tuiles ont charge${tuilesKO.length ? " — MANQUE " + tuilesKO.map((t) => t.src).join(", ") : ""}`);
+    dire(platesT.length === 0, `${id} : toutes les tuiles occupent une place non nulle${platesT.length ? " — PLATE " + platesT.map((t) => t.src).join(", ") : ""}`);
+
+    const bandesKO = m.bandes.filter((t) => !t.charge);
+    dire(bandesKO.length === 0, `${id} : ${m.bandes.length} planche(s) de scene epinglee chargee(s)${bandesKO.length ? " — MANQUE " + bandesKO.map((t) => t.src).join(", ") : ""}`);
+
+    /* Les fonds du cote « avant », demandes un par un. */
+    let fondsKO = 0;
+    for (const u of m.fonds) {
+      const abs = u.startsWith("http") ? u : new URL(u, BASE).href;
+      try {
+        const r = await p.request.get(abs);
+        if (r.status() !== 200) { fondsKO++; console.log(`         ${abs.split("/").pop()} → ${r.status()}`); }
+      } catch (e) { fondsKO++; }
+    }
+    dire(fondsKO === 0, `${id} : ${m.fonds.length} fond(s) du cote « avant », ${fondsKO} en echec`);
+  }
+  dire(ko.length === 0, `aucune image ne repond autre chose que 200${ko.length ? " — " + ko.join(" · ") : ""}`);
   await ctx.close();
 }
 

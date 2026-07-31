@@ -483,3 +483,13 @@ venaient de décisions prises la veille**.
 | D-645 | Les deux côtés défilent en **pourcentage**, pas en pixels. Deux pages de hauteurs très différentes ne peuvent pas partager une course en pixels sans que la plus grande soit plafonnée par la plus petite. La vitre ne contient plus qu'une piste vide ; les deux pages sont posées par-dessus et translatées chacune de sa fraction |
 | D-646 | Tout est calculé en `cqw` — centièmes de la largeur du cadre. Rien n'est à recalculer quand la fenêtre change, et **la même valeur sert au cadre en grille comme au cadre agrandi** |
 | D-647 | Le cadre agrandi **est le même cadre, déplacé**. Une copie aurait doublé le markup, doublé les images servies et laissé deux états qui divergent au premier glissement. Un trou de la même hauteur garde la place dans la grille, sinon la page saute sous le visiteur |
+
+### Les tuiles — D-648 et D-649
+
+Chantier du 2026-07-31, régression signalée : le texte alternatif à la
+place des quatre sites « après ».
+
+| ID | Décision |
+|---|---|
+| D-648 | Chaque capture « après » est **découpée en tuiles de 1 100 px**. Une image de 6 916 px arrive tout d'un coup ou pas du tout, et pendant le « pas du tout » le navigateur peint son texte alternatif dans une boîte de 3 863 px. La description quitte les images et passe sur la vue en `role="img"` — un `alt` vide ne peut plus remplir l'écran |
+| D-649 | `ba-check § 9` exige que **chaque** image charge : `complete`, `naturalWidth > 0`, dimensions rendues non nulles — et les fonds CSS du côté « avant » sont demandés un par un. Prouvé en retirant deux fichiers : le test les nomme tous les deux |

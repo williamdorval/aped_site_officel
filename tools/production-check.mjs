@@ -76,6 +76,26 @@ await page.evaluate(async () => {
 });
 await page.waitForTimeout(900);
 
+/* ON DESCEND AUSSI DANS LES CADRES DE LA SECTION 03.  D-649
+   Depuis que chaque « apres » est une PILE DE TUILES (D-648), les
+   tuiles du bas ne sont demandees que quand elles approchent — c'est
+   tout l'interet. Une passe qui ne parcourt que la PAGE les trouve
+   donc « vides » et crie au defaut sur un comportement voulu.
+   On descend chaque vitre jusqu'a son terme, par pas, avant de
+   juger : ce qui reste vide apres ca ne charge vraiment pas. */
+await page.evaluate(async () => {
+  for (const v of document.querySelectorAll("[data-ba-vitre]")) {
+    const max = v.scrollHeight - v.clientHeight;
+    for (let y = 0; y <= max; y += Math.max(200, v.clientHeight * 0.8)) {
+      v.scrollTop = y;
+      await new Promise((r) => setTimeout(r, 70));
+    }
+    v.scrollTop = max;
+    await new Promise((r) => setTimeout(r, 120));
+  }
+});
+await page.waitForTimeout(1400);
+
 /* On ouvre aussi les cinq panneaux et les modales : leurs boutons
    comptent autant que les autres. */
 await page.evaluate(() => {
@@ -255,8 +275,20 @@ for (const l of releve.liens) {
 
 const liensMorts = releve.liens.filter((l) => l.ok === false);
 const boutonsMuets = releve.boutons.filter((b) => !b.mene);
-const imagesVides = releve.images.filter((i) => !i.chargee && i.visible);
-const imagesDormantes = releve.images.filter((i) => !i.chargee && !i.visible);
+/* LES TUILES DES « APRES » NE SE JUGENT PAS ICI.  D-649
+   Elles sont differees exprès, et elles n'entrent dans le champ que
+   TRANSLATEES par le pilote du cadre — les faire toutes charger
+   demande de descendre dans chaque vitre en suivant le rendu, ce que
+   cette passe-ci ne fait pas. `ba-check.mjs § 9` s'en charge et
+   exige que les QUATRE piles chargent en entier, avec des
+   dimensions rendues non nulles.
+   On les sort donc du compte des vides — mais on les COMPTE a part
+   et on dit ou elles sont verifiees, pour que personne ne croie
+   qu'elles ne le sont nulle part. */
+const estTuileBA = (i) => /\/apres-[a-z]+-t\d+\.webp$/.test(i.src);
+const imagesVides = releve.images.filter((i) => !i.chargee && i.visible && !estTuileBA(i));
+const tuilesBA = releve.images.filter(estTuileBA);
+const imagesDormantes = releve.images.filter((i) => !i.chargee && !i.visible && !estTuileBA(i));
 const imagesSansTaille = releve.images.filter((i) => !i.dimensionnee);
 const pdfHs = Object.entries(reponses).filter(([h, r]) => h.endsWith(".pdf") && (r.statut !== 200 || r.type !== "application/pdf"));
 
@@ -295,6 +327,7 @@ if (boutonsMuets.length) boutonsMuets.forEach((b) => console.log(`  MUET  « ${b
 else console.log("  aucun bouton sans commande");
 console.log(`\nMOTS DE REMPLISSAGE : ${releve.remplissage.length ? releve.remplissage.join(" · ") : "aucun"}`);
 console.log(`IMAGES : ${R.images}  vides ${imagesVides.length}  differees dans un calque ferme ${imagesDormantes.length}  sans width/height ${imagesSansTaille.length}`);
+console.log("  dont " + tuilesBA.length + " tuiles de la section 03 — verifiees par `ba-check.mjs § 9`, pas ici");
 imagesDormantes.forEach((i) => console.log(`  DORMANTE (fichier verifie a part)  ${i.src}`));
 imagesVides.forEach((i) => console.log(`  VIDE  ${i.src}`));
 imagesSansTaille.forEach((i) => console.log(`  SANS TAILLE  ${i.src}`));

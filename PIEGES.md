@@ -721,3 +721,44 @@ Un test qui appelle `element.focus()` puis lit `outline-width` rend
 d'affilée sur un bouton parfaitement conforme.
 
 **Correctif :** tabuler, puis lire le style de `document.activeElement`.
+
+### 52 · Une image déclarée n'est pas une image chargée
+
+`ba-check.mjs` mesurait des écarts de pixels entre deux captures d'un
+cadre pour prouver que le défilement se voit. Le 2026-07-31, les quatre
+« après » ont affiché leur **texte alternatif** à la place des sites —
+et tout le fichier est passé au vert. Deux captures de texte alternatif
+diffèrent aussi.
+
+Rien n'y vérifiait qu'une image **charge**. Et une `background-image`
+qui répond 404 ne se voit nulle part : elle ne passe par aucun `<img>`,
+aucune sonde du DOM ne la trouve manquante.
+
+**Ce qu'il faut exiger, et rien de moins :**
+- `complete` **et** `naturalWidth > 0` — le fichier est arrivé et s'est
+  décodé ;
+- une largeur et une hauteur **rendues** non nulles — elle occupe
+  vraiment de la place ;
+- pour les fonds CSS, relever les adresses dans les styles calculés et
+  les **demander une par une**.
+
+Et il faut d'abord amener chaque image dans le champ : une tuile
+différée n'entre en vue que **translatée** par le pilote du cadre, pas
+par le défilement de son conteneur. Un `scrollTop` posé d'un coup la
+saute.
+
+### 53 · Une hauteur lue sur la première tuile d'une pile
+
+`--ba-y` était borné par `.ba-shot.naturalHeight / naturalWidth`. Le
+jour où l'image d'un seul tenant est devenue une **pile de tuiles**,
+cette balise n'a plus désigné que la première : 1 100 px sur 6 916.
+
+Le maximum calculé valait donc six fois trop peu — et l'assertion
+« au bout, il ne reste rien » **passait pour une mauvaise raison** :
+`position / maximum` dépassait 1, le reste sortait négatif, et
+« négatif < 2 » est vrai. Un test vert sur un calcul faux.
+
+**Correctif :** mesurer la hauteur **rendue de la pile**, la même que
+celle que le pilote utilise. Et se méfier d'une assertion qui ne peut
+échouer que par le haut : elle ne dit rien quand le calcul déraille par
+le bas.
