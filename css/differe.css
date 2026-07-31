@@ -99,11 +99,34 @@
 }
 /* PALIER 2 — le geste propre a chaque frontiere tombe, les trois  D-106 */
 :root[data-palier="2"] .seuil[data-verbe] { --seuil-g4: none; }
+@media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
+/* Le seuil de la descente perd sa bande : le volet EST la bande,
+     et la carte vit DANS le volet — elle arrive et repart avec lui.
+     La remontee et la cloture gardent leur bande d'encre. */
+html.sas-ok .sas[data-sas="descente"] .seuil {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: var(--s-8);
+    z-index: 5;
+    margin: 0;
+    padding-block: 0;
+    background: transparent;
+  }
+html.sas-ok .sas[data-sas="cloture"] .seuil {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    margin: 0;
+  }
+}
 #visite, #calculateur, #comparatif, #processus,
 #apropos, #reference, #faq, #contact, .footer {
   content-visibility: auto;
 }
-.footer { contain-intrinsic-size: auto 1178px; }
+.footer { contain-intrinsic-size: auto 1090px; }
 /* Une fois la section entree, les grains se ressoudent. */
 .section-rule.is-set {
   background-image: linear-gradient(90deg, var(--rule-strong) 0 100%);
@@ -494,6 +517,10 @@
   margin-bottom: var(--s-5);
 }
 .link-btn { text-decoration: underline; text-underline-offset: 3px; font-family: var(--font-data); font-size: var(--fs-8); }
+@keyframes rail-aligne {
+  from { transform: translate3d(-28px, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
 @keyframes entree-bande {
   to { transform: translate3d(calc(var(--d) * 101%), 0, 0); }
 }
@@ -694,24 +721,23 @@
 .cadeau-fiche { background-size: 100% var(--rule-w); }
 }
 /* LES POINTS DE CAPTURE DISCRETS. Trois, moins insistants que le  D-155 */
+/* L'appat se plie a la LARGEUR REELLE de sa boite, pas a celle de  D-585
+   l'ecran : pose dans le panneau du calculateur (~420 px) sous une
+   media 48em, il ecrasait son paragraphe en colonne d'un mot. Le
+   texte garde 26ch minimum ; en dessous, le bouton passe dessous. */
 .appat {
-  display: grid;
-  gap: var(--s-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4) var(--s-6);
   padding: var(--s-5);
   border: var(--rule-w) solid var(--rule-strong);
   background: var(--surface-2);
 }
-.appat p { font-size: var(--fs-7); color: var(--ink-muted); max-width: 44ch; }
+.appat p { flex: 1 1 26ch; font-size: var(--fs-7); color: var(--ink-muted); max-width: 44ch; }
 .appat b { color: var(--ink); font-weight: 700; }
-.appat .btn { justify-self: start; }
-@media (min-width: 48em) {
-.appat {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--s-6);
-  }
-.appat .btn { justify-self: end; }
-}
+.appat .btn { flex: 0 0 auto; margin-left: auto; }
+/* `.svc-appat` a ete retire le 2026-07-30 avec le bloc appat de la  D-156 */
 .footer-docs-mot {
   margin-top: var(--s-6);
   font-family: var(--font-data);

@@ -21,6 +21,7 @@ dans le document qui la porte.
 | **une mesure qui rend un verdict surprenant** | `PIEGES.md` — 30 faux verdicts déjà payés |
 | **ce qui n'est pas prouvé, pas fini** | `RESERVES.md` |
 | **quels skills charger** | `DESIGN-STACK.md` |
+| **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` — le chantier du 2026-07-31 |
 | **l'historique** | `archives/rapports/` |
 
 **Ces documents se mettent à jour à chaque changement de structure** —
@@ -159,6 +160,16 @@ plein · **1** allégé (< 64em, `pointer: coarse`, ≤ 4 cœurs ou ≤ 4 Go) ·
 (`prefers-reduced-motion`). **L'escalade est à sens unique.** Ordre de
 chute et ce qui n'est **jamais** sacrifié : `ANIMATIONS.md`.
 
+**Le budget des SAS** (les trois pistes de l'arc de luminance) :
+`html.sas-ok` se décide dans le `<head>` AVANT la première mise en
+page — largeur ≥ 64em, pointeur fin, > 4 cœurs, > 4 Go, pas de
+mouvement réduit. Sans la classe, un sas EST sa bande de seuil : le
+téléphone reçoit la page d'avant le chantier, zéro coût. Si le palier
+monte en cours de route, les sas se FIGENT à leur forme finale sans
+jamais rendre leur hauteur — une piste qui se replie en pleine lecture
+fait sauter la page. Le mot forgé reste : l'information ne dépend
+jamais de l'animation.
+
 ## LES ERREURS DÉJÀ COMMISES — une ligne chacune
 
 Cause et correctif : `PIEGES.md`.
@@ -215,3 +226,11 @@ le site, la piste des Services jamais touchée du doigt — sont dans
 32. **Une marge `auto` peut se lire autrement et se poser au même
    pixel** — comparer la géométrie avant de conclure d'une valeur
    calculée.
+33. **GSAP lit un `transform` CSS de repos comme une base en PIXELS et
+   anime `yPercent` PAR-DESSUS** — un volet dont le repos est
+   `translateY(-102%)` joue sa course déjà hors écran. Purger avec un
+   `y: 0` explicite dans le `fromTo`.
+34. **Une section `content-visibility` rend sa hauteur RÉSERVÉE même
+   après une traverse** — elle ressaute dès qu'elle ressort de
+   l'écran. Une hauteur réelle se mesure PENDANT que la section est
+   visible, en s'arrêtant dessus.

@@ -97,6 +97,8 @@
 - **D-440** — N1 · progression de lecture, et progression DANS la section
 - **D-441** — Fraction de la section REELLEMENT parcourue.
 - **D-442** — LA DOUZIEME FRONTIERE — LA CLOTURE.
+- **D-578** — Trois seuils vivent dans un sas : reperage par `data-vers`
+- **D-583** — Viser l'ancre — `content-visibility` fait mentir les arrivees
 
 ---
 
@@ -1558,3 +1560,24 @@ Fraction de la section REELLEMENT parcourue.
     autres : un cran dit ou on en est, donc il ne se sacrifie pas.
     ============================================================
 
+
+## D-578 — TROIS SEUILS VIVENT DANS UN SAS
+
+Les seuils des sas (04-05, 05-06, 12-00) sont sortis de leur section
+pour qu'une arrivee par ancre atterrisse APRES la piste. Le cran G2 et
+le filet de section active se reperent donc par `data-vers`, jamais
+par la parente DOM — le repere par selecteur ne perime pas, celui par
+structure vient de perimer.
+
+## D-583 — VISER L'ANCRE
+
+Le navigateur saute vers une position calculee sur les hauteurs
+RESERVEES des sections `content-visibility` ; les vraies hauteurs
+arrivent en rendant, et la cible s'est deplacee. Defaut ANTERIEUR au
+chantier des sas — mesure a 2 474 px d'ecart sur #visite, sur la copie
+temoin d'avant le chantier. On re-mesure sur place en petites
+iterations (six au plus, 2 px de tolerance, scroll-padding respecte),
+au chargement avec ancre puis a la fin du defilement doux d'un clic
+(`scrollend`, repli 750 ms). Abandon immediat des que le visiteur
+reprend la main (molette, touche, doigt). Les ancres #svc- gardent
+leur propre visee, prouvee 10/10.

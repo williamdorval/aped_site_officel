@@ -2285,15 +2285,32 @@
         railCurseur.style.setProperty("--h", actif.offsetHeight + "px");
         railCurseur.classList.add("is-on");
       }
+      /* Trois seuils vivent dans un SAS, hors de leur section : le  D-578
+         reperage passe par data-vers, jamais par la parente. */
+      var numDe = {};
+      railLinks.forEach(function (a, i) {
+        numDe[a.dataset.rail] = (i + 1 < 10 ? "0" : "") + (i + 1);
+      });
+      function seuilVers(idSec) {
+        var sec2 = doc.getElementById(idSec);
+        var dedans = sec2 && $("[data-seuil]", sec2);
+        if (dedans) return dedans;
+        var v = numDe[idSec];
+        return v ? $('[data-seuil][data-vers="' + v + '"]') : null;
+      }
+
       $$("section, .hero").forEach(function (s) {
-        var rule = $("[data-section-rule]", s);
-        if (rule) rule.classList.toggle("is-current", s.id === id);
+        var propre = $("[data-section-rule]", s);
+        if (!propre && s.id) {
+          var sl = seuilVers(s.id);
+          propre = sl && $("[data-section-rule]", sl);
+        }
+        if (propre) propre.classList.toggle("is-current", s.id === id);
       });
 
       /* G2 · LE CRAN DE LA FRONTIERE — V4, et il vit ICI, pas dans  D-439 */
       if (actif) {
-        var sec = doc.getElementById(id);
-        var seuil = sec && $("[data-seuil]", sec);
+        var seuil = seuilVers(id);
         if (seuil && seuil.getAttribute("data-cran") !== "fait" && !seuil._cran) {
           seuil._cran = true;
           seuil.setAttribute("data-cran", "pose");
@@ -2362,6 +2379,65 @@
     }, { passive: true });
     measure();
   }
+
+  /* == VISER L'ANCRE — `content-visibility` fait mentir les arrivees ==  D-583 */
+  /* Le navigateur saute vers une position calculee sur des hauteurs
+     RESERVEES ; les vraies hauteurs arrivent en rendant, et la cible
+     s'est deplacee. Defaut anterieur au chantier des sas, mesure a
+     2 474 px d'ecart sur #visite. On re-mesure SUR PLACE, en petites
+     iterations, et on abandonne des que le visiteur reprend la main. */
+  (function viserLesAncres() {
+    var mainReprise = false;
+    ["wheel", "touchstart", "keydown"].forEach(function (g) {
+      window.addEventListener(g, function () { mainReprise = true; }, { passive: true });
+    });
+
+    function viser(hash, essai) {
+      if (mainReprise) return;
+      var el = hash && hash.length > 1 && doc.getElementById(hash.slice(1));
+      if (!el) return;
+      var pad = parseFloat(getComputedStyle(doc.documentElement).scrollPaddingTop) || 0;
+      var d = el.getBoundingClientRect().top - pad;
+      if (Math.abs(d) < 2 || (essai || 0) > 6) return;
+      window.scrollBy({ top: d, left: 0, behavior: "instant" });
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { viser(hash, (essai || 0) + 1); });
+      });
+    }
+
+    if (location.hash && location.hash.length > 1) {
+      var re = function () { mainReprise = false; viser(location.hash, 0); };
+      if (doc.readyState === "complete") setTimeout(re, 120);
+      else window.addEventListener("load", function () { setTimeout(re, 120); }, { once: true });
+      /* Une seconde passe : la cascade de rendu `content-visibility`
+         peut encore deplacer la cible apres la premiere. */
+      window.setTimeout(function () { viser(location.hash, 0); }, 900);
+    }
+
+    doc.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a) return;
+      var hash = a.getAttribute("href");
+      /* Les ancres du rail des Services ont leur propre visee,
+         prouvee 10/10 — on ne double pas un mecanisme qui marche. */
+      if (!hash || hash === "#" || hash.indexOf("#svc-") === 0) return;
+      mainReprise = false;
+      var fait = false;
+      var corriger = function () {
+        if (fait) return;
+        fait = true;
+        viser(hash, 0);
+      };
+      /* Le defilement natif est doux (scroll-behavior: smooth) : on
+         corrige a sa FIN, jamais pendant. */
+      if ("onscrollend" in window) {
+        window.addEventListener("scrollend", corriger, { once: true });
+        window.setTimeout(corriger, 1100);
+      } else {
+        window.setTimeout(corriger, 750);
+      }
+    }, true);
+  })();
 
   /* == LA DOUZIEME FRONTIERE — LA CLOTURE. ==  D-442 */
   (function cloture() {

@@ -209,6 +209,12 @@
 - **D-296** — PALIER 2 — MINIMAL.
 - **D-297** — 7 · La cascade par lettre. UN SEUL NOMBRE la supprime, et c'est
 - **D-298** — CE QUI NE TOMBE JAMAIS, A AUCUN PALIER, et la liste est courte
+- **D-571** — 1ter. LES TROIS SAS — replies par defaut, actifs sous `sas-ok`
+- **D-572** — LA CHAMBRE NOIRE — la section 05 adopte les jetons du theme oppose
+- **D-579** — La remontee est un calque : le volet couvre et se degage
+- **D-580** — Les `contain-intrinsic-size` recalibres aux hauteurs mesurees
+- **D-584** — Le contrat du voyage : l'assemblage du rail a l'arrivee
+- **D-585** — L'appat se plie a la largeur de sa boite, pas de l'ecran
 
 ---
 
@@ -2917,3 +2923,51 @@ CE QUI NE TOMBE JAMAIS, A AUCUN PALIER, et la liste est courte
   performance n'a pas le droit de toucher a ca — sinon ce n'est
   plus un budget, c'est une panne.
 
+
+## D-571 — 1ter. LES TROIS SAS — replies par defaut
+
+Tout l'actif vit sous `html.sas-ok` ET sous une media (largeur +
+mouvement reduit) : double verrou. Sans la classe, un sas est sa bande
+de seuil, rien de plus — le telephone recoit exactement la page
+d'avant le chantier. Les hauteurs de piste sont des vh fixes : aucune
+mise en page ne depend d'un contenu, CLS structurellement nul.
+
+## D-572 — LA CHAMBRE NOIRE — les jetons du theme OPPOSE
+
+La section 05 est la seule piece sombre du site, dans les deux themes.
+Plutot que d'inventer des couleurs, elle adopte le jeu de jetons
+complet de l'autre theme : chaque paire de contraste qui s'y rend est
+une paire deja auditee. En sombre, la chambre est claire — l'inversion
+est le message, pas la couleur.
+
+## D-579 — LA REMONTEE EST UN CALQUE
+
+Voir decisions/index.md § D-568 — la version piste rendait des ecrans
+vides. `y: 0` explicite dans le fromTo : GSAP lit le transform CSS de
+repos (-102 % resolu en pixels) comme base et additionne yPercent par
+dessus — sans purge, le volet joue sa course deja hors ecran.
+
+## D-580 — LES `contain-intrinsic-size` RECALIBRES
+
+Les valeurs dataient d'un contenu anterieur : #apropos reservait
+1 996 px pour 1 108 reels, #contact 2 347 pour 1 402 — pres de
+2 900 px d'erreur cumulee qui faussaient chaque arrivee par ancre.
+Releve du 2026-07-31 a 1440x900 par `node tools/sas-check.mjs`, qui
+mesure chaque section PENDANT qu'elle est a l'ecran (piege 4 : hors
+ecran, la hauteur rendue est la reservation, meme apres une traverse).
+
+## D-584 — LE CONTRAT DU VOYAGE
+
+Les douze stations du rail arrivent decalees de 28 px et se reprennent
+en 520 ms (V2, chiffres de MESURES § 5, aucun fondu) pendant que la
+composition du hero se pose. Le visiteur voit d'emblee qu'il y a douze
+stations et qu'il est a la premiere : c'est l'annonce du contrat de
+lecture, portee par l'orientation elle-meme — jamais un « scroll to
+explore », le cliche que toutes les references bannissent.
+
+## D-585 — L'APPAT SE PLIE A SA BOITE
+
+Pose dans le panneau du calculateur (~420 px) sous une media 48em, il
+ecrasait son paragraphe en colonne d'un mot par ligne. Flex avec
+`flex: 1 1 26ch` sur le texte : la bascule suit la largeur REELLE de
+la boite, sans media.

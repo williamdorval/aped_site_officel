@@ -770,3 +770,26 @@ demandent une correction.
  est enveloppé dans un `jetables.push(...)`. Sans conséquence : le
  second `kill` sur un `IntersectionObserver` déjà déconnecté ne
  fait rien.
+
+---
+
+## AJOUTÉ LE 2026-07-31 — LES SAS (`js/sas.js` · `app.css § 1ter`)
+
+Détail de conception : `REFONTE-IMMERSIVE.md`. Actifs sous
+`html.sas-ok` seulement (décidé dans le `<head>`, D-581) ; repliés =
+les bandes de seuil d'avant. L'escalade de palier FIGE sans replier
+(D-577). Aucun texte scrubbé ; le canvas est décoratif, le mot est du
+DOM.
+
+| ID | Quoi | Fichier | Déclencheur | Durée / course | Verbe | Palier |
+|---|---|---|---|---|---|---|
+| A197 | Volet de la descente — l'encre avale l'écran, arête de grains | sas.js · app.css | scrub, piste 04→05, `top bottom → 55% bottom` | 200 vh de piste | V1 (arête = matière V3) | sas-ok |
+| A198 | La forge — pluie de grains → « Essayez. », déterministe par graine | sas.js | progression 0,42→0,88 du même scrub | ~2 000 grains, dpr ≤ 1,5 | V3 (les grains se soudent en mot) | sas-ok |
+| A199 | Le mot bascule — visibilité en une image à p ≥ 0,86, jamais un fondu | sas.js · `.est-la` | cran de progression | 1 image | V4 | sas-ok |
+| A200 | Fil minium de la descente — naît sous le mot, tire vers la pièce | sas.js | scrub p 0,88→1 | scaleY 0→1, 50 vh | V3 | sas-ok |
+| A201 | Calque de la remontée — se dégage vers le haut sur le Calculateur | sas.js | scrub, `top 85% → +=115vh` | translation −102 % | V1 | sas-ok |
+| A202 | Fil de la clôture — se soude dans la bande « Fin de la traversée » | sas.js | scrub, piste 12→00, `top bottom → bottom bottom` | scaleY 0→1 | V3 | sas-ok |
+| A203 | L'assemblage du rail — le contrat du voyage à l'arrivée | app.css (D-584) | horloges de `compo-hero`, retard 160 ms + 36 ms/station | 520 ms, 28 px, ζ = 1 | V2 | avec la séquence d'entrée |
+
+Preuves : `node tools/sas-check.mjs` — 11 captures par sas, écarts
+0,13–47,7 % ; traversée complète 60 i/s pile, 0 image > 20 ms / 763.

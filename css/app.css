@@ -123,20 +123,192 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 /* PALIER 2 — le geste propre a chaque frontiere tombe, les trois  D-106 */
 :root[data-palier="2"] .seuil[data-verbe] { --seuil-g4: none; }
 
+/* == 1ter. LES TROIS SAS — L'ARC DE LUMINANCE ==  D-571 */
+/* Replie par defaut : sans script, sous 64em, machine faible ou
+   mouvement reduit, un sas EST sa bande de seuil, rien de plus.
+   `html.sas-ok` se decide dans le HEAD, AVANT la premiere mise en
+   page : une hauteur de piste posee apres coup fait sauter les
+   arrivees par ancre de 1 700 px. Ces regles sont CRITIQUES pour
+   la meme raison — `differe.css` arrive apres l'ancre. */
+.sas-piste { position: relative; }
+.sas-scene { position: relative; }
+.sas-volet { position: relative; }
+.sas-arete, .sas-forge, .sas-mot, .sas-fil { display: none; }
+
+/* LA CHAMBRE NOIRE — la section 05, seule piece sombre du site.  D-572
+   Elle adopte le jeu de jetons du THEME OPPOSE : en clair elle est
+   nuit, en sombre elle est jour. Chaque paire de contraste qui s'y
+   rend est une paire deja auditee de l'autre theme — aucun nouveau
+   couple de couleurs n'existe. */
+:root[data-theme="light"] #visite {
+  color-scheme: dark;
+  --surface-0: #101211; --surface-1: #191c1a; --surface-2: #232724;
+  --surface-inverse: #dcdedb;
+  --ink: #dcdedb; --ink-muted: #9aa09c; --ink-inverse: #101211;
+  --accent: #e8562f; --accent-text: #ff7a52; --accent-ink: #101211;
+  --accent-wash: rgb(232 86 47 / 0.14);
+  --accent-on-inverse: #9b2810;
+  --rule: rgb(220 222 219 / 0.18); --rule-strong: rgb(220 222 219 / 0.40);
+  --rule-accent: #e8562f;
+  --danger: #ff8b7a; --danger-wash: rgb(255 139 122 / 0.12); --ok: #6fcf8f;
+  --scrim: rgb(8 9 8 / 0.82);
+}
+:root[data-theme="dark"] #visite {
+  color-scheme: light;
+  --surface-0: #dcdedb; --surface-1: #cbcec9; --surface-2: #f2f3f1;
+  --surface-inverse: #101211;
+  --ink: #101211; --ink-muted: #565a57; --ink-inverse: #dcdedb;
+  --accent: #c8371b; --accent-text: #9b2810; --accent-ink: #f2f3f1;
+  --accent-wash: rgb(200 55 27 / 0.10);
+  --accent-on-inverse: #ff7a52;
+  --rule: rgb(16 18 17 / 0.16); --rule-strong: rgb(16 18 17 / 0.38);
+  --rule-accent: #c8371b;
+  --danger: #a11a10; --danger-wash: rgb(161 26 16 / 0.10); --ok: #1d5c34;
+  --scrim: rgb(16 18 17 / 0.72);
+}
+#visite { background: var(--surface-0); color: var(--ink); }
+
+@media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
+  html.sas-ok .sas .sas-piste { height: var(--sas-course, 220vh); }
+  html.sas-ok .sas .sas-scene {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+  html.sas-ok .sas .sas-volet {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: var(--surface-inverse);
+    will-change: transform;
+  }
+  /* L'arete du volet : la frange de grains de la signature, posee
+     HORS du panneau, sur son bord qui avance. Une trame, pas un
+     fondu. */
+  html.sas-ok .sas .sas-arete {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(-1 * var(--s-5));
+    height: var(--s-5);
+    background-image: repeating-linear-gradient(
+      90deg, var(--surface-inverse) 0 2px, transparent 2px 5px);
+  }
+  html.sas-ok .sas .sas-forge {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+  }
+  /* Le mot forge. Il n'apparait JAMAIS en fondu : `est-la` bascule
+     la visibilite en une image (V4), posee par sas.js quand les
+     grains sont a leur place. */
+  html.sas-ok .sas .sas-mot {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 9vw, 8.25rem);
+    font-weight: 800;
+    font-stretch: 118%;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+    color: var(--ink-inverse);
+    visibility: hidden;
+  }
+  html.sas-ok .sas .sas-mot.est-la { visibility: visible; }
+  /* Le seuil de la descente perd sa bande : le volet EST la bande,
+     et la carte vit DANS le volet — elle arrive et repart avec lui.
+     La remontee et la cloture gardent leur bande d'encre. */
+  html.sas-ok .sas[data-sas="descente"] .seuil {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: var(--s-8);
+    z-index: 5;
+    margin: 0;
+    padding-block: 0;
+    background: transparent;
+  }
+  html.sas-ok .sas[data-sas="cloture"] .seuil {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    margin: 0;
+  }
+  /* Le fil du chantier : 2 px, aucun texte, le scrub y est permis.
+     Repos = forme finale (tendu jusqu'a la bande) ; sas.js pose le
+     depart. Centre sur la COLONNE de contenu, pas sur l'ecran : le
+     rail vit a gauche et n'est pas la scene. */
+  html.sas-ok .sas .sas-fil {
+    display: block;
+    position: absolute;
+    left: calc(var(--rail-w) + (100% - var(--rail-w)) / 2);
+    top: 0;
+    width: 2px;
+    height: calc(100vh - 96px);
+    background: var(--rule-strong);
+    transform-origin: top center;
+    will-change: transform;
+  }
+  /* Le fil de la descente est MINIUM : il nait sous le mot forge et
+     tire vers la piece sombre — la couleur d'action, la ou l'on va
+     agir. */
+  html.sas-ok .sas[data-sas="descente"] .sas-fil {
+    top: 50%;
+    height: 50vh;
+    background: var(--accent);
+    z-index: 3;
+  }
+  .sas[data-sas="descente"] { --sas-course: 200vh; }
+  .sas[data-sas="cloture"]  { --sas-course: 100vh; }
+
+  /* LA REMONTEE EST UN CALQUE, PAS UNE PISTE. Le volet couvre le  D-579
+     debut du Calculateur et se degage vers le haut par translation :
+     la question se decouvre sous l'arete. Il ne coute aucune hauteur
+     de page. Repos = forme finale : parti. */
+  .sas--calque { position: relative; }
+  html.sas-ok .sas--calque .sas-volet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 130vh;
+    z-index: 6;
+    pointer-events: none;
+    background: var(--surface-inverse);
+    transform: translateY(-102%);
+    will-change: transform;
+  }
+}
+
 /* LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.  D-107 */
 #visite, #calculateur, #comparatif, #processus,
 #apropos, #reference, #faq, #contact, .footer {
   content-visibility: auto;
 }
-#visite { contain-intrinsic-size: auto 1180px; }
-#calculateur { contain-intrinsic-size: auto 1465px; }
-#comparatif { contain-intrinsic-size: auto 1600px; }
-#processus { contain-intrinsic-size: auto 2183px; }
-#apropos { contain-intrinsic-size: auto 1996px; }
-#reference { contain-intrinsic-size: auto 1585px; }
-#faq { contain-intrinsic-size: auto 1057px; }
-#contact { contain-intrinsic-size: auto 2347px; }
-.footer { contain-intrinsic-size: auto 1178px; }
+/* Releve du 2026-07-31 a 1440x900, `node tools/sas-check.mjs` —
+   les valeurs precedentes dataient d'un contenu anterieur et
+   faussaient de pres de 2 900 px les arrivees par ancre.  D-580 */
+#visite { contain-intrinsic-size: auto 1256px; }
+#calculateur { contain-intrinsic-size: auto 1711px; }
+#comparatif { contain-intrinsic-size: auto 1125px; }
+#processus { contain-intrinsic-size: auto 1602px; }
+#apropos { contain-intrinsic-size: auto 1108px; }
+#reference { contain-intrinsic-size: auto 1165px; }
+#faq { contain-intrinsic-size: auto 913px; }
+#contact { contain-intrinsic-size: auto 1402px; }
+.footer { contain-intrinsic-size: auto 1090px; }
 
 .rule-top { border-top: var(--rule-w) solid var(--rule); }
 .rule-bottom { border-bottom: var(--rule-w) solid var(--rule); }
@@ -1057,6 +1229,24 @@ html.entree-attend .he,
 html.entree-attend .he::after,
 html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused !important; }
 
+/* LE CONTRAT DU VOYAGE — l'assemblage du rail.  D-584
+   Pendant que la composition du hero se pose, les douze stations
+   arrivent decalees et se reprennent (V2, 28 px, 520 ms, aucun
+   depassement, aucun fondu) : le visiteur voit d'emblee qu'il y a
+   douze stations et qu'il est a la premiere. C'est l'annonce du
+   contrat de lecture — jamais un « scroll to explore ». Les crans
+   partent avec les horloges de `compo-hero` et se taisent avec
+   elles ; sans sequence d'entree, le rail est simplement la. */
+html.compo-hero .rail-list a {
+  animation: rail-aligne 520ms var(--e-snap) calc(160ms + var(--re, 0) * 1ms) both;
+}
+html.compo-attend .rail-list a,
+html.entree-attend .rail-list a { animation-play-state: paused !important; }
+@keyframes rail-aligne {
+  from { transform: translate3d(-28px, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
 html.entree-on .entree {
   display: block;
   position: fixed;
@@ -1496,25 +1686,23 @@ html.entree-saut .entree-plaque {
 }
 
 /* LES POINTS DE CAPTURE DISCRETS. Trois, moins insistants que le  D-155 */
+/* L'appat se plie a la LARGEUR REELLE de sa boite, pas a celle de  D-585
+   l'ecran : pose dans le panneau du calculateur (~420 px) sous une
+   media 48em, il ecrasait son paragraphe en colonne d'un mot. Le
+   texte garde 26ch minimum ; en dessous, le bouton passe dessous. */
 .appat {
-  display: grid;
-  gap: var(--s-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4) var(--s-6);
   padding: var(--s-5);
   border: var(--rule-w) solid var(--rule-strong);
   background: var(--surface-2);
 }
-.appat p { font-size: var(--fs-7); color: var(--ink-muted); max-width: 44ch; }
+.appat p { flex: 1 1 26ch; font-size: var(--fs-7); color: var(--ink-muted); max-width: 44ch; }
 .appat b { color: var(--ink); font-weight: 700; }
-.appat .btn { justify-self: start; }
+.appat .btn { flex: 0 0 auto; margin-left: auto; }
 /* `.svc-appat` a ete retire le 2026-07-30 avec le bloc appat de la  D-156 */
-@media (min-width: 48em) {
-  .appat {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--s-6);
-  }
-  .appat .btn { justify-self: end; }
-}
 .footer-docs-mot {
   margin-top: var(--s-6);
   font-family: var(--font-data);

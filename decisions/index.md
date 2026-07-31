@@ -100,6 +100,11 @@
 - **D-092** — LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.
 - **D-093** — LA VAGUE 2 ATTEND QUE LE VISITEUR BOUGE.
 - **D-094** — L'ORDRE EST CELUI DE LA CASCADE : `differe.css` d'abord,
+- **D-567** — SAS 1 · LA DESCENTE — la frontiere recoit une piste
+- **D-568** — SAS 2 · LA REMONTEE — un calque, pas une piste
+- **D-569** — SAS 3 · LA CLOTURE — le fil se soude dans la bande
+- **D-570** — La bande d'encre du seuil 02 est partie : un seul arc
+- **D-581** — `sas-ok` se decide dans le HEAD, avant la mise en page
 
 ---
 
@@ -1630,3 +1635,52 @@ L'ORDRE EST CELUI DE LA CASCADE : `differe.css` d'abord,
         feuilles de section, qui ne surchargent que leurs propres
         classes.
 
+
+## D-567 — SAS 1 · LA DESCENTE — la frontiere recoit une piste
+
+La lecon d'Alche (SOTY 2025), verifiee au pixel : un sas est une piste
+de defilement presque vide dont l'unique fonction est de donner a une
+progression 0-1 la place de jouer la transition. Ici : l'encre avale
+l'ecran sous une arete de grains (V1 dont l'arete est V3), la forge
+fait pleuvoir des grains qui deviennent « Essayez. » (le moteur
+limaille, pilote par la progression, deterministe par graine), le vrai
+mot DOM bascule d'un cran a 86 % (V4). Le seuil vit HORS de la
+section : une arrivee par ancre atterrit APRES le sas — le spectacle
+est pour celui qui descend, jamais un peage. Replie partout ou il ne
+peut pas etre grand : sans script, sous 64em, machine faible, ou
+mouvement reduit, il redevient la bande d'encre d'avant.
+
+## D-568 — SAS 2 · LA RECIPROQUE EST UN CALQUE, PAS UNE PISTE
+
+La premiere version etait une piste collante de 180 vh : elle rendait
+des ecrans de ciment vide, mesures a 0 % d'ecart entre deux captures.
+Un sas qui n'a rien a montrer est du defilement vole. Le volet couvre
+maintenant le DEBUT du Calculateur et se degage vers le haut : la
+question « combien vous coute le travail fait a la main » se decouvre
+sous l'arete — V1 exact, une forme deja la. Cout en hauteur de page :
+zero pixel.
+
+## D-569 — SAS 3 · LA CLOTURE — le fil se soude dans la bande
+
+Le fil du chantier (2 px, aucun texte, scrub permis) descend et finit
+sa course exactement quand la bande « Fin de la traversee » touche le
+bas de l'ecran : il s'y soude, il ne pend pas dans le vide. La bande
+existante fait le reste — cran, volet, soudure dans la marque.
+
+## D-570 — LA BANDE D'ENCRE DU SEUIL 02 EST PARTIE
+
+Trois bandes d'encre dispersees (02, 05, 06) racontaient trois petites
+histoires. L'arc de luminance n'en raconte qu'une : le site est clair,
+il descend UNE fois dans la chambre noire (05) pour essayer
+l'instrument, il en ressort avec le chiffre, et la nuit tombe au pied.
+Reference : REFONTE-IMMERSIVE.md § 3.
+
+## D-581 — `sas-ok` SE DECIDE DANS LE HEAD, AVANT LA MISE EN PAGE
+
+La hauteur des pistes doit etre connue quand le navigateur calcule une
+arrivee par ancre : decidee en vague 2, elle faisait sauter la page de
+1 700 px apres l'atterrissage. Les portes sont celles du palier 1 de
+langue.js — largeur, pointeur, coeurs, memoire — evaluables en une
+milliseconde synchrone. Les regles CSS correspondantes sont dans la
+liste CRITIQUES de css-critique.mjs pour la meme raison :
+`differe.css` arrive apres l'ancre.

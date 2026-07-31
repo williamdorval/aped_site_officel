@@ -268,3 +268,26 @@ Issus de `archives/rapports/RECHERCHE-ACCUEIL.md`.
 | `ba-check.mjs` | un curseur qui ne bouge rien, un clavier muet, une boucle qui ne se voit pas ou qui ne s'arrête pas, une poignée inerte sans script |
 
 Les trois prennent un **port**, pas une adresse.
+
+### Le chantier des sas (2026-07-31)
+
+| Outil | Ce qu'il rend |
+|---|---|
+| `sas-check.mjs [adresse]` | activation et géométrie des trois pistes · le verbe absorbé · séquence de 11 captures par sas avec écart de pixels consécutifs · hauteurs réelles des sections c-v **mesurées à l'écran** (piège 34) · arrivée par ancre après la re-visée (attendre 2,2 s — mesurer avant, c'est mesurer le navigateur) · erreurs console |
+
+### Chiffres de référence — refonte immersive, 2026-07-31, 1440×900 clair
+
+| Mesure | Valeur | Seuil |
+|---|---|---|
+| LCP (`SPAN.plate-big`) | **192 ms** (avant : 184 — même passe non appariée, le bruit domine) | < 300 ms |
+| CLS | **0** | 0 |
+| i/s médiane, traversée complète avec les trois sas · images > 20 ms | **60** · **0 / 763** | 60 · 0 |
+| écart de cascade | **0** sur 354 112 propriétés | 0 |
+| séquence du sas descente, 10 pas | **0,13 à 45,5 %** d'écart entre captures | > 1 % |
+| séquence de la remontée | **1,9 à 47,7 %** | > 1 % |
+| séquence de la clôture | **1,7 à 22 %** | > 1 % |
+| ancres `#visite` · `#calculateur` · `#contact`, chargement à froid | **88 px pile** (= scroll-padding), stables dès 600 ms | 88 px |
+| erreurs console | **0** | 0 |
+
+Témoin d'avant chantier (copie datée, port 8098) : `#visite` atterrissait
+à **2 474 px** de sa cible — le défaut d'ancre était antérieur.

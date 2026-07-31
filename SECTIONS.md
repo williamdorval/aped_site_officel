@@ -26,19 +26,19 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 | № | Section | Ancre | `index.html` | l. | `css/app.css` | JS | autres |
 |---|---|---|---|---:|---|---|---|
-| 01 | **Accueil** | `#top` | 212-268 | 57 | 1528-1791 · 1040-1304 | `main.js` 114-219 | — |
-| 02 | **Services** | `#services` | 269-737 | 469 | 1792-2311 | `main.js` 220-559 | — |
-| 03 | **Réalisations** | `#realisations` | 738-1905 | 1168 | 2312-4382 | `main.js` 560-643 | — |
-| 04 | **Secteurs** | `#demos` | 1906-2371 | 466 | 4383-4500 | `main.js` 2080-2158 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
-| 05 | **Visite 360** | `#visite` | 2372-2432 | 61 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2433-2602 | 170 | 4501-4637 | `main.js` 1860-2079 | — |
-| 07 | **Comparatif** | `#comparatif` | 2603-2727 | 125 | 4638-4795 | — | — |
-| 08 | **Processus** | `#processus` | 2728-2863 | 136 | 4796-4981 | `main.js` 644-680 | — |
-| 09 | **Agence** | `#apropos` | 2864-2956 | 93 | 4982-5064 | — | — |
-| 10 | **Référence** | `#reference` | 2957-3031 | 75 | 5065-5179 | — | — |
-| 11 | **Questions** | `#faq` | 3032-3107 | 76 | 5180-5213 | `langue.js` 613-641 | — |
-| 12 | **Contact** | `#contact` | 3108-3229 | 122 | 5214-5412 | `main.js` 1208-1253 · `main.js` 1254-1319 · `main.js` 1320-1411 | — |
-| — | **Pied de page** | `#footer` | 3230-3282 | 53 | 5413-5473 | `main.js` 2366-2386 | — |
+| 01 | **Accueil** | `#top` | 224-280 | 57 | 1716-1979 · 1212-1494 | `main.js` 114-219 | — |
+| 02 | **Services** | `#services` | 281-753 | 473 | 1980-2499 | `main.js` 220-559 | — |
+| 03 | **Réalisations** | `#realisations` | 754-1921 | 1168 | 2500-4570 | `main.js` 560-643 | — |
+| 04 | **Secteurs** | `#demos` | 1922-2413 | 492 | 4571-4688 | `main.js` 2080-2158 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 05 | **Visite 360** | `#visite` | 2414-2483 | 70 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
+| 06 | **Calculateur** | `#calculateur` | 2484-2644 | 161 | 4689-4825 | `main.js` 1860-2079 | — |
+| 07 | **Comparatif** | `#comparatif` | 2645-2769 | 125 | 4826-4983 | — | — |
+| 08 | **Processus** | `#processus` | 2770-2905 | 136 | 4984-5169 | `main.js` 644-680 | — |
+| 09 | **Agence** | `#apropos` | 2906-2998 | 93 | 5170-5252 | — | — |
+| 10 | **Référence** | `#reference` | 2999-3073 | 75 | 5253-5367 | — | — |
+| 11 | **Questions** | `#faq` | 3074-3149 | 76 | 5368-5401 | `langue.js` 613-641 | — |
+| 12 | **Contact** | `#contact` | 3150-3282 | 133 | 5402-5600 | `main.js` 1208-1253 · `main.js` 1254-1319 · `main.js` 1320-1411 | — |
+| — | **Pied de page** | `#footer` | 3283-3335 | 53 | 5601-5661 | `main.js` 2442-2462 | — |
 
 <!-- PLAGES:FIN -->
 
@@ -63,8 +63,19 @@ précède. Les onze autres en portent un chacune, plus celui du pied
 (`data-de="12" data-vers="00"`).
 
 **`data-dress="encre"` habille la bande de seuil, pas la section.**
-Quatre bandes seulement : celles qui entrent dans la 02, la 05, la 06
-et dans le pied.
+Trois bandes seulement depuis le 2026-07-31 : celles qui entrent dans
+la 05, la 06 et dans le pied — et **toutes trois vivent dans un SAS**
+(`div.sas[data-sas]`), HORS de leur section, pour qu'une arrivée par
+ancre atterrisse après la piste. La bande du seuil 02 est redevenue
+claire (D-570, l'arc de luminance). Le repérage d'un seuil se fait par
+`data-vers`, jamais par la parenté DOM (D-578).
+
+**La chambre noire.** `#visite` est la seule section sombre du site,
+dans les deux thèmes : elle adopte le jeu de jetons du thème OPPOSÉ
+(D-572). Les trois sas : descente (04→05, moment impossible — forge du
+mot « Essayez. »), remontée (05→06, calque qui se dégage vers le
+haut), clôture (12→00, le fil se soude dans la bande). Détail :
+`REFONTE-IMMERSIVE.md`, moteur `js/sas.js`.
 
 **`css/app.css` est la seule source de style.** `critique.css` et
 `differe.css` sont fabriqués par `node tools/css-critique.mjs` et ne

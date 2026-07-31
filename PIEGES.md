@@ -427,3 +427,36 @@ rapport pour qui voudra la reprendre.
 avoir comparé la géométrie. Une propriété qui diffère sans qu'un pixel
 bouge n'est pas un défaut du site — c'est une question posée à
 l'instrument.
+
+## AJOUTÉS LE 2026-07-31, CHANTIER DES SAS
+
+### 33 · GSAP additionne `yPercent` à un `transform` CSS de repos
+
+Le volet de la remontée a un repos CSS `translateY(-102%)` — la règle
+« l'état de repos est la forme finale ». Le `fromTo` animait
+`yPercent: 0 → -102`… et le volet ne paraissait jamais. GSAP lit le
+transform calculé comme une **base en pixels** (-102 % résolus contre
+la hauteur de l'élément) et anime `yPercent` **par-dessus** : la
+course entière se jouait déjà hors écran. Les captures le disaient —
+0 % d'écart là où le drain devait balayer — et c'est la séquence
+d'images, pas le DOM, qui a permis de le voir.
+
+**Correctif :** purger la base avec un `y: 0` explicite dans les deux
+états du `fromTo`. La règle vaut pour toute paire « repos CSS en
+transform + tween en pourcentage ». `scaleY` n'est pas touché : les
+échelles se décomposent, elles ne s'additionnent pas.
+
+### 34 · La hauteur réelle d'une section `content-visibility` se mesure À L'ÉCRAN
+
+Pour recalibrer les `contain-intrinsic-size`, la sonde a traversé
+toute la page puis mesuré chaque section : elle a rendu **exactement
+les valeurs réservées**, au pixel. Une section `content-visibility:
+auto` ressaute en réservation dès qu'elle ressort de l'écran — la
+traverse ne « persiste » pas.
+
+**Correctif :** s'arrêter SUR chaque section (`scrollIntoView`, pause,
+mesure) pendant qu'elle est visible. C'est ce que fait
+`tools/sas-check.mjs`. Corollaire déjà payé au piège 4 : hors écran,
+`getBoundingClientRect()` rend la réservation, et une réservation
+périmée fausse chaque arrivée par ancre — près de 2 900 px d'erreur
+cumulée le 2026-07-31.

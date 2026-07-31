@@ -59,6 +59,18 @@
       var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduit) d.classList.add("reduced-motion");
 
+      /* LES SAS SE DECIDENT ICI, AVANT LA PREMIERE MISE EN PAGE.  D-581
+         La hauteur des pistes doit etre stable quand le navigateur
+         calcule une arrivee par ancre : decidee plus tard, elle
+         faisait sauter la page de 1 700 px. Memes portes que le
+         palier 1 de langue.js. */
+      var sasOk = !reduit &&
+        window.matchMedia("(min-width: 64em)").matches &&
+        !window.matchMedia("(pointer: coarse)").matches &&
+        (navigator.hardwareConcurrency || 8) > 4 &&
+        (navigator.deviceMemory || 8) > 4;
+      if (sasOk) d.classList.add("sas-ok");
+
       /* SEQUENCE D'ENTREE — la decision se prend AVANT le premier  D-005 */
       var type = "navigate";
       try {
@@ -182,18 +194,18 @@
 <!-- Les numéros sont cliquables : ils sont la navigation, pas un décor. -->
 <aside class="rail" id="rail">
   <nav class="rail-list" id="railList" aria-label="Index des sections">
-    <a href="#top" data-rail="top"><em>01</em>Accueil</a>
-    <a href="#services" data-rail="services"><em>02</em>Services</a>
-    <a href="#realisations" data-rail="realisations"><em>03</em>Démonstrations</a>
-    <a href="#demos" data-rail="demos"><em>04</em>Secteurs</a>
-    <a href="#visite" data-rail="visite"><em>05</em>Visite 360</a>
-    <a href="#calculateur" data-rail="calculateur"><em>06</em>Calculateur</a>
-    <a href="#comparatif" data-rail="comparatif"><em>07</em>Comparatif</a>
-    <a href="#processus" data-rail="processus"><em>08</em>Processus</a>
-    <a href="#apropos" data-rail="apropos"><em>09</em>Agence</a>
-    <a href="#reference" data-rail="reference"><em>10</em>Référence</a>
-    <a href="#faq" data-rail="faq"><em>11</em>Questions</a>
-    <a href="#contact" data-rail="contact"><em>12</em>Contact</a>
+    <a href="#top" data-rail="top" style="--re: 0"><em>01</em>Accueil</a>
+    <a href="#services" data-rail="services" style="--re: 36"><em>02</em>Services</a>
+    <a href="#realisations" data-rail="realisations" style="--re: 72"><em>03</em>Démonstrations</a>
+    <a href="#demos" data-rail="demos" style="--re: 108"><em>04</em>Secteurs</a>
+    <a href="#visite" data-rail="visite" style="--re: 144"><em>05</em>Visite 360</a>
+    <a href="#calculateur" data-rail="calculateur" style="--re: 180"><em>06</em>Calculateur</a>
+    <a href="#comparatif" data-rail="comparatif" style="--re: 216"><em>07</em>Comparatif</a>
+    <a href="#processus" data-rail="processus" style="--re: 252"><em>08</em>Processus</a>
+    <a href="#apropos" data-rail="apropos" style="--re: 288"><em>09</em>Agence</a>
+    <a href="#reference" data-rail="reference" style="--re: 324"><em>10</em>Référence</a>
+    <a href="#faq" data-rail="faq" style="--re: 360"><em>11</em>Questions</a>
+    <a href="#contact" data-rail="contact" style="--re: 396"><em>12</em>Contact</a>
   </nav>
   <!-- N1 · combien il en reste. La question que se pose un patron de
        PME qui defile, et a laquelle rien ne repondait. -->
@@ -270,7 +282,11 @@
       <!-- ===== FRONTIERE 02 · 01 vers 02 =====
            G4 : volet (bas). On quitte la matiere brute pour l'offre : seule bascule de fond du haut de page.
            G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="01" data-vers="02" data-dress="encre" data-verbe="volet" data-sens="bas">
+      <!-- La bande d'encre est partie le 2026-07-31 : l'arc de
+           luminance ne garde qu'UNE chambre noire (05) et la nuit du
+           pied. Trois bandes d'encre dispersees racontaient trois
+           petites histoires ; une seule en raconte une grande.  D-570 -->
+      <div class="seuil" data-seuil data-de="01" data-vers="02" data-dress="clair" data-verbe="volet" data-sens="bas">
         <div class="wrap seuil-in">
           <div class="section-rule draw seuil-filet" data-section-rule></div>
           <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>01</span><span>02</span></span></b><span class="seuil-nom">Services</span></p>
@@ -2369,16 +2385,33 @@
 
 
 <!-- ===================== 05 · VISITE 360 ===================== -->
-<section id="visite">
-      <!-- ===== FRONTIERE 05 · 04 vers 05 =====
-           G4 : volet (bas). On entre dans un instrument. La visite est une piece sombre, l'arete le dit.
-           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="04" data-vers="05" data-dress="encre" data-verbe="volet" data-sens="bas">
-        <div class="wrap seuil-in">
-          <div class="section-rule draw seuil-filet" data-section-rule></div>
-          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>04</span><span>05</span></span></b><span class="seuil-nom">Visite 360</span></p>
+  <!-- ===== SAS 1 · LA DESCENTE · 04 vers 05 =====  D-567
+       La frontiere recoit une PISTE : l'encre avale l'ecran sous une
+       arete de grains (V1 dont l'arete est V3), les grains forgent le
+       mot dans le noir, le vrai mot bascule d'un cran (V4). Replie
+       (sans script, sous 64em, palier 1+, mouvement reduit), il ne
+       reste que la bande d'encre d'avant : rien ne depend du mouvement.
+       Le seuil vit ICI, hors de la section : une arrivee par ancre
+       atterrit APRES le sas, jamais dedans. -->
+  <div class="sas" data-sas="descente">
+    <div class="sas-piste">
+      <div class="sas-scene">
+        <div class="sas-volet" data-sas-volet>
+          <div class="sas-arete" aria-hidden="true"></div>
+          <div class="seuil" data-seuil data-de="04" data-vers="05" data-dress="encre" data-verbe="volet" data-sens="bas">
+            <div class="wrap seuil-in">
+              <div class="section-rule draw seuil-filet" data-section-rule></div>
+              <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>04</span><span>05</span></span></b><span class="seuil-nom">Visite 360</span></p>
+            </div>
+          </div>
         </div>
+        <canvas class="sas-forge" data-sas-forge aria-hidden="true"></canvas>
+        <p class="sas-mot" data-sas-mot aria-hidden="true" translate="no">Essayez.</p>
+        <i class="sas-fil" data-sas-fil aria-hidden="true"></i>
       </div>
+    </div>
+  </div>
+<section id="visite">
   <div class="wrap band">
     <div class="head" style="margin-top: var(--s-6);">
       <p class="head-index">Démo · Immobilier</p>
@@ -2430,16 +2463,25 @@
 </section>
 
   <!-- ===================== 05 · CALCULATEUR ===================== -->
-  <section id="calculateur">
-      <!-- ===== FRONTIERE 06 · 05 vers 06 =====
-           G4 : volet (haut). La RECIPROQUE du seuil precedent : la meme arete, dans l'autre sens. On ressort.
-           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="05" data-vers="06" data-dress="encre" data-verbe="volet" data-sens="haut">
-        <div class="wrap seuil-in">
-          <div class="section-rule draw seuil-filet" data-section-rule></div>
-          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>05</span><span>06</span></span></b><span class="seuil-nom">Calculateur</span></p>
-        </div>
+  <!-- ===== SAS 2 · LA REMONTEE · 05 vers 06 =====  D-568
+       La reciproque du sas 1, et elle n'est pas symetrique : pas de
+       piste, pas de forge. Un volet-calque couvre le debut du
+       Calculateur et se DEGAGE vers le haut au defilement : la
+       question « combien vous coute » se decouvre sous l'arete —
+       V1 pur, une forme deja la. Il ne coute pas un pixel de page.
+       Replie, il ne reste que la bande d'encre d'avant. -->
+  <div class="sas sas--calque" data-sas="remontee">
+    <div class="sas-volet" data-sas-volet aria-hidden="true">
+      <div class="sas-arete sas-arete--haut"></div>
+    </div>
+    <div class="seuil" data-seuil data-de="05" data-vers="06" data-dress="encre" data-verbe="volet" data-sens="haut">
+      <div class="wrap seuil-in">
+        <div class="section-rule draw seuil-filet" data-section-rule></div>
+        <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>05</span><span>06</span></span></b><span class="seuil-nom">Calculateur</span></p>
       </div>
+    </div>
+  </div>
+  <section id="calculateur">
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
         <p class="head-index">On ne vous demande rien</p>
@@ -3219,13 +3261,24 @@
   </section>
 
   <!-- ===================== PIED DE PAGE ===================== -->
-  <!-- FRONTIERE 12 · 12 vers le pied  D-079 -->
-<div class="seuil seuil--pied" data-seuil data-de="12" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
-  <div class="wrap seuil-in">
-    <div class="section-rule draw seuil-filet" data-section-rule></div>
-    <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>12</span><span>00</span></span></b><span class="seuil-nom">Fin de la traversée</span></p>
+  <!-- ===== SAS 3 · LA CLOTURE · 12 vers le pied =====  D-569
+       Le fil du chantier descend une derniere fois (scaleY, aucun
+       texte, scrub permis) et la bande de cloture existante fait le
+       reste : cran, volet, soudure dans la marque. Replie : la bande
+       seule, comme avant. -->
+  <div class="sas" data-sas="cloture">
+    <div class="sas-piste">
+      <div class="sas-scene">
+        <i class="sas-fil" data-sas-fil aria-hidden="true"></i>
+        <div class="seuil seuil--pied" data-seuil data-de="12" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
+          <div class="wrap seuil-in">
+            <div class="section-rule draw seuil-filet" data-section-rule></div>
+            <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>12</span><span>00</span></span></b><span class="seuil-nom">Fin de la traversée</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
 <footer class="footer">
     <div class="wrap footer-grid">
@@ -3942,7 +3995,7 @@
       ["js/limaille.js", "js/trame.js", "js/main.js", "js/hero.js"],
       /* `langue.js` — le langage de mouvement de la phase 8 — arrive  D-091 */
       ["js/vendor/gsap.min.js", "js/vendor/ScrollTrigger.min.js",
-       "js/motion.js", "js/langue.js", "js/pointe.js", "js/tour360.js"]
+       "js/sas.js", "js/motion.js", "js/langue.js", "js/pointe.js", "js/tour360.js"]
     ];
     /* LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.  D-092 */
     function poserVague(liste, apres) {

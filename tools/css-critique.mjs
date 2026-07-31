@@ -64,13 +64,18 @@ const CRITIQUES = [
      2) se jouaient a 0 % de visibilite.
      Une animation de CHARGEMENT ne peut pas vivre dans une feuille
      differee. La regle vaut pour tout ce qu'on ajoutera ensuite. */
-  "he", "compo-hero", "compo-attend", "ligne"
+  "he", "compo-hero", "compo-attend", "ligne",
+  /* Les SAS : leur hauteur de piste doit etre posee au premier
+     calcul de mise en page, sinon une arrivee par ancre atterrit
+     1 700 px a cote — differe.css arrive APRES l'ancre.  D-582 */
+  "sas", "sas--calque", "est-la"
 ];
 const estCritique = (nom) =>
   CRITIQUES.includes(nom) ||
   nom.startsWith("entree-") || nom.startsWith("hero-") || nom.startsWith("nav-") ||
   nom.startsWith("rail-") || nom.startsWith("menu-") || nom.startsWith("btn--") ||
-  nom.startsWith("plate-") || nom.startsWith("spec-") || nom.startsWith("fiche-");
+  nom.startsWith("plate-") || nom.startsWith("spec-") || nom.startsWith("fiche-") ||
+  nom.startsWith("sas-");
 
 /* TOUTES les classes du selecteur, pas seulement celles du sujet.
 

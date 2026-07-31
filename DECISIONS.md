@@ -348,3 +348,34 @@ moitié « après », elle, reste au budget — et deux échecs réels y ont
 Le libellé de navigation est devenu **« Démonstrations »**, partout, en
 une fois. Un visiteur qui clique « Projets » attend du travail
 commandé ; il trouvait quatre maquettes d'entreprises fictives.
+
+---
+
+# 2026-07-31 · REFONTE IMMERSIVE — L'ARC, LES SAS, LA CHAMBRE NOIRE
+
+Conception et périmètre : `REFONTE-IMMERSIVE.md`. Branche
+`refonte-immersive`, retour arrière `git switch main` (étiquette
+`avant-immersif`, copie disque datée à côté du dépôt).
+
+| Décision | Raison |
+|---|---|
+| **Trois sas, pas douze** | douze sas seraient les « douze séparateurs » ; le calme entre les sas est ce qui les rend grands |
+| **Un seul arc de luminance** | trois bandes d'encre dispersées racontaient trois petites histoires ; la bande du seuil 02 est partie (D-570) |
+| **La chambre noire = jetons du thème opposé** | aucune paire de contraste inventée — chaque couple est déjà audité dans l'autre thème (D-572) |
+| **Le moment impossible réutilise la limaille** | une seule idée déclinée devient une signature ; un second moteur aurait été un gadget (D-575) |
+| **La remontée est un calque, pas une piste** | la version piste rendait des écrans vides mesurés à 0 % d'écart ; un sas qui n'a rien à montrer est du défilement volé (D-568) |
+| **`sas-ok` décidé dans le `<head>`** | une hauteur de piste posée après coup faisait sauter les ancres de 1 700 px (D-581) |
+| **Le contrat d'arrivée est le rail lui-même** | « scroll to explore » est le cliché que toutes les références bannissent ; montrer les douze stations EST le contrat (D-584) |
+| **Les seuils des sas se repèrent par `data-vers`** | le repère par structure DOM vient de périmer ; celui par sélecteur ne périme pas (D-578) |
+| **Les ancres se visent en re-mesurant sur place** | défaut ANTÉRIEUR au chantier (2 474 px d'écart sur la copie témoin) ; `content-visibility` reste la cause, non corrigée — le correctif vise le symptôme, honnêtement (D-583) |
+
+Corrigés en passant : les `contain-intrinsic-size` périmés de près de
+2 900 px (D-580) ; l'appât du calculateur écrasé en colonne d'un mot
+(D-585). Pièges nouveaux : 33 (base pixel de GSAP sous `yPercent`) et
+34 (hauteur c-v mesurée à l'écran).
+
+Chiffres après chantier, machine de bureau, 1440×900 : LCP **192 ms** ·
+CLS **0** · traversée complète **60 i/s pile, 0 image > 20 ms sur
+763** · ancres `#visite`/`#calculateur`/`#contact` à **88 px pile**
+(le `scroll-padding`) · cascade **0 écart sur 354 112 propriétés** ·
+console **0**.

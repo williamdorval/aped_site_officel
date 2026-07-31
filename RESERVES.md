@@ -216,3 +216,25 @@ qu'il **évite** le conflit entre le glissement horizontal du doigt et
 le défilement vertical de la page — il n'y a aucun geste horizontal,
 donc aucun `touch-action` à négocier. Mais éviter un problème n'est pas
 l'avoir mesuré.
+
+## Refonte immersive, 2026-07-31
+
+- **Aucun sas n'a été vu sur un appareil réel.** La réserve générale
+  du projet s'applique en entier ; s'y ajoute que `sas-ok` exclut les
+  téléphones PAR CONSTRUCTION — le mobile reçoit la page d'avant, et
+  c'est voulu, mais personne n'a encore vérifié de ses yeux que le
+  repli est propre sur un vrai appareil.
+- **La cause `content-visibility` des ancres n'est PAS corrigée.**
+  D-583 vise le symptôme : la re-visée mesure sur place et corrige.
+  Le jour où les réservations seront tenues exactes en continu, la
+  re-visée deviendra un filet qui ne se déclenche jamais.
+- **Le mot « Essayez. » est un impératif, pas une affirmation** — rien
+  à défendre au téléphone. Mais si la section 05 change de contenu, le
+  mot forgé doit suivre le sens de ce qui l'attend dessous.
+- **La forge n'a été mesurée qu'à 1440×900.** À 2560 px de large, le
+  canvas grossit (~9k grains estimés) ; le plafond dpr 1,5 borne le
+  coût, mais aucune mesure n'existe au-delà de 1920.
+- **Le clic sur un lien d'ancre pendant le défilement doux** : la
+  re-visée attend `scrollend` (repli 750/1100 ms). Un visiteur qui
+  clique puis défile à la main DANS cette fenêtre annule la
+  correction — choix assumé (sa main gagne toujours), non mesuré.

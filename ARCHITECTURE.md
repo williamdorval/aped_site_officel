@@ -638,3 +638,29 @@ Ils passaient au vert sur du vide : le piège 17.
  ne correspondent à aucun fichier du dépôt. C'est volontaire — le fichier
  ne sert qu'à alimenter le MCP en registries — mais un outil qui le lit
  au pied de la lettre se trompera.
+
+---
+
+## AJOUTÉ LE 2026-07-31 — `js/sas.js` ET LES TROIS SAS
+
+**`js/sas.js`** (~250 l.) — l'orchestre des trois sas de l'arc de
+luminance. Vague 2, chargé APRÈS ScrollTrigger et AVANT `motion.js`
+et `langue.js` — l'ordre est l'argument : il retire le `data-verbe`
+des seuils absorbés avant que `langue.js` ne les lise (D-576). Ce
+qu'il ne contient PAS : la décision d'activer (elle vit dans le
+`<head>`, `html.sas-ok`, D-581), les hauteurs de piste (CSS critique,
+D-582), l'orientation (le cran G2 reste dans `main.js`).
+
+**Le markup** : `div.sas[data-sas="descente|remontee|cloture"]`, hors
+des sections, portant le seuil de sa frontière. Descente et clôture :
+`.sas-piste > .sas-scene` collante ; remontée : calque sans piste
+(D-568). Styles : `app.css § 1ter`, préfixe `sas-` dans la liste
+CRITIQUES de `css-critique.mjs`.
+
+**La chambre noire** : `#visite` porte les jetons du thème opposé
+(D-572) — aucun nouveau couple de couleurs n'existe dans le projet.
+
+**`main.js` a gagné deux blocs** : le repérage des seuils par
+`data-vers` (D-578) et la re-visée des ancres (D-583) — le défaut
+qu'elle corrige est antérieur au chantier et sa cause (`content-
+visibility`) reste ouverte dans `RESERVES.md`.
