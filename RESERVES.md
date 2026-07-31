@@ -17,6 +17,38 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 ---
 
 <a id="mobile"></a>
+## Services et Réalisations, 2026-07-31
+
+- **Le rail horizontal reste un contrôle caché.** La littérature
+  (NN/g, *Beware Horizontal Scrolling*) est défavorable : coût
+  d'interaction, flèches jamais regardées en oculométrie, piste
+  informationnelle faible. Il est conservé sur demande explicite, et
+  les trois conditions de défendabilité sont tenues — débord partiel
+  du service suivant, compteur permanent, et la même liste disponible
+  en pile sous 48em et sous mouvement réduit. **Ça n'en fait pas une
+  preuve que le rail aide.**
+- **Le curseur avant / après non plus.** Aucune étude publiée ne
+  départage le curseur du côte-à-côte ; toutes les affirmations
+  contraires viennent d'éditeurs de composants. Le repos à 50 % est
+  une mitigation, pas une démonstration.
+- **`exemple.ca` n'est pas un domaine réservé.** RFC 2606 ne réserve
+  que `example.com`, `.net`, `.org`. Les courriels des maquettes
+  utilisent `@exemple.ca` : le risque est nul en pratique, mais ce
+  n'est pas une garantie formelle.
+- **L'outil d'estimation du service 05 n'envoie encore rien.** Le
+  projet de référence porte un `TODO` à l'endroit de l'envoi : le
+  message « votre demande a été transmise » y est en avance sur le
+  code. La fiche du service décrit ce qu'on LIVRE, pas l'état de ce
+  projet-là — mais la distinction mérite d'être connue.
+- **Une lecture de marge `auto` diverge entre la feuille découpée et
+  la feuille entière** (piège 32). Géométrie identique au pixel,
+  cause exacte non élucidée.
+- **Les maquettes sont plus hautes que ce qu'on en voit.** La boucle
+  parcourt 48cqw sur des pages de 220 à 410cqw : au-delà de ~110cqw,
+  le contenu n'est jamais atteint. Il n'est pas faux, il est inutile.
+- **Rien de ce chantier n'a été vu sur un appareil réel.** La réserve
+  générale du projet tient, sans exception.
+
 ## 1 · LE PLUS GROS TROU DE PREUVE
 
 > **AUCUNE mesure de ce projet n'a été prise sur un appareil réel.**

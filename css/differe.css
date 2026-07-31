@@ -736,16 +736,51 @@
   100% { background-image: linear-gradient(90deg, var(--rule-strong) 0 100%); }
 }
 /* == 14. SERVICES — LA PISTE, LA SCENE ET LE RAIL ==  D-176 */
-.svc { display: grid; gap: var(--s-5); }
-/* La planche se cale sous le chapo, pas a une bande de distance :  D-177 */
-.svc { margin-top: calc(var(--s-6) * -1); }
-/* LA MARGE DU RAIL EST CELLE DU TEXTE, calculee comme `.wrap` la  D-178 */
+.svc { display: grid; padding-block-start: var(--band-tight); }
+/* LA MARGE DU RAIL EST CELLE DU TEXTE, ET ELLE SE MESURE.  D-178 */
 .svc {
-  --svc-marge: max(var(--pad), calc((100% - var(--maxw)) / 2));
-  --svc-gap: clamp(var(--s-5), 4vw, var(--s-8));
+  --svc-marge: var(--pad);
+  /* L'AIR AUTOUR D'UN CHANTIER A ETE OUVERT D'UN CRAN.  D-466 */
+  --svc-gap: clamp(var(--s-6), 5vw, var(--s-9));
   /* LA LARGEUR D'UN CHANTIER — ET POURQUOI ELLE N'EST PAS UN  D-179 */
-  --svc-larg: min(66rem, 72vw);
+  --svc-larg: min(52rem, 68vw);
+  --svc-fin: min(30rem, 56vw);
 }
+/* == LA TETE — ELLE VIT DANS LA SCENE, ET C'EST LE CORRECTIF DU VIDE. ==  D-467 */
+.svc-tete-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-6);
+}
+.svc-tete .head { margin-bottom: 0; }
+.svc-tete .head p { max-width: 46ch; }
+/* L'ODOMETRE — V4 · CRAN, et il remplace a lui seul la liste et la  D-468 */
+.svc-compte {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-family: var(--font-data);
+  font-size: var(--fs-7);
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.svc-roul {
+  display: block;
+  font-size: var(--fs-3);
+  line-height: 1;
+  height: 1em;
+  overflow: hidden;
+  font-weight: 400;
+  color: var(--accent-text);
+  transition: transform var(--t-2) step-end;
+}
+.svc-roul > span { display: block; height: 1em; line-height: 1; }
+/* LE CORPS DE LA CARTE. Le numero tient le haut, tout le reste  D-490 */
+.svc-plan-bas { display: grid; gap: var(--s-3); align-content: end; }
 /* == LA PILE — l'etat de base. == */
 .svc-planche {
   width: min(100% - (var(--pad) * 2), var(--maxw));
@@ -754,7 +789,7 @@
   padding: 0;
   margin-block: 0;
   display: grid;
-  gap: var(--s-6);
+  gap: var(--s-7);
 }
 .svc-plan {
   display: grid;
@@ -797,27 +832,22 @@
   text-transform: uppercase;
 }
 .svc-plan-delai b { color: var(--accent-text); font-weight: 400; }
-/* L'INDEX — N1 · ORIENTATION.  D-181 */
-.svc-index {
-  width: min(100% - (var(--pad) * 2), var(--maxw));
-  margin-inline: auto;
-  display: grid;
-  gap: var(--s-4);
+/* LE PANNEAU DE CLOTURE N'A PAS DE NUMERO, ET C'EST LE POINT.  D-469 */
+/* Il n'est pas le sixieme service : il ferme la serie. En pile, un
+   numero vide y laissait un point isole qui se lisait comme une
+   poussiere — releve du 2026-07-31 a 390 px. */
+.svc-plan--fin { grid-template-rows: minmax(0, 1fr); }
+.svc-porte--fin { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+/* == LE PIED DE SCENE — la reserve sur les delais. ==  D-470 */
+.svc-pied > .wrap {
+  padding-top: var(--s-4);
+  border-top: var(--rule-w) solid var(--rule);
 }
-.svc-index-liste,
-.svc-jauge { display: none; }
-.svc-reserve {
-  margin: 0;
-  color: var(--ink-muted);
-}
+.svc-reserve { margin: 0; color: var(--ink-muted); }
 /* `.fine` et `.svc-reserve` ont la meme specificite (0,1,0) : c'est  D-182 */
 .svc .svc-reserve { max-width: 62ch; }
-/* LA PORTE ET LE PANNEAU DE DETAIL.  D-183 */
-/* `.svc-porte` RESERVE LA HAUTEUR. A l'ouverture le `<details>`
-   quitte le flux ; sans cette boite le chantier perdrait la hauteur
-   de son bouton et le rail se recomposerait sous l'oeil. */
-.svc-porte { min-height: 2.75rem; display: grid; justify-items: start; margin-top: var(--s-2); }
-.svc-detail { display: grid; }
+/* LA PORTE ET LE BOUTON D'OUVERTURE.  D-183 */
+.svc-porte { min-height: 2.75rem; display: grid; justify-items: start; margin-top: var(--s-3); }
 .svc-plus {
   display: inline-flex;
   align-items: center;
@@ -835,8 +865,8 @@
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--ink);
+  text-decoration: none;
   cursor: pointer;
-  list-style: none;
   /* V4 · CRAN — l'aplat minium roule sous le libelle, il ne fond
      pas. Meme mecanique que les deux boutons du hero. */
   position: relative;
@@ -844,7 +874,6 @@
   isolation: isolate;
   --cran: 520ms;
 }
-.svc-plus::-webkit-details-marker { display: none; }
 .svc-plus::before {
   content: "";
   position: absolute;
@@ -859,40 +888,41 @@
 .svc-plus:focus-visible { color: var(--accent-ink); border-color: var(--accent); }
 .svc-plus:hover::before,
 .svc-plus:focus-visible::before { transform: scaleX(1); }
-/* Le chevron ROULE d'un cran, il ne tourne pas en continu. */
-.svc-plus .icon { flex: none; width: 0.875rem; height: 0.875rem; transition: transform var(--cran, 260ms) step-end; }
-.svc-detail[open] .svc-plus .icon { transform: rotate(180deg); }
-/* Deux libelles, un seul visible : l'etat se LIT, il ne se devine
-   pas a la forme d'une fleche. */
-.svc-detail[open] .svc-plus [data-ouvrir],
-.svc-detail:not([open]) .svc-plus [data-fermer] { display: none; }
-/* LE PANNEAU. Centre par `inset` + `margin: auto`, JAMAIS par  D-184 */
-.svc-detail[open] {
-  position: fixed;
-  inset: var(--s-5);
-  margin: auto;
-  z-index: var(--z-modal);
-  inline-size: min(100% - var(--s-5), 64rem);
-  block-size: fit-content;
-  /* `100dvh` MOINS LES DEUX MARGES, ET PAS `100 %`.  D-185 */
-  max-block-size: calc(100dvh - var(--s-5) * 2);
+.svc-plus .icon { flex: none; width: 0.875rem; height: 0.875rem; }
+/* == LES CINQ FICHES ==  D-471 */
+/* SANS SCRIPT, ELLES SONT CINQ ARTICLES EMPILES, ENTIEREMENT LUS.  D-472 */
+.svc-fiches { display: grid; gap: var(--s-8); margin-top: var(--band); }
+.svc-fiches-t {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-4);
+}
+.svc-fiche {
+  display: grid;
   grid-template-rows: auto minmax(0, 1fr);
+  width: min(100% - (var(--pad) * 2), var(--maxw));
+  margin-inline: auto;
   background: var(--surface-2);
   border: var(--rule-w) solid var(--rule-strong);
+  scroll-margin-top: calc(var(--nav-h) + var(--s-5));
 }
-.svc-detail[open] .svc-plus {
-  border: 0;
-  border-bottom: var(--rule-w) solid var(--rule-strong);
-  padding: var(--s-4) var(--s-5);
-  display: flex;
-}
-.svc-detail[open] .svc-detail-in {
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: var(--s-6);
+/* AVEC SCRIPT, ELLES DISPARAISSENT DU FLUX ET NE REPARAISSENT QU'EN  D-473 */
+html.js .svc-fiches { display: block; margin-top: 0; }
+html.js .svc-fiches > .wrap { display: none; }
+html.js .svc-fiche { display: none; }
+html.js .svc-fiche[data-ouvert] {
+  display: grid;
+  position: fixed;
+  inset: clamp(var(--s-3), 2.6vw, var(--s-7));
+  margin: auto;
+  z-index: var(--z-modal);
+  width: auto;
+  inline-size: min(100% - clamp(var(--s-3), 2.6vw, var(--s-7)), 68rem);
+  block-size: fit-content;
+  /* `100dvh` MOINS LES DEUX MARGES, ET PAS `100 %`.  D-185 */
+  max-block-size: calc(100dvh - clamp(var(--s-3), 2.6vw, var(--s-7)) * 2);
 }
 /* LE VOILE — ET IL N'EST PAS PORTE PAR LE PANNEAU, POUR DEUX  D-186 */
-.svc-porte:has(> .svc-detail[open])::before {
+html.js .svc-fiches:has(.svc-fiche[data-ouvert])::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -900,16 +930,18 @@
   background: var(--scrim);
   animation: svc-degage 300ms var(--e-snap) both;
 }
-.svc-porte:has(> .svc-detail[open][data-sortant])::before {
+html.js .svc-fiches:has(.svc-fiche[data-sortant])::before {
   animation: svc-degage 260ms 60ms var(--e-snap) reverse both;
 }
-/* L'INTERIEUR DU PANNEAU — plus aere qu'avant, et c'est une  D-187 */
-.svc-detail-in {
-  display: grid;
-  gap: var(--s-6);
-  align-content: start;
+/* LA BARRE DU PANNEAU — le numero, le nom, et la fermeture. ==  D-474 */
+.svc-fiche-barre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border-bottom: var(--rule-w) solid var(--rule-strong);
 }
-.svc-fiche-tete { display: grid; gap: var(--s-3); }
 .svc-fiche-sur {
   display: flex;
   align-items: baseline;
@@ -922,17 +954,50 @@
   color: var(--ink-muted);
 }
 .svc-fiche-sur .num { font-style: normal; color: var(--accent-text); }
-.svc-fiche-titre { font-size: var(--fs-3); max-width: 24ch; margin: 0; line-height: 1.1; }
-.svc-fiche-corps { display: grid; gap: var(--s-6); }
+.svc-fiche-x {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 2.75rem;
+  padding: 0 var(--s-4);
+  margin-inline-end: calc(var(--s-4) * -1);
+  background: transparent;
+  border: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color var(--t-2) step-end;
+}
+.svc-fiche-x:hover,
+.svc-fiche-x:focus-visible { color: var(--accent-text); }
+.svc-fiche-x .icon { width: 0.875rem; height: 0.875rem; }
+/* SANS SCRIPT IL N'Y A RIEN A FERMER. */
+html:not(.js) .svc-fiche-x { display: none; }
+/* L'INTERIEUR DU PANNEAU — plus aere qu'avant, et c'est une  D-187 */
+.svc-fiche-in {
+  display: grid;
+  gap: var(--s-7);
+  align-content: start;
+  padding: var(--s-6) var(--s-5) var(--s-7);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.svc-fiche-tete { display: grid; gap: var(--s-3); }
+.svc-fiche-titre { font-size: var(--fs-3); max-width: 26ch; margin: 0; line-height: 1.1; }
+.svc-fiche-corps { display: grid; gap: var(--s-7); }
 .svc-fiche-dit { display: grid; gap: var(--s-4); align-content: start; }
 .svc-fiche-dit p { margin: 0; color: var(--ink-muted); font-size: var(--fs-6); max-width: 62ch; }
 /* La phrase-squelette ouvre le detail : c'est elle qui fait lire les
-   quatre chantiers comme UN standard et non comme quatre arguments
+   cinq services comme UN standard et non comme cinq arguments
    empiles. En encre pleine, pas en `--ink-muted`. */
 .svc-fiche-dit .svc-lead { color: var(--ink); font-size: var(--fs-5); max-width: 54ch; }
 .svc-fiche-cote { display: grid; gap: var(--s-6); align-content: start; }
 .svc-bloc { display: grid; gap: var(--s-4); }
 .svc-bloc > .label { margin: 0; color: var(--ink); }
+.svc-note { margin: 0; color: var(--ink-muted); font-size: var(--fs-7); line-height: 1.55; }
 /* « CE QUE VOUS RECEVEZ » — une liste NUMEROTEE, et le numero est  D-188 */
 .svc-recu {
   display: grid;
@@ -971,11 +1036,46 @@
 }
 .svc-specs li { display: grid; grid-template-columns: 1.25rem 1fr; gap: var(--s-3); font-size: var(--fs-7); color: var(--ink-muted); }
 .svc-specs .icon { width: 0.875rem; height: 0.875rem; margin-top: 0.45em; color: var(--accent-text); }
+/* == LE SCHEMA DU SERVICE 05 — REDESSINE, JAMAIS CAPTURE. ==  D-475 */
+.svc-plan2d-duo { display: grid; gap: var(--s-4); }
+@media (min-width: 40em) {
+.svc-plan2d-duo { grid-template-columns: 1fr 1fr; }
+}
+.svc-plan2d {
+  display: grid;
+  gap: var(--s-3);
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-0);
+  padding: var(--s-4);
+}
+.svc-plan2d svg { display: block; width: 100%; height: auto; }
+.svc-plan2d figcaption {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+  line-height: 1.55;
+}
+.svc-plan2d .p2-grille { stroke: var(--rule); stroke-width: 1; }
+.svc-plan2d .p2-forme { fill: none; stroke: var(--accent); stroke-width: 2; }
+.svc-plan2d .p2-bord { fill: none; stroke: var(--ink); stroke-width: 3; }
+.svc-plan2d .p2-noeud { fill: var(--surface-2); stroke: var(--ink); stroke-width: 1.5; }
+.svc-plan2d .p2-cote { fill: none; stroke: var(--ink-muted); stroke-width: 1; }
+.svc-plan2d .p2-txt {
+  fill: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.svc-plan2d .p2-txt--fort { fill: var(--accent-text); }
+.svc-plan2d .p2-masse { fill: var(--surface-1); stroke: var(--ink-muted); stroke-width: 1; }
+.svc-plan2d .p2-lame { stroke: var(--rule-strong); stroke-width: 1; }
+.svc-plan2d .p2-sol { fill: var(--surface-1); }
 .svc-fiche-pied {
   display: grid;
-  gap: var(--s-4);
+  gap: var(--s-5);
   justify-items: start;
-  padding-top: var(--s-4);
+  padding-top: var(--s-5);
   border-top: var(--rule-w) solid var(--rule-strong);
 }
 .svc-fiche-delai {
@@ -990,13 +1090,15 @@
 }
 .svc-fiche-delai b { color: var(--accent-text); letter-spacing: var(--tracking-label); text-transform: uppercase; }
 .svc-fiche-delai span { color: var(--ink-muted); }
+/* TROIS PORTES, UNE SEULE PLEINE. Le brief demande « plusieurs portes  D-476 */
+.svc-fiche-actes { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 @keyframes svc-degage {
   from { clip-path: inset(0 0 100% 0); }
   to { clip-path: inset(0 0 0 0); }
 }
-.svc-detail[open] { animation: svc-degage 420ms 90ms var(--e-snap) both; }
+html.js .svc-fiche[data-ouvert] { animation: svc-degage 420ms 90ms var(--e-snap) both; }
 /* LA FERMETURE EST LA RECIPROQUE, par ou l'ouverture est venue. */
-.svc-detail[open][data-sortant] { animation: svc-degage 260ms var(--e-snap) reverse both; }
+html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(--e-snap) reverse both; }
 @media (min-width: 48em) and (prefers-reduced-motion: no-preference) {
 html.js .svc {
     /* LA HAUTEUR DE LA SCENE. `100dvh` et non `100vh` : sur les
@@ -1004,58 +1106,69 @@ html.js .svc {
        grande valeur et la scene depasse d'autant. */
     --svc-scene: calc(100dvh - var(--nav-h));
     /* LE PAS VERTICAL — la distance de defilement qui fait passer  D-192 */
-    --svc-pas: min(46vh, 430px);
-    --svc-n: 4;
+    --svc-pas: min(40vh, 360px);
+    /* SIX ITEMS, PAS QUATRE : cinq services et le panneau de  D-477 */
+    --svc-n: 6;
   }
 html.js .svc-piste {
     height: calc(var(--svc-scene) + (var(--svc-n) - 1) * var(--svc-pas));
   }
-/* LA SCENE MONTE AU-DESSUS DE LA BARRE PENDANT QU'UN PANNEAU EST  D-193 */
-html.js .svc-scene:has(.svc-detail[open]) { z-index: var(--z-modal); }
 html.js .svc-scene {
     position: sticky;
     top: var(--nav-h);
     height: var(--svc-scene);
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    /* TROIS RANGEES : la tete, la vitre, le pied. C'est ce qui  D-478 */
+    grid-template-rows: auto minmax(0, 1fr) auto;
     gap: var(--s-5);
     padding-block: var(--s-5);
   }
 /* LA VITRE EST UN CONTENEUR DE DEFILEMENT, ET C'EST ELLE QUI  D-194 */
+/* LA PLANCHE REMPLIT LA VITRE — ET C'EST LE CORRECTIF DU VIDE  D-494 */
 html.js .svc-vitre {
     overflow: hidden;
     scroll-behavior: auto;
     display: grid;
-    align-content: center;
+    align-content: stretch;
     min-height: 0;
   }
+html.js .svc-planche { min-height: 100%; }
 /* LE RAIL. Une seule transformation par image, ecrite par  D-195 */
 html.js .svc-planche {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: var(--svc-gap);
-    width: auto;
     max-width: none;
     margin-inline: 0;
     padding-inline: var(--svc-marge);
     /* `width: max-content` — SANS LUI, IL N'Y A RIEN A DEFILER.  D-196 */
     width: max-content;
   }
+/* DEUX RANGEES : le numero sur un filet en haut, TOUT LE RESTE  D-491 */
 html.js .svc-plan {
     flex: 0 0 auto;
     width: var(--svc-larg);
     border-top: 0;
     padding-top: 0;
-    gap: var(--s-4);
+    grid-template-rows: auto minmax(0, 1fr);
+    align-content: stretch;
+    gap: var(--s-6);
   }
-/* L'ECHELLE — C'EST ELLE QUI REMPLACE L'IMAGE, ET LE RAPPORT EST  D-197 */
+html.js .svc-plan-num {
+    padding-bottom: var(--s-3);
+    border-bottom: var(--rule-w) solid var(--rule-strong);
+  }
+html.js .svc-plan-bas { gap: var(--s-4); }
+html.js .svc-plan--fin { width: var(--svc-fin); }
+/* L'ECHELLE — RAMENEE A 80 %, ET C'EST UNE MESURE, PAS UN GOUT.  D-479 */
 html.js .svc-plan-nom {
-    font-size: clamp(2.5rem, 6.4vw, 5.25rem);
+    font-size: clamp(2rem, 5vw, 4.25rem);
     letter-spacing: -0.035em;
     line-height: 0.98;
     max-width: 14ch;
   }
-html.js .svc-plan-dit { font-size: var(--fs-4); max-width: 32ch; }
+html.js .svc-plan--fin .svc-plan-nom { font-size: clamp(1.5rem, 2.6vw, 2.25rem); line-height: 1.05; max-width: 18ch; }
+html.js .svc-plan-dit { font-size: var(--fs-5); max-width: 34ch; }
 html.js .svc-plan-num { font-size: var(--fs-7); }
 @keyframes svc-degage-nom { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 html.js .svc-plan-nom { position: relative; }
@@ -1073,70 +1186,26 @@ html.js .svc-planche[data-degage] .svc-plan-nom::after {
 html.js .svc-planche[data-degage] .svc-plan[data-vu] .svc-plan-nom::after {
     animation: svc-degage-nom 420ms var(--e-drive) forwards;
   }
-/* L'INDEX REPREND SON ROLE. */
-html.js .svc-index-liste {
-    display: grid;
-    grid-template-columns: repeat(var(--svc-n), minmax(0, 1fr));
-    gap: var(--gutter);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-html.js .svc-index-liste a {
-    display: grid;
-    gap: var(--s-2);
-    padding-top: var(--s-3);
-    text-decoration: none;
-    color: var(--ink-muted);
-    font-family: var(--font-data);
-    font-size: var(--fs-8);
-    line-height: 1.35;
-    /* V4 · CRAN. L'entree courante ne fond pas vers l'accent : elle
-       y roule d'un cran. `step-end` sur 260 ms, comme les autres
-       micro-etats de la section. */
-    transition: color 260ms step-end;
-  }
-html.js .svc-index-liste .num {
-    font-style: normal;
-    letter-spacing: var(--tracking-label);
-  }
-html.js .svc-index-liste a:hover,
-  html.js .svc-index-liste a:focus-visible { color: var(--ink); }
-html.js .svc-index-liste a[aria-current="true"] { color: var(--ink); }
-html.js .svc-index-liste a[aria-current="true"] .num { color: var(--accent-text); }
-/* LA JAUGE. `transform: scaleX` et jamais `width` : une propriete
-     de mise en page animee soixante fois par seconde est le seul
-     poste de cette section qui pourrait couter une image. */
-html.js .svc-jauge {
-    display: block;
-    height: var(--rule-w);
-    background: var(--rule-strong);
-    position: relative;
-  }
-html.js .svc-jauge > b {
-    position: absolute;
-    inset: 0;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left center;
-  }
-html.js .svc-index { gap: var(--s-3); }
 }
 @media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
-html.js .svc { --svc-larg: min(66rem, 52vw); }
+html.js .svc { --svc-larg: min(44rem, 42vw); --svc-fin: min(28rem, 26vw); }
 }
 @media (prefers-reduced-motion: reduce) {
 .svc-plus { --cran: 0ms; }
-.svc-detail[open],
-  .svc-detail[open][data-sortant],
-  .svc-porte:has(> .svc-detail[open])::before,
-  .svc-porte:has(> .svc-detail[open][data-sortant])::before { animation: none !important; }
+html.js .svc-fiche[data-ouvert],
+  html.js .svc-fiche[data-ouvert][data-sortant],
+  html.js .svc-fiches:has(.svc-fiche[data-ouvert])::before,
+  html.js .svc-fiches:has(.svc-fiche[data-sortant])::before { animation: none !important; }
 }
 /* PALIER 2 — le degagement du panneau tombe avec les autres  D-201 */
-:root[data-palier="2"] .svc-detail[open],
-:root[data-palier="2"] .svc-detail[open][data-sortant],
-:root[data-palier="2"] .svc-porte:has(> .svc-detail[open])::before,
-:root[data-palier="2"] .svc-porte:has(> .svc-detail[open][data-sortant])::before { animation: none !important; }
+:root[data-palier="2"] html.js .svc-fiche[data-ouvert],
+:root[data-palier="2"] html.js .svc-fiche[data-ouvert][data-sortant],
+:root[data-palier="2"] html.js .svc-fiches:has(.svc-fiche[data-ouvert])::before,
+:root[data-palier="2"] html.js .svc-fiches:has(.svc-fiche[data-sortant])::before { animation: none !important; }
+@media (min-width: 48em) {
+.svc-fiche-in { padding: var(--s-7) var(--s-7) var(--s-8); }
+.svc-fiche-barre { padding: var(--s-4) var(--s-7); }
+}
 @media (min-width: 64em) {
 /* DEUX COLONNES : ce qui se LIT, ce qui se COMPTE. */
 .svc-fiche-corps {
@@ -1149,489 +1218,1988 @@ html.js .svc { --svc-larg: min(66rem, 52vw); }
     justify-items: start;
   }
 }
-/* == 15. AVANT / APRES — trois demonstrations, zero image ==  D-202 */
-.ba-liste { display: grid; gap: var(--s-9); }
-.ba { display: grid; gap: var(--s-4); }
+/* == 15. AVANT / APRES — quatre demonstrations, zero image ==  D-202 */
+/* L'UNITE DE CE BLOC EST LE `cqw`, ET C'EST TOUTE L'IDEE.  D-500 */
+/* LA GRILLE — DEUX PAR DEUX, ET C'EST CE QUI DEZOOME.  D-501 */
+/* LA LARGEUR ET LA GRILLE VIVENT SUR DEUX ELEMENTS DIFFERENTS.  D-544 */
+/* `.wrap` vit dans `critique.css`, `.ba-grille` dans `differe.css`.
+   Poser une marge `auto` sur un element dont la LARGEUR vient de
+   l autre feuille fait diverger la cascade decoupee de la cascade
+   entiere — 4 ecarts mesures le 2026-07-31, pour une geometrie
+   pourtant identique au pixel. Un `.wrap` nu centre, la grille
+   remplit : chaque feuille garde son element. */
+.ba-grille { display: grid; gap: var(--s-8) var(--gutter); }
+/* LE FILET DU HAUT EST L HOTE DE V3 · SOUDER : les quatre se  D-538 */
+/* soudent en sequence quand la grille arrive. Il est AU-DESSUS du
+   cadre et non sous la legende, sinon il doublerait la bordure du
+   cadre a un pixel d intervalle. */
+.ba {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+  padding-top: var(--s-4);
+  border-top: var(--rule-w) solid var(--rule-strong);
+}
+/* == LE CADRE ET LA SCENE ==  D-502 */
+.ba-scene {
+  position: relative;
+  /* LE CONTENEUR DE REQUETE. Sans lui, aucun `cqw` ne veut rien  D-503 */
+  container-type: inline-size;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-2);
+  isolation: isolate;
+  /* LA POSITION DE REPOS EST 50, ET C'EST UNE DECISION.  D-504 */
+  --ba-p: 50;
+}
+/* LE CADRE EST UNE IMAGE, ET UNE IMAGE NE S'INVERSE PAS.  D-545 */
+/* Releve du 2026-07-31, passe de critique 3. En theme sombre, la
+   reconstitution restait blanche — un site de 2011 l'est, quel que
+   soit le reglage du visiteur — pendant que la moitie « apres »
+   passait en encre. La comparaison se lisait alors « clair contre
+   foncé » AVANT de se lire « mauvais contre bon » : deux variables
+   au lieu d'une. La scene garde donc la palette claire dans les deux
+   themes. Les LEGENDES, elles, sont hors du cadre et suivent la page :
+   l'image est une image, les mots sont les notres. */
+:root[data-theme="dark"] .ba-scene {
+  color-scheme: light;
+  --surface-0: #dcdedb;
+  --surface-1: #cbcec9;
+  --surface-2: #f2f3f1;
+  --surface-inverse: #101211;
+  --ink: #101211;
+  --ink-muted: #565a57;
+  --ink-inverse: #dcdedb;
+  --accent: #c8371b;
+  --accent-text: #9b2810;
+  --accent-ink: #f2f3f1;
+  /* `--accent-on-inverse` FAISAIT PARTIE DU JEU, ET L'OUBLIER COUTE  D-546 */
+  /* Le bandeau de l'outil d'estimation est en encre pleine : son
+     accent doit etre celui qui se lit SUR la surface inverse. Sans
+     cette ligne, la valeur du theme sombre restait — un minium fonce
+     concu pour un fond clair — et rendait 2,42:1. Mesure du
+     2026-07-31. */
+  --accent-on-inverse: #ff7a52;
+  --accent-wash: rgb(200 55 27 / 0.10);
+  --rule: rgb(16 18 17 / 0.16);
+  --rule-strong: rgb(16 18 17 / 0.38);
+  --rule-accent: #c8371b;
+}
+.ba-vue { position: absolute; inset: 0; overflow: hidden; }
+/* L'APRES EST LA COUCHE DU DESSOUS, ENTIERE. L'AVANT EST ROGNE PAR  D-505 */
+.ba-vue--avant { z-index: 2; clip-path: inset(0 calc((100 - var(--ba-p)) * 1%) 0 0); }
+/* LA PAGE — 1000 px de maquette rendus a la largeur du cadre. */
+.ba-page {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  min-height: 118cqw;
+  background: var(--surface-0);
+  color: var(--ink);
+  --ba-course: 48cqw;
+  will-change: transform;
+}
+@keyframes ba-defile {
+  0%, 9%   { transform: translateY(0); }
+  50%, 59% { transform: translateY(calc(var(--ba-course) * -1)); }
+  100%     { transform: translateY(0); }
+}
+.ba-scene[data-vif] .ba-page { animation: ba-defile 34s var(--e-drive) infinite; }
+/* LA PAUSE EXIGE `!important` — `animation` est un raccourci et il  D-507 */
+.ba-scene:hover .ba-page,
+.ba-scene:focus-within .ba-page { animation-play-state: paused !important; }
+/* LES DEUX ETIQUETTES SONT PERMANENTES.  D-508 */
+.ba-etq {
+  position: absolute;
+  top: 0;
+  z-index: 3;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.ba-etq--a { left: 0; background: var(--ink); color: var(--surface-0); }
+.ba-etq--b { right: 0; background: var(--accent); color: var(--accent-ink); }
+/* LE TRAIT ET LA PRISE. L'arete est un filet de 1 px en minium :  D-509 */
+.ba-trait {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--ba-p) * 1%);
+  z-index: 3;
+  width: var(--rule-w);
+  background: var(--accent);
+  pointer-events: none;
+}
+.ba-trait::before {
+  content: "‹ ›";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-data);
+  font-size: var(--fs-7);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+/* LA POIGNEE EST UN `input[type=range]` NATIF, ET C'EST TOUT  D-510 */
+.ba-poignee {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: ew-resize;
+  /* Le doigt garde le defilement vertical de la page, et donne  D-511 */
+  touch-action: pan-y;
+}
+.ba-poignee::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.ba-poignee::-webkit-slider-thumb { -webkit-appearance: none; width: 2.75rem; height: 100%; background: transparent; cursor: ew-resize; }
+.ba-poignee::-moz-range-track { height: 100%; background: transparent; }
+.ba-poignee::-moz-range-thumb { width: 2.75rem; height: 100%; background: transparent; border: 0; border-radius: 0; cursor: ew-resize; }
+.ba-poignee:focus-visible { outline: var(--focus-w) solid var(--accent-text); outline-offset: calc(var(--focus-w) * -1); }
+/* SANS SCRIPT, LA POIGNEE NE FERAIT RIEN : on la retire, et la  D-512 */
+html:not(.js) .ba-poignee,
+html:not(.js) .ba-trait { display: none; }
+/* == LA LEGENDE — un titre court, une ligne, jamais un paragraphe. ==  D-513 */
 .ba-tete {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
-  gap: var(--s-3) var(--s-5);
-  padding-bottom: var(--s-3);
-  border-bottom: var(--rule-w) solid var(--rule-strong);
-}
-.ba-num {
-  display: flex;
-  align-items: baseline;
-  gap: var(--s-3);
+  gap: var(--s-2) var(--s-3);
   margin: 0;
-  font-size: var(--fs-4);
 }
-.ba-num .num {
+.ba-tete .num {
   font-style: normal;
   font-family: var(--font-data);
   font-size: var(--fs-8);
   letter-spacing: var(--tracking-label);
   color: var(--accent-text);
 }
-/* L'ETIQUETTE D'HONNETETE EST DANS LE TITRE, PAS EN NOTE.  D-203 */
-.ba-etiq {
-  margin: 0;
+.ba-tete b { font-weight: 400; font-size: var(--fs-5); }
+.ba-tete span {
   font-family: var(--font-data);
   font-size: var(--fs-8);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--ink-muted);
 }
-.ba-cadre { display: grid; gap: var(--s-4); }
-/* LE CRAN — V4. Deux etats, aucun entre-deux.  D-204 */
-.ba-cran {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  border: var(--rule-w) solid var(--ink);
-  justify-self: start;
+.ba-dit { margin: 0; font-size: var(--fs-6); color: var(--ink-muted); line-height: 1.5; max-width: 46ch; }
+.ba-dit b { color: var(--ink); font-weight: 400; }
+/* La derniere ligne de la section : l'honnetete, en fine, une fois. */
+.ba-fin { margin: 0; color: var(--ink-muted); }
+@media (min-width: 56em) {
+.ba-grille { grid-template-columns: 1fr 1fr; gap: var(--s-9) var(--s-7); }
 }
-.ba-cran label {
-  display: grid;
-  gap: 2px;
-  align-content: center;
-  min-height: 2.75rem;
-  padding: var(--s-2) var(--s-5);
-  cursor: pointer;
-  font-family: var(--font-data);
-  color: var(--ink);
-  transition: background-color 260ms step-end, color 260ms step-end;
-}
-.ba-cran label + input + label,
-.ba-cran input + label ~ input + label { border-left: var(--rule-w) solid var(--ink); }
-.ba-cran label b {
-  font-weight: 400;
-  font-size: var(--fs-7);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-}
-.ba-cran label span { font-size: var(--fs-8); color: var(--ink-muted); }
-.ba-cran input:checked + label { background: var(--accent); color: var(--accent-ink); }
-.ba-cran input:checked + label span { color: var(--accent-ink); }
-.ba-cran input:focus-visible + label { outline: 2px solid var(--accent-text); outline-offset: 2px; }
-.ba-cran label:hover { background: var(--surface-1); }
-/* LA PRECISION SUIT LE FOND, ET C'EST UN ECHEC MESURE.  D-205 */
-.ba-cran label:hover span { color: var(--ink); }
-.ba-cran input:checked + label:hover { background: var(--accent); }
-.ba-cran input:checked + label:hover span { color: var(--accent-ink); }
-/* == LA SCENE. Hauteur fixe, deux vues dans la meme case. == */
-.ba-scene {
-  display: grid;
-  height: clamp(320px, 58vh, 560px);
-  border: var(--rule-w) solid var(--rule-strong);
-  background: var(--surface-2);
-  /* `overflow: hidden` et pas `auto` : une zone de defilement  D-206 */
-  overflow: hidden;
-  isolation: isolate;
-}
-.ba-vue { grid-area: 1 / 1; overflow: hidden; min-width: 0; }
-/* LE CRAN, COTE SCENE. Un seul selecteur par sens, grace a
-   `:has()` — sinon il faudrait six regles indexees par `id`, et
-   chaque comparaison ajoutee en demanderait deux de plus. */
-.ba-cadre:has([data-ba-vue="apres"]:checked) .ba-vue--avant,
-.ba-cadre:has([data-ba-vue="avant"]:checked) .ba-vue--apres { visibility: hidden; }
-/* LES TROIS ECARTS — ce qui rend la comparaison LISIBLE SANS UN  D-207 */
-.ba-ecart {
-  display: grid;
-  gap: var(--s-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: ecart;
-}
-/* LE NUMERO EST POSITIONNE, PAS MIS EN COLONNE DE GRILLE — ET  D-208 */
-.ba-ecart li {
-  counter-increment: ecart;
-  position: relative;
-  padding-left: 2rem;
-  /* LE FILET FAIT DE CES TROIS LIGNES UN HOTE DE V3 · SOUDER.  D-209 */
-  padding-top: var(--s-3);
-  border-top: var(--rule-w) solid var(--rule);
-  font-size: var(--fs-6);
-  color: var(--ink-muted);
-  line-height: 1.5;
-}
-/* LE NUMERO EST EN `::after`, ET CE N'EST PAS UN GOUT.  D-210 */
-.ba-ecart li::after {
-  content: counter(ecart, decimal-leading-zero);
-  position: absolute;
-  left: 0;
-  top: calc(var(--s-3) + 0.28em);
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  color: var(--accent-text);
-  letter-spacing: var(--tracking-label);
-}
-.ba-ecart b { color: var(--ink); font-weight: 400; }
-@media (min-width: 48em) {
-.ba-ecart { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); }
-}
-/* == L'APRES — notre langue, et trois compositions differentes. ==  D-211 */
-.ba-vue--apres { background: var(--surface-0); display: grid; grid-template-rows: auto minmax(0, 1fr); }
-.ap { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; }
+/* == L'APRES — notre langue, a l'echelle d'une page. ==  D-211 */
+/* FLEX ET NON GRILLE : `margin-top: auto` sur le pied n absorbe l espace  D-536 */
+.ap { display: flex; flex-direction: column; min-height: 118cqw; }
 .ap-nav {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-5);
+  gap: 1.6cqw;
+  padding: 1.6cqw 3.2cqw;
   border-bottom: var(--rule-w) solid var(--rule-strong);
   font-family: var(--font-data);
-  font-size: var(--fs-8);
+  font-size: 1.2cqw;
 }
-.ap-nav b { font-weight: 400; letter-spacing: var(--tracking-label); text-transform: uppercase; }
-.ap-nav span { color: var(--ink-muted); }
-.ap-corps {
+.ap-nav b { font-weight: 400; font-size: 1.4cqw; letter-spacing: var(--tracking-label); text-transform: uppercase; }
+.ap-nav span { color: var(--ink-muted); flex: 1 1 auto; text-align: right; }
+.ap-nav i { font-style: normal; padding: 0.9cqw 1.8cqw; background: var(--accent); color: var(--accent-ink); letter-spacing: var(--tracking-label); text-transform: uppercase; }
+/* LE HERO EST SUR DEUX COLONNES, ET C EST UNE MESURE.  D-537 */
+/* A 50 %, le visiteur voit la MOITIE GAUCHE de l avant et la MOITIE
+   DROITE de l apres. Un hero dont tout le contenu est cale a gauche
+   ne montre donc, du cote apres, que de la marge. Le titre traverse,
+   et l objet le plus lourd part a droite. */
+.ap-hero {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-content: start;
-  gap: var(--s-4);
-  padding: var(--s-5) var(--s-5) var(--s-6);
-  min-height: 0;
+  gap: 2cqw 3.2cqw;
+  padding: 5cqw 3.2cqw;
 }
+.ap-hero > * { grid-column: 1 / -1; }
+.ap-hero > .ap-tel,
+.ap-hero > .ap-fiche { grid-column: 2; grid-row: 1 / span 4; align-self: start; justify-self: end; }
 .ap-sur {
   margin: 0;
   font-family: var(--font-data);
-  font-size: var(--fs-8);
+  font-size: 1.2cqw;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--accent-text);
 }
 .ap-titre {
   margin: 0;
-  font-size: clamp(1.5rem, 3.4vw, 2.5rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  max-width: 20ch;
+  font-size: 5.2cqw;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  max-width: 26ch;
 }
-/* LE TELEPHONE DU GARAGE. C'est l'objet le plus gros de la
-   maquette, et c'est tout l'ecart avec la version d'a cote — ou il
-   est en 11 px, au bas d'un tableau. */
-.ap-tel {
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  justify-items: start;
-  padding: var(--s-3) var(--s-5);
-  background: var(--accent);
-  color: var(--accent-ink);
-  justify-self: start;
-}
-.ap-tel span { font-family: var(--font-data); font-size: var(--fs-8); letter-spacing: var(--tracking-label); text-transform: uppercase; }
-.ap-tel b { font-weight: 400; font-size: clamp(1.375rem, 2.6vw, 1.875rem); font-variant-numeric: tabular-nums; }
-.ap-faits { display: grid; gap: var(--s-3); margin: 0; }
-.ap-faits > div {
-  display: grid;
-  gap: 2px;
-  padding-top: var(--s-2);
-  border-top: var(--rule-w) solid var(--rule);
-}
-.ap-faits b { font-weight: 400; font-family: var(--font-data); font-size: var(--fs-8); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-muted); }
-.ap-faits span { font-size: var(--fs-6); }
-/* LE MENU DU RESTAURANT — le bloc pour lequel on vient. */
-.ap-menu { display: grid; gap: var(--s-3); padding-top: var(--s-3); border-top: var(--rule-w) solid var(--rule-strong); }
-.ap-menu-t { margin: 0; font-family: var(--font-data); font-size: var(--fs-8); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--accent-text); }
-.ap-menu dl { display: grid; gap: var(--s-2); margin: 0; }
-.ap-menu dl > div { display: grid; grid-template-columns: 6rem 1fr; gap: var(--s-3); align-items: baseline; }
-.ap-menu dt { font-family: var(--font-data); font-size: var(--fs-8); text-transform: uppercase; letter-spacing: var(--tracking-label); color: var(--ink-muted); }
-.ap-menu dd { margin: 0; font-size: var(--fs-6); }
-.ap-menu-p { margin: 0; font-size: var(--fs-8); font-family: var(--font-data); color: var(--ink-muted); }
-.ap-cta {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--s-2);
-  margin: 0;
-  justify-self: start;
-  padding: var(--s-3) var(--s-5);
-  background: var(--accent);
-  color: var(--accent-ink);
+.ap-dit { margin: 0; font-size: 1.8cqw; line-height: 1.45; color: var(--ink-muted); max-width: 58ch; }
+.ap-actes { display: flex; flex-wrap: wrap; gap: 1.2cqw; }
+.ap-acte {
+  padding: 1.2cqw 2.2cqw;
+  border: var(--rule-w) solid var(--ink);
   font-family: var(--font-data);
-  font-size: var(--fs-7);
+  font-size: 1.2cqw;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
-.ap-cta b { font-weight: 400; }
-/* LE CHAMP DU DENEIGEMENT. INERTE, et c'est une decision : une  D-212 */
+.ap-acte--fort { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+/* LA FICHE DE DROITE — ET C'EST UNE MESURE, PAS UNE DECORATION.  D-542 */
+/* A 50 %, le visiteur voit la moitie GAUCHE de l'avant et la moitie
+   DROITE de l'apres. Sans objet a droite, notre langue — grande,
+   aeree, calee a gauche — se lit comme une page VIDE a cote d'une
+   page chargee : l'argument s'inverse. La fiche porte exactement ce
+   que la version d'avant refuse : l'heure, l'adresse, le numero, et
+   une action.  Releve du 2026-07-31, passe de critique 1. */
+.ap-fiche {
+  width: 30cqw;
+  display: grid;
+  gap: 1.4cqw;
+  align-content: start;
+  padding: 2cqw;
+  border: var(--rule-w) solid var(--ink);
+  background: var(--surface-2);
+}
+.ap-fiche-t {
+  margin: 0;
+  padding-bottom: 1cqw;
+  border-bottom: var(--rule-w) solid var(--rule);
+  font-family: var(--font-data);
+  font-size: 1.1cqw;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.ap-fiche dl { display: grid; gap: 1.2cqw; margin: 0; }
+.ap-fiche dl > div { display: grid; gap: 0.2cqw; }
+.ap-fiche dt {
+  font-family: var(--font-data);
+  font-size: 1cqw;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.ap-fiche dd { margin: 0; font-size: 1.5cqw; line-height: 1.3; }
+.ap-fiche-cta {
+  margin: 0;
+  padding: 1.1cqw 1.6cqw;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-data);
+  font-size: 1.1cqw;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-align: center;
+}
+/* LA BANDE DE FAITS — ce que le visiteur cherche AVANT de lire.  D-514 */
+.ap-bande {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3.2cqw;
+  padding: 2.2cqw 3.2cqw;
+  border-block: var(--rule-w) solid var(--rule-strong);
+  /* `--surface-2` ET NON `--surface-1` : sous `--ink-muted`, le  D-540 */
+  background: var(--surface-2);
+}
+.ap-fait { display: grid; gap: 0.4cqw; }
+.ap-fait b {
+  font-weight: 400;
+  font-family: var(--font-data);
+  font-size: 1.1cqw;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.ap-fait span { font-size: 1.5cqw; line-height: 1.3; }
+/* `overflow: hidden` — LE RAIL INTERIEUR DEBORDE SA COLONNE.  D-539 */
+/* Six tuiles a 24cqw font 153cqw de contenu minimal : sans ce
+   rognage, le bloc pousse la maquette a 985 px dans une vue de
+   618 px, et le bandeau de navigation sort du cadre en silence. */
+.ap-bloc {
+  display: grid;
+  align-content: start;
+  gap: 2.2cqw;
+  padding: 4cqw 3.2cqw;
+  border-bottom: var(--rule-w) solid var(--rule);
+  min-width: 0;
+  overflow: hidden;
+}
+.ap-bloc-t {
+  position: relative;
+  margin: 0;
+  padding-bottom: 1.2cqw;
+  font-family: var(--font-data);
+  font-size: 1.2cqw;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+/* V3 · SOUDER — le filet du titre de bloc se trace, il n'apparait  D-515 */
+.ap-bloc-t::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--rule-w);
+  background: var(--accent);
+  /* L'ETAT DE REPOS EST LA FORME FINALE — le filet est TRACE quand  D-521 */
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+@keyframes ap-souder { 0%, 6% { transform: scaleX(0); } 34%, 100% { transform: scaleX(1); } }
+.ba-scene[data-vif] .ap-bloc-t::after { animation: ap-souder 34s var(--e-snap) infinite; }
+.ap-cartes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8cqw; }
+.ap-carte { display: grid; gap: 0.8cqw; align-content: start; }
+.ap-carte i { display: block; height: 9cqw; background: var(--surface-1); border: var(--rule-w) solid var(--rule); }
+.ap-carte b { font-weight: 400; font-size: 1.5cqw; }
+.ap-carte span { font-size: 1.3cqw; color: var(--ink-muted); line-height: 1.4; }
+.ap-liste { display: grid; gap: 1.2cqw; margin: 0; padding: 0; list-style: none; }
+.ap-liste li {
+  padding-top: 1.2cqw;
+  border-top: var(--rule-w) solid var(--rule);
+  font-size: 1.5cqw;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+.ap-liste b { color: var(--ink); font-weight: 400; }
+/* LE RAIL INTERIEUR — c'est le mouvement PROPRE a la maquette, pas  D-516 */
+.ap-rail { display: flex; gap: 1.8cqw; }
+.ap-tuile { flex: 0 0 24cqw; display: grid; gap: 0.8cqw; align-content: start; }
+.ap-tuile i { display: block; height: 14cqw; background: var(--surface-1); border: var(--rule-w) solid var(--rule); }
+.ap-tuile b { font-weight: 400; font-size: 1.4cqw; }
+.ap-tuile span { font-size: 1.2cqw; color: var(--ink-muted); }
+@keyframes ap-rail { 0%, 8% { transform: translateX(0); } 46%, 100% { transform: translateX(-26cqw); } }
+.ba-scene[data-vif] .ap-rail { animation: ap-rail 17s var(--e-drive) infinite alternate; }
+.ap-grille { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2cqw; }
+.ap-grille i { display: block; aspect-ratio: 4 / 3; background: var(--surface-1); border: var(--rule-w) solid var(--rule); }
 .ap-champ {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-4);
+  gap: 1.4cqw;
+  padding: 1.4cqw 1.8cqw;
   border: var(--rule-w) solid var(--ink);
 }
-.ap-champ-lab { font-family: var(--font-data); font-size: var(--fs-8); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-muted); }
-.ap-champ-val { font-size: var(--fs-5); flex: 1 1 auto; }
-.ap-champ-btn {
-  padding: var(--s-2) var(--s-4);
-  background: var(--ink);
-  color: var(--surface-0);
+.ap-champ-lab { font-family: var(--font-data); font-size: 1.1cqw; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-muted); }
+.ap-champ-val { font-size: 1.7cqw; flex: 1 1 auto; }
+.ap-champ-btn { padding: 0.9cqw 1.8cqw; background: var(--ink); color: var(--surface-0); font-family: var(--font-data); font-size: 1.1cqw; letter-spacing: var(--tracking-label); text-transform: uppercase; }
+.ap-reponse { margin: 0; font-size: 1.5cqw; color: var(--ink-muted); }
+.ap-reponse b { color: var(--accent-text); font-weight: 400; }
+.ap-menu { display: grid; gap: 1.4cqw; }
+.ap-menu-t { margin: 0; font-family: var(--font-data); font-size: 1.2cqw; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--accent-text); }
+.ap-menu dl { display: grid; gap: 1cqw; margin: 0; }
+.ap-menu dl > div { display: grid; grid-template-columns: 9cqw 1fr auto; gap: 1.4cqw; align-items: baseline; padding-bottom: 1cqw; border-bottom: var(--rule-w) solid var(--rule); }
+.ap-menu dt { font-family: var(--font-data); font-size: 1.1cqw; text-transform: uppercase; letter-spacing: var(--tracking-label); color: var(--ink-muted); }
+.ap-menu dd { margin: 0; font-size: 1.5cqw; }
+.ap-menu-p { margin: 0; font-size: 1.2cqw; font-family: var(--font-data); color: var(--ink-muted); }
+/* LE TELEPHONE EN PLEINE MASSE — le seul objet de la maquette qui  D-517 */
+.ap-tel {
+  display: grid;
+  gap: 0.4cqw;
+  margin: 0;
+  justify-self: start;
+  padding: 1.4cqw 2.4cqw;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.ap-tel span { font-family: var(--font-data); font-size: 1.1cqw; letter-spacing: var(--tracking-label); text-transform: uppercase; }
+.ap-tel b { font-weight: 400; font-size: 3.4cqw; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.ap-pied {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.4cqw;
+  margin-top: auto;
+  padding: 3cqw 3.2cqw;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
   font-family: var(--font-data);
-  font-size: var(--fs-8);
+  font-size: 1.2cqw;
+}
+.ap-pied b { font-weight: 400; letter-spacing: var(--tracking-label); text-transform: uppercase; }
+.ap-pied span { opacity: 0.72; }
+/* == L'AVANT · 01 — 2008-2012, RECONSTITUE SUR PIECES. ==  D-213 */
+/* LES INTERDITS DU SITE NE S'APPLIQUENT PAS ICI, ET C'EST LE SUJET.  D-518 */
+.v11 {
+  min-height: 118cqw;
+  background: #ffffff;
+  color: #000000;
+  font-family: Verdana, Geneva, Arial, sans-serif;
+  font-size: 1.1cqw;
+  line-height: 1.5;
+}
+.v11-page { width: 90cqw; margin: 0 auto; border-collapse: collapse; table-layout: fixed; }
+.v11-banniere {
+  padding: 2.4cqw 2cqw;
+  background: #1b3d6d;
+  background-image: linear-gradient(#2a5a9e, #12294a);
+  color: #ffffff;
+  text-align: center;
+}
+.v11-nom { display: block; font-family: "Arial Black", Arial, sans-serif; font-size: 3.4cqw; letter-spacing: 0.02em; text-shadow: 1px 1px 0 #000; }
+.v11-slogan { display: block; margin-top: 0.6cqw; font-style: italic; font-size: 1.4cqw; color: #ffd67a; }
+.v11-onglets { padding: 0; background: #d8d8d8; background-image: linear-gradient(#f2f2f2, #c9c9c9); border-top: 1px solid #fff; border-bottom: 1px solid #8a8a8a; }
+.v11-onglet { display: inline-block; padding: 0.9cqw 1.8cqw; border-right: 1px solid #b0b0b0; font-size: 1.2cqw; color: #14417a; text-decoration: underline; }
+.v11-on { background: #ffffff; font-weight: bold; }
+.v11-cote { width: 22cqw; padding: 1.6cqw; background: #eef1f6; border-right: 1px solid #b8c2d0; vertical-align: top; }
+.v11-menu-t { margin: 0 0 1cqw; font-family: "Arial Black", Arial, sans-serif; font-size: 1.4cqw; color: #1b3d6d; }
+.v11-lien { margin: 0 0 0.7cqw; font-size: 1.1cqw; color: #14417a; text-decoration: underline; }
+.v11-compteur { margin: 2cqw 0 1.2cqw; padding: 0.8cqw; background: #000; color: #0f0; font-family: "Courier New", monospace; text-align: center; }
+.v11-compteur b { display: block; font-size: 0.9cqw; color: #fff; font-weight: normal; }
+.v11-compteur i { font-style: normal; font-size: 1.6cqw; letter-spacing: 0.24em; }
+.v11-badges { display: flex; gap: 0.6cqw; }
+.v11-badges i { flex: 1 1 auto; padding: 0.5cqw; border: 1px solid #7a7a7a; background: #dfe6ee; font-style: normal; font-size: 0.8cqw; text-align: center; line-height: 1.2; }
+.v11-mini { margin: 1.2cqw 0 0; font-size: 0.85cqw; color: #555; line-height: 1.35; }
+.v11-corps { padding: 1.8cqw 2cqw; vertical-align: top; background: #ffffff; }
+/* LE TEXTE DEFILANT. `<marquee>` est obsolete, mais l'effet EST le  D-041 */
+.v11-defile { overflow: hidden; margin: 0 0 1.4cqw; padding: 0.5cqw 0; background: #fff2c2; border: 1px solid #e0c96a; white-space: nowrap; }
+.v11-defile span { display: inline-block; padding-left: 100%; font-weight: bold; font-size: 1.1cqw; color: #a83b00; }
+@keyframes v11-defile { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+/* LE TEXTE DEFILANT N EST PAS CONDITIONNE A LA VISIBILITE.  D-543 */
+/* C est la SEULE animation permanente du site, et `palier-check`
+   s appuie dessus pour prouver que le palier 1 la fait tomber. La
+   conditionner a `data-vif` rendait la sonde muette : elle lisait
+   `none` de loin et appelait ca un echec. Une transformation sur un
+   seul span, que le navigateur bride deja hors ecran. */
+.v11-defile span { animation: v11-defile 16s linear infinite; }
+.v11-h1 { margin: 0 0 1.4cqw; font-family: "Arial Black", Arial, sans-serif; font-size: 2.4cqw; color: #1b3d6d; }
+.v11-photo { height: 16cqw; margin-bottom: 1.4cqw; background: #9aa7b4; background-image: repeating-linear-gradient(45deg, #93a1af 0 1.2cqw, #a3b0bd 1.2cqw 2.4cqw); border: 3px double #7a8794; }
+.v11-p { margin: 0 0 1.4cqw; text-align: justify; font-size: 1.1cqw; }
+.v11-p--centre { text-align: center; }
+.v11-p--casse { color: #333; }
+.v11-promo { margin: 0 0 1cqw; padding: 1cqw; border: 2px dashed #c00; background: #fff6f6; text-align: center; font-size: 1.1cqw; }
+.v11-promo b { color: #c00; }
+.v11-tel { margin: 1.4cqw 0 0; font-size: 1.3cqw; }
+.v11-pdf { margin: 0 0 1.4cqw; }
+.v11-flash { height: 10cqw; margin-bottom: 1.4cqw; border: 1px solid #999; background: #f4f4f4; display: grid; place-items: center; color: #777; font-size: 1.1cqw; }
+.v11-pied { padding: 1.4cqw 2cqw; background: #eef1f6; border-top: 1px solid #b8c2d0; text-align: center; font-size: 0.95cqw; color: #444; line-height: 1.6; }
+.v11-a { color: #14417a; text-decoration: underline; }
+/* == BA 02 · DESIGN INTERIEUR. L'AVANT reconstitue une page de resultats
+   d'annuaire specialise : filtres, 17 fiches, upsell, texte SEO, pied a
+   trois colonnes. Radius, ombres et degrades sont AUTORISES ICI SEULEMENT
+   — chaque regle est enfermee dans `.ba-vue--avant .ann`. Un seul orange,
+   reserve au bouton d'inscription de l'annuaire. Toute longueur est en
+   `cqw` (1cqw = 10 px de maquette), sauf les filets, qui restent a 1px. */
+/* ---------- LE SOCLE ---------- */
+.ba-vue--avant .ann {
+  display: block;
+  min-height: 118cqw;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #34383d;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.4cqw;
+  line-height: 1.5;
+  text-align: left;
+}
+/* ---------- L'EN-TETE DE L'ANNUAIRE ---------- */
+/* Le nom en haut a gauche n'est pas celui de l'entreprise : c'est
+   celui du proprietaire de la page. Tout part de la. */
+.ba-vue--avant .ann-tete {
+  display: flex;
+  align-items: center;
+  gap: 2.4cqw;
+  padding: 1.6cqw 3cqw;
+  background: #ffffff;
+  border-bottom: 1px solid #e4e7ea;
+  box-shadow: 0 0.2cqw 0.6cqw rgb(16 24 32 / 0.07);
+  position: relative;
+  z-index: 2;
+}
+.ba-vue--avant .ann-logo {
+  flex: 0 0 auto;
+  font-size: 2.1cqw;
+  font-weight: 400;
+  letter-spacing: -0.02cqw;
+  color: #656c72;
+  white-space: nowrap;
+}
+.ba-vue--avant .ann-logo b { font-weight: 700; color: #2b3035; }
+.ba-vue--avant .ann-rech {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid #d5dade;
+  border-radius: 0.5cqw;
+  background: #ffffff;
+  overflow: hidden;
+}
+.ba-vue--avant .ann-rech-txt {
+  flex: 1 1 auto;
+  padding: 0.95cqw 1.3cqw;
+  font-size: 1.35cqw;
+  color: #656c72;
+  background: #fbfcfc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ba-vue--avant .ann-rech-btn {
+  flex: 0 0 auto;
+  padding: 0.95cqw 1.8cqw;
+  font-size: 1.3cqw;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #4a5760;
+  background-image: linear-gradient(180deg, #56646e 0%, #414d56 100%);
+}
+.ba-vue--avant .ann-menu {
+  flex: 0 0 auto;
+  font-size: 1.3cqw;
+  color: #656c72;
+  white-space: nowrap;
+}
+/* ---------- LE TITRE — IL APPARTIENT A L'ANNUAIRE ---------- */
+.ba-vue--avant .ann-bandeau {
+  padding: 2.4cqw 3cqw 2.2cqw;
+  background-color: #f6f7f8;
+  background-image: linear-gradient(180deg, #fafbfb 0%, #f2f4f5 100%);
+  border-bottom: 1px solid #e4e7ea;
+}
+.ba-vue--avant .ann-fil { font-size: 1.2cqw; color: #656c72; }
+.ba-vue--avant .ann-fil b { font-weight: 400; color: #9aa2a8; }
+.ba-vue--avant .ann-h1 {
+  margin-top: 1cqw;
+  font-size: 3cqw;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #2b3035;
+}
+.ba-vue--avant .ann-sous { margin-top: 0.8cqw; font-size: 1.4cqw; color: #656c72; }
+/* ---------- LES TROIS FILTRES ---------- */
+.ba-vue--avant .ann-filtres {
+  display: flex;
+  gap: 1.4cqw;
+  padding: 1.8cqw 3cqw;
+  background: #ffffff;
+  border-bottom: 1px solid #eceef0;
+}
+.ba-vue--avant .ann-filtre {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  flex: 1 1 0;
+  padding: 1cqw 1.4cqw;
+  border: 1px solid #d9dee2;
+  border-radius: 0.5cqw;
+  background-color: #fbfcfc;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f3f5f6 100%);
+  font-size: 1.3cqw;
+  color: #52585e;
+  white-space: nowrap;
+}
+.ba-vue--avant .ann-filtre b { margin-left: auto; font-weight: 400; color: #8b9298; }
+/* ---------- LES FICHES — LA NOTRE EST LA QUATRIEME ---------- */
+.ba-vue--avant .ann-liste {
+  display: grid;
+  gap: 1.6cqw;
+  padding: 2.4cqw 3cqw;
+  background: #ffffff;
+}
+.ba-vue--avant .ann-item {
+  display: flex;
+  gap: 2cqw;
+  padding: 2cqw;
+  background: #ffffff;
+  border: 1px solid #e5e8eb;
+  border-radius: 0.7cqw;
+  box-shadow: 0 0.15cqw 0.5cqw rgb(16 24 32 / 0.06);
+}
+/* LA NOTRE. Une bordure un peu plus dense, rien de plus : dans un
+   annuaire, personne ne se distingue — c'est justement le probleme. */
+.ba-vue--avant .ann-item--moi {
+  border-color: #adb5bc;
+  box-shadow: 0 0.2cqw 0.7cqw rgb(16 24 32 / 0.13);
+}
+.ba-vue--avant .ann-vig {
+  flex: 0 0 14cqw;
+  height: 14cqw;
+  border-radius: 0.5cqw;
+  background-image: linear-gradient(155deg, #eaedef 0%, #d7dde1 100%);
+  border: 1px solid #e2e6e9;
+}
+.ba-vue--avant .ann-item:nth-child(2) .ann-vig { background-image: linear-gradient(155deg, #e6e9eb 0%, #cfd6da 100%); }
+.ba-vue--avant .ann-item:nth-child(3) .ann-vig { background-image: linear-gradient(155deg, #edeeef 0%, #dadfe2 100%); }
+.ba-vue--avant .ann-item:nth-child(4) .ann-vig { background-image: linear-gradient(155deg, #e8ebed 0%, #d3d9dd 100%); }
+.ba-vue--avant .ann-item:nth-child(5) .ann-vig { background-image: linear-gradient(155deg, #eceeef 0%, #d8dee1 100%); }
+.ba-vue--avant .ann-item:nth-child(6) .ann-vig { background-image: linear-gradient(155deg, #e4e8ea 0%, #ccd3d8 100%); }
+.ba-vue--avant .ann-corps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7cqw;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.ba-vue--avant .ann-ligne { display: flex; align-items: baseline; gap: 1cqw; }
+.ba-vue--avant .ann-nom { font-size: 1.9cqw; font-weight: 700; color: #2f3a42; }
+.ba-vue--avant .ann-badge {
+  padding: 0.25cqw 0.8cqw;
+  border-radius: 0.3cqw;
+  background: #eef0f2;
+  font-size: 1.05cqw;
+  letter-spacing: 0.07cqw;
+  text-transform: uppercase;
+  color: #656c72;
+}
+.ba-vue--avant .ann-cat { font-size: 1.3cqw; color: #656c72; }
+.ba-vue--avant .ann-tags { display: flex; flex-wrap: wrap; gap: 0.6cqw; }
+.ba-vue--avant .ann-tags span {
+  padding: 0.35cqw 0.9cqw;
+  border: 1px solid #e0e4e7;
+  border-radius: 1.4cqw;
+  background: #f6f7f8;
+  font-size: 1.15cqw;
+  color: #656c72;
+}
+.ba-vue--avant .ann-extrait {
+  font-size: 1.35cqw;
+  line-height: 1.55;
+  color: #52585e;
+}
+/* LE LIEN NE MENE PAS CHEZ ELLE : il mene a une autre page de
+   l'annuaire. C'est la seule sortie offerte par la fiche. */
+.ba-vue--avant .ann-plus {
+  margin-top: auto;
+  font-size: 1.3cqw;
+  font-weight: 700;
+  color: #3f4e58;
+}
+/* ---------- LA PAGINATION — IL EN RESTE DEUX PAGES ---------- */
+.ba-vue--avant .ann-pages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8cqw;
+  padding: 0 3cqw 2.6cqw;
+  background: #ffffff;
+}
+.ba-vue--avant .ann-pages b,
+.ba-vue--avant .ann-pages span {
+  padding: 0.85cqw 1.5cqw;
+  border: 1px solid #dfe3e6;
+  border-radius: 0.4cqw;
+  background: #ffffff;
+  font-size: 1.3cqw;
+  font-weight: 400;
+  color: #52585e;
+}
+.ba-vue--avant .ann-pages b {
+  background: #eceef0;
+  border-color: #c3cad0;
+  font-weight: 700;
+  color: #2b3035;
+}
+/* ---------- L'ENCART DE L'ANNUAIRE — LE SEUL ORANGE ---------- */
+.ba-vue--avant .ann-promo {
+  display: flex;
+  align-items: center;
+  gap: 2.4cqw;
+  margin: 0 3cqw 2.8cqw;
+  padding: 2.4cqw 2.6cqw;
+  border: 1px solid #e8e2d8;
+  border-radius: 0.8cqw;
+  background-color: #fbf7f2;
+  background-image: linear-gradient(180deg, #fefcf9 0%, #f7f1e8 100%);
+}
+.ba-vue--avant .ann-promo-txt { flex: 1 1 auto; min-width: 0; }
+.ba-vue--avant .ann-promo-t { font-size: 1.8cqw; font-weight: 700; color: #2b3035; }
+.ba-vue--avant .ann-promo-p { margin-top: 0.7cqw; font-size: 1.35cqw; color: #656c72; }
+.ba-vue--avant .ann-promo-btn {
+  flex: 0 0 auto;
+  padding: 1.2cqw 2.4cqw;
+  border-radius: 0.5cqw;
+  /* La couleur PLEINE reste #bb5600 : le degrade n'est qu'un vernis,
+     et le blanc dessus garde 4,7:1. */
+  background-color: #bb5600;
+  background-image: linear-gradient(180deg, #c25c00 0%, #a94b00 100%);
+  box-shadow: 0 0.2cqw 0.5cqw rgb(140 60 0 / 0.28);
+  font-size: 1.5cqw;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+}
+/* ---------- LE TEXTE DE REFERENCEMENT DE L'ANNUAIRE ---------- */
+/* Quarante pour cent de la page repond a des questions generales sur le
+   metier — et conseille d'aller voir des realisations que la fiche, elle,
+   ne montre nulle part. */
+.ba-vue--avant .ann-texte {
+  padding: 0.6cqw 3cqw 3.4cqw;
+  background: #ffffff;
+  border-top: 1px solid #eceef0;
+}
+.ba-vue--avant .ann-h2 {
+  margin-top: 2.8cqw;
+  font-size: 2.1cqw;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #2b3035;
+}
+.ba-vue--avant .ann-p {
+  margin-top: 1.1cqw;
+  font-size: 1.4cqw;
+  line-height: 1.65;
+  color: #52585e;
+}
+.ba-vue--avant .ann-puces {
+  margin: 1.2cqw 0 0;
+  padding-left: 2.4cqw;
+  list-style: disc outside;
+}
+.ba-vue--avant .ann-puces li {
+  margin-bottom: 0.7cqw;
+  font-size: 1.4cqw;
+  line-height: 1.6;
+  color: #52585e;
+}
+/* ---------- LE PIED, TROIS COLONNES ---------- */
+.ba-vue--avant .ann-pied {
+  padding: 3.2cqw 3cqw 2.2cqw;
+  background: #3a4046;
+  color: #dfe3e6;
+}
+.ba-vue--avant .ann-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3cqw;
+}
+.ba-vue--avant .ann-col b {
+  display: block;
+  margin-bottom: 1.1cqw;
+  font-size: 1.45cqw;
+  font-weight: 700;
+  color: #ffffff;
+}
+.ba-vue--avant .ann-col span {
+  display: block;
+  margin-bottom: 0.75cqw;
+  font-size: 1.3cqw;
+  color: #a8b0b6;
+}
+.ba-vue--avant .ann-bas {
+  margin-top: 2.6cqw;
+  padding-top: 1.7cqw;
+  border-top: 1px solid rgb(255 255 255 / 0.16);
+  font-size: 1.2cqw;
+  color: #a8b0b6;
+}
+/* == L'APRES · UN SEUL AJOUT ==========================================
+   LA PLANCHE DE CHANTIERS, POSEE JUSTE SOUS LE HERO. Un studio de design
+   se juge sur des images, pas sur une phrase : le premier ecran doit en
+   porter trois. Elle vit DANS un `.ap-bloc`, donc elle herite de sa
+   gouttiere et ne peut pas se desaligner du reste. Aplats de ciment et
+   d'encre, filets a 1px, aucun rayon, aucune ombre, aucun minium. */
+.ap-di-planche {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1.2cqw;
+}
+.ap-di-vue { display: grid; gap: 0.8cqw; align-content: start; min-width: 0; }
+.ap-di-vue i {
+  display: block;
+  height: 19cqw;
+  background: var(--surface-1);
+  border: 1px solid var(--rule-strong);
+}
+.ap-di-vue:nth-child(2) i { background: var(--surface-2); }
+.ap-di-vue:nth-child(3) i { background: var(--ink-muted); }
+.ap-di-vue span {
+  font-family: var(--font-data);
+  font-size: 1.2cqw;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+/* BA 04 — ENTREPRENEUR : le gabarit acheté de 2019 (.gab), et l’outil d’estimation (.ap-es-).
+   1cqw = 10 px de maquette. Seul .gab a droit aux arrondis, aux ombres et aux dégradés — ils y sont enfermés. */
+/* ============================================================
+   L’AVANT — un gabarit acheté, propre, récent, et muet sur le
+   seul chiffre qui intéresse le visiteur. Toutes les règles
+   portent `.gab` deux fois : la vue AVANT remet `all: revert`
+   sur `:where(*)` — même poids que `.gab` seul, donc l’ordre
+   de source déciderait, et il n’est pas garanti.
+
+   Toutes les longueurs sont en `cqw` (1cqw = 10 px de maquette),
+   sauf les filets, qui restent en `1px` littéral. Seule exception :
+   `letter-spacing`, laissé en `em` — il se mesure sur une
+   `font-size` déjà écrite en `cqw`, donc il suit la maquette au
+   même facteur. L’écrire en `cqw` le décrocherait de sa lettre.
+   ============================================================ */
+.gab.gab {
+  min-height: 118cqw;
+  background: #ffffff;
+  color: #5a6472;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5cqw;
+  line-height: 1.55;
+  text-align: left;
+}
+/* -- 1 · la barre supérieure : RBQ, heures, téléphone -- */
+.gab .gab-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 0.9cqw 4cqw;
+  background: #16233c;
+  color: #b9c2d0;
+  font-size: 1.25cqw;
+  letter-spacing: 0.02em;
+}
+.gab .gab-top-tel { color: #ffb04a; font-weight: bold; }
+/* -- 2 · l’en-tête : logo, six liens, bouton plein -- */
+.gab .gab-tete {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3cqw;
+  padding: 1.8cqw 4cqw;
+  background: #ffffff;
+  border-bottom: 1px solid #e6eaf0;
+  box-shadow: 0 2px 8px rgb(22 35 60 / 0.09);
+}
+.gab .gab-logo { display: flex; align-items: center; gap: 1.2cqw; }
+.gab .gab-logo-m {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.6cqw;
+  height: 4.6cqw;
+  border-radius: 6px;
+  background-color: #24406e;
+  background-image: linear-gradient(155deg, #2d4d80 0%, #16233c 100%);
+  box-shadow: 0 2px 5px rgb(22 35 60 / 0.28);
+  color: #ffffff;
+  font-size: 1.9cqw;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+}
+.gab .gab-logo-t { display: block; }
+.gab .gab-logo-n {
+  display: block;
+  color: #16233c;
+  font-size: 1.85cqw;
+  font-weight: bold;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.gab .gab-logo-s {
+  display: block;
+  color: #8b95a4;
+  font-size: 1.05cqw;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.gab .gab-menu { display: flex; flex-wrap: wrap; align-items: center; gap: 1.9cqw; }
+.gab .gab-menu > span {
+  color: #4a5566;
+  font-size: 1.3cqw;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.gab .gab-menu > span.gab-on { color: #e8760f; }
+/* -- le bouton orange, dégradé compris : c’est la signature du genre -- */
+.gab .gab-btn {
+  display: inline-block;
+  padding: 1.1cqw 2.1cqw;
+  border-radius: 4px;
+  background-color: #e8760f;
+  background-image: linear-gradient(#f28c1e 0%, #e0700c 100%);
+  box-shadow: 0 2px 5px rgb(224 112 12 / 0.38);
+  color: #ffffff;
+  font-size: 1.25cqw;
+  font-weight: bold;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.gab .gab-btn--gros { padding: 1.5cqw 3cqw; font-size: 1.5cqw; }
+.gab .gab-btn--large { display: block; width: 100%; padding: 1.6cqw; font-size: 1.5cqw; }
+/* -- 3 · le carrousel plein cadre, voile à 50 %, pastilles, flèches -- */
+.gab .gab-carr { position: relative; height: 38cqw; overflow: hidden; background: #39434f; }
+.gab .gab-carr-photo {
+  position: absolute;
+  inset: 0;
+  background-color: #6d7a86;
+  background-image: linear-gradient(148deg, #939daa 0%, #5d6a77 52%, #333d49 100%);
+}
+.gab .gab-carr-voile {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(90deg, rgb(9 16 28 / 0.66) 0%, rgb(9 16 28 / 0.44) 100%);
+}
+.gab .gab-carr-txt {
+  position: absolute;
+  left: 9cqw;
+  right: 9cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+}
+.gab .gab-carr-h {
+  margin: 0 0 1.5cqw;
+  color: #ffffff;
+  font-size: 3.6cqw;
+  font-weight: bold;
+  line-height: 1.15;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgb(0 0 0 / 0.45);
+}
+.gab .gab-carr-p {
+  margin: 0 auto 2.4cqw;
+  max-width: 58cqw;
+  color: #e6eaf0;
+  font-size: 1.6cqw;
+  line-height: 1.6;
+}
+.gab .gab-fleche {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.8cqw;
+  height: 3.8cqw;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.22);
+  color: #ffffff;
+  font-size: 2cqw;
+  line-height: 1;
+}
+.gab .gab-fleche--g { left: 2.4cqw; }
+.gab .gab-fleche--d { right: 2.4cqw; }
+.gab .gab-puces {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.4cqw;
+  display: flex;
+  justify-content: center;
+  gap: 0.9cqw;
+}
+.gab .gab-puces i { width: 1cqw; height: 1cqw; border-radius: 50%; background: rgb(255 255 255 / 0.45); }
+.gab .gab-puces i.gab-on { background: #e8760f; }
+/* -- les sections, et leurs titres soulignés d’un trait orange -- */
+.gab .gab-sec { padding: 3.8cqw 4cqw; }
+.gab .gab-sec--gris { background: #f4f7fa; }
+.gab .gab-sec--fonce { background-color: #1b2b48; background-image: linear-gradient(#223454 0%, #16233c 100%); }
+.gab .gab-sec-t {
+  margin: 0 0 1cqw;
+  color: #16233c;
+  font-size: 2.5cqw;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.gab .gab-sec-t::after {
+  content: "";
+  display: block;
+  width: 6cqw;
+  height: 3px;
+  margin: 1.2cqw auto 0;
+  border-radius: 2px;
+  background: #e8760f;
+}
+.gab .gab-sec-s {
+  margin: 0 auto 2.8cqw;
+  max-width: 58cqw;
+  color: #8b95a4;
+  font-size: 1.45cqw;
+  text-align: center;
+}
+.gab .gab-sec--fonce .gab-sec-t { color: #ffffff; }
+.gab .gab-lien { display: inline-block; margin-top: 0.8cqw; color: #e8760f; font-size: 1.3cqw; font-weight: bold; }
+/* -- 4 · les trois cartes à icône ronde -- */
+.gab .gab-atouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.6cqw; }
+.gab .gab-atout {
+  padding: 2.6cqw 2.2cqw;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
+  text-align: center;
+}
+.gab .gab-ico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.4cqw;
+  height: 6.4cqw;
+  margin: 0 auto 1.6cqw;
+  border-radius: 50%;
+  background-color: #fdf0e0;
+  background-image: linear-gradient(#fdf1e2 0%, #f8dcbb 100%);
+  color: #e8760f;
+  font-size: 2.6cqw;
+  line-height: 1;
+}
+.gab .gab-atout b {
+  display: block;
+  margin-bottom: 0.9cqw;
+  color: #16233c;
+  font-size: 1.65cqw;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.gab .gab-atout p { margin: 0; color: #7b8698; font-size: 1.35cqw; line-height: 1.65; }
+/* -- 5 · le bloc « à propos », deux colonnes -- */
+.gab .gab-apropos { display: grid; grid-template-columns: 36cqw minmax(0, 1fr); gap: 3.6cqw; align-items: center; }
+.gab .gab-apropos-img {
+  height: 21cqw;
+  border-radius: 8px;
+  background-color: #8d97a3;
+  background-image: linear-gradient(135deg, #a8b1bc 0%, #6d7884 58%, #4c5661 100%);
+  box-shadow: 0 4px 16px rgb(22 35 60 / 0.16);
+}
+.gab .gab-h3 {
+  margin: 0 0 1.2cqw;
+  color: #16233c;
+  font-size: 2.1cqw;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.gab .gab-apropos-c p { margin: 0 0 1.2cqw; font-size: 1.45cqw; line-height: 1.7; }
+/* -- 6 · la grille de six services, cartes identiques -- */
+.gab .gab-svc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqw; }
+.gab .gab-svc-c {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
+}
+.gab .gab-svc-i {
+  height: 9.5cqw;
+  background-color: #8d97a3;
+  background-image: linear-gradient(135deg, #9ba5b1 0%, #626e7a 100%);
+}
+.gab .gab-svc-c:nth-child(2) .gab-svc-i { background-image: linear-gradient(135deg, #a6afba 0%, #6d7985 100%); }
+.gab .gab-svc-c:nth-child(3) .gab-svc-i { background-image: linear-gradient(135deg, #94a0ac 0%, #58646f 100%); }
+.gab .gab-svc-c:nth-child(5) .gab-svc-i { background-image: linear-gradient(135deg, #a1abb6 0%, #667281 100%); }
+.gab .gab-svc-c:nth-child(6) .gab-svc-i { background-image: linear-gradient(135deg, #8f9aa6 0%, #5c6773 100%); }
+.gab .gab-svc-b { padding: 2cqw 2cqw 2.4cqw; }
+.gab .gab-svc-b b {
+  display: block;
+  margin-bottom: 0.8cqw;
+  color: #16233c;
+  font-size: 1.55cqw;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.gab .gab-svc-b p { margin: 0; color: #7b8698; font-size: 1.3cqw; line-height: 1.6; }
+/* -- 7 · « Pourquoi nous choisir ? », quatre puces sur fond marine -- */
+.gab .gab-pq {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2cqw 3.4cqw;
+  max-width: 76cqw;
+  margin: 0 auto;
+}
+.gab .gab-pq-l { display: flex; align-items: flex-start; gap: 1.3cqw; color: #ccd5e2; font-size: 1.4cqw; line-height: 1.6; }
+.gab .gab-pq-l i {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5cqw;
+  height: 2.5cqw;
+  margin-top: 0.2cqw;
+  border-radius: 50%;
+  background: #e8760f;
+  color: #ffffff;
+  font-size: 1.25cqw;
+  font-style: normal;
+  line-height: 1;
+}
+.gab .gab-pq-l b { color: #ffffff; }
+/* -- 8 · six vignettes de réalisations -- */
+.gab .gab-real { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2cqw; }
+.gab .gab-real-v i {
+  display: block;
+  height: 11cqw;
+  border-radius: 6px;
+  background-color: #8d97a3;
+  background-image: linear-gradient(140deg, #a3adb8 0%, #616d79 100%);
+  box-shadow: 0 2px 9px rgb(22 35 60 / 0.14);
+}
+.gab .gab-real-v:nth-child(2) i { background-image: linear-gradient(140deg, #97a2ae 0%, #57626d 100%); }
+.gab .gab-real-v:nth-child(4) i { background-image: linear-gradient(140deg, #aab3be 0%, #6b7783 100%); }
+.gab .gab-real-v:nth-child(5) i { background-image: linear-gradient(140deg, #909ba7 0%, #5b6672 100%); }
+.gab .gab-real-v span { display: block; margin-top: 0.9cqw; color: #8b95a4; font-size: 1.2cqw; text-align: center; }
+/* -- 9 · les témoignages : le seul serif italique de la maquette -- */
+.gab .gab-temo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqw; }
+.gab .gab-temo-c {
+  padding: 2.6cqw 2.2cqw;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
+  text-align: center;
+}
+.gab .gab-etoiles { margin: 0 0 1.2cqw; color: #f5a623; font-size: 1.5cqw; letter-spacing: 0.16em; }
+.gab .gab-cite {
+  margin: 0 0 1.4cqw;
+  color: #5a6472;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.45cqw;
+  font-style: italic;
+  line-height: 1.7;
+}
+.gab .gab-temo-c b { color: #16233c; font-size: 1.2cqw; letter-spacing: 0.07em; text-transform: uppercase; }
+/* -- 10 · la FAQ en accordéon, quatre questions repliées -- */
+.gab .gab-faq { max-width: 70cqw; margin: 0 auto; }
+.gab .gab-faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  margin-bottom: 1.2cqw;
+  padding: 1.7cqw 2.2cqw;
+  border: 1px solid #e2e7ee;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgb(22 35 60 / 0.07);
+  color: #16233c;
+  font-size: 1.45cqw;
+  font-weight: bold;
+}
+.gab .gab-faq-q i { color: #e8760f; font-size: 2.2cqw; font-style: normal; line-height: 1; }
+/* -- 11 · LE CŒUR DU PROBLÈME : un formulaire qui promet un rappel,
+      et pas un seul chiffre à l’écran. -- */
+.gab .gab-form {
+  max-width: 66cqw;
+  margin: 0 auto;
+  padding: 2.8cqw;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 6px 22px rgb(22 35 60 / 0.15);
+}
+.gab .gab-form-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5cqw; margin-bottom: 1.5cqw; }
+.gab .gab-champ {
+  display: block;
+  padding: 1.35cqw 1.4cqw;
+  border: 1px solid #d5dce5;
+  border-radius: 4px;
+  background: #fbfcfd;
+  color: #a8b1bd;
+  font-size: 1.35cqw;
+}
+.gab .gab-champ--zone { min-height: 8.5cqw; margin-bottom: 1.8cqw; }
+.gab .gab-form-p { margin: 1.4cqw 0 0; color: #8b95a4; font-size: 1.2cqw; text-align: center; }
+/* -- 12 · le pied de page à trois colonnes -- */
+.gab .gab-pied {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3cqw;
+  padding: 3.6cqw 4cqw;
+  background: #16233c;
+  color: #b9c2d0;
+  font-size: 1.35cqw;
+}
+.gab .gab-pied > div b {
+  display: block;
+  margin-bottom: 1.2cqw;
+  color: #ffffff;
+  font-size: 1.4cqw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.gab .gab-pied > div p { margin: 0 0 0.5cqw; }
+.gab .gab-bas { padding: 1.5cqw 4cqw; background: #0f1928; color: #7b8698; font-size: 1.15cqw; text-align: center; }
+/* ============================================================
+   L’APRÈS — L’OUTIL D’ESTIMATION. La pièce qui n’existe pas
+   dans l’avant : le visiteur dessine, l’outil compte, et la
+   demande part déjà chiffrée. Charte stricte : rayon 0, aucune
+   ombre, aucun dégradé, aucun flou. Le minium ne sert qu’aux
+   endroits où le visiteur AGIT — le choix retenu, les poignées
+   du plan, le chiffre de surface.
+   ============================================================ */
+.ap-es { display: grid; gap: 1.8cqw; padding: 2cqw; border: 1px solid var(--rule-strong); background: var(--surface-2); }
+/* -- le fil des trois étapes, la deuxième en cours -- */
+.ap-es-fil { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2cqw; padding-bottom: 1.5cqw; border-bottom: 1px solid var(--rule); }
+.ap-es-pas {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  color: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 1.05cqw;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
-.ap-reponse { margin: 0; font-size: var(--fs-5); }
-.ap-reponse b { color: var(--accent-text); font-weight: 400; }
-/* == L'AVANT — 2008-2012, RECONSTITUE SUR PIECES. ==  D-213 */
-/* LE `revert` REND AU NAVIGATEUR SES VALEURS PAR DEFAUT, ET C'EST  D-214 */
-.ba-vue--avant :where(*) { all: revert; }
-.ba-vue--avant {
-  /* Le fond en mosaique. Deux traits croises tres pales : c'est ce
-     que rendaient les `texture.jpg` de 20 x 20 px de l'epoque. */
-  background-color: #c8cfd6;
-  background-image:
-    repeating-linear-gradient(0deg, rgba(255,255,255,.5) 0 1px, transparent 1px 6px),
-    repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 1px, transparent 1px 6px);
-  color: #333;
-  overflow: hidden;
+.ap-es-pas + .ap-es-pas { padding-left: 1.2cqw; border-left: 1px solid var(--rule); }
+.ap-es-pas i {
+  display: grid;
+  place-items: center;
+  width: 2cqw;
+  height: 2cqw;
+  border: 1px solid var(--rule-strong);
+  font-size: 1.05cqw;
+  font-style: normal;
+  line-height: 1;
 }
-/* LA LARGEUR FIXE, ET LE DEBORDEMENT EST LE PROPOS.  D-215 */
-.ba-vue--avant .v11 { display: block; padding: 12px 0; }
-.ba-vue--avant .v11-page {
-  width: 960px;
-  margin: 0 auto;
-  border-collapse: collapse;
+.ap-es-pas--ici { color: var(--ink); }
+.ap-es-pas--ici i { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+/* -- le plan à gauche, les questions à droite. Le plan se cale en
+   haut, les questions se répartissent sur toute sa hauteur : c’est
+   ce qui empêche la colonne de droite de finir en trou. -- */
+.ap-es-corps { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr); gap: 2.2cqw; }
+.ap-es-plan { align-self: start; padding: 1.3cqw; border: 1px solid var(--rule-strong); background: var(--surface-0); }
+.ap-es-svg { display: block; width: 100%; height: auto; }
+.ap-es-echelle {
+  margin: 1cqw 0 0;
+  color: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 0.95cqw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+/* Le carreau est une TRAME, pas un filet : il a le droit de
+   s’amincir avec l’échelle. La forme et les cotes, elles, sont
+   des traits porteurs — `non-scaling-stroke` les tient à 1 px. */
+.ap-es-grille { stroke: var(--rule); }
+.ap-es-forme { fill: var(--accent-wash); stroke: var(--accent); }
+.ap-es-poignee { fill: var(--accent); }
+.ap-es-cote { stroke: var(--ink-muted); }
+.ap-es-cote-t { fill: var(--ink); font-family: var(--font-data); letter-spacing: 0.04em; }
+/* -- trois questions, jamais plus, et des choix en pastilles carrées -- */
+.ap-es-quest { display: grid; gap: 1.6cqw; align-content: space-between; }
+.ap-es-q-t { margin: 0 0 0.9cqw; color: var(--ink); font-size: 1.4cqw; line-height: 1.4; }
+.ap-es-choix { display: flex; flex-wrap: wrap; gap: 0.8cqw; }
+.ap-es-pastille {
+  padding: 0.7cqw 1.2cqw;
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 1cqw;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.ap-es-pastille--ici { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+/* -- la ligne de résultat : la surface est acquise, le montant ne l’est pas encore -- */
+.ap-es-bas { display: flex; flex-wrap: wrap; gap: 1.2cqw; padding-top: 1.5cqw; border-top: 1px solid var(--rule-strong); }
+.ap-es-res {
+  display: flex;
+  align-items: baseline;
+  gap: 1cqw;
+  margin: 0;
+  padding: 0.9cqw 1.6cqw;
+  border: 1px solid var(--rule-strong);
+}
+.ap-es-res span {
+  color: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 1cqw;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.ap-es-res b {
+  color: var(--accent-text);
+  font-family: var(--font-data);
+  font-size: 2.2cqw;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.ap-es-bandeau {
+  flex: 1 1 24cqw;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.9cqw 1.6cqw;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-size: 1.25cqw;
+  line-height: 1.4;
+}
+.ap-es-bandeau b { color: var(--accent-on-inverse); font-weight: 400; }
+.ap-es-note { margin: 0; color: var(--ink-muted); font-size: 1.1cqw; }
+/* PAS DE POINT DE RUPTURE ICI, ET C’EST VOULU. Tout est en `cqw` :
+   la maquette est une page de 1000 px homothétique, elle rend le
+   MÊME dessin à toutes les largeurs de conteneur. Une requête de
+   conteneur casserait cette invariance et ferait apparaître deux
+   mises en page là où la comparaison n’en attend qu’une. */
+/* L'AVANT 03 — LA FICHE D'ANNUAIRE TOURISTIQUE. Le restaurant n'a pas
+   de site : il a une fiche que l'office tient a sa place. Coins
+   arrondis, ombres et degrades sont le SUJET, et ne sortent jamais
+   de `.tou` — chaque selecteur du fichier commence par cette classe.
+   Une seule unite : `1cqw` = 10 px de maquette. Les filets restent
+   en `1px` litteral, sinon ils disparaissent a l'echelle. */
+/* ------------------------------------------------------------
+   LE SEUL AJOUT COTE APRES : LE CADRE QUI BORNE LE RAIL.
+
+   `.ap-rail` aligne six `.ap-tuile` en `flex: 0 0 24cqw` : sa
+   largeur MINIMALE vaut 6 x 24 + 5 x 1,8 = 153cqw. Un element de
+   grille a `min-width: auto`, donc ce plancher remonte jusqu'a la
+   colonne de `.ap` et elargit TOUTE la maquette a 153cqw dans un
+   cadre qui en fait 100 — mesure : la page rendue faisait 985 px
+   de large dans une vue de 618, et la barre perdait son bouton
+   « Reserver » pendant que la bande perdait son quatrieme fait.
+   Le debordement ne se voyait pas : `.ba-vue` le rogne en silence.
+
+   `min-width: 0` retire ce plancher, `overflow: hidden` rend au
+   rail le cadre dans lequel il est cense defiler. A remonter dans
+   `ba.css` si les autres maquettes emploient le rail — le defaut
+   est dans le vocabulaire commun, pas dans cette maquette-ci.
+   ------------------------------------------------------------ */
+.ap-rs-defile { min-width: 0; overflow: hidden; }
+/* ------------------------------------------------------------
+   LE SOCLE. Le reset est en `:where()` a specificite zero cote
+   cible : n'importe quelle regle `.tou .tou-x` ci-dessous gagne,
+   quel que soit l'ordre du decoupage de la feuille.
+   ------------------------------------------------------------ */
+.tou,
+.tou *,
+.tou *::before,
+.tou *::after { box-sizing: border-box; }
+.tou :where(p, dl, dt, dd, ul, ol, li, figure) { margin: 0; padding: 0; }
+.tou :where(ul, ol) { list-style: none; }
+.tou :where(i) { font-style: normal; }
+.tou {
+  --tou-bleu: #123c59;
+  --tou-bleu-m: #1b6ea3;
+  --tou-bleu-p: #e9f1f7;
+  --tou-encre: #33424e;
+  --tou-gris: #6d7f8c;
+  --tou-pale: #9fb0bb;
+  --tou-ligne: #d5e0e8;
+  --tou-fond: #f2f6f9;
+
+  min-height: 118cqw;
   background: #fff;
-  border: 1px solid #999;
-  font-family: Tahoma, Verdana, Arial, sans-serif;
-  font-size: 11px;
-  line-height: 1.35;
-  color: #454545;
-}
-/* LE BANDEAU EN RELIEF. `text-shadow` et degre vertical : les deux
-   etaient des IMAGES en 2011, le rendu est le meme. */
-.ba-vue--avant .v11-banniere {
-  padding: 18px 16px 14px;
-  background-color: #1a5289;
-  background-image: linear-gradient(#1f68a5 0%, #14477a 100%);
-  border-bottom: 3px solid #0d3358;
-  text-align: center;
-}
-.ba-vue--avant .v11-nom {
-  display: block;
+  color: var(--tou-encre);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 30px;
+  font-size: 1.5cqw;
+  line-height: 1.55;
+}
+/* LA COLONNE DE L'OFFICE. 880 px dans une page de 1000. */
+.tou .tou-c { width: 88cqw; margin: 0 auto; }
+/* ------------------------------------------------------------
+   LE BANDEAU « NAVIGATEUR DESUET ». Servi AVANT le contenu :
+   la premiere chose que la page dit au client du restaurant
+   parle du navigateur.
+   ------------------------------------------------------------ */
+.tou .tou-desuet {
+  background: linear-gradient(#fffaea 0%, #ffeeb8 100%);
+  border-bottom: 1px solid #e3c765;
+  color: #6b4e00;
+  font-size: 1.25cqw;
+}
+.tou .tou-desuet-in {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  padding: 0.9cqw 0;
+}
+.tou .tou-desuet-in b { font-weight: bold; }
+.tou .tou-des-p { flex: 1 1 auto; }
+.tou .tou-brw { display: inline-flex; gap: 0.6cqw; }
+.tou .tou-brw i {
+  width: 1.9cqw;
+  height: 1.9cqw;
+  border-radius: 50%;
+  box-shadow: inset 0 -0.3cqw 0.5cqw rgba(0, 0, 0, .2);
+}
+.tou .tou-brw i:nth-child(1) { background: radial-gradient(circle at 34% 30%, #ffd483, #d9631a); }
+.tou .tou-brw i:nth-child(2) { background: radial-gradient(circle at 34% 30%, #8fd0ff, #1a63a8); }
+.tou .tou-brw i:nth-child(3) { background: radial-gradient(circle at 34% 30%, #ffe27a, #c9a300); }
+.tou .tou-brw i:nth-child(4) { background: radial-gradient(circle at 34% 30%, #b9c6cf, #5e7280); }
+.tou .tou-x { color: #9a7a2a; font-size: 1.4cqw; }
+/* ------------------------------------------------------------
+   LA BARRE UTILITAIRE, PUIS L'ENTETE DE L'OFFICE.
+   ------------------------------------------------------------ */
+.tou .tou-util {
+  background: var(--tou-bleu);
+  color: #cfe2ef;
+  font-size: 1.15cqw;
+}
+.tou .tou-util-in {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.8cqw;
+  padding: 0.7cqw 0;
+}
+.tou .tou-lang b { color: #fff; font-weight: bold; }
+.tou .tou-entete { border-bottom: 1px solid var(--tou-ligne); }
+.tou .tou-entete-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 1.4cqw 0;
+}
+.tou .tou-logo { display: flex; align-items: center; gap: 1.2cqw; }
+.tou .tou-logo-i {
+  flex: 0 0 auto;
+  width: 4.4cqw;
+  height: 4.4cqw;
+  border-radius: 1cqw;
+  background: linear-gradient(135deg, #35a0cf 0%, #123c59 100%);
+  box-shadow: 0 0.2cqw 0.6cqw rgba(18, 60, 89, .35);
+}
+.tou .tou-logo-t { display: grid; }
+.tou .tou-logo-t b {
+  font-size: 2.4cqw;
   font-weight: bold;
-  letter-spacing: -1px;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000, 2px 2px 3px rgba(0,0,0,.6);
-}
-/* LA CURSIVE MICROSOFT, ET PAS COMIC SANS — voir l'argument en
-   tete de bloc. Relevee chez Nadya coiffure, 2008. */
-.ba-vue--avant .v11-nom--script {
-  font-family: "Monotype Corsiva", "Bailey Script", "Segoe Script", cursive;
-  font-size: 40px;
-  letter-spacing: 0;
-}
-.ba-vue--avant .v11-slogan {
-  display: block;
-  margin-top: 4px;
-  font-family: Georgia, "Times New Roman", serif;
-  font-style: italic;
-  font-size: 13px;
-  color: #e6f0f9;
-}
-/* LES ONGLETS. 82 px de large dans une barre de 64 px chez Auto
-   Precision ; on garde le rapport, pas le pixel. */
-.ba-vue--avant .v11-onglets {
-  padding: 6px 10px 0;
-  background-color: #ccd6de;
-  background-image: linear-gradient(#dfe6ec 0%, #b9c6d1 100%);
-  border-bottom: 1px solid #8fa0af;
-  white-space: nowrap;
-}
-.ba-vue--avant .v11-onglet {
-  display: inline-block;
-  min-width: 82px;
-  padding: 5px 10px;
-  margin-right: 3px;
-  border: 1px solid #8fa0af;
-  border-bottom: 0;
-  border-radius: 5px 5px 0 0;
-  background-color: #e9eef2;
-  background-image: linear-gradient(#fbfcfd 0%, #d6dee6 100%);
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  font-weight: bold;
-  color: #14477a;
-  text-align: center;
-}
-.ba-vue--avant .v11-on { background-color: #f7fafc; background-image: linear-gradient(#fff 0%, #eef3f7 100%); color: #8f2600; }
-.ba-vue--avant .v11-cote {
-  width: 190px;
-  padding: 12px 10px;
-  vertical-align: top;
-  background: #eef1f4;
-  border-right: 1px solid #c4ccd3;
-}
-.ba-vue--avant .v11-menu-t {
-  margin: 0 0 6px;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 15px;
-  font-weight: bold;
-  color: #14477a;
-  border-bottom: 1px solid #c4ccd3;
-}
-.ba-vue--avant .v11-lien { margin: 0 0 4px; color: #0000ee; text-decoration: underline; font-size: 11px; }
-.ba-vue--avant .v11-corps { padding: 12px 14px; vertical-align: top; }
-@keyframes v11-defile { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
-.ba-vue--avant .v11-defile {
-  overflow: hidden;
-  margin: 0 0 10px;
-  padding: 3px 0;
-  border: 1px solid #d8b400;
-  background: #fff8d6;
-  color: #a00;
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  font-weight: bold;
-  white-space: nowrap;
-}
-/* LE RETARD NEGATIF N'EST PAS UNE COQUETTERIE. Sans lui, le texte  D-217 */
-.ba-vue--avant .v11-defile span {
-  display: inline-block;
-  animation: v11-defile 21s linear -7s infinite;
-}
-.ba-vue--avant .v11-h1 {
-  margin: 0 0 8px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 24px;
-  font-weight: bold;
-  letter-spacing: -1px;
-  color: #14477a;
-}
-/* LA « PHOTOGRAPHIE ». Aucun fichier : trois aplats et une trame,  D-218 */
-.ba-vue--avant .v11-photo {
-  float: left;
-  width: 300px;
-  height: 165px;
-  margin: 2px 12px 6px 0;
-  border: 2px solid #9aa4ad;
-  background:
-    repeating-linear-gradient(0deg, rgba(0,0,0,.055) 0 1px, transparent 1px 8px),
-    repeating-linear-gradient(90deg, rgba(0,0,0,.045) 0 1px, transparent 1px 8px),
-    linear-gradient(#93b0c9 0%, #b7c8d6 38%, #7c7a70 39%, #4e4c46 66%, #3a3934 100%);
-  filter: saturate(1.55) contrast(1.18);
-}
-.ba-vue--avant .v11-photo--resto {
-  background:
-    repeating-linear-gradient(0deg, rgba(0,0,0,.055) 0 1px, transparent 1px 8px),
-    repeating-linear-gradient(90deg, rgba(0,0,0,.045) 0 1px, transparent 1px 8px),
-    linear-gradient(#6b4a32 0%, #a87c50 44%, #d8c39a 45%, #8f6a44 100%);
-}
-/* LE TEXTE JUSTIFIE EN 11 px, avec la lezarde que ca fabrique. */
-.ba-vue--avant .v11-p { margin: 0 0 10px; text-align: justify; font-size: 11px; line-height: 1.35; }
-.ba-vue--avant .v11-p--centre { text-align: center; }
-.ba-vue--avant .v11-p--casse { clear: both; }
-.ba-vue--avant .v11-promo {
-  display: inline-block;
-  width: 45%;
-  margin: 0 6px 8px 0;
-  padding: 6px 8px;
-  border: 1px solid #cf8b00;
-  border-radius: 6px;
-  background-color: #fff0c8;
-  background-image: linear-gradient(#fff6df 0%, #ffe6a8 100%);
-  box-shadow: 2px 2px 4px rgba(0,0,0,.25);
-  font-size: 11px;
-  color: #7a4a00;
-  text-align: center;
-}
-.ba-vue--avant .v11-tel { margin: 6px 0 0; font-size: 11px; }
-.ba-vue--avant .v11-pdf { margin: 0 0 10px; font-size: 12px; }
-.ba-vue--avant .v11-a { color: #0000ee; text-decoration: underline; }
-.ba-vue--avant .v11-flash {
-  width: 305px;
-  height: 41px;
-  margin: 8px auto;
-  border: 1px solid #999;
-  background: #ececec;
-  color: #545454;
-  font-size: 11px;
-  text-align: center;
-  line-height: 41px;
-}
-/* LE COMPTEUR DE VISITEURS. Chiffres en creux sur fond noir : le
-   rendu des compteurs CGI de l'epoque. */
-.ba-vue--avant .v11-compteur { margin: 14px 0 8px; text-align: center; }
-.ba-vue--avant .v11-compteur b { display: block; font-size: 10px; color: #575757; font-weight: bold; }
-.ba-vue--avant .v11-compteur i {
-  display: inline-block;
-  margin-top: 3px;
-  padding: 2px 4px;
-  background: #111;
-  border: 1px solid #555;
-  color: #6f6;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 12px;
-  font-style: normal;
-  letter-spacing: 1px;
-}
-/* LES BADGES W3C — 88 x 31 px, la taille canonique de l'epoque. */
-.ba-vue--avant .v11-badges { margin: 8px 0; text-align: center; }
-.ba-vue--avant .v11-badges i {
-  display: inline-block;
-  width: 88px;
-  height: 31px;
-  margin: 2px;
-  border: 1px solid #7a7a7a;
-  background-color: #ececec;
-  background-image: linear-gradient(#fdfdfd 0%, #dcdcdc 100%);
-  color: #444;
-  font-family: Verdana, sans-serif;
-  font-size: 9px;
-  font-style: normal;
   line-height: 1.15;
-  text-align: center;
-  padding-top: 3px;
-  box-sizing: border-box;
+  letter-spacing: -0.05cqw;
+  color: var(--tou-bleu);
 }
-.ba-vue--avant .v11-badges--large { margin: 14px 0 0; }
-.ba-vue--avant .v11-mini { margin: 10px 0 0; font-size: 10px; color: #565656; text-align: center; }
-.ba-vue--avant .v11-mini--centre { text-align: center; }
-.ba-vue--avant .v11-pied {
-  padding: 8px 10px;
-  border-top: 1px solid #c4ccd3;
-  background: #eef1f4;
-  font-size: 10px;
-  color: #575757;
+.tou .tou-logo-t span { font-size: 1.15cqw; color: var(--tou-gris); }
+/* LE CHAMP DE RECHERCHE DE L'OFFICE — plus gros que le nom du
+   restaurant, et il cherche dans TOUTE la region. */
+.tou .tou-rech {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1cqw;
+  width: 33cqw;
+  padding: 1cqw 1.4cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 2.4cqw;
+  background: var(--tou-fond);
+  box-shadow: inset 0 0.1cqw 0.35cqw rgba(18, 60, 89, .1);
+  color: #93a3ae;
+  font-size: 1.25cqw;
+}
+.tou .tou-loupe {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.6cqw;
+  height: 1.6cqw;
+  border: 2px solid #7b93a3;
+  border-radius: 50%;
+}
+.tou .tou-loupe::after {
+  content: "";
+  position: absolute;
+  right: -0.45cqw;
+  bottom: -0.15cqw;
+  width: 0.9cqw;
+  height: 2px;
+  background: #7b93a3;
+  transform: rotate(45deg);
+}
+.tou .tou-menu {
+  background: linear-gradient(#2180bc 0%, #145a86 100%);
+  box-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, .22);
+}
+.tou .tou-menu-in { display: flex; }
+.tou .tou-menu-in span {
+  padding: 1.05cqw 1.5cqw;
+  color: #eaf3f9;
+  font-size: 1.3cqw;
+}
+.tou .tou-menu-in .tou-on {
+  background: rgba(255, 255, 255, .18);
+  border-radius: 0.6cqw 0.6cqw 0 0;
+  color: #fff;
+  font-weight: bold;
+}
+/* LE FIL D'ARIANE DE L'OFFICE. Le nom du restaurant est la
+   quatrieme chose de la ligne, et la plus petite. */
+.tou .tou-fil {
+  background: var(--tou-fond);
+  border-bottom: 1px solid var(--tou-ligne);
+  font-size: 1.2cqw;
+  color: var(--tou-gris);
+}
+.tou .tou-fil .tou-c { padding: 0.9cqw 0; }
+.tou .tou-fil b {
+  margin: 0 0.6cqw;
+  color: #aebdc7;
+  font-weight: 400;
+}
+.tou .tou-fil em { font-style: normal; color: var(--tou-encre); }
+/* ------------------------------------------------------------
+   LA BANNIERE. C'EST LA PHOTO D'UN AUTRE RESTAURANT — elle est
+   heritee de la categorie parente, et la legende le dit en
+   1,15cqw sous l'image. Aucun fichier : trois aplats et une
+   trame, comme partout ailleurs dans cette section.
+   ------------------------------------------------------------ */
+.tou .tou-ban-ph {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  height: 15cqw;
+  padding-bottom: 1.6cqw;
+  background:
+    linear-gradient(rgba(8, 22, 32, .42) 0%, rgba(8, 22, 32, 0) 42%, rgba(8, 22, 32, .55) 100%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .04) 0 0.1cqw, transparent 0.1cqw 0.8cqw),
+    linear-gradient(#3f6076 0%, #7fa1ac 46%, #cbb182 47%, #9a7850 72%, #4c3a27 100%);
+}
+/* LA RIVE D'EN FACE, PUIS L'AUBERGE. Les deux sont absolument
+   positionnees, donc elles ne deviennent PAS des elements de la
+   boite flexible qui porte le nom. Sans ces deux couches, l'aplat
+   reste un degrade abstrait — et il faut qu'il se lise comme une
+   PHOTOGRAPHIE pour que la legende en dessous fasse son effet. */
+.tou .tou-ban-ph::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5.5cqw;
+  height: 1.8cqw;
+  background: repeating-linear-gradient(90deg, #24382a 0 0.9cqw, #324c39 0.9cqw 2.1cqw, #1d2f23 2.1cqw 2.8cqw);
+  opacity: .92;
+}
+.tou .tou-ban-ph::after {
+  content: "";
+  position: absolute;
+  left: 11cqw;
+  top: 3.2cqw;
+  width: 19cqw;
+  height: 4cqw;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 1.9cqw, rgba(255, 216, 148, .9) 1.9cqw 3cqw),
+    linear-gradient(#5a4029 0%, #33241a 100%);
+  background-size: 100% 1.3cqw, 100% 100%;
+  background-position: 0 1.7cqw, 0 0;
+  background-repeat: no-repeat;
+  box-shadow: 0 0.4cqw 1.2cqw rgba(0, 0, 0, .4);
+}
+.tou .tou-ban-nom {
+  position: relative;
+  z-index: 1;
+  width: 88cqw;
+  margin: 0 auto;
+  color: #fff;
+  font-size: 2.5cqw;
+  font-weight: bold;
+  letter-spacing: -0.05cqw;
+  text-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, .6);
+}
+.tou .tou-ban-leg {
+  padding: 0.8cqw 0;
+  background: var(--tou-fond);
+  border-bottom: 1px solid var(--tou-ligne);
+  font-size: 1.15cqw;
+  color: var(--tou-gris);
+}
+/* ------------------------------------------------------------
+   LE CORPS. Deux colonnes : la fiche, et les encarts de l'office.
+   ------------------------------------------------------------ */
+.tou .tou-corps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 26cqw;
+  gap: 3cqw;
+  align-items: start;
+  padding: 2cqw 0 2.6cqw;
+}
+/* LES DRAPEAUX ADMINISTRATIFS. « En vedette » et « Ferme
+   temporairement » se contredisent, et personne au restaurant ne
+   peut retirer ni l'un ni l'autre. */
+.tou .tou-drapeaux {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8cqw;
+  margin-bottom: 1.2cqw;
+}
+.tou .tou-drap {
+  padding: 0.45cqw 1.1cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 2cqw;
+  background: #eef3f7;
+  color: var(--tou-gris);
+  font-size: 1.05cqw;
+  font-weight: bold;
+  letter-spacing: 0.06cqw;
+  text-transform: uppercase;
+}
+.tou .tou-drap--ved {
+  border-color: #d59b12;
+  background: linear-gradient(#ffd86b, #f0b429);
+  color: #5c3d00;
+}
+.tou .tou-drap--ferme {
+  border-color: #f3b5ae;
+  background: #fdecea;
+  color: #a32116;
+}
+.tou .tou-h1 {
+  font-size: 3.2cqw;
+  font-weight: bold;
+  line-height: 1.15;
+  letter-spacing: -0.05cqw;
+  color: var(--tou-bleu);
+}
+.tou .tou-sous {
+  margin-top: 0.5cqw;
+  font-size: 1.25cqw;
+  color: var(--tou-gris);
+}
+.tou .tou-st {
+  margin-top: 1.9cqw;
+  padding-bottom: 0.6cqw;
+  border-bottom: 1px solid var(--tou-ligne);
+  font-size: 1.7cqw;
+  font-weight: bold;
+  color: var(--tou-bleu);
+}
+.tou .tou-p { margin-top: 1.2cqw; font-size: 1.45cqw; }
+.tou .tou-note { margin-top: 0.8cqw; font-size: 1.1cqw; color: var(--tou-pale); }
+/* LE TABLEAU DE LA FICHE. Quatorze champs, dont trois vides — et
+   les trois vides sont exactement les trois que le client cherche :
+   les heures, le menu, la reservation. */
+.tou .tou-tab {
+  overflow: hidden;
+  margin-top: 1.2cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  box-shadow: 0 0.1cqw 0.4cqw rgba(18, 60, 89, .08);
+}
+.tou .tou-lig {
+  display: grid;
+  grid-template-columns: 17cqw minmax(0, 1fr);
+  gap: 1.2cqw;
+  padding: 0.7cqw 1.4cqw;
+  font-size: 1.3cqw;
+}
+.tou .tou-lig:nth-child(odd) { background: #f7fafc; }
+.tou .tou-lig + .tou-lig { border-top: 1px solid #e8eef3; }
+.tou .tou-cle { color: var(--tou-gris); }
+.tou .tou-lien { color: #1259a8; text-decoration: underline; }
+.tou .tou-vide { color: #a8b6c0; }
+.tou .tou-note-i { font-size: 1.05cqw; color: var(--tou-pale); }
+.tou .tou-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7cqw;
+  margin-top: 1.2cqw;
+}
+.tou .tou-cat {
+  padding: 0.55cqw 1.2cqw;
+  border: 1px solid #c9dcea;
+  border-radius: 2cqw;
+  background: var(--tou-bleu-p);
+  color: #1259a8;
+  font-size: 1.15cqw;
+}
+/* LA CARTE. Un quadrillage de rues, une punaise, un bouton
+   « agrandir » — et rien de ce qu'on vient chercher. */
+.tou .tou-carte {
+  position: relative;
+  overflow: hidden;
+  height: 14cqw;
+  margin-top: 1.2cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  box-shadow: inset 0 0 2cqw rgba(0, 0, 0, .07);
+}
+.tou .tou-carte-rues {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg, transparent 0 46%, #cfe0ea 46% 52%, transparent 52%),
+    repeating-linear-gradient(90deg, transparent 0 7cqw, #fff 7cqw 8cqw),
+    repeating-linear-gradient(0deg, transparent 0 4.6cqw, #fff 4.6cqw 5.3cqw),
+    linear-gradient(#eaeee5, #dfe6da);
+}
+.tou .tou-carte-pin {
+  position: absolute;
+  left: 41%;
+  top: 34%;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: #d93025;
+  box-shadow: 0 0.3cqw 0.6cqw rgba(0, 0, 0, .38);
+  transform: rotate(-45deg);
+}
+.tou .tou-carte-btn {
+  position: absolute;
+  right: 1cqw;
+  top: 1cqw;
+  padding: 0.6cqw 1.1cqw;
+  border: 1px solid #c3ced6;
+  border-radius: 0.4cqw;
+  background: #fff;
+  box-shadow: 0 0.15cqw 0.4cqw rgba(0, 0, 0, .2);
+  color: #1259a8;
+  font-size: 1.1cqw;
+}
+.tou .tou-carte-att {
+  position: absolute;
+  left: 1cqw;
+  bottom: 0.8cqw;
+  font-size: 1cqw;
+  color: #7d8b93;
+}
+.tou .tou-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9cqw;
+  margin-top: 1.6cqw;
+}
+.tou .tou-btn {
+  padding: 1cqw 1.6cqw;
+  border: 1px solid #c3d3de;
+  border-radius: 0.5cqw;
+  background: linear-gradient(#fff, #eef3f7);
+  box-shadow: 0 0.1cqw 0.3cqw rgba(18, 60, 89, .14);
+  color: var(--tou-bleu);
+  font-size: 1.25cqw;
+  font-weight: bold;
+}
+/* LE BOUTON PLEIN EST CELUI DE L'OFFICE, PAS CELUI DU CLIENT :
+   « ajouter a mon carnet de voyage » sert l'annuaire. Reserver une
+   table n'existe nulle part sur cette page. */
+.tou .tou-btn--plein {
+  border-color: #12557f;
+  background: linear-gradient(#2a8fbf, #14638f);
+  color: #fff;
+}
+.tou .tou-tenue {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2cqw;
+  margin-top: 1.4cqw;
+  padding: 1.1cqw 1.4cqw;
+  border: 1px solid #cfe0ec;
+  border-left: 4px solid #2a8fbf;
+  border-radius: 0.6cqw;
+  background: var(--tou-bleu-p);
+  font-size: 1.2cqw;
+  color: #3b4c58;
+}
+.tou .tou-tenue-i {
+  flex: 0 0 auto;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  border-radius: 50%;
+  background: #2a8fbf;
+}
+.tou .tou-tenue b { font-weight: bold; color: var(--tou-bleu); }
+/* ------------------------------------------------------------
+   LA COLONNE DE DROITE — les encarts de l'office.
+   ------------------------------------------------------------ */
+.tou .tou-late { display: grid; gap: 1.6cqw; }
+.tou .tou-encart {
+  overflow: hidden;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  background: #fff;
+  box-shadow: 0 0.15cqw 0.5cqw rgba(18, 60, 89, .09);
+}
+.tou .tou-encart-t {
+  padding: 0.9cqw 1.2cqw;
+  border-bottom: 1px solid var(--tou-ligne);
+  background: linear-gradient(#f9fbfc, #e9f1f7);
+  font-size: 1.2cqw;
+  font-weight: bold;
+  color: var(--tou-bleu);
+}
+.tou .tou-enc-in {
+  display: grid;
+  gap: 0.6cqw;
+  padding: 1.2cqw;
+}
+.tou .tou-enc-l { font-size: 1.2cqw; }
+.tou .tou-enc-l b { font-weight: bold; }
+.tou .tou-lig2 {
+  display: flex;
+  justify-content: space-between;
+  gap: 1cqw;
+  padding-bottom: 0.5cqw;
+  border-bottom: 1px dotted #dde6ec;
+  font-size: 1.15cqw;
+}
+.tou .tou-lig2 span { color: var(--tou-gris); }
+.tou .tou-lig2 b { font-weight: bold; }
+.tou .tou-pub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 11cqw;
+  padding: 0 1cqw;
+  border: 1px dashed #c3d3de;
+  border-radius: 0.5cqw;
+  background: repeating-linear-gradient(45deg, #f5f9fb 0 1cqw, #eaf1f6 1cqw 2cqw);
+  color: var(--tou-pale);
+  font-size: 1.1cqw;
   text-align: center;
 }
-/* LES DEUX AUTRES HABILLAGES. Trois sites de 2010 ne se
-   ressemblaient pas plus que trois sites de 2026 : ils partageaient
-   les memes DEFAUTS, pas la meme palette. */
-.ba-vue--avant .v11--resto { background: transparent; }
-.ba-vue--avant .v11--resto .v11-banniere { background-color: #621818; background-image: linear-gradient(#7a1f1f 0%, #4a1010 100%); border-bottom-color: #2e0a0a; }
-.ba-vue--avant .v11--resto .v11-slogan { color: #f6e4e4; }
-.ba-vue--avant .v11--resto .v11-onglets { background-color: #e4d2bb; background-image: linear-gradient(#f0e3d3 0%, #d8c0a4 100%); border-bottom-color: #a98d6a; }
-.ba-vue--avant .v11--resto .v11-onglet { border-color: #a98d6a; background-color: #f5ebdc; background-image: linear-gradient(#fffaf3 0%, #ecdcc6 100%); color: #6a1a1a; }
-.ba-vue--avant .v11--resto .v11-on { background-color: #fbf7f1; background-image: linear-gradient(#fff 0%, #f7efe3 100%); color: #8f2600; }
-.ba-vue--avant .v11--resto .v11-h1 { color: #7a1f1f; font-family: "Times New Roman", Times, serif; }
-.ba-vue--avant .v11--neige .v11-banniere { background-color: #213055; background-image: linear-gradient(#2c3e6b 0%, #16233f 100%); border-bottom-color: #0d1526; }
-.ba-vue--avant .v11--neige .v11-onglets { background-color: #d0d7e6; background-image: linear-gradient(#e4e9f2 0%, #bcc6da 100%); border-bottom-color: #8f9ab2; }
-.ba-vue--avant .v11--neige .v11-onglet { border-color: #8f9ab2; color: #16233f; }
-.ba-vue--avant .v11--neige .v11-h1 { color: #16233f; }
-/* LES TROIS ARRETS DU TEXTE DEFILANT.  D-219 */
-.ba-cadre:has([data-ba-vue="apres"]:checked) .v11-defile span { animation-play-state: paused !important; }
+.tou .tou-pub--court { height: 7.5cqw; }
+/* ------------------------------------------------------------
+   LES AUTRES ETABLISSEMENTS DE LA CATEGORIE. Quatre vignettes au
+   MEME gabarit : la fiche n'appartient pas au restaurant, elle
+   appartient a la liste.
+   ------------------------------------------------------------ */
+.tou .tou-autres {
+  padding: 2.4cqw 0 2.6cqw;
+  border-top: 1px solid var(--tou-ligne);
+  background: var(--tou-fond);
+}
+.tou .tou-st--centre {
+  margin-top: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+  text-align: center;
+}
+.tou .tou-vigs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.6cqw;
+  margin-top: 1.8cqw;
+}
+.tou .tou-vig {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  background: #fff;
+  box-shadow: 0 0.2cqw 0.6cqw rgba(18, 60, 89, .11);
+}
+.tou .tou-vig-ph {
+  height: 9cqw;
+  background: linear-gradient(#8fa8b6 0%, #b9a279 46%, #7a6144 100%);
+}
+.tou .tou-vig-ph--b { background: linear-gradient(#a8b9c4 0%, #d0c2a4 46%, #8a7a5e 100%); }
+.tou .tou-vig-ph--c { background: linear-gradient(#7d95a6 0%, #a68b6a 46%, #5f4b34 100%); }
+.tou .tou-vig-ph--d { background: linear-gradient(#9fb4bd 0%, #c4b393 46%, #6f5c41 100%); }
+.tou .tou-vig b {
+  padding: 1cqw 1.1cqw 0;
+  font-size: 1.3cqw;
+  font-weight: bold;
+  color: var(--tou-bleu);
+}
+.tou .tou-vig span {
+  padding: 0 1.1cqw;
+  font-size: 1.1cqw;
+  color: var(--tou-gris);
+}
+.tou .tou-vig em {
+  padding: 0.3cqw 1.1cqw 1.1cqw;
+  font-size: 1.1cqw;
+  font-style: normal;
+  color: var(--tou-pale);
+}
+/* ------------------------------------------------------------
+   L'INFOLETTRE DE L'OFFICE, PUIS SON PIED DE PAGE.
+   ------------------------------------------------------------ */
+.tou .tou-info {
+  padding: 2.2cqw 0;
+  background: linear-gradient(#2180bc, #123c59);
+  color: #fff;
+}
+.tou .tou-info-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+.tou .tou-info-t { font-size: 2cqw; font-weight: bold; }
+.tou .tou-info-p { margin-top: 0.3cqw; font-size: 1.25cqw; color: #cfe2ef; }
+.tou .tou-info-f { display: flex; gap: 0.8cqw; }
+.tou .tou-info-ch {
+  width: 24cqw;
+  padding: 1.1cqw 1.4cqw;
+  border-radius: 0.5cqw;
+  background: #fff;
+  color: #93a3ae;
+  font-size: 1.25cqw;
+}
+.tou .tou-info-b {
+  padding: 1.1cqw 1.8cqw;
+  border-radius: 0.5cqw;
+  background: linear-gradient(#ffd86b, #f0b429);
+  box-shadow: 0 0.2cqw 0.5cqw rgba(0, 0, 0, .28);
+  color: #5c3d00;
+  font-size: 1.25cqw;
+  font-weight: bold;
+}
+.tou .tou-pied {
+  padding: 2.4cqw 0 1.6cqw;
+  background: #0e2f45;
+  color: #b9cdda;
+}
+.tou .tou-pied-in {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2cqw;
+}
+.tou .tou-pt {
+  margin-bottom: 0.9cqw;
+  font-size: 1.25cqw;
+  font-weight: bold;
+  color: #fff;
+}
+.tou .tou-pl { padding: 0.3cqw 0; font-size: 1.15cqw; }
+.tou .tou-parts {
+  display: flex;
+  justify-content: center;
+  gap: 1.2cqw;
+  margin-top: 1.8cqw;
+  padding-top: 1.6cqw;
+  border-top: 1px solid rgba(255, 255, 255, .15);
+}
+.tou .tou-parts i {
+  width: 12cqw;
+  height: 4cqw;
+  border-radius: 0.4cqw;
+  background: rgba(255, 255, 255, .11);
+}
+.tou .tou-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqw;
+  margin-top: 2cqw;
+  font-size: 1.05cqw;
+  color: #7f97a7;
+}
 @media (prefers-reduced-motion: reduce) {
-.ba-vue--avant .v11-defile span { animation: none !important; }
+/* Le texte defilant doit RESTER LISIBLE a l'arret : sans ce  D-522 */
+.v11-defile span { padding-left: 0; }
+.ba-page,
+  .ap-rail,
+  .ap-bloc-t::after,
+  .v11-defile span { animation: none !important; }
 }
-:root[data-palier="1"] .ba-vue--avant .v11-defile span,
-:root[data-palier="2"] .ba-vue--avant .v11-defile span { animation: none !important; }
-@media (min-width: 64em) {
-.ba { grid-template-columns: minmax(0, 1fr); }
-.ap-corps { padding: var(--s-6) var(--s-7) var(--s-7); gap: var(--s-5); }
-.ap-nav { padding: var(--s-4) var(--s-7); }
-.ba-scene { height: clamp(420px, 62vh, 620px); }
-}
+:root[data-palier="2"] .ba-page,
+:root[data-palier="2"] .ap-rail,
+:root[data-palier="2"] .ap-bloc-t::after,
+:root[data-palier="2"] .v11-defile span { animation: none !important; }
+:root[data-palier="2"] .v11-defile span { padding-left: 0; }
+/* PALIER 1 — LA SEULE ANIMATION PERMANENTE TOMBE LA PREMIERE.  D-520 */
+/* Le texte defilant de 2011 tourne sans fin et sans declencheur :
+   c'est exactement le poste qu'un appareil serre doit perdre en
+   premier. La boucle de defilement des maquettes tombe avec lui ;
+   les mouvements INTERIEURS de l'apres, eux, tiennent au palier 1 —
+   ce sont eux qui portent l'argument. */
+:root[data-palier="1"] .ba-page,
+:root[data-palier="1"] .v11-defile span { animation: none !important; }
+:root[data-palier="1"] .v11-defile span { padding-left: 0; }
 /* == 16. SECTEURS - trois groupes, pas treize lignes filetees == */
 .sector-group {
   padding-block: var(--s-7);

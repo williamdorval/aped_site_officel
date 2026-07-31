@@ -208,3 +208,10 @@ Les autres réserves ouvertes — FormSubmit jamais activé, la cause
 périmés qui passent en ne mesurant rien, `images/og.png` qui contredit
 le site, la piste des Services jamais touchée du doigt — sont dans
 `RESERVES.md`.
+
+31. **Un `lastIndexOf` sur une balise fermante commune coupe tout le
+   document** — borner une découpe par deux marqueurs uniques, et
+   compter les `<section>` avant et après.
+32. **Une marge `auto` peut se lire autrement et se poser au même
+   pixel** — comparer la géométrie avant de conclure d'une valeur
+   calculée.

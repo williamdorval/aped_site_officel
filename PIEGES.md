@@ -42,6 +42,8 @@ correctif.
 | [28](#28) | Un bridage trop fort rend le palier 2 inatteignable |
 | [29](#29) | **Une planche de captures d'une page qui bouge n'est pas une preuve** |
 | [30](#30) | Un seuil qui vaut `NaN` rend « aucune différence » sur n'importe quoi |
+| [31](#31) | Un `lastIndexOf` sur une balise fermante commune coupe tout le document |
+| [32](#32) | Une marge `auto` peut se LIRE autrement et se POSER au même pixel |
 
 ---
 
@@ -343,3 +345,85 @@ cassé**, et dont la panne ressemble au succès.
 **Correctif :** un paramètre illisible arrête l'outil.
 `if (!Number.isFinite(SEUIL)) process.exit(2)`. Un repli silencieux sur
 une valeur par défaut aurait masqué la même faute autrement.
+
+---
+
+<a id="31"></a>
+### 31 · UN `lastIndexOf` SUR UNE BALISE FERMANTE COMMUNE COUPE TOUT LE DOCUMENT
+
+**Relevé le 2026-07-31, chantier Services et Réalisations.**
+
+Pour remplacer un bloc de `index.html`, une commande a borné la
+découpe ainsi :
+
+```js
+const A = h.indexOf('<figure class="svc-plan2d">');
+const B = h.indexOf("</div>", h.lastIndexOf("</figure>"));
+h = h.slice(0, A) + neuf + h.slice(B);
+```
+
+`lastIndexOf("</figure>")` cherche dans **tout le document**, pas dans
+le bloc visé. Il a trouvé la dernière `</figure>` de la page — sept
+sections plus bas. `B` a donc désigné un point situé après elle, et le
+`slice` a supprimé **les sections 03 à 09 en entier**, soit 1 393
+lignes, sans une seule erreur de syntaxe et sans que rien ne le signale.
+
+Le fichier restait un HTML valide. Le serveur le servait sans broncher.
+Seul un `grep '<section'` a montré qu'il n'en restait que quatre
+sur douze.
+
+**Correctif :** borner une découpe par deux marqueurs **uniques**,
+vérifier que la borne haute précède la borne basse, et ne jamais
+utiliser `lastIndexOf` sur une balise fermante générique. Puis poser
+un invariant après chaque remplacement structurel :
+
+```js
+const avant = L.filter((l) => /<section[ >]/.test(l)).length;
+/* … la découpe … */
+const apres = L.filter((l) => /<section[ >]/.test(l)).length;
+if (avant !== apres) throw new Error("le remplacement a mange des sections");
+```
+
+Coût : la restauration s'est faite depuis `git show HEAD:index.html`.
+Sans commit récent, le chantier était perdu.
+
+**Corollaire, payé deux fois le même jour :** une chaîne JavaScript
+passée à `node -e "…"` depuis un shell POSIX voit ses accents graves
+interprétés comme une substitution de commande. Deux commentaires du
+code sont partis en silence de cette façon. Les scripts qui portent
+des accents graves s'écrivent dans un fichier, jamais en ligne.
+
+---
+
+<a id="32"></a>
+### 32 · UNE MARGE `auto` PEUT SE LIRE AUTREMENT ET SE POSER AU MÊME PIXEL
+
+**Relevé le 2026-07-31.**
+
+`cascade-check` a annoncé **4 écarts de cascade** sur `margin-left` et
+`margin-right` d'un seul `.wrap` : « 0px » sur la page réelle, « 48px »
+sur le contrôle. Le verdict était stable d'une passe à l'autre — donc
+pas un clignotement d'état, pas le piège 12.
+
+Le rectangle, lui, était **identique au pixel dans les deux cas** :
+`left 344, largeur 1048, hauteur 1033`. La largeur calculée était
+identique elle aussi. Rien n'avait bougé à l'écran.
+
+La différence tient à ceci : sur la page réelle, `differe.css` est
+**injecté par script**, alors que le contrôle sert `app.css` comme une
+feuille du document. Chrome ne résout pas la valeur *utilisée* d'une
+marge `auto` de la même façon dans les deux cas. `content-visibility`
+n'y est pour rien : la divergence persiste après l'avoir levée, ce qui
+a été mesuré avant de conclure.
+
+**Correctif :** l'outil relève désormais aussi le **rectangle utilisé**
+de chaque élément. Une divergence sur une propriété `margin-*` dont le
+rectangle est identique est comptée comme une **lecture**, affichée
+nommément avec son rectangle — pas comme un écart, et surtout pas en
+silence. Le seuil « 0 écart » garde son sens ; la lecture reste au
+rapport pour qui voudra la reprendre.
+
+**Ce que ce piège interdit :** conclure d'une valeur calculée sans
+avoir comparé la géométrie. Une propriété qui diffère sans qu'un pixel
+bouge n'est pas un défaut du site — c'est une question posée à
+l'instrument.

@@ -62,7 +62,7 @@ function ratio(a, b) {
 }
 
 const nav = await chromium.launch();
-const rapport = { themes: {}, hero: {}, contraste: {}, console: [] };
+const rapport = { themes: {}, hero: {}, contraste: {}, console: [], exclus: 0 };
 
 for (const vp of LARGEURS) {
   for (const theme of ["light", "dark"]) {
@@ -134,9 +134,16 @@ for (const vp of LARGEURS) {
         return c ? c.rgb : [255, 255, 255];
       }
       const out = [];
+      let exclus = 0;
       const tous = document.querySelectorAll("body *");
       for (const el of tous) {
         if (el.closest("[aria-hidden='true']")) continue;
+        /* CE QU'ON MONTRE PEUT ETRE MAUVAIS ; CE QU'ON FAIT, NON.
+           Une reconstitution de mauvais site A un mauvais contraste :
+           c'est son sujet meme. Elle se declare `role="img"`, et on
+           l'exclut EN DISANT COMBIEN — une exclusion silencieuse
+           serait le piege 17. La moitie APRES, elle, reste au budget. */
+        if (el.closest('[role="img"]')) { exclus++; continue; }
         if (el.closest(".modal[hidden], .menu[hidden], template")) continue;
         const txt = Array.from(el.childNodes)
           .filter((n) => n.nodeType === 3 && n.textContent.trim())
@@ -165,9 +172,10 @@ for (const vp of LARGEURS) {
           });
         }
       }
-      return out;
+      return { echecs: out, exclus };
     });
-    rapport.contraste[`${vp.nom}/${theme}`] = echecs;
+    rapport.contraste[`${vp.nom}/${theme}`] = echecs.echecs;
+    rapport.exclus += echecs.exclus;
 
     /* ---- captures par section ---- */
     const dir = path.join(SORTIE, `${vp.nom}-${theme === "light" ? "clair" : "sombre"}`);
@@ -203,6 +211,7 @@ console.log("\nDEBORDEMENT :");
 for (const [k, v] of Object.entries(rapport.themes)) if (k.endsWith("/debord")) console.log(`  ${k}  ${v}`);
 console.log("\nECHECS DE CONTRASTE :");
 for (const [k, v] of Object.entries(rapport.contraste)) console.log(`  ${k}  ${v.length}`);
+console.log(`  elements exclus (sous [role="img"], reconstitutions) : ${rapport.exclus}`);
 const tous = Object.entries(rapport.contraste).flatMap(([k, v]) => v.map((x) => ({ vue: k, ...x })));
 const vus = new Set();
 for (const e of tous) {

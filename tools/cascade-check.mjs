@@ -109,6 +109,17 @@ async function releve(entiere, theme) {
     }
     window.scrollTo(0, 0);
   });
+  /* PIEGE 4, PAR PRECAUTION ET NON PAR DIAGNOSTIC.
+     Les sections portent `content-visibility: auto` : une fois revenu
+     en haut, ce qui est hors ecran n'est plus mis en page, et toute
+     valeur calculee qui depend de la mise en page devient une valeur
+     RESERVEE. On leve donc la propriete DES DEUX COTES avant de lire.
+     Ca ne suffit pas a expliquer la divergence de marge `auto` du
+     2026-07-31 — mesuree, elle persiste apres la levee — mais ca
+     retire une variable de la mesure. */
+  await page.addStyleTag({
+    content: "*, *::before, *::after { content-visibility: visible !important; contain-intrinsic-size: auto !important; }",
+  });
   await page.waitForTimeout(900);
 
   const out = await page.evaluate((props) => {
@@ -133,7 +144,11 @@ async function releve(entiere, theme) {
     const res = {};
     for (const el of document.querySelectorAll("body *")) {
       const cs = getComputedStyle(el);
-      const v = { __classe: (typeof el.className === "string" ? el.className : "") || "" };
+      const r = el.getBoundingClientRect();
+      const v = {
+        __classe: (typeof el.className === "string" ? el.className : "") || "",
+        __rect: [Math.round(r.left), Math.round(r.width), Math.round(r.height)].join("/"),
+      };
       for (const p of props) v[p] = cs.getPropertyValue(p);
       res[chemin(el)] = v;
     }
@@ -152,6 +167,7 @@ for (const theme of ["light", "dark"]) {
 
   const cles = Object.keys(decoupe);
   const ecarts = [];
+  const lectures = [];
   const etats = [];
   for (const cle of cles) {
     const a = decoupe[cle], b = entiere[cle];
@@ -178,19 +194,36 @@ for (const theme of ["light", "dark"]) {
         }
         continue;
       }
-      if (a[p] !== b[p]) ecarts.push({ cle, classe: a.__classe, prop: p, decoupe: a[p], entiere: b[p] });
+      if (a[p] === b[p]) continue;
+      /* UNE MARGE `auto` QUI SE LIT AUTREMENT MAIS SE POSE AU MEME
+         PIXEL N EST PAS UN ECART DE CASCADE.  Releve du 2026-07-31 :
+         `.wrap` du bloc avant/apres rendait `margin-left: 0px` sur la
+         page reelle et `48px` sur le controle, pour un rectangle
+         IDENTIQUE au pixel dans les deux cas — Chrome ne resout pas
+         la valeur utilisee de la meme facon selon que la feuille est
+         posee par le document ou injectee par script.  On le compte
+         a part, on ne le cache pas. */
+      if (/^margin-/.test(p) && a.__rect === b.__rect && (a[p] === "0px" || b[p] === "0px")) {
+        lectures.push({ cle, classe: a.__classe, prop: p, decoupe: a[p], entiere: b[p], rect: a.__rect });
+        continue;
+      }
+      ecarts.push({ cle, classe: a.__classe, prop: p, decoupe: a[p], entiere: b[p] });
     }
   }
   rapport.themes[theme] = {
     elements: cles.length,
     ecarts: ecarts.length,
     etatsDifferents: etats.length,
+    lectures: lectures.length,
+    detailLectures: lectures.slice(0, 8),
     detail: ecarts.slice(0, 40),
     detailEtats: etats.slice(0, 10)
   };
   rapport.total += cles.length * PROPS.length;
   rapport.ecarts += ecarts.length;
-  console.log(`${theme.padEnd(6)} ${cles.length} elements · ${cles.length * PROPS.length} proprietes · ${ecarts.length} ecart(s) de cascade · ${etats.length} element(s) dans un etat different`);
+  console.log(`${theme.padEnd(6)} ${cles.length} elements · ${cles.length * PROPS.length} proprietes · ${ecarts.length} ecart(s) de cascade · ${etats.length} element(s) dans un etat different · ${lectures.length} lecture(s) de marge auto a geometrie identique`);
+  lectures.slice(0, 6).forEach((l) =>
+    console.log(`   LECTURE  .${l.classe || "(sans classe)"}  ${l.prop} : « ${l.decoupe} » contre « ${l.entiere} », meme rectangle ${l.rect}`));
   ecarts.slice(0, 20).forEach((e) =>
     console.log(`   .${e.classe || "(sans classe)"}  ${e.prop}\n      decoupe « ${e.decoupe} »\n      entiere « ${e.entiere} »\n      ${e.cle}`));
 }

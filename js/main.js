@@ -231,18 +231,47 @@
 
     var vitre = rail.parentNode;
     var plans = $$(".svc-plan", rail);
-    var liens = $$("[data-svc-vers]");
-    var jauge = $("[data-svc-jauge]");
+    var compte = $("[data-svc-compte]");
     var n = plans.length;
     if (n < 2) return;
+
+    /* LE DERNIER ITEM DU RAIL N'EST PAS UN SERVICE : c'est le panneau  D-481 */
+    var nSvc = 0;
+    for (var z = 0; z < n; z++) if (!plans[z].classList.contains("svc-plan--fin")) nSvc++;
 
     /* EST-CE QUE LE RAIL EXISTE ? LA REPONSE EST DANS LE CSS.  D-370 */
     var estActif = false;
     var course = 0;     /* distance verticale de la piste, en px */
-    var pas = 0;        /* distance horizontale d'un chantier au suivant */
     var collant = 0;    /* le `top` effectif du `position: sticky` */
+    var cibles = [];    /* scrollLeft de REPOS, un par item */
 
     var premierArmement = true;
+
+    /* LA POSITION DE REPOS D'UN CHANTIER — ET C'EST ICI QUE LES DEUX  D-482 */
+    function mesurer() {
+      cibles = [];
+      /* LA MARGE DU RAIL SE MESURE SUR LE TEXTE, ELLE NE SE RECALCULE  D-493 */
+      var ref = scene.querySelector(".svc-pied > .wrap") || scene.querySelector(".svc-tete .wrap");
+      if (ref) {
+        var m = Math.round(ref.getBoundingClientRect().left - vitre.getBoundingClientRect().left);
+        if (m >= 0 && m < 600) rail.style.paddingInline = m + "px";
+      }
+      var W = vitre.clientWidth;
+      var max = Math.max(0, vitre.scrollWidth - W);
+      if (W <= 0) return;
+      var base = vitre.scrollLeft;
+      var vb = vitre.getBoundingClientRect();
+      for (var i = 0; i < n; i++) {
+        var pb = plans[i].getBoundingClientRect();
+        /* La position DANS LE CONTENU, relue par rectangles : elle ne
+           depend d'aucun `offsetParent`, donc d'aucun `position` pose
+           ailleurs dans la section. */
+        var gauche = pb.left - vb.left + base;
+        var c = gauche + pb.width / 2 - W / 2;
+        if (c < 0) c = 0; else if (c > max) c = max;
+        cibles.push(c);
+      }
+    }
 
     function relire() {
       var st = getComputedStyle(scene);
@@ -250,13 +279,12 @@
       estActif = st.position === "sticky";
       collant = parseFloat(st.top) || 0;
       course = Math.max(0, piste.offsetHeight - scene.offsetHeight);
-      /* LE PAS SE MESURE, IL NE SE CALCULE PAS. `largeur + gap` est  D-371 */
-      pas = plans.length > 1 ? (plans[1].offsetLeft - plans[0].offsetLeft) : 0;
       if (!estActif) {
         rail.removeAttribute("data-degage");
         vitre.scrollLeft = 0;
-        if (jauge) jauge.style.transform = "";
+        cibles = [];
       } else {
+        mesurer();
         /* LA PREMIERE IMAGE NE DOIT DEPENDRE DE PERSONNE.  D-372 */
         var r0 = piste.getBoundingClientRect();
         var h0 = window.innerHeight;
@@ -277,6 +305,21 @@
 
     var actuel = -1;
 
+    /* L'ODOMETRE — V4 · CRAN. Deux cases, une fenetre d'une ligne :  D-483 */
+    var bascule = false;
+
+    function deuxChiffres(k) { return (k < 10 ? "0" : "") + k; }
+
+    function poserCompte(k) {
+      if (!compte || compte.children.length < 2) return;
+      var txt = deuxChiffres(Math.min(k + 1, nSvc));
+      var idx = bascule ? 0 : 1;
+      if (compte.children[idx].textContent === txt) return;
+      compte.children[idx].textContent = txt;
+      compte.style.transform = bascule ? "translateY(0)" : "translateY(-50%)";
+      bascule = !bascule;
+    }
+
     function marquer(k) {
       if (k === actuel) return;
       actuel = k;
@@ -286,19 +329,17 @@
         if (i === k) plans[i].setAttribute("data-actif", "");
         else plans[i].removeAttribute("data-actif");
         /* `data-vu` NE SE RETIRE JAMAIS. Le degagement du nom est  D-376 */
-        if (i <= k) plans[i].setAttribute("data-vu", "");
+        /* `k + 1` ET NON `k` : le chantier SUIVANT deborde toujours  D-492 */
+        if (i <= k + 1) plans[i].setAttribute("data-vu", "");
       }
-      for (var j = 0; j < liens.length; j++) {
-        if (j === k) liens[j].setAttribute("aria-current", "true");
-        else liens[j].removeAttribute("aria-current");
-      }
+      poserCompte(k);
     }
 
     /* UNE SEULE LECTURE DE MISE EN PAGE PAR IMAGE, ET ELLE VIENT  D-377 */
     function image() {
       if (!estActif || !enVue) return;
-      /* LE FILET DE SECURITE. Une geometrie degeneree — course ou  D-378 */
-      if (course <= 0 || pas <= 0) { marquer(n - 1); return; }
+      /* LE FILET DE SECURITE. Une geometrie degeneree — course nulle  D-378 */
+      if (course <= 0 || cibles.length !== n) { marquer(n - 1); return; }
       var haut = piste.getBoundingClientRect().top;
       var p = (collant - haut) / course;
       if (p < 0) p = 0; else if (p > 1) p = 1;
@@ -309,12 +350,11 @@
       var f = u - i;
       var g = (f - MORT) / (1 - 2 * MORT);
       if (g < 0) g = 0; else if (g > 1) g = 1;
-      var s = i + lisser(g);
+      var t = lisser(g);
 
       /* `scrollLeft` ET NON `transform` — voir l'argument en tete du  D-379 */
-      vitre.scrollLeft = s * pas;
-      if (jauge) jauge.style.transform = "scaleX(" + (s / (n - 1)).toFixed(4) + ")";
-      marquer(Math.round(s));
+      vitre.scrollLeft = cibles[i] + (cibles[i + 1] - cibles[i]) * t;
+      marquer(t >= 0.5 ? i + 1 : i);
     }
 
     /* LE PILOTE. Un ecouteur `scroll` passif, une seule image  D-380 */
@@ -339,7 +379,7 @@
 
     window.addEventListener("scroll", surDefilement, { passive: true });
 
-    /* Le redimensionnement change la course, le pas et la hauteur de  D-382 */
+    /* Le redimensionnement change la course, les cibles et la hauteur  D-382 */
     var attendR = false;
     window.addEventListener("resize", function () {
       if (attendR) return;
@@ -357,6 +397,10 @@
     window.addEventListener("load", relire);
     /* `bfcache` rejoue `pageshow` sans rejouer le script. */
     window.addEventListener("pageshow", relire);
+    /* LES POLICES CHANGENT LA LARGEUR DES NOMS, DONC LES CIBLES.  D-484 */
+    if (doc.fonts && doc.fonts.ready && doc.fonts.ready.then) {
+      doc.fonts.ready.then(function () { if (estActif) { mesurer(); image(); } });
+    }
 
     /* LA VITRE NE DEFILE QUE SUR L'AXE QU'ON PILOTE.  D-385 */
     vitre.addEventListener("scroll", function () {
@@ -376,18 +420,6 @@
       }
     }
 
-    for (var t = 0; t < liens.length; t++) {
-      (function (a, k) {
-        a.addEventListener("click", function (e) {
-          /* SANS RAIL, ON NE TOUCHE A RIEN. La pile verticale a de  D-387 */
-          if (!estActif) return;
-          e.preventDefault();
-          allerA(k, true);
-          try { history.replaceState(history.state, "", "#" + plans[k].id); } catch (err) {}
-        });
-      })(liens[t], t);
-    }
-
     /* L'ARRIVEE PAR ANCRE.  D-388 */
     /* ON VERIFIE L'ATTERRISSAGE, ON NE LE SUPPOSE PAS.  D-389 */
     var libre = false;
@@ -396,9 +428,9 @@
     });
 
     function viser(k) {
-      var essais = 0;
+      var essais2 = 0;
       (function poser() {
-        if (libre || !estActif || course <= 0 || essais++ > 30) return;
+        if (libre || !estActif || course <= 0 || essais2++ > 30) return;
         var haut = piste.getBoundingClientRect().top;
         var y = Math.round(window.scrollY + haut - collant + (k / (n - 1)) * course);
         if (Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y);
@@ -408,6 +440,7 @@
 
     function surAncre() {
       var h = location.hash;
+      if (h && h.indexOf("#svc-fiche-") === 0) { ouvrirParId(h.slice(1), null); return; }
       if (!h || h.indexOf("#svc-0") !== 0) return;
       for (var i = 0; i < plans.length; i++) {
         if ("#" + plans[i].id === h) { viser(i); return; }
@@ -428,48 +461,50 @@
       allerA(k, false);
     });
 
-    /* LE CLAVIER — par crans, comme le defilement.  D-391 */
-    var index = $(".svc-index");
-    if (index) {
-      index.addEventListener("keydown", function (e) {
-        if (!estActif) return;
-        var k = actuel < 0 ? 0 : actuel, cible = null;
-        if (e.key === "ArrowRight" || e.key === "ArrowDown") cible = Math.min(n - 1, k + 1);
-        else if (e.key === "ArrowLeft" || e.key === "ArrowUp") cible = Math.max(0, k - 1);
-        else if (e.key === "Home") cible = 0;
-        else if (e.key === "End") cible = n - 1;
-        else return;
-        e.preventDefault();
-        allerA(cible, true);
-        if (liens[cible]) try { liens[cible].focus({ preventScroll: true }); } catch (err) {}
-      });
+    /* == LE PANNEAU DE DETAIL ==  D-392 */
+    /* IL VIT HORS DU RAIL. C'EST LA CAUSE DU PANNEAU COUPE, ET LA  D-485 */
+    var boite = $("[data-svc-fiches]");
+    var fiches = $$(".svc-fiche");
+    var retour = null;
+
+    function parId(id) {
+      for (var i = 0; i < fiches.length; i++) if (fiches[i].id === id) return fiches[i];
+      return null;
     }
 
-    /* == LE PANNEAU DE DETAIL ==  D-392 */
-    var fiches = $$("[data-svc-fiche]", rail);
-
-    function ouvrir(f) {
-      for (var i = 0; i < fiches.length; i++) {
-        if (fiches[i] !== f && fiches[i].open) fiches[i].open = false;
-      }
+    function ouvrir(f, declencheur) {
+      if (!f || ficheOuverte === f) return;
+      if (ficheOuverte) fermer(ficheOuverte, true);
+      retour = declencheur || null;
+      f.setAttribute("data-ouvert", "");
+      /* LE ROLE N'EXISTE QUE QUAND LE PANNEAU EST UN CALQUE.  D-486 */
+      f.setAttribute("role", "dialog");
+      f.setAttribute("aria-modal", "true");
       ficheOuverte = f;
       lockScroll();
-      var plan = f.closest(".svc-plan");
-      try { history.pushState({ aped: "svc-fiche" }, "", plan ? "#" + plan.id : location.hash); } catch (e) {}
+      try { f.focus({ preventScroll: true }); } catch (e) {}
+      try { history.pushState({ aped: "svc-fiche" }, "", "#" + f.id); } catch (e) {}
     }
 
-    function fermer(f) {
-      if (!f || !f.open) return;
-      var tete = $("summary", f);
-      var net = reduced.matches || doc.documentElement.getAttribute("data-palier") === "2";
+    function ouvrirParId(id, declencheur) { ouvrir(parId(id), declencheur); }
+
+    function fermer(f, net) {
+      if (!f || !f.hasAttribute("data-ouvert")) return;
+      var brut = net || reduced.matches || doc.documentElement.getAttribute("data-palier") === "2";
       var fini = function () {
-        f.open = false;
+        f.removeAttribute("data-ouvert");
         f.removeAttribute("data-sortant");
+        f.removeAttribute("role");
+        f.removeAttribute("aria-modal");
         if (ficheOuverte === f) ficheOuverte = null;
         unlockScroll();
-        if (tete) try { tete.focus({ preventScroll: true }); } catch (e) {}
+        /* ON REVIENT EXACTEMENT OU ON ETAIT : le verrou n'a jamais  D-487 */
+        if (retour) {
+          try { retour.focus({ preventScroll: true }); } catch (e) {}
+          retour = null;
+        }
       };
-      if (net) { fini(); return; }
+      if (brut) { fini(); return; }
       f.setAttribute("data-sortant", "");
       window.setTimeout(fini, 300);
     }
@@ -486,23 +521,39 @@
       if (ficheOuverte) fermer(ficheOuverte);
     });
 
-    for (var f = 0; f < fiches.length; f++) {
-      (function (fiche) {
-        var tete = $("summary", fiche);
-        if (!tete) return;
-        tete.addEventListener("click", function (e) {
-          if (fiche.open) { e.preventDefault(); fermerFiche(); return; }
-          /* A l'ouverture on laisse le natif poser `open` — le
-             clavier, l'ancre et la recherche dans la page restent
-             intacts — et on s'accroche au tour suivant. */
-          requestAnimationFrame(function () { if (fiche.open) ouvrir(fiche); });
+    var portes = $$("[data-svc-ouvre]");
+    for (var q = 0; q < portes.length; q++) {
+      (function (a) {
+        a.addEventListener("click", function (e) {
+          var f = parId(a.getAttribute("data-svc-ouvre"));
+          /* SANS CIBLE, L'ANCRE FAIT SON TRAVAIL. Le lien reste un
+             lien : c'est lui, et pas le script, qui rend la fiche
+             atteignable quand le script n'a pas tourne. */
+          if (!f) return;
+          e.preventDefault();
+          ouvrir(f, a);
         });
-        /* LE VOILE EST UN PSEUDO-ELEMENT DE `.svc-porte`, pas du  D-393 */
-        var porte = fiche.parentNode;
-        porte.addEventListener("click", function (e) {
-          if (e.target === porte && fiche.open) fermerFiche();
-        });
-      })(fiches[f]);
+      })(portes[q]);
+    }
+
+    var croix = $$("[data-svc-ferme]");
+    for (var c = 0; c < croix.length; c++) {
+      croix[c].addEventListener("click", function () { fermerFiche(); });
+    }
+
+    /* LES PORTES DU PIED FERMENT AVANT DE SAUTER : sinon le visiteur  D-488 */
+    var sauts = $$("[data-svc-ferme-vers]");
+    for (var s2 = 0; s2 < sauts.length; s2++) {
+      sauts[s2].addEventListener("click", function () {
+        if (ficheOuverte) fermer(ficheOuverte, true);
+      });
+    }
+
+    /* LE CLIC A L'EXTERIEUR. Le voile est le `::before` de la boite :  D-489 */
+    if (boite) {
+      boite.addEventListener("click", function (e) {
+        if (e.target === boite && ficheOuverte) fermerFiche();
+      });
     }
   })();
 
@@ -515,54 +566,79 @@
       return doc.documentElement.getAttribute("data-palier") || "0";
     }
 
-    /* --- 1 · LE PASSAGE --- */
+    /* --- 1 · LE CURSEUR ---  D-530 */
+    /* LA POIGNEE EST UN `input[type=range]` NATIF, ET C'EST TOUT  D-531 */
+    var touche = false;
+    var scenes = [];
+
     for (var i = 0; i < cadres.length; i++) {
-      (function (cadre, k) {
-        cadre.addEventListener("change", function (e) {
-          var cible = e.target;
-          if (!cible || cible.type !== "radio") return;
-          if (reduced.matches || palier() === "2") return;
-          if (!window.APED_TRAME) return;
-          var quoi = cible.getAttribute("data-ba-vue");
-          var vue = $(quoi === "apres" ? ".ba-vue--apres" : ".ba-vue--avant", cadre);
-          if (!vue) return;
-          window.APED_TRAME.degager(vue, {
-            nom: "ba-" + k + "-" + quoi,
-            sens: "droite",
-            /* Une graine FIXE par carte et par sens : `Math.random()`  D-395 */
-            graine: 617 + k * 13 + (quoi === "apres" ? 1 : 0),
-            /* 520 / 240 et non 420 / 190 : releve du 2026-07-30,  D-396 */
-            duree: 520, vie: 240, maille: 44, z: 3
-          });
+      (function (cadre) {
+        var scene = $(".ba-scene", cadre);
+        var curseur = $("[data-ba-curseur]", cadre);
+        if (!scene || !curseur) return;
+        scenes.push(scene);
+
+        function poser(v) {
+          if (!isFinite(v)) return;
+          if (v < 0) v = 0; else if (v > 100) v = 100;
+          scene.style.setProperty("--ba-p", v);
+          /* `aria-valuetext` PARCE QUE « 62 » NE VEUT RIEN DIRE.  D-532 */
+          curseur.setAttribute("aria-valuetext", Math.round(v) + " % de la version d'avant");
+        }
+
+        curseur.addEventListener("input", function () {
+          touche = true;
+          poser(Number(curseur.value));
         });
-      })(cadres[i], i);
+        poser(Number(curseur.value));
+        scene.aped_poser = poser;
+        scene.aped_curseur = curseur;
+      })(cadres[i]);
     }
 
-    /* --- 2 · LA DEMONSTRATION D'OUVERTURE --- */
-    if (reduced.matches || !window.IntersectionObserver) return;
-    var premier = cadres[0];
-    var bouton = $('[data-ba-vue="apres"]', premier);
-    if (!bouton) return;
+    /* --- 2 · LE DEFILEMENT DES MAQUETTES NE TOURNE QUE DANS LE  D-533 */
+    if (window.IntersectionObserver) {
+      var oeil = new IntersectionObserver(function (entrees) {
+        for (var j = 0; j < entrees.length; j++) {
+          if (entrees[j].isIntersecting) entrees[j].target.setAttribute("data-vif", "");
+          else entrees[j].target.removeAttribute("data-vif");
+        }
+      }, { threshold: 0.25 });
+      for (var k = 0; k < scenes.length; k++) oeil.observe(scenes[k]);
+    } else {
+      for (var m = 0; m < scenes.length; m++) scenes[m].setAttribute("data-vif", "");
+    }
+
+    /* --- 3 · LA DEMONSTRATION D'OUVERTURE ---  D-534 */
+    /* SANS ELLE, LE VISITEUR NE SAIT PAS QUE CA SE GLISSE. La  D-535 */
+    if (reduced.matches || palier() === "2" || !window.IntersectionObserver) return;
+    var premiere = scenes[0];
+    if (!premiere) return;
     var joue = false;
 
-    /* LE PREMIER GESTE DU VISITEUR ANNULE LA DEMONSTRATION. S'il a
-       deja touche au cran, il a compris ; rejouer par-dessus, ce
-       serait lui reprendre la main sur ce qu'il vient de decider. */
-    premier.addEventListener("change", function () { joue = true; });
-
-    var oeil = new IntersectionObserver(function (entrees) {
-      if (joue || !entrees[0].isIntersecting) return;
+    var oeil2 = new IntersectionObserver(function (entrees) {
+      if (joue || touche || !entrees[0].isIntersecting) return;
       joue = true;
-      oeil.disconnect();
-      /* 900 ms : le temps que la carte soit franchement dans  D-397 */
+      oeil2.disconnect();
       window.setTimeout(function () {
-        if (bouton.checked) return;
-        bouton.checked = true;
-        /* `checked` par script n'emet AUCUN evenement : le passage  D-398 */
-        bouton.dispatchEvent(new Event("change", { bubbles: true }));
-      }, 900);
-    }, { threshold: 0.55 });
-    oeil.observe(premier);
+        if (touche) return;
+        var t0 = 0, DUREE = 760;
+        premiere.aped_poser(100);
+        (function pas(t) {
+          if (touche) { premiere.aped_poser(50); premiere.aped_curseur.value = 50; return; }
+          if (!t0) t0 = t;
+          var p = (t - t0) / DUREE;
+          if (p > 1) p = 1;
+          /* Une seule arete, franche, qui balaye : V1 · DEGAGER. */
+          var e = 1 - Math.pow(1 - p, 3);
+          var v = 100 - 50 * e;
+          premiere.aped_poser(v);
+          premiere.aped_curseur.value = Math.round(v);
+          if (p < 1) requestAnimationFrame(pas);
+        })(0);
+      }, 700);
+    }, { threshold: 0.5 });
+    oeil2.observe(premiere);
   })();
 
   /* == PARCOURS — compteur d'etape. ==  D-399 */
@@ -1018,7 +1094,7 @@
   function trapList() {
     if (activeModal) return focusablesIn(activeModal);
     /* La fiche de service est un calque au meme titre qu'une  D-416 */
-    if (ficheOuverte && ficheOuverte.open) return focusablesIn(ficheOuverte);
+    if (ficheOuverte) return focusablesIn(ficheOuverte);
     if (menu && !menu.hidden) {
       var nav = $(".nav");
       return (nav ? focusablesIn(nav) : []).concat(focusablesIn(menu));
@@ -1122,7 +1198,7 @@
       /* La fiche vient AVANT le menu et APRES la modale : une
          modale peut s'ouvrir depuis la fiche (« Démarrer ce
          chantier »), donc c'est elle qui doit partir la premiere. */
-      else if (ficheOuverte && ficheOuverte.open) fermerFiche();
+      else if (ficheOuverte) fermerFiche();
       else closeMenu();
       return;
     }

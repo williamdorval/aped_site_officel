@@ -152,7 +152,7 @@ async function sonder(nom, opts = {}) {
          un test qui affirme la presence du mecanisme qu'on vient de
          retirer.
          Ce qui remplace le compteur EST du N1 et se mesure mieux :
-         les quatre chantiers sont NOMMES et lisibles en meme temps,
+         les cinq services sont NOMMES et lisibles en meme temps,
          a tous les paliers, sans script. On compte donc les noms
          atteignables, pas un chiffre. */
       /* MIS A JOUR LE 2026-07-30. `.svc-index a` et
@@ -161,8 +161,8 @@ async function sonder(nom, opts = {}) {
          meme. Ce qui porte l'orientation N1 est maintenant la
          PLANCHE — quatre colonnes de texte peintes en permanence,
          a tous les paliers. */
-      chantiersNommes: document.querySelectorAll(".svc-plan-tete").length,
-      chantiersLisibles: [...document.querySelectorAll(".svc-plan-dit")]
+      chantiersNommes: document.querySelectorAll(".svc-plan:not(.svc-plan--fin) .svc-plan-nom").length,
+      chantiersLisibles: [...document.querySelectorAll(".svc-plan:not(.svc-plan--fin) .svc-plan-dit")]
         .filter((e) => { const r = e.getBoundingClientRect(); return r.width > 2 && r.height > 2; }).length,
       curseur: !!document.querySelector(".rail-curseur.is-on"),
       /* LES DOUZE FRONTIERES. Le CRAN du seuil est du N1 : il vit
@@ -200,7 +200,7 @@ async function sonder(nom, opts = {}) {
         const e = document.querySelector("[data-svc-scene]");
         return e ? getComputedStyle(e).position : "absente";
       })(),
-      chantiersNommes: document.querySelectorAll(".svc-plan-nom").length,
+      chantiersNommes: document.querySelectorAll(".svc-plan:not(.svc-plan--fin) .svc-plan-nom").length,
       plaquesVivantes: !!document.querySelector("[data-plaques].est-vivante"),
       plaquesAnimees: [...new Set([...document.querySelectorAll(".plaque-corps")]
         .map((c) => getComputedStyle(c).animationName))],
@@ -243,8 +243,8 @@ console.log("\nPALIER 0 — bureau, large, pointeur fin");
   dire(r.cranGhost === "520ms", `--cran du fantome du hero : ${r.cranGhost}`);
   dire(r.defilePermanent === "v11-defile",
     `texte defilant de 2011 : ${r.defilePermanent}   (doit tourner au palier 0)`);
-  dire(r.chantiersNommes === 4,
-    `les quatre chantiers sont nommes (${r.chantiersNommes} / 4)`);
+  dire(r.chantiersNommes === 5,
+    `les cinq services sont nommes (${r.chantiersNommes} / 5)`);
 }
 
 console.log("\nPALIER 1 — trois declencheurs statiques, testes separement");
@@ -266,8 +266,8 @@ for (const [nom, opts] of [
      c'est la LARGEUR (48em) et le mouvement reduit ; les trois
      declencheurs de palier 1 testes ici sont donc de deux natures,
      et le releve les separe. */
-  dire(r.chantiersNommes === 4,
-    `${nom.padEnd(24)} -> les quatre chantiers restent nommes (${r.chantiersNommes} / 4)`);
+  dire(r.chantiersNommes === 5,
+    `${nom.padEnd(24)} -> les cinq services restent nommes (${r.chantiersNommes} / 5)`);
 }
 
 console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + "");
@@ -307,8 +307,8 @@ console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + ""
      c'est le bloc « escalade » qui le verifie. Ici on constate
      seulement qu'elle n'est pas la, et que les plaques restent
      lisibles. */
-  dire(r.defilePermanent === "none" && r.chantiersNommes === 4,
-    `animation permanente absente, quatre chantiers nommes (${r.chantiersNommes} / 4)`);
+  dire(r.defilePermanent === "none" && r.chantiersNommes === 5,
+    `animation permanente absente, cinq services nommes (${r.chantiersNommes} / 5)`);
   console.log(`         frequence relevee par la page elle-meme : ${r.images} i/s`);
   }
 }
@@ -321,8 +321,8 @@ for (const [nom, opts] of [
 ]) {
   const r = await sonder(nom, opts);
   const ok = r.reste.trim() !== "" && r.etape.trim() !== "" &&
-             r.chantiersNommes === 4 && r.chantiersLisibles === 4 && r.curseur;
-  dire(ok, `${nom} -> restantes « ${r.reste.trim()} », etape « ${r.etape.trim()} », chantiers nommes ${r.chantiersNommes} / 4 et lisibles ${r.chantiersLisibles} / 4, curseur ${r.curseur ? "pose" : "ABSENT"}`);
+             r.chantiersNommes === 5 && r.chantiersLisibles === 5 && r.curseur;
+  dire(ok, `${nom} -> restantes « ${r.reste.trim()} », etape « ${r.etape.trim()} », services nommes ${r.chantiersNommes} / 5 et lisibles ${r.chantiersLisibles} / 5, curseur ${r.curseur ? "pose" : "ABSENT"}`);
   /* Le numero du seuil dit lui aussi « ou on est ». Il doit donc
      etre JUSTE a tous les paliers, y compris quand plus rien ne
      roule : au repos la bande montre deja la bonne valeur. */
@@ -383,7 +383,7 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
      la pose dans `transform`.
      ------------------------------------------------------------ */
   const apresEscalade = await page.evaluate(() => ({
-    chantiers: document.querySelectorAll(".svc-plan-nom").length,
+    chantiers: document.querySelectorAll(".svc-plan:not(.svc-plan--fin) .svc-plan-nom").length,
     vivante: !!document.querySelector("[data-plaques].est-vivante"),
     animees: [...new Set([...document.querySelectorAll(".plaque-corps")].map((c) => getComputedStyle(c).animationName))],
     inclinees: [...document.querySelectorAll(".plaque-corps")].filter((c) => {
@@ -393,8 +393,8 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
   }));
   dire(apresEscalade.vivante === false && apresEscalade.animees.every((a) => a === "none"),
     `boucle de vie TUEE EN VOL a l'escalade (${apresEscalade.animees.join(",")})`);
-  dire(apresEscalade.chantiers === 4,
-    `les quatre chantiers restent nommes apres le kill (${apresEscalade.chantiers} / 4)`);
+  dire(apresEscalade.chantiers === 5,
+    `les cinq services restent nommes apres le kill (${apresEscalade.chantiers} / 5)`);
   await ctx.close();
 }
 

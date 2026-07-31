@@ -26,19 +26,19 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 | № | Section | Ancre | `index.html` | l. | `css/app.css` | JS | autres |
 |---|---|---|---|---:|---|---|---|
-| 01 | **Accueil** | `#top` | 208-264 | 57 | 1528-1791 · 1040-1304 | `main.js` 114-219 | — |
-| 02 | **Services** | `#services` | 265-541 | 277 | 1792-2241 | `main.js` 220-508 | — |
-| 03 | **Réalisations** | `#realisations` | 542-807 | 266 | 2242-2746 | `main.js` 509-567 | — |
-| 04 | **Secteurs** | `#demos` | 808-1273 | 466 | 2747-2864 | `main.js` 2004-2082 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
-| 05 | **Visite 360** | `#visite` | 1274-1334 | 61 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 1335-1504 | 170 | 2865-3001 | `main.js` 1784-2003 | — |
-| 07 | **Comparatif** | `#comparatif` | 1505-1629 | 125 | 3002-3159 | — | — |
-| 08 | **Processus** | `#processus` | 1630-1765 | 136 | 3160-3345 | `main.js` 568-604 | — |
-| 09 | **Agence** | `#apropos` | 1766-1858 | 93 | 3346-3428 | — | — |
-| 10 | **Référence** | `#reference` | 1859-1933 | 75 | 3429-3543 | — | — |
-| 11 | **Questions** | `#faq` | 1934-2009 | 76 | 3544-3577 | `langue.js` 613-641 | — |
-| 12 | **Contact** | `#contact` | 2010-2131 | 122 | 3578-3776 | `main.js` 1132-1177 · `main.js` 1178-1243 · `main.js` 1244-1335 | — |
-| — | **Pied de page** | `#footer` | 2132-2184 | 53 | 3777-3837 | `main.js` 2290-2310 | — |
+| 01 | **Accueil** | `#top` | 212-268 | 57 | 1528-1791 · 1040-1304 | `main.js` 114-219 | — |
+| 02 | **Services** | `#services` | 269-737 | 469 | 1792-2311 | `main.js` 220-559 | — |
+| 03 | **Réalisations** | `#realisations` | 738-1905 | 1168 | 2312-4382 | `main.js` 560-643 | — |
+| 04 | **Secteurs** | `#demos` | 1906-2371 | 466 | 4383-4500 | `main.js` 2080-2158 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 05 | **Visite 360** | `#visite` | 2372-2432 | 61 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
+| 06 | **Calculateur** | `#calculateur` | 2433-2602 | 170 | 4501-4637 | `main.js` 1860-2079 | — |
+| 07 | **Comparatif** | `#comparatif` | 2603-2727 | 125 | 4638-4795 | — | — |
+| 08 | **Processus** | `#processus` | 2728-2863 | 136 | 4796-4981 | `main.js` 644-680 | — |
+| 09 | **Agence** | `#apropos` | 2864-2956 | 93 | 4982-5064 | — | — |
+| 10 | **Référence** | `#reference` | 2957-3031 | 75 | 5065-5179 | — | — |
+| 11 | **Questions** | `#faq` | 3032-3107 | 76 | 5180-5213 | `langue.js` 613-641 | — |
+| 12 | **Contact** | `#contact` | 3108-3229 | 122 | 5214-5412 | `main.js` 1208-1253 · `main.js` 1254-1319 · `main.js` 1320-1411 | — |
+| — | **Pied de page** | `#footer` | 3230-3282 | 53 | 5413-5473 | `main.js` 2366-2386 | — |
 
 <!-- PLAGES:FIN -->
 
@@ -127,20 +127,35 @@ est le douzième.
 |---|---|
 | `.svc-piste[data-svc-piste]` | porte la **course**. Un écran plus (n − 1) × `--svc-pas`. Ne contient rien d'autre |
 | `.svc-scene[data-svc-scene]` | ce qu'on **voit**. `position: sticky`, un écran de haut |
-| `.svc-vitre` | **rogne** le rail. Le rognage s'arrête là : le panneau de détail est un descendant du rail et passe en `position: fixed` |
+| `.svc-vitre` | **rogne** le rail — et c'est pour ça que les fiches vivent DEHORS : un `position: fixed` posé sous un ancêtre transformé et rogné s'affiche coupé |
 
 **Composants** : seuil → `div.head` (h2 « Ce qu'on livre. ») →
 `div.svc#svc` (porte `--svc-marge`, `--svc-gap`, `--svc-larg`,
-`--svc-pas`, `--svc-n`) → `.svc-piste > .svc-scene > .svc-vitre >
-ol.svc-planche[data-svc-rail]` → 4 × `li.svc-plan[id]` (`#svc-01` à
-`#svc-04`) → **index** `nav.svc-index` (4 ancres `[data-svc-vers]`,
-jauge `i.svc-jauge > b[data-svc-jauge]`, `.svc-reserve`).
+`--svc-fin`, `--svc-pas`, `--svc-n`) → `.svc-piste > .svc-scene`, qui
+tient **trois rangées** :
 
-Par chantier : `p.svc-plan-num` · `h3.svc-plan-nom` · `p.svc-plan-dit`
-· `p.svc-plan-delai` · `div.svc-porte > details.svc-detail[data-svc-fiche]`.
-Par panneau : `.svc-fiche-tete` · `.svc-fiche-corps`
-(`.svc-fiche-dit` + `.svc-fiche-cote` avec `ol.svc-recu` et
-`ul.svc-specs`) · `.svc-fiche-pied`.
+1. `.svc-tete > .wrap.svc-tete-in` — `.head` (h2 + une ligne) et
+   l'odomètre `p.svc-compte > b.svc-roul[data-svc-compte]`. **La tête
+   est DANS la scène collante** : c'est ce qui supprime l'écran vide à
+   l'entrée.
+2. `.svc-vitre > ol.svc-planche[data-svc-rail]` — **six** `li.svc-plan` :
+   cinq services (`#svc-01` … `#svc-05`) et le panneau de clôture
+   `li.svc-plan--fin#svc-fin[role=none]`.
+3. `.svc-pied > .wrap` — `p.svc-reserve`, la réserve sur les délais,
+   visible à **toutes** les largeurs.
+
+Par service : `p.svc-plan-num` · `div.svc-plan-bas` (`h3.svc-plan-nom`
+· `p.svc-plan-dit` · `p.svc-plan-delai` · `div.svc-porte >
+a.svc-plus[data-svc-ouvre]`).
+
+Les **cinq fiches** sont hors de la piste, dans
+`div.svc-fiches[data-svc-fiches]` : `article.svc-fiche[id][tabindex=-1]`
+→ `.svc-fiche-barre` (numéro + `button[data-svc-ferme]`) ·
+`.svc-fiche-in` (`.svc-fiche-tete` · `.svc-fiche-corps` =
+`.svc-fiche-dit` + `.svc-fiche-cote` avec `ol.svc-recu` et
+`ul.svc-specs` · `.svc-fiche-pied` avec `.svc-fiche-actes`).
+La fiche 05 porte en plus `.svc-plan2d-duo` — deux SVG **redessinés**,
+jamais capturés.
 
 **Ce que la section ne contient PAS** : aucun `ScrollTrigger`, aucun
 pin, aucune image, aucun détournement de molette, aucun état de
@@ -155,20 +170,30 @@ c'est ce qui rend le bug d'ancre structurellement impossible.
 |---|---|
 | **Ancre** | `#realisations` |
 | **Seuil** | `02 → 03` · nom **« Démonstrations »** |
-| **Verbe / sens** | `data-verbe="degager"` `data-sens="bas"` `data-cible=".ba:first-of-type .ba-cadre"` — porte la trame |
+| **Verbe / sens** | `data-verbe="degager"` `data-sens="bas"` `data-cible=".ba:first-of-type .ba-scene"` — porte la trame |
 | **Fond encre** | non |
-| **Blocs CSS** | `15. AVANT / APRES` (dont le sous-bloc `L'AVANT — 2008-2012`, tout sous `.ba-vue--avant`) |
+| **Blocs CSS** | `15. AVANT / APRES`. **L'unité y est le `cqw`** : `1cqw = 10 px de maquette`, sur une page de référence de 1 000 px. Seuls les filets restent en `1px`. Quatre sous-blocs d'« avant », chacun sous son propre préfixe : `.v11` (2011), `.ann` (annuaire), `.tou` (office de tourisme), `.gab` (gabarit 2019) |
 | **JS** | `js/main.js` bloc `SECTION 03` — `avantApres()`. **Rien dans `motion.js`, rien dans `langue.js`** |
 
 **Composants** : seuil → en-tête (h2 « Ce qu'on voit encore. Ce que ça
-devient. » + chapô d'honnêteté) → `div.wrap.ba-liste` → 3 ×
-`article.ba[id]` : `#ba-garage`, `#ba-restaurant`, `#ba-deneigement`.
+Après. » + une ligne) → `p.ba-sans[hidden]` (repli sans script) →
+`div.wrap > div.ba-grille[data-souder]` → **4** `article.ba[id]` :
+`#ba-garage`, `#ba-design`, `#ba-restaurant`, `#ba-renovation`.
+Grille **deux par deux** à partir de 56em.
 
-Par comparaison : `.ba-tete` (numéro + étiquette « Démonstration ·
-entreprise fictive ») · `.ba-cadre[data-ba]` >
-`.ba-cran[role=radiogroup]` (2 `input[type=radio][data-ba-vue]` + 2
-`label`) + `.ba-scene` > `.ba-vue--avant` et `.ba-vue--apres` ·
-`ol.ba-ecart` (3 lignes).
+Par comparaison : `.ba-cadre[data-ba] > .ba-scene` (porte
+`container-type: inline-size` et `--ba-p`) > `.ba-vue--apres` et
+`.ba-vue--avant[role=img][aria-label]`, chacune contenant un
+`div.ba-page` ; puis `.ba-etq--a` / `.ba-etq--b`, `i.ba-trait` et
+`input.ba-poignee[type=range][data-ba-curseur]`. Sous le cadre :
+`p.ba-tete` (numéro + métier + nature de l'avant) et `p.ba-dit`
+(**une** phrase). La section se ferme sur `p.ba-fin`.
+
+Le vocabulaire de l'« après » est commun aux quatre : `.ap-nav`,
+`.ap-hero` (deux colonnes — l'objet lourd part à DROITE, sinon la
+moitié visible au repos est vide), `.ap-fiche`, `.ap-tel`,
+`.ap-bande > .ap-fait`, `.ap-bloc` (+ `.ap-cartes`, `.ap-liste`,
+`.ap-rail`, `.ap-grille`, `.ap-champ`, `.ap-menu`), `.ap-pied`.
 La maquette de 2011 : `div.v11 > table.v11-page[role=presentation]`.
 La maquette APED : `div.ap > .ap-nav + .ap-corps`, composition
 **différente** pour chacun des trois.

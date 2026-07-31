@@ -258,3 +258,13 @@ Issus de `archives/rapports/RECHERCHE-ACCUEIL.md`.
   1,03:1 pendant 117 ms ; on bascule à mi-course ;
 - alignement : **24-32 px** latéraux, **520 ms**, dépassement
   **0,00 px**.
+
+### Les outils du chantier Services et Réalisations (2026-07-31)
+
+| Outil | Ce qu'il refuse de laisser passer |
+|---|---|
+| `svc-course.mjs` | un écran vide à l'entrée du rail, une course qui s'arrête avant la fin, un mouvement invisible entre deux pas |
+| `svc-fiches.mjs` | un panneau qui déborde du viewport, un contenu plus haut que sa boîte sans défilement, la page qui défile derrière, Échap qui ne ferme pas, le focus qui ne revient pas |
+| `ba-check.mjs` | un curseur qui ne bouge rien, un clavier muet, une boucle qui ne se voit pas ou qui ne s'arrête pas, une poignée inerte sans script |
+
+Les trois prennent un **port**, pas une adresse.

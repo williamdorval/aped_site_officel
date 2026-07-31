@@ -1030,8 +1030,17 @@ html.entree-saut .hero-fiche .fiche-rule,
 /* V1 · DEGAGER — LE NOM SE DECOUVRE QUAND SON CHANTIER ARRIVE.  D-198 */
 @keyframes svc-degage-nom { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 }
-/* LE TEXTE DEFILANT. Valeurs par defaut de `<marquee>` selon la  D-216 */
-@keyframes v11-defile { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+/* V1 · DEGAGER, SENS BAS — la page se decouvre sous l'arete du  D-506 */
+@keyframes ba-defile {
+  0%, 9%   { transform: translateY(0); }
+  50%, 59% { transform: translateY(calc(var(--ba-course) * -1)); }
+  100%     { transform: translateY(0); }
+}
+@keyframes ap-souder { 0%, 6% { transform: scaleX(0); } 34%, 100% { transform: scaleX(1); } }
+@keyframes ap-rail { 0%, 8% { transform: translateX(0); } 46%, 100% { transform: translateX(-26cqw); } }
+@keyframes v11-defile { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+.tou :where(p, dl, dt, dd, ul, ol, li, figure) { margin: 0; padding: 0; }
+.tou :where(ul, ol) { list-style: none; }
 .fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
 /* --- 768 px : compositions asymetriques --- */
 @media (min-width: 48em) {

@@ -269,3 +269,82 @@ lignes reste un fichier où l'on peut se perdre si l'index ment. Tout
 repose donc sur `plages-check.mjs` et sur la discipline de le lancer.
 Si cette discipline ne tient pas, la décision est mauvaise et il
 faudra découper.
+
+
+## 2026-07-31 · Services et Réalisations
+
+### Cinq services, et la tête entre dans la scène
+
+Le rail commençait par un écran vide et finissait sans finir. Les deux
+défauts avaient la même cause : **rien ne remplissait la scène**.
+L'en-tête vivait au-dessus, hors du bloc collant, et le rail visait
+`k × pas` — une distance que le contenu ne pouvait pas parcourir.
+
+- **La tête est descendue dans la scène collante.** À l'entrée, le
+  visiteur voit le titre, le compteur et le service 01 en même temps.
+- **La cible d'un cran est le CENTRE de l'élément, bornée à
+  `[0, scrollWidth − clientWidth]`.** Le premier se cale à gauche, le
+  dernier à droite, et rien ne se clampe en silence au milieu.
+- **Un sixième élément ferme le rail** : « Et si le vôtre n'est pas
+  là ? ». Ce n'est pas un service — d'où `role="none"`, pour que la
+  liste continue d'en annoncer cinq.
+- **La marge du rail se MESURE** sur le texte au lieu de se recalculer.
+  `padding-inline: max(pad, (100% − maxw) / 2)` sur un `width:
+  max-content` résout le pourcentage contre sa propre largeur : 2 199 px
+  de marge fantôme, et le dernier service n'atteignait jamais sa place.
+
+### Le panneau de détail sort du rail
+
+Il s'affichait coupé parce qu'il était `position: fixed` **à
+l'intérieur** d'un conteneur transformé et rogné : un ancêtre
+transformé devient le bloc conteneur d'un descendant fixe, et
+`.svc-vitre` a `overflow: hidden`. Les cinq fiches vivent maintenant
+hors de la piste. Sans script elles sont cinq articles empilés et lus ;
+avec script, un calque `role="dialog"` avec Échap, clic dehors, verrou
+de défilement et retour du focus au bouton d'ouverture.
+
+### Le service 05 se dessine, il ne se capture pas
+
+Le brief demandait des captures floutées de l'outil d'estimation. Les
+schémas 2D et 3D sont **redessinés en SVG**. Trois raisons, dans cet
+ordre : une capture floutée sur un site qui interdit le flou est une
+contradiction que le visiteur voit ; les captures les plus utilisables
+portent le vocabulaire du métier du client **dans leurs pixels**, donc
+flouter le nom ne suffit pas ; et un dessin pèse 4 Ko au lieu de 300.
+Aucun nom, aucun secteur, aucune mesure du projet réel.
+
+### Quatre comparaisons, quatre échecs DIFFÉRENTS
+
+Quatre fois le même vieux site aurait fait un seul argument répété.
+Chaque « avant » échoue autrement : un site de 2011 en tableaux ; une
+fiche d'annuaire spécialisé où l'entreprise est noyée parmi seize
+concurrents ; une fiche d'office de tourisme sans horaire ni menu ni
+réservation ; et — le plus utile — **un gabarit acheté en 2019, qui
+n'a pas l'air vieux et ne répond quand même pas**. C'est celui-là qui
+parle au patron qui pense « j'ai déjà un site ».
+
+Le quatrième porte l'outil d'estimation du service 05 : c'est la seule
+des quatre qui démontre une capacité que les autres ne montrent pas,
+et elle referme la boucle entre Services et Démonstrations.
+
+### Le repos du curseur est 50 %, et c'est une décision
+
+La recherche est nette sur un point : un curseur est un contrôle caché,
+et le visiteur qui ne le bouge jamais repart en croyant qu'il n'y a
+rien. Au repos, le partage est donc **moitié-moitié** — l'écart se voit
+sans un geste, et la poignée n'est qu'un bonus. Sans script, elle est
+retirée : rien d'inerte à tirer.
+
+### Ce qu'on MONTRE peut être mauvais ; ce qu'on FAIT, non
+
+Les quatre reconstitutions ont un mauvais contraste : **c'est leur
+sujet**. Elles se déclarent `role="img"` avec une légende, et
+`theme-check` les exclut **en disant combien** (6 820 éléments). La
+moitié « après », elle, reste au budget — et deux échecs réels y ont
+été corrigés.
+
+### « Projets » promettait des mandats livrés
+
+Le libellé de navigation est devenu **« Démonstrations »**, partout, en
+une fois. Un visiteur qui clique « Projets » attend du travail
+commandé ; il trouvait quatre maquettes d'entreprises fictives.
