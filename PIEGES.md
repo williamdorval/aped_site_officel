@@ -460,3 +460,112 @@ mesure) pendant qu'elle est visible. C'est ce que fait
 `getBoundingClientRect()` rend la réservation, et une réservation
 périmée fausse chaque arrivée par ancre — près de 2 900 px d'erreur
 cumulée le 2026-07-31.
+
+---
+
+## AJOUTÉS LE 2026-07-31, CHANTIER DE MISE EN PRODUCTION
+
+### 35 · Une scène collante n'est épinglée qu'à partir de 100vh de course
+
+Le volet du sas de la descente jouait un balayage `yPercent: -101 → 0`
+sur les 42 premiers pour cent de sa piste. Il ne s'est **jamais vu**.
+Une scène `position: sticky; top: 0` reste dans le flux tant que le
+haut de sa piste n'a pas atteint le haut de la fenêtre : la première
+moitié de la course, la scène ENTRE par le bas, et tout ce qui bouge
+à l'intérieur bouge hors champ. Relevé : à p = 0,20 le bord bas du
+volet était à **964 px**, soit 64 px sous la fenêtre.
+
+**Correctif :** tout mouvement d'une scène collante se cale sur la
+fenêtre `[hauteurScène / hauteurPiste, 1]`, pas sur `[0, 1]`. Et si le
+mouvement n'y tient pas, c'est le DÉFILEMENT qui devient le balayage —
+une forme déjà là que le visiteur découvre, ce qui est la définition
+exacte de V1.
+
+### 36 · Un test qui synthétise l'événement ne teste pas le geste
+
+`ba-check.mjs` validait la poignée avant/après en posant `value` puis
+en émettant un `input`. Tout passait au vert. Un vrai `mouse.down`
+suivi de huit `mouse.move` a laissé la valeur **immobile du début à la
+fin**, souris et doigt : le glissement était mort, probablement depuis
+toujours. La cause tenait au champ `input[type=range]` étiré sur toute
+la scène, dont la PISTE n'a aucune hauteur — Chromium ne suit le
+pointeur que dedans.
+
+**Correctif :** pour un geste, simuler le geste. `mouse.down` +
+`mouse.move`, et exiger que la valeur **suive** le curseur, pas
+seulement qu'elle bouge. Deuxième forme du piège 17, et la plus chère.
+
+### 37 · Une image est glissable par défaut, et ça annule le geste
+
+Aussitôt le glissement réparé, il s'est remis à coller — mais
+autrement : la valeur suivait le premier déplacement, puis se figeait.
+Le navigateur reconnaissait un début de glisser-déposer d'**image** et
+émettait `pointercancel`, que tout pilote correct lit comme « le geste
+m'a été retiré ».
+
+**Correctif :** `draggable="false"` sur l'image, `user-select: none`
+sur le cadre. Vaut pour toute zone de geste qui contient une image ou
+du texte sélectionnable.
+
+### 38 · Une sonde de port en IPv4 ment sur un serveur qui écoute en IPv6
+
+Vite se lie à `localhost`, que Windows résout en `::1`. Un
+`net.connect(port, "127.0.0.1")` rendait « port libre » pendant que
+Vite répondait « port déjà utilisé » — deux verdicts contradictoires
+sur le même numéro, et trois changements de port pour rien.
+`netstat` disait la vérité : `TCP [::1]:5211 LISTENING`, rien sur
+`0.0.0.0`.
+
+**Correctif :** interroger `localhost`, pas une famille d'adresses. Et
+tuer les processus par `netstat | findstr LISTENING`, qui voit les
+deux familles.
+
+### 39 · `decode()` ne rejette jamais sur une image jamais demandée
+
+Une attente `Promise.all(images.map(i => i.decode().catch(…)))` a
+bloqué une sonde **huit minutes sans un mot**. `decode()` ne rejette
+pas quand l'image n'a pas été requise : il ne résout simplement
+jamais, et le `.catch` ne sert à rien.
+
+**Correctif :** toute attente sur une promesse qui vient de la page
+porte sa propre limite — `Promise.race` avec un délai. Et l'outil DIT
+combien d'images n'y sont pas arrivées.
+
+### 40 · Un sélecteur de masquage trop large peut effacer la page entière
+
+Pour neutraliser les curseurs maison des sites capturés, la sonde
+masquait `[class*="cursor"]`. Or `cursor-none` et `cursor-pointer` sont
+des utilitaires Tailwind, et un des sites le pose sur son enveloppe :
+**la page entière disparaissait**. Résultat livré sans un mot : quatre
+WebP de 5 Ko, entièrement noirs. Quatre passes ont cherché du côté du
+port, du lissage, de la densité d'écran.
+
+**Correctif :** deux règles. Un sélecteur de masquage se nomme
+explicitement, jamais par sous-chaîne de classe. Et une capture dont
+l'écart-type de luminance est nul **arrête l'outil** : une image vide
+n'est pas une image, et livrée en silence c'est ce qui part en ligne.
+
+### 41 · Un calendrier qui ouvre sur le mois courant peut n'avoir aucune date
+
+Le calendrier de réservation ouvrait sur le mois en cours. Un 31 du
+mois, avec un préavis de 24 h, il ne reste **aucune date ouverte** :
+le visiteur voyait quarante et un jours grisés, sans un mot pour lui
+dire d'aller au mois suivant. Trouvé par `formulaires-e2e.mjs`, qui a
+cherché une plage libre sur dix jours et n'en a trouvé aucune — et le
+défaut ne se manifeste que quelques jours par mois.
+
+**Correctif :** ouvrir sur le mois du premier jour RÉSERVABLE, et
+borner la flèche « précédent » sur ce mois-là. À poser dans la remise
+à zéro, pas seulement à l'initialisation : c'est elle qui s'exécute à
+chaque ouverture.
+
+### 42 · Une dégradation par palier ne s'hérite pas toute seule
+
+`:root[data-palier="1"] .v11-defile span { animation: none }` coupait
+la seule animation permanente du site. Au palier **2** — la machine la
+plus serrée des trois — l'attribut vaut « 2 », le sélecteur ne mord
+plus, et l'animation **se remettait à tourner**. L'escalade est à sens
+unique dans le code JavaScript ; elle ne l'était pas dans le CSS.
+
+**Correctif :** un palier coupe pour lui ET pour tous ceux d'après.
+Les trois valeurs sont écrites dans le sélecteur.

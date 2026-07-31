@@ -241,3 +241,69 @@ l'avoir mesuré.
   re-visée attend `scrollend` (repli 750/1100 ms). Un visiteur qui
   clique puis défile à la main DANS cette fenêtre annule la
   correction — choix assumé (sa main gagne toujours), non mesuré.
+
+---
+
+## OUVERTES APRÈS LA MISE EN PRODUCTION — 2026-07-31
+
+### Les captures des quatre « après » viennent de serveurs de DÉVELOPPEMENT
+
+Les quatre projets ont été photographiés sous `npm run dev`, pas sous
+un build de production. Le rendu visible est le même — c'est le même
+code, les mêmes polices, les mêmes images — mais aucune de ces quatre
+captures ne prouve que le site *déployé* est identique. Refaire les
+captures après un build réel serait plus solide.
+
+### Deux défauts trouvés DANS les projets sources, non corrigés
+
+Ils appartiennent aux dépôts des démonstrations, pas à ce site-ci, et
+personne ne les a corrigés à la source :
+
+1. **`demo-design-int-rieur` — les espaces disparaissent des titres en
+   Fraunces.** « On dessine des espaces qui vous ressemblent » rend
+   « Ondessinedesespacesqui vousressemblent ». Le caractère d'espace
+   est placé à la FIN d'un `inline-block`, où le rendu le supprime.
+   Trois endroits sur l'accueil. La capture le répare à la prise de
+   vue avec `white-space: pre-wrap` — donc **la capture est plus juste
+   que le site**, ce qui n'est pas tenable si le site part en ligne.
+2. **`restau` — le héros devient noir dès qu'on a fait défiler la page
+   d'un pixel** dans une fenêtre pilotée. Reproduit à chaque essai.
+   Contourné en photographiant sans bouger. Cause non cherchée.
+
+### Les chiffres invérifiables des sites de démonstration
+
+Les captures montrent, entre autres, « 12 000+ véhicules », « 98 % »,
+« 120+ projets livrés », « 5 000+ clients ». Ce sont les contenus de
+démonstrations d'entreprises qui n'existent pas, et la ligne
+d'honnêteté sous les quatre comparaisons le dit. Mais un visiteur qui
+ne lit pas cette ligne voit des chiffres. **À trancher par le
+propriétaire** : les neutraliser à la capture comme les coordonnées,
+ou les laisser.
+
+### Le tracteur du site de déneigement porte une marque réelle
+
+La photo du héros montre un tracteur identifiable. Ce n'est pas une
+fausse recommandation — c'est un objet dans une photo — mais aucun
+masquage textuel ne peut l'atteindre.
+
+### Les blocs photo gris des reconstitutions « avant »
+
+Quinze rectangles gris subsistent du côté AVANT des comparaisons
+(`.v11-photo`, `.gab-carr-photo`, `.gab-svc-i`). C'est un choix : un
+site de 2011 et un gabarit acheté ont des blocs photo génériques, et
+les reconstituer sans eux serait les flatter. `realisations-check.mjs`
+les compte à part et ne juge que le côté APRÈS, où il n'en reste
+aucun. **Si le propriétaire les trouve trop proches d'un placeholder,
+il faut les remplir d'une trame.**
+
+### FormSubmit n'est toujours pas activé
+
+Inchangé. Les six formulaires livrent **6 / 6 par le repli courriel**,
+vérifié de bout en bout le 2026-07-31 par `tools/formulaires-e2e.mjs`.
+Le service répond 200 avec `success: "false"` et un message
+d'activation. **Rien ne part automatiquement tant que le lien reçu par
+courriel n'a pas été cliqué.**
+
+### La réserve qui domine tout le reste n'a pas bougé
+
+> **AUCUNE mesure de ce projet n'a été prise sur un appareil réel.**

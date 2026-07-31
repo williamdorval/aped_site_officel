@@ -302,3 +302,67 @@ Témoin d'avant chantier (copie datée, port 8098) : `#visite` atterrissait
 | élément LCP | `SPAN.plate-big` | `SPAN.plate-big` |
 | CLS max | 0 | 0 |
 | chemin critique transféré | 292,3 Ko | 300,8 Ko (**+2,9 %** — les règles critiques des sas et le script du HEAD) |
+
+---
+
+## RELEVÉS DU 2026-07-31 · MISE EN PRODUCTION
+
+`node tools/serve.mjs 8099` d'abord. **Tous les outils cités ici
+acceptent un port OU une adresse complète** — `tools/_adresse.mjs`
+normalise les deux. Trois outils mouraient auparavant sur
+`Cannot navigate to invalid URL` selon la forme employée.
+
+### Les quatre outils de preuve, un par chantier
+
+| Outil | Ce qu'il rend | Verdict au 2026-07-31 |
+|---|---|---|
+| `forge-check.mjs` | fond du volet dans les deux thèmes · 13 images sur la piste dont 7 dans la fenêtre de forge, avec l'écart entre consécutives · i/s pendant le sas SEUL · **saccade mesurée à la molette** | 8 / 8 |
+| `services-check.mjs` | les six positions de repos avec haut, filet, bas, largeur et repos · séquence de 13 images · molette | 9 / 9 |
+| `panneaux-check.mjs` | les cinq panneaux ouverts · les deux renvois exercés **dix fois chacun** | 7 / 7 |
+| `realisations-check.mjs` | **un vrai glissement** de souris et de doigt · trois positions par comparaison · les huit pages en hauteur réelle · placeholders comptés séparément avant / après | 10 / 10 |
+| `production-check.mjs` | tous les liens · tous les boutons (**cliqués** quand aucun écouteur n'est détecté) · mots de remplissage · images · PDF · requêtes tierces · console | 8 / 8 |
+
+### La saccade, et comment elle se mesure
+
+**Un défilement lisse de synthèse ne peut PAS la voir** : il fabrique
+lui-même la continuité qu'on cherche à vérifier. On envoie une rafale
+de molette — 22 crans de 100 px toutes les 50 ms — et on relève
+l'avancée IMAGE PAR IMAGE.
+
+| Mesure, thème clair | `scrub: true` | `scrub: 0.45` |
+|---|---|---|
+| images figées pendant la rafale | **26 / 71** | **0 / 68** |
+| plus grand bond entre deux images | **44,5 px** | **23,6 px** |
+
+Le nombre de grains n'a jamais été en cause : **60 i/s dès le premier
+relevé**, 0 image au-dessus de 20 ms.
+
+### Le socle de performance, après les quatre chantiers
+
+| Mesure | Seuil | Relevé |
+|---|---|---|
+| LCP (`SPAN.plate-big`, 1440×900) | < 300 ms | **208 ms** |
+| CLS | 0 | **0** |
+| i/s médiane, traversée complète | 60 | **60** · 0 / 774 images > 20 ms |
+| i/s pendant le sas seul | 60 | **59,9** · 0 / 155 > 20 ms |
+| échecs de contraste, 5 largeurs × 2 thèmes | 0 | **0** |
+| contraste à l'arrêt, 41 positions | 0 | **0** |
+| débordement horizontal, 320 → 1920 | aucun | **aucun** |
+| contenu coupé par un `overflow` | aucun | **aucun** |
+| erreurs console | 0 | **0** |
+| écart de cascade | 0 | **0** sur 323 576 propriétés |
+| requêtes tierces | 0 | **0** |
+| liens morts / boutons muets | 0 | **0 / 66** · **0 / 97** |
+| formulaires qui livrent par le repli | 6 | **6 / 6** |
+| montants « À RETIRER » dans le source | 0 | **0** |
+
+Poids ajouté par les quatre captures des « après » : **309 Ko**,
+différées, hors du chemin critique. `critique.css` : 53 Ko.
+
+### Ce qui a été trouvé par la mesure, et n'aurait pas été trouvé autrement
+
+- le balayage du volet jouait **hors écran** — vu à l'image, pas au code ;
+- la poignée avant/après ne glissait pas, et le test la déclarait bonne ;
+- le calendrier de réservation n'offrait **aucune date** un 31 du mois ;
+- l'animation permanente **repartait** au palier 2 ;
+- un dessin rendait en noir plein faute de règle CSS applicable.

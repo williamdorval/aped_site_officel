@@ -1684,3 +1684,26 @@ langue.js — largeur, pointeur, coeurs, memoire — evaluables en une
 milliseconde synchrone. Les regles CSS correspondantes sont dans la
 liste CRITIQUES de css-critique.mjs pour la meme raison :
 `differe.css` arrive apres l'ancre.
+
+## 2026-07-31 · MISE EN PRODUCTION — D-586 à D-625
+
+Le journal complet, avec les relevés, est dans `DECISIONS.md`
+§ 2026-07-31. Ici, l'aiguillage : `grep D-6xx` trouve les deux bouts.
+
+| Plage | Fichier porteur | Sujet |
+|---|---|---|
+| D-586 | `css/tokens.css` · `css/app.css` | la chambre noire sort des deux thèmes |
+| D-587 à D-589 | `js/sas.js` | la forge en deux mouvements · les trois temps · le lissage |
+| D-590 à D-592 | `css/app.css` · `js/sas.js` | le centrage · le rognage · le balayage supprimé |
+| D-593, D-594 | `js/main.js` · `css/app.css` | le glissement au pointeur · le doigt qui tranche |
+| D-595 à D-598 | `css/app.css` · `js/main.js` | le trou · le panneau de clôture · le rythme · la gouttière |
+| D-599, D-600 | `js/main.js` · `tools/services-check.mjs` | le rattrapage du rail · la visée de la sonde |
+| D-601 à D-606 | `css/app.css` · `index.html` | les visuels des panneaux 01 à 04 |
+| D-607 | `js/main.js` · `js/tour360.js` | `data-tour-pret`, le lancement de la visite |
+| D-608 | `tools/css-critique.mjs` | les images-clés différées |
+| D-609 | `css/app.css` | le vocabulaire du dessin, hors d'une seule boîte |
+| D-610 à D-616, D-618, D-620 | `tools/demos-capture.mjs` | les sept pièges de la capture |
+| D-617, D-619, D-621 | `index.html` · `css/app.css` | l'après en capture · le glisser natif refusé · les temps d'arrêt |
+| D-622 | `js/main.js` | le calendrier ouvre sur le premier jour réservable |
+| D-623, D-624 | `tools/production-check.mjs` | les écouteurs demandés au moteur · le clic qui tranche |
+| D-625 | `css/app.css` | la dégradation s'hérite |

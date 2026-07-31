@@ -20,7 +20,8 @@ import { fileURLToPath } from "node:url";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
-const PORT = process.argv[2] || "8099";
+import { port as portDe } from "./_adresse.mjs";
+const PORT = portDe(process.argv[2]);
 const NOM = process.argv[3] || "theme";
 const BASE = `http://127.0.0.1:${PORT}/`;
 const SORTIE = path.join(RACINE, "refonte-captures", NOM);

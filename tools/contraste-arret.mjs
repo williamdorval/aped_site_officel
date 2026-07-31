@@ -12,7 +12,8 @@
    contre le fond opaque le plus proche.
    ============================================================ */
 import { chromium } from "playwright";
-const B = process.argv[2] || "http://localhost:8099";
+import { adresse } from "./_adresse.mjs";
+const B = adresse(process.argv[2]);
 const N = Number(process.argv[3] || 40);
 const nav = await chromium.launch();
 const page = await (await nav.newContext({ viewport: { width: 1440, height: 900 } })).newPage();

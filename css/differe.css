@@ -3021,16 +3021,28 @@ html:not(.js) .ba-trait { display: none; }
 .ba-page,
   .v11-defile span { animation: none !important; }
 }
-:root[data-palier="2"] .v11-defile span { padding-left: 0; }
 /* PALIER 1 — LA SEULE ANIMATION PERMANENTE TOMBE LA PREMIERE.  D-520 */
 /* Le texte defilant de 2011 tourne sans fin et sans declencheur :
    c'est exactement le poste qu'un appareil serre doit perdre en
    premier. La boucle de defilement des maquettes tombe avec lui ;
    L'apres n'a plus de mouvement interieur a garder : c'est une
    capture du vrai site, une image fixe (D-617). */
+/* ET CE QUI TOMBE AU PALIER 1 RESTE TOMBE AU PALIER 2.  D-625
+   La regle ne visait QUE `[data-palier="1"]`. Or l'attribut porte
+   une seule valeur : a « 2 », le selecteur ne mord plus, et le
+   texte defilant de 2011 se REMETTAIT A TOURNER sur la machine la
+   plus serree des trois. L'escalade est a sens unique — ce qu'elle
+   coupe ne revient pas parce qu'on est descendu d'un cran de plus.
+   Releve par `palier-check.mjs`, palier 2 exerce par bridage x6. */
 :root[data-palier="1"] .ba-page,
-:root[data-palier="1"] .v11-defile span { animation: none !important; }
-:root[data-palier="1"] .v11-defile span { padding-left: 0; }
+:root[data-palier="2"] .ba-page,
+:root[data-palier="3"] .ba-page,
+:root[data-palier="1"] .v11-defile span,
+:root[data-palier="2"] .v11-defile span,
+:root[data-palier="3"] .v11-defile span { animation: none !important; }
+:root[data-palier="1"] .v11-defile span,
+:root[data-palier="2"] .v11-defile span,
+:root[data-palier="3"] .v11-defile span { padding-left: 0; }
 /* == 16. SECTEURS - trois groupes, pas treize lignes filetees == */
 .sector-group {
   padding-block: var(--s-7);

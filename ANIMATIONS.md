@@ -783,13 +783,33 @@ DOM.
 
 | ID | Quoi | Fichier | Déclencheur | Durée / course | Verbe | Palier |
 |---|---|---|---|---|---|---|
-| A197 | Volet de la descente — l'encre avale l'écran, arête de grains | sas.js · app.css | scrub, piste 04→05, `top bottom → 55% bottom` | 200 vh de piste | V1 (arête = matière V3) | sas-ok |
-| A198 | La forge — pluie de grains → « Essayez. », déterministe par graine | sas.js | progression 0,42→0,88 du même scrub | ~2 000 grains, dpr ≤ 1,5 | V3 (les grains se soudent en mot) | sas-ok |
-| A199 | Le mot bascule — visibilité en une image à p ≥ 0,86, jamais un fondu | sas.js · `.est-la` | cran de progression | 1 image | V4 | sas-ok |
-| A200 | Fil minium de la descente — naît sous le mot, tire vers la pièce | sas.js | scrub p 0,88→1 | scaleY 0→1, 50 vh | V3 | sas-ok |
+| A197 | ~~Balayage du volet de la descente~~ — **SUPPRIMÉE le 2026-07-31** : elle se jouait entièrement hors écran (D-592). La plaque d'encre est déjà là, arête de grains en tête, et c'est le DÉFILEMENT qui la découvre — V1 dans sa définition exacte | app.css | — | piste 240 vh, arête `--s-4` en trois rangs | V1 (arête = matière V3) | sas-ok |
+| A198 | La forge — la limaille tombe puis s'aligne en « Essayez. », déterministe par graine | sas.js | progression **0,45→0,88** du même scrub, `LISSE = 0.45` | ~5 000 grains de 2 px, densité 1 — voir A204 et A205 | V2 (les grains se reprennent) | sas-ok |
+| A199 | Le mot bascule — visibilité en une image à **p ≥ 0,90**, jamais un fondu. Le canevas se vide au même instant : la limaille ne griffonne plus par-dessus (D-588) | sas.js · `.est-la` | cran de progression | 1 image | V4 | sas-ok |
+| A200 | Fil minium de la descente — naît **sous** le mot, tire vers la pièce. Il partait à `top: 50 %`, donc à travers le « y » (D-590) | sas.js | scrub **p 0,91→1** | scaleY 0→1, depuis `50 % + 7,5 vw` | V3 | sas-ok |
 | A201 | Calque de la remontée — se dégage vers le haut sur le Calculateur | sas.js | scrub, `top 85% → +=115vh` | translation −102 % | V1 | sas-ok |
 | A202 | Fil de la clôture — se soude dans la bande « Fin de la traversée » | sas.js | scrub, piste 12→00, `top bottom → bottom bottom` | scaleY 0→1 | V3 | sas-ok |
 | A203 | L'assemblage du rail — le contrat du voyage à l'arrivée | app.css (D-584) | horloges de `compo-hero`, retard 160 ms + 36 ms/station | 520 ms, 28 px, ζ = 1 | V2 | avec la séquence d'entrée |
 
 Preuves : `node tools/sas-check.mjs` — 11 captures par sas, écarts
 0,13–47,7 % ; traversée complète 60 i/s pile, 0 image > 20 ms / 763.
+
+---
+
+## AJOUTÉES LE 2026-07-31 — MISE EN PRODUCTION
+
+| # | Ce qui bouge | Fichier | Déclencheur | Course | Verbe | Palier |
+|---|---|---|---|---|---|---|
+| A204 | **La forge — chute** : chaque grain tombe jusqu'à sa hauteur finale, décalé latéralement. Il se forme un banc de limaille plus large que le mot | sas.js (D-587) | scrub `LISSE = 0.45`, p 0,45 → 0,70 | 0,35 à 1,25 fois la hauteur du canevas, vers le bas | V2 | sas-ok, palier 0 |
+| A205 | **La forge — alignement** : les grains se reprennent à l'horizontale, le banc se compacte et les lettres apparaissent d'elles-mêmes | sas.js (D-587) | scrub, p 0,70 → 0,88 | ± 7,5 % de la largeur du canevas, ζ = 1 | V2 | sas-ok, palier 0 |
+| A206 | **Le CRAN de la forge** : à p = 0,90 le canevas se vide et le vrai mot est là. Une seule image sépare l'un de l'autre | sas.js (D-588) | scrub, seuil 0,90 | bascule de `visibility` | V4 | sas-ok, palier 0 |
+| A207 | **Le rattrapage du rail des services** : entre deux crans de molette, la position rejoint sa cible sur le rythme d'affichage | main.js (D-599) | `scroll` + rAF | facteur 0,22 par image, converge en ~0,35 s | — | tombe avec le rail |
+| A208 | **La chaîne d'automatisation** du panneau 02 : une pièce de minium parcourt quatre stations, chacune se coche d'un cran en passant | app.css (D-603) | permanente, panneau ouvert | 7,2 s, 285 px, 4 crans | V2 + V4 | **tombe aux paliers 2 et 3**, marques conservées |
+| A209 | **La soudure de la chaîne** : le fil minium se ferme derrière la pièce | app.css (D-603) | idem | `scaleX` 0 → 1 par quarts | V3 | idem |
+
+### Retirées
+
+| # | Pourquoi |
+|---|---|
+| A197 | Le balayage du volet se jouait **hors écran** — la scène collante n'est épinglée qu'à partir de 100vh de course, et à p = 0,20 le bord bas du volet était 64 px sous la fenêtre. Le défilement EST le balayage (D-592) |
+| Mouvements intérieurs des quatre « après » (`.ap-rail`, la soudure des filets de `.ap-bloc-t`) | Les maquettes redessinées sont remplacées par des captures des vrais sites : une image fixe (D-617) |

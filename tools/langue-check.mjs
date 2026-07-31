@@ -18,7 +18,8 @@
    ============================================================ */
 import { chromium } from "playwright";
 
-const B = process.argv[2] || "http://localhost:8099";
+import { adresse } from "./_adresse.mjs";
+const B = adresse(process.argv[2]);
 const nav = await chromium.launch();
 
 function ligne(ok, texte) {

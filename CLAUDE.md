@@ -22,6 +22,7 @@ dans le document qui la porte.
 | **ce qui n'est pas prouvé, pas fini** | `RESERVES.md` |
 | **quels skills charger** | `DESIGN-STACK.md` |
 | **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` — le chantier du 2026-07-31 |
+| **les preuves d'un chantier** | `preuves/LISEZ-MOI.md` — un dossier par chantier, l'outil qui le refait, et ce qu'il faut voir dans chaque image |
 | **l'historique** | `archives/rapports/` |
 
 **Ces documents se mettent à jour à chaque changement de structure** —
@@ -120,7 +121,7 @@ se transforme.
 
 | Mesure | Seuil |
 |---|---|
-| LCP (`SPAN.plate-big`, 1440×900) | **< 300 ms** — mesuré 84 · 92 · 112 |
+| LCP (`SPAN.plate-big`, 1440×900) | **< 300 ms** — mesuré 84 · 92 · 112 · 208 |
 | CLS | **0** |
 | i/s médiane, traversée complète · images > 20 ms | **60** · **0** |
 | échecs de contraste, 5 largeurs × 2 thèmes | **0** |
@@ -233,4 +234,23 @@ le site, la piste des Services jamais touchée du doigt — sont dans
 34. **Une section `content-visibility` rend sa hauteur RÉSERVÉE même
    après une traverse** — elle ressaute dès qu'elle ressort de
    l'écran. Une hauteur réelle se mesure PENDANT que la section est
-   visible, en s'arrêtant dessus.
+   visible, en s'arrêtant dessus.35. **Une scène collante n'est épinglée qu'à partir de 100vh de
+   course** — tout mouvement qu'on y joue avant se joue hors champ.
+36. **Un test qui synthétise l'événement ne teste pas le geste** —
+   pour un glissement, `mouse.down` + `mouse.move`, et exiger que la
+   valeur SUIVE le curseur, pas seulement qu'elle bouge.
+37. **Une image est glissable par défaut** : le navigateur émet
+   `pointercancel` et retire le geste en cours.
+38. **Une sonde de port en IPv4 ment sur un serveur qui écoute en
+   IPv6** — interroger `localhost`, pas une famille d'adresses.
+39. **`decode()` ne rejette jamais sur une image jamais demandée** :
+   toute attente sur une promesse de la page porte sa propre limite.
+40. **Un sélecteur de masquage par sous-chaîne de classe peut effacer
+   la page** — `[class*="cursor"]` attrape `cursor-none`. Et une
+   capture plate doit ARRÊTER l'outil, jamais partir en silence.
+41. **Un calendrier qui ouvre sur le mois courant peut n'offrir aucune
+   date** — ouvrir sur le mois du premier jour réservable, et le poser
+   dans la remise à zéro, pas seulement à l'initialisation.
+42. **Une dégradation par palier ne s'hérite pas toute seule** : un
+   sélecteur `[data-palier="1"]` ne mord plus quand l'attribut vaut
+   « 2 ». Écrire les trois valeurs.

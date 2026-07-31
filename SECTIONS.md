@@ -26,19 +26,19 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 | № | Section | Ancre | `index.html` | l. | `css/app.css` | JS | autres |
 |---|---|---|---|---:|---|---|---|
-| 01 | **Accueil** | `#top` | 224-280 | 57 | 1716-1979 · 1212-1494 | `main.js` 114-219 | — |
-| 02 | **Services** | `#services` | 281-753 | 473 | 1980-2499 | `main.js` 220-559 | — |
-| 03 | **Réalisations** | `#realisations` | 754-1921 | 1168 | 2500-4570 | `main.js` 560-643 | — |
-| 04 | **Secteurs** | `#demos` | 1922-2413 | 492 | 4571-4688 | `main.js` 2080-2158 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
-| 05 | **Visite 360** | `#visite` | 2414-2483 | 70 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2484-2644 | 161 | 4689-4825 | `main.js` 1860-2079 | — |
-| 07 | **Comparatif** | `#comparatif` | 2645-2769 | 125 | 4826-4983 | — | — |
-| 08 | **Processus** | `#processus` | 2770-2905 | 136 | 4984-5169 | `main.js` 644-680 | — |
-| 09 | **Agence** | `#apropos` | 2906-2998 | 93 | 5170-5252 | — | — |
-| 10 | **Référence** | `#reference` | 2999-3073 | 75 | 5253-5367 | — | — |
-| 11 | **Questions** | `#faq` | 3074-3149 | 76 | 5368-5401 | `langue.js` 613-641 | — |
-| 12 | **Contact** | `#contact` | 3150-3282 | 133 | 5402-5600 | `main.js` 1208-1253 · `main.js` 1254-1319 · `main.js` 1320-1411 | — |
-| — | **Pied de page** | `#footer` | 3283-3335 | 53 | 5601-5661 | `main.js` 2446-2466 | — |
+| 01 | **Accueil** | `#top` | 224-280 | 57 | 1764-2027 · 1260-1542 | `main.js` 114-219 | — |
+| 02 | **Services** | `#services` | 281-917 | 637 | 2028-2722 | `main.js` 220-664 | — |
+| 03 | **Réalisations** | `#realisations` | 918-1734 | 817 | 2723-4426 | `main.js` 665-826 | — |
+| 04 | **Secteurs** | `#demos` | 1735-2226 | 492 | 4427-4544 | `main.js` 2291-2369 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 05 | **Visite 360** | `#visite` | 2227-2296 | 70 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
+| 06 | **Calculateur** | `#calculateur` | 2297-2457 | 161 | 4545-4681 | `main.js` 2071-2290 | — |
+| 07 | **Comparatif** | `#comparatif` | 2458-2582 | 125 | 4682-4839 | — | — |
+| 08 | **Processus** | `#processus` | 2583-2718 | 136 | 4840-5025 | `main.js` 827-863 | — |
+| 09 | **Agence** | `#apropos` | 2719-2811 | 93 | 5026-5108 | — | — |
+| 10 | **Référence** | `#reference` | 2812-2886 | 75 | 5109-5223 | — | — |
+| 11 | **Questions** | `#faq` | 2887-2962 | 76 | 5224-5257 | `langue.js` 613-641 | — |
+| 12 | **Contact** | `#contact` | 2963-3095 | 133 | 5258-5456 | `main.js` 1391-1436 · `main.js` 1437-1502 · `main.js` 1503-1594 | — |
+| — | **Pied de page** | `#footer` | 3096-3148 | 53 | 5457-5517 | `main.js` 2657-2677 | — |
 
 <!-- PLAGES:FIN -->
 

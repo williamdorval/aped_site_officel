@@ -1,0 +1,56 @@
+{
+  "liens": 66,
+  "parGenre": {
+    "ancre": 56,
+    "mailto": 4,
+    "externe": 1,
+    "relatif": 5
+  },
+  "liensMorts": [],
+  "boutons": 97,
+  "boutonsMuets": [],
+  "motsDeRemplissage": [],
+  "images": 22,
+  "imagesVides": [],
+  "imagesDormantes": [
+    {
+      "src": "images/doc-automatisation.webp",
+      "chargee": false,
+      "visible": false,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/doc-ia.webp",
+      "chargee": false,
+      "visible": false,
+      "dimensionnee": true,
+      "differee": true
+    }
+  ],
+  "imagesSansTaille": [],
+  "pdf": [
+    {
+      "h": "documents/aped-automatisation.pdf",
+      "statut": 200,
+      "type": "application/pdf"
+    },
+    {
+      "h": "documents/aped-ia-croissance.pdf",
+      "statut": 200,
+      "type": "application/pdf"
+    }
+  ],
+  "requetesTierces": [],
+  "erreurs": [],
+  "verdict": {
+    "aucunLienMort": true,
+    "aucunBoutonMuet": true,
+    "aucunMotDeRemplissage": true,
+    "toutesLesImagesChargent": true,
+    "toutesLesImagesSontDimensionnees": true,
+    "lesDeuxDocumentsRepondent": true,
+    "aucuneRequeteTierce": true,
+    "aucuneErreurConsole": true
+  }
+}

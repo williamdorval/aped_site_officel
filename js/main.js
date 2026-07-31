@@ -1602,13 +1602,33 @@
   var slotsEmpty = $("#slotsEmpty");
   var bookingModal = $("#modal-booking");
 
-  var calView = new Date();
   var selectedDate = null;
   var selectedSlotLabel = "";
 
   function startOfDay(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
   function minDate() { return startOfDay(new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000)); }
   function maxDate() { return startOfDay(new Date(Date.now() + BOOKING.horizonDays * 24 * 3600 * 1000)); }
+
+  /* == LE CALENDRIER OUVRE SUR LE PREMIER JOUR RESERVABLE.  D-622
+     Il ouvrait sur le MOIS COURANT. Un 31 du mois, avec un preavis
+     de 24 h, il ne reste aucune date ouverte dans ce mois-la : le
+     visiteur voyait quarante et un jours GRISES, sans un mot pour
+     lui dire d'aller au mois suivant. Releve le 2026-07-31 par
+     `formulaires-e2e.mjs`, qui a cherche une plage libre sur dix
+     jours et n'en a trouve aucune.
+     On ouvre donc sur le mois du premier jour ouvrable — la fleche
+     « precedent » se desactive d'elle-meme, rien d'autre a changer. */
+  function premierJourOuvrable() {
+    var d = minDate();
+    var fin = maxDate();
+    for (var i = 0; i < 60 && d <= fin; i++) {
+      if (BOOKING.businessDays.indexOf(d.getDay()) !== -1) return d;
+      d = new Date(d.getTime() + 86400000);
+    }
+    return minDate();
+  }
+
+  var calView = premierJourOuvrable();
   function slotLabel(slot) { var p = slot.split(":"); return p[0] + " h " + p[1]; }
 
   function goBStep(n) {
@@ -1666,9 +1686,13 @@
       })(d);
     }
 
+    /* La borne du « precedent » est le mois du premier jour
+       RESERVABLE, pas le mois courant : remonter plus haut ne
+       montrerait que des cases grisees.  D-622 */
     var viewStart = new Date(y, m, 1);
-    var thisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    calPrev.disabled = viewStart <= thisMonth;
+    var pj = premierJourOuvrable();
+    var moisPlancher = new Date(pj.getFullYear(), pj.getMonth(), 1);
+    calPrev.disabled = viewStart <= moisPlancher;
     calNext.disabled = new Date(y, m + 1, 1) > hi;
   }
 
@@ -1706,7 +1730,11 @@
   }
 
   function resetBooking() {
-    calView = new Date();
+    /* Et ICI aussi : c'est la remise a zero qui s'execute a chaque
+       ouverture de la modale, donc c'est elle qui decide du mois
+       affiche. La poser a `new Date()` ramenait le calendrier sur le
+       mois courant — entierement grise un 31 du mois.  D-622 */
+    calView = premierJourOuvrable();
     selectedDate = null;
     selectedSlotLabel = "";
     renderCalendar();

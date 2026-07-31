@@ -23,7 +23,9 @@ import { fileURLToPath } from "node:url";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
-const PORT = process.argv[2] || "8099";
+import { adresse, port as portDe } from "./_adresse.mjs";
+const PORT = portDe(process.argv[2]);
+
 
 const FICHIERS = ["index.html", "404.html", "css/app.css", "css/tokens.css", "css/base.css",
   "css/tour360.css", "js/main.js", "js/motion.js", "js/hero.js", "js/limaille.js",

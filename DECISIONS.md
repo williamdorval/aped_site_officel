@@ -379,3 +379,68 @@ CLS **0** · traversée complète **60 i/s pile, 0 image > 20 ms sur
 763** · ancres `#visite`/`#calculateur`/`#contact` à **88 px pile**
 (le `scroll-padding`) · cascade **0 écart sur 354 112 propriétés** ·
 console **0**.
+
+---
+
+## 2026-07-31 · MISE EN PRODUCTION — D-586 à D-625
+
+Quatre chantiers, et une seule règle : **ce qui se regarde se prouve
+par une image, pas par un chiffre.** Les preuves sont dans `preuves/`,
+un dossier par chantier, avec le `rapport.json` qui les accompagne.
+
+### La forge du sas — D-586 à D-592
+
+| ID | Décision |
+|---|---|
+| D-586 | La chambre noire sort des deux thèmes. Jetons `--chambre-*`, encre à pleine concentration `#060807`, un seul jeu pour les deux réglages. **Un lieu sombre qui blanchit quand on éteint la lumière n'est pas un lieu sombre**, et un arc de luminance qui s'inverse avec le thème n'a plus de direction |
+| D-587 | La limaille tombe, PUIS s'aligne. Deux mouvements séparés au lieu d'une convergence en droite ligne : la chute donne un banc, l'alignement latéral en tire les lettres. L'ancienne version bougeait 1,79 % des pixels entre deux images — un moment qu'on ne remarque pas n'existe pas |
+| D-588 | Les trois temps ne mordent plus l'un sur l'autre. Le vrai mot était posé à 0,86 pendant que la limaille peignait jusqu'à 0,94 : elle griffonnait par-dessus un texte déjà peint |
+| D-589 | `scrub: 0.45` au lieu de `true`. Mesuré à la rafale de molette : **26 images figées sur 71 et des bonds de 44,5 px**, contre 2 sur 68 et 23,6 px. Le problème n'a jamais été le nombre de grains — 60 i/s dès le départ |
+| D-590 | La scène EST déjà la colonne. Le fil écartait le rail une seconde fois : mot centré à 868, fil à 992 |
+| D-591 | Pas de rognage sur la scène de la descente : l'arête vit hors de la plaque |
+| D-592 | **Le balayage du volet est supprimé.** Il se jouait entièrement hors écran — la scène collante n'est épinglée qu'à partir de 100vh de course, et à p = 0,20 le bord bas du volet était 64 px SOUS la fenêtre. La plaque est déjà là et c'est le visiteur qui descend dedans, ce qui est la définition exacte de V1 |
+
+### Services — D-595 à D-600
+
+| ID | Décision |
+|---|---|
+| D-595 | La planche ne remplit plus la vitre. Elle l'étirait, et comme le corps de la carte est collé en bas, tout l'excédent s'empilait en vide au-dessus du titre. Écart filet → nom : **32 px**, le gap déclaré |
+| D-596 | Le panneau de clôture s'inscrit dans la même grille : largeur d'une carte, rangée 1 réservée sur un filet léger. Il n'avait pas de numéro, donc son corps se plaçait en rangée 1 — collé en haut, à l'opposé des cinq autres |
+| D-597 | Zone morte de 18 % à 10 %, pas vertical à 400 px. La pente maximale tombe de 2,34 à 1,79 fois la moyenne |
+| D-598 | La marge de fin du rail devient la gouttière de centrage : la dernière carte se calait 222 px à droite de toutes les autres |
+| D-599 | Le rail rattrape sa cible sur le rythme d'affichage. Même cause que la saccade du sas, même correctif |
+| D-600 | *(sonde)* la position de repos se vise à `haut − collant + course × p`. Oublier le `collant` décale de 5,3 px et fait condamner un centrage sain |
+
+### Les cinq panneaux — D-601 à D-609
+
+| ID | Décision |
+|---|---|
+| D-601 | Trois classes de remplissage ajoutées au vocabulaire du schéma 05, et rien d'autre |
+| D-602 | Le renvoi du panneau 01 porte le DESSIN de ce qu'on va voir : une page coupée en deux par le filet minium |
+| D-603 | Le service le plus abstrait reçoit le seul visuel animé du lot. Quatre stations nommées en français de tous les jours, une pièce de minium qui les parcourt, chaque station cochée d'un CRAN |
+| D-604 | Palier 2 et 3 : la course s'arrête, les quatre marques restent. `!important` — piège 16 |
+| D-605 | L'affiche du panneau 03 est la VRAIE première image du lecteur installé plus bas |
+| D-606 | Deux écrans dessinés pour le 04, au vocabulaire du 05. Redessinés, jamais capturés : une capture d'un logiciel livré serait la preuve d'un mandat qu'on ne peut pas montrer |
+| D-607 | `data-tour-pret` : `tour360.js` arrive en vague 2, un `.click()` envoyé avant frappe un bouton sans écouteur et ne fait rien, en silence |
+| D-608 | Les images-clés qui n'animent qu'un panneau ouvert au clic quittent le chemin critique. Liste EXPLICITE, jamais un préfixe |
+| D-609 | Le vocabulaire du dessin ne vit plus sous une seule boîte. Vu à la capture : un `p2-plaque` sans règle rendait en NOIR PLEIN et ne levait aucune erreur |
+
+### Réalisations — D-593, D-594, D-610 à D-621
+
+| ID | Décision |
+|---|---|
+| D-593 | **Le glissement est piloté au pointeur.** Un vrai `mouse.down` + huit `mouse.move` laissaient `--ba-p` à 50 du début à la fin. Le champ `input[type=range]` est étiré sur toute la scène mais sa piste n'a aucune hauteur |
+| D-594 | Au doigt, le premier déplacement tranche : horizontal on compare, vertical la page reprend la main |
+| D-617 | **L'après est une capture du vrai site.** Les quatre maquettes redessinées portaient des rectangles gris à la place des photos, dans la section dont le sujet est la preuve. 426 lignes de CSS mort partent avec elles |
+| D-619 | Une image est glissable par défaut : `pointercancel` annulait le geste dès le premier déplacement |
+| D-621 | Les temps d'arrêt de la boucle passent de 9 % à 5 % : l'après est une image fixe maintenant |
+| D-610 à D-616, D-618, D-620 | Sept pièges de la capture, tous écrits dans `tools/demos-capture.mjs` avec leur relevé. Voir `PIEGES.md` § 38 à 40 |
+
+### La passe de production — D-622 à D-625
+
+| ID | Décision |
+|---|---|
+| D-622 | Le calendrier ouvre sur le premier jour RÉSERVABLE. Un 31 du mois, il ouvrait sur quarante et un jours grisés |
+| D-623 | Les écouteurs se demandent au moteur, pas à une heuristique d'attributs : quatre faux verdicts sur quatre |
+| D-624 | Ce qui reste sans écouteur détectable **se fait cliquer**. La question posée est « est-ce que ce bouton mène quelque part » : c'est par le clic qu'on y répond |
+| D-625 | Ce qui tombe au palier 1 reste tombé aux paliers 2 et 3. Le sélecteur ne visait que « 1 », et l'animation permanente se remettait à tourner sur la machine la plus serrée des trois |
