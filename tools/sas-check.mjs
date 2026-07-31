@@ -127,4 +127,38 @@ for (const ancre of ["#visite", "#calculateur"]) {
 }
 
 console.log("ERREURS CONSOLE:", erreurs.length ? JSON.stringify(erreurs) : "aucune");
+
+/* --- LES REPLIS. Sous 64em et sous mouvement reduit, un sas EST sa
+   bande de seuil : hauteur de bande, pas de classe sas-ok, aucun
+   canvas, aucun volet peint. --- */
+for (const cas of [
+  { nom: "390px", ctx: { viewport: { width: 390, height: 844 } } },
+  { nom: "reduit-1440", ctx: { viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" } },
+]) {
+  const c2 = await nav.newContext(cas.ctx);
+  const p2 = await c2.newPage();
+  await p2.addInitScript(() => {
+    try {
+      sessionStorage.setItem("aped-sans-popup", "1");
+      sessionStorage.setItem("aped-entree-saut", "1");
+    } catch (e) {}
+  });
+  await p2.goto(ADRESSE, { waitUntil: "networkidle" });
+  await p2.mouse.wheel(0, 10).catch(() => {});
+  await p2.waitForTimeout(1600);
+  const repli = await p2.evaluate(() => ({
+    sasOk: document.documentElement.classList.contains("sas-ok"),
+    pistes: [...document.querySelectorAll(".sas[data-sas]")].map((s) => {
+      const b = s.querySelector(".sas-piste") || s;
+      return Math.round(b.getBoundingClientRect().height);
+    }),
+    actifs: document.querySelectorAll(".sas.sas-actif").length,
+    forges: [...document.querySelectorAll(".sas-forge")].filter(
+      (cv) => getComputedStyle(cv).display !== "none").length,
+  }));
+  const bon = !repli.sasOk && repli.actifs === 0 && repli.forges === 0 &&
+    repli.pistes.every((h) => h < 400);
+  console.log("REPLI", cas.nom, bon ? "OK" : "ECHEC", JSON.stringify(repli));
+  await c2.close();
+}
 await nav.close();

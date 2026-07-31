@@ -2405,7 +2405,11 @@
       });
     }
 
-    if (location.hash && location.hash.length > 1) {
+    /* Les ancres du rail des Services ont leur propre visee, au
+       chargement comme au clic — la doubler l'a fait atterrir sur le
+       mauvais chantier, 10 fois sur 10. */
+    if (location.hash && location.hash.length > 1 &&
+      location.hash.indexOf("#svc-") !== 0) {
       var re = function () { mainReprise = false; viser(location.hash, 0); };
       if (doc.readyState === "complete") setTimeout(re, 120);
       else window.addEventListener("load", function () { setTimeout(re, 120); }, { once: true });

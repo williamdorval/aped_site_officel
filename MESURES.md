@@ -291,3 +291,14 @@ Les trois prennent un **port**, pas une adresse.
 
 Témoin d'avant chantier (copie datée, port 8098) : `#visite` atterrissait
 à **2 474 px** de sa cible — le défaut d'ancre était antérieur.
+
+**A/B apparié contre le témoin d'avant chantier** (`ab-structure.mjs`,
+7 passes alternées, témoin = copie datée sur le port 8098) :
+
+| Mesure | Avant | Après |
+|---|---|---|
+| LCP, médiane | 144 ms | 152 ms |
+| **LCP, médiane des différences** | — | **+8 ms** (étendue −24 à +20 : le bruit domine, aucun écart concluant) |
+| élément LCP | `SPAN.plate-big` | `SPAN.plate-big` |
+| CLS max | 0 | 0 |
+| chemin critique transféré | 292,3 Ko | 300,8 Ko (**+2,9 %** — les règles critiques des sas et le script du HEAD) |

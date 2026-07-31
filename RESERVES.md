@@ -173,10 +173,13 @@ invisible non borné. Les deux fichiers ne sont référencés nulle part
 (la marque affichée est `logo-mark.svg`), mais on ne peut pas en
 revendiquer l'exclusivité.
 
-**`images/og.png` contredit le site** — il affiche « 24 h · Délai de
-réponse » là où le site dit **12 h** partout, et les deux ne sont pas
-la même chose. C'est la carte qui part quand quelqu'un partage le site,
-et **aucun outil ne lit le texte dans un PNG**.
+**FERMÉ le 2026-07-31 — `images/og.png` contredisait le site** (« 24 h »
+contre 12 h partout, plus une pique invérifiable). La carte est
+maintenant **fabriquée depuis le vrai site** par `node tools/og.mjs` :
+plaque de limaille réelle capturée au repos, titre du hero, les trois
+faits du socle — vraie par construction. La réserve « aucun outil ne
+lit le texte dans un PNG » demeure : si le socle change, relancer
+l'outil fait partie de la correction de véracité.
 
 **La « photographie » de la maquette de 2011 est dessinée en CSS** —
 trois aplats et une trame, sursaturés. Pis-aller assumé : aucune image

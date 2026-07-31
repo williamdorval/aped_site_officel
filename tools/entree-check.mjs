@@ -172,13 +172,17 @@ page4.on("pageerror", (e) => R.erreurs.push("reduit pageerror: " + String(e)));
 await page4.goto(BASE, { waitUntil: "commit" });
 await page4.waitForFunction(() => performance.now() >= 260, null, { timeout: 8000 }).catch(() => {});
 R.reduit = { a260ms: await sonde(page4) };
-await page4.screenshot({ path: path.join(SORTIE, "reduit-260ms.png") });
+/* Le logo se mesure AVANT la capture d'ecran : la capture coute
+   100-200 ms et poussait la mesure au-dela de la fenetre 520-640 ms
+   du monogramme sur machine chargee — piege 9, un detecteur trop
+   lent condamne un comportement sain. */
 R.reduit.logoVisible = await page4.evaluate(() => {
   const m = document.querySelector(".entree-mark");
   if (!m) return false;
   const r = m.getBoundingClientRect();
   return r.width > 40 && getComputedStyle(m).clipPath === "none";
 });
+await page4.screenshot({ path: path.join(SORTIE, "reduit-260ms.png") });
 await page4.waitForTimeout(900);
 R.reduit.a1200ms = await sonde(page4);
 R.reduit.rideauParti = !R.reduit.a1200ms.rideauPresent;

@@ -46,6 +46,17 @@ await page.evaluate(() => {
     document.querySelectorAll("main p, main span, main li, main h1, main h2, main h3, main dd, main dt, footer p").forEach((el) => {
       const t = el.textContent.trim();
       if (t.length < 4) return;
+      /* Meme exclusion que theme-check : ce que le site MONTRE comme
+         mauvais (les reconstitutions declarees role="img", avec
+         legende) a le droit d'etre mauvais — c'est leur sujet. Ce
+         qu'il FAIT reste au budget. */
+      if (el.closest('[role="img"]')) return;
+      /* Le mot forge vit sur le volet d'encre par z-index, pas par
+         parente : la sonde DOM lit le fond de l'ancetre (ciment) et
+         condamne un blanc-sur-noir reel — piege 25, une sonde du DOM
+         ne voit pas la peinture. Sa preuve est en CAPTURE :
+         refonte-captures/sas/descente. */
+      if (el.closest("[data-sas-mot]")) return;
       if (el.querySelector("p,span,li,h1,h2,h3,dd,dt") && el.children.length) {
         /* On ne mesure que les feuilles de texte. */
         let feuille = true;

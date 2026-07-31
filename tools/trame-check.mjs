@@ -153,9 +153,25 @@ async function page(opts) {
   await p.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
   await p.waitForTimeout(900);
   const vus = await p.evaluate(() => [...window.__NOMS].sort());
-  const attendus = ["seuil-02", "seuil-03", "seuil-05", "seuil-06", "seuil-11", "seuil-12", "seuil-00"].sort();
+  /* Depuis le 2026-07-31, les frontieres 05 et 06 sont ABSORBEES par
+     leurs sas quand `html.sas-ok` est pose (D-576) : leur geste est
+     le volet du sas, pas un voile de trame. Les attendre ici serait
+     verrouiller l'ancien monde — le piege 17 dans l'autre sens. */
+  const sasOk = await p.evaluate(() => document.documentElement.classList.contains("sas-ok"));
+  const attendus = (sasOk
+    ? ["seuil-02", "seuil-03", "seuil-11", "seuil-12", "seuil-00"]
+    : ["seuil-02", "seuil-03", "seuil-05", "seuil-06", "seuil-11", "seuil-12", "seuil-00"]).sort();
+  const interdits = sasOk ? ["seuil-05", "seuil-06"].filter((n) => vus.includes(n)) : [];
   const manquants = attendus.filter((a) => !vus.includes(a));
-  dire(manquants.length === 0, "les sept passages de frontiere partent, nommes", manquants.length ? "MANQUE " + manquants.join(", ") : vus.join(", "));
+  dire(manquants.length === 0 && interdits.length === 0,
+    sasOk ? "les cinq passages de frontiere partent, nommes — 05 et 06 absorbes par les sas"
+      : "les sept passages de frontiere partent, nommes",
+    manquants.length ? "MANQUE " + manquants.join(", ")
+      : interdits.length ? "DOUBLE GESTE " + interdits.join(", ") : vus.join(", "));
+  if (sasOk) {
+    const actifs = await p.evaluate(() => document.querySelectorAll(".sas.sas-actif").length);
+    dire(actifs === 3, "les trois sas sont actifs quand ils absorbent", String(actifs));
+  }
   dire(await p.evaluate(() => document.querySelectorAll("canvas.trame-voile").length) === 0, "aucun voile ne survit a la traversee");
   dire(erreurs.length === 0, "traversee complete : zero erreur console", erreurs.join(" | "));
   await c.close();

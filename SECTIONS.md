@@ -38,7 +38,7 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | 10 | **Référence** | `#reference` | 2999-3073 | 75 | 5253-5367 | — | — |
 | 11 | **Questions** | `#faq` | 3074-3149 | 76 | 5368-5401 | `langue.js` 613-641 | — |
 | 12 | **Contact** | `#contact` | 3150-3282 | 133 | 5402-5600 | `main.js` 1208-1253 · `main.js` 1254-1319 · `main.js` 1320-1411 | — |
-| — | **Pied de page** | `#footer` | 3283-3335 | 53 | 5601-5661 | `main.js` 2442-2462 | — |
+| — | **Pied de page** | `#footer` | 3283-3335 | 53 | 5601-5661 | `main.js` 2446-2466 | — |
 
 <!-- PLAGES:FIN -->
 
@@ -128,7 +128,7 @@ est le douzième.
 | **Ancre** | `#services` |
 | **Seuil** | `01 → 02` · nom **« Services »** |
 | **Verbe / sens** | `data-verbe="volet"` `data-sens="bas"` — porte la trame |
-| **Fond encre** | **oui** |
+| **Fond encre** | non — la bande est redevenue claire le 2026-07-31 (D-570, l'arc de luminance) |
 | **Blocs CSS** | `14. SERVICES` (le rail lui-même vit dans un seul `@media (min-width: 48em) and (prefers-reduced-motion: no-preference)`) |
 | **JS** | `js/main.js` bloc `SECTION 02` — `svcRail()`, `relire()`, `marquer()`, `image()`, `allerA()`, `viser()`, `surAncre()`. **Rien dans `motion.js`, rien dans `langue.js`** |
 

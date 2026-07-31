@@ -159,12 +159,16 @@ const R = {};
          releve est ce qui empeche ce test de passer en ne mesurant
          plus rien. */
       const m = new DOMMatrixReadOnly(getComputedStyle(rail).transform);
-      const mj = new DOMMatrixReadOnly(getComputedStyle(jauge).transform);
+      /* La jauge `[data-svc-jauge]` a quitte le document lors de la
+         seconde refonte des Services : l'outil DIT qu'elle est
+         absente au lieu de crasher — un crash sur cible disparue est
+         le cousin bruyant du piege 17. */
+      const mj = jauge ? new DOMMatrixReadOnly(getComputedStyle(jauge).transform) : null;
       const vus = [...document.querySelectorAll(".svc-plan[data-vu]")].length;
       return {
         scrollY: Math.round(window.scrollY),
         x: Math.round(m.m41),
-        jauge: +mj.a.toFixed(3),
+        jauge: mj ? +mj.a.toFixed(3) : "absente",
         actif: actif ? actif.id : null,
         ariaCurrent: cur ? cur.textContent.replace(/\s+/g, " ").trim() : null,
         vitreLeft: vitre.scrollLeft,
@@ -245,6 +249,13 @@ const R = {};
   const p = await page();
   await p.goto(BASE + "/index.html#svc-01", { waitUntil: "load" });
   await p.waitForTimeout(2600);
+  /* `.svc-index` et la navigation aux fleches ont quitte le document
+     avec la refonte « cinq services » du 2026-07-31 matin. Une cible
+     disparue se DIT — elle ne se crashe pas, elle ne se tait pas. */
+  const indexExiste = await p.evaluate(() => !!document.querySelector('.svc-index a[href="#svc-01"]'));
+  if (!indexExiste) {
+    R.clavier = { note: "CIBLE DISPARUE — .svc-index retire le 2026-07-31 (bb63a36), la navigation aux fleches n'existe plus ; le clavier passe par les liens .svc-plus" };
+  } else {
   const av = await p.evaluate(() => window.scrollY);
   await p.evaluate(() => { document.querySelector('.svc-index a[href="#svc-01"]').focus(); });
   await p.keyboard.press("ArrowRight");
@@ -269,6 +280,7 @@ const R = {};
     return { vitre: r.parentNode.scrollLeft, actif: actif ? actif.id : null, dansLaVitre: s.left >= v.left - 2 && s.right <= v.right + 2 };
   });
   R.clavier = { avant: Math.round(av), apresFleche: { ...ap, y: Math.round(ap.y) }, focus04: foc };
+  }
   await p.context().close();
 }
 
@@ -371,10 +383,14 @@ l("   saut maximal : " + Math.max(...R.ancre.map((s) => Math.abs(s.saut))) + " p
   "   |  chantier vise atteint : " + R.ancre.filter((s) => s.actif === "svc-03").length + " / 10");
 
 l("\n5 · CLAVIER");
-l("   fleche droite depuis l'index : scrollY " + R.clavier.avant + " -> " + R.clavier.apresFleche.y +
-  "   actif " + R.clavier.apresFleche.actif + "   vitre " + R.clavier.apresFleche.vitre);
-l("   focus sur « Voir en detail » du 04 : actif " + R.clavier.focus04.actif +
-  "   vitre " + R.clavier.focus04.vitre + "   bouton dans la vitre : " + R.clavier.focus04.dansLaVitre);
+if (R.clavier.note) {
+  l("   " + R.clavier.note);
+} else {
+  l("   fleche droite depuis l'index : scrollY " + R.clavier.avant + " -> " + R.clavier.apresFleche.y +
+    "   actif " + R.clavier.apresFleche.actif + "   vitre " + R.clavier.apresFleche.vitre);
+  l("   focus sur « Voir en detail » du 04 : actif " + R.clavier.focus04.actif +
+    "   vitre " + R.clavier.focus04.vitre + "   bouton dans la vitre : " + R.clavier.focus04.dansLaVitre);
+}
 
 l("\n6 · SANS JAVASCRIPT");
 l("   chantiers dans le document ... " + R.sansScript.chantiers);
