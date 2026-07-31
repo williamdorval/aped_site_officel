@@ -123,15 +123,10 @@ page derrière avant et après** — elle ne doit pas avoir bougé.
 |---|---|
 | La descente **jusqu'au pied du site neuf** : huit images plus la fin forcée | `defile-ba-*-0..7.png` et `defile-ba-*-fin.png` |
 | Les scènes épinglées qui **rejouent** leur transition latérale, sans superposition | `bande-ba-design-0-*.png` · `bande-ba-restaurant-0-*.png` |
-| La comparaison **en grand** | `loupe-ba-*.png` |
-| Le défilement en grand, sur toute sa course | `loupe-defile-ba-*-0..4.png` |
 
 `rapport.json` ajoute, pour chacune : `auBoutDuApres` — les deux côtés
 arrivent-ils à leur pied ensemble —, `scenesEpinglees` avec les états
-atteints et les écarts de pixels entre deux images, et `loupe` avec la
-taille de la scène avant et après agrandissement, la course
-recalculée, les positions atteintes par la poignée en grand, et la
-position de la page après fermeture.
+atteints et les écarts de pixels entre deux images.
 
 **Ce qu'aucune de ces images ne prouve :** le geste au doigt. La
 propriété `overscroll-behavior` est mesurée, le pouce ne l'est pas.

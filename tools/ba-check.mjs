@@ -18,9 +18,6 @@
                        grossiers : personne ne reste coince.
    6 · LE VERROU       a mi-piste chacun est a mi-course de SA
                        hauteur, au bout chacun est a son pied.
-   6bis · LA LOUPE     le MEME cadre, deplace dans le dialogue : la
-                       course se recalcule, et en fermant tout est
-                       revenu, place dans la page comprise.
    7 · L'ARRET         mouvement reduit, palier 2 — et on peut
                        toujours descendre dans le cadre.
    8 · SANS SCRIPT     le cadre est retire, les quatre titres
@@ -443,88 +440,6 @@ console.log("\n6 · LE VERROU — a mi-chemin d'un cote, a mi-chemin de l'autre"
     const rapportLu = m.avant / m.larg;
     const derive = Math.abs(rapportLu - RAPPORTS[paires[id]]) / RAPPORTS[paires[id]] * 100;
     dire(derive < 3, `${id} : rapport de la reconstitution ${rapportLu.toFixed(3)} contre ${RAPPORTS[paires[id]]} — derive ${derive.toFixed(1)} %`);
-  }
-  await ctx.close();
-}
-
-/* ---------- 6bis · LA LOUPE ----------  D-647
-   On ne verifie pas qu'un dialogue s'ouvre : on verifie que c'est LE
-   MEME cadre qui s'y trouve, que la course s'est recalculee, et
-   qu'en fermant tout est revenu — y compris la place dans la page.
-   Un cadre agrandi qui serait une COPIE passerait les trois
-   premieres questions et raterait la quatrieme. */
-console.log("\n6bis · LA LOUPE — le meme cadre, en grand");
-{
-  const { ctx, p } = await page();
-  for (const id of CARTES) {
-    await p.evaluate((i) => document.getElementById(i).scrollIntoView({ block: "center", behavior: "instant" }), id);
-    await p.waitForTimeout(600);
-    const avant = await p.evaluate((i) => {
-      const s = document.querySelector("#" + i + " .ba-scene");
-      const b = document.querySelector("#" + i + " [data-ba-ouvrir]");
-      const cs = b ? getComputedStyle(b) : null;
-      return {
-        h: s.clientHeight,
-        y: Math.round(window.scrollY),
-        bouton: !!b,
-        visible: cs ? cs.display !== "none" && cs.visibility !== "hidden" && parseFloat(cs.opacity) > 0.5 : false,
-        nom: b ? (b.textContent || "").trim().slice(0, 40) : ""
-      };
-    }, id);
-    dire(avant.bouton && avant.visible, `${id} : le bouton d'agrandissement est visible en permanence`);
-    dire(/Agrandir/.test(avant.nom), `${id} : et il porte un nom lisible — « ${avant.nom} »`);
-
-    await p.click(`#${id} [data-ba-ouvrir]`);
-    await p.waitForTimeout(700);
-    const dedans = await p.evaluate((i) => {
-      const d = document.getElementById("ba-loupe");
-      const c = d.querySelector(".ba-cadre");
-      const s = d.querySelector(".ba-scene");
-      const v = d.querySelector("[data-ba-vitre]");
-      return {
-        ouverte: d.open,
-        leMeme: !!(c && c.querySelector(".ba-shot")) && !document.querySelector("#" + i + " .ba-cadre"),
-        h: s.clientHeight,
-        course: v.scrollHeight - v.clientHeight,
-        trou: !!document.querySelector(".ba-trou")
-      };
-    }, id);
-    /* L'ANNEAU SE MESURE AU CLAVIER, PAS AU `focus()`.
-       `:focus-visible` ne s'arme pas sur un focus pose par script :
-       le navigateur ne le juge « visible » que quand il vient d'un
-       geste clavier. Une premiere version appelait `f.focus()` et
-       lisait le style — quatre faux echecs sur quatre, sur un anneau
-       qui existe. On tabule donc, comme un visiteur. */
-    await p.keyboard.press("Tab");
-    await p.waitForTimeout(120);
-    const anneau = await p.evaluate(() => {
-      const a = document.activeElement;
-      if (!a) return { ok: false, quoi: "aucun" };
-      const cs = getComputedStyle(a);
-      return {
-        ok: cs.outlineStyle !== "none" && parseFloat(cs.outlineWidth) > 0,
-        quoi: (a.className || a.tagName).toString().slice(0, 30)
-      };
-    });
-    dedans.anneau = anneau.ok;
-    dedans.focus = anneau.quoi;
-    dire(dedans.ouverte, `${id} : la loupe s'ouvre`);
-    dire(dedans.leMeme, `${id} : c'est LE MEME cadre — il n'est plus a sa place dans la grille`);
-    dire(dedans.h > avant.h * 1.8, `${id} : la scene passe de ${avant.h} a ${dedans.h} px de haut`);
-    dire(dedans.course > 1000, `${id} : la course s'est recalculee — ${dedans.course} px`);
-    dire(dedans.trou, `${id} : un trou de la meme hauteur garde la place dans la grille`);
-    dire(dedans.anneau, `${id} : au clavier, l element atteint porte un anneau — ${dedans.focus}`);
-
-    await p.keyboard.press("Escape");
-    await p.waitForTimeout(600);
-    const apres = await p.evaluate((i) => ({
-      fermee: !document.getElementById("ba-loupe").open,
-      revenu: !!document.querySelector("#" + i + " .ba-cadre"),
-      trou: !!document.querySelector(".ba-trou"),
-      y: Math.round(window.scrollY)
-    }), id);
-    dire(apres.fermee && apres.revenu && !apres.trou, `${id} : Echap ferme, le cadre est revenu, le trou est retire`);
-    dire(apres.y === avant.y, `${id} : on revient exactement ou on etait (${avant.y} → ${apres.y})`);
   }
   await ctx.close();
 }

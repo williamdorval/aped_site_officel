@@ -482,7 +482,7 @@ venaient de décisions prises la veille**.
 | D-644 | Une scène épinglée ne se met pas à plat : à une hauteur donnée elle n'a qu'un seul état horizontal. Elle est photographiée **image par image** sur toute sa course, empilée en planche, et le défilement du visiteur choisit laquelle montrer. La capture distingue un élément fixe **dès le sommet** — barre du site, à masquer — d'un élément qui **devient** fixe plus bas : celui-là est une scène, et il se rejoue |
 | D-645 | Les deux côtés défilent en **pourcentage**, pas en pixels. Deux pages de hauteurs très différentes ne peuvent pas partager une course en pixels sans que la plus grande soit plafonnée par la plus petite. La vitre ne contient plus qu'une piste vide ; les deux pages sont posées par-dessus et translatées chacune de sa fraction |
 | D-646 | Tout est calculé en `cqw` — centièmes de la largeur du cadre. Rien n'est à recalculer quand la fenêtre change, et **la même valeur sert au cadre en grille comme au cadre agrandi** |
-| D-647 | Le cadre agrandi **est le même cadre, déplacé**. Une copie aurait doublé le markup, doublé les images servies et laissé deux états qui divergent au premier glissement. Un trou de la même hauteur garde la place dans la grille, sinon la page saute sous le visiteur |
+| ~~D-647~~ | **RETIRÉE le 2026-07-31 (D-650)** — le propriétaire n'en veut pas. Ce qui suit reste écrit pour que personne ne la réinvente en croyant qu'elle manquait : le cadre agrandi **était le même cadre, déplacé**. Une copie aurait doublé le markup, doublé les images servies et laissé deux états qui divergent au premier glissement. Un trou de la même hauteur garde la place dans la grille, sinon la page saute sous le visiteur |
 
 ### Les tuiles — D-648 et D-649
 
@@ -493,3 +493,9 @@ place des quatre sites « après ».
 |---|---|
 | D-648 | Chaque capture « après » est **découpée en tuiles de 1 100 px**. Une image de 6 916 px arrive tout d'un coup ou pas du tout, et pendant le « pas du tout » le navigateur peint son texte alternatif dans une boîte de 3 863 px. La description quitte les images et passe sur la vue en `role="img"` — un `alt` vide ne peut plus remplir l'écran |
 | D-649 | `ba-check § 9` exige que **chaque** image charge : `complete`, `naturalWidth > 0`, dimensions rendues non nulles — et les fonds CSS du côté « avant » sont demandés un par un. Prouvé en retirant deux fichiers : le test les nomme tous les deux |
+
+### Le retrait de la loupe — D-650
+
+| ID | Décision |
+|---|---|
+| D-650 | La loupe est retirée en entier : le bouton, le dialogue, le trou qui gardait la place, les règles de la vue agrandie, le pilote de `main.js` et les deux sections de test. Elle marchait et elle était prouvée ; elle n'était pas voulue. Vérifié après coup : la poignée atteint toujours 2 / 50 / 98 %, les quatre cadres gardent leur course et descendent jusqu'au pied du site neuf |

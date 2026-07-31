@@ -1661,140 +1661,14 @@ html.js .svc-fiche[data-ouvert],
   border: var(--rule-w) solid var(--rule-strong);
   background: var(--surface-2);
 }
-/* == LA LOUPE — LE CADRE EN GRAND ==  D-647
-   L'AFFORDANCE EST UN BOUTON DANS LA BARRE D'ADRESSE, et c'est
-   voulu : un navigateur met ses commandes de fenetre a cet
-   endroit-la, donc personne n'a besoin qu'on le lui explique. Il est
-   VISIBLE en permanence — un bouton qui n'apparait qu'au survol
-   n'existe pas au doigt, et c'est justement au telephone que la
-   loupe sert le plus, la ou les cadres sont minuscules.
-   Il ne peut pas se confondre avec la poignee : il vit dans la barre
-   du haut, elle vit dans la scene. */
-.ba-loupe-ouvrir {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.2rem;
-  padding: 0;
-  background: var(--ink);
-  color: var(--surface-0);
-  border: 0;
-  cursor: zoom-in;
-}
-.ba-loupe-ouvrir svg {
-  width: 1rem;
-  height: 1rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-}
-.ba-loupe-ouvrir:hover,
-.ba-loupe-ouvrir:focus-visible { background: var(--accent); color: var(--accent-ink); }
-.ba-loupe-ouvrir:focus-visible { outline: var(--focus-w) solid var(--accent-text); outline-offset: calc(var(--focus-w) * -1); }
-/* L'etiquette « Apres » lui cede la place : elles occupaient le meme
-   coin, et une etiquette masquee par un bouton ne dit plus rien. */
-.ba-chrome .ba-etq--b { margin-right: 2.75rem; }
-.loupe {
-  width: min(96vw, 1600px);
-  max-width: none;
-  height: min(94dvh, 1000px);
-  max-height: none;
-  padding: 0;
-  border: var(--rule-w) solid var(--rule-strong);
-  border-radius: 0;
-  background: var(--surface-1);
-  color: var(--ink);
-  overflow: hidden;
-}
-.loupe::backdrop { background: rgb(16 18 17 / 0.86); }
-.loupe-hote {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  padding: var(--s-6);
-}
-/* LE CADRE ACCUEILLI PREND TOUTE LA PLACE, EN LARGEUR ET EN HAUTEUR.
-   Le rapport 16/10 de la grille est la pour que quatre ecrans
-   tiennent dans une rangee. Dans la loupe il n'a plus de raison
-   d'etre, et il coutait cher : sur un telephone de 390 x 844, une
-   scene bridee a 16/10 faisait 364 x 228 — quatorze pixels de plus
-   que dans la grille. La loupe ne servait a rien la ou elle sert le
-   plus.
-   La scene prend donc la hauteur restante. La bande d'une scene
-   epinglee reste haute de 62,5 cqw — c'est UNE fenetre du site
-   photographie, ca ne depend pas de la taille du cadre — et ce qui
-   depasse montre la page autour. `main.js` recalcule la course tout
-   seul : une fenetre plus haute, c'est moins de course, et c'est
-   exact. */
-.loupe-hote .ba-cadre {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-}
-.loupe-hote .ba-scene {
-  flex: 1 1 auto;
-  aspect-ratio: auto;
-  min-height: 0;
-}
-.loupe-hote .ba-tete { display: none; }
-.loupe-fermer {
-  position: absolute;
-  top: var(--s-3);
-  right: var(--s-3);
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  padding: 0.5rem 0.8rem;
-  background: var(--ink);
-  color: var(--surface-0);
-  border: 0;
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  cursor: pointer;
-}
-.loupe-fermer svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; }
-.loupe-fermer:hover,
-.loupe-fermer:focus-visible { background: var(--accent); color: var(--accent-ink); }
-.loupe-fermer:focus-visible { outline: var(--focus-w) solid var(--accent-text); outline-offset: calc(var(--focus-w) * -1); }
-/* LA PLACE RESTE PRISE PENDANT QUE LE CADRE EST AILLEURS.  D-647
-   Sans ca, la grille se referme quand le noeud part dans le
-   dialogue, et la page saute de 320 px sous le visiteur — il
-   retrouverait, en fermant, une section qui a bouge. */
-.ba-trou { display: block; }
-html:not(.js) .ba-loupe-ouvrir { display: none; }
-/* DANS LA LOUPE, LE BOUTON D'AGRANDISSEMENT N'A PLUS D'OBJET, et il
-   entrait en collision avec le bouton de fermeture : les deux
-   visaient le meme coin. On le retire, et l'etiquette « Apres »
-   reprend la place qu'elle lui cedait. */
-.loupe-hote .ba-loupe-ouvrir { display: none; }
-.loupe-hote .ba-chrome .ba-etq--b { margin-right: 0; }
-@media (max-width: 40em) {
-.loupe { width: 100vw; height: 100dvh; border: 0; }
-.loupe-hote { padding: 0; }
-/* SUR TELEPHONE, FERMER SE MET SOUS LE POUCE, PAS SOUS L'ONGLE.
-     En haut a droite il couvrait la barre d'adresse du cadre — donc
-     l'etiquette « Apres » et le domaine — et il fallait remonter la
-     main pour l'atteindre. En bas au centre, il ne couvre que le
-     pied de la comparaison et il tombe la ou le pouce est deja. */
-.loupe-fermer {
-    top: auto;
-    right: auto;
-    bottom: calc(var(--s-3) + env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.7rem 1.1rem;
-  }
-}
+/* LA LOUPE EST RETIREE.  D-650
+   Le cadre pouvait s'ouvrir en grand dans un `<dialog>` : bouton dans
+   la barre d'adresse, Echap, clic dehors, retour a la place exacte.
+   Elle marchait et elle etait prouvee. Le proprietaire n'en veut pas.
+   Tout part — le bouton, le dialogue, le trou qui gardait la place,
+   les regles de la vue agrandie, le pilote et les deux sections de
+   test. Ce qui reste de D-647 est son entree dans `DECISIONS.md`,
+   pour que personne ne la reinvente en croyant qu'elle manquait. */
 /* LES DEUX ETIQUETTES SONT PERMANENTES.  D-508
    ELLES VIVENT DANS LA BARRE D'ADRESSE, PAS SUR LA PAGE.  D-638
    Elles etaient posees dans les coins hauts de la scene, donc
