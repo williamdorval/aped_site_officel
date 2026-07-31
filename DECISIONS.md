@@ -469,3 +469,17 @@ descriptif part — « les gens ne lisent pas, ils regardent ».
 | D-640 | Au doigt, les deux gestes se disputent le même rectangle et ils ne peuvent pas gagner tous les deux. On tranche par la **surface** : la colonne de la poignée compare (`touch-action: none`), tout le reste du cadre défile. Sans ça, la vitre revendique le geste dès le premier déplacement — `pointercancel`, poignée figée à 42 % après un seul pas |
 | D-641 | La prise de la poignée s'allume sous `any-pointer: coarse` (pas `pointer: coarse` — un portable tactile annonce un pointeur primaire fin), et `main.js` renvoie la molette posée dessus à la vitre. Le filet vit dans la scène, pas dans la vitre : sa molette faisait descendre la **page**, et les cinq écarts de la descente sont tombés à 0,00 % |
 | D-642 | Seule la **première séquence tactile d'une page** aboutit sous Playwright. Le défaut suit le rang, pas la comparaison — vérifié dans les deux sens. `realisations-check` ne juge donc plus que la première ; `tools/ba-doigt.mjs` prouve les quatre, une page neuve chacune |
+
+### Les cadres navigables — D-643 à D-647
+
+Chantier du 2026-07-31, deuxième passe. Trois défauts signalés par le
+propriétaire, tous vus à l'écran et invisibles au code, et **les trois
+venaient de décisions prises la veille**.
+
+| ID | Décision |
+|---|---|
+| D-643 | Les quatre « après » sont photographiés **entiers**, jusqu'au pied de page — 10 795 · 10 934 · 11 687 · 6 711 px. D-632 les coupait au rapport de la reconstitution d'en face : on montrait 14 % du site du garage, et le visiteur se bloquait au pied du site de 2011 |
+| D-644 | Une scène épinglée ne se met pas à plat : à une hauteur donnée elle n'a qu'un seul état horizontal. Elle est photographiée **image par image** sur toute sa course, empilée en planche, et le défilement du visiteur choisit laquelle montrer. La capture distingue un élément fixe **dès le sommet** — barre du site, à masquer — d'un élément qui **devient** fixe plus bas : celui-là est une scène, et il se rejoue |
+| D-645 | Les deux côtés défilent en **pourcentage**, pas en pixels. Deux pages de hauteurs très différentes ne peuvent pas partager une course en pixels sans que la plus grande soit plafonnée par la plus petite. La vitre ne contient plus qu'une piste vide ; les deux pages sont posées par-dessus et translatées chacune de sa fraction |
+| D-646 | Tout est calculé en `cqw` — centièmes de la largeur du cadre. Rien n'est à recalculer quand la fenêtre change, et **la même valeur sert au cadre en grille comme au cadre agrandi** |
+| D-647 | Le cadre agrandi **est le même cadre, déplacé**. Une copie aurait doublé le markup, doublé les images servies et laissé deux états qui divergent au premier glissement. Un trou de la même hauteur garde la place dans la grille, sinon la page saute sous le visiteur |

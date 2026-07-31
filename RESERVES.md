@@ -330,22 +330,29 @@ une vraie marque.
 
 ### OUVERTES PAR LE CHANTIER DU CADRE NAVIGABLE — 2026-07-31
 
-**« La page entière dedans » a été lu comme « le site à l'échelle d'un
-écran, et on descend dedans ».** Le cadre montre une fenêtre de
-navigateur de 1 280 px réduite à 460, pas les 10 000 px du site tenus
-dans 286 px de haut. Les deux lectures de la demande sont possibles ;
-la seconde rendrait la composition illisible et interdirait de
-défiler, ce que la même demande exige. **Si le propriétaire voulait la
-première, il faut le dire — c'est une autre section, pas un réglage.**
+**FERMÉE le 2026-07-31 — la hauteur des « après ».** La réserve
+précédente assumait de couper chaque « après » à la hauteur de la
+reconstitution d'en face. Le propriétaire l'a relevé en une phrase :
+« j'arrive au bas du site avant, tout se bloque, et le après a encore
+beaucoup à montrer ». Il a raison, et l'argument que j'en donnais
+était faux — la règle « les deux côtés finissent à la même ligne » se
+tient en POURCENTAGE, pas en pixels. Les quatre sites sont
+photographiés entiers et se visitent jusqu'à leur pied de page.
 
-**La hauteur de chaque « après » est celle de la reconstitution d'en
-face**, pas celle du vrai site : 1,18 · 2,72 · 2,41 · 4,16 fois la
-largeur du cadre, contre 8 à 9 pour les pages réelles. Raison : une
-comparaison n'a de sens que si les deux côtés finissent à la même
-ligne, sinon la poignée compare le pied d'un site avec le milieu de
-l'autre. **Conséquence assumée : le garage ne montre que son héros et
-sa première section**, parce que son « avant » de 2011 n'était pas
-plus long. `ba-check.mjs § 6` refuse une dérive de plus de 3 %.
+**Le « après » n'est PAS un site vivant.** C'est une image cousue à
+partir du vrai site, plus une planche de vues par scène épinglée. Le
+visiteur voit la vraie page et la vraie transition, mais **rien ne
+tourne** : aucun script du site montré ne s'exécute, aucun lien n'y est
+cliquable. Faire tourner les quatre sites pour de vrai demanderait de
+les construire en statique, de les servir depuis ce dépôt et de
+corriger à la source les marques masquées à la prise de vue — c'est un
+autre chantier, et il change le modèle de déploiement.
+
+**La course d'une scène épinglée est relevée au pas de la descente,
+pas au pixel.** Le restaurant épingle sur environ 1 260 px ; la
+détection, qui avance par fenêtres de 640 px, en a retenu 605. La
+transition rejouée couvre donc un peu moins que la vraie. Aucune
+conséquence visible, mais c'est une approximation, pas une mesure.
 
 **Le doigt n'a pas été essayé.** `overscroll-behavior` passe à `auto`
 sous `pointer: coarse` pour que le cadre ne piège pas le défilement de
@@ -361,6 +368,13 @@ médiocrité est le sujet. Les quatre blocs « avant » portent
 d'assistance reçoit une image décrite et jamais ce texte-là. **Ça
 reste une exception argumentée à « 0 échec de contraste », pas un
 zéro.**
+
+**Le poids des images de la section passe de 333 Ko à 1 287 Ko** —
+quatre sites entiers plus deux planches de transition. Toutes
+différées, sous la ligne de flottaison, sans effet mesuré sur le LCP
+(168-220 ms) ni le CLS (0). Ça reste 1,3 Mo servis à qui descend
+jusque-là, et c'est le prix de « le visiteur visite vraiment les
+quatre sites ». À rediscuter si le poids devient un sujet.
 
 **`cls-source.mjs` relève 0,0017 sur 34 décalages** quand il pilote la
 page ; `accueil-check.mjs tenue`, l'instrument du seuil, relève **0**.

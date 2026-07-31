@@ -48,7 +48,7 @@
         98
       ],
       "ecartsDescente": [
-        66.79,
+        66.81,
         63.47,
         49.38,
         65.64,
@@ -83,15 +83,15 @@
             9
           ],
           "ecarts": [
-            50.25,
-            49.1,
+            50.24,
+            49.09,
             49.79,
             49.04,
             49,
             47.53,
-            39.41
+            39.4
           ],
-          "ecartMinimal": 39.41
+          "ecartMinimal": 39.4
         }
       ]
     },
@@ -111,14 +111,14 @@
       ],
       "ecartsDescente": [
         76.37,
-        57.04,
-        41.64,
-        26.37,
-        65.74,
+        57.08,
+        41.85,
+        26.5,
+        65.78,
         70.38,
         42.48
       ],
-      "ecartMinimal": 26.37,
+      "ecartMinimal": 26.5,
       "pageDerriere": "4643 → 4643",
       "auBoutDuApres": {
         "auBout": true,
@@ -145,15 +145,15 @@
             9
           ],
           "ecarts": [
-            34.35,
-            38.11,
-            33.27,
-            32.55,
-            31.91,
-            32.33,
-            40.22
+            34.67,
+            38.46,
+            33.64,
+            32.92,
+            32.26,
+            32.74,
+            40.66
           ],
-          "ecartMinimal": 31.91
+          "ecartMinimal": 32.26
         }
       ]
     },
@@ -172,11 +172,11 @@
         98
       ],
       "ecartsDescente": [
-        80.49,
+        80.58,
         74.88,
-        61.03,
-        75.34,
-        66.26,
+        61.07,
+        75.39,
+        66.24,
         59.07,
         73.96
       ],
@@ -230,5 +230,131 @@
       ]
     }
   },
-  "erreursConsole": []
+  "erreursConsole": [],
+  "loupe": {
+    "ba-garage": {
+      "petite": {
+        "scene": "458x286",
+        "course": 3577
+      },
+      "grande": {
+        "ouverte": true,
+        "cadreDedans": true,
+        "trouPose": true,
+        "scene": "1314x833",
+        "course": 10249
+      },
+      "poigneeEnGrand": [
+        25,
+        75
+      ],
+      "ecartsDefileEnGrand": [
+        52.97,
+        38.82,
+        29.43,
+        27.42
+      ],
+      "ecartMinimalEnGrand": 27.42,
+      "pageAvant": 4139,
+      "apresFermeture": {
+        "fermee": true,
+        "revenu": true,
+        "trouRetire": true,
+        "y": 4139
+      }
+    },
+    "ba-design": {
+      "petite": {
+        "scene": "458x286",
+        "course": 3408
+      },
+      "grande": {
+        "ouverte": true,
+        "cadreDedans": true,
+        "trouPose": true,
+        "scene": "1314x833",
+        "course": 9764
+      },
+      "poigneeEnGrand": [
+        25,
+        75
+      ],
+      "ecartsDefileEnGrand": [
+        41.77,
+        37.16,
+        38.58,
+        54.07
+      ],
+      "ecartMinimalEnGrand": 37.16,
+      "pageAvant": 4139,
+      "apresFermeture": {
+        "fermee": true,
+        "revenu": true,
+        "trouRetire": true,
+        "y": 4139
+      }
+    },
+    "ba-restaurant": {
+      "petite": {
+        "scene": "458x286",
+        "course": 3750
+      },
+      "grande": {
+        "ouverte": true,
+        "cadreDedans": true,
+        "trouPose": true,
+        "scene": "1314x833",
+        "course": 10746
+      },
+      "poigneeEnGrand": [
+        25,
+        75
+      ],
+      "ecartsDefileEnGrand": [
+        49.22,
+        36.81,
+        47.46,
+        65.36
+      ],
+      "ecartMinimalEnGrand": 36.81,
+      "pageAvant": 4643,
+      "apresFermeture": {
+        "fermee": true,
+        "revenu": true,
+        "trouRetire": true,
+        "y": 4643
+      }
+    },
+    "ba-renovation": {
+      "petite": {
+        "scene": "458x286",
+        "course": 2115
+      },
+      "grande": {
+        "ouverte": true,
+        "cadreDedans": true,
+        "trouPose": true,
+        "scene": "1314x833",
+        "course": 6056
+      },
+      "poigneeEnGrand": [
+        25,
+        75
+      ],
+      "ecartsDefileEnGrand": [
+        67.7,
+        64.78,
+        55.26,
+        54.14
+      ],
+      "ecartMinimalEnGrand": 54.14,
+      "pageAvant": 4643,
+      "apresFermeture": {
+        "fermee": true,
+        "revenu": true,
+        "trouRetire": true,
+        "y": 4643
+      }
+    }
+  }
 }

@@ -683,3 +683,41 @@ d'ailleurs échouer l'appel : `Must send a TouchStart first`.
 
 **Et une leçon de plus :** quand un défaut suit le RANG d'une boucle
 et jamais son contenu, ce n'est pas la page qu'il faut regarder.
+
+### 49 · Un élément fixe au sommet et un élément épinglé plus bas ne sont pas la même chose
+
+Une couture qui masque **tous** les `position: fixed` à partir de la
+deuxième fenêtre masque aussi les scènes épinglées — celles qui
+retiennent la page pendant deux ou trois mille pixels et font glisser
+leur contenu latéralement. Résultat : la scène disparaît par endroits,
+et ce qu'il en reste se recouvre, parce que chaque fenêtre est posée à
+sa hauteur de défilement alors que le contenu, lui, n'a pas bougé.
+
+Vu de la page finie, ça donne « des images superposées » — et ça fait
+passer le site montré pour du travail bâclé, alors qu'il est intact.
+
+**La distinction se relève à `y = 0` :** ce qui est déjà fixe au
+sommet est de la chrome (barre, voile) et doit être masqué. Ce qui
+**devient** fixe plus bas est une scène épinglée, et elle doit être
+jouée.
+
+### 50 · Deux pages de hauteurs différentes ne peuvent pas partager une course en pixels
+
+Un site de 2011 fait quelques centaines de pixels, un site neuf en fait
+dix mille. Empilés dans le même conteneur défilant, ils partagent une
+seule course — celle du plus court dès qu'on borne l'autre. Le
+visiteur arrive au pied du vieux site et **tout** s'arrête.
+
+**Correctif :** une course en POURCENTAGE. Le conteneur ne porte
+qu'une piste vide ; chaque page est translatée de sa propre fraction.
+À mi-chemin d'un côté, à mi-chemin de l'autre, et les deux atteignent
+leur pied ensemble. Aucun des deux ne plafonne l'autre.
+
+### 51 · `:focus-visible` ne s'arme pas sur un `focus()` de script
+
+Un test qui appelle `element.focus()` puis lit `outline-width` rend
+**zéro** sur un anneau qui existe : le navigateur ne juge le focus
+« visible » que lorsqu'il vient d'un geste clavier. Quatre faux échecs
+d'affilée sur un bouton parfaitement conforme.
+
+**Correctif :** tabuler, puis lire le style de `document.activeElement`.
