@@ -51,11 +51,26 @@ const GRAND = "?auto=compress&cs=tinysrgb&w=1920";
    16/9 pour les bandeaux, sinon en 4/3. */
 const TIRAGES = {
   construction: [
-    /* Le heros : une charpente en cours, c'est ce qu'un entrepreneur
-       general montre en premier. */
-    { n: 1, emploi: "heros — charpente en cours", large: true,
-      src: "url:" + PX + "/37627682/pexels-photo-37627682.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/new-home-construction-in-elk-grove-37627682/", fen: { x: 0, y: 0.10, w: 1 } },
+    /* LE HEROS PASSE EN `xl`.  D-660
+       Le standard demande une photographie PLEIN CADRE. Une image de
+       1280 px etiree sur une fenetre de 1280 en densite 1,5 est
+       demandee a 1920 px reels : elle arrive floue, et c'est la
+       premiere chose qu'on voit du site. Cette charpente-la est une
+       maison ENTIERE, montee, sous un ciel franc — pas un detail de
+       colombage : au heros, il faut le sujet, pas un morceau. */
+    /* DEUX HEROS ESSAYES ET REJETES, POUR DEUX RAISONS DIFFERENTES :
+       · `37627540` porte « TALLWALL » imprime en clair sur les
+         panneaux de revetement, a trois endroits. C'est une marque
+         reelle, et sur un heros de 1920 px elle se lit ;
+       · `33043393` est une rangee de logements neufs identiques. Le
+         site ecrit « pas de multilogement neuf ». La photo aurait
+         contredit la page a la premiere ligne.
+       Celle qui reste raconte l'entreprise en une image : une vieille
+       maison a clin blanc, et une ossature neuve greffee dessus. C'est
+       exactement « agrandissements et renovations majeures ». */
+    { n: 1, emploi: "heros — agrandissement greffe sur une maison existante", xl: true,
+      src: "url:" + PX + "/33954649/pexels-photo-33954649.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/33954649/", fen: { x: 0, y: 0.05, w: 1 } },
     { n: 2, emploi: "ossature de bois", large: true,
       src: "url:" + PX + "/8817834/pexels-photo-8817834.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/construction-of-framework-of-house-with-softwood-materials-8817834/", fen: { x: 0.04, y: 0.08, w: 0.92 } },
@@ -76,46 +91,88 @@ const TIRAGES = {
        planche-contact ou le texte imprime est trop petit pour se
        voir. Une planche-contact ne remplace pas l'image en taille
        reelle quand ce qu'on cherche est un mot. */
-    { n: 4, emploi: "chantier interieur, cloisons montees", src: "ph:unfinished_office", licence: LIC_PH,
-      page: "https://polyhaven.com/a/unfinished_office", yaw: 150, pitch: -6, hfov: 82 },
-    /* `small_empty_room_2` a d'abord ete mis ici, et c'est une piece
-       aux murs marbres avec des briques de verre de couleur : ni un
-       sous-sol, ni un chantier. Je l'avais deja ecartee pour cette
-       raison dans un autre tirage, et je l'ai reprise sans regarder. */
-    { n: 5, emploi: "sous-sol a finir", src: "ph:debris_basement_corridor", licence: LIC_PH,
-      page: "https://polyhaven.com/a/debris_basement_corridor", yaw: 0, pitch: -4, hfov: 84 },
-    { n: 6, emploi: "atelier de menuiserie", src: "ph:carpentry_shop_01", licence: LIC_PH,
-      page: "https://polyhaven.com/a/carpentry_shop_01", yaw: 270, pitch: -4, hfov: 78 },
-    { n: 7, emploi: "atelier, second poste", src: "ph:carpentry_shop_01", licence: LIC_PH,
-      page: "https://polyhaven.com/a/carpentry_shop_01", yaw: 90, pitch: -4, hfov: 78 },
-    { n: 8, emploi: "combles amenages", src: "ph:pine_attic", licence: LIC_PH,
-      page: "https://polyhaven.com/a/pine_attic", yaw: 180, pitch: -6, hfov: 80 },
-    { n: 9, emploi: "salle de bain livree", src: "ph:modern_bathroom", licence: LIC_PH,
-      page: "https://polyhaven.com/a/modern_bathroom", yaw: 180, pitch: -8, hfov: 80 },
-    { n: 10, emploi: "cuisine livree", src: "ph:kiara_interior", licence: LIC_PH,
-      page: "https://polyhaven.com/a/kiara_interior", yaw: 180, pitch: -6, hfov: 80 },
-    /* DEUX TIRAGES GARDES MAIS NON POSES SUR LE SITE.  D-657
-       Le site ecrit, en toutes lettres a la section Services : « On ne
-       fait pas de commercial, pas de multilogement neuf, pas de
-       piscine creusee. » Ces deux images-la ne peuvent donc pas etre
-       montrees comme des chantiers de l'entreprise :
-       · 11 — un mur ocre nu, sans un outil ni une trace de travail :
-         rien n'y prouve qu'un entrepreneur y soit passe ;
-       · 12 — un hall industriel a colonnes et cloisons de tole. Aucune
-         lecture residentielle ne tient : la poser ici contredirait la
-         ligne 705 de la page.
-       Elles restent produites et licenciees — un autre secteur peut en
-       avoir l'emploi. Elles ne sont referencees par aucune page. */
-    { n: 11, emploi: "non posee — piece finie, plancher neuf", src: "ph:small_empty_house", licence: LIC_PH,
-      page: "https://polyhaven.com/a/small_empty_house", yaw: 70, pitch: -6, hfov: 80 },
-    /* Le 4 tire deja `unfinished_office` a 150 degres : reprendre le
-       meme angle ici recreait exactement le doublon qu'on corrige.
-       Autre panorama, autre sujet. */
-    { n: 12, emploi: "non posee — grand volume industriel", src: "ph:empty_warehouse_01", licence: LIC_PH,
-      page: "https://polyhaven.com/a/empty_warehouse_01", yaw: 200, pitch: -4, hfov: 84 }
+    /* LES PANORAMAS REPROJETES CEDENT LA PLACE A DE VRAIES PHOTOS.  D-660
+       Un panorama Poly Haven est fait pour ECLAIRER un rendu 3D : il
+       est pris a hauteur de trepied, sans sujet, sans lumiere
+       choisie. Reprojete, il rend une piece correcte et morte. Le
+       standard demande une image ou l'on voit un geste, une matiere
+       ou une texture — et ca, seule une photographie le donne. Les
+       trois interieurs LIVRES restent en panorama : la piece finie
+       est justement le seul cas ou l'absence de sujet est juste. */
+    { n: 4, emploi: "chantier interieur — cloisons montees, portes percees",
+      src: "url:" + PX + "/7937304/pexels-photo-7937304.jpeg" + GRAND, licence: LIC_PX,
+      /* Source en PORTRAIT : le cadre calcule ne fait que 41 % de la
+         hauteur. Pose a 0, il photographie le plafond. Piege 58 */
+      page: "https://www.pexels.com/photo/7937304/", fen: { x: 0.09, y: 0.35, w: 0.82 } },
+    { n: 5, emploi: "demolition — gypse retire, ossature et isolant a nu",
+      src: "url:" + PX + "/8488031/pexels-photo-8488031.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8488031/", fen: { x: 0.09, y: 0.08, w: 0.82 } },
+    /* LE VISAGE EST UN CRITERE DE REJET, PAS UN DETAIL.
+       Quatre photographies d'atelier ecartees pour ca : `32357250`,
+       `11127339`, `8830256` montrent un visage net et identifiable, et
+       `17410515` porte un texte imprime illisible sur le dos de deux
+       chandails. Une entreprise fictive ne peut pas montrer des gens
+       reels au travail. Celle-ci ne montre que des MAINS. */
+    { n: 6, emploi: "atelier — le rabot a la main, personne d'identifiable", large: true,
+      src: "url:" + PX + "/5691541/pexels-photo-5691541.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/5691541/", fen: { x: 0, y: 0.08, w: 1 } },
+    /* La fenetre s'arrete a 62 % de la largeur : au-dela, un immeuble
+       jaune vif et rose occupe le fond, et un aplat fluorescent dans
+       une photo de chantier quebecois se voit avant la charpente. */
+    { n: 7, emploi: "charpente de toit — fermes et entraits, vue de dessous",
+      src: "url:" + PX + "/8491085/pexels-photo-8491085.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8491085/", fen: { x: 0.02, y: 0.05, w: 0.60 } },
+    /* LES TROIS INTERIEURS LIVRES PASSENT EUX AUSSI EN PHOTOGRAPHIE.  D-660
+       Ils etaient les derniers panoramas reprojetes de la page, et le
+       test du cote-a-cote les a designes tout seuls : sur la meme
+       page que la charpente et la demolition, la cuisine reprojetee
+       rendait une image floue avec un sac a main et un extincteur
+       dans le cadre. Un cadrage CSS peut sortir un objet du champ ; il
+       ne rend pas une image nette. Une piece LIVREE est justement
+       celle qu'un client regarde le plus longtemps — c'est la
+       derniere ou l'on peut se permettre une image d'amateur. */
+    /* `10187179` etait la premiere : une source en PORTRAIT ou les
+       puits de lumiere sont en haut et le lit en bas. Une fenetre 4/3
+       n'en garde que 41 % — soit les puits sans la piece, soit la
+       piece sans les puits. Deux essais, deux moities. Sur un sujet
+       qui a besoin des DEUX, il faut une source en paysage.
+       Celle-ci les a tous les deux, plus le plafond fini en bois que
+       la fiche du chantier decrit.
+       ATTENTION AU RAPPORT : la source est en 16/9. Une fenetre 4/3
+       de 82 % de large demande 1 181 px de haut sur une image qui
+       n'en a que 1 080 — le bas serait vide. `w` descend a 0,72. */
+    { n: 8, emploi: "combles amenages — plafond de bois, deux puits de lumiere",
+      src: "url:" + PX + "/271743/pexels-photo-271743.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/271743/", fen: { x: 0.14, y: 0, w: 0.72 } },
+    { n: 9, emploi: "salle de bain livree — douche vitree, ceramique pleine hauteur",
+      src: "url:" + PX + "/11208975/pexels-photo-11208975.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/11208975/", fen: { x: 0.09, y: 0.10, w: 0.82 } },
+    { n: 10, emploi: "cuisine livree — ilot central, armoires de bois et de laque",
+      src: "url:" + PX + "/36777538/pexels-photo-36777538.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/36777538/", fen: { x: 0.09, y: 0.03, w: 0.82 } },
+    { n: 11, emploi: "fond pleine largeur — maison enveloppee, toiture sous-couche posee", xl: true,
+      src: "url:" + PX + "/209266/pexels-photo-209266.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/209266/", fen: { x: 0, y: 0.05, w: 1 } },
+    { n: 12, emploi: "finition en cours — enduits, echelle, planchers proteges", large: true,
+      src: "url:" + PX + "/36035072/pexels-photo-36035072.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/36035072/", fen: { x: 0, y: 0.08, w: 1 } }
   ],
 
-  /* IMMOBILIER — DIX PROPRIETES, DONC DIX PROPRIETES.  D-658
+  /* DEUX TIRAGES SUPPRIMES, PAS ARCHIVES.  D-657 puis D-660
+     `ph:small_empty_house` — un mur ocre nu, sans un outil ni une
+     trace de travail — et `ph:empty_warehouse_01` — un hall industriel
+     a colonnes et cloisons de tole — avaient ete produits pour le site
+     de construction, puis ecartes : la section Services ecrit « on ne
+     fait pas de commercial », et une photo qui contredit le texte du
+     site ne se pose pas. Ils etaient restes sur le disque « au cas ou
+     un autre secteur en aurait l'emploi ».
+     Aucun n'en a eu l'emploi, et un fichier garde « au cas ou » est un
+     fichier que personne ne relit : il finit par etre repris SANS
+     etre regarde, ce qui est exactement l'erreur que ce projet a payee
+     trois fois. Ils sortent. La ligne de commande qui les refait est
+     dans l'historique.
+
+     IMMOBILIER — DIX PROPRIETES, DONC DIX PROPRIETES.  D-658
      La page annonce dix inscriptions a dix adresses differentes et
      n'avait QUATRE photos, reprises seize fois. Le meme salon portait
      « 412, chemin du Vieux-Moulin » et « 77, rue du Coteau-Vert » ; la
@@ -227,6 +284,14 @@ const TIRAGES = {
   ]
 };
 
+/* TROIS TAILLES, ET LA PLUS GRANDE EST NOUVELLE.
+   Le standard demande une photographie PLEIN CADRE au heros et des
+   cases de 400 a 700 px. Une image de 1280 px etiree sur une fenetre
+   de 1280 en densite 1,5 est demandee a 1920 px reels : elle arrive
+   floue, et c'est la premiere chose qu'on voit d'un site. `xl` sert
+   aux heros et aux fonds pleine largeur, `large` aux bandeaux, et
+   `normal` aux cartes. */
+const XL = { w: 1920, h: 1080 };
 const LARGE = { w: 1280, h: 720 };
 const NORMAL = { w: 960, h: 720 };
 
@@ -315,7 +380,7 @@ for (const secteur of aFaire) {
     const dest = path.join(SORTIE, `${secteur}-${t.n}.webp`);
     REGISTRE.push({ fichier: path.relative(RACINE, dest).replace(/\\/g, "/"), emploi: t.emploi, source: t.src, page: t.page, licence: t.licence });
     if (fs.existsSync(dest) && !FORCER) { console.log("·", path.basename(dest).padEnd(22), "deja present — on n'y touche pas"); continue; }
-    const dim = t.large ? LARGE : NORMAL;
+    const dim = t.xl ? XL : t.large ? LARGE : NORMAL;
     const f = await resoudre(t.src);
     let res;
     if (t.src.startsWith("ph:")) {
