@@ -866,12 +866,26 @@
         }
 
         if (piste && vitre) {
-          var enVol = false;
-          vitre.addEventListener("scroll", function () {
-            if (enVol) return;
-            enVol = true;
-            requestAnimationFrame(function () { enVol = false; rendre(); });
-          }, { passive: true });
+          /* ON PEINT DANS L'EVENEMENT, PAS UNE IMAGE PLUS TARD.  D-654
+             La premiere version etalait le rendu sur un
+             `requestAnimationFrame` — le reflexe habituel pour ne pas
+             surcharger un ecouteur de defilement. Ici c'etait FAUX, et
+             mesure : sur 18 images ou le defilement avancait,
+             l'image a suivi 0 fois dans la meme image. CENT POUR
+             CENT de retard d'une image, systematique.
+             Ce que ca donne a l'ecran : la vitre defile sur le
+             compositeur, mais ce qu'on voit est la PILE, posee
+             par-dessus et deplacee par nous. Une image de retard, et
+             la pile montre encore l'etat d'avant pendant que la
+             barre est deja ailleurs — deux contenus qui ne se
+             correspondent plus. Dans une scene epinglee, ou le
+             recouvrement occupe toute la fenetre, ca se lit comme du
+             contenu duplique et deborde.
+             Un evenement `scroll` est distribue AVANT la peinture :
+             y ecrire la transformation la fait partir dans la meme
+             image. Le cout est de deux proprietes personnalisees par
+             evenement, et c'est moins cher qu'une image de retard. */
+          vitre.addEventListener("scroll", rendre, { passive: true });
           mesurer();
           if (window.ResizeObserver) new ResizeObserver(mesurer).observe(scene);
         }

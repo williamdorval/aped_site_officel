@@ -506,3 +506,9 @@ place des quatre sites « après ».
 |---|---|
 | D-651 | Une scène épinglée n'est plus rejouée en **dix vues** — un saut tous les 240 px, un diaporama — mais en **deux couches continues** : le fond de la scène, et la piste qui glisse par-dessus, translatée. La mesure a tranché : dans les deux scènes, **un seul élément translate**, purement à l'horizontale, pendant que rien ne bouge verticalement. Une translation n'a pas de pas, donc elle ne peut pas sauter. Le poids des deux scènes tombe de 493 Ko à 96 Ko |
 | D-652 | Un fichier de sortie qui n'est plus produit est **effacé** par l'outil qui le produisait. Deux planches abandonnées quand les scènes sont passées en piste continue sont restées sur le disque, plus référencées, et gonflaient la section de 505 Ko sans que rien ne le dise |
+
+### Le retard d'une image — D-654
+
+| ID | Décision |
+|---|---|
+| D-654 | Les deux translations du cadre sont écrites **dans l'événement `scroll`**, plus dans un `requestAnimationFrame`. Mesuré avant : sur 18 images où le défilement avançait, le contenu suivait dans la même image **0 fois**. Après : 0 % de retard. Un `scroll` est distribué avant la peinture ; l'étaler sur une image faisait traîner la pile derrière la barre, et une couche en retard par-dessus une image fixe se lit comme du contenu superposé |

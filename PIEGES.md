@@ -792,3 +792,28 @@ référencés nulle part, invisibles à toute vérification de page, et
 L'outil qui produit doit **effacer ce qu'il ne produit plus**, en
 bornant le nettoyage à son propre motif de nom. Sinon le seul relevé
 juste est un `du` à la main, et personne ne le fait.
+
+### 56 · `requestAnimationFrame` sur un écouteur de défilement met le contenu en retard d'une image
+
+Étaler un rendu sur un `requestAnimationFrame` est le réflexe habituel
+pour ne pas surcharger un écouteur de `scroll`. Quand ce qu'on peint
+**est** ce que le visiteur croit défiler, c'est faux.
+
+Le conteneur défile sur le compositeur ; ce qu'on voit est une couche
+posée par-dessus et déplacée par nous. Une image de retard, et la
+couche montre encore l'état d'avant pendant que la barre est déjà
+ailleurs.
+
+**Mesuré :** sur 18 images où le défilement avançait, le contenu a suivi
+dans la même image **0 fois**. Cent pour cent de retard, systématique —
+et invisible sur une capture stabilisée, puisque tout se remet en place
+dès qu'on arrête.
+
+**Correctif :** écrire la transformation **dans l'événement**. Un
+`scroll` est distribué avant la peinture, donc le style part dans la
+même image. Après : 0 %. Le coût est de deux propriétés personnalisées
+par événement.
+
+**Comment le mesurer :** échantillonner `scrollTop` et la valeur
+appliquée dans la MÊME boucle d'animation, et compter les images où
+l'une a changé sans l'autre. Un écart moyen ne le montre pas.
