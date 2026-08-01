@@ -327,9 +327,19 @@ const TIRAGES = {
     { n: 3, emploi: "studio — boites a lumiere et fond blanc", large: true,
       src: "url:" + PX + "/134469/pexels-photo-134469.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/134469/", fen: { x: 0, y: 0.08, w: 1 } },
-    { n: 4, emploi: "studio — la boite a lumiere seule, gris",
+    /* LA FENETRE NE GARDE QUE 40 % DE LA LARGEUR, ET C'EST UN REJET
+       DEGUISE EN RECADRAGE. Les deux boites a lumiere de cette source
+       portent le nom de leur fabricant imprime en clair sur la toile,
+       et le mur de droite porte un lettrage peint. Le site l'avait
+       « regle » en posant l'image dans une bande verticale de 250 px
+       avec un `object-position` a 5 % : la marque disparaissait du
+       rendu et restait dans le fichier. Cinquieme fois que ce cas se
+       presente sur les douze secteurs, et cinquieme fois qu'on tranche
+       au meme endroit — a la source. Ce qui reste : un flash nu sur
+       son pied, mur blanc, plafond noir. */
+    { n: 4, emploi: "studio — un flash nu sur son pied, mur blanc",
       src: "url:" + PX + "/7383644/pexels-photo-7383644.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/7383644/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+      page: "https://www.pexels.com/photo/7383644/", fen: { x: 0.02, y: 0.50, w: 0.40 } },
     { n: 5, emploi: "studio — projecteurs sur pied, fond neutre",
       src: "url:" + PX + "/53265/pexels-photo-53265.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/53265/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
