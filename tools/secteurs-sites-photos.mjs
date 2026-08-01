@@ -288,7 +288,56 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/10772256/", fen: { x: 0.09, y: 0.08, w: 0.82 } },
     { n: 8, emploi: "chalet — la porte vitree sur la neige, vue de l'interieur",
       src: "url:" + PX + "/8162940/pexels-photo-8162940.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/8162940/", fen: { x: 0.09, y: 0.12, w: 0.82 } }
+      page: "https://www.pexels.com/photo/8162940/", fen: { x: 0.09, y: 0.12, w: 0.82 } },
+    /* NEUF DE PLUS, 2026-08-01. Huit images sur une page de 13 000 px
+       faisaient 0,6 grande image par millier de pixels ; les trois
+       references relevees en font 3,9 a 6,2. Un site dont le sujet est
+       un PAYSAGE montrait le paysage en vignette. Six des neuf sont en
+       `portrait` : une piste horizontale d'images DEBOUT est ce qui
+       remplace les listes a deux colonnes.
+       Ecartes en les ouvrant en pleine resolution :
+       · `8112294` — un poele qui porte le nom du fabriquant en relief
+         sur la porte et un medaillon rouge lisible ;
+       · `11327757` — une chambre avec une tenture a motif imprime
+         repete, un cadre au mur et deux plantes : elle CONTREDIT le
+         texte, qui promet « un lit, une lampe, une fenetre » ;
+       · `27641249` — un visage de trois quarts, identifiable ;
+       · `7789861` — un chassis turquoise, hors palette ;
+       · `29846585` — un lac a l'heure bleue, superbe, mais l'horizon
+         porte une bande orange et les lumieres d'une ville : le
+         cadrage qui les retire ne laisse plus assez de pixels pour
+         une bande pleine largeur nette. */
+    { n: 9, emploi: "bande pleine largeur — brume sur le lac gele, rangee d'arbres nus", xl: true,
+      /* `w` a 0,92 : un panneau routier rond se tient au bord droit. */
+      src: "url:" + PX + "/30352745/pexels-photo-30352745.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/30352745/", fen: { x: 0, y: 0.10, w: 0.92 } },
+    { n: 10, emploi: "debout — les pins au bord du lac gele, reflets sur la glace", portrait: true,
+      src: "url:" + PX + "/20100203/pexels-photo-20100203.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/20100203/", fen: { x: 0, y: 0.10, w: 1 } },
+    /* Source en 6:7, presque carree : a `w = 1` la coupe 5:7 demanderait
+       2 688 px de haut sur une image qui n'en a que 2 240. `w` descend
+       a 0,82 et le cadre tient. Piege 58 */
+    { n: 11, emploi: "debout — le chemin qui monte entre les conifères, mont derriere", portrait: true,
+      src: "url:" + PX + "/15871965/pexels-photo-15871965.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/15871965/", fen: { x: 0.09, y: 0, w: 0.82 } },
+    { n: 12, emploi: "debout — la corde de bois de face, bouts de buches sous la neige", portrait: true,
+      src: "url:" + PX + "/11183216/pexels-photo-11183216.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/11183216/", fen: { x: 0, y: 0.03, w: 1 } },
+    { n: 13, emploi: "debout — le poele a bois allume, mur de planches", portrait: true,
+      src: "url:" + PX + "/12730495/pexels-photo-12730495.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/12730495/", fen: { x: 0, y: 0.02, w: 1 } },
+    { n: 14, emploi: "debout — la table dressee, chandelles et branches de sapin", portrait: true,
+      src: "url:" + PX + "/6232597/pexels-photo-6232597.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6232597/", fen: { x: 0, y: 0, w: 1 } },
+    { n: 15, emploi: "detail — la fenetre givree, cristaux de glace sur le carreau", large: true,
+      src: "url:" + PX + "/10262197/pexels-photo-10262197.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/10262197/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 16, emploi: "debout — le sentier dans la boulaie enneigee, troncs nus", portrait: true,
+      src: "url:" + PX + "/30124961/pexels-photo-30124961.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/30124961/", fen: { x: 0, y: 0, w: 1 } },
+    { n: 17, emploi: "detail — mur de billots gris, petite fenetre et glacons au debord", large: true,
+      src: "url:" + PX + "/20558770/pexels-photo-20558770.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/20558770/", fen: { x: 0, y: 0.05, w: 1 } }
   ],
 
   /* CLINIQUE ET SANTE — CLINIQUE DU RIVERAIN.
