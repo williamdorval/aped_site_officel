@@ -292,7 +292,13 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/2935910/", fen: { x: 0, y: 0.06, w: 1 } },
     { n: 2, emploi: "bande pleine largeur — rayonnages mobiles d'archives", xl: true,
       src: "url:" + PX + "/31139000/pexels-photo-31139000.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/31139000/", fen: { x: 0, y: 0.10, w: 1 } },
+      /* La fenetre s'arrete a 74 % : au-dela, une travee de reliures
+         porte « AMERICAN LAW REPORTS ANNOTATED » en clair sur les dos.
+         C'est une collection editoriale reelle, donc une marque. Elle
+         etait noyee sous un voile a 88 % dans la page — mais un voile
+         est un reglage de mise en page, pas un recadrage : qui le
+         baissera fera revenir le titre. On coupe a la source. */
+      page: "https://www.pexels.com/photo/31139000/", fen: { x: 0, y: 0.10, w: 0.74 } },
     { n: 3, emploi: "entree — porte de bronze entre deux colonnes de marbre",
       src: "url:" + PX + "/15498156/pexels-photo-15498156.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/15498156/", fen: { x: 0.09, y: 0.24, w: 0.82 } },
