@@ -280,12 +280,12 @@ calculé est plus court que l'image et se pose **en haut**.
    rien.
 
    ```
-   node tools/_galerie.mjs "https://www.awwwards.com/websites/<catégorie>/" 20
-   node tools/_galerie.mjs "https://www.siteinspire.com/websites?categories=<n>" 20
-   node tools/_ref.mjs "https://<le site>" <métier>-<nom> 1440
+   node tools/refs-galerie.mjs "https://www.awwwards.com/websites/<catégorie>/" 20
+   node tools/refs-galerie.mjs "https://www.siteinspire.com/websites?categories=<n>" 20
+   node tools/refs-releve.mjs "https://<le site>" <métier>-<nom> 1440
    ```
 
-   `_ref.mjs` dépose le premier écran, **sept captures prises en
+   `refs-releve.mjs` dépose le premier écran, **sept captures prises en
    défilant à la molette** — donc pendant que les révélations se
    jouent — et un `releve.json` : familles de polices, taille et
    interlignage du `h1`, paddings de section, fonds dominants,
