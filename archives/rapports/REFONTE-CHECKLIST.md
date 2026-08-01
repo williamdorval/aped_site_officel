@@ -10,8 +10,8 @@ pas la mémoire d'une session.
 | Restauration | `restau` (section 03) | **oui** | `2f2497e` |
 | Garage et mécanique | `demo-carroserie` (section 03) | **oui** | `9633a98` |
 | Paysagement et déneigement | `MV-deneigement` (section 03) | **oui** | `741eaeb` |
-| Construction et rénovation | `demos-secteurs/construction/` | non — reprise des photos en cours | — |
-| Immobilier | `demos-secteurs/immobilier/` | non — zones creuses en correction | — |
+| Construction et rénovation | `demos-secteurs/construction/` | **oui** | `1e5f2ff` + `9f341ba` |
+| Immobilier | `demos-secteurs/immobilier/` | **oui** | `aa701fc` + `9f341ba` |
 | Boutique en ligne | — | non | — |
 | Coiffure et esthétique | — | non | — |
 | Gym et entraînement | — | non | — |
@@ -28,13 +28,28 @@ pas la mémoire d'une session.
 2. écrire le site dans `demos-secteurs/<secteur>/index.html`, un seul
    fichier, aucune requête externe, `noindex` et mention de
    démonstration ;
-3. `node tools/demos-capture.mjs --ecran secteur-<cle>` — il sait
-   photographier un fichier statique du dépôt sans démarrer de serveur
-   (D-653), à condition que l'entrée existe dans `PROJETS` ;
-4. `node tools/demos-webp.mjs` — tuiles de 1 100 px ;
+3. `node tools/demos-capture.mjs --ecran --port <port> secteur-<cle>` —
+   il sait photographier un fichier statique du dépôt sans démarrer de
+   serveur (D-653), à condition que l'entrée existe dans `PROJETS`.
+   **`--port` prend le numéro du serveur de la session** : la table
+   `PROJETS` dit 8099, qui n'écoute pas toujours ;
+4. `node tools/demos-webp.mjs` — tuiles de 1 100 px. **Sans clé de
+   projet** : il convertit tous les `-ecran.png` de `tools/_demos`, et
+   ses deux arguments positionnels sont la largeur et la qualité ;
 5. `node tools/secteurs-markup.mjs <cle>` — branche l'aperçu ;
-6. `node tools/secteurs-vue.mjs 8123 <cle>` — les captures de preuve ;
-7. commit.
+6. `node tools/css-critique.mjs` puis `node tools/cascade-check.mjs
+   <port>` — 0 écart obligatoire ;
+7. `node tools/secteurs-vue.mjs <port> <cle>` — les captures de preuve ;
+8. commit.
+
+**REGARDER LES PHOTOS, UNE PAR UNE, EN TAILLE RÉELLE.** C'est l'étape
+qui a coûté le plus cher deux fois de suite : trois marques imprimées
+sur le site de construction, neuf tirages sur seize à jeter sur celui
+d'immobilier. Un nom de panorama, une planche-contact et un
+`object-position` ne répondent à aucune des quatre questions.
+**Et une adresse = une photo qui n'appartient qu'à elle** : le type de
+bâtiment, l'état et le voisinage doivent suivre ce que la fiche écrit.
+D-656 · D-657 · D-658 · pièges 57 et 58.
 
 **Les trois premiers n'ont rien coûté en octets** : leurs tuiles
 existaient déjà pour la section 03.

@@ -1,6 +1,30 @@
 {
   "secteurs": [
     {
+      "secteur": "restaurant",
+      "site": true,
+      "actif": true,
+      "course": 3476,
+      "tuiles": 7,
+      "chargees": 6
+    },
+    {
+      "secteur": "garage",
+      "site": true,
+      "actif": true,
+      "course": 3317,
+      "tuiles": 7,
+      "chargees": 6
+    },
+    {
+      "secteur": "paysagement",
+      "site": true,
+      "actif": true,
+      "course": 1972,
+      "tuiles": 4,
+      "chargees": 4
+    },
+    {
       "secteur": "construction",
       "site": true,
       "actif": true,
