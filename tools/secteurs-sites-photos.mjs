@@ -462,7 +462,33 @@ const TIRAGES = {
        l'image montre, jamais ce que la source contenait. */
     { n: 15, emploi: "oeuvre · objet — deux roses dans la lumiere rasante, fond d'ombre", large: true,
       src: "url:" + PX + "/11900137/pexels-photo-11900137.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/11900137/", fen: { x: 0.10, y: 0.27, w: 0.80 } }
+      page: "https://www.pexels.com/photo/11900137/", fen: { x: 0.10, y: 0.27, w: 0.80 } },
+
+    /* TROIS ŒUVRES DE PLUS, ET DEUX SONT EN PORTRAIT — 2026-08-01.
+       L'accrochage n'avait que du 16/9 : dix rectangles de meme forme
+       a la suite se lisent comme une planche-contact, pas comme un
+       mur de salle. Le format PORTRAIT est ce qui casse la file, et
+       c'est aussi le format d'un tirage encadre.
+
+       CE QUI A ETE ECARTE, EN PLEINE RESOLUTION : `7119222`, deux
+       vases pointilles sur un mur terracotta — aucune marque, mais
+       la meme nature morte claire que `10726947`, et le mur rose
+       apporte une couleur d'accent que ce site n'a pas. `20874963`
+       et `5480815`, des tours a balcons : des fenetres d'habitation
+       ou l'on distingue des interieurs. `3806603`, un portrait.
+
+       `11831530` porte des graffitis au pied du mur : la fenetre
+       part de `y = 0` et la coupe portrait s'arrete bien au-dessus.
+       Verifie a l'ouverture du fichier, pas sur la planche. */
+    { n: 16, emploi: "oeuvre · architecture — l'arete en chevron d'un volume de beton, contre-plongee", portrait: true,
+      src: "url:" + PX + "/11831530/pexels-photo-11831530.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/11831530/", fen: { x: 0, y: 0, w: 1 } },
+    { n: 17, emploi: "oeuvre · architecture — une dalle en porte-a-faux sur une facade de beton, noir et blanc", portrait: true,
+      src: "url:" + PX + "/32466579/pexels-photo-32466579.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/32466579/", fen: { x: 0, y: 0.02, w: 1 } },
+    { n: 18, emploi: "oeuvre · objet — branches de saule et leur ombre sur un mur de marbre sombre", large: true,
+      src: "url:" + PX + "/7814445/pexels-photo-7814445.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7814445/", fen: { x: 0, y: 0.04, w: 1 } }
   ],
 
   construction: [

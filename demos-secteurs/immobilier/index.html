@@ -4,22 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Ancrage Immobilier — dix propriétés au catalogue, Val-des-Ormes</title>
-<meta name="description" content="Courtage résidentiel à Val-des-Ormes. Dix propriétés présentées lot par lot, chacune avec son plan coté, sa visite 360 et son compte rendu du vendredi. Site de démonstration.">
+<meta name="theme-color" content="#0d1725">
+<title>Ancrage Immobilier, dix propriétés au catalogue, Val-des-Ormes</title>
+<meta name="description" content="Courtage résidentiel à Val-des-Ormes. Dix propriétés au registre, présentées planche par planche, avec plan coté et visite 360. Site de démonstration.">
 <style>
 /* ══════════════════════════════════════════════════════════════════
    ANCRAGE IMMOBILIER — « RIVE & PIERRE »
-   Direction artistique : un CATALOGUE DE VENTE AUX ENCHÈRES. La
-   propriété est un objet qu’on présente — numéroté, décrit,
-   photographié en grand. Nuit froide, os, or, ardoise. Angles vifs,
-   filets d’or d’un pixel autour de chaque fiche. Aucune ombre,
-   aucun flou, aucun coin arrondi, AUCUN PRIX : on présente, on ne
-   chiffre pas.
-   Signature : un numéro de lot GÉANT en filigrane derrière chaque
-   propriété. Il revient dix fois.
-   Affichage dm-serif · texte spectral · surfaces, lots et dates en
-   jetbrains-mono. Trois familles, six faces.
-   Aucun script. Aucune requête tierce.
+
+   DIRECTION ARTISTIQUE : un CATALOGUE DE VENTE AUX ENCHÈRES, pas un
+   site d’inscriptions. Ce qui distingue les deux tient en une phrase :
+   un site d’inscriptions répète dix fois la même fiche ; un catalogue
+   VARIE l’échelle de ses planches et met un REGISTRE en tête pour
+   qu’on ne perde jamais le compte.
+
+   TROIS RÉFÉRENCES MESURÉES (tools/_refs/) :
+   · kononenkogroup.com — le registre : dix biens en une table de dix
+     lignes, et des plates jamais posées à la même largeur ni dans la
+     même colonne. Écarté : la grotesque neutre, le blanc sur blanc.
+   · eleos.la — la respiration des planches : une grande, puis deux
+     demi-planches, et un relevé en clé/valeur sous chacune. Écarté :
+     la composition tout en monospace, qui appartient au chantier.
+   · era-residence.com — l’échelle du premier écran : la photographie
+     occupe la fenêtre entière, l’affichage est énorme. Écarté : la
+     couleur prune, l’anglaise, le sélecteur d’appartement.
+
+   PALETTE nuit #0d1725 · os #efe9dd · or #b8964f · ardoise.
+   AFFICHAGE dm-serif · TEXTE spectral · SURFACES jetbrains-mono.
+   FORMES angles vifs, filets d’or de 1 px, aucun coin arrondi.
+   SIGNATURES, deux, une bruyante et une discrète :
+     · le NUMÉRO DE LOT géant en filigrane derrière chaque planche ;
+     · LA RÈGLE DE DIX — dix traits d’un pixel, celui du lot en cours
+       en or et plus haut. Elle revient sur chacune des dix planches.
+   AUCUN PRIX. Aucun script. Aucune requête tierce.
    ══════════════════════════════════════════════════════════════════ */
 
 @font-face{font-family:"dm-serif";src:url("../../fonts/demos/dm-serif-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
@@ -32,10 +48,9 @@
 /* ── LA MATIÈRE ──────────────────────────────────────────────────
    Rapports mesurés. Sur nuit #0d1725 : os 14,9:1 · or 6,4:1 ·
    or clair 8,9:1 · ardoise claire 7,0:1. L’ardoise pleine (#5d6b7a)
-   tombe à 3,3:1 — elle ne porte JAMAIS de texte, elle ne sert
-   qu’aux filets. Sur os #efe9dd : nuit 14,9:1 · or foncé 5,8:1 ·
-   ardoise foncée 6,1:1. Sur l’or plein, le texte est toujours NUIT
-   (6,4:1) — l’os n’y tient pas (2,3:1). */
+   tombe à 3,3:1 : elle ne porte JAMAIS de texte, elle ne sert qu’aux
+   filets. Sur os #efe9dd : nuit 14,9:1 · or foncé 5,8:1 · ardoise
+   foncée 6,1:1. Sur l’or plein, le texte est toujours NUIT. */
 :root{
   --nuit:#0d1725;
   --os:#efe9dd;
@@ -44,25 +59,29 @@
   --or-f:#6f5518;
   --ard:#93a3b3;
   --ard-f:#4a5766;
-  --filet:rgba(184,150,79,.32);
-  --filet-v:rgba(184,150,79,.78);
-  --filet-f:rgba(111,85,24,.30);
-  --filet-fv:rgba(111,85,24,.72);
+  --filet:rgba(184,150,79,.30);
+  --filet-v:rgba(184,150,79,.80);
+  --filet-f:rgba(111,85,24,.28);
+  --filet-fv:rgba(111,85,24,.74);
   --aff:"dm-serif",Georgia,"Times New Roman",serif;
   --txt:"spectral",Georgia,"Times New Roman",serif;
   --mno:"jetbrains-mono",ui-monospace,Consolas,monospace;
-  --large:1340px;
-  --marge:clamp(18px,4vw,64px);
-  --vide:clamp(92px,10.6vw,168px);
+  --large:1360px;
+  --marge:clamp(18px,4vw,60px);
+  --vide:clamp(88px,10vw,158px);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background-color:var(--nuit)}
+html{
+  -webkit-text-size-adjust:100%;scroll-behavior:smooth;background-color:var(--nuit);
+  color-scheme:dark;-webkit-tap-highlight-color:rgba(184,150,79,.24);
+}
+a,label,summary{touch-action:manipulation}
 body{
   background-color:var(--nuit);color:var(--os);
   font:400 15px/1.72 var(--txt);
   font-kerning:normal;text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+  overflow-x:clip;
 }
 img{display:block;max-width:100%;height:auto}
 ul,ol{list-style:none}
@@ -70,49 +89,70 @@ a{color:inherit;text-decoration:none}
 ::selection{background:var(--or);color:var(--nuit)}
 :focus-visible{outline:2px solid var(--or-c);outline-offset:3px}
 .f-os :focus-visible{outline-color:var(--or-f)}
+/* le saut de navigation : hors champ tant qu’il n’a pas le focus */
+.saut{
+  position:absolute;left:var(--marge);top:-100px;z-index:9;
+  background-color:var(--os);color:var(--nuit);padding:13px 20px;
+  font-family:var(--mno);font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  transition:top .18s ease;
+}
+.saut:focus-visible{top:12px}
 
 /* ══ LE MOUVEMENT ═════════════════════════════════════════════════
    `forwards`, JAMAIS `both`. Avec `both`, un élément qui n’a pas
-   encore atteint sa plage garde son état de DÉPART — ici un volet
-   FERMÉ. Une capture pleine page ne défile pas : la moitié du
-   catalogue sortirait en bandes vides. Avec `forwards`, hors plage
-   c’est le style de base qui tient, et le style de base est la
-   forme FINALE. La bascule se fait à `entry 0 %`, quand l’élément
-   n’a pas un pixel de visible.
+   encore atteint sa plage garde son état de DÉPART. Une capture
+   pleine page ne défile pas : la moitié du catalogue sortirait en
+   bandes vides. Avec `forwards`, hors plage c’est le style de base
+   qui tient, et le style de base est la forme FINALE.
 
    Les animations de la couverture, elles, sont pilotées par le
    TEMPS : sur une timeline de temps il n’y a pas d’avant-plage à
    remplir, et `both` y est sans danger. */
-@keyframes volet{from{clip-path:inset(0 50% 0 50%)}to{clip-path:inset(0 0 0 0)}}
+@keyframes volet{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes rideau{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes leve{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes trace{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes decadre{from{transform:translateY(-3.6%)}to{transform:translateY(3.6%)}}
+@keyframes derive{from{transform:translateY(-9%)}to{transform:translateY(9%)}}
 @keyframes roule{from{transform:translateY(0)}to{transform:translateY(-83.3333%)}}
 
-/* la révélation de ce site : le volet qui s’ouvre depuis le CENTRE */
-.vt{animation:volet forwards;animation-timeline:view();animation-range:entry 0% cover 24%}
-.rv{animation:leve forwards;animation-timeline:view();animation-range:entry 0% cover 22%}
-.rl{transform-origin:left;animation:trace forwards;animation-timeline:view();animation-range:entry 4% cover 26%}
+/* la révélation de ce site : un VOLET qui balaie de gauche à droite,
+   sens de lecture. Jamais un fondu, jamais une arrivée latérale.
+
+   LA PLAGE SE FERME DANS `entry`, ET C’EST UNE CORRECTION PAYÉE.
+   Avec `cover 24 %`, une capture fixe au milieu du catalogue a
+   attrapé la planche du lot 02 ouverte aux neuf dixièmes : la plate
+   sortait 60 px plus étroite que sa voisine, et ça se lisait comme
+   une grille cassée. Fermer la plage avant que l’élément soit
+   entièrement dans la fenêtre coûte un peu de course au visiteur et
+   rend la page photographiable à n’importe quelle hauteur.
+   STANDARD § 2.3. */
+.vt{animation:volet forwards;animation-timeline:view();animation-range:entry 0% entry 55%}
+.rd{animation:rideau forwards;animation-timeline:view();animation-range:entry 0% entry 58%}
+.rv{animation:leve forwards;animation-timeline:view();animation-range:entry 0% entry 52%}
+.rl{transform-origin:left;animation:trace forwards;animation-timeline:view();animation-range:entry 6% entry 62%}
 
 /* le décalage se lit en PLAGE, jamais en délai : `animation-delay`
    n’a aucun effet sur une timeline de défilement. */
-.rv--2{animation-range:entry 4% cover 26%}
-.rv--3{animation-range:entry 8% cover 30%}
-.rv--4{animation-range:entry 12% cover 34%}
+.rv--2,.vt--2{animation-range:entry 8% entry 62%}
+.rv--3,.vt--3{animation-range:entry 16% entry 70%}
+.rv--4,.vt--4{animation-range:entry 24% entry 78%}
 
-/* l’ouverture de la couverture — pilotée par le temps */
-.ou{animation:leve .6s cubic-bezier(.2,.72,.2,1) both}
-.ou2{animation-delay:.10s}
-.ou3{animation-delay:.20s}
-.ou4{animation-delay:.30s}
-.ouv{animation:volet .85s cubic-bezier(.16,.8,.24,1) both}
-.our{animation:trace .5s cubic-bezier(.22,.7,.2,1) both;animation-delay:.26s;transform-origin:left}
+/* l’ouverture de la couverture, pilotée par le temps : la planche
+   se tire de sa pochette du haut vers le bas, puis l’étiquette se
+   pose de la gauche vers la droite. */
+.ou{animation:leve .62s cubic-bezier(.2,.72,.2,1) both}
+.ou2{animation-delay:.34s}
+.ou3{animation-delay:.44s}
+.ou4{animation-delay:.54s}
+.ou5{animation-delay:.64s}
+.ourid{animation:rideau .9s cubic-bezier(.16,.8,.24,1) both}
+.ouvol{animation:volet .7s cubic-bezier(.16,.8,.24,1) both;animation-delay:.26s}
+.our{animation:trace .5s cubic-bezier(.22,.7,.2,1) both;animation-delay:.52s;transform-origin:left}
 
 @supports not (animation-timeline: view()){
-  .rv{animation:none;opacity:1;transform:none}
-  .vt{animation:none;clip-path:none}
-  .rl{animation:none;transform:none}
-  .ph--dec img{animation:none;transform:none}
+  .rv,.vt,.rd,.rl{animation:none;opacity:1;transform:none;clip-path:none}
+  .ph--dec img,.ph--der img,.fil{animation:none;transform:none}
   /* le repos de l’odomètre EST déjà sa valeur finale : on coupe
      l’animation, on ne touche PAS au transform. */
   .od-p{animation:none}
@@ -127,48 +167,64 @@ a{color:inherit;text-decoration:none}
 .bloc{padding:var(--vide) 0}
 .f-nuit{background-color:var(--nuit);color:var(--os)}
 .f-os{background-color:var(--os);color:var(--nuit)}
-section[id]{scroll-margin-top:6px}
+section[id],article[id]{scroll-margin-top:8px}
 
 /* ── LE TRAITEMENT DES PHOTOS ───────────────────────────────────
-   Chaud, contrasté, ombres profondes. Aucun virage de couleur : ce
-   site ne teinte pas ses images, il les DURCIT. C’est ce qui le
-   sépare d’un carnet de voyage — la propriété doit avoir l’air
-   d’un objet éclairé à la lampe, pas d’un paysage.
+   Chaud, contrasté, ombres profondes. Ce site ne teinte pas ses
+   images, il les DURCIT : la propriété doit avoir l’air d’un objet
+   éclairé à la lampe, pas d’un paysage. La saturation baisse d’un
+   cran pour que les verts et les jaunes des intérieurs ne se
+   battent pas avec l’or.
    `overflow: clip`, PAS `hidden` : `hidden` ferait du cadre un
    conteneur de défilement, et la `view()` posée sur l’image s’y
    résoudrait — le décadrage resterait figé à mi-course. */
 .ph{position:relative;overflow:clip;background-color:#0a121d;z-index:1}
-.ph img{width:100%;height:100%;object-fit:cover;filter:contrast(1.1) saturate(1.05) brightness(.96)}
+.ph img{width:100%;height:100%;object-fit:cover;filter:contrast(1.14) saturate(.84) brightness(.94)}
 .ph--dec img{position:absolute;left:0;top:-4.4%;height:108.8%;animation:decadre linear forwards;animation-timeline:view();animation-range:cover 0% cover 100%}
+.ph--der img{position:absolute;left:0;top:-10%;height:120%;animation:derive linear forwards;animation-timeline:view();animation-range:cover 0% cover 100%}
 .ph::after{content:"";position:absolute;inset:0;border:1px solid var(--filet);pointer-events:none}
 .f-os .ph::after{border-color:var(--filet-f)}
 
 /* ── TYPOGRAPHIE ────────────────────────────────────────────────
    dm-serif n’a qu’une graisse : l’échelle fait tout le travail.
-   130 px pour la couverture, 15 px pour le texte, rien entre les
-   deux sauf les adresses. */
-h1,h2,h3,.gd{font-family:var(--aff);font-weight:400;letter-spacing:-.012em}
-h1{font-size:clamp(38px,9.4vw,130px);line-height:.94;letter-spacing:-.022em}
-h2{font-size:clamp(29px,4.6vw,62px);line-height:.98;max-width:19ch;text-wrap:balance}
-h3{font-size:clamp(24px,3vw,42px);line-height:1.02;letter-spacing:-.016em}
-.txt{font-size:15px;line-height:1.74;max-width:56ch}
-.txt+.txt{margin-top:1.05em}
-.lede{font-size:clamp(16px,1.4vw,19px);line-height:1.62;max-width:46ch;color:var(--os)}
+   112 px pour la couverture, 15 px pour le texte, et rien entre
+   les deux sauf les adresses. */
+h1,h2,h3,.gd{font-family:var(--aff);font-weight:400;letter-spacing:-.014em}
+h1{font-size:clamp(38px,6.4vw,98px);line-height:.93;letter-spacing:-.026em}
+h2{font-size:clamp(30px,4.8vw,64px);line-height:.98;max-width:17ch;text-wrap:balance}
+h3{font-size:clamp(23px,2.9vw,40px);line-height:1.03;letter-spacing:-.018em}
+.txt{font-size:14.5px;line-height:1.72;max-width:54ch}
+.lede{font-size:clamp(16px,1.35vw,18.5px);line-height:1.62;max-width:52ch;color:var(--ard)}
 .f-os .lede{color:var(--ard-f)}
 .f-os .txt{color:var(--ard-f)}
 .mno{font-family:var(--mno);font-weight:500;font-size:11px;letter-spacing:.17em;text-transform:uppercase;line-height:1.7;color:var(--ard)}
 .f-os .mno{color:var(--ard-f)}
-.regle{display:block;height:1px;background-color:var(--or);width:min(240px,44%)}
+.regle{display:block;height:1px;background-color:var(--or);width:min(220px,42%)}
 .f-os .regle{background-color:var(--or-f)}
 
+/* ── LA RÈGLE DE DIX ────────────────────────────────────────────
+   Dix traits d’un pixel espacés de 15 px, et un onzième trait en or,
+   plus haut, posé sur celui du lot en cours. Un seul élément : la
+   trame est un `repeating-linear-gradient`, donc un GRAIN, pas un
+   fondu. Elle revient sur les dix planches, et elle compte. */
+.r10{
+  display:block;position:relative;width:150px;height:9px;flex:none;
+  background-image:repeating-linear-gradient(90deg,var(--filet) 0 1px,transparent 1px 15px);
+  background-repeat:no-repeat;background-size:150px 9px;
+}
+.f-os .r10{background-image:repeating-linear-gradient(90deg,var(--filet-f) 0 1px,transparent 1px 15px)}
+.r10::after{content:"";position:absolute;top:-4px;left:calc(var(--n) * 15px);width:1px;height:17px;background-color:var(--or-c)}
+.f-os .r10::after{background-color:var(--or-f)}
+
 /* ── BARRE DU HAUT ──────────────────────────────────────────────
-   Une plaque de catalogue : la marque à gauche en serif, les
-   sections à droite en mono, un filet d’or dessous. */
-.tete{border-bottom:1px solid var(--filet);position:relative;z-index:3}
-.tete .dedans{display:flex;align-items:center;gap:14px 30px;flex-wrap:wrap;padding-block:16px}
+   Une plaque de catalogue : la marque en serif à gauche, les
+   sections en mono à droite, un filet d’or dessous. Une seule
+   ligne au-dessus de 1040 px. */
+.tete{border-bottom:1px solid var(--filet);position:relative;z-index:4;background-color:var(--nuit)}
+.tete .dedans{display:flex;align-items:center;gap:12px 28px;flex-wrap:wrap;padding-block:15px}
 .marq{font-family:var(--aff);font-weight:400;font-size:22px;letter-spacing:.01em;line-height:1;color:var(--os)}
 .marq span{color:var(--or-c)}
-.nav{display:flex;gap:clamp(12px,2vw,30px);margin-left:auto;flex-wrap:wrap}
+.nav{display:flex;gap:clamp(12px,1.9vw,28px);margin-left:auto;flex-wrap:wrap}
 .nav a{
   position:relative;font-family:var(--mno);font-weight:500;font-size:10.5px;
   letter-spacing:.16em;text-transform:uppercase;color:var(--ard);padding-block:5px;
@@ -186,19 +242,15 @@ h3{font-size:clamp(24px,3vw,42px);line-height:1.02;letter-spacing:-.016em}
 .f-os .puce{color:var(--or-f);border-color:var(--filet-f)}
 
 /* ── BOUTONS ────────────────────────────────────────────────────
-   L’appel principal est une ÉTIQUETTE COLLÉE : un aplat d’os sur
-   la nuit, texte nuit. Volontairement PAS un bouton de laiton —
-   c’est la seule pièce qui rapprochait encore cette page d’un
-   autre site sombre du panneau, et elle ne coûtait rien à changer.
-   L’or reste sur les filets, les numéros de lot, les surfaces et
-   les états de survol.
-   Le filet s’éclaire et s’épaissit d’un demi-pixel — sur la
-   bordure d’un pseudo-élément, donc sans déplacer la mise en page
-   d’un seul pixel. */
+   L’appel principal est une ÉTIQUETTE COLLÉE : un aplat d’os sur la
+   nuit, texte nuit. Volontairement pas un bouton de laiton — c’était
+   la pièce qui rapprochait le plus cette page des autres sites
+   sombres du panneau. L’or reste sur les filets, les numéros de lot,
+   les surfaces et les états de survol. */
 .bt{
   position:relative;display:inline-block;font-family:var(--mno);font-weight:500;
-  font-size:11px;letter-spacing:.17em;text-transform:uppercase;padding:15px 28px;
-  background-color:var(--os);color:var(--nuit);
+  font-size:11px;letter-spacing:.17em;text-transform:uppercase;padding:15px 26px;
+  background-color:var(--os);color:var(--nuit);white-space:nowrap;
   transition:background-color .2s ease,color .2s ease,transform .18s ease;
 }
 .bt::after{content:"";position:absolute;inset:0;border:1px solid var(--os);transition:border-width .18s ease,border-color .18s ease;pointer-events:none}
@@ -220,160 +272,295 @@ h3{font-size:clamp(24px,3vw,42px);line-height:1.02;letter-spacing:-.016em}
 .actes{display:flex;flex-wrap:wrap;gap:12px}
 
 /* ══ A · LA COUVERTURE ══════════════════════════════════════════
-   Une page de titre de catalogue : le titre EN HAUT, sur la
-   colonne, et la planche de couverture EN BAS, pleine largeur. */
-.couv{display:flex;flex-direction:column;min-height:100svh}
-.couv-t{padding:clamp(28px,3.6vw,54px) 0 clamp(26px,3vw,44px)}
-.couv-t .mno{margin-bottom:clamp(14px,1.7vw,24px)}
-.couv-t h1{margin-bottom:clamp(18px,1.9vw,28px)}
-.couv-t .regle{margin-bottom:clamp(18px,1.9vw,26px)}
-.couv-t .lede{margin-bottom:clamp(20px,2.1vw,30px);max-width:52ch}
-.couv-ph{flex:1 1 auto;min-height:min(46svh,470px);display:flex;flex-direction:column}
-.couv-ph .ph{flex:1 1 auto}
-.couv-lg{
-  display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline;
-  border-top:1px solid var(--filet);padding-block:13px;
+   La planche occupe la FENÊTRE ENTIÈRE, bord à bord des quatre
+   côtés. Par-dessus, une seule pièce : l’ÉTIQUETTE D’ENCRE — un
+   rectangle de nuit plein, cerné d’un filet d’or, posé en haut à
+   gauche comme une étiquette collée sur une planche de catalogue.
+   C’est là, et seulement là, que vit le texte : le contraste est
+   celui de l’os sur la nuit, 14,9:1, jamais celui d’un texte sur
+   une photographie.
+
+   Le titre et le premier appel tiennent dans les 800 premiers
+   pixels à 1280 de large : l’étiquette est ancrée EN HAUT, jamais
+   centrée verticalement. Piège 63. */
+.couv{position:relative;overflow:clip;min-height:min(calc(100svh - 58px),960px);display:flex}
+.couv-pl{position:absolute;inset:0;z-index:0}
+.couv-pl img{width:100%;height:100%;object-fit:cover;object-position:50% 64%;filter:contrast(1.2) saturate(.62) brightness(.84)}
+.couv-pl::after{content:"";position:absolute;inset:0;background-color:rgba(13,23,37,.24);pointer-events:none}
+.couv > .dedans{position:relative;z-index:2;width:100%;padding-top:clamp(34px,4.6vh,66px);padding-bottom:clamp(30px,4vh,58px)}
+.couv-q{
+  position:relative;background-color:var(--nuit);
+  width:min(740px,66%);padding:clamp(24px,2.9vw,42px);
 }
-.couv-lg b{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--or-c);flex:none}
-.couv-lg i{font-style:normal;font-size:14px;line-height:1.5;color:var(--ard);max-width:74ch}
+.couv-q::after{content:"";position:absolute;inset:0;border:1px solid var(--filet-v);pointer-events:none}
+.couv-q .mno{margin-bottom:clamp(12px,1.5vw,20px)}
+.couv-q h1{margin-bottom:clamp(16px,1.7vw,24px)}
+.couv-q .regle{margin-bottom:clamp(16px,1.7vw,22px)}
+.couv-q .lede{margin-bottom:clamp(18px,1.9vw,26px);max-width:44ch;color:var(--os)}
+.couv-lg{
+  margin-top:clamp(20px,2.3vw,30px);border-top:1px solid var(--filet);padding-top:12px;
+  font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;line-height:1.8;color:var(--ard);max-width:56ch;
+}
 
 /* ── CARTOUCHE DE SECTION ───────────────────────────────────────
-   Le libellé en mono, un filet d’or qui se trace, puis le titre. */
-.cart{margin-bottom:clamp(36px,4.4vw,64px)}
-.cart .mno{display:block;margin-bottom:14px}
-.cart .regle{margin-bottom:clamp(20px,2.4vw,30px)}
-.cart-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.78fr);gap:clamp(24px,4.4vw,72px);align-items:end}
-.cart-2 .lede{padding-bottom:4px}
+   Le libellé, un filet d’or qui se trace, puis le titre, puis le
+   chapeau EN DESSOUS du titre — jamais flottant dans une colonne de
+   droite. Un titre et son explication forment un bloc, pas deux. */
+.cart{margin-bottom:clamp(34px,4.2vw,60px)}
+.cart .mno{display:block;margin-bottom:13px}
+.cart .regle{margin-bottom:clamp(18px,2.2vw,28px)}
+.cart h2+.lede{margin-top:clamp(16px,1.8vw,24px)}
 
-/* ══ B · LE RELEVÉ QUI COMPTE EN ROULANT ════════════════════════
+/* ══ B · LE REGISTRE ════════════════════════════════════════════
+   Dix biens en dix lignes. C’est ce qui remplace dix fiches
+   identiques : le compte se lit d’un coup d’œil, et les planches
+   qui suivent peuvent alors changer d’échelle sans qu’on se perde.
+   Le registre SE TRIE, sans script : trois boutons radio et un
+   `order` par ligne. Sans `:has()`, l’ordre reste celui des lots et
+   rien n’est perdu. */
+.tri{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(22px,2.4vw,32px);border:0}
+.tri legend{
+  font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--ard-f);margin-bottom:11px;padding:0;
+}
+.tri input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.tri label{
+  display:inline-block;cursor:pointer;font-family:var(--mno);font-weight:500;font-size:10px;
+  letter-spacing:.15em;text-transform:uppercase;padding:9px 15px 8px;color:var(--ard-f);
+  border:1px solid var(--filet-f);transition:color .18s ease,background-color .18s ease,border-color .18s ease;
+}
+.tri label:hover{color:var(--nuit);border-color:var(--filet-fv)}
+.tri label:active{opacity:.62}
+.tri input:checked + label{background-color:var(--nuit);color:var(--os);border-color:var(--nuit)}
+.tri input:focus-visible + label{outline:2px solid var(--or-f);outline-offset:3px}
+
+.reg{display:flex;flex-direction:column;border-top:1px solid var(--filet-f)}
+.reg-l{order:var(--a)}
+#registre:has(#tri-b:checked) .reg-l{order:var(--b)}
+#registre:has(#tri-c:checked) .reg-l{order:var(--c)}
+.reg-l a{
+  display:grid;align-items:baseline;gap:2px 18px;
+  grid-template-columns:34px minmax(0,1.5fr) minmax(0,.9fr) minmax(0,.95fr) 84px 16px;
+  padding:15px 0;border-bottom:1px solid var(--filet-f);
+  transition:transform .22s cubic-bezier(.2,.72,.2,1);
+}
+.reg-l a:hover,.reg-l a:focus-visible{transform:translateX(7px)}
+.reg-n{font-family:var(--mno);font-weight:500;font-size:13px;letter-spacing:.02em;color:var(--or-f);transition:color .18s ease}
+.reg-a{font-size:16.5px;line-height:1.35;color:var(--nuit)}
+.reg-s,.reg-t{font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ard-f);line-height:1.6}
+.reg-h{font-family:var(--mno);font-weight:500;font-size:12.5px;letter-spacing:-.01em;color:var(--or-f);text-align:right;white-space:nowrap}
+.reg-f{font-family:var(--mno);font-weight:500;font-size:12px;color:var(--ard-f);text-align:right;transition:color .18s ease,transform .22s ease}
+.reg-l a:hover .reg-f,.reg-l a:focus-visible .reg-f{color:var(--or-f);transform:translateX(3px)}
+.reg-l a:hover .reg-a,.reg-l a:focus-visible .reg-a{text-decoration:underline;text-decoration-color:var(--filet-fv);text-underline-offset:5px}
+.reg-l a:active{opacity:.66}
+/* la ligne s’écrit de la gauche vers la droite, sens de lecture */
+.reg-l{animation:volet forwards;animation-timeline:view();animation-range:entry 0% entry 92%}
+
+.colo{
+  margin-top:clamp(20px,2.2vw,28px);
+  font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;line-height:1.85;color:var(--ard-f);max-width:70ch;
+}
+
+/* ══ LE RELEVÉ QUI COMPTE EN ROULANT ════════════════════════════
    Piège 65 : la piste est déclarée sur la BANDE — la boîte dont la
    géométrie correspond à ce que le visiteur voit — et hissée
    jusqu’aux piles de chiffres par `timeline-scope`. Une `view()`
-   posée sur une pile mesurerait la PILE, six fois plus haute que
-   sa fenêtre, et les nombres resteraient figés à mi-course. */
+   posée sur une pile mesurerait la PILE, six fois plus haute que sa
+   fenêtre, et les nombres resteraient figés à mi-course. */
 .releve-w{timeline-scope:--bande}
 .releve{
   view-timeline-name:--bande;view-timeline-axis:block;
   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:clamp(20px,3vw,48px);
-  border-top:1px solid var(--filet-f);padding-top:clamp(26px,3vw,42px);
-  margin-top:clamp(48px,5.6vw,88px);
+  gap:clamp(20px,3vw,44px);
+  border-top:1px solid var(--filet-f);padding-top:clamp(24px,2.8vw,38px);
+  margin-top:clamp(44px,5.2vw,80px);
 }
-.od{display:block;height:1.1em;overflow:hidden;font-family:var(--mno);font-weight:500;font-size:clamp(26px,3.4vw,50px);letter-spacing:-.03em;color:var(--or-f);line-height:1.1}
+.od{display:block;height:1.1em;overflow:hidden;font-family:var(--mno);font-weight:500;font-size:clamp(25px,3.2vw,46px);letter-spacing:-.03em;color:var(--or-f);line-height:1.1}
 .od-p{display:block;transform:translateY(-83.3333%);animation:roule linear forwards;animation-timeline:--bande;animation-range:cover 10% cover 46%}
 .od-p i{display:block;height:1.1em;line-height:1.1;font-style:normal}
-.releve p{margin-top:13px;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;line-height:1.7;color:var(--ard-f);max-width:20ch}
+.releve p{margin-top:12px;font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase;line-height:1.7;color:var(--ard-f);max-width:20ch}
 
-/* ── CE QUI PART AVEC CHAQUE LOT ────────────────────────────────── */
-.trois{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3.4vw,54px);margin-top:clamp(46px,5.4vw,84px)}
-.trois li{border-top:1px solid var(--filet-f);padding-top:clamp(20px,2.2vw,28px)}
-.trois .n{display:block;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.2em;color:var(--or-f);margin-bottom:14px}
-.trois h3{font-size:clamp(21px,2.2vw,29px);margin-bottom:12px}
-.trois p{font-size:14.5px;line-height:1.68;color:var(--ard-f)}
+/* ══ C·D·E·F · LES PLANCHES ═════════════════════════════════════
+   SIX FORMES DE PLANCHE, ET AUCUNE NE SERT DEUX FOIS DE SUITE.
+   C’est le point du chantier : dix biens présentés dix fois de la
+   même façon, c’est un tableur ; un catalogue change d’échelle.
+     P1  planche pleine largeur .............. lot 01
+     P2  double planche à gouttière .......... lots 02 et 03
+     P3  feuillet de détails, trois échelles . lots 04, 05 et 06
+     P4  bande de contexte, pleine fenêtre ... aucun lot
+     P5  planche asymétrique, court + haut ... lots 07 et 08
+     P6  planche à fond perdu + étiquette .... lot 09
+     P7  le dernier lot, marges énormes ...... lot 10 */
 
-/* ══ C · LE CATALOGUE ═══════════════════════════════════════════
-   Un lot = un bloc large, avec de l’air. Jamais une vignette.
-   Le numéro de lot GÉANT en filigrane est le dispositif de
-   signature : `overflow: clip` le borne au bloc — sans quoi il
-   déborderait la page sous 640 px. `clip` ne crée pas de conteneur
-   de défilement, donc les `view()` intérieures restent résolues
-   sur la page. */
-.lots{display:flex;flex-direction:column;gap:clamp(64px,7.6vw,124px)}
-.lot{position:relative;overflow:clip;overflow-clip-margin:10px}
-.lot-num{
+.lot{position:relative;overflow:clip;overflow-clip-margin:12px}
+/* la gouttière entre deux planches se pose sur la PILE, jamais sur
+   l’adjacence : `.lot + .lot` décalait aussi le second lot d’une
+   double planche, et les deux plates sortaient à deux hauteurs
+   différentes. */
+.lots > * + *{margin-top:clamp(64px,7.4vw,124px)}
+
+/* le filigrane : le numéro de lot, énorme, derrière la planche, et
+   il dérive lentement au défilement. TRACÉ, PAS PLEIN — un aplat à
+   8 % rendait une tache grise sous le relevé de surfaces, et les
+   chiffres en or devenaient boueux. Un chiffre au trait laisse
+   passer le texte. */
+.fil{
   position:absolute;z-index:0;pointer-events:none;white-space:nowrap;
-  font-family:var(--mno);font-weight:500;font-size:clamp(72px,12.6vw,190px);
-  line-height:.8;letter-spacing:-.045em;color:rgba(184,150,79,.09);
+  font-family:var(--mno);font-weight:500;font-size:clamp(104px,16vw,250px);
+  line-height:.78;letter-spacing:-.05em;
+  color:transparent;-webkit-text-stroke:1.5px rgba(184,150,79,.19);
+  animation:derive linear forwards;animation-timeline:view();animation-range:cover 0% cover 100%;
 }
-.f-os .lot-num{color:rgba(111,85,24,.11)}
-.lot-t{position:relative;z-index:1}
-.lot--pl .lot-num{left:0;bottom:-.13em}
-.lot--g .lot-num{right:0;top:-.02em;text-align:right}
-.lot--d .lot-num{left:0;top:-.02em}
-/* le lot vedette réserve une bande au-dessus de sa première
-   planche : le filigrane y respire au lieu d’être avalé par la
-   photographie. */
-.lot--ved{padding-top:clamp(46px,6vw,100px)}
-.lot--ved .lot-num{left:0;top:-.06em;font-size:clamp(62px,10vw,148px)}
+.f-os .fil{-webkit-text-stroke-color:rgba(111,85,24,.17)}
+.lot > *:not(.fil){position:relative;z-index:1}
 
-/* la planche pleine largeur : le lot occupe toute la colonne */
-.lot--pl .ph{height:clamp(300px,41vw,620px)}
-.lot--pl .lot-t{margin-top:clamp(24px,2.6vw,36px);display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:clamp(20px,3.4vw,58px);align-items:start}
+/* le rail : la règle de dix, le secteur et le type. Il coiffe chaque
+   planche et il est la seule pièce commune aux six formes. */
+.rail{display:flex;align-items:center;gap:16px 22px;flex-wrap:wrap;margin-bottom:clamp(14px,1.6vw,22px)}
+.rail .k{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.19em;text-transform:uppercase;color:var(--or-c)}
+.f-os .rail .k{color:var(--or-f)}
+.rail .v{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ard)}
+.f-os .rail .v{color:var(--ard-f)}
 
-/* la demi-planche : photo d’un côté, fiche de l’autre */
-.lot--g,.lot--d{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(22px,3.6vw,60px);align-items:center}
-.lot--g .ph,.lot--d .ph{height:clamp(280px,33vw,500px)}
-.lot--d .ph{order:2}
-.lot--d .lot-t{order:1}
-
-.lot-r{display:block;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.19em;text-transform:uppercase;color:var(--or-c);margin-bottom:16px}
-.f-os .lot-r{color:var(--or-f)}
-.lot h3{margin-bottom:14px}
+.lot h3{margin-bottom:12px}
 .lot h3 a{position:relative;display:inline}
 .lot h3 a::after{content:"";position:absolute;left:0;right:100%;bottom:-.09em;height:1px;background-color:var(--or);transition:right .32s cubic-bezier(.2,.72,.2,1)}
 .f-os .lot h3 a::after{background-color:var(--or-f)}
 .lot h3 a:hover::after,.lot h3 a:focus-visible::after{right:0}
-.lot .txt{font-size:14.5px;max-width:52ch;color:var(--ard)}
+.lot .txt{color:var(--ard)}
 .f-os .lot .txt{color:var(--ard-f)}
 
-/* le filet d’or qui encadre la fiche, et qui s’éclaire au survol */
-.fiche{position:relative;padding:clamp(20px,2.3vw,32px);transition:transform .24s cubic-bezier(.2,.72,.2,1)}
-.fiche::after{content:"";position:absolute;inset:0;border:1px solid var(--filet);transition:border-color .2s ease,border-width .2s ease;pointer-events:none}
-.f-os .fiche::after{border-color:var(--filet-f)}
-.lot:hover .fiche,.lot:focus-within .fiche{transform:translateX(4px)}
-.lot:hover .fiche::after,.lot:focus-within .fiche::after{border-color:var(--filet-v);border-width:1.5px}
-.f-os .lot:hover .fiche::after,.f-os .lot:focus-within .fiche::after{border-color:var(--filet-fv)}
-
 /* le relevé de surfaces, en mono, séparé par des filets d’or */
-.spec{display:flex;flex-wrap:wrap;margin-top:clamp(18px,2vw,26px);border-top:1px solid var(--filet);padding-top:14px}
+.spec{display:flex;flex-wrap:wrap;margin-top:clamp(16px,1.8vw,24px);border-top:1px solid var(--filet);padding-top:13px}
 .f-os .spec{border-top-color:var(--filet-f)}
-.spec--nu{margin-top:0;border-top:0;padding-top:0}
-.spec li{padding:0 clamp(12px,1.5vw,22px);border-left:1px solid var(--filet);flex:0 1 auto}
+.spec li{padding:0 clamp(11px,1.4vw,20px);border-left:1px solid var(--filet);flex:0 1 auto}
 .f-os .spec li{border-left-color:var(--filet-f)}
 .spec li:first-child{padding-left:0;border-left:0}
-.spec b{display:block;font-family:var(--mno);font-weight:500;font-size:clamp(16px,1.7vw,22px);letter-spacing:-.01em;color:var(--or-c);line-height:1.3}
+.spec b{display:block;font-family:var(--mno);font-weight:500;font-size:clamp(16px,1.6vw,21px);letter-spacing:-.01em;color:var(--or-c);line-height:1.3}
 .f-os .spec b{color:var(--or-f)}
 .spec span{display:block;font-family:var(--mno);font-weight:500;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ard);margin-top:5px}
 .f-os .spec span{color:var(--ard-f)}
 
-/* la planche pleine largeur, entre le lot 05 et le lot 06 */
-.planche{margin:clamp(64px,7.6vw,124px) 0}
-.planche .ph{height:clamp(260px,30vw,470px)}
-.planche img{object-position:50% 18%}
-.planche figcaption{
-  display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline;
-  border-top:1px solid var(--filet);padding-top:13px;
+/* P1 · la planche pleine largeur : la plate occupe la colonne
+   entière, la notice court sous elle en trois parts. */
+.p1 .ph{height:clamp(300px,42vw,600px)}
+.p1-t{margin-top:clamp(22px,2.4vw,34px);display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(20px,3.2vw,54px);align-items:start}
+.p1-t .spec{margin-top:0;border-top:0;padding-top:0}
+
+/* P2 · la double planche : deux plates de même taille, une
+   gouttière large, et la notice sous chacune. */
+.p2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,3.4vw,56px)}
+.p2 .ph{height:clamp(260px,29vw,420px)}
+.p2 .txt{max-width:44ch}
+
+/* P3 · le feuillet de détails : trois plates, trois largeurs, trois
+   hauteurs de départ. C’est la planche qu’un catalogue met au milieu
+   d’un chapitre, et c’est elle qui casse le rythme le plus fort. */
+.p3{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 clamp(18px,2.4vw,38px);align-items:start}
+.p3-a{grid-column:1 / 6;grid-row:1}
+.p3-b{grid-column:7 / 13;grid-row:1 / span 2;margin-top:clamp(46px,7vw,132px)}
+.p3-c{grid-column:3 / 9;grid-row:2;margin-top:clamp(34px,3.8vw,64px)}
+.p3-a .ph{height:clamp(240px,26vw,380px)}
+.p3-b .ph{height:clamp(280px,34vw,510px)}
+.p3-c .ph{height:clamp(220px,23vw,330px)}
+.p3 .txt{max-width:42ch}
+
+/* P4 · la bande de contexte : pleine fenêtre, hors conteneur, une
+   dérive lente. Aucun lot, aucune fiche. Elle sépare les deux
+   moitiés du catalogue et donne à voir la rue plutôt que la maison. */
+/* LA HAUTEUR DE CETTE BANDE EST UNE MESURE, PAS UN GOÛT. Le numéro
+   civique « 621 » est lisible à la loupe sur cette photographie, à
+   68 % de sa hauteur. La plate fait 1440 de large : l’image se pose
+   à l’échelle de la largeur, donc 810 px de haut rendus. Avec une
+   fenêtre de 470 px, la boîte du décadrage en fait 511, et la
+   dérive de ±3,6 % ne descend jamais plus bas que 64 % de l’image.
+   Le numéro reste hors champ. Toucher à `height` ou à
+   `object-position` le ramène. */
+.bande{position:relative;width:100%}
+.bande .ph{height:clamp(230px,42svh,470px)}
+.bande img{object-position:50% 2%}
+.bande-lg{background-color:var(--nuit);border-top:1px solid var(--filet)}
+.bande-lg .dedans{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline;padding-block:13px}
+.bande-lg b{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--or-c);flex:none}
+.bande-lg i{font-style:normal;font-size:14px;line-height:1.55;color:var(--ard);max-width:64ch}
+
+/* P5 · la planche asymétrique. Une plate PANORAMIQUE et large à
+   gauche, une plate PORTRAIT et étroite à droite, alignées par le
+   bas. Les deux colonnes étaient d’abord à 1,08 / 0,92 : à l’écran,
+   ça redonnait la double planche du lot 02, en plus étroit. À 1,45 /
+   0,55 les deux formats ne se ressemblent plus du tout, et le vide
+   au-dessus de la colonne large fait la respiration. */
+.p5{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.55fr);gap:clamp(24px,3.4vw,56px);align-items:end}
+.p5-a .ph{height:clamp(180px,21vw,304px)}
+.p5-b .ph{height:clamp(330px,44vw,610px)}
+.p5 .txt{max-width:52ch}
+.p5-b .txt{max-width:34ch}
+.p5-b h3{font-size:clamp(21px,2.2vw,29px)}
+
+/* P6 · la planche à fond perdu : la photographie prend la fenêtre
+   entière et l’étiquette d’encre se pose dessus, en bas à gauche.
+   C’est le seul écho de la couverture, et il ne sert qu’une fois. */
+.fp{position:relative;width:100%;overflow:clip}
+.fp .ph{height:clamp(340px,72svh,680px)}
+.fp{overflow-clip-margin:0}
+.fp .fil{left:auto;right:2.4vw;top:.16em;-webkit-text-stroke-color:rgba(239,233,221,.36)}
+/* `.lot > *:not(.fil)` pose `position: relative` sur tous les enfants
+   d’une planche, et ça vaut (0,2,0) : un simple `.fp-q { position:
+   absolute }` ne mordait pas, l’étiquette retombait DANS le flux et
+   pendait de 290 px sous la photographie. Il faut la même
+   spécificité, plus bas dans la feuille. */
+.fp .fp-q{
+  position:absolute;left:0;right:0;bottom:clamp(20px,4vh,54px);z-index:2;
+  pointer-events:none;
 }
-.planche figcaption b{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--or-c);flex:none}
-.planche figcaption i{font-style:normal;font-size:14px;line-height:1.55;color:var(--ard);max-width:66ch}
+.fp-q .dedans{display:flex}
+.fp-i{
+  background-color:var(--nuit);position:relative;pointer-events:auto;
+  width:min(620px,62%);padding:clamp(22px,2.6vw,36px);
+}
+.fp-i::after{content:"";position:absolute;inset:0;border:1px solid var(--filet-v);pointer-events:none}
+
+/* P7 · le dernier lot : une plate centrée, des marges énormes, rien
+   d’autre sur la page. La façon dont un catalogue ferme sa vente. */
+.p7{max-width:820px;margin:0 auto;text-align:center}
+.p7 .rail{justify-content:center}
+.p7 .ph{height:clamp(260px,34vw,470px)}
+.p7 .lot-t{margin-top:clamp(22px,2.4vw,32px)}
+.p7 .txt{max-width:50ch;margin:0 auto}
+.p7 .spec{justify-content:center;border-top:0;margin-top:clamp(18px,2vw,26px);padding-top:0}
+.p7 h3{margin-bottom:14px}
 
 .note{
-  margin-top:clamp(52px,6vw,92px);border-top:1px solid var(--filet);padding-top:clamp(20px,2.2vw,28px);
-  display:flex;flex-wrap:wrap;gap:20px 48px;justify-content:space-between;align-items:flex-start;
+  margin-top:clamp(50px,5.6vw,88px);border-top:1px solid var(--filet);padding-top:clamp(18px,2vw,26px);
+  display:flex;flex-wrap:wrap;gap:20px 44px;justify-content:space-between;align-items:flex-start;
 }
-.note p{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;line-height:1.8;color:var(--ard);max-width:56ch}
+.f-os .note{border-top-color:var(--filet-f)}
+.note p{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;line-height:1.85;color:var(--ard);max-width:54ch}
+.f-os .note p{color:var(--ard-f)}
 
-/* ══ D · LE LOT VEDETTE ═════════════════════════════════════════ */
-.ved-pl .ph{height:clamp(320px,43vw,640px)}
-.ved-lg{padding-top:12px;font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase;line-height:1.8;color:var(--ard-f);max-width:74ch}
-.paire{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.2vw,32px);margin-top:clamp(16px,2.2vw,32px)}
-.paire .ph{height:clamp(240px,30vw,440px)}
+/* ══ G · LE LOT VEDETTE ═════════════════════════════════════════ */
+.ved-pl .ph{height:clamp(300px,43vw,620px)}
+.ved-lg{padding-top:11px;font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase;line-height:1.8;color:var(--ard);max-width:70ch}
+.paire{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.2vw,30px);margin-top:clamp(16px,2.2vw,30px)}
+.paire .ph{height:clamp(230px,29vw,420px)}
 
 /* ── LE PLAN D’ÉTAGE QUI SE DESSINE ─────────────────────────────
-   Deux calques du MÊME tracé. Le calque sourd est toujours là :
-   au repos, le plan est complet et aucune information ne dépend du
-   survol. Le calque vif, lui, part vide et se RETRACE mur par mur
-   en 900 ms sur `:hover` et `:focus-within`. `pathLength="100"`
-   normalise les neuf tracés : un seul `stroke-dashoffset` les
-   pilote tous, et le décalage vient des `transition-delay`. */
-.plan-w{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(16px,2.2vw,32px);margin-top:clamp(16px,2.2vw,32px);align-items:stretch}
-.pl-f{position:relative;padding:clamp(20px,2.4vw,34px);display:flex;flex-direction:column;justify-content:space-between;gap:22px}
-.pl-f::after{content:"";position:absolute;inset:0;border:1px solid var(--filet-f);transition:border-color .2s ease,border-width .2s ease;pointer-events:none}
-.pl-f:hover::after,.pl-f:focus-within::after{border-color:var(--filet-fv);border-width:1.5px}
+   Deux calques du MÊME tracé. Le calque sourd est toujours là : au
+   repos le plan est complet, et aucune information ne dépend du
+   survol. Le calque vif part vide et se RETRACE mur par mur en
+   900 ms sur `:hover` et `:focus-within`. `pathLength="100"`
+   normalise les neuf tracés : un seul `stroke-dashoffset` les pilote
+   tous, et le décalage vient des `transition-delay`. */
+.plan-w{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(16px,2.2vw,30px);margin-top:clamp(16px,2.2vw,30px);align-items:stretch}
+.pl-f{position:relative;padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;justify-content:space-between;gap:22px}
+.pl-f::after{content:"";position:absolute;inset:0;border:1px solid var(--filet);transition:border-color .2s ease,border-width .2s ease;pointer-events:none}
+.pl-f:hover::after,.pl-f:focus-within::after{border-color:var(--filet-v);border-width:1.5px}
 .plan{width:100%;height:auto;display:block}
-.pl-d path{fill:none;stroke:rgba(111,85,24,.34);stroke-width:1.4;stroke-linecap:square}
+.pl-d path{fill:none;stroke:rgba(184,150,79,.30);stroke-width:1.4;stroke-linecap:square}
 .pl-v path{
-  fill:none;stroke:var(--or-f);stroke-width:1.4;stroke-linecap:square;
+  fill:none;stroke:var(--or-c);stroke-width:1.4;stroke-linecap:square;
   stroke-dasharray:100;stroke-dashoffset:100;
   transition:stroke-dashoffset .42s cubic-bezier(.3,.72,.2,1);
 }
@@ -386,164 +573,238 @@ h3{font-size:clamp(24px,3vw,42px);line-height:1.02;letter-spacing:-.016em}
 .pl-v path:nth-child(8){transition-delay:.43s}
 .pl-v path:nth-child(9){transition-delay:.47s}
 .pl-f:hover .pl-v path,.pl-f:focus-within .pl-v path{stroke-dashoffset:0}
-.pl-l text{font-family:var(--mno);font-weight:500;font-size:11px;letter-spacing:.12em;fill:var(--ard-f)}
-.pl-t{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.pl-l text{font-family:var(--mno);font-weight:500;font-size:11px;letter-spacing:.12em;fill:var(--ard)}
+.pl-t{display:flex;flex-direction:column;align-items:flex-start;gap:15px}
 .pl-t .mno{font-size:10px}
 
-/* ── LE RELEVÉ COMPLET, QUI SE DÉPLIE ───────────────────────────── */
-.releve-d{margin-top:clamp(44px,5vw,76px);border-top:1px solid var(--filet-f)}
+/* ── LE RELEVÉ COMPLET, EN TROIS GROUPES ────────────────────────
+   Quatorze lignes empilées sous quatorze filets, c’était une fiche
+   technique. Trois groupes de quatre à cinq lignes, un filet par
+   GROUPE, c’est un relevé. */
+.releve-d{margin-top:clamp(42px,4.8vw,72px);border-top:1px solid var(--filet)}
 .releve-d summary{
   list-style:none;cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;
-  gap:18px;padding:20px 0;font-family:var(--mno);font-weight:500;font-size:11px;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--or-f);
-  border-bottom:1px solid var(--filet-f);transition:color .2s ease;
+  gap:18px;padding:19px 0;font-family:var(--mno);font-weight:500;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--or-c);
+  border-bottom:1px solid var(--filet);transition:color .2s ease;
 }
 .releve-d summary::-webkit-details-marker{display:none}
 .releve-d summary::after{content:"+";font-size:17px;line-height:1;transition:transform .26s cubic-bezier(.2,.72,.2,1)}
 .releve-d[open] summary::after{transform:rotate(45deg)}
-.releve-d summary:hover,.releve-d summary:focus-visible{color:var(--nuit)}
+.releve-d summary:hover,.releve-d summary:focus-visible{color:var(--os)}
 .releve-d summary:active{opacity:.6}
-.rel-l{columns:2;column-gap:clamp(28px,4vw,64px);padding-top:6px}
-.rel-l li{break-inside:avoid;display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid var(--filet-f)}
-.rel-l .k{font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ard-f);flex:0 0 auto;max-width:42%}
-.rel-l .v{font-size:14px;line-height:1.5;text-align:right;color:var(--nuit)}
+.rel-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3.4vw,56px);padding-top:clamp(22px,2.6vw,34px)}
+.rel-g > div{border-top:1px solid var(--filet)}
+.rel-g h4{
+  font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--or-c);padding-top:13px;margin-bottom:13px;
+}
+.rel-g li{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:6px 0}
+.rel-g .k{font-family:var(--mno);font-weight:500;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ard);flex:0 0 auto}
+.rel-g .v{font-size:13.5px;line-height:1.5;text-align:right;color:var(--os)}
 
-/* ══ E · LA DÉMARCHE ════════════════════════════════════════════ */
-.etapes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,3.6vw,58px) clamp(28px,4.4vw,76px)}
-.etape{border-top:1px solid var(--filet);padding-top:clamp(20px,2.2vw,28px)}
-.etape .n{display:block;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.2em;color:var(--or-c);margin-bottom:14px}
-.etape h3{font-size:clamp(21px,2.3vw,30px);margin-bottom:12px}
-.etape p{font-size:14.5px;line-height:1.68;color:var(--ard);max-width:48ch}
+/* ══ H · LA DÉMARCHE ════════════════════════════════════════════
+   Quatre temps en quatre colonnes sous un filet continu, chacun
+   marqué d’un cran d’or au-dessus. C’est la règle de dix, à quatre. */
+.dem{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(22px,2.8vw,44px);border-top:1px solid var(--filet-f)}
+.dem > div{position:relative;padding-top:clamp(20px,2.2vw,28px)}
+.dem > div::before{content:"";position:absolute;top:-1px;left:0;width:34px;height:3px;background-color:var(--or-f)}
+.dem h3{font-size:clamp(20px,2.1vw,27px);margin-bottom:11px}
+.dem p{font-size:14px;line-height:1.66;color:var(--ard-f)}
+.dem .rem{
+  display:block;margin-top:13px;padding-top:11px;border-top:1px solid var(--filet-f);
+  font-family:var(--mno);font-weight:500;font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;line-height:1.8;color:var(--or-f);
+}
 
-/* ══ F · JOINDRE ════════════════════════════════════════════════ */
-.joindre{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:clamp(30px,5vw,86px);align-items:start}
-.coord{border-top:1px solid var(--filet-f)}
-.coord li{padding:16px 0;border-bottom:1px solid var(--filet-f)}
-.coord b{display:block;font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--or-f);margin-bottom:7px}
-.coord .v{display:block;font-family:var(--aff);font-size:clamp(22px,2.4vw,32px);line-height:1.12;letter-spacing:-.012em}
-.coord a{border-bottom:1px solid var(--filet-f);transition:color .2s ease,border-color .2s ease}
-.coord a:hover,.coord a:focus-visible{color:var(--or-f);border-color:var(--or-f)}
+/* ══ I · JOINDRE ET PIED ════════════════════════════════════════ */
+.joindre{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr);gap:clamp(28px,4.6vw,78px);align-items:start}
+.coord{border-top:1px solid var(--filet)}
+.coord li{padding:15px 0;border-bottom:1px solid var(--filet)}
+.coord b{display:block;font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--or-c);margin-bottom:6px}
+.coord .v{display:block;font-family:var(--aff);font-size:clamp(21px,2.3vw,30px);line-height:1.14;letter-spacing:-.014em}
+.coord a{border-bottom:1px solid var(--filet);transition:color .2s ease,border-color .2s ease}
+.coord a:hover,.coord a:focus-visible{color:var(--or-c);border-color:var(--or-c)}
 .coord a:active{opacity:.6}
 
-/* ══ PIED ═══════════════════════════════════════════════════════ */
-.pied{padding:clamp(60px,7vw,104px) 0 clamp(44px,5vw,70px)}
-.pied-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px 48px;align-items:flex-start}
-.pied-n{display:flex;flex-wrap:wrap;gap:10px 26px}
+.pied{margin-top:clamp(58px,6.6vw,102px);padding-top:clamp(28px,3vw,42px);border-top:1px solid var(--filet)}
+.pied-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:26px 44px;align-items:flex-start}
+.pied-n{display:flex;flex-wrap:wrap;gap:10px 24px}
 .pied-n a{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ard);transition:color .2s ease}
 .pied-n a:hover,.pied-n a:focus-visible{color:var(--or-c)}
 .pied-n a:active{color:var(--os)}
-.pied-b{margin-top:clamp(38px,4.4vw,62px);padding-top:24px;border-top:1px solid var(--filet);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 40px;align-items:flex-start}
-.pied-b p{font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.13em;text-transform:uppercase;line-height:1.9;color:var(--ard);max-width:66ch}
+.pied-b{margin-top:clamp(32px,3.8vw,54px);padding-top:22px;border-top:1px solid var(--filet);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 36px;align-items:flex-start}
+.pied-b p{font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.13em;text-transform:uppercase;line-height:1.9;color:var(--ard);max-width:62ch}
 
-/* ── LARGEURS ───────────────────────────────────────────────────── */
+/* ── LARGEURS ────────────────────────────────────────────────────
+   Piège 66 : le `clip` du corps ne prouve rien sur les enfants.
+   Chaque grille se replie AVANT que sa colonne la plus étroite
+   passe sous la largeur du contenu qu’elle porte. */
 @media (max-width:1040px){
-  .cart-2,.joindre,.lot--pl .lot-t{grid-template-columns:1fr;gap:clamp(20px,4vw,36px)}
-  .cart-2{align-items:start}
-  .lot--g,.lot--d{grid-template-columns:1fr;gap:clamp(22px,4vw,34px)}
-  .lot--d .ph,.lot--d .lot-t{order:0}
-  .lot--g .lot-num,.lot--d .lot-num{left:0;right:auto;text-align:left;top:auto;bottom:-.13em}
-  .lot--g .ph,.lot--d .ph{height:clamp(280px,44vw,430px)}
-  .plan-w{grid-template-columns:1fr}
-  .nav{width:100%;margin-left:0;gap:14px}
+  .p1-t,.joindre{grid-template-columns:1fr;gap:clamp(20px,4vw,32px)}
+  .dem{grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,38px)}
+  .rel-g{grid-template-columns:1fr 1fr}
+  .nav{width:100%;margin-left:0;gap:13px}
+  .couv-q{width:min(660px,80%)}
+  .fp-i{width:min(620px,80%)}
+}
+@media (max-width:900px){
+  .reg-l a{grid-template-columns:32px minmax(0,1fr) 78px 16px;gap:3px 14px}
+  .reg-s,.reg-t{grid-column:2}
+  .reg-t{margin-top:-2px}
+  .reg-h{grid-row:1;grid-column:3}
+  .reg-f{grid-row:1;grid-column:4}
+  .p3{grid-template-columns:1fr;gap:clamp(40px,6vw,64px)}
+  .p3-a,.p3-b,.p3-c{grid-column:1;grid-row:auto;margin-top:0}
+  .p3-a .ph,.p3-b .ph,.p3-c .ph{height:clamp(240px,44vw,400px)}
+  .p5{grid-template-columns:1fr;gap:clamp(40px,6vw,60px);align-items:start}
+  .p5-a .ph,.p5-b .ph{height:clamp(250px,44vw,400px)}
 }
 @media (max-width:760px){
-  .releve{grid-template-columns:1fr 1fr;gap:26px}
-  .trois{grid-template-columns:1fr;gap:26px}
-  .etapes{grid-template-columns:1fr}
-  .paire{grid-template-columns:1fr}
-  .rel-l{columns:1}
+  .releve{grid-template-columns:1fr 1fr;gap:24px}
+  .p2{grid-template-columns:1fr;gap:clamp(40px,6vw,60px)}
+  .p2 .ph{height:clamp(240px,44vw,380px)}
+  .plan-w,.paire{grid-template-columns:1fr}
+  .rel-g{grid-template-columns:1fr;gap:26px}
   .tete .puce{display:none}
-  .tete .dedans{padding-block:13px;gap:11px}
-  .couv-ph{min-height:min(38svh,300px)}
+  .tete .dedans{padding-block:12px;gap:10px}
+  .couv{min-height:auto}
+  .couv-pl{position:relative;height:clamp(210px,34svh,320px)}
+  .couv > .dedans{padding-top:clamp(24px,3.4vh,40px)}
+  .couv-q{width:100%}
+  .fp .ph{height:clamp(300px,52svh,440px)}
+  .fp-q{position:relative;left:auto;right:auto;bottom:auto;margin-top:-1px}
+  .fp-i{width:100%}
+}
+@media (max-width:560px){
+  .dem{grid-template-columns:1fr}
+  .p7{text-align:left}
+  .p7 .rail,.p7 .spec{justify-content:flex-start}
+  .p7 .txt{margin:0}
 }
 @media (max-width:460px){
-  .spec li{padding:0;border-left:0;flex:0 0 50%;margin-bottom:14px}
+  .spec li{padding:0;border-left:0;flex:0 0 50%;margin-bottom:13px}
   .spec li:nth-last-child(-n+2){margin-bottom:0}
-  .rel-l li{flex-direction:column;gap:5px}
-  .rel-l .v{text-align:left}
-  .rel-l .k{max-width:none}
-  .couv-lg,.planche figcaption{gap:6px 0}
-  .couv-lg b,.planche figcaption b{flex-basis:100%}
+  .rel-g li{flex-direction:column;gap:3px;align-items:flex-start}
+  .rel-g .v{text-align:left}
+  .bande-lg .dedans{gap:5px 0}
+  .bande-lg b{flex-basis:100%}
+  .r10{width:105px;background-size:105px 9px}
+  .r10::after{left:calc(var(--n) * 10.5px)}
 }
 </style>
 </head>
 <body>
 
-<!-- ══ A · LA COUVERTURE ══════════════════════════════════════════ -->
-<div class="couv" id="haut">
-  <header class="tete">
-    <div class="dedans">
-      <a class="marq" href="#haut">Ancrage <span>Immobilier</span></a>
-      <nav class="nav" aria-label="Sections du site">
-        <a href="#catalogue">Le catalogue</a>
-        <a href="#vedette">Le lot 01</a>
-        <a href="#demarche">La démarche</a>
-        <a href="#joindre">Joindre</a>
-      </nav>
-      <span class="puce">Site de démonstration</span>
-    </div>
-  </header>
+<a class="saut" href="#registre">Aller au registre</a>
 
-  <div class="couv-t">
-    <div class="dedans">
-      <p class="mno ou">Catalogue courant &nbsp;·&nbsp; Val-des-Ormes et cinq secteurs &nbsp;·&nbsp; permis 0000</p>
-      <h1 class="ou ou2">Dix propriétés<br>au catalogue.</h1>
+<header class="tete">
+  <div class="dedans">
+    <a class="marq" href="#haut">Ancrage <span>Immobilier</span></a>
+    <nav class="nav" aria-label="Sections du site">
+      <a href="#registre">Le registre</a>
+      <a href="#catalogue">Les planches</a>
+      <a href="#vedette">Le lot 01</a>
+      <a href="#demarche">La démarche</a>
+      <a href="#joindre">Joindre</a>
+    </nav>
+    <span class="puce">Site de démonstration</span>
+  </div>
+</header>
+
+<!-- ══ A · LA COUVERTURE ══════════════════════════════════════════
+     La planche prend la fenêtre entière ; l’étiquette d’encre porte
+     tout le texte. Aucun mot ne repose sur la photographie. -->
+<div class="couv" id="haut">
+  <div class="couv-pl ourid">
+    <img src="../../images/secteurs-sites/immobilier-1.webp" width="1920" height="1080"
+         fetchpriority="high" decoding="async"
+         alt="Aire ouverte d’une maison&#160;: fauteuils et canapé autour d’une table basse, portes-fenêtres pliantes rabattues sur un jardin, cuisine et coin repas en enfilade au fond.">
+  </div>
+  <div class="dedans">
+    <div class="couv-q ouvol">
+      <p class="mno ou ou2">Catalogue courant, Val-des-Ormes et cinq secteurs</p>
+      <h1 class="ou ou3">Dix propriétés<br>au catalogue.</h1>
       <span class="regle our"></span>
-      <p class="lede ou ou3">Courtage résidentiel, un seul territoire. Chaque propriété est présentée comme une pièce&nbsp;: une planche, un relevé de surfaces, un plan d’étage coté et une visite&#160;360.</p>
-      <div class="actes ou ou4">
-        <a class="bt" href="#catalogue">Voir les dix lots</a>
+      <p class="lede ou ou4">Courtage résidentiel sur un seul territoire. Chaque propriété a sa planche, son relevé de surfaces et son plan d’étage coté.</p>
+      <div class="actes ou ou5">
+        <a class="bt" href="#registre">Voir le registre</a>
         <a class="bt bt--nu" href="#joindre">Faire évaluer une propriété</a>
       </div>
+      <p class="couv-lg">Planche de couverture&#160;: l’aire ouverte du lot 01, portes pliantes rabattues sur la cour.</p>
     </div>
   </div>
-
-  <figure class="couv-ph">
-    <div class="ph ph--dec ouv">
-      <img src="../../images/secteurs-sites/immobilier-1.webp" width="1920" height="1080"
-           style="object-position:50% 70%"
-           fetchpriority="high" decoding="async"
-           alt="Aire ouverte d’une maison&#160;: fauteuils et canapé autour d’une table basse, portes-fenêtres pliantes rabattues sur un jardin, cuisine et coin repas en enfilade au fond.">
-    </div>
-    <figcaption class="dedans">
-      <span class="couv-lg"><b>Planche de couverture</b><i>L’aire ouverte du lot 01, portes pliantes rabattues sur la cour. Le séjour, la cuisine et le coin repas tiennent dans une seule pièce.</i></span>
-    </figcaption>
-  </figure>
 </div>
 
-<!-- ══ B · LE PARTI PRIS, ET LE RELEVÉ DE LA SAISON ═══════════════ -->
-<section class="bloc f-os releve-w">
+<!-- ══ B · LE REGISTRE ════════════════════════════════════════════ -->
+<section class="bloc f-os releve-w" id="registre">
   <div class="dedans">
     <div class="cart">
-      <span class="mno rv">Le parti pris</span>
+      <span class="mno rv">Le registre</span>
       <span class="regle rl"></span>
-      <div class="cart-2">
-        <h2 class="rv">On présente les propriétés. On ne les chiffre pas ici.</h2>
-        <p class="lede rv rv--2">Un prix demandé se défend avec les ventes conclues de la rue sous les yeux. Une page web n’a pas ce contexte&nbsp;: elle donne la propriété, ses pièces et ses surfaces, puis on se parle.</p>
-      </div>
+      <h2 class="rv">Dix lots, et aucun prix affiché.</h2>
+      <p class="lede rv rv--2">Un prix demandé se défend avec les ventes conclues de la rue sous les yeux. Une page web n’a pas ce contexte. Elle donne la propriété, ses pièces et ses surfaces&#160;; le reste se dit de vive voix.</p>
     </div>
 
-    <ul class="trois">
-      <li class="rv">
-        <span class="n">01</span>
-        <h3>Le plan d’étage coté</h3>
-        <p>Chaque niveau relevé au laser, puis redessiné. Les superficies habitables excluent toujours le sous-sol, même aménagé&nbsp;: c’est la seule façon de comparer deux maisons.</p>
-      </li>
-      <li class="rv rv--2">
-        <span class="n">02</span>
-        <h3>La visite 360</h3>
-        <p>Toutes les pièces, dans l’ordre où on les traverse. Elle évite les visites de curiosité, et elle ne cache pas la pièce qu’on aurait envie de cacher.</p>
-      </li>
-      <li class="rv rv--3">
-        <span class="n">03</span>
-        <h3>Le compte rendu du vendredi</h3>
-        <p>Un écrit chaque semaine au propriétaire vendeur, même les semaines sans visite. Les commentaires des visiteurs sont notés tels quels, y compris ceux qui font mal.</p>
-      </li>
+    <fieldset class="tri">
+      <legend>Trier le registre</legend>
+      <input type="radio" name="tri" id="tri-a" checked>
+      <label for="tri-a">Par numéro de lot</label>
+      <input type="radio" name="tri" id="tri-b">
+      <label for="tri-b">Par superficie</label>
+      <input type="radio" name="tri" id="tri-c">
+      <label for="tri-c">Par secteur</label>
+    </fieldset>
+
+    <ul class="reg">
+      <li class="reg-l" style="--a:1;--b:6;--c:9"><a href="#lot-01">
+        <span class="reg-n">01</span><span class="reg-a">412, chemin du Vieux-Moulin</span>
+        <span class="reg-s">Val-des-Ormes</span><span class="reg-t">Plain-pied 2004</span>
+        <span class="reg-h">1&#160;640&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:2;--b:2;--c:4"><a href="#lot-02">
+        <span class="reg-n">02</span><span class="reg-a">15, croissant des Aubépines</span>
+        <span class="reg-s">Plateau-des-Cèdres</span><span class="reg-t">Maison à étages 2016</span>
+        <span class="reg-h">2&#160;410&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:3;--b:3;--c:1"><a href="#lot-03">
+        <span class="reg-n">03</span><span class="reg-a">87, rue des Bouleaux-Blancs</span>
+        <span class="reg-s">Coteau-Bélanger</span><span class="reg-t">Cottage 1998</span>
+        <span class="reg-h">1&#160;980&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:4;--b:8;--c:6"><a href="#lot-04">
+        <span class="reg-n">04</span><span class="reg-a">230, montée du Cormier</span>
+        <span class="reg-s">Rivière-aux-Trembles</span><span class="reg-t">Plain-pied 1976</span>
+        <span class="reg-h">1&#160;180&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:5;--b:9;--c:3"><a href="#lot-05">
+        <span class="reg-n">05</span><span class="reg-a">6-B, rue de la Draveuse</span>
+        <span class="reg-s">Le Vieux-Rang</span><span class="reg-t">Copropriété 2011</span>
+        <span class="reg-h">940&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:6;--b:1;--c:7"><a href="#lot-06">
+        <span class="reg-n">06</span><span class="reg-a">1104, rang du Grand-Brûlé</span>
+        <span class="reg-s">Secteur nord</span><span class="reg-t">Fermette 1932</span>
+        <span class="reg-h">2&#160;780&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:7;--b:7;--c:5"><a href="#lot-07">
+        <span class="reg-n">07</span><span class="reg-a">48, impasse des Perdrix</span>
+        <span class="reg-s">Plateau-des-Cèdres</span><span class="reg-t">Jumelé 2008</span>
+        <span class="reg-h">1&#160;520&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:8;--b:10;--c:8"><a href="#lot-08">
+        <span class="reg-n">08</span><span class="reg-a">320, avenue Ferland Ouest</span>
+        <span class="reg-s">Secteur nord</span><span class="reg-t">Copropriété 2014</span>
+        <span class="reg-h">720&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:9;--b:5;--c:10"><a href="#lot-09">
+        <span class="reg-n">09</span><span class="reg-a">77, rue du Coteau-Vert</span>
+        <span class="reg-s">Val-des-Ormes</span><span class="reg-t">Cottage 1989</span>
+        <span class="reg-h">1&#160;720&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
+      <li class="reg-l" style="--a:10;--b:4;--c:2"><a href="#lot-10">
+        <span class="reg-n">10</span><span class="reg-a">9, chemin des Quatre-Vents</span>
+        <span class="reg-s">Coteau-Bélanger</span><span class="reg-t">Plain-pied 2012</span>
+        <span class="reg-h">1&#160;810&#160;pi²</span><span class="reg-f" aria-hidden="true">↗</span></a></li>
     </ul>
+
+    <p class="colo">Sur chaque lot&#160;: le plan coté de chaque niveau, la visite 360 de toutes les pièces, et un compte rendu écrit chaque vendredi, même les semaines sans visite.</p>
 
     <div class="releve">
       <div>
         <span class="od"><span class="od-p"><i>0</i><i>2</i><i>4</i><i>6</i><i>8</i><i>10</i></span></span>
-        <p>Lots au catalogue</p>
+        <p>Lots au registre</p>
       </div>
       <div>
         <span class="od"><span class="od-p"><i>2&#160;800</i><i>6&#160;000</i><i>9&#160;200</i><i>12&#160;000</i><i>14&#160;800</i><i>16&#160;700</i></span></span>
@@ -561,299 +822,341 @@ h3{font-size:clamp(24px,3vw,42px);line-height:1.02;letter-spacing:-.016em}
   </div>
 </section>
 
-<!-- ══ C · LE CATALOGUE ═══════════════════════════════════════════ -->
+<!-- ══ C · LES PLANCHES, PREMIÈRE PARTIE ══════════════════════════
+     P1 · lot 01, planche pleine largeur.
+     P2 · lots 02 et 03, double planche à gouttière. -->
 <section class="bloc f-nuit" id="catalogue">
   <div class="dedans">
     <div class="cart">
-      <span class="mno rv">Le catalogue</span>
       <span class="regle rl"></span>
-      <div class="cart-2">
-        <h2 class="rv">Dix lots, présentés un par un.</h2>
-        <p class="lede rv rv--2">L’ordre est celui du catalogue, pas celui d’un classement. Chaque fiche donne le secteur, l’année de construction, les pièces et les surfaces&nbsp;; le reste se dit de vive voix.</p>
-      </div>
+      <h2 class="rv">Chaque lot a sa planche, et aucune ne se répète.</h2>
+      <p class="lede rv rv--2">L’ordre est celui du registre, pas celui d’un classement. Ce qui change d’un lot à l’autre, c’est l’échelle de la planche&#160;: la pièce la plus parlante décide de la place qu’elle prend.</p>
     </div>
 
     <div class="lots">
 
-      <!-- LOT 01 — planche pleine largeur -->
-      <article class="lot lot--pl">
-        <span class="lot-num" aria-hidden="true">LOT 01</span>
+      <!-- P1 ──────────────────────────────────────────────────── -->
+      <article class="lot p1" id="lot-01">
+        <span class="fil" aria-hidden="true" style="left:0;bottom:-.12em">01</span>
+        <div class="rail rv">
+          <span class="r10" style="--n:0" aria-hidden="true"></span>
+          <span class="k">Lot 01</span>
+          <span class="v">Val-des-Ormes, plain-pied 2004</span>
+        </div>
         <div class="ph ph--dec vt">
           <img src="../../images/secteurs-sites/immobilier-2.webp" width="1280" height="720"
-               style="object-position:50% 68%" loading="lazy" decoding="async"
+               style="object-position:50% 72%" loading="lazy" decoding="async"
                alt="Façade d’un plain-pied à revêtement gris clair&#160;: pignon central, porte de garage double, lanterne murale et porte d’entrée brune sous un porche.">
         </div>
-        <div class="lot-t">
+        <div class="p1-t">
           <div>
-            <span class="lot-r">Lot 01 &nbsp;·&nbsp; Val-des-Ormes &nbsp;·&nbsp; plain-pied 2004</span>
             <h3><a href="#vedette">412, chemin du Vieux-Moulin</a></h3>
-            <p class="txt">Sous-sol pleine hauteur aménagé, garage double attenant. Le terrain donne sur une bande boisée qui appartient à la municipalité&nbsp;: rien ne se construira à l’arrière.</p>
+            <p class="txt">Sous-sol pleine hauteur aménagé, garage double attenant. Le terrain donne sur une bande boisée qui appartient à la municipalité&#160;: rien ne se construira à l’arrière.</p>
           </div>
-          <div class="fiche">
-            <ul class="spec spec--nu">
-              <li><b>3</b><span>chambres</span></li>
-              <li><b>2</b><span>salles de bain</span></li>
-              <li><b>1&#160;640</b><span>pi² habitables</span></li>
-              <li><b>8&#160;200</b><span>pi² de terrain</span></li>
+          <ul class="spec">
+            <li><b>3</b><span>chambres</span></li>
+            <li><b>2</b><span>salles de bain</span></li>
+            <li><b>1&#160;640</b><span>pi² habitables</span></li>
+            <li><b>8&#160;200</b><span>pi² de terrain</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- P2 ──────────────────────────────────────────────────── -->
+      <div class="p2">
+        <article class="lot" id="lot-02">
+          <span class="fil" aria-hidden="true" style="left:0;bottom:-.14em;font-size:clamp(84px,11vw,168px)">02</span>
+          <div class="rail rv">
+            <span class="r10" style="--n:1" aria-hidden="true"></span>
+            <span class="k">Lot 02</span>
+          </div>
+          <div class="ph ph--dec vt">
+            <img src="../../images/secteurs-sites/immobilier-3.webp" width="960" height="720"
+                 loading="lazy" decoding="async"
+                 alt="Séjour clair à double hauteur&#160;: escalier de bois suspendu contre un mur texturé, table à manger ronde et fauteuils crème, cuisine ouverte au fond.">
+          </div>
+          <div style="margin-top:clamp(18px,2vw,26px)">
+            <h3><a href="#joindre">15, croissant des Aubépines</a></h3>
+            <p class="txt">Escalier de bois ouvert sur le séjour, plafond à double hauteur à l’entrée, cuisine en enfilade. Rue en boucle, aucun transit. Plateau-des-Cèdres, maison à étages de 2016.</p>
+            <ul class="spec">
+              <li><b>4</b><span>chambres</span></li>
+              <li><b>3</b><span>salles de bain</span></li>
+              <li><b>2&#160;410</b><span>pi² habitables</span></li>
             </ul>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- LOT 02 -->
-      <article class="lot lot--g">
-        <span class="lot-num" aria-hidden="true">LOT 02</span>
-        <div class="ph ph--dec vt">
-          <img src="../../images/secteurs-sites/immobilier-3.webp" width="960" height="720"
-               loading="lazy" decoding="async"
-               alt="Séjour clair à double hauteur&#160;: escalier de bois suspendu contre un mur texturé, table à manger ronde et fauteuils crème, cuisine ouverte au fond.">
-        </div>
-        <div class="lot-t fiche">
-          <span class="lot-r">Lot 02 &nbsp;·&nbsp; Plateau-des-Cèdres &nbsp;·&nbsp; maison à étages 2016</span>
-          <h3><a href="#joindre">15, croissant des Aubépines</a></h3>
-          <p class="txt">Escalier de bois ouvert sur le séjour, plafond à double hauteur à l’entrée, cuisine en enfilade. Rue en boucle, aucun transit.</p>
-          <ul class="spec">
-            <li><b>4</b><span>chambres</span></li>
-            <li><b>3</b><span>salles de bain</span></li>
-            <li><b>2&#160;410</b><span>pi² habitables</span></li>
-          </ul>
-        </div>
-      </article>
+        <article class="lot" id="lot-03">
+          <span class="fil" aria-hidden="true" style="left:0;bottom:-.14em;font-size:clamp(84px,11vw,168px)">03</span>
+          <div class="rail rv rv--2">
+            <span class="r10" style="--n:2" aria-hidden="true"></span>
+            <span class="k">Lot 03</span>
+          </div>
+          <div class="ph ph--dec vt vt--2">
+            <img src="../../images/secteurs-sites/immobilier-4.webp" width="960" height="720"
+                 loading="lazy" decoding="async"
+                 alt="Façade d’un cottage à revêtement vert pâle&#160;: galerie couverte à colonnes blanches, lucarne à deux fenêtres, garage double brun et longue entrée de béton.">
+          </div>
+          <div style="margin-top:clamp(18px,2vw,26px)">
+            <h3><a href="#joindre">87, rue des Bouleaux-Blancs</a></h3>
+            <p class="txt">Galerie couverte en façade, lucarne à l’étage, garage double. Le terrain est plat de la rue jusqu’au fond. Coteau-Bélanger, cottage de 1998.</p>
+            <ul class="spec">
+              <li><b>4</b><span>chambres</span></li>
+              <li><b>2</b><span>salles de bain</span></li>
+              <li><b>1&#160;980</b><span>pi² habitables</span></li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <!-- LOT 03 -->
-      <article class="lot lot--d">
-        <span class="lot-num" aria-hidden="true">LOT 03</span>
-        <div class="ph ph--dec vt">
-          <img src="../../images/secteurs-sites/immobilier-4.webp" width="960" height="720"
-               loading="lazy" decoding="async"
-               alt="Façade d’un cottage à revêtement vert pâle&#160;: galerie couverte à colonnes blanches, lucarne à deux fenêtres, garage double brun et longue entrée de béton.">
+<!-- ══ D · LE FEUILLET DE DÉTAILS ═════════════════════════════════
+     P3 · lots 04, 05 et 06. Trois plates, trois largeurs, trois
+     hauteurs de départ. C’est la planche qui casse le rythme. -->
+<section class="bloc f-os" aria-label="Le catalogue, feuillet de détails, lots 04 à 06">
+  <div class="dedans">
+    <div class="p3">
+      <article class="lot p3-a" id="lot-04">
+        <span class="fil" aria-hidden="true" style="left:0;bottom:-.14em;font-size:clamp(80px,10vw,148px)">04</span>
+        <div class="rail rv">
+          <span class="r10" style="--n:3" aria-hidden="true"></span>
+          <span class="k">Lot 04</span>
         </div>
-        <div class="lot-t fiche">
-          <span class="lot-r">Lot 03 &nbsp;·&nbsp; Coteau-Bélanger &nbsp;·&nbsp; cottage 1998</span>
-          <h3><a href="#joindre">87, rue des Bouleaux-Blancs</a></h3>
-          <p class="txt">Galerie couverte en façade, lucarne à l’étage, garage double. Le terrain est plat de la rue jusqu’au fond.</p>
-          <ul class="spec">
-            <li><b>4</b><span>chambres</span></li>
-            <li><b>2</b><span>salles de bain</span></li>
-            <li><b>1&#160;980</b><span>pi² habitables</span></li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- LOT 04 -->
-      <article class="lot lot--g">
-        <span class="lot-num" aria-hidden="true">LOT 04</span>
         <div class="ph ph--dec vt">
           <img src="../../images/secteurs-sites/immobilier-5.webp" width="960" height="720"
                loading="lazy" decoding="async"
                alt="Chambre&#160;: lit double couvert d’une courtepointe verte, mur d’accent en panneaux bruns derrière la tête de lit, rideau clair à l’embrasse et tables de chevet foncées.">
         </div>
-        <div class="lot-t fiche">
-          <span class="lot-r">Lot 04 &nbsp;·&nbsp; Rivière-aux-Trembles &nbsp;·&nbsp; plain-pied 1976</span>
+        <div style="margin-top:clamp(16px,1.8vw,24px)">
           <h3><a href="#joindre">230, montée du Cormier</a></h3>
-          <p class="txt">Deux chambres de plain-pied, mur d’accent en panneaux de bois dans la principale. Une partie du secteur touche la zone inondable cartographiée&nbsp;: elle se vérifie avant toute offre.</p>
+          <p class="txt">Deux chambres de plain-pied, mur d’accent en panneaux de bois dans la principale. Une partie de Rivière-aux-Trembles touche la zone inondable cartographiée&#160;: elle se vérifie avant toute offre.</p>
           <ul class="spec">
             <li><b>2</b><span>chambres</span></li>
             <li><b>1</b><span>salle de bain</span></li>
-            <li><b>1&#160;180</b><span>pi² habitables</span></li>
+            <li><b>1&#160;180</b><span>pi²</span></li>
           </ul>
         </div>
       </article>
 
-      <!-- LOT 05 — planche pleine largeur -->
-      <article class="lot lot--pl">
-        <span class="lot-num" aria-hidden="true">LOT 05</span>
+      <article class="lot p3-b" id="lot-05">
+        <span class="fil" aria-hidden="true" style="left:0;bottom:-.14em;font-size:clamp(96px,13vw,196px)">05</span>
+        <div class="rail rv">
+          <span class="r10" style="--n:4" aria-hidden="true"></span>
+          <span class="k">Lot 05</span>
+          <span class="v">Le plus petit terrain à entretenir</span>
+        </div>
         <div class="ph ph--dec vt">
           <img src="../../images/secteurs-sites/immobilier-6.webp" width="1280" height="720"
                style="object-position:50% 58%" loading="lazy" decoding="async"
                alt="Séjour en longueur éclairé à la corniche&#160;: foyer encastré à gauche, mur de rangements blancs pleine hauteur, banquette de pierre, canapés de suède beige et rideaux doublés.">
         </div>
-        <div class="lot-t">
-          <div>
-            <span class="lot-r">Lot 05 &nbsp;·&nbsp; Le Vieux-Rang &nbsp;·&nbsp; copropriété 2011</span>
-            <h3><a href="#joindre">6-B, rue de la Draveuse</a></h3>
-            <p class="txt">Séjour en longueur, foyer encastré et rangements pleine hauteur sur toute la cloison. Un seul niveau, aucune marche depuis le stationnement.</p>
-          </div>
-          <div class="fiche">
-            <ul class="spec spec--nu">
-              <li><b>2</b><span>chambres</span></li>
-              <li><b>1</b><span>salle de bain</span></li>
-              <li><b>940</b><span>pi² habitables</span></li>
-            </ul>
-          </div>
+        <div style="margin-top:clamp(16px,1.8vw,24px)">
+          <h3><a href="#joindre">6-B, rue de la Draveuse</a></h3>
+          <p class="txt">Séjour en longueur, foyer encastré et rangements pleine hauteur sur toute la cloison. Un seul niveau, aucune marche depuis le stationnement. Le Vieux-Rang, copropriété de 2011.</p>
+          <ul class="spec">
+            <li><b>2</b><span>chambres</span></li>
+            <li><b>1</b><span>salle de bain</span></li>
+            <li><b>940</b><span>pi²</span></li>
+          </ul>
         </div>
       </article>
-    </div>
 
-    <!-- LA PLANCHE PLEINE LARGEUR -->
-    <figure class="planche">
-      <div class="ph ph--dec vt">
-        <img src="../../images/secteurs-sites/immobilier-16.webp" width="1920" height="1080"
-             loading="lazy" decoding="async"
-             alt="Rangée de maisons voisines dans une rue de quartier&#160;: pignons à bardeaux, revêtements beige, vert et ardoise, galeries à colonnes en façade et jeunes arbres encore nus.">
-      </div>
-      <figcaption><b>Planche 02</b><i>Une rue du Plateau-des-Cèdres&nbsp;: pignons à bardeaux, galeries à colonnes en façade, plantations encore jeunes. Deux des dix lots sont dans ce secteur.</i></figcaption>
-    </figure>
-
-    <div class="lots">
-
-      <!-- LOT 06 -->
-      <article class="lot lot--d">
-        <span class="lot-num" aria-hidden="true">LOT 06</span>
+      <article class="lot p3-c" id="lot-06">
+        <span class="fil" aria-hidden="true" style="left:0;bottom:-.14em;font-size:clamp(74px,9vw,136px)">06</span>
+        <div class="rail rv">
+          <span class="r10" style="--n:5" aria-hidden="true"></span>
+          <span class="k">Lot 06</span>
+        </div>
         <div class="ph ph--dec vt">
           <img src="../../images/secteurs-sites/immobilier-7.webp" width="960" height="720"
                loading="lazy" decoding="async"
                alt="Fermette blanche à toit de tuiles rouges et volets bordeaux, grange de bois attenante sous le même versant, hauts peupliers à gauche et pré en pente devant.">
         </div>
-        <div class="lot-t fiche">
-          <span class="lot-r">Lot 06 &nbsp;·&nbsp; Secteur nord &nbsp;·&nbsp; fermette 1932, rénovée 2019</span>
+        <div style="margin-top:clamp(16px,1.8vw,24px)">
           <h3><a href="#joindre">1104, rang du Grand-Brûlé</a></h3>
-          <p class="txt">Corps de logis et grange attenante sous le même toit, sur un versant en pente douce. Puits et fosse septique&nbsp;: les attestations se lisent avant de faire une offre.</p>
+          <p class="txt">Corps de logis et grange attenante sous le même toit, sur un versant en pente douce. Puits et fosse septique&#160;: les attestations se lisent avant de faire une offre.</p>
           <ul class="spec">
             <li><b>5</b><span>chambres</span></li>
             <li><b>2</b><span>salles de bain</span></li>
-            <li><b>2&#160;780</b><span>pi² habitables</span></li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- LOT 07 -->
-      <article class="lot lot--g">
-        <span class="lot-num" aria-hidden="true">LOT 07</span>
-        <div class="ph ph--dec vt">
-          <img src="../../images/secteurs-sites/immobilier-8.webp" width="960" height="720"
-               loading="lazy" decoding="async"
-               alt="Séjour au foyer allumé sous un manteau blanc&#160;: canapé d’angle gris, lampe de table allumée, escalier à rampe de bois à droite et plancher de bois foncé.">
-        </div>
-        <div class="lot-t fiche">
-          <span class="lot-r">Lot 07 &nbsp;·&nbsp; Plateau-des-Cèdres &nbsp;·&nbsp; jumelé 2008</span>
-          <h3><a href="#joindre">48, impasse des Perdrix</a></h3>
-          <p class="txt">Séjour au foyer, escalier vers l’étage, plancher de bois franc au rez-de-chaussée. Mur mitoyen d’un seul côté.</p>
-          <ul class="spec">
-            <li><b>3</b><span>chambres</span></li>
-            <li><b>2</b><span>salles de bain</span></li>
-            <li><b>1&#160;520</b><span>pi² habitables</span></li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- LOT 08 -->
-      <article class="lot lot--d">
-        <span class="lot-num" aria-hidden="true">LOT 08</span>
-        <div class="ph ph--dec vt">
-          <img src="../../images/secteurs-sites/immobilier-9.webp" width="960" height="720"
-               loading="lazy" decoding="async"
-               alt="Chambre d’une copropriété&#160;: tête de lit capitonnée vert d’eau, literie grise, bureau intégré et fauteuil de velours dans la même menuiserie, tablettes au-dessus du lit.">
-        </div>
-        <div class="lot-t fiche">
-          <span class="lot-r">Lot 08 &nbsp;·&nbsp; Secteur nord &nbsp;·&nbsp; copropriété 2014</span>
-          <h3><a href="#joindre">320, avenue Ferland Ouest</a></h3>
-          <p class="txt">Une chambre, tête de lit et bureau intégrés dans la même menuiserie. Le plus petit lot du catalogue, et le seul sans terrain à entretenir.</p>
-          <ul class="spec">
-            <li><b>1</b><span>chambre</span></li>
-            <li><b>1</b><span>salle de bain</span></li>
-            <li><b>720</b><span>pi² habitables</span></li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- LOT 09 — planche pleine largeur -->
-      <article class="lot lot--pl">
-        <span class="lot-num" aria-hidden="true">LOT 09</span>
-        <div class="ph ph--dec vt">
-          <img src="../../images/secteurs-sites/immobilier-10.webp" width="1280" height="720"
-               loading="lazy" decoding="async"
-               alt="Séjour vide&#160;: foyer allumé au manteau de bois entre deux bibliothèques encastrées, contour de pierre empilée, ventilateur de plafond et fenêtres pleine hauteur à droite.">
-        </div>
-        <div class="lot-t">
-          <div>
-            <span class="lot-r">Lot 09 &nbsp;·&nbsp; Val-des-Ormes &nbsp;·&nbsp; cottage 1989</span>
-            <h3><a href="#joindre">77, rue du Coteau-Vert</a></h3>
-            <p class="txt">Foyer au manteau de bois entre deux bibliothèques encastrées, fenêtres pleine hauteur sur la cour. La maison est vide&nbsp;: les visites se font n’importe quel jour.</p>
-          </div>
-          <div class="fiche">
-            <ul class="spec spec--nu">
-              <li><b>3</b><span>chambres</span></li>
-              <li><b>2</b><span>salles de bain</span></li>
-              <li><b>1&#160;720</b><span>pi² habitables</span></li>
-              <li><b>6&#160;400</b><span>pi² de terrain</span></li>
-            </ul>
-          </div>
-        </div>
-      </article>
-
-      <!-- LOT 10 -->
-      <article class="lot lot--g">
-        <span class="lot-num" aria-hidden="true">LOT 10</span>
-        <div class="ph ph--dec vt">
-          <img src="../../images/secteurs-sites/immobilier-11.webp" width="960" height="720"
-               loading="lazy" decoding="async"
-               alt="Cuisine en L à armoires blanches&#160;: cuisinière et lave-vaisselle en acier inoxydable, comptoirs de pierre claire, dosseret de tuiles rectangulaires et fenêtre au-dessus de l’évier.">
-        </div>
-        <div class="lot-t fiche">
-          <span class="lot-r">Lot 10 &nbsp;·&nbsp; Coteau-Bélanger &nbsp;·&nbsp; plain-pied 2012</span>
-          <h3><a href="#joindre">9, chemin des Quatre-Vents</a></h3>
-          <p class="txt">Cuisine en L, armoires blanches et comptoirs de pierre claire, fenêtre au-dessus de l’évier donnant sur la cour. Un seul niveau habitable.</p>
-          <ul class="spec">
-            <li><b>3</b><span>chambres</span></li>
-            <li><b>2</b><span>salles de bain</span></li>
-            <li><b>1&#160;810</b><span>pi² habitables</span></li>
+            <li><b>2&#160;780</b><span>pi²</span></li>
           </ul>
         </div>
       </article>
     </div>
+  </div>
+</section>
+
+<!-- ══ P4 · LA BANDE DE CONTEXTE ══════════════════════════════════ -->
+<figure class="bande">
+  <div class="ph ph--dec">
+    <img src="../../images/secteurs-sites/immobilier-16.webp" width="1920" height="1080"
+         loading="lazy" decoding="async"
+         alt="Rangée de maisons voisines dans une rue de quartier&#160;: pignons à bardeaux, revêtements beige, vert et ardoise, galeries à colonnes en façade et jeunes arbres encore nus.">
+  </div>
+  <figcaption class="bande-lg">
+    <div class="dedans"><b>La rue, pas la maison</b><i>Le Plateau-des-Cèdres&#160;: pignons à bardeaux, galeries à colonnes en façade, plantations encore jeunes. Deux des dix lots sont dans ce secteur.</i></div>
+  </figcaption>
+</figure>
+
+<!-- ══ E · LES PLANCHES, SECONDE PARTIE ═══════════════════════════
+     P5 · lots 07 et 08, planche asymétrique.
+     P6 · lot 09, planche à fond perdu. -->
+<section class="bloc f-nuit" aria-label="Le catalogue, lots 07 et 08">
+  <div class="dedans">
+    <div class="p5">
+      <article class="lot p5-a" id="lot-07">
+        <span class="fil" aria-hidden="true" style="left:0;bottom:-.16em;font-size:clamp(78px,10vw,150px)">07</span>
+        <div class="rail rv">
+          <span class="r10" style="--n:6" aria-hidden="true"></span>
+          <span class="k">Lot 07</span>
+        </div>
+        <div class="ph ph--dec vt">
+          <img src="../../images/secteurs-sites/immobilier-8.webp" width="960" height="720"
+               style="object-position:56% 52%" loading="lazy" decoding="async"
+               alt="Séjour au foyer allumé sous un manteau blanc&#160;: canapé d’angle gris, lampe de table allumée, escalier à rampe de bois à droite et plancher de bois foncé.">
+        </div>
+        <div style="margin-top:clamp(16px,1.8vw,24px)">
+          <h3><a href="#joindre">48, impasse des Perdrix</a></h3>
+          <p class="txt">Séjour au foyer, escalier vers l’étage, plancher de bois franc au rez-de-chaussée. Mur mitoyen d’un seul côté. Plateau-des-Cèdres, jumelé de 2008.</p>
+          <ul class="spec">
+            <li><b>3</b><span>chambres</span></li>
+            <li><b>2</b><span>salles de bain</span></li>
+            <li><b>1&#160;520</b><span>pi²</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="lot p5-b" id="lot-08">
+        <span class="fil" aria-hidden="true" style="left:auto;right:0;bottom:-.14em;font-size:clamp(88px,12vw,182px)">08</span>
+        <div class="rail rv">
+          <span class="r10" style="--n:7" aria-hidden="true"></span>
+          <span class="k">Lot 08</span>
+          <span class="v">Le plus petit du registre</span>
+        </div>
+        <div class="ph ph--dec vt">
+          <img src="../../images/secteurs-sites/immobilier-9.webp" width="960" height="720"
+               style="object-position:62% 46%" loading="lazy" decoding="async"
+               alt="Chambre d’une copropriété&#160;: tête de lit capitonnée vert d’eau, literie grise, bureau intégré et fauteuil de velours dans la même menuiserie, tablettes au-dessus du lit.">
+        </div>
+        <div style="margin-top:clamp(16px,1.8vw,24px)">
+          <h3><a href="#joindre">320, avenue Ferland Ouest</a></h3>
+          <p class="txt">Une chambre, tête de lit et bureau intégrés dans la même menuiserie. Le seul lot sans terrain à entretenir. Secteur nord, copropriété de 2014.</p>
+          <ul class="spec">
+            <li><b>1</b><span>chambre</span></li>
+            <li><b>1</b><span>salle de bain</span></li>
+            <li><b>720</b><span>pi²</span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- P6 · la planche à fond perdu ───────────────────────────────── -->
+<article class="fp lot" id="lot-09">
+  <span class="fil" aria-hidden="true">09</span>
+  <div class="ph ph--dec">
+    <img src="../../images/secteurs-sites/immobilier-10.webp" width="1280" height="720"
+         style="object-position:50% 38%" loading="lazy" decoding="async"
+         alt="Séjour vide&#160;: foyer allumé au manteau de bois entre deux bibliothèques encastrées, contour de pierre empilée, ventilateur de plafond et fenêtres pleine hauteur à droite.">
+  </div>
+  <div class="fp-q">
+    <div class="dedans">
+      <div class="fp-i">
+        <div class="rail">
+          <span class="r10" style="--n:8" aria-hidden="true"></span>
+          <span class="k">Lot 09</span>
+          <span class="v">Val-des-Ormes, cottage 1989</span>
+        </div>
+        <h3><a href="#joindre">77, rue du Coteau-Vert</a></h3>
+        <p class="txt">Foyer au manteau de bois entre deux bibliothèques encastrées, fenêtres pleine hauteur sur la cour. La maison est vide&#160;: les visites se font n’importe quel jour.</p>
+        <ul class="spec">
+          <li><b>3</b><span>chambres</span></li>
+          <li><b>2</b><span>salles de bain</span></li>
+          <li><b>1&#160;720</b><span>pi² habitables</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ══ F · LE DERNIER LOT ═════════════════════════════════════════ -->
+<section class="bloc f-os" aria-label="Le catalogue, lot 10, le dernier du registre">
+  <div class="dedans">
+    <article class="lot p7" id="lot-10">
+      <span class="fil" aria-hidden="true" style="left:0;right:0;bottom:-.12em;text-align:center">10</span>
+      <div class="rail rv">
+        <span class="r10" style="--n:9" aria-hidden="true"></span>
+        <span class="k">Lot 10</span>
+        <span class="v">Le dernier du registre</span>
+      </div>
+      <div class="ph ph--dec vt">
+        <img src="../../images/secteurs-sites/immobilier-11.webp" width="960" height="720"
+             loading="lazy" decoding="async"
+             alt="Cuisine en L à armoires blanches&#160;: cuisinière et lave-vaisselle en acier inoxydable, comptoirs de pierre claire, dosseret de tuiles rectangulaires et fenêtre au-dessus de l’évier.">
+      </div>
+      <div class="lot-t">
+        <h3><a href="#joindre">9, chemin des Quatre-Vents</a></h3>
+        <p class="txt">Cuisine en L, armoires blanches et comptoirs de pierre claire, fenêtre au-dessus de l’évier donnant sur la cour. Un seul niveau habitable. Coteau-Bélanger, plain-pied de 2012.</p>
+        <ul class="spec">
+          <li><b>3</b><span>chambres</span></li>
+          <li><b>2</b><span>salles de bain</span></li>
+          <li><b>1&#160;810</b><span>pi² habitables</span></li>
+        </ul>
+      </div>
+    </article>
 
     <div class="note">
-      <p>Les dix adresses de ce catalogue, leurs caractéristiques et leurs surfaces sont fictives&nbsp;: cette page est une démonstration de mise en page, pas un registre d’inscriptions.</p>
+      <p>Les dix adresses de ce registre, leurs caractéristiques et leurs surfaces sont fictives. Cette page est une démonstration de mise en page, pas un registre d’inscriptions.</p>
       <a class="bt" href="#joindre">Parler d’un de ces lots</a>
     </div>
   </div>
 </section>
 
-<!-- ══ D · LE LOT VEDETTE ═════════════════════════════════════════ -->
-<section class="bloc f-os" id="vedette">
+<!-- ══ G · LE LOT VEDETTE ═════════════════════════════════════════ -->
+<section class="bloc f-nuit" id="vedette">
   <div class="dedans">
     <div class="cart">
       <span class="mno rv">Le lot vedette</span>
       <span class="regle rl"></span>
-      <div class="cart-2">
-        <h2 class="rv">Lot 01 — 412, chemin du Vieux-Moulin</h2>
-        <p class="lede rv rv--2">Plain-pied de 2004, tenu par les mêmes propriétaires depuis la construction. Quatre planches, le plan du rez-de-chaussée, et le relevé complet en dessous.</p>
-      </div>
+      <h2 class="rv">Ce qu’une inscription complète contient.</h2>
+      <p class="lede rv rv--2">Plain-pied de 2004, tenu par les mêmes propriétaires depuis la construction. Quatre planches, le plan du rez-de-chaussée qui se dessine au survol, et le relevé complet en dessous.</p>
     </div>
 
-    <div class="lot lot--ved">
-      <span class="lot-num" aria-hidden="true" style="left:0;top:-.12em">LOT 01</span>
+    <div class="lot" style="padding-top:clamp(38px,5vw,84px)">
+      <span class="fil" aria-hidden="true" style="left:0;top:-.06em;font-size:clamp(90px,12vw,190px)">01</span>
 
-      <figure class="ved-pl lot-t">
+      <figure class="ved-pl">
         <div class="ph ph--dec vt">
           <img src="../../images/secteurs-sites/immobilier-12.webp" width="1280" height="720"
                style="object-position:50% 60%" loading="lazy" decoding="async"
                alt="Salon du lot 01&#160;: foyer au manteau de bois surmonté d’un miroir, colonne blanche sur socle de brique, porte d’entrée grande ouverte sur la cour et plancher stratifié foncé.">
         </div>
-        <figcaption class="ved-lg">Planche 03 — le salon, porte d’entrée ouverte sur la cour. C’est la pièce par laquelle commence la visite&#160;360.</figcaption>
+        <figcaption class="ved-lg">Planche 03, le salon, porte d’entrée ouverte sur la cour. C’est la pièce par laquelle commence la visite&#160;360.</figcaption>
       </figure>
 
-      <div class="paire lot-t">
+      <div class="paire">
         <figure>
           <div class="ph ph--dec vt">
             <img src="../../images/secteurs-sites/immobilier-13.webp" width="960" height="720"
                  loading="lazy" decoding="async"
                  alt="Séjour du lot 01&#160;: grande pièce ouverte à plancher de bois franc, canapé gris et table basse de chêne, ventilateur de plafond, baie vitrée à droite sur le boisé.">
           </div>
-          <figcaption class="ved-lg">Planche 04 — le séjour, ouvert sur l’entrée. La baie de droite donne sur la bande boisée.</figcaption>
+          <figcaption class="ved-lg">Planche 04, le séjour, ouvert sur l’entrée. La baie de droite donne sur la bande boisée.</figcaption>
         </figure>
         <figure>
-          <div class="ph ph--dec vt">
+          <div class="ph ph--dec vt vt--2">
             <img src="../../images/secteurs-sites/immobilier-14.webp" width="960" height="720"
                  loading="lazy" decoding="async"
                  alt="Chambre 2 du lot 01&#160;: mur de panneaux de bois clair quadrillés de baguettes noires, applique orientable noire au-dessus du lit, coussins verts et jeté de fourrure.">
           </div>
-          <figcaption class="ved-lg">Planche 05 — la chambre 2, mur de panneaux et applique orientable.</figcaption>
+          <figcaption class="ved-lg">Planche 05, la chambre 2, mur de panneaux et applique orientable.</figcaption>
         </figure>
       </div>
 
-      <div class="plan-w lot-t">
+      <div class="plan-w">
         <div class="pl-f">
           <svg class="plan" viewBox="0 0 420 272" role="img"
                aria-label="Plan schématique du rez-de-chaussée du lot 01 : séjour et cuisine à l’avant, deux chambres et une salle de bain à l’arrière, garage double sur le côté droit.">
@@ -889,90 +1192,100 @@ h3{font-size:clamp(24px,3vw,42px);line-height:1.02;letter-spacing:-.016em}
             </g>
           </svg>
           <div class="pl-t">
-            <span class="mno">Rez-de-chaussée &nbsp;·&nbsp; 1&#160;640 pi² &nbsp;·&nbsp; schéma indicatif, non à l’échelle &nbsp;·&nbsp; le plan coté se dessine au survol</span>
+            <span class="mno">Rez-de-chaussée, 1&#160;640 pi². Schéma indicatif, non à l’échelle. Le plan coté se dessine au survol.</span>
             <a class="bt" href="#joindre">Demander le plan coté</a>
           </div>
         </div>
         <figure>
-          <div class="ph ph--dec vt" style="height:clamp(240px,30vw,440px)">
+          <div class="ph ph--dec vt" style="height:clamp(230px,29vw,420px)">
             <img src="../../images/secteurs-sites/immobilier-15.webp" width="960" height="720"
                  loading="lazy" decoding="async"
                  alt="Terrasse de bois du lot 01&#160;: table ronde et fauteuils de bois massif, pins hauts tout autour et versant boisé au fond.">
           </div>
-          <figcaption class="ved-lg">Planche 06 — la terrasse arrière et la bande boisée.</figcaption>
+          <figcaption class="ved-lg">Planche 06, la terrasse arrière et la bande boisée.</figcaption>
         </figure>
       </div>
     </div>
 
     <details class="releve-d">
       <summary>Le relevé complet du lot 01</summary>
-      <ul class="rel-l">
-        <li><span class="k">Type</span><span class="v">Plain-pied détaché, un niveau habitable</span></li>
-        <li><span class="k">Construction</span><span class="v">2004</span></li>
-        <li><span class="k">Habitable</span><span class="v">1&#160;640 pi², sous-sol exclu</span></li>
-        <li><span class="k">Sous-sol</span><span class="v">1&#160;180 pi², pleine hauteur, aménagé</span></li>
-        <li><span class="k">Terrain</span><span class="v">8&#160;200 pi², de forme irrégulière</span></li>
-        <li><span class="k">Chambres</span><span class="v">3 au rez-de-chaussée</span></li>
-        <li><span class="k">Salles d’eau</span><span class="v">1 salle de bain complète, 1 salle d’eau</span></li>
-        <li><span class="k">Stationnement</span><span class="v">Garage double attenant, 4 places en cour</span></li>
-        <li><span class="k">Fondation</span><span class="v">Béton coulé, drain refait en 2017</span></li>
-        <li><span class="k">Toiture</span><span class="v">Bardeau d’asphalte, refaite en 2019</span></li>
-        <li><span class="k">Chauffage</span><span class="v">Plinthes, thermopompe murale, foyer au bois</span></li>
-        <li><span class="k">Eau et égout</span><span class="v">Puits artésien, fosse septique conforme</span></li>
-        <li><span class="k">À prévoir</span><span class="v">Plancher du sous-sol, thermopompe de 11 ans</span></li>
-        <li><span class="k">Arrière</span><span class="v">Bande boisée municipale, rien ne s’y construit</span></li>
-      </ul>
+      <div class="rel-g">
+        <div>
+          <h4>Le bâtiment</h4>
+          <ul>
+            <li><span class="k">Type</span><span class="v">Plain-pied détaché</span></li>
+            <li><span class="k">Construction</span><span class="v">2004</span></li>
+            <li><span class="k">Fondation</span><span class="v">Béton coulé, drain refait 2017</span></li>
+            <li><span class="k">Toiture</span><span class="v">Bardeau d’asphalte, 2019</span></li>
+            <li><span class="k">Chauffage</span><span class="v">Plinthes, thermopompe, foyer</span></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Les surfaces</h4>
+          <ul>
+            <li><span class="k">Habitable</span><span class="v">1&#160;640 pi², sous-sol exclu</span></li>
+            <li><span class="k">Sous-sol</span><span class="v">1&#160;180 pi², aménagé</span></li>
+            <li><span class="k">Terrain</span><span class="v">8&#160;200 pi², irrégulier</span></li>
+            <li><span class="k">Chambres</span><span class="v">3 au rez-de-chaussée</span></li>
+            <li><span class="k">Salles d’eau</span><span class="v">1 complète, 1 salle d’eau</span></li>
+          </ul>
+        </div>
+        <div>
+          <h4>À prévoir, et à savoir</h4>
+          <ul>
+            <li><span class="k">Travaux</span><span class="v">Plancher du sous-sol</span></li>
+            <li><span class="k">Âge</span><span class="v">Thermopompe de 11 ans</span></li>
+            <li><span class="k">Eau et égout</span><span class="v">Puits artésien, fosse conforme</span></li>
+            <li><span class="k">Stationnement</span><span class="v">Garage double, 4 places en cour</span></li>
+            <li><span class="k">Arrière</span><span class="v">Bande boisée municipale</span></li>
+          </ul>
+        </div>
+      </div>
     </details>
   </div>
 </section>
 
-<!-- ══ E · LA DÉMARCHE ════════════════════════════════════════════ -->
-<section class="bloc f-nuit" id="demarche">
+<!-- ══ H · LA DÉMARCHE ════════════════════════════════════════════ -->
+<section class="bloc f-os" id="demarche">
   <div class="dedans">
     <div class="cart">
-      <span class="mno rv">La démarche</span>
       <span class="regle rl"></span>
-      <div class="cart-2">
-        <h2 class="rv">Une inscription se prépare avant d’être publiée.</h2>
-        <p class="lede rv rv--2">Quatre temps, et chacun produit un document que le propriétaire garde — même si le mandat se termine avant la vente.</p>
-      </div>
+      <h2 class="rv">Une inscription se prépare avant d’être publiée.</h2>
+      <p class="lede rv rv--2">Quatre temps, et chacun produit un document que le propriétaire garde, même si le mandat se termine avant la vente.</p>
     </div>
 
-    <div class="etapes">
-      <div class="etape rv">
-        <span class="n">Temps 01</span>
+    <div class="dem">
+      <div class="rv">
         <h3>L’évaluation</h3>
-        <p>Visite complète, mesures au laser, relevé des travaux faits et à faire. Comparaison avec les ventes conclues des douze derniers mois dans un rayon serré — les ventes conclues, pas les demandes.</p>
+        <p>Visite complète, mesures au laser, relevé des travaux faits et à faire. Comparaison avec les ventes conclues des douze derniers mois dans un rayon serré.</p>
+        <span class="rem">Reste au propriétaire&#160;: le rapport écrit, dans les trois jours</span>
       </div>
-      <div class="etape rv rv--2">
-        <span class="n">Temps 02</span>
+      <div class="rv rv--2">
         <h3>La préparation</h3>
-        <p>Ce qui se règle avant la séance photo&nbsp;: les réparations qui se voient sur chaque image, le désencombrement pièce par pièce, l’entrée et la façade. Une liste priorisée, avec ce qui ne rapporte rien.</p>
+        <p>Ce qui se règle avant la séance photo&#160;: les réparations qui se voient sur chaque image, le désencombrement pièce par pièce, l’entrée et la façade.</p>
+        <span class="rem">Reste au propriétaire&#160;: la liste priorisée, avec ce qui ne rapporte rien</span>
       </div>
-      <div class="etape rv rv--3">
-        <span class="n">Temps 03</span>
+      <div class="rv rv--3">
         <h3>Les planches</h3>
-        <p>Une demi-journée sur place&nbsp;: les photos, le plan coté de chaque niveau, la visite 360 et les extérieurs aux deux meilleures heures. Les fichiers en pleine résolution restent au propriétaire.</p>
+        <p>Une demi-journée sur place&#160;: les photos, le plan coté de chaque niveau, la visite 360 et les extérieurs aux deux meilleures heures du jour.</p>
+        <span class="rem">Reste au propriétaire&#160;: les fichiers en pleine résolution</span>
       </div>
-      <div class="etape rv rv--4">
-        <span class="n">Temps 04</span>
-        <h3>Les visites, et le vendredi</h3>
-        <p>Présence à chaque visite, commentaires notés tels quels, compte rendu écrit chaque vendredi. Puis l’analyse de chaque promesse d’achat&nbsp;: le prix demandé, mais aussi les conditions et les délais.</p>
+      <div class="rv rv--4">
+        <h3>Les visites</h3>
+        <p>Présence à chaque visite, commentaires notés tels quels, y compris ceux qui font mal. Puis l’analyse de chaque promesse d’achat&#160;: le prix demandé, mais aussi les conditions et les délais.</p>
+        <span class="rem">Reste au propriétaire&#160;: le compte rendu de chaque vendredi</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ F · JOINDRE ════════════════════════════════════════════════ -->
-<section class="bloc f-os" id="joindre">
+<!-- ══ I · JOINDRE, ET LE PIED ════════════════════════════════════ -->
+<section class="bloc f-nuit" id="joindre">
   <div class="dedans">
     <div class="cart">
-      <span class="mno rv">Joindre</span>
       <span class="regle rl"></span>
-      <div class="cart-2">
-        <h2 class="rv">Une visite d’une heure, un rapport écrit dans les trois jours.</h2>
-        <p class="lede rv rv--2">Aucun engagement, aucun contrat à signer sur place. Une évaluation sert aussi à quelqu’un qui ne vend pas cette année.</p>
-      </div>
+      <h2 class="rv">Une visite d’une heure, un rapport écrit dans les trois jours.</h2>
+      <p class="lede rv rv--2">Aucun engagement, aucun contrat à signer sur place. Une évaluation sert aussi à quelqu’un qui ne vend pas cette année.</p>
     </div>
 
     <div class="joindre">
@@ -983,40 +1296,37 @@ h3{font-size:clamp(24px,3vw,42px);line-height:1.02;letter-spacing:-.016em}
         <li><b>Territoire</b><span class="v">Val-des-Ormes et cinq secteurs</span></li>
       </ul>
       <div>
-        <p class="txt">Aucun mandat n’est pris en dehors des six secteurs&nbsp;: un prix demandé se défend avec des ventes conclues à trois rues de là, pas avec une moyenne régionale.</p>
-        <p class="txt">La rétribution se négocie et s’inscrit au contrat de courtage, avant la signature. Elle n’est due qu’à la signature chez le notaire.</p>
-        <div class="actes" style="margin-top:clamp(24px,2.8vw,36px)">
-          <a class="bt" href="#catalogue">Revoir les dix lots</a>
+        <p class="txt">Aucun mandat n’est pris en dehors des six secteurs. Un prix demandé se défend avec des ventes conclues à trois rues de là, pas avec une moyenne régionale.</p>
+        <p class="txt" style="margin-top:1.05em">La rétribution se négocie et s’inscrit au contrat de courtage, avant la signature. Elle n’est due qu’à la signature chez le notaire.</p>
+        <div class="actes" style="margin-top:clamp(22px,2.6vw,34px)">
+          <a class="bt" href="#registre">Revoir le registre</a>
           <a class="bt bt--nu" href="#vedette">Le lot vedette</a>
         </div>
       </div>
     </div>
+
+    <div class="pied">
+      <div class="pied-h">
+        <div>
+          <p class="marq" style="margin-bottom:13px">Ancrage <span>Immobilier</span></p>
+          <p class="mno">ancrage-immobilier.ca &#160;·&#160; 000 000-0000</p>
+        </div>
+        <nav class="pied-n" aria-label="Pied de page">
+          <a href="#registre">Le registre</a>
+          <a href="#catalogue">Les planches</a>
+          <a href="#vedette">Le lot 01</a>
+          <a href="#demarche">La démarche</a>
+          <a href="#haut">Haut de la page</a>
+        </nav>
+      </div>
+      <div class="pied-b">
+        <p>Dix lots au registre, six secteurs. Plan coté, visite 360 et compte rendu du vendredi sur chaque inscription.</p>
+        <p><span class="puce">Site de démonstration</span></p>
+      </div>
+      <p class="mno" style="margin-top:19px;max-width:74ch">Site de démonstration&#160;: entreprise fictive, coordonnées neutres, propriétés inventées. Aucune inscription réelle n’est présentée sur cette page, et aucune démarche n’y est possible.</p>
+    </div>
   </div>
 </section>
-
-<!-- ══ PIED ═══════════════════════════════════════════════════════ -->
-<footer class="pied f-nuit">
-  <div class="dedans">
-    <div class="pied-h">
-      <div>
-        <p class="marq" style="margin-bottom:14px">Ancrage <span>Immobilier</span></p>
-        <p class="mno">Val-des-Ormes &nbsp;·&nbsp; ancrage-immobilier.ca &nbsp;·&nbsp; 000 000-0000 &nbsp;·&nbsp; permis 0000</p>
-      </div>
-      <nav class="pied-n" aria-label="Pied de page">
-        <a href="#catalogue">Le catalogue</a>
-        <a href="#vedette">Le lot 01</a>
-        <a href="#demarche">La démarche</a>
-        <a href="#joindre">Joindre</a>
-        <a href="#haut">Haut de la page</a>
-      </nav>
-    </div>
-    <div class="pied-b">
-      <p>Dix lots au catalogue &nbsp;·&nbsp; six secteurs &nbsp;·&nbsp; plan coté, visite 360 et compte rendu du vendredi sur chaque inscription</p>
-      <p><span class="puce">Site de démonstration</span></p>
-    </div>
-    <p class="mno" style="margin-top:20px;max-width:76ch">Site de démonstration&nbsp;: entreprise fictive, coordonnées neutres, propriétés inventées. Aucune inscription réelle n’est présentée sur cette page, et aucune démarche n’y est possible.</p>
-  </div>
-</footer>
 
 </body>
 </html>
