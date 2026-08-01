@@ -451,3 +451,51 @@ l'architecture actuelle refuse.
 **AUCUNE de ces douze pages n'a été vue sur un appareil réel.** Tout
 vient de Chromium sous Playwright sur un poste de bureau Windows,
 relevés « 320 px » et « 390 px » compris.
+
+---
+
+## Les douze secteurs, seconde passe — 2026-08-01
+
+### Ce qui reste ouvert sur l'aperçu vivant
+
+- **Trois des douze n'ont pas d'aperçu vivant** : restau, garage et
+  déneigement sont des projets réels qui vivent hors de ce dépôt, et
+  aucun serveur d'ici ne les sert. Ils gardent la planche de captures.
+- **L'aperçu vivant ne joue qu'au palier 0**, pointeur fin, largeur
+  ≥ 64 em, hors mouvement réduit. Sur téléphone, au clavier, et dès
+  que le palier monte, le visiteur voit la planche — donc le
+  mouvement écrit dans les douze sites ne lui est pas montré.
+- **Le cadre est `inert`** : on ne peut pas le défiler soi-même. C'est
+  le prix de ne pas poser trente arrêts de tabulation dans le fil de
+  l'accueil. Le visiteur qui veut agir clique la pastille.
+- **CLS mesuré à 0,0029**, pas à 0 comme l'annonce `CLAUDE.md`.
+  Trente-quatre décalages sur des `a::after` / `a::before` vers
+  7,5 s. **Ce n'est pas le chantier de l'aperçu vivant** — la valeur
+  est identique au millième avant et après, vérifiée en remettant les
+  deux fichiers à leur état d'origine. C'est un défaut PRÉEXISTANT et
+  personne ne l'avait relevé.
+
+### Ce que chaque session a laissé ouvert
+
+| Site | Réserve |
+|---|---|
+| Clinique | Le premier virage froid a tourné **les fauteuils bleus en orange** avant d'être corrigé — vu à l'image, jamais par une sonde. La plaque `clinique-2`, la plus floue, est sous un voile bleu à 82 % : la photographie n'y est plus qu'une texture, on ne peut pas dire qu'on « montre » ce corridor |
+| Coiffure | Le type ne passe pas PAR-DESSUS la photographie du héros, ce que fait la référence : la source de lumière tombe exactement là où les lettres traverseraient. Onze images contre trente chez Achilles Heel. Le dernier tiers reste le point faible, et un blanc à droite du second bloc n'est pas composé |
+| Coiffure | **Trois images du secteur ne sont plus employées** alors qu'elles restent au registre des licences : qui compte les fichiers en trouvera plus que d'employées |
+| Gym | Les photographies restent des images de banque ; les trois références shootent leur propre salle, et le duotone ne rachète la cohérence tonale qu'à moitié. Le bandeau défilant tourne en continu hors mouvement réduit — coût GPU constant, non mesuré en i/s sur la traversée |
+| Gym | `25 LB` moulé sur `gym-3` est la seule unité impériale d'une page dont tout le discours est en kilos |
+| Construction | Le calcul du surlignage **n'est pas bridé par `prefers-reduced-motion`** — c'est un traitement, pas un mouvement, mais l'arbitrage se discute. Il l'est par le nombre de cœurs et la mémoire. `construction-9` reste la plus faible des douze : sous traitement, un champ gris avec trois lignes |
+| Construction | Pas de caractère d'affichage sous licence : les références ont Suisse et Founders Grotesk, `space-grotesk` est bon mais commun |
+| Immobilier | **La hauteur de la bande panoramique est une mesure, pas un goût** : le numéro civique « 621 » est lisible à la loupe à 68 % de la hauteur de la source. Toucher à `height` ou à `object-position` le ramène en champ — c'est écrit en commentaire au-dessus de la règle |
+| Immobilier | La photographie de couverture est un salon de banlieue, pas une photographie d'architecture. Durcie, elle tient ; l'appariement propriété ↔ photo était imposé et n'a pas été touché. Le tri du registre réordonne VISUELLEMENT (`order`) : un lecteur d'écran lira toujours 01 → 10 |
+| Photographe | La photographie de Dieste occupe 100 % de son premier écran, celle-ci 57 % — le prix des marges énormes et d'un titre qu'un client doit lire. L'état du filtre de salle ne vit pas dans l'URL : on ne peut pas partager un lien vers « salle objet » |
+| Hébergement | Le héros donne 62 % de la fenêtre à la photographie, les références 100 %. La rétrécir pousserait le bouton au-delà des 800 px du pli. La densité photographique reste **trois fois sous les références** — elles n'ont presque pas de texte, cette page en a et c'est son argument |
+| Juridique | Vingt mesures de contraste sont **approchées**, pas exactes : le papier porte un dégradé et la remontée s'arrête dessus |
+
+### La réserve qui domine, et elle n'a pas bougé d'un mot
+
+**AUCUNE de ces douze pages n'a été vue sur un appareil réel.** Tout
+vient de Chromium sous Playwright sur un poste de bureau Windows,
+relevés « 320 px » et « 390 px » compris. La piste latérale de
+l'auberge est précisément ce qui se juge au doigt, et personne ne l'a
+touchée du doigt.
