@@ -1538,3 +1538,44 @@
      geste — la lecon de D-619, appliquee avant de la repayer. */
   -webkit-user-drag: none;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   L'APERÇU VIVANT — parce qu'un aperçu FIGÉ ne prouve pas qu'on sait
+   animer.  D-672
+
+   L'aperçu était une suite de captures qu'on parcourt à la molette.
+   Le mouvement écrit dans les douze sites — parallaxe, volet, masque
+   qui monte, compteurs qui roulent — n'y jouait pas : ce qui bougeait,
+   c'était le défilement. Or c'est exactement ce que la section doit
+   prouver.
+
+   Le `<iframe>` est SUR la planche, jamais à sa place : la planche
+   reste le poster, elle porte le texte de remplacement, elle tient la
+   géométrie, et elle est ce que voient le clavier, les lecteurs
+   d'écran et tout palier au-dessus de zéro. Le vivant est un LUXE
+   posé par-dessus.
+   ═══════════════════════════════════════════════════════════════════ */
+.sec-live {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-0);
+  opacity: 0;
+  transition: opacity var(--t-2) var(--e-snap);
+}
+.sec-live.is-pret { opacity: 1; }
+.sec-live-cadre {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  border: 0;
+  display: block;
+  background: var(--surface-0);
+}
+/* Pendant que le vivant joue, la planche s'efface ET rend la molette
+   à la page : deux surfaces défilantes superposées se désynchronisent
+   à la première roulette, et ça se voit tout de suite. */
+.mock-stage.is-vivant .mock.is-on { opacity: 0; }
+.mock-stage.is-vivant .sec-vitre { pointer-events: none; }

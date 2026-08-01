@@ -50,12 +50,18 @@ for (const cle of aFaire) {
   const maux = [];
 
   /* --- ce qui se lit dans la source --- */
-  if (/<script[\s>]/i.test(src)) maux.push("un <script>");
+  /* LE SCRIPT EST AUTORISÉ DEPUIS LE 2026-08-01, LA REQUÊTE TIERCE
+     NON. Ce qu'on refuse, c'est un `src` qui sort du dépôt — un CDN
+     est une requête tierce même quand il sert la même bibliothèque
+     que celle qu'on a sous la main. */
+  const srcs = [...src.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)].map((m) => m[1]);
+  const horsDepot = srcs.filter((u) => /^(https?:)?\/\//i.test(u) && !/^https?:\/\/localhost/i.test(u));
+  if (horsDepot.length) maux.push(`script hors du dépôt : ${horsDepot.join(" ")}`);
   if (/https?:\/\/(?!localhost)/i.test(src.replace(/<!--[\s\S]*?-->/g, ""))) maux.push("une adresse absolue hors du dépôt");
   if (!/name=["']robots["']\s+content=["']noindex,nofollow["']/i.test(src)) maux.push("pas de noindex");
   if (!/(site de démonstration|démonstration)/i.test(src)) maux.push("pas de mention de démonstration");
-  if (!/@keyframes/.test(src)) maux.push("AUCUNE @keyframes — le site ne bouge pas");
-  if (!/animation-timeline/.test(src)) maux.push("aucune animation pilotée par le défilement");
+  const bouge = /@keyframes/.test(src) || /animation-timeline/.test(src) || /gsap|ScrollTrigger/.test(src);
+  if (!bouge) maux.push("AUCUN mouvement — ni @keyframes, ni animation-timeline, ni GSAP");
   if (!/prefers-reduced-motion/.test(src)) maux.push("prefers-reduced-motion non traité");
 
   const imgs = [...src.matchAll(/<img\b[^>]*>/gi)].map((m) => m[0]);
@@ -98,7 +104,24 @@ for (const cle of aFaire) {
   if (tierces.length) maux.push(`${tierces.length} requête(s) tierce(s) : ${[...new Set(tierces)].slice(0, 3).join(" ")}`);
   if (erreurs.length) maux.push(`${erreurs.length} erreur(s) console : ${erreurs[0].slice(0, 90)}`);
 
+  const avecJS = texte.replace(/\s+/g, " ").trim().length;
   await p.close();
+
+  /* RIEN DE NÉCESSAIRE À LA LECTURE NE DÉPEND DU SCRIPT. On recharge
+     la page JavaScript COUPÉ et on compare la quantité de texte
+     rendu. Un site dont la moitié du contenu disparaît sans script
+     n'est pas dégradable — et c'est exactement ce que le passage au
+     JavaScript risquait d'introduire. */
+  if (srcs.length || /<script[\s>]/i.test(src)) {
+    const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
+    const q = await ctx.newPage();
+    await q.goto(url, { waitUntil: "load", timeout: 45000 });
+    await q.waitForTimeout(500);
+    const sansJS = (await q.evaluate(() => document.body.innerText)).replace(/\s+/g, " ").trim().length;
+    await ctx.close();
+    const part = avecJS ? Math.round((sansJS / avecJS) * 100) : 0;
+    if (part < 85) maux.push(`sans JavaScript il ne reste que ${part} % du texte (${sansJS}/${avecJS})`);
+  }
   if (maux.length) echecs++;
   R.push({
     secteur: cle,

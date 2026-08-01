@@ -2540,6 +2540,188 @@
         if (doc.hidden) arreter(); else if (!fige) demarrer();
       });
     }
+
+    /* ==================================================================
+       L'APERCU VIVANT — un aperçu FIGE ne prouve pas qu'on sait animer.
+       D-672
+
+       CE QUI NE CHANGE PAS. La planche de captures reste le poster :
+       elle porte le texte de remplacement, elle tient la geometrie
+       (donc CLS a zero), elle est ce que voient le clavier, les
+       lecteurs d'ecran, le tactile et tout palier au-dessus de zero.
+       Elle est aussi le seul aperçu des TROIS projets reels, qui
+       vivent hors de ce depot et qu'aucun serveur d'ici ne sert.
+
+       CE QUI S'AJOUTE. Sur un poste large, pointeur fin, palier 0, et
+       SEULEMENT pendant que le pointeur est sur le panneau : un
+       `<iframe>` de meme origine charge le vrai site de demonstration
+       et le fait defiler tout seul. Ce n'est pas une reconstitution du
+       mouvement, c'est le mouvement.
+
+       POURQUOI L'IFRAME ET PAS AUTRE CHOSE. Trois solutions ont ete
+       pesees. Une video par secteur : deux a trois megaoctets chacune,
+       a refaire a chaque retouche d'un site, et ce serait un
+       ENREGISTREMENT — la section vendrait une capture d'ecran de sa
+       preuve. Rejouer les animations en miniature dans le panneau :
+       une reconstitution, donc un faux, et le depot interdit d'afficher
+       ce qu'il ne peut pas defendre. L'iframe est le seul des trois qui
+       montre la chose elle-meme.
+
+       CE QU'ELLE COUTE, ET COMMENT ON LE BORNE. Un site de secteur pese
+       de 200 a 700 ko une fois ses polices et ses premieres images
+       chargees. On n'en tient QU'UN a la fois, on ne le cree qu'apres
+       le premier survol du panneau — donc bien apres le LCP, qui se
+       joue dans le heros — et on le detruit des que le pointeur sort.
+       Le survol qui balaie douze pastilles ne charge rien : un delai
+       de 320 ms avale le balayage.
+
+       `inert` FERME LA PORTE AU CLAVIER, ET C'EST VOULU. Une page de
+       demonstration porte une trentaine d'arrets de tabulation. Les
+       laisser entrer dans le fil de la page d'accueil serait un piege
+       de focus deguise en demonstration. Le vivant est donc inerte,
+       invisible aux lecteurs d'ecran, et il DISPARAIT des qu'un focus
+       clavier arrive sur le panneau : le visiteur au clavier retrouve
+       la planche, son etiquette et son defilement.
+       ================================================================== */
+    var LOCAUX = {
+      boutique: 1, coiffure: 1, gym: 1, hotel: 1, clinique: 1,
+      immobilier: 1, juridique: 1, photo: 1, construction: 1
+    };
+    var largeMQ = window.matchMedia("(min-width: 64em)");
+
+    function palierPlein() {
+      var p = doc.documentElement.getAttribute("data-palier");
+      /* Les trois valeurs sont ecrites : un test sur la seule valeur
+         « 1 » ne mord plus quand l'attribut passe a « 2 ». Piege 42 */
+      return p !== "1" && p !== "2" && p !== "3";
+    }
+    function vivantPossible() {
+      return !reduced.matches && !coarse.matches && largeMQ.matches &&
+        palierPlein() && "IntersectionObserver" in window;
+    }
+
+    var live = null, cadre = null, chrome = null;
+    var minuteurSrc = 0, boucle = 0, dernierGeste = 0, pause = 0;
+    var survole = false, dansLaVue = false, cleVivante = "";
+
+    function batir() {
+      if (live) return;
+      live = doc.createElement("div");
+      live.className = "sec-live";
+      live.setAttribute("inert", "");
+      chrome = doc.createElement("div");
+      chrome.className = "sec-chrome";
+      chrome.innerHTML = "<i></i><i></i><span></span><em></em>";
+      cadre = doc.createElement("iframe");
+      cadre.className = "sec-live-cadre";
+      cadre.setAttribute("loading", "lazy");
+      /* PAS de `scrolling="no"` : il pose `overflow: hidden` sur la
+         fenetre du document embarque, et `scrollTop` y reste alors
+         cloue a zero. Le cadre ne bougerait plus d'un pixel, et rien
+         ne le dirait. */
+      cadre.setAttribute("title", "Apercu vivant du site de demonstration");
+      live.appendChild(chrome);
+      live.appendChild(cadre);
+      cadre.addEventListener("load", prendreLaMain);
+      scene.appendChild(live);
+    }
+
+    function copierChrome() {
+      var m = scene.querySelector(".mock.is-on .sec-chrome");
+      if (!m || !chrome) return;
+      var s = m.querySelector("span"), e = m.querySelector("em");
+      chrome.querySelector("span").textContent = s ? s.textContent : "";
+      chrome.querySelector("em").textContent = e ? e.textContent : "";
+    }
+
+    function prendreLaMain() {
+      copierChrome();
+      live.classList.add("is-pret");
+      scene.classList.add("is-vivant");
+      dernierGeste = 0;
+      pause = 0;
+      if (!boucle) boucle = window.requestAnimationFrame(conduire);
+    }
+
+    /* ON POUSSE LE DEFILEMENT D'UN PEU MOINS DE DEUX PIXELS PAR IMAGE.
+       C'est lent — 120 px la seconde — et c'est le point : une
+       traversee de 12 000 px prend cent secondes, mais le visiteur ne
+       regarde que quelques secondes, et pendant ces secondes-la
+       QUELQUE CHOSE BOUGE. Un defilement rapide ferait defiler, pas
+       animer : les revelations passeraient toutes en meme temps.
+       On avance par PAS, jamais par saut : un `scrollTo` qui saute
+       tue une scene epinglee. Piege 5 */
+    function conduire() {
+      boucle = 0;
+      if (!live || live.hidden) return;
+      var d = null;
+      try { d = cadre.contentDocument; } catch (e) { d = null; }
+      var el = d && d.scrollingElement;
+      if (el) {
+        var max = el.scrollHeight - el.clientHeight;
+        if (pause) {
+          pause--;
+          if (!pause) el.scrollTop = 0;
+        } else if (max > 8) {
+          var y = el.scrollTop + 1.9;
+          if (y >= max) { el.scrollTop = max; pause = 70; }
+          else el.scrollTop = y;
+        }
+      }
+      boucle = window.requestAnimationFrame(conduire);
+    }
+
+    function eteindre() {
+      if (!live) return;
+      live.classList.remove("is-pret");
+      live.hidden = true;
+      scene.classList.remove("is-vivant");
+      window.clearTimeout(minuteurSrc);
+      if (boucle) { window.cancelAnimationFrame(boucle); boucle = 0; }
+      /* La page chargee est LIBEREE : un `<iframe>` laisse en place
+         garde ses images, ses polices et son ScrollTrigger en
+         memoire, et il y en a douze. */
+      if (cadre.getAttribute("src")) { cadre.removeAttribute("src"); cleVivante = ""; }
+    }
+
+    function allumer(cle) {
+      if (!vivantPossible() || !LOCAUX[cle] || !survole || !dansLaVue) { eteindre(); return; }
+      batir();
+      window.clearTimeout(minuteurSrc);
+      if (cleVivante === cle && live.classList.contains("is-pret")) { live.hidden = false; return; }
+      live.hidden = true;
+      live.classList.remove("is-pret");
+      scene.classList.remove("is-vivant");
+      minuteurSrc = window.setTimeout(function () {
+        if (!survole || !dansLaVue) return;
+        cleVivante = cle;
+        live.hidden = false;
+        cadre.setAttribute("src", "demos-secteurs/" + cle + "/index.html");
+      }, 320);
+    }
+
+    var grille = preview.closest(".sectors-grid") || preview.parentNode;
+    if (grille) {
+      grille.addEventListener("pointerenter", function (ev) {
+        if (ev.pointerType === "touch") return;
+        survole = true;
+        if (secteurCourant) allumer(secteurCourant);
+      });
+      grille.addEventListener("pointerleave", function () { survole = false; eteindre(); });
+      /* UN FOCUS CLAVIER RESTITUE LA PLANCHE. Le vivant est inerte :
+         si on le laissait pendant qu'on tabule, le visiteur au clavier
+         mettrait son anneau de focus sur une planche invisible. */
+      grille.addEventListener("focusin", function () { survole = false; eteindre(); });
+      doc.addEventListener("aped:secteur", function (ev) { allumer(ev.detail && ev.detail.cle); });
+    }
+
+    new IntersectionObserver(function (es) {
+      dansLaVue = es[0].isIntersecting;
+      if (!dansLaVue) eteindre();
+    }, { threshold: 0.2 }).observe(preview);
+
+    doc.addEventListener("visibilitychange", function () { if (doc.hidden) eteindre(); });
+    if (reduced.addEventListener) reduced.addEventListener("change", function () { if (reduced.matches) eteindre(); });
   }
 
   /* == LE CRAN — V4 du langage de mouvement, et il vit ICI. ==  D-434 */

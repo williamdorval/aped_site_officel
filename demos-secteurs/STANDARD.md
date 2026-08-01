@@ -96,10 +96,34 @@ site statique en 2026 se lit comme un gabarit de 2017, et l'aperçu du
 panneau ne montre rien bouger. **Si le visiteur ne voit rien bouger, on
 n'a rien prouvé.**
 
-### 2.1 Toujours zéro `<script>`
+### 2.0 · LE JAVASCRIPT EST AUTORISÉ — la contrainte a été levée le 2026-08-01
 
-Ça n'a pas changé, et ce n'est pas une contrainte : **les animations
-pilotées par le défilement se font en CSS pur** depuis Chrome 115.
+La première fournée s'était imposé « zéro `<script>` ». Le raisonnement
+tenait — une page sans script ne peut pas avoir d'erreur console — mais
+**c'était un plafond de qualité, et il s'est vu** : le surlignage cyan
+du chantier a été déclaré « impossible en CSS pur », `timeline-scope`
+demande Chrome 116 quand `animation-timeline` demande 115, et le
+`@supports` ne couvre pas ce trou d'une version.
+
+| | |
+|---|---|
+| **Le JavaScript est autorisé** | dans les sites de secteur uniquement |
+| **GSAP et ScrollTrigger sont autorisés** | **auto-hébergés**, jamais un CDN : `../../js/vendor/gsap.min.js` et `../../js/vendor/ScrollTrigger.min.js` sont déjà dans le dépôt |
+| **Ce qui ne bouge pas** | **zéro requête tierce**, **zéro erreur console**. Un script qui plante est pire que pas de script |
+| **Ce qui ne bouge pas non plus** | rien de nécessaire à la LECTURE ni à l'USAGE ne dépend du script. Le texte, les images, les liens et les formulaires marchent sans lui |
+| **Le site APED, lui, ne change pas** | ses interdits tiennent tous |
+
+**Le CSS pur reste le bon outil quand il suffit** — une révélation, un
+survol, une bascule `:target`. On ne charge pas 113 ko de GSAP pour
+faire monter un bloc de 30 px. Le script sert ce que le CSS ne sait pas
+faire : un tracé qui suit un contour, un texte découpé en lettres, un
+pinceau qui suit le curseur, une scène épinglée, un chiffre qui
+s'interpole.
+
+### 2.1 Le CSS pur, pour tout ce qu'il sait faire
+
+**Les animations pilotées par le défilement se font en CSS pur** depuis
+Chrome 115.
 
 ```css
 @keyframes monte { from { opacity:0; transform: translateY(34px) } to { opacity:1; transform:none } }
@@ -231,8 +255,11 @@ calculé est plus court que l'image et se pose **en haut**.
 - **Un seul fichier** `demos-secteurs/<secteur>/index.html`, style dans
   un `<style>`.
 - **Zéro requête tierce.** Images `../../images/secteurs-sites/`,
-  polices `../../fonts/demos/`.
-- **Zéro `<script>`.** Voir § 2.
+  polices `../../fonts/demos/`, scripts `../../js/vendor/`.
+- **Le script est autorisé, la requête tierce ne l'est pas.** Voir § 2.0.
+  `node tools/demos-controle.mjs` refuse toute adresse absolue hors du
+  dépôt, y compris `cdnjs`, `unpkg` et `jsdelivr`.
+- **Zéro erreur console**, et c'est maintenant la contrainte qui compte.
 - **CLS à 0** : `width` et `height` sur **chaque** `<img>`, aux
   dimensions réelles du fichier (`node tools/_inventaire.mjs <secteur>`).
 - **LCP sous 300 ms** : l'image du héros en `fetchpriority="high"`,
@@ -246,10 +273,31 @@ calculé est plus court que l'image et se pose **en haut**.
 
 ## 7 · LA CHAÎNE, DANS L'ORDRE
 
-1. **Écrire la direction artistique AVANT de coder** : palette (hex),
-   typographie, formes, mouvement, traitement photo, référence
-   culturelle. Une ligne par poste.
-2. Regarder de vraies références **primées** du métier ;
+1. **ALLER CHERCHER LES MEILLEURS SITES DU MONDE DE CE MÉTIER, ET LES
+   MESURER.** Pas « s'inspirer vaguement » : ouvrir, défiler, relever.
+   C'est l'étape qui manquait à la première fournée, et ça se voyait —
+   douze directions artistiques inventées, bonnes, mais nourries de
+   rien.
+
+   ```
+   node tools/_galerie.mjs "https://www.awwwards.com/websites/<catégorie>/" 20
+   node tools/_galerie.mjs "https://www.siteinspire.com/websites?categories=<n>" 20
+   node tools/_ref.mjs "https://<le site>" <métier>-<nom> 1440
+   ```
+
+   `_ref.mjs` dépose le premier écran, **sept captures prises en
+   défilant à la molette** — donc pendant que les révélations se
+   jouent — et un `releve.json` : familles de polices, taille et
+   interlignage du `h1`, paddings de section, fonds dominants,
+   bibliothèques d'animation détectées, nombre d'images de plus de
+   380 px.
+
+   **Trois références retenues par métier**, et on écrit pour chacune :
+   ce qu'on lui prend, et ce qu'on écarte.
+
+2. **Écrire la direction artistique** : palette (hex), typographie,
+   formes, mouvement, traitement photo, référence culturelle. Une
+   ligne par poste ;
 3. `node tools/_inventaire.mjs <secteur>` — dimensions et emplois ;
 4. `node tools/secteurs-sites-photos.mjs <secteur>` s'il en manque ;
 5. **ouvrir chaque photo, une par une, en taille réelle** ;
