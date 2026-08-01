@@ -1,58 +1,121 @@
 [
  {
-  "fichier": "images/secteurs-sites/gym-1.webp",
-  "emploi": "heros — plateau de force au petit matin, cages et cordes",
-  "source": "url:https://images.pexels.com/photos/6388373/pexels-photo-6388373.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/6388373/",
+  "fichier": "images/secteurs-sites/clinique-1.webp",
+  "emploi": "heros — salle d'attente claire, accueil et sieges",
+  "source": "url:https://images.pexels.com/photos/8459996/pexels-photo-8459996.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/8459996/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/gym-2.webp",
-  "emploi": "bande pleine largeur — barre chargee au sol, salle dans la brume",
-  "source": "url:https://images.pexels.com/photos/6389516/pexels-photo-6389516.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/6389516/",
+  "fichier": "images/secteurs-sites/clinique-2.webp",
+  "emploi": "bande pleine largeur — corridor vitre et rangee de sieges",
+  "source": "url:https://images.pexels.com/photos/19921278/pexels-photo-19921278.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/19921278/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/gym-3.webp",
-  "emploi": "salle — barre posee sur le plancher de bois, cordes au fond",
-  "source": "url:https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/1552252/",
+  "fichier": "images/secteurs-sites/clinique-3.webp",
+  "emploi": "salle d'examen — table, bureau et fauteuil",
+  "source": "url:https://images.pexels.com/photos/7789602/pexels-photo-7789602.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/7789602/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/gym-4.webp",
-  "emploi": "salle — anneaux, sacs et bar fixe sur mur peint",
-  "source": "url:https://images.pexels.com/photos/6390225/pexels-photo-6390225.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/6390225/",
+  "fichier": "images/secteurs-sites/clinique-4.webp",
+  "emploi": "corridor — portes vitrees, sol clair",
+  "source": "url:https://images.pexels.com/photos/16571738/pexels-photo-16571738.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/16571738/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/gym-5.webp",
-  "emploi": "materiel — les barres rangees debout contre la cage",
-  "source": "url:https://images.pexels.com/photos/6389856/pexels-photo-6389856.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/6389856/",
+  "fichier": "images/secteurs-sites/clinique-5.webp",
+  "emploi": "detail — bequilles appuyees au mur, sieges de la salle",
+  "source": "url:https://images.pexels.com/photos/13185365/pexels-photo-13185365.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/13185365/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/gym-6.webp",
-  "emploi": "materiel — disque de 20 kg en fonte, mur de brique",
-  "source": "url:https://images.pexels.com/photos/4793231/pexels-photo-4793231.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/4793231/",
+  "fichier": "images/secteurs-sites/clinique-6.webp",
+  "emploi": "bureau — poste de consultation, chaises visiteurs",
+  "source": "url:https://images.pexels.com/photos/7789610/pexels-photo-7789610.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/7789610/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/gym-7.webp",
-  "emploi": "materiel — haltere hexagonal et son ombre sur le plancher",
-  "source": "url:https://images.pexels.com/photos/4753987/pexels-photo-4753987.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/4753987/",
+  "fichier": "images/secteurs-sites/clinique-7.webp",
+  "emploi": "corridor — lumiere douce, portes fermees",
+  "source": "url:https://images.pexels.com/photos/6234630/pexels-photo-6234630.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/6234630/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/gym-8.webp",
-  "emploi": "materiel — disque olympique et collier sur tapis de caoutchouc",
-  "source": "url:https://images.pexels.com/photos/2261481/pexels-photo-2261481.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/2261481/",
+  "fichier": "images/secteurs-sites/juridique-1.webp",
+  "emploi": "heros — colonnade en enfilade, noir et blanc",
+  "source": "url:https://images.pexels.com/photos/2935910/pexels-photo-2935910.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/2935910/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/juridique-2.webp",
+  "emploi": "bande pleine largeur — rayonnages mobiles d'archives",
+  "source": "url:https://images.pexels.com/photos/31139000/pexels-photo-31139000.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/31139000/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/juridique-3.webp",
+  "emploi": "entree — porte de bronze entre deux colonnes de marbre",
+  "source": "url:https://images.pexels.com/photos/15498156/pexels-photo-15498156.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/15498156/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/juridique-4.webp",
+  "emploi": "entree — portail classique et emmarchement",
+  "source": "url:https://images.pexels.com/photos/8652755/pexels-photo-8652755.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/8652755/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/juridique-5.webp",
+  "emploi": "detail — chapiteaux et lanterne de rue",
+  "source": "url:https://images.pexels.com/photos/1000740/pexels-photo-1000740.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/1000740/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/photo-1.webp",
+  "emploi": "heros — fond de papier deroule et parapluie",
+  "source": "url:https://images.pexels.com/photos/6989087/pexels-photo-6989087.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/6989087/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/photo-2.webp",
+  "emploi": "bande pleine largeur — le studio monte, noir et blanc",
+  "source": "url:https://images.pexels.com/photos/2388569/pexels-photo-2388569.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/2388569/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/photo-3.webp",
+  "emploi": "studio — boites a lumiere et fond blanc",
+  "source": "url:https://images.pexels.com/photos/134469/pexels-photo-134469.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/134469/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/photo-4.webp",
+  "emploi": "studio — la boite a lumiere seule, gris",
+  "source": "url:https://images.pexels.com/photos/7383644/pexels-photo-7383644.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/7383644/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/photo-5.webp",
+  "emploi": "studio — projecteurs sur pied, fond neutre",
+  "source": "url:https://images.pexels.com/photos/53265/pexels-photo-53265.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/53265/",
   "licence": "https://www.pexels.com/license/"
  }
 ]

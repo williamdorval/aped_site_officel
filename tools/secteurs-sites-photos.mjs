@@ -196,6 +196,124 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/2261481/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
   ],
 
+  /* HEBERGEMENT ET TOURISME — AUBERGE DES CAPS.
+     Le piege ici n'est pas la marque, c'est le CLIMAT. Une chambre
+     d'hotel de banque d'images est presque toujours mediterraneenne ou
+     tropicale : mur de pierre blanche et volets bleus, ou palmiers
+     derriere la porte-fenetre. Posee sous « auberge de bord de
+     fleuve », elle ment sur ce que le client va trouver en arrivant.
+     Ecartes pour ca : `15717924` (mur de pierre du sud, applique en
+     fer forge), `14025022` (ventilateur de plafond et palmiers),
+     `13722872` (une image de synthese, pas une photographie). */
+  hotel: [
+    { n: 1, emploi: "heros — l'auberge au bord du lac gele, fumee a la cheminee", xl: true,
+      src: "url:" + PX + "/37321970/pexels-photo-37321970.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/37321970/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 2, emploi: "bande pleine largeur — les chalets eclaires dans la boulaie, a la brunante", xl: true,
+      src: "url:" + PX + "/30490316/pexels-photo-30490316.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/30490316/", fen: { x: 0, y: 0.10, w: 1 } },
+    { n: 3, emploi: "chalet — pignon vitre sous la neige, pins derriere", large: true,
+      src: "url:" + PX + "/6530842/pexels-photo-6530842.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6530842/", fen: { x: 0, y: 0.18, w: 1 } },
+    { n: 4, emploi: "salle a manger — murs de billots, lustre, tables dressees", large: true,
+      src: "url:" + PX + "/29109683/pexels-photo-29109683.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/29109683/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 5, emploi: "chambre — deux lits, murs de bois rond, edredons blancs",
+      src: "url:" + PX + "/14465275/pexels-photo-14465275.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/14465275/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    { n: 6, emploi: "mezzanine — pignon vitre sur la sapiniere givree",
+      src: "url:" + PX + "/6087207/pexels-photo-6087207.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6087207/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    { n: 7, emploi: "dependance — remise de bois grise sous les epinettes",
+      src: "url:" + PX + "/10772256/pexels-photo-10772256.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/10772256/", fen: { x: 0.09, y: 0.08, w: 0.82 } },
+    { n: 8, emploi: "chalet — la porte vitree sur la neige, vue de l'interieur",
+      src: "url:" + PX + "/8162940/pexels-photo-8162940.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8162940/", fen: { x: 0.09, y: 0.12, w: 0.82 } }
+  ],
+
+  /* CLINIQUE ET SANTE — CLINIQUE DU RIVERAIN.
+     Ecartes : `33812025` porte le nom et le logo d'un vrai centre
+     medical grave sur le mur, `7108284` une enseigne en cyrillique,
+     `12454146` est une piece verdatre et bruitee qui ne rassurerait
+     personne. Aucun patient, aucun soignant : un visage dans une
+     salle d'attente est une donnee de sante. */
+  clinique: [
+    { n: 1, emploi: "heros — salle d'attente claire, accueil et sieges", xl: true,
+      src: "url:" + PX + "/8459996/pexels-photo-8459996.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8459996/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 2, emploi: "bande pleine largeur — corridor vitre et rangee de sieges", xl: true,
+      src: "url:" + PX + "/19921278/pexels-photo-19921278.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/19921278/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 3, emploi: "salle d'examen — table, bureau et fauteuil", large: true,
+      src: "url:" + PX + "/7789602/pexels-photo-7789602.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7789602/", fen: { x: 0, y: 0.20, w: 1 } },
+    { n: 4, emploi: "corridor — portes vitrees, sol clair", large: true,
+      src: "url:" + PX + "/16571738/pexels-photo-16571738.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/16571738/", fen: { x: 0, y: 0.22, w: 1 } },
+    /* Fenetre decalee a droite : une boite de produit avec un mot
+       lisible occupe le bord gauche de la source. */
+    { n: 5, emploi: "detail — bequilles appuyees au mur, sieges de la salle",
+      src: "url:" + PX + "/13185365/pexels-photo-13185365.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/13185365/", fen: { x: 0.26, y: 0.02, w: 0.72 } },
+    { n: 6, emploi: "bureau — poste de consultation, chaises visiteurs",
+      src: "url:" + PX + "/7789610/pexels-photo-7789610.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7789610/", fen: { x: 0.09, y: 0.18, w: 0.82 } },
+    { n: 7, emploi: "corridor — lumiere douce, portes fermees",
+      src: "url:" + PX + "/6234630/pexels-photo-6234630.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6234630/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+  ],
+
+  /* SERVICES JURIDIQUES — CABINET VALLIERES.
+     Ecarte : `3927126` — les seuls livres de droit nets de la banque
+     portent « DHAKA REPORTS » et le nom d'un vrai cabinet dore sur le
+     dos. Toutes les vues de « bureau d'avocat » de la banque montrent
+     en plus une personne posant en costume ; on n'en prend aucune.
+     Ce qui reste est de l'ARCHITECTURE et de l'ARCHIVE : ce que le
+     droit a de plus impersonnel, et c'est juste. */
+  juridique: [
+    { n: 1, emploi: "heros — colonnade en enfilade, noir et blanc", xl: true,
+      src: "url:" + PX + "/2935910/pexels-photo-2935910.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/2935910/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 2, emploi: "bande pleine largeur — rayonnages mobiles d'archives", xl: true,
+      src: "url:" + PX + "/31139000/pexels-photo-31139000.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/31139000/", fen: { x: 0, y: 0.10, w: 1 } },
+    { n: 3, emploi: "entree — porte de bronze entre deux colonnes de marbre",
+      src: "url:" + PX + "/15498156/pexels-photo-15498156.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/15498156/", fen: { x: 0.09, y: 0.24, w: 0.82 } },
+    { n: 4, emploi: "entree — portail classique et emmarchement",
+      src: "url:" + PX + "/8652755/pexels-photo-8652755.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8652755/", fen: { x: 0.09, y: 0.20, w: 0.82 } },
+    { n: 5, emploi: "detail — chapiteaux et lanterne de rue",
+      src: "url:" + PX + "/1000740/pexels-photo-1000740.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/1000740/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+  ],
+
+  /* PHOTOGRAPHE ET CREATIF — ATELIER LUMEN.
+     Ecartes, et pour une raison propre au metier : LE FILM PORTE LE
+     NOM DE SON FABRICANT SUR LA BORDURE. `7206568` et `10276039` sont
+     de belles images de negatifs, et chaque perforation est legendee
+     « KODAK ». Ce n'est pas un cadrage malheureux, c'est la nature du
+     support. On montre donc le STUDIO et l'ECLAIRAGE, pas la
+     pellicule. */
+  photo: [
+    { n: 1, emploi: "heros — fond de papier deroule et parapluie", xl: true,
+      src: "url:" + PX + "/6989087/pexels-photo-6989087.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6989087/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 2, emploi: "bande pleine largeur — le studio monte, noir et blanc", xl: true,
+      src: "url:" + PX + "/2388569/pexels-photo-2388569.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/2388569/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 3, emploi: "studio — boites a lumiere et fond blanc", large: true,
+      src: "url:" + PX + "/134469/pexels-photo-134469.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/134469/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 4, emploi: "studio — la boite a lumiere seule, gris",
+      src: "url:" + PX + "/7383644/pexels-photo-7383644.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7383644/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    { n: 5, emploi: "studio — projecteurs sur pied, fond neutre",
+      src: "url:" + PX + "/53265/pexels-photo-53265.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/53265/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+  ],
+
   construction: [
     /* LE HEROS PASSE EN `xl`.  D-660
        Le standard demande une photographie PLEIN CADRE. Une image de
