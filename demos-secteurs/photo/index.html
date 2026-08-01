@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#000000">
 <title>Atelier Lumen — architecture, intérieur, objet</title>
+<!-- Les deux faces qui peignent le titre, préchargées : elles sont
+     le LCP de la page. Le reste suit en `swap`. -->
+<link rel="preload" href="../../fonts/demos/instrument-serif-3.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/demos/instrument-serif-1.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="description" content="Atelier Lumen, photographe à Québec. Architecture, intérieur et objet. Onze œuvres montrées en grand, sans retouche. Nombre de fichiers, délai et droits d’usage écrits avant la séance. Site de démonstration.">
 <style>
 /* ─────────────────────────────────────────────────────────────
@@ -83,7 +88,10 @@
 @media (max-width:640px){ :root{ --marge:24px; --sec:88px } }
 
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%; background:var(--noir); scroll-behavior:smooth}
+html{
+  -webkit-text-size-adjust:100%; background:var(--noir); scroll-behavior:smooth;
+  color-scheme:dark;                  /* barres et champs natifs sombres */
+}
 @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto } }
 body{
   margin:0; background:var(--noir); color:var(--blanc);
@@ -99,6 +107,19 @@ ul,ol{padding:0; list-style:none}
 fieldset{border:0; padding:0; min-width:0}
 em{font-style:italic}
 :focus-visible{outline:2px solid var(--blanc); outline-offset:4px}
+a,button,label,select,input,textarea,summary{
+  touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+}
+[id]{ scroll-margin-top:28px }
+
+/* LE LIEN D’ÉVITEMENT — 23 arrêts au clavier, dont 9 œuvres.
+   Il n’apparaît qu’au focus, et il porte son anneau. */
+.saut{
+  position:absolute; left:-9999px; top:0; z-index:9;
+  background:var(--blanc); color:var(--noir); padding:14px 22px;
+  font-size:13px; text-decoration:none;
+}
+.saut:focus{ left:0 }
 
 /* ── LE MOUVEMENT ───────────────────────────────────────────
    Un seul keyframe porte toute la page : l’opacité. Les œuvres
@@ -149,7 +170,7 @@ h1{
 h2{
   font-family:var(--aff); font-weight:400; color:var(--blanc);
   font-size:clamp(38px,5.2vw,78px); line-height:.94; letter-spacing:-.006em;
-  max-width:15ch;
+  max-width:15ch; text-wrap:balance;
 }
 /* L’énoncé est le plus fort de la page après le titre : c’est la
    seule phrase qui dit une limite, et une limite se lit en gros. */
@@ -159,9 +180,9 @@ h2{
   max-width:16ch;
 }
 /* Trois lignes, pas quatre : au-delà, ça redevient un dossier. */
-.txt{ color:var(--gris); max-width:44ch; font-size:14px }
+.txt{ color:var(--gris); max-width:44ch; font-size:14px; text-wrap:pretty }
 .txt b{ color:var(--blanc); font-weight:400 }
-.petit{ font-size:13px; color:var(--gris); max-width:60ch }
+.petit{ font-size:13px; color:var(--gris); max-width:60ch; text-wrap:pretty }
 
 /* ── liens et boutons — blanc sur noir, jamais une couleur ──── */
 .lien{ position:relative; text-decoration:none; color:var(--blanc); display:inline-block }
@@ -272,7 +293,11 @@ h2{
 .salle:has(#f-obj:checked) .oeu[data-g="arc"]{ display:none }
 @supports not selector(:has(*)){ .filtre{ display:none } }
 
-.oeuvres{ margin-top:74px }
+/* L’écart d’accrochage vaut aussi ENTRE un groupe et la bande à
+   fond perdu qui le suit : sans lui, la dernière œuvre du groupe
+   touchait presque la bande. */
+.oeuvres{ margin-top:74px; margin-bottom:clamp(84px,9vw,132px) }
+.oeuvres:last-child{ margin-bottom:0 }
 .oeu{ margin:0 0 clamp(84px,9vw,132px) }
 .oeu:last-child{ margin-bottom:0 }
 .oeu img{ width:100%; height:auto }
@@ -398,6 +423,8 @@ h2{
 </head>
 <body>
 
+<a class="saut" href="#accrochage">Aller à l’accrochage</a>
+
 <!-- ══ BARRE ══════════════════════════════════════════════════ -->
 <header class="barre" id="haut">
   <a class="marque" href="#haut">atelier lumen</a>
@@ -445,7 +472,7 @@ h2{
 
 <!-- ══ L’ÉNONCÉ — un écran, une phrase ═══════════════════════ -->
 <section class="sec in">
-  <p class="enonce">Ni personne, ni ciel rapporté, ni couleur changée. Ce que l’appareil a vu, <em>et rien d’autre</em>.</p>
+  <h2 class="enonce">Ni personne, ni ciel rapporté, ni couleur changée. Ce que l’appareil a vu, <em>et rien d’autre</em>.</h2>
   <p class="txt" style="margin-top:42px">Architecture, intérieur, objet. En studio à Québec ou sur place, dans un rayon de 40&#8239;km.</p>
 </section>
 
@@ -592,7 +619,7 @@ h2{
 <!-- ══ L’ATELIER ═════════════════════════════════════════════ -->
 <section id="atelier">
   <div class="sec in" style="padding-bottom:0">
-    <p class="enonce">Le montage est fait <em>avant</em> votre arrivée.</p>
+    <h2 class="enonce">Le montage est fait <em>avant</em> votre arrivée.</h2>
     <p class="txt" style="margin-top:42px">Les heures comptées commencent quand la première prise est possible, pas quand le premier pied sort de son sac.</p>
   </div>
 
@@ -662,7 +689,7 @@ h2{
     </div>
     <div>
       <label for="crl">Courriel</label>
-      <input id="crl" name="crl" type="email" autocomplete="email" placeholder="courriel@exemple.ca">
+      <input id="crl" name="crl" type="email" inputmode="email" autocomplete="email" spellcheck="false" autocapitalize="off" placeholder="courriel@exemple.ca">
     </div>
     <div>
       <label for="typ">Ce que c’est</label>
