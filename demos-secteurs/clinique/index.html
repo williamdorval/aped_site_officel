@@ -1,1256 +1,986 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr-CA">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinique du Riverain — médecine familiale, sans rendez-vous le matin</title>
+<meta name="description" content="Clinique médicale familiale. Cinq médecins, deux infirmières praticiennes, une physiothérapeute. Sur rendez-vous, et sans rendez-vous le matin. Site de démonstration.">
 <meta name="robots" content="noindex,nofollow">
-<title>Clinique du Riverain — le délai est affiché, et il est relevé deux fois par jour</title>
-<meta name="description" content="Clinique médicale familiale privée. Cinq médecins, deux infirmières praticiennes, une physiothérapeute. Le délai réel est affiché, la liste d’attente aussi. Site de démonstration.">
+<link rel="icon" href="data:,">
 <style>
-/* ─────────────────────────────────────────────────────────────
-   CLINIQUE DU RIVERAIN — site de démonstration
-   Affichage manrope 800 · texte inter · détail jetbrains-mono
-   Aucun script. Aucune requête tierce.
+/* ══════════════════════════════════════════════════════════════════
+   CLINIQUE DU RIVERAIN — une APPLICATION DE SANTÉ BIEN FAITE.
+   Rond, calme, aéré, jamais froid.
 
-   DISPOSITIF DE SIGNATURE — « le tableau d'attente ».
-   Un chiffre en manrope, une jauge graduée dont chaque cran vaut
-   une unité réelle (une minute, un jour, une place), et un relevé
-   daté en mono. Il revient six fois : héros, tableau des délais,
-   sans rendez-vous, urgence (à zéro), résultats, prise de rendez-vous.
-   ───────────────────────────────────────────────────────────── */
+   C'est le SEUL site du dépôt à coins arrondis et à ombres douces,
+   et c'est sa différence : rayon 24 px sur les cartes et les cadres,
+   999 px sur les boutons, les étiquettes et les pastilles. Les
+   ombres sont voulues, très basses en contraste, toujours dans le
+   bleu de la page — jamais du gris neutre.
 
-@font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-0.woff2") format("woff2");font-style:normal;font-weight:800;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
-@font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-1.woff2") format("woff2");font-style:normal;font-weight:800;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-2.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-3.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
-@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+   PALETTE : glacier #eef4f8 (fond dominant, clair) · blanc pur pour
+   les cartes · bleu #1b4f7a · menthe #7fbfa8 · encre douce #20303a.
+   Aucun orange, aucun rouge — SAUF le bloc des signes d'urgence,
+   #b3261e, où le rouge est légitime et sert à quelque chose.
+
+   DEUX FAMILLES, pas de mono : outfit 800 (géométrique, bols ronds)
+   jusqu'à 104 px, interlignage .95 · manrope 400/800 pour le texte,
+   16 px — un peu plus gros que les autres sites, c'est une clinique.
+
+   DISPOSITIF DE SIGNATURE : la PASTILLE RONDE. Elle numérote une
+   étape, porte les initiales d'un membre de l'équipe, ouvre un
+   onglet, marque un signe d'urgence. Elle revient dans six sections.
+   Son geste : un ANNEAU de progression qui se dessine au défilement
+   (stroke-dashoffset), quatre fois dans la page.
+
+   PHOTOGRAPHIE : lumière du jour, hautes lumières relevées —
+   brightness(1.06) saturate(.94) contrast(.96) — dans des cadres à
+   rayon 24 px. Aucun gros plan clinique, aucun instrument.
+
+   Zéro script, zéro requête tierce.
+   ══════════════════════════════════════════════════════════════════ */
+
+@font-face{font-family:"outfit";src:url("../../fonts/demos/outfit-2.woff2") format("woff2");font-style:normal;font-weight:800;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"outfit";src:url("../../fonts/demos/outfit-3.woff2") format("woff2");font-style:normal;font-weight:800;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-2.woff2") format("woff2");font-style:normal;font-weight:800;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-3.woff2") format("woff2");font-style:normal;font-weight:800;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 
 :root{
-  --papier:#f7f6f3;
-  --papier2:#eceae4;
-  --ink:#12181c;
-  --encre:#12181c;
-  --gris:#4a555c;          /* texte courant sur papier — 7,0:1 */
-  --gris2:#5c676e;         /* mono discret — 5,3:1 sur papier, 4,8:1 sur papier2 */
-  --clair:#a9b4ba;         /* texte courant sur l'encre — 8,4:1 */
-  --acc:#1a5f7a;           /* accent unique — 6,5:1 sur papier */
-  --acc-c:#4f9cba;         /* le même bleu, éclairci pour l'encre — 5,8:1 */
-  --trait:#d8d5cd;
-  --trait-s:#2b3339;
-  --aff:"manrope",system-ui,sans-serif;
-  --txt:"inter",system-ui,sans-serif;
-  --mno:"jetbrains-mono",ui-monospace,monospace;
+  --glacier:#eef4f8;
+  --blanc:#ffffff;
+  --bleu:#1b4f7a;
+  --bleu-f:#17456a;       /* le bleu au survol, un cran plus profond */
+  --menthe:#7fbfa8;
+  --encre:#20303a;        /* 12,2:1 sur glacier */
+  --doux:#4e6373;         /* texte secondaire — 5,6:1 sur glacier, 6,2:1 sur blanc */
+  --pale:#cfe0ec;         /* texte secondaire SUR le bleu — 6,3:1 */
+  --rouge:#b3261e;        /* le seul rouge, et seulement pour l'urgence — 6,5:1 */
+  --bord:#dbe6ee;
+  --aff:"outfit",ui-rounded,"Segoe UI",system-ui,Arial,sans-serif;
+  --txt:"manrope",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
+  --e:cubic-bezier(.22,1,.36,1);
+  --r:24px;
+  /* L'ombre douce — deux couches, toutes deux dans le bleu de la
+     page. Un gris neutre ferait une salissure ; le bleu fait de
+     l'air. */
+  --om:0 2px 4px rgba(27,79,122,.06), 0 12px 32px rgba(27,79,122,.10);
+  --om-h:0 4px 10px rgba(27,79,122,.09), 0 22px 48px rgba(27,79,122,.16);
+  --om-b:0 2px 4px rgba(27,79,122,.05), 0 10px 26px rgba(27,79,122,.07);
 }
 
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{
-  margin:0; background:var(--papier); color:var(--encre);
-  font-family:var(--txt); font-size:15px; line-height:1.62;
-  font-kerning:normal; text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--glacier)}
+body{background:var(--glacier);color:var(--encre);font:400 16px/1.65 var(--txt);font-kerning:normal}
+img{display:block;max-width:100%}
+ul,ol{list-style:none}
+a{color:inherit;text-decoration:none}
+b,strong{font-weight:800}
+::selection{background:var(--menthe);color:var(--encre)}
+:focus-visible{outline:3px solid var(--bleu);outline-offset:3px}
+.sec--bleu :focus-visible{outline-color:var(--menthe)}
+
+/* ── ossature ──────────────────────────────────────────────────── */
+.cont{max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+.sec{padding:clamp(74px,9vw,150px) 0}
+.sec--glacier{background:var(--glacier)}
+.sec--blanc{background:var(--blanc)}
+.sec--bleu{background:var(--bleu);color:var(--blanc)}
+section[id]{scroll-margin-top:18px}
+
+/* ── typographie ───────────────────────────────────────────────── */
+h1,h2{font-family:var(--aff);font-weight:800;letter-spacing:-.028em;line-height:.95}
+h1{font-size:clamp(38px,6.6vw,104px)}
+h2{font-size:clamp(29px,4.5vw,66px);line-height:.98}
+h3{font:800 clamp(18px,1.5vw,21px)/1.25 var(--aff);letter-spacing:-.012em}
+.lede{font-size:clamp(17px,1.35vw,20px);line-height:1.55;max-width:52ch}
+.intro{color:var(--doux);max-width:58ch;font-size:16.5px;margin-top:clamp(18px,2vw,26px)}
+.sec--bleu .intro{color:var(--pale)}
+.fine{margin-top:clamp(24px,2.6vw,38px);color:var(--doux);font-size:13.5px;line-height:1.6;max-width:70ch}
+p+p{margin-top:12px}
+
+/* L'étiquette ronde qui coiffe chaque section */
+.etiq{display:inline-block;border-radius:999px;padding:9px 18px;
+  background:var(--blanc);color:var(--bleu);box-shadow:var(--om-b);
+  font:800 12px/1 var(--txt);letter-spacing:.09em;text-transform:uppercase;
+  margin-bottom:clamp(18px,2.2vw,30px)}
+.sec--blanc .etiq{background:var(--glacier);box-shadow:none}
+.sec--bleu .etiq{background:rgba(255,255,255,.14);color:var(--blanc);box-shadow:none}
+
+/* ══ LA PASTILLE — le dispositif de signature ════════════════════ */
+.past{display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:var(--pw,46px);height:var(--pw,46px);border-radius:999px;
+  background:var(--bleu);color:var(--blanc);
+  font:800 var(--pf,16px)/1 var(--aff);letter-spacing:-.02em;
+  transition:transform .26s var(--e),box-shadow .26s var(--e),background-color .26s var(--e)}
+.past--m{background:var(--menthe);color:var(--encre)}
+.past--r{background:var(--rouge);color:var(--blanc)}
+.past--c{background:var(--blanc);color:var(--bleu)}
+
+/* ══ LE MOUVEMENT ═════════════════════════════════════════════════
+   `forwards`, JAMAIS `both` : avec `both`, tout ce qui n'a pas
+   atteint sa plage garde son état de DÉPART, donc `opacity:0`, et
+   une capture pleine page rend la moitié du site VIDE. Avec
+   `forwards`, hors plage c'est le style de base qui tient — et le
+   style de base est la forme FINALE.
+   Toutes les plages se ferment au plus tard à `cover 28%`.
+   Le plus doux du dépôt : 220 à 320 ms, courbe (.22,1,.36,1) ;
+   seules les cartes dépassent un peu, en (.2,1.28,.5,1).
+   ════════════════════════════════════════════════════════════════ */
+@keyframes pose{from{opacity:0;transform:translateY(26px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes leve{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes tracer{from{stroke-dashoffset:100}to{stroke-dashoffset:var(--off,100)}}
+@keyframes derive{from{transform:translateY(0)}to{transform:translateY(-12%)}}
+
+/* 1 · les cartes montent et SE POSENT, avec un très léger
+   dépassement. Le décalage se fait en DÉCALANT LA PLAGE : un
+   `animation-delay` n'a aucun effet sur une piste de défilement. */
+/* (.2,1.5,.45,1) et pas (.2,1.28,.5,1) : relevé enfant contre
+   parent, le dépassement du premier ne valait que 0,7 px sur une
+   course de 26 — invisible. Il en fait 2,4 maintenant. */
+.rv{animation:pose cubic-bezier(.2,1.5,.45,1) forwards;
+  animation-timeline:view();animation-range:entry 0% cover 22%}
+.rv:nth-child(3n+2){animation-range:entry 3% cover 25%}
+.rv:nth-child(3n+3){animation-range:entry 6% cover 28%}
+.rv-t{animation:leve var(--e) forwards;
+  animation-timeline:view();animation-range:entry 0% cover 24%}
+
+/* 2 · la dérive lente des photographies — le mouvement continu.
+   La piste est déclarée SUR LE CADRE, jamais sur l'image : le cadre
+   porte `overflow:hidden` pour son rayon, ce qui en fait un
+   conteneur de défilement ; un `view()` posé sur l'image y
+   mesurerait l'image DANS le cadre, et resterait figé. */
+.cadre{position:relative;display:block;border-radius:var(--r);overflow:hidden;
+  background:var(--bord);view-timeline:--par block}
+/* L'image est POSÉE en absolu, pas laissée en flux : un `height`
+   en pourcentage dans un cadre dont la hauteur vient d'un
+   `aspect-ratio` ne se résout pas toujours, et la seconde photo de
+   la salle 4 laissait 25 px de fond sous elle en fin de dérive. */
+.cadre img{position:absolute;top:0;left:0;width:100%;height:114%;object-fit:cover;
+  filter:brightness(1.06) saturate(.94) contrast(.96);
+  transform:translateY(-6%);
+  animation:derive linear forwards;animation-timeline:--par;animation-range:cover 0% cover 100%}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important;transition:none !important}
 }
-img{display:block; max-width:100%; height:auto}
-a{color:inherit}
-h1,h2,h3,h4,p,ul,ol,figure,dl,dd{margin:0}
-ul,ol{padding:0; list-style:none}
-button,input,select,textarea{font:inherit; color:inherit}
-
-::selection{background:var(--acc); color:var(--papier)}
-:focus-visible{outline:2px solid var(--acc); outline-offset:3px}
-.f-s :focus-visible{outline-color:var(--acc-c)}
-
-/* ── ossature ─────────────────────────────────────────────── */
-.env{width:100%; max-width:1240px; margin:0 auto; padding-inline:clamp(20px,4.4vw,56px)}
-.sec{padding-block:clamp(78px,10.4vw,168px)}
-.f-p{background:var(--papier); color:var(--encre)}
-.f-p2{background:var(--papier2); color:var(--encre)}
-.f-s{background:var(--ink); color:var(--papier)}
-.f-s .tx,.f-s .txp{color:var(--clair)}
-.f-s .eti{color:var(--acc-c)}
-.f-s .fil{border-color:var(--trait-s)}
-
-/* ── typographie ──────────────────────────────────────────── */
-.eti{
-  font-family:var(--mno); font-size:10.5px; font-weight:500;
-  letter-spacing:.21em; text-transform:uppercase; color:var(--acc);
-  line-height:1.35;
-}
-.eti--g{color:var(--gris2)}
-.tt{
-  font-family:var(--aff); font-weight:800;
-  font-size:clamp(30px,3.72vw,47px); line-height:.94;
-  letter-spacing:-.03em; text-transform:lowercase;
-}
-.tx{font-size:15px; line-height:1.68; color:var(--gris); max-width:34em}
-.tx + .tx{margin-top:1.05em}
-.tx b{font-weight:600; color:var(--encre)}
-.f-s .tx b{color:var(--papier)}
-.txp{font-size:clamp(16px,1.5vw,19px); line-height:1.5; color:var(--gris); max-width:31em}
-.f-s .txp{color:var(--clair)}
-.fil{border-top:1px solid var(--trait)}
-.note{
-  margin-top:26px; font-family:var(--mno); font-size:10.5px; font-weight:500;
-  letter-spacing:.13em; text-transform:uppercase; color:var(--gris2); line-height:1.85;
-  max-width:66em;
-}
-.f-s .note{color:var(--clair)}
-
-/* ── LE TABLEAU D'ATTENTE — dispositif de signature ───────── */
-/* la jauge : un rail d'un pixel, une part remplie, et des crans.
-   Les crans sont une trame à arrêts francs — aucun fondu. */
-.jauge{
-  --p:50%; --n:20; --cran:var(--papier);
-  position:relative; height:14px; border:1px solid var(--trait);
-}
-.jauge i{position:absolute; top:0; bottom:0; left:0; width:var(--p); background:var(--acc); display:block}
-.jauge::after{
-  content:""; position:absolute; inset:0;
-  background:repeating-linear-gradient(90deg,var(--cran) 0 1px,transparent 1px calc(100% / var(--n)));
-}
-.f-s .jauge{--cran:var(--ink); border-color:var(--trait-s)}
-.f-s .jauge i{background:var(--acc-c)}
-.f-p2 .jauge{--cran:var(--papier2)}
-
-.nb{font-family:var(--aff); font-weight:800; letter-spacing:-.045em; line-height:.84; color:var(--acc)}
-.f-s .nb{color:var(--acc-c)}
-.un{
-  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.19em;
-  text-transform:uppercase; color:var(--gris2); margin-left:9px;
-}
-.f-s .un{color:var(--clair)}
-.rel{
-  font-family:var(--mno); font-size:10px; font-weight:500;
-  letter-spacing:.15em; text-transform:uppercase; color:var(--gris2); line-height:1.7;
-}
-.f-s .rel{color:var(--clair)}
-.rel b{font-weight:500; color:var(--acc)}
-.f-s .rel b{color:var(--acc-c)}
-
-/* ── bouton ───────────────────────────────────────────────── */
-.bt{
-  display:inline-flex; align-items:center; gap:14px;
-  background:var(--acc); color:#fff;
-  font-family:var(--mno); font-size:11px; font-weight:500;
-  letter-spacing:.17em; text-transform:uppercase;
-  padding:15px 24px; border:0; border-radius:0; cursor:pointer;
-  text-decoration:none; transition:background .16s linear;
-}
-.bt:hover{background:#12455a}
-.bt .fl{width:22px; height:1px; background:currentColor; display:block}
-.bt2{
-  display:inline-flex; align-items:center; gap:12px;
-  font-family:var(--mno); font-size:11px; font-weight:500;
-  letter-spacing:.17em; text-transform:uppercase; color:var(--encre);
-  border-bottom:1px solid var(--encre); padding-bottom:5px; text-decoration:none;
-}
-.f-s .bt2{color:var(--papier); border-color:var(--papier)}
-.bt2:hover{color:var(--acc); border-color:var(--acc)}
-.f-s .bt2:hover{color:var(--acc-c); border-color:var(--acc-c)}
-
-/* ── barre du haut ────────────────────────────────────────── */
-.tete{background:var(--papier); border-bottom:1px solid var(--trait)}
-.tete__in{display:flex; align-items:center; justify-content:space-between; gap:26px; padding-block:15px}
-.marq{display:block; text-decoration:none; line-height:1}
-.marq b{display:block; font-family:var(--aff); font-weight:800; font-size:22px; text-transform:lowercase; letter-spacing:-.035em}
-.marq span{display:block; margin-top:6px; font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.23em; text-transform:uppercase; color:var(--gris2)}
-.nav{display:flex; align-items:center; gap:clamp(12px,1.8vw,26px)}
-.nav a{
-  font-family:var(--mno); font-size:10.5px; font-weight:500;
-  letter-spacing:.15em; text-transform:uppercase; text-decoration:none;
-  color:var(--gris); padding-block:6px; border-bottom:1px solid transparent;
-}
-.nav a:hover{color:var(--acc); border-color:var(--acc)}
-.tete .bt{padding:12px 18px}
-
-/* ── HÉROS ────────────────────────────────────────────────── */
-/* la barre du haut mesure 71 px ; la plaque d'encre monte du bandeau
-   d'affichage dans la photographie — une seule forme en L. */
-.heros{display:flex; flex-direction:column; min-height:calc(100vh - 71px); background:var(--papier)}
-.heros__im{position:relative; flex:1 1 auto; min-height:300px; display:flex; align-items:flex-end; background:#e6e7e6}
-.heros__im > img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 56%}
-.heros__im > .env{position:relative}
-.heros__tag{
-  position:absolute; right:0; top:0; z-index:2;
-  background:var(--papier); color:var(--gris2);
-  font-family:var(--mno); font-size:9.5px; font-weight:500;
-  letter-spacing:.2em; text-transform:uppercase; padding:9px 14px 8px;
-}
-.plaq{
-  background:var(--ink); color:var(--papier);
-  width:min(716px,100%); padding:clamp(26px,3.1vw,40px) clamp(24px,3vw,38px) clamp(28px,3.2vw,42px);
-}
-.plaq .eti{color:var(--acc-c); margin-bottom:clamp(16px,1.8vw,22px)}
-.h1{
-  font-family:var(--aff); font-weight:800; text-transform:lowercase;
-  font-size:clamp(44px,8.4vw,122px); line-height:.92; letter-spacing:-.035em;
-  margin-bottom:clamp(18px,2vw,26px);
-}
-.plaq .txp{color:var(--clair); max-width:38em}
-.plaq__ct{display:flex; align-items:center; flex-wrap:wrap; gap:18px clamp(18px,2.4vw,32px); margin-top:clamp(22px,2.4vw,30px)}
-.plaq__tel{font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.17em; text-transform:uppercase; color:var(--clair); line-height:1.6}
-.plaq__tel b{display:block; color:var(--papier); font-size:15px; letter-spacing:.05em; margin-top:5px; text-transform:none}
-
-/* le bandeau d'affichage — quatre cases */
-.bdo{background:var(--ink); color:var(--papier)}
-.bdo__in{display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--trait-s)}
-.bdo__c{padding:clamp(20px,2.3vw,28px) clamp(16px,1.9vw,26px) clamp(20px,2.3vw,28px) 0; border-right:1px solid var(--trait-s)}
-.bdo__c:last-child{border-right:0; padding-right:0}
-.bdo__c + .bdo__c{padding-left:clamp(16px,1.9vw,26px)}
-.bdo .eti{color:var(--acc-c); margin-bottom:clamp(12px,1.4vw,17px); min-height:2.7em}
-.bdo .nb{font-size:clamp(34px,4.4vw,58px)}
-.bdo__v{display:flex; align-items:baseline; margin-bottom:clamp(12px,1.4vw,16px)}
-.bdo .jauge{height:12px}
-.bdo__s{margin-top:11px; font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.15em; text-transform:uppercase; color:var(--clair); line-height:1.7}
-.bdo__d b{font-family:var(--aff); font-weight:800; font-size:clamp(19px,1.9vw,25px); letter-spacing:-.025em; display:block; line-height:1.1; text-transform:lowercase}
-.bdo__d .h{font-family:var(--mno); font-size:12px; letter-spacing:.1em; color:var(--acc-c); display:block; margin-top:9px}
-
-/* ── manifeste ────────────────────────────────────────────── */
-.man{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:clamp(30px,5vw,74px); align-items:start}
-.man__t{font-family:var(--aff); font-weight:800; text-transform:lowercase; font-size:clamp(27px,3.3vw,42px); line-height:1.04; letter-spacing:-.032em}
-.chif{display:grid; grid-template-columns:repeat(4,1fr); margin-top:clamp(52px,6.4vw,88px); border-top:1px solid var(--trait)}
-.chif div{padding:clamp(24px,2.8vw,34px) 20px clamp(4px,1vw,10px) 0; border-right:1px solid var(--trait)}
-.chif div:last-child{border-right:0}
-.chif .n{font-family:var(--aff); font-weight:800; font-size:clamp(40px,5.6vw,72px); line-height:.86; color:var(--acc); letter-spacing:-.045em}
-.chif .l{margin-top:15px; font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--gris2); line-height:1.6}
-
-/* ── en-tête de section ───────────────────────────────────── */
-.enT{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.82fr); gap:clamp(22px,4vw,64px); align-items:end; margin-bottom:clamp(38px,4.6vw,62px)}
-.enT .eti{margin-bottom:18px}
-.enT .tx{padding-bottom:3px}
-
-/* ── LE TABLEAU DES DÉLAIS ────────────────────────────────── */
-.dtete{
-  display:grid; grid-template-columns:74px minmax(0,1.3fr) 104px minmax(140px,1fr) 138px;
-  gap:0 clamp(12px,1.9vw,26px); padding-bottom:11px; border-bottom:1px solid var(--trait-s);
-  font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.17em;
-  text-transform:uppercase; color:var(--clair);
-}
-.del > li{
-  display:grid; grid-template-columns:74px minmax(0,1.3fr) 104px minmax(140px,1fr) 138px;
-  gap:0 clamp(12px,1.9vw,26px); align-items:center;
-  padding:clamp(20px,2.2vw,27px) 0; border-bottom:1px solid var(--trait-s);
-}
-.del .c{font-family:var(--mno); font-size:10.5px; font-weight:500; letter-spacing:.13em; color:var(--acc-c)}
-.del h3{font-size:16px; font-weight:600; line-height:1.3; letter-spacing:-.005em}
-.del .q{margin-top:6px; font-size:13.5px; line-height:1.5; color:var(--clair); max-width:36em}
-.del .v{display:flex; align-items:baseline}
-.del .v .nb{font-size:clamp(30px,3.4vw,44px)}
-.del .v .un{margin-left:7px; font-size:9.5px}
-.del .d{font-family:var(--mno); font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--papier); line-height:1.5; text-align:right}
-.del .d span{display:block; margin-top:6px; color:var(--clair); letter-spacing:.14em}
-.datt{
-  display:grid; grid-template-columns:repeat(3,1fr); gap:0;
-  margin-top:clamp(44px,5vw,68px); border-top:1px solid var(--trait-s);
-}
-.datt > div{padding:clamp(24px,2.8vw,34px) clamp(18px,2.2vw,30px) 0 0; border-right:1px solid var(--trait-s)}
-.datt > div:last-child{border-right:0; padding-right:0}
-.datt > div + div{padding-left:clamp(18px,2.2vw,30px)}
-.datt .eti{margin-bottom:16px}
-.datt .v{display:flex; align-items:baseline; margin-bottom:15px}
-.datt .nb{font-size:clamp(34px,4.2vw,54px)}
-.datt p.x{margin-top:14px; font-size:14px; line-height:1.6; color:var(--clair); max-width:30em}
-
-/* ── deux photographies ───────────────────────────────────── */
-.duo{display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(14px,1.9vw,26px)}
-.duo figure{margin:0}
-.duo img{width:100%; height:clamp(260px,31vw,420px); object-fit:cover}
-.cap{margin-top:12px; font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.17em; text-transform:uppercase; color:var(--gris2); line-height:1.7}
-.f-s .cap{color:var(--clair)}
-
-/* ── sans rendez-vous ─────────────────────────────────────── */
-.srv{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.02fr); gap:clamp(30px,4.6vw,72px); align-items:start; margin-bottom:clamp(44px,5.2vw,72px)}
-.marche{border-top:1px solid var(--trait)}
-.marche li{display:grid; grid-template-columns:46px minmax(0,1fr); gap:0 clamp(14px,1.8vw,24px); padding:clamp(17px,1.9vw,23px) 0; border-bottom:1px solid var(--trait); align-items:baseline}
-.marche .n{font-family:var(--mno); font-size:10.5px; font-weight:500; letter-spacing:.13em; color:var(--acc)}
-.marche h3{font-size:15.5px; font-weight:600; line-height:1.35; margin-bottom:6px}
-.marche p{font-size:14px; line-height:1.6; color:var(--gris); max-width:44em}
-.pan{border:1px solid var(--trait); padding:clamp(22px,2.5vw,30px)}
-.pan .eti{margin-bottom:16px}
-.pan .v{display:flex; align-items:baseline; margin-bottom:16px}
-.pan .nb{font-size:clamp(40px,5.2vw,66px)}
-.pan .x{margin-top:15px; font-size:14px; line-height:1.6; color:var(--gris)}
-.nfp{margin-top:15px; border-top:1px solid var(--trait)}
-.nfp li{
-  display:flex; gap:16px; align-items:baseline;
-  padding:12px 0; border-bottom:1px solid var(--trait);
-  font-size:14.5px; line-height:1.4; color:var(--gris);
-}
-.nfp li span{font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.13em; color:var(--acc)}
-
-/* ── bande photographique ─────────────────────────────────── */
-.bande{position:relative; min-height:clamp(400px,48vw,600px); display:flex; align-items:flex-end; background:#cfd2d3}
-.bande > img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 58%}
-.bande > .env{position:relative; padding-bottom:0}
-.bande__pl{background:var(--ink); color:var(--papier); width:min(880px,100%); padding:clamp(26px,3vw,40px) clamp(24px,3vw,40px) clamp(28px,3.2vw,42px)}
-.bande__pl .eti{color:var(--acc-c); margin-bottom:16px}
-.bande__ph{font-family:var(--aff); font-weight:800; text-transform:lowercase; font-size:clamp(21px,2.7vw,36px); line-height:1.08; letter-spacing:-.03em}
-
-/* ── urgence ──────────────────────────────────────────────── */
-.urg{display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--trait-s)}
-.urg li{padding:clamp(22px,2.5vw,32px) clamp(18px,2.2vw,32px) clamp(24px,2.8vw,36px) 0; border-bottom:1px solid var(--trait-s); border-right:1px solid var(--trait-s)}
-.urg li:nth-child(3n){border-right:0; padding-right:0}
-.urg li + li{padding-left:clamp(18px,2.2vw,32px)}
-.urg li:nth-child(3n+1){padding-left:0}
-.urg .n{font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.2em; color:var(--acc-c); display:block; margin-bottom:15px}
-.urg h3{font-family:var(--aff); font-weight:800; font-size:clamp(18px,1.85vw,23px); line-height:1.1; text-transform:lowercase; letter-spacing:-.028em; margin-bottom:11px}
-.urg p{font-size:14px; line-height:1.6; color:var(--clair)}
-.app{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.25fr); gap:clamp(28px,4.4vw,68px); align-items:center; margin-top:clamp(46px,5.4vw,76px)}
-.app .nu{font-family:var(--aff); font-weight:800; font-size:clamp(64px,10.4vw,148px); line-height:.82; letter-spacing:-.05em; color:var(--acc-c)}
-.app .nu span{display:block; margin-top:20px; font-family:var(--mno); font-size:10.5px; font-weight:500; letter-spacing:.19em; text-transform:uppercase; color:var(--clair); line-height:1.8}
-.zero{border:1px solid var(--trait-s); padding:clamp(22px,2.5vw,30px); margin-top:clamp(30px,3.4vw,42px)}
-.zero .v{display:flex; align-items:baseline; margin-bottom:15px}
-.zero .nb{font-size:clamp(40px,5vw,64px)}
-
-/* ── qui fait quoi ────────────────────────────────────────── */
-.eqi{display:grid; grid-template-columns:repeat(2,1fr); border-top:1px solid var(--trait)}
-.eqi > li{padding:clamp(24px,2.7vw,34px) clamp(20px,2.4vw,34px) clamp(26px,3vw,38px) 0; border-bottom:1px solid var(--trait); border-right:1px solid var(--trait)}
-.eqi > li:nth-child(2n){border-right:0; padding-right:0; padding-left:clamp(20px,2.4vw,34px)}
-.eqi .c{font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.19em; color:var(--acc); display:block; margin-bottom:15px}
-.eqi h3{font-family:var(--aff); font-weight:800; font-size:clamp(21px,2.15vw,27px); line-height:1.06; text-transform:lowercase; letter-spacing:-.03em; margin-bottom:6px}
-.eqi .r{font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--gris2); margin-bottom:16px; line-height:1.7}
-.eqi dl{display:grid; grid-template-columns:auto minmax(0,1fr); gap:9px 14px; align-items:baseline}
-.eqi dt{font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--acc); white-space:nowrap; padding-top:2px}
-.eqi dt.no{color:var(--gris2)}
-.eqi dd{font-size:14px; line-height:1.58; color:var(--gris)}
-.pied2{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,4.4vw,64px); align-items:center; margin-top:clamp(46px,5.4vw,76px)}
-.pied2 img{width:100%; height:clamp(260px,29vw,390px); object-fit:cover}
-.pied2 figure{margin:0}
-
-/* ── services ─────────────────────────────────────────────── */
-.svc{border-top:1px solid var(--trait)}
-.svc > li{
-  display:grid; grid-template-columns:76px minmax(0,1fr) 128px 118px;
-  gap:0 clamp(14px,2vw,28px); align-items:baseline;
-  padding:clamp(19px,2.1vw,26px) 0; border-bottom:1px solid var(--trait);
-}
-.svc .c{font-family:var(--mno); font-size:10.5px; font-weight:500; letter-spacing:.13em; color:var(--acc)}
-.svc h3{font-size:16px; font-weight:600; line-height:1.3}
-.svc .q{margin-top:6px; font-size:13.5px; line-height:1.55; color:var(--gris); max-width:44em}
-.svc .du{font-family:var(--mno); font-size:11px; font-weight:500; letter-spacing:.13em; text-transform:uppercase; color:var(--gris2)}
-.svc .pr{text-align:right; font-family:var(--aff); font-weight:800; font-size:clamp(21px,2.2vw,28px); letter-spacing:-.035em; color:var(--acc); line-height:1}
-
-/* ── la visite ────────────────────────────────────────────── */
-.vis{display:grid; grid-template-columns:minmax(0,1.12fr) minmax(0,1fr); gap:clamp(28px,4.4vw,66px); align-items:start; margin-bottom:clamp(42px,5vw,70px)}
-.vis figure{margin:0}
-.vis img{width:100%; height:clamp(280px,33vw,440px); object-fit:cover}
-.apo{display:grid; grid-template-columns:repeat(2,1fr); gap:0 clamp(26px,4vw,60px); border-top:1px solid var(--trait)}
-.apo > div{display:grid; grid-template-columns:28px minmax(0,1fr); gap:0 14px; padding:clamp(16px,1.8vw,21px) 0; border-bottom:1px solid var(--trait); align-items:baseline}
-.apo .n{font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.13em; color:var(--acc)}
-.apo h3{font-size:15px; font-weight:600; line-height:1.35; margin-bottom:5px}
-.apo p{font-size:13.5px; line-height:1.55; color:var(--gris)}
-
-/* ── résultats ────────────────────────────────────────────── */
-.res{display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(20px,2.6vw,36px); margin-bottom:clamp(42px,5vw,70px)}
-.res > div{border:1px solid var(--trait-s); padding:clamp(24px,2.8vw,34px)}
-.res .eti{margin-bottom:17px; min-height:2.7em}
-.res .v{display:flex; align-items:baseline; margin-bottom:16px}
-.res .nb{font-size:clamp(38px,4.8vw,62px)}
-.res .x{margin-top:15px; font-size:14px; line-height:1.62; color:var(--clair)}
-.rgl{display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--trait-s)}
-.rgl li{padding:clamp(24px,2.8vw,34px) clamp(18px,2.2vw,32px) 0 0; border-right:1px solid var(--trait-s)}
-.rgl li:last-child{border-right:0; padding-right:0}
-.rgl li + li{padding-left:clamp(18px,2.2vw,32px)}
-.rgl h3{font-family:var(--aff); font-weight:800; font-size:clamp(19px,1.95vw,24px); line-height:1.1; text-transform:lowercase; letter-spacing:-.03em; margin-bottom:12px}
-.rgl p{font-size:14px; line-height:1.62; color:var(--clair)}
-
-/* ── ce qu'on ne vend pas ─────────────────────────────────── */
-.vnd{border-top:1px solid var(--trait)}
-.vnd > li{display:grid; grid-template-columns:100px minmax(0,1fr); gap:0 clamp(16px,2.4vw,38px); padding:clamp(22px,2.5vw,32px) 0; border-bottom:1px solid var(--trait); align-items:baseline}
-.vnd .n{font-family:var(--mno); font-size:10.5px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--acc)}
-.vnd h3{font-family:var(--aff); font-weight:800; font-size:clamp(21px,2.3vw,30px); line-height:1.06; text-transform:lowercase; letter-spacing:-.032em; margin-bottom:10px}
-.vnd p{font-size:14.5px; line-height:1.64; color:var(--gris); max-width:52em}
-
-/* ── questions ────────────────────────────────────────────── */
-.faq{display:grid; grid-template-columns:repeat(2,1fr); gap:0 clamp(28px,4.4vw,68px); border-top:1px solid var(--trait)}
-.faq > div{padding:clamp(22px,2.5vw,30px) 0; border-bottom:1px solid var(--trait)}
-.faq h3{font-family:var(--aff); font-weight:800; font-size:clamp(17px,1.72vw,22px); line-height:1.14; text-transform:lowercase; letter-spacing:-.028em; margin-bottom:11px}
-.faq p{font-size:14px; line-height:1.62; color:var(--gris)}
-.faq p + p{margin-top:.9em}
-
-/* ── prise de rendez-vous ─────────────────────────────────── */
-/* le bandeau d'affichage, sixième et dernière apparition */
-.rbar{
-  display:grid; grid-template-columns:repeat(4,1fr);
-  border-top:1px solid var(--trait); border-bottom:1px solid var(--trait);
-  margin-bottom:clamp(28px,3.2vw,42px);
-}
-.rbar > div{padding:clamp(24px,2.8vw,34px) clamp(18px,2.2vw,30px) clamp(26px,3vw,36px) 0; border-right:1px solid var(--trait)}
-.rbar > div:last-child{border-right:0; padding-right:0}
-.rbar > div + div{padding-left:clamp(18px,2.2vw,30px)}
-.rbar .eti{margin-bottom:clamp(13px,1.5vw,18px); min-height:2.7em}
-.rbar .v{display:flex; align-items:baseline; margin-bottom:15px}
-.rbar .nb{font-size:clamp(34px,4.2vw,54px)}
-.rbar .w{margin-top:13px; font-size:14px; line-height:1.55; color:var(--gris)}
-.rbar .w b{font-weight:600; color:var(--encre)}
-.rbar .w.gr{font-family:var(--aff); font-weight:800; font-size:clamp(19px,1.9vw,24px); letter-spacing:-.03em; color:var(--acc); line-height:1.1}
-.form{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(16px,2vw,24px) clamp(18px,2.4vw,30px)}
-.ch--m{grid-column:span 2}
-.ch{display:flex; flex-direction:column; gap:9px}
-.ch--l{grid-column:1 / -1}
-.ch > label{font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.19em; text-transform:uppercase; color:var(--acc)}
-.ch input,.ch select,.ch textarea{
-  background:transparent; border:1px solid var(--trait); border-radius:0;
-  padding:13px 14px; font-family:var(--txt); font-size:15px; color:var(--encre); width:100%;
-}
-.ch textarea{min-height:104px; resize:vertical}
-.ch input::placeholder,.ch textarea::placeholder{color:#8b939a}
-.ch input:focus,.ch select:focus,.ch textarea:focus{border-color:var(--acc)}
-.ch--case{grid-column:3; flex-direction:row; align-items:flex-start; gap:12px; align-self:end; padding-bottom:5px}
-.ch--case input{width:16px; height:16px; flex:0 0 auto; margin-top:3px; accent-color:var(--acc)}
-.ch--case label{font-family:var(--txt); font-size:14px; letter-spacing:0; text-transform:none; color:var(--gris)}
-.piedf{grid-column:1 / -1; display:flex; flex-wrap:wrap; align-items:center; gap:20px 30px; margin-top:4px}
-.piedf .m{font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--gris2); line-height:1.8; max-width:30em}
-/* le seul encadré d'encre pleine de la page : c'est l'avertissement.
-   L'accent ne sert qu'au bouton, aux micro-libellés et aux chiffres. */
-.avis{
-  border:1px solid var(--encre); padding:clamp(18px,2vw,24px);
-  margin-bottom:clamp(24px,2.8vw,34px);
-  display:grid; grid-template-columns:minmax(0,210px) minmax(0,1fr); gap:14px clamp(20px,2.6vw,34px); align-items:start;
-}
-.avis p{font-size:14px; line-height:1.6; color:var(--gris); max-width:74em}
-.avis .eti{padding-top:3px}
-
-/* ── pied ─────────────────────────────────────────────────── */
-.pied{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:clamp(26px,3.4vw,48px)}
-.pied h4{font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.21em; text-transform:uppercase; color:var(--acc-c); margin-bottom:16px}
-.pied p,.pied li{font-size:14px; line-height:1.72; color:var(--clair)}
-.pied a{text-decoration:none; border-bottom:1px solid var(--trait-s)}
-.pied a:hover{color:var(--acc-c); border-color:var(--acc-c)}
-.pied__mq b{display:block; font-family:var(--aff); font-weight:800; font-size:26px; text-transform:lowercase; color:var(--papier); letter-spacing:-.035em}
-.pied__mq span{display:block; margin-top:8px; font-family:var(--mno); font-size:9.5px; font-weight:500; letter-spacing:.23em; text-transform:uppercase; color:var(--acc-c)}
-.bas{margin-top:clamp(44px,5vw,70px); padding-top:24px; border-top:1px solid var(--trait-s)}
-.demo{
-  display:inline-block; margin-top:18px;
-  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.18em;
-  text-transform:uppercase; color:var(--papier); border:1px solid var(--acc-c); padding:8px 13px 7px;
+@supports not (animation-timeline: view()){
+  .rv,.rv-t{animation:none;opacity:1;transform:none;clip-path:none}
+  .cadre img{animation:none;transform:translateY(-6%)}
+  .arc{animation:none}
 }
 
-/* ── largeurs ─────────────────────────────────────────────── */
+/* ── boutons et liens : rayon 999, soulèvement de 2 px ─────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  border-radius:999px;padding:17px 30px;border:2px solid transparent;
+  font:800 15.5px/1 var(--txt);letter-spacing:.005em;cursor:pointer;
+  transition:transform .24s var(--e),box-shadow .24s var(--e),
+    background-color .24s var(--e),color .24s var(--e),border-color .24s var(--e)}
+.btn--p{background:var(--bleu);color:var(--blanc);box-shadow:var(--om)}
+.btn--p:hover,.btn--p:focus-visible{background:var(--bleu-f);transform:translateY(-2px);box-shadow:var(--om-h)}
+.btn--p:active{transform:translateY(0);box-shadow:0 1px 3px rgba(27,79,122,.22)}
+.btn--s{background:var(--blanc);color:var(--bleu);border-color:var(--bord);box-shadow:var(--om-b)}
+.btn--s:hover,.btn--s:focus-visible{border-color:var(--bleu);transform:translateY(-2px);box-shadow:var(--om)}
+.btn--s:active{transform:translateY(0);box-shadow:none}
+.btn--pt{padding:12px 22px;font-size:14px}
+
+.lien{display:inline-block;border-radius:999px;padding:2px 8px;margin:0 -8px;
+  font-weight:800;color:var(--bleu);
+  box-shadow:inset 0 -2px 0 rgba(27,79,122,.34);
+  transition:background-color .24s var(--e),color .24s var(--e),box-shadow .24s var(--e)}
+.lien:hover,.lien:focus-visible{background:var(--bleu);color:var(--blanc);box-shadow:none}
+.lien:active{transform:translateY(1px)}
+
+/* ── la bande de démonstration, puis l'entête ──────────────────── */
+.bandeau{background:var(--bleu);color:var(--blanc);
+  font:800 12px/1.4 var(--txt);letter-spacing:.1em;text-transform:uppercase;
+  padding:11px 16px;text-align:center}
+.tete{background:var(--blanc);box-shadow:0 1px 0 var(--bord)}
+.tete-i{display:flex;align-items:center;gap:12px clamp(14px,2.4vw,30px);
+  padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.marque{display:inline-flex;align-items:center;gap:12px;border-radius:999px;
+  padding:6px 16px 6px 6px;margin-left:-6px;
+  font:800 clamp(17px,1.5vw,20px)/1 var(--aff);letter-spacing:-.02em;color:var(--encre);
+  transition:background-color .24s var(--e),transform .24s var(--e)}
+.marque:hover,.marque:focus-visible{background:var(--glacier)}
+.marque:hover .past{transform:scale(1.06);box-shadow:var(--om)}
+.marque:active{transform:translateY(1px)}
+.marque .past{--pw:40px;--pf:15px}
+.nav{display:flex;gap:4px clamp(2px,.8vw,10px);margin-left:auto;flex-wrap:wrap}
+.nav a{display:inline-block;border-radius:999px;padding:10px 16px;
+  font:800 14px/1 var(--txt);color:var(--doux);
+  transition:background-color .24s var(--e),color .24s var(--e),transform .24s var(--e)}
+.nav a:hover,.nav a:focus-visible{background:var(--glacier);color:var(--bleu)}
+.nav a:active{transform:translateY(1px)}
+
+/* ── LE HÉROS ──────────────────────────────────────────────────── */
+.heros{background:var(--glacier);padding:clamp(36px,4.6vw,68px) 0 clamp(52px,6vw,96px)}
+.heros h1{max-width:16ch}
+.heros h1 em{font-style:normal;display:inline-block;border-radius:999px;
+  background:var(--menthe);color:var(--encre);padding:0 .3em .05em;margin:0 -.06em}
+.heros-b{display:flex;align-items:flex-end;justify-content:space-between;
+  gap:22px clamp(26px,4vw,64px);flex-wrap:wrap;margin-top:clamp(24px,2.8vw,40px)}
+.actes{display:flex;align-items:center;gap:12px clamp(12px,1.4vw,18px);flex-wrap:wrap}
+.heros-l{margin-top:clamp(16px,1.8vw,24px);display:flex;gap:6px 24px;flex-wrap:wrap;
+  color:var(--doux);font-size:14.5px}
+.cadre--h{margin-top:clamp(28px,3.2vw,48px);height:clamp(230px,32vw,450px)}
+
+/* ── LES ANNEAUX — le geste qui se reconnaît ───────────────────── */
+/* `view()` mesure la boîte de l'élément QU'ELLE ANIME. Un cercle
+   SVG a une boîte que personne ne regarde : la piste est donc
+   déclarée sur la GRILLE — la géométrie que le visiteur voit — et
+   les arcs s'y accrochent par son nom. */
+.anneaux{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(16px,2vw,28px);margin-top:clamp(30px,3.4vw,48px);
+  view-timeline:--rings block}
+.carte{border-radius:var(--r);padding:clamp(22px,2.4vw,34px);background:var(--blanc);box-shadow:var(--om)}
+.sec--blanc .carte{background:var(--glacier);box-shadow:var(--om-b)}
+.sec--bleu .carte{background:rgba(255,255,255,.09);box-shadow:none}
+.jauge{display:flex;flex-direction:column;align-items:flex-start}
+.anneau{position:relative;width:clamp(104px,10vw,132px);aspect-ratio:1;flex:none;
+  margin-bottom:clamp(16px,1.8vw,24px)}
+.anneau svg{display:block;width:100%;height:100%;transform:rotate(-90deg)}
+.piste{fill:none;stroke:var(--bord);stroke-width:9}
+.sec--bleu .piste{stroke:rgba(255,255,255,.22)}
+/* `--off` est écrit en clair sur chaque arc, JAMAIS calculé.
+   Mesuré : avec `--off:calc(100 - var(--p)*100)`, Chromium ne sait
+   pas interpoler entre `100` et un `calc()` non résolu — il retombe
+   en interpolation DISCRÈTE et l'anneau saute d'un coup de vide à
+   plein à 6 % de sa plage. La sonde du DOM le dit, pas l'image :
+   le trait final est le bon dans les deux cas. */
+.arc{fill:none;stroke:var(--bleu);stroke-width:9;stroke-linecap:round;
+  stroke-dasharray:100;stroke-dashoffset:var(--off,100);
+  /* une courbe plus étalée que celle de la maison : avec
+     (.22,1,.36,1) l'anneau était plein après 16 % de sa plage —
+     120 px de défilement, et personne ne le voyait se dessiner. */
+  animation:tracer cubic-bezier(.35,.62,.4,1) forwards;
+  animation-timeline:--rings;animation-range:entry 0% cover 28%}
+.arc--m{stroke:var(--menthe)}
+.anneau-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font:800 clamp(28px,2.9vw,38px)/1 var(--aff);letter-spacing:-.04em}
+.anneau-n small{font-size:.42em;margin-left:.14em;letter-spacing:-.01em}
+.jauge h3{margin-bottom:8px}
+.jauge p{color:var(--doux);font-size:15px;line-height:1.55}
+.sec--bleu .jauge p{color:var(--pale)}
+
+/* ── la bande photographique pleine largeur ────────────────────── */
+.bande{padding:0 clamp(18px,4vw,40px);background:var(--blanc)}
+.bande .cadre{max-width:1560px;margin:0 auto;height:clamp(220px,34vw,520px)}
+
+/* ── deux colonnes, une pour le texte, une pour l'image ────────── */
+.duo{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
+  gap:clamp(26px,3.4vw,56px);align-items:start;margin-top:clamp(30px,3.6vw,50px)}
+.duo--inv{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
+.col-ph{display:grid;gap:clamp(16px,1.8vw,24px);min-width:0}
+.col-ph .cadre{height:clamp(230px,26vw,380px)}
+
+/* ── les étapes en pastilles ───────────────────────────────────── */
+.pas{display:grid;gap:clamp(12px,1.4vw,18px)}
+.pas li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px clamp(14px,1.6vw,22px);
+  align-items:start;border-radius:var(--r);padding:clamp(18px,1.9vw,26px);
+  background:var(--blanc);box-shadow:var(--om-b);
+  transition:box-shadow .26s var(--e),transform .26s var(--e)}
+.sec--blanc .pas li{background:var(--glacier);box-shadow:none}
+.pas li:hover{transform:translateY(-2px);box-shadow:var(--om)}
+.pas li:hover .past{transform:scale(1.06);box-shadow:var(--om)}
+.pas h3{margin-bottom:6px}
+.pas p{color:var(--doux);font-size:15.5px;line-height:1.6}
+
+/* ── la rangée de pilules ──────────────────────────────────────── */
+.pilules{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(18px,2vw,26px)}
+.pilules li{border-radius:999px;padding:11px 20px;background:var(--blanc);
+  box-shadow:var(--om-b);font-weight:800;font-size:14.5px;color:var(--bleu)}
+
+/* ── les heures, en lignes ─────────────────────────────────────── */
+.h{display:flex;justify-content:space-between;gap:12px;
+  font:400 15px/1.6 var(--txt);border-bottom:1px solid var(--bord);padding:7px 0}
+.h:last-child{border-bottom:0}
+
+/* ── L'ÉQUIPE — les pastilles grandissent au survol ────────────── */
+.equipe{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(14px,1.7vw,24px);margin-top:clamp(30px,3.6vw,50px)}
+.membre{border-radius:var(--r);padding:clamp(20px,2vw,28px);background:var(--glacier);
+  transition:transform .28s var(--e),box-shadow .28s var(--e),background-color .28s var(--e)}
+.membre:hover{transform:translateY(-4px);background:var(--blanc);box-shadow:var(--om-h)}
+.membre:hover .past{transform:scale(1.06);box-shadow:var(--om)}
+.membre .past{--pw:56px;--pf:19px;margin-bottom:clamp(14px,1.5vw,20px)}
+.membre h3{margin-bottom:2px}
+.membre .role{color:var(--doux);font-size:13.5px;font-weight:800;
+  letter-spacing:.02em;margin-bottom:14px}
+.membre dt{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--bleu);margin-bottom:3px}
+.membre dd{font-size:14.5px;line-height:1.5;color:var(--doux)}
+.membre dd+dt{margin-top:12px}
+.membre dt.non{color:var(--doux)}
+
+/* ── le bloc bleu ──────────────────────────────────────────────── */
+.points{display:grid;gap:clamp(12px,1.4vw,18px);margin-top:0}
+.points li{border-radius:var(--r);padding:clamp(20px,2.1vw,30px);
+  background:rgba(255,255,255,.09)}
+/* Blanc, pas menthe : la menthe sur le fond d'une carte du bloc
+   bleu ne vaut que 3,2:1, et un titre de 18 px gras n'est PAS du
+   « grand texte » au sens de la règle (il faut 18,66 px). La menthe
+   reste ce qu'elle est ici — un trait, pas un texte. */
+.points h3{margin-bottom:6px;color:var(--blanc)}
+.points p{color:var(--pale);font-size:15.5px;line-height:1.6}
+
+/* ── LA VISITE — deux photographies, grandes ───────────────────── */
+.paire{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(18px,2.2vw,32px);margin-top:clamp(30px,3.6vw,50px)}
+.paire .cadre{aspect-ratio:3/2}
+/* Les deux vues de la salle 4 portent une chaise terre cuite très
+   saturée, la seule tache chaude d'une page qui n'a pas d'orange :
+   ces deux-là seulement descendent à .84 de saturation. Le reste du
+   traitement — hautes lumières relevées — ne change pas. */
+.paire .cadre img{filter:brightness(1.07) saturate(.84) contrast(.96)}
+figcaption{margin-top:14px;color:var(--doux);font-size:14.5px;line-height:1.5}
+.sec--bleu figcaption{color:var(--pale)}
+.apporter{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:clamp(14px,1.6vw,22px);margin-top:clamp(20px,2.4vw,32px)}
+.apporter li{border-radius:var(--r);padding:clamp(18px,1.9vw,26px);
+  background:var(--blanc);box-shadow:var(--om-b);
+  transition:transform .26s var(--e),box-shadow .26s var(--e)}
+.apporter li:hover{transform:translateY(-3px);box-shadow:var(--om)}
+.apporter li:hover .past{transform:scale(1.06)}
+.apporter .past{--pw:40px;--pf:15px;margin-bottom:14px}
+.apporter h3{font-size:16px;margin-bottom:6px}
+.apporter p{color:var(--doux);font-size:14.5px;line-height:1.5}
+
+/* ── L'URGENCE — le seul rouge de la page ──────────────────────── */
+.urg{border-radius:var(--r);background:var(--blanc);box-shadow:var(--om);
+  padding:clamp(24px,3.2vw,52px);margin-top:clamp(30px,3.4vw,48px);
+  border-top:6px solid var(--rouge)}
+.signes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(18px,2.2vw,32px) clamp(20px,2.6vw,44px);margin-top:clamp(24px,2.8vw,38px)}
+.signes li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
+.signes .past{--pw:38px;--pf:14px}
+.signes h3{font-size:16.5px;margin-bottom:4px}
+.signes p{color:var(--doux);font-size:14.5px;line-height:1.5}
+.secours{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,1.6vw,22px);margin-top:clamp(26px,3vw,42px)}
+.secours li{border-radius:var(--r);padding:clamp(18px,1.9vw,26px);background:var(--glacier)}
+.secours li:first-child{background:var(--rouge);color:var(--blanc)}
+.secours b{display:block;font:800 clamp(26px,2.6vw,36px)/1 var(--aff);letter-spacing:-.02em;
+  margin-bottom:8px}
+.secours p{font-size:14.5px;line-height:1.5;color:var(--doux)}
+.secours li:first-child p{color:#fbe6e4}
+
+/* ══ LE PARCOURS EN TROIS ÉTAPES — `:checked`, sans script ═══════ */
+.parc{margin-top:clamp(30px,3.6vw,50px)}
+.parc>input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.parc-o{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:clamp(18px,2vw,26px)}
+.parc-o label{display:inline-flex;align-items:center;gap:12px;border-radius:999px;
+  padding:10px 22px 10px 10px;background:var(--glacier);color:var(--doux);cursor:pointer;
+  font:800 15px/1 var(--txt);
+  transition:background-color .26s var(--e),color .26s var(--e),
+    box-shadow .26s var(--e),transform .26s var(--e)}
+.parc-o label .past{--pw:34px;--pf:14px;background:var(--blanc);color:var(--doux)}
+.parc-o label:hover{transform:translateY(-2px);box-shadow:var(--om-b)}
+.parc-o label:active{transform:translateY(0)}
+#pe1:checked~.parc-o label[for="pe1"],
+#pe2:checked~.parc-o label[for="pe2"],
+#pe3:checked~.parc-o label[for="pe3"]{background:var(--bleu);color:var(--blanc);box-shadow:var(--om)}
+#pe1:checked~.parc-o label[for="pe1"] .past,
+#pe2:checked~.parc-o label[for="pe2"] .past,
+#pe3:checked~.parc-o label[for="pe3"] .past{background:var(--menthe);color:var(--encre)}
+#pe1:focus-visible~.parc-o label[for="pe1"],
+#pe2:focus-visible~.parc-o label[for="pe2"],
+#pe3:focus-visible~.parc-o label[for="pe3"]{outline:3px solid var(--bleu);outline-offset:3px}
+/* `overflow:clip`, pas `hidden` : `hidden` ferait de la fenêtre un
+   conteneur de défilement, et un panneau caché pourrait s'y faire
+   défiler au clavier. `clip` respecte le rayon et ne défile jamais. */
+.parc-f{border-radius:var(--r);overflow:clip;background:var(--glacier)}
+.parc-r{display:flex;transition:transform .32s var(--e)}
+#pe2:checked~.parc-f .parc-r{transform:translateX(-100%)}
+#pe3:checked~.parc-f .parc-r{transform:translateX(-200%)}
+.parc-r>div{flex:0 0 100%;padding:clamp(24px,3vw,46px);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);
+  gap:clamp(16px,2.6vw,44px);align-items:start}
+.parc-r h3{font-size:clamp(20px,2vw,28px)}
+.parc-r p{color:var(--doux);font-size:16px}
+.parc-l{margin-top:clamp(16px,1.8vw,24px);color:var(--doux);font-size:14px}
+
+/* ── joindre ───────────────────────────────────────────────────── */
+.joindre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,1.7vw,24px);margin-top:clamp(30px,3.6vw,50px)}
+.joindre dt{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--bleu);margin-bottom:12px}
+.joindre dd{font:800 clamp(19px,1.7vw,24px)/1.2 var(--aff);letter-spacing:-.02em}
+/* `.sous`, PAS `.joindre dd span` : les lignes d'heures sont
+   elles aussi des `span` dans un `dd`, et le sélecteur large leur
+   posait un `display:block` et une marge de 12 px — les heures
+   partaient 12 px plus haut que leur libellé. */
+.joindre dd .sous{display:block;font:400 15px/1.55 var(--txt);color:var(--doux);margin-top:12px}
+.fin{display:flex;align-items:center;gap:14px clamp(16px,2vw,28px);flex-wrap:wrap;
+  margin-top:clamp(28px,3.2vw,44px)}
+
+/* ── pied ──────────────────────────────────────────────────────── */
+.pied{background:var(--bleu);color:var(--blanc);padding:clamp(52px,6vw,96px) 0 clamp(28px,3vw,44px)}
+.pied-h{display:flex;justify-content:space-between;align-items:center;
+  gap:20px clamp(26px,4vw,60px);flex-wrap:wrap}
+.pied-n{display:inline-flex;align-items:center;gap:14px;
+  font:800 clamp(23px,2.4vw,34px)/1 var(--aff);letter-spacing:-.028em}
+.pied-m{display:flex;gap:6px clamp(4px,1vw,12px);flex-wrap:wrap}
+.pied-m a{border-radius:999px;padding:10px 16px;font:800 14px/1 var(--txt);color:var(--pale);
+  transition:background-color .24s var(--e),color .24s var(--e),transform .24s var(--e)}
+.pied-m a:hover,.pied-m a:focus-visible{background:rgba(255,255,255,.14);color:var(--blanc)}
+.pied-m a:active{transform:translateY(1px)}
+.pied-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(20px,2.6vw,40px);margin-top:clamp(32px,4vw,60px)}
+/* #a9dcc7 : la menthe éclaircie pour du texte de 12 px sur le bleu
+   plein — 5,6:1. La menthe de la charte n'y vaut que 4,1:1. */
+.pied-g dt{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:#a9dcc7;margin-bottom:12px}
+.pied-g dd{color:var(--pale);font-size:15px;line-height:1.75}
+.pied-b{margin-top:clamp(30px,3.6vw,52px);padding-top:clamp(18px,2.2vw,30px);
+  border-top:1px solid rgba(255,255,255,.2);
+  display:flex;justify-content:space-between;gap:12px 34px;flex-wrap:wrap;
+  color:var(--pale);font-size:13.5px;line-height:1.65}
+.pied-b p{max-width:78ch}
+
+/* ── largeurs ──────────────────────────────────────────────────── */
 @media (max-width:1080px){
-  .man{grid-template-columns:1fr; gap:26px}
-  .enT{grid-template-columns:1fr; gap:20px; align-items:start}
-  .srv{grid-template-columns:1fr; gap:32px}
-  .vis{grid-template-columns:1fr; gap:28px}
-  .form{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .ch--case{grid-column:1 / -1; align-self:auto; padding-bottom:0}
-  .pied2{grid-template-columns:1fr; gap:28px; align-items:start}
-  .app{grid-template-columns:1fr; gap:26px; align-items:start}
-  .pied{grid-template-columns:1fr 1fr; gap:34px}
-  .del > li,.dtete{grid-template-columns:64px minmax(0,1.2fr) 92px minmax(110px,1fr) 118px}
+  .equipe,.apporter,.signes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .duo,.duo--inv{grid-template-columns:1fr}
+  .col-ph{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .col-ph .cadre{height:clamp(200px,26vw,300px)}
+  .pied-g{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:900px){
-  .nav{display:none}
-  .bdo__in{grid-template-columns:repeat(2,1fr)}
-  .bdo__c{border-bottom:1px solid var(--trait-s)}
-  .bdo__c:nth-child(2n){border-right:0; padding-right:0}
-  .bdo__c:nth-child(2n+1){padding-left:0}
-  .bdo__c:nth-child(n+3){border-bottom:0}
-  .bdo .eti{min-height:0}
-  .urg{grid-template-columns:repeat(2,1fr)}
-  .urg li:nth-child(3n){border-right:1px solid var(--trait-s); padding-right:clamp(18px,2.2vw,32px)}
-  .urg li:nth-child(2n){border-right:0; padding-right:0}
-  .urg li{padding-left:0}
-  .urg li:nth-child(2n){padding-left:clamp(18px,2.2vw,32px)}
-  .faq{grid-template-columns:1fr}
-  .rgl{grid-template-columns:1fr}
-  .rgl li,.rgl li + li{border-right:0; padding-right:0; padding-left:0; padding-bottom:clamp(22px,3vw,30px); border-bottom:1px solid var(--trait-s)}
-  .rgl li:last-child{border-bottom:0; padding-bottom:0}
-  .datt{grid-template-columns:1fr}
-  .datt > div,.datt > div + div{border-right:0; padding-right:0; padding-left:0; padding-bottom:clamp(22px,3vw,30px); border-bottom:1px solid var(--trait-s)}
-  .datt > div:last-child{border-bottom:0; padding-bottom:0}
-  .apo{grid-template-columns:1fr}
-  .rbar{grid-template-columns:repeat(2,1fr)}
-  .rbar > div{border-bottom:1px solid var(--trait)}
-  .rbar > div:nth-child(2n){border-right:0; padding-right:0}
-  .rbar > div:nth-child(2n+1){padding-left:0}
-  .rbar > div:nth-child(n+3){border-bottom:0}
-  .rbar .eti{min-height:0}
-  .avis{grid-template-columns:1fr}
+@media (max-width:860px){
+  .anneaux{grid-template-columns:1fr}
+  .jauge{flex-direction:row;align-items:center;gap:clamp(18px,3vw,30px)}
+  .anneau{margin-bottom:0;width:clamp(88px,16vw,116px)}
+  .paire{grid-template-columns:1fr}
+  .secours{grid-template-columns:1fr}
+  .joindre{grid-template-columns:1fr}
+  .nav{width:100%;margin-left:0;order:3}
+  .nav a{padding:9px 13px;font-size:13.5px}
 }
-@media (max-width:760px){
-  /* le tableau des délais se replie : code et date sur la première
-     ligne, l'intitulé sur la deuxième, le chiffre sur la troisième */
-  .dtete{display:none}
-  .del > li{grid-template-columns:minmax(0,1fr) auto; gap:13px 16px; align-items:baseline}
-  .del .c{grid-column:1; grid-row:1}
-  .del .d{grid-column:2; grid-row:1; text-align:right}
-  .del .d span{display:inline; margin-top:0; margin-left:10px}
-  .del li > div:not(.jauge){grid-column:1 / -1; grid-row:2}
-  .del .v{grid-column:1 / -1; grid-row:3}
-  .del .j{display:none}
-  /* le héros s'empile : la photographie, puis la plaque */
-  .heros__im{display:block; padding-top:0; min-height:0}
-  .heros__im > img{position:static; width:100%; height:58vw; min-height:190px; object-position:50% 62%}
-  .heros__im > .env{padding-inline:0}
-  .plaq{width:100%; padding-inline:clamp(20px,4.4vw,56px)}
-  .chif{grid-template-columns:repeat(2,1fr)}
-  .chif div{border-bottom:1px solid var(--trait)}
-  .chif div:nth-child(2n){border-right:0; padding-right:0}
-  .chif div:nth-child(n+3){border-bottom:0}
-  .duo{grid-template-columns:1fr}
-  .eqi{grid-template-columns:1fr}
-  .eqi > li{border-right:0!important; padding-right:0!important; padding-left:0!important}
-  .svc > li{grid-template-columns:56px minmax(0,1fr) 96px; row-gap:10px}
-  .svc .pr{grid-column:3; grid-row:1; text-align:right}
-  .svc .du{grid-column:2; grid-row:2}
-  .res{grid-template-columns:1fr}
-  .vnd > li{grid-template-columns:1fr; gap:12px}
-  .form{grid-template-columns:1fr}
-  .ch--m{grid-column:span 1}
-  .pied{grid-template-columns:1fr}
-  .heros{min-height:auto}
-  .bande{min-height:0; padding-top:62vw}
+@media (max-width:620px){
+  body{font-size:15.5px}
+  .equipe,.apporter,.signes,.col-ph{grid-template-columns:1fr}
+  .col-ph .cadre{height:clamp(200px,52vw,280px)}
+  .pied-g{grid-template-columns:1fr}
+  .actes{width:100%}
+  .actes .btn{flex:1 1 auto}
+  .parc-o label{padding:9px 18px 9px 9px;font-size:14px}
 }
-@media (max-width:560px){
-  .bdo__in,.rbar{grid-template-columns:1fr}
-  .rbar > div,.rbar > div + div{border-right:0; padding-right:0; padding-left:0; border-bottom:1px solid var(--trait)}
-  .rbar > div:last-child{border-bottom:0}
-  .bdo__c,.bdo__c + .bdo__c{border-right:0; padding-right:0; padding-left:0; border-bottom:1px solid var(--trait-s)}
-  .bdo__c:last-child{border-bottom:0}
-  .urg{grid-template-columns:1fr}
-  .urg li{border-right:0!important; padding-right:0!important; padding-left:0!important}
-  .marche li{grid-template-columns:1fr; gap:8px}
-  .tete__in{flex-wrap:wrap; gap:14px}
+@media (max-width:430px){
+  .jauge{flex-direction:column;align-items:flex-start;gap:16px}
+  .anneau{width:96px}
+  .btn{padding:15px 24px;font-size:15px}
 }
-@media print{.heros{min-height:auto}}
 </style>
 </head>
 <body>
 
-<!-- ══ BARRE ══════════════════════════════════════════════ -->
+<p class="bandeau">Site de démonstration — entreprise fictive, aucun soin réel n’est offert</p>
+
 <header class="tete">
-  <div class="env tete__in">
-    <a class="marq" href="#haut"><b>clinique du riverain</b><span>Médecine familiale · Québec</span></a>
-    <nav class="nav" aria-label="Sections">
-      <a href="#delais">Délais</a>
-      <a href="#sansrdv">Sans rendez-vous</a>
+  <div class="cont tete-i">
+    <a class="marque" href="#haut"><span class="past">CR</span> Clinique du Riverain</a>
+    <nav class="nav">
+      <a href="#matin">Le matin</a>
+      <a href="#sans">Sans rendez-vous</a>
+      <a href="#equipe">L’équipe</a>
+      <a href="#visite">La visite</a>
       <a href="#urgence">Urgence</a>
-      <a href="#equipe">Qui fait quoi</a>
-      <a href="#services">Services</a>
-      <a href="#questions">Questions</a>
     </nav>
-    <a class="bt" href="#rdv">Prendre rendez-vous<span class="fl" aria-hidden="true"></span></a>
+    <a class="btn btn--p btn--pt" href="#rendez-vous">Prendre rendez-vous</a>
   </div>
 </header>
 
-<!-- ══ HÉROS ══════════════════════════════════════════════ -->
-<div class="heros" id="haut">
-  <div class="heros__im">
-    <img src="../../images/secteurs-sites/clinique-1.webp" width="1920" height="1080"
-         fetchpriority="high" decoding="async"
-         alt="Salle d’attente très claire : comptoir d’accueil à dessus de granit, deux portes de bois, six fauteuils bleu marine à accoudoirs de bois, table basse et plafond suspendu.">
-    <p class="heros__tag">Site de démonstration</p>
-    <div class="env">
-      <div class="plaq">
-        <p class="eti">Clinique médicale familiale · privée · Québec</p>
-        <h1 class="h1">on affiche<br>l’attente.</h1>
-        <p class="txp">Le délai réel de chaque type de consultation, relevé deux fois par jour. Le nombre de places qu’il reste au sans rendez-vous. Et si votre cas relève de l’urgence, on vous le dit à l’accueil — pas après quarante minutes assis.</p>
-        <div class="plaq__ct">
-          <a class="bt" href="#delais">Voir les neuf délais<span class="fl" aria-hidden="true"></span></a>
-          <p class="plaq__tel">Accueil, 7 h 30 à 17 h<b>000 000-0000</b></p>
-        </div>
-      </div>
-    </div>
-  </div>
+<main>
 
-  <!-- le tableau d'attente — première apparition -->
-  <div class="bdo">
-    <div class="env">
-      <div class="bdo__in">
-        <div class="bdo__c">
-          <p class="eti">Sans rendez-vous<br>attente sur place</p>
-          <p class="bdo__v"><span class="nb">40</span><span class="un">minutes</span></p>
-          <div class="jauge" style="--p:44%;--n:18"><i></i></div>
-          <p class="bdo__s">Un cran = 5 minutes · plafond 90</p>
-        </div>
-        <div class="bdo__c">
-          <p class="eti">Prochain rendez-vous<br>patient inscrit</p>
-          <p class="bdo__v"><span class="nb">2</span><span class="un">jours</span></p>
-          <div class="jauge" style="--p:5.9%;--n:34"><i></i></div>
-          <p class="bdo__s">Un cran = 1 jour · plafond 34</p>
-        </div>
-        <div class="bdo__c">
-          <p class="eti">Places restantes<br>au sans rendez-vous</p>
-          <p class="bdo__v"><span class="nb">8</span><span class="un">sur 22</span></p>
-          <div class="jauge" style="--p:63.6%;--n:22"><i></i></div>
-          <p class="bdo__s">Un cran = 1 place · 14 déjà prises</p>
-        </div>
-        <div class="bdo__c bdo__d">
-          <p class="eti">Dernier relevé</p>
-          <p><b>sam. 1 août 2026</b><span class="h">09:10</span></p>
-          <p class="bdo__s" style="margin-top:19px">Relevé deux fois par jour<br>7 h 40 et 13 h 00</p>
-        </div>
+<!-- ══ LE HÉROS ═════════════════════════════════════════════════ -->
+<section class="heros" id="haut">
+  <div class="cont">
+    <p class="etiq">Clinique médicale familiale · Québec</p>
+    <h1>Une heure écrite,<br>pas un <em>bientôt</em>.</h1>
+    <div class="heros-b">
+      <p class="lede">Au sans rendez-vous, on inscrit votre nom, on vérifie tout de suite si votre cas relève de l’urgence, puis on vous donne un numéro et une heure. Vous pouvez sortir en attendant&nbsp;: l’heure donnée tient.</p>
+      <div class="actes">
+        <a class="btn btn--p" href="#rendez-vous">Prendre rendez-vous</a>
+        <a class="btn btn--s" href="tel:0000000000">000 000-0000</a>
       </div>
     </div>
+    <p class="heros-l"><span>Cinq médecins, deux infirmières praticiennes, une physiothérapeute</span> <span>Sans rendez-vous du lundi au samedi, le matin</span></p>
+    <figure class="cadre cadre--h">
+      <img src="../../images/secteurs-sites/clinique-1.webp" width="1920" height="1080" fetchpriority="high" decoding="async" alt="Salle d’attente très claire : comptoir d’accueil à dessus de granit, deux portes de bois, six fauteuils bleus à accoudoirs de bois et table basse au centre.">
+    </figure>
   </div>
+</section>
+
+<!-- ══ CE MATIN — les trois anneaux ═════════════════════════════ -->
+<section class="sec sec--blanc" id="matin">
+  <div class="cont">
+    <p class="etiq rv-t">Ce matin</p>
+    <h2 class="rv-t">Relevé deux fois par jour,<br>et affiché tel quel</h2>
+    <p class="intro rv-t">On n’écrit pas «&nbsp;selon la disponibilité&nbsp;». Trois chiffres sont relevés à 7 h 40 et à 13 h, et ce sont ceux-là qu’on vous donnera au téléphone.</p>
+
+    <div class="anneaux">
+      <article class="carte jauge rv">
+        <div class="anneau">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="piste" cx="60" cy="60" r="52" pathLength="100"></circle>
+            <circle class="arc" cx="60" cy="60" r="52" pathLength="100" style="--off:64"></circle>
+          </svg>
+          <b class="anneau-n">8<small>/22</small></b>
+        </div>
+        <div>
+          <h3>Places restantes au sans rendez-vous</h3>
+          <p>Huit sur vingt-deux au relevé de 9 h 10. Quatorze sont déjà prises depuis l’ouverture.</p>
+        </div>
+      </article>
+      <article class="carte jauge rv">
+        <div class="anneau">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="piste" cx="60" cy="60" r="52" pathLength="100"></circle>
+            <circle class="arc" cx="60" cy="60" r="52" pathLength="100" style="--off:56"></circle>
+          </svg>
+          <b class="anneau-n">40<small>min</small></b>
+        </div>
+        <div>
+          <h3>Attente sur place, en ce moment</h3>
+          <p>De l’inscription au moment où on vous appelle. L’anneau est plafonné à quatre-vingt-dix minutes.</p>
+        </div>
+      </article>
+      <article class="carte jauge rv">
+        <div class="anneau">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="piste" cx="60" cy="60" r="52" pathLength="100"></circle>
+            <circle class="arc" cx="60" cy="60" r="52" pathLength="100" style="--off:38"></circle>
+          </svg>
+          <b class="anneau-n">31<small>/50</small></b>
+        </div>
+        <div>
+          <h3>Liste d’attente, première visite</h3>
+          <p>Elle ferme à cinquante. Au-delà, la réception vous le dit et n’inscrit pas votre nom.</p>
+        </div>
+      </article>
+    </div>
+
+    <p class="fine">Les délais, les places et les nombres de cette page sont inventés&nbsp;: c’est un site de démonstration. Sur une vraie clinique, ils viendraient du logiciel de rendez-vous et changeraient deux fois par jour.</p>
+  </div>
+</section>
+
+<!-- ══ LA BANDE ═════════════════════════════════════════════════ -->
+<div class="bande">
+  <figure class="cadre">
+    <img src="../../images/secteurs-sites/clinique-2.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Corridor vitré : rangée de sièges beiges le long des fenêtres, perspective fuyante et lumière de jour.">
+  </figure>
 </div>
 
-<!-- ══ CE QUE C'EST ═══════════════════════════════════════ -->
-<section class="sec f-p">
-  <div class="env">
-    <div class="man">
-      <div>
-        <p class="eti" style="margin-bottom:22px">Ce que c’est</p>
-        <h2 class="man__t">une clinique de huit professionnels qui affiche son délai, sa liste d’attente et ses tarifs, et qui ne vous vend rien d’autre que la consultation.</h2>
-        <p class="rel" style="margin-top:clamp(26px,3vw,38px)"><b>Au relevé de 9 h 10</b> · Sans rendez-vous 40 min · Prochain rendez-vous 2 jours · 8 places restantes sur 22 · Liste d’attente 31 personnes</p>
-        <p class="rel" style="margin-top:12px"><b>Ce qui n’est pas ici</b> · Ni laboratoire, ni imagerie, ni salle de réanimation, ni service de garde la nuit</p>
-      </div>
-      <div>
-        <p class="tx">Cinq médecins de famille, deux infirmières praticiennes spécialisées, une physiothérapeute. Sur rendez-vous toute la journée, sans rendez-vous le matin. Une seule adresse, un seul étage, onze salles.</p>
-        <p class="tx">Nous n’écrivons ni « bien-être », ni « prendre soin de vous », ni « votre santé nous tient à cœur ». Nous écrivons le nombre de jours avant la prochaine plage libre, le nombre de places qu’il reste ce matin, la durée de chaque consultation et son tarif. Ce sont les quatre choses qu’on nous demande au téléphone.</p>
-        <p class="tx"><b>Nous sommes une clinique privée.</b> Les consultations ne sont pas couvertes par le régime public : vous payez, nous remettons un reçu, et le remboursement dépend de votre assurance — pas de nous.</p>
-      </div>
-    </div>
-    <div class="chif">
-      <div><p class="n">8</p><p class="l">Professionnels<br>5 médecins · 2 IPS · 1 physio</p></div>
-      <div><p class="n">11</p><p class="l">Salles<br>dont 2 de physiothérapie</p></div>
-      <div><p class="n">22</p><p class="l">Places au sans rendez-vous<br>par matinée, pas une de plus</p></div>
-      <div><p class="n">2</p><p class="l">Relevés par jour<br>7 h 40 et 13 h 00</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ LE TABLEAU DES DÉLAIS ══════════════════════════════ -->
-<section class="sec f-s" id="delais">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Le tableau des délais · relevé du 1 août 2026, 9 h 10</p>
-        <h2 class="tt">neuf délais,<br>du plus court au plus long</h2>
-      </div>
-      <p class="tx">Le chiffre est le nombre de jours entre le relevé et la première plage réellement libre. La jauge est graduée : un cran vaut un jour. À droite, la date et l’heure de cette plage-là, celle que la réception offrira au prochain appel.</p>
-    </div>
-
-    <div class="dtete" aria-hidden="true">
-      <span>Code</span><span>Type de consultation</span><span>Délai</span><span class="j">Jauge · 1 cran = 1 jour</span><span style="text-align:right">Prochaine plage</span>
-    </div>
-    <ol class="del">
-      <li>
-        <p class="c">DÉL-01</p>
-        <div><h3>Nouveau problème, patient inscrit</h3><p class="q">Une douleur, une infection, quelque chose qui vient d’arriver. Ces plages sont gardées libres jusqu’à la veille.</p></div>
-        <p class="v"><span class="nb">2</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:5.9%;--n:34"><i></i></div>
-        <p class="d">lun. 3 août<span>08 h 40</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-02</p>
-        <div><h3>Renouvellement d’ordonnance, sans visite</h3><p class="q">Traité au dossier par le médecin qui vous suit. Uniquement si la dernière visite date de moins de douze mois.</p></div>
-        <p class="v"><span class="nb">3</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:8.8%;--n:34"><i></i></div>
-        <p class="d">mar. 4 août<span>au dossier</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-03</p>
-        <div><h3>Physiothérapie, suivi</h3><p class="q">Séance de suivi après une évaluation faite ici. Les plages de suivi sont réservées d’une séance à l’autre.</p></div>
-        <p class="v"><span class="nb">3</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:8.8%;--n:34"><i></i></div>
-        <p class="d">mar. 4 août<span>11 h 40</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-04</p>
-        <div><h3>Consultation, infirmière praticienne</h3><p class="q">Infection urinaire, otite, contraception, plaie, suivi de tension. Sans passer par un médecin.</p></div>
-        <p class="v"><span class="nb">4</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:11.8%;--n:34"><i></i></div>
-        <p class="d">mer. 5 août<span>10 h 00</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-05</p>
-        <div><h3>Résultats à discuter en personne</h3><p class="q">Quand un résultat demande une conversation plutôt qu’un appel. C’est le médecin qui l’a demandé qui vous reçoit.</p></div>
-        <p class="v"><span class="nb">5</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:14.7%;--n:34"><i></i></div>
-        <p class="d">jeu. 6 août<span>14 h 20</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-06</p>
-        <div><h3>Suivi régulier, patient inscrit</h3><p class="q">Diabète, tension, thyroïde, médication à réviser. Rendez-vous planifié, avec le même professionnel qu’à la visite précédente.</p></div>
-        <p class="v"><span class="nb">6</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:17.6%;--n:34"><i></i></div>
-        <p class="d">ven. 7 août<span>09 h 20</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-07</p>
-        <div><h3>Physiothérapie, première évaluation</h3><p class="q">Soixante minutes. Une seule physiothérapeute : c’est elle qui fixe le plancher de ce délai-là.</p></div>
-        <p class="v"><span class="nb">9</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:26.5%;--n:34"><i></i></div>
-        <p class="d">lun. 10 août<span>08 h 00</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-08</p>
-        <div><h3>Première visite, nouveau patient</h3><p class="q">Ouverture de dossier, quarante-cinq minutes. C’est le délai le plus souvent contesté au téléphone, et c’est le vrai.</p></div>
-        <p class="v"><span class="nb">24</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:70.6%;--n:34"><i></i></div>
-        <p class="d">mar. 25 août<span>15 h 00</span></p>
-      </li>
-      <li>
-        <p class="c">DÉL-09</p>
-        <div><h3>Examen médical complet</h3><p class="q">Soixante minutes, avec prélèvements. Nous n’en ouvrons que quatre par semaine, le mercredi matin.</p></div>
-        <p class="v"><span class="nb">34</span><span class="un">jours</span></p>
-        <div class="jauge j" style="--p:100%;--n:34"><i></i></div>
-        <p class="d">ven. 4 septembre<span>08 h 00</span></p>
-      </li>
-    </ol>
-    <p class="note">Délai en jours de calendrier depuis le relevé · La jauge est plafonnée à 34 jours, le plus long du tableau · Un désistement peut ouvrir une plage plus tôt : on rappelle dans l’ordre de la liste d’attente, jamais dans un autre · Ces chiffres sont ceux d’un site de démonstration</p>
-
-    <div class="datt">
-      <div>
-        <p class="eti">Liste d’attente · première visite</p>
-        <p class="v"><span class="nb">31</span><span class="un">personnes</span></p>
-        <div class="jauge" style="--p:62%;--n:50"><i></i></div>
-        <p class="x">Elle est fermée à cinquante. Au-delà, la réception vous le dit et n’inscrit pas votre nom : une liste qu’on ne rappellera pas ne sert à personne.</p>
-      </div>
-      <div>
-        <p class="eti">Rappels faits sur désistement · juillet</p>
-        <p class="v"><span class="nb">19</span><span class="un">appels</span></p>
-        <div class="jauge" style="--p:38%;--n:50"><i></i></div>
-        <p class="x">Dix-neuf personnes ont été vues plus tôt que leur date parce que quelqu’un a annulé. C’est la seule façon d’avancer dans la liste.</p>
-      </div>
-      <div>
-        <p class="eti">Nouveaux dossiers ouverts · juillet</p>
-        <p class="v"><span class="nb">12</span><span class="un">par mois</span></p>
-        <div class="jauge" style="--p:24%;--n:50"><i></i></div>
-        <p class="x">Douze par mois, répartis entre les cinq médecins. C’est ce que huit professionnels peuvent suivre sans allonger les délais de ceux qui sont déjà inscrits.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ LE SANS RENDEZ-VOUS ════════════════════════════════ -->
-<section class="sec f-p" id="sansrdv">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Le sans rendez-vous · le matin</p>
-        <h2 class="tt">vingt-deux places,<br>et on ferme la liste</h2>
-      </div>
-      <p class="tx">On n’écrit pas « selon la disponibilité ». Il y a vingt-deux places par matinée. Quand elles sont prises, la réception vous le dit à la porte, avec le délai du lendemain — elle ne vous fait pas asseoir « au cas où ».</p>
-    </div>
-
-    <div class="srv">
-      <ol class="marche">
-        <li><p class="n">01</p><div><h3>Vous arrivez et vous donnez votre nom</h3><p>Carte d’assurance maladie et une pièce d’identité. L’inscription prend deux minutes ; on ne demande pas le motif à voix haute au comptoir.</p></div></li>
-        <li><p class="n">02</p><div><h3>On regarde d’abord si c’est une urgence</h3><p>Neuf signes sont vérifiés à l’inscription. Si l’un d’eux est présent, vous ne vous assoyez pas : on appelle le 9-1-1 et on reste avec vous.</p></div></li>
-        <li><p class="n">03</p><div><h3>On vous donne un numéro et une heure</h3><p>Pas « bientôt ». Une heure, écrite. Si elle change de plus de quinze minutes, quelqu’un vient vous le dire.</p></div></li>
-        <li><p class="n">04</p><div><h3>Vous pouvez sortir</h3><p>L’heure donnée tient. Le stationnement, le café d’en face, une marche : rien ne vous oblige à rester assis dans le corridor.</p></div></li>
-        <li><p class="n">05</p><div><h3>Quand les 22 places sont prises</h3><p>La liste ferme. On vous donne le délai du lendemain et, si votre cas ne peut pas attendre, on vous dit où aller — même si ce n’est pas ici.</p></div></li>
-      </ol>
-      <div>
-        <div class="pan">
-          <p class="eti">Places restantes · relevé de 9 h 10</p>
-          <p class="v"><span class="nb">8</span><span class="un">sur 22</span></p>
-          <div class="jauge" style="--p:63.6%;--n:22"><i></i></div>
-          <p class="x">Quatorze places prises depuis l’ouverture à 8 h. Au rythme de ce matin, la liste ferme vers 10 h 20.</p>
-        </div>
-        <p class="rel" style="margin-top:26px"><b>Heures</b> · Lundi au vendredi, 7 h 30 à 11 h 30 · Samedi, 8 h à 11 h · Dimanche, fermé</p>
-        <p class="tx" style="margin-top:20px">Le sans rendez-vous n’est pas réservé aux patients inscrits. Vous n’avez pas besoin d’avoir un dossier ici pour venir le matin, et venir le matin ne vous inscrit pas non plus.</p>
-        <p class="eti" style="margin-top:clamp(26px,3vw,36px)">Ce qui ne se règle pas le matin · cinq choses</p>
-        <ul class="nfp">
-          <li><span>01</span>Renouvellement d’ordonnance</li>
-          <li><span>02</span>Formulaire, certificat, rapport</li>
-          <li><span>03</span>Examen médical complet</li>
-          <li><span>04</span>Physiothérapie, évaluation ou suivi</li>
-          <li><span>05</span>Suivi d’une maladie chronique</li>
-        </ul>
-        <p class="rel" style="margin-top:18px">Ces cinq-là se prennent sur rendez-vous, et leur délai est au tableau</p>
-      </div>
-    </div>
+<!-- ══ LE SANS RENDEZ-VOUS ══════════════════════════════════════ -->
+<section class="sec sec--glacier" id="sans">
+  <div class="cont">
+    <p class="etiq rv-t">Le sans rendez-vous</p>
+    <h2 class="rv-t">Vingt-deux places le matin,<br>et on ferme la liste</h2>
+    <p class="intro rv-t">Quand elles sont prises, la réception vous le dit à la porte, avec le délai du lendemain. Elle ne vous fait pas asseoir «&nbsp;au cas où&nbsp;».</p>
 
     <div class="duo">
-      <figure>
-        <img src="../../images/secteurs-sites/clinique-4.webp" width="1280" height="720" loading="lazy" decoding="async"
-             alt="Corridor de clinique : portes vitrées à cadre bronze, bambou en pot, comptoir au fond.">
-        <figcaption class="cap">L’entrée · de la porte vitrée au comptoir, neuf mètres</figcaption>
-      </figure>
-      <figure>
-        <img src="../../images/secteurs-sites/clinique-7.webp" width="960" height="720" loading="lazy" decoding="async"
-             alt="Corridor carrelé vert d’eau : portes fermées, banc bas à gauche, éclairage de plafond.">
-        <figcaption class="cap">Le corridor des salles 3 à 6 · photographié avant l’ouverture</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
+      <ol class="pas">
+        <li class="rv"><span class="past">1</span>
+          <div>
+            <h3>Vous donnez votre nom</h3>
+            <p>Carte d’assurance maladie et une pièce d’identité. L’inscription prend deux minutes, et on ne vous demande pas le motif à voix haute au comptoir.</p>
+          </div>
+        </li>
+        <li class="rv"><span class="past">2</span>
+          <div>
+            <h3>On regarde d’abord si c’est une urgence</h3>
+            <p>Neuf signes sont vérifiés dès l’inscription. Si l’un d’eux est présent, vous ne vous assoyez pas&nbsp;: on appelle le 9-1-1 et quelqu’un reste avec vous.</p>
+          </div>
+        </li>
+        <li class="rv"><span class="past">3</span>
+          <div>
+            <h3>On vous donne un numéro et une heure</h3>
+            <p>Pas «&nbsp;bientôt&nbsp;». Une heure, écrite. Si elle change de plus de quinze minutes, quelqu’un vient vous le dire.</p>
+          </div>
+        </li>
+        <li class="rv"><span class="past">4</span>
+          <div>
+            <h3>Vous pouvez sortir</h3>
+            <p>Le stationnement, le café d’en face, une marche&nbsp;: rien ne vous oblige à rester assis dans le corridor jusqu’à votre tour.</p>
+          </div>
+        </li>
+        <li class="rv"><span class="past">5</span>
+          <div>
+            <h3>Quand les vingt-deux places sont prises</h3>
+            <p>La liste ferme. On vous donne le délai du lendemain et, si votre cas ne peut pas attendre, on vous dit où aller — même si ce n’est pas ici.</p>
+          </div>
+        </li>
+      </ol>
 
-<!-- ══ BANDE ══════════════════════════════════════════════ -->
-<section class="bande">
-  <img src="../../images/secteurs-sites/clinique-2.webp" width="1920" height="1080" loading="lazy" decoding="async"
-       alt="Corridor vitré : rangée de sièges beiges le long des fenêtres, perspective fuyante, lumière de jour.">
-  <div class="env">
-    <div class="bande__pl">
-      <p class="eti">Pourquoi le chiffre est écrit</p>
-      <p class="bande__ph">un délai affiché est un délai qu’on peut nous reprocher. c’est exactement pour ça qu’il est affiché.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ══ L'URGENCE ══════════════════════════════════════════ -->
-<section class="sec f-s" id="urgence">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Ce qui ne relève pas de nous · neuf signes</p>
-        <h2 class="tt">avec un de ces neuf signes,<br>n’attendez pas ici</h2>
-      </div>
-      <p class="tx">Cette liste est vérifiée à l’inscription, avant que vous ne vous assoyiez. Nous n’avons ni salle de réanimation, ni imagerie, ni laboratoire sur place. Nous faire attendre quarante minutes vous ferait perdre quarante minutes.</p>
-    </div>
-
-    <ol class="urg">
-      <li><p class="n">Nº 01</p><h3>douleur ou serrement dans la poitrine</h3><p>Avec ou sans douleur au bras, au dos ou à la mâchoire. Avec ou sans sueur. Ne conduisez pas vous-même.</p></li>
-      <li><p class="n">Nº 02</p><h3>difficulté à respirer qui s’aggrave</h3><p>Souffle court au repos, incapacité à finir une phrase, lèvres ou ongles bleutés.</p></li>
-      <li><p class="n">Nº 03</p><h3>faiblesse soudaine d’un côté</h3><p>Bras ou jambe qui tombe, bouche croche, parole embrouillée, vision qui part d’un coup. L’heure exacte du début compte.</p></li>
-      <li><p class="n">Nº 04</p><h3>perte de conscience ou convulsion</h3><p>Même si la personne est revenue à elle. Même si ça n’a duré que quelques secondes.</p></li>
-      <li><p class="n">Nº 05</p><h3>saignement qui ne s’arrête pas</h3><p>Après dix minutes de pression continue, sans relâcher pour regarder. Ou un saignement qui gicle.</p></li>
-      <li><p class="n">Nº 06</p><h3>coup à la tête avec vomissements</h3><p>Ou avec somnolence, confusion, ou une pupille plus grande que l’autre. Chez un enfant comme chez un adulte.</p></li>
-      <li><p class="n">Nº 07</p><h3>enflure de la gorge ou de la langue</h3><p>Après une piqûre, un aliment ou un médicament. Avec démangeaison, plaques ou serrement de la gorge.</p></li>
-      <li><p class="n">Nº 08</p><h3>fièvre chez un bébé de moins de 3 mois</h3><p>38 °C ou plus, prise sous le bras ou au rectum. À cet âge-là, la fièvre se regarde à l’hôpital, pas ici.</p></li>
-      <li><p class="n">Nº 09</p><h3>pensées de vous faire du mal</h3><p>Appelez le 9-1-1 si le geste est proche. Sinon, Info-Social répond au 8-1-1, option 2, jour et nuit. Vous pouvez aussi le dire à l’accueil : on appelle avec vous.</p></li>
-    </ol>
-
-    <div class="app">
-      <p class="nu">9-1-1<span>Urgence · ambulance<br>24 heures sur 24</span></p>
-      <div>
-        <p class="tx">Pour tout le reste dont vous n’êtes pas certain — une fièvre qui dure, une douleur qui vous inquiète, un médicament que vous ne savez pas prendre — <b>Info-Santé répond au 8-1-1</b>, gratuitement, jour et nuit. Une infirmière vous dira si ça peut attendre notre prochaine plage ou non.</p>
-        <div class="zero">
-          <p class="eti">Attente pour un de ces neuf signes</p>
-          <p class="v"><span class="nb">0</span><span class="un">minute</span></p>
-          <div class="jauge" style="--p:0%;--n:18"><i></i></div>
-          <p class="x" style="margin-top:15px; font-size:14px; line-height:1.6; color:var(--clair)">La jauge est vide et c’est voulu : ces neuf signes-là ne prennent pas de numéro et ne passent pas par la salle d’attente.</p>
+      <div class="col-ph">
+        <figure class="cadre">
+          <img src="../../images/secteurs-sites/clinique-4.webp" width="1280" height="720" loading="lazy" decoding="async" style="object-position:66% 50%" alt="Corridor de clinique : portes vitrées à cadre bronze, grand bambou en pot et comptoir de bois au fond.">
+        </figure>
+        <div class="carte">
+          <h3>Les heures du matin</h3>
+          <div style="margin-top:14px">
+            <div class="h"><span>Lundi au vendredi</span><b>7 h 30 – 11 h 30</b></div>
+            <div class="h"><span>Samedi</span><b>8 h – 11 h</b></div>
+            <div class="h"><span>Dimanche</span><b>Fermé</b></div>
+          </div>
+          <p style="margin-top:16px;color:#4e6373;font-size:15px">Le matin est ouvert à tout le monde, dossier ou pas. Venir le matin ne vous inscrit pas non plus&nbsp;: l’inscription passe par une première visite.</p>
+        </div>
+        <div>
+          <p class="intro" style="margin-top:0"><b>Ce qui ne se règle pas le matin</b> — ces cinq-là se prennent sur rendez-vous.</p>
+          <ul class="pilules">
+            <li>Renouvellement d’ordonnance</li>
+            <li>Formulaire, certificat, rapport</li>
+            <li>Examen médical complet</li>
+            <li>Physiothérapie</li>
+            <li>Suivi d’une maladie chronique</li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ QUI FAIT QUOI ══════════════════════════════════════ -->
-<section class="sec f-p2" id="equipe">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Qui fait quoi · huit professionnels</p>
-        <h2 class="tt">ce que chacun prend,<br>et ce qu’il ne prend pas</h2>
-      </div>
-      <p class="tx">Ni photo, ni nom de famille, ni biographie : ce qui vous sert au téléphone, c’est de savoir qui peut vous voir pour votre affaire. Ce qu’une personne ne prend pas est écrit aussi gros que ce qu’elle prend.</p>
-    </div>
+<!-- ══ L'ÉQUIPE ═════════════════════════════════════════════════ -->
+<section class="sec sec--blanc" id="equipe">
+  <div class="cont">
+    <p class="etiq rv-t">L’équipe</p>
+    <h2 class="rv-t">Huit personnes, et ce que<br>chacune prend</h2>
+    <p class="intro rv-t">Ni photo, ni nom de famille, ni biographie. Ce qui sert quand on appelle, c’est de savoir qui peut vous voir pour votre affaire — et ce qu’une personne ne prend pas est écrit aussi gros que ce qu’elle prend.</p>
 
-    <ol class="eqi">
-      <li>
-        <p class="c">MED-01</p>
+    <div class="equipe">
+      <article class="membre rv"><span class="past">Ar</span>
         <h3>Dre Ariane</h3>
-        <p class="r">Médecine familiale · depuis 2011</p>
+        <p class="role">Médecine familiale · depuis 2011</p>
         <dl>
           <dt>Prend</dt><dd>Santé des femmes, contraception, ménopause, suivi de grossesse jusqu’à la 20<sup>e</sup> semaine.</dd>
-          <dt class="no">Ne prend pas</dt><dd>Le suivi de grossesse au-delà de 20 semaines ni l’accouchement : le dossier est transféré à ce moment-là.</dd>
+          <dt class="non">Ne prend pas</dt><dd>Le suivi au-delà de 20 semaines ni l’accouchement&nbsp;: le dossier est transféré à ce moment-là.</dd>
         </dl>
-      </li>
-      <li>
-        <p class="c">MED-02</p>
+      </article>
+      <article class="membre rv"><span class="past">Si</span>
         <h3>Dr Simon</h3>
-        <p class="r">Médecine familiale · depuis 2004</p>
+        <p class="role">Médecine familiale · depuis 2004</p>
         <dl>
-          <dt>Prend</dt><dd>Diabète, tension, cholestérol, thyroïde. Révision de médication chez les personnes qui en prennent plus de cinq.</dd>
-          <dt class="no">Ne prend pas</dt><dd>Les certificats d’aptitude au travail ni les expertises demandées par un employeur ou un assureur.</dd>
+          <dt>Prend</dt><dd>Diabète, tension, cholestérol, thyroïde. Révision de médication au-delà de cinq médicaments.</dd>
+          <dt class="non">Ne prend pas</dt><dd>Les certificats d’aptitude au travail ni les expertises demandées par un employeur.</dd>
         </dl>
-      </li>
-      <li>
-        <p class="c">MED-03</p>
+      </article>
+      <article class="membre rv"><span class="past">Fa</span>
         <h3>Dre Fatou</h3>
-        <p class="r">Médecine familiale · depuis 2016</p>
+        <p class="role">Médecine familiale · depuis 2016</p>
         <dl>
-          <dt>Prend</dt><dd>Enfants et adolescents, de la naissance à 17 ans. Vaccination, otites, asthme, courbes de croissance.</dd>
-          <dt class="no">Ne prend pas</dt><dd>Les adultes. Son horaire est entièrement pédiatrique, y compris au sans rendez-vous.</dd>
+          <dt>Prend</dt><dd>Enfants et adolescents, de la naissance à 17 ans. Vaccination, otites, asthme, croissance.</dd>
+          <dt class="non">Ne prend pas</dt><dd>Les adultes. Son horaire est entièrement pédiatrique, y compris au sans rendez-vous.</dd>
         </dl>
-      </li>
-      <li>
-        <p class="c">MED-04</p>
+      </article>
+      <article class="membre rv"><span class="past">Ét</span>
         <h3>Dr Étienne</h3>
-        <p class="r">Médecine familiale · depuis 2009</p>
+        <p class="role">Médecine familiale · depuis 2009</p>
         <dl>
-          <dt>Prend</dt><dd>Peau, lésions à retirer, points de suture, ongles incarnés, petites interventions faites en salle 7.</dd>
-          <dt class="no">Ne prend pas</dt><dd>Le suivi de grossesse ni le suivi pédiatrique de moins de 2 ans.</dd>
+          <dt>Prend</dt><dd>Peau, lésions à retirer, points de suture, ongles incarnés, petites interventions en salle 7.</dd>
+          <dt class="non">Ne prend pas</dt><dd>Le suivi de grossesse ni le suivi pédiatrique avant deux ans.</dd>
         </dl>
-      </li>
-      <li>
-        <p class="c">MED-05</p>
+      </article>
+      <article class="membre rv"><span class="past">Ca</span>
         <h3>Dre Camille</h3>
-        <p class="r">Médecine familiale · depuis 1998</p>
+        <p class="role">Médecine familiale · depuis 1998</p>
         <dl>
-          <dt>Prend</dt><dd>Personnes de 70 ans et plus, mémoire, chutes, autonomie à la maison, rendez-vous avec un proche aidant présent.</dd>
-          <dt class="no">Ne prend pas</dt><dd>De nouveaux dossiers avant janvier : son horaire est complet et nous préférons l’écrire que le découvrir au téléphone.</dd>
+          <dt>Prend</dt><dd>Personnes de 70 ans et plus, mémoire, chutes, autonomie, rendez-vous avec un proche aidant.</dd>
+          <dt class="non">Ne prend pas</dt><dd>De nouveaux dossiers avant janvier. On préfère l’écrire que le faire découvrir au téléphone.</dd>
         </dl>
-      </li>
-      <li>
-        <p class="c">IPS-01</p>
+      </article>
+      <article class="membre rv"><span class="past past--m">So</span>
         <h3>Sophie</h3>
-        <p class="r">Infirmière praticienne spécialisée · première ligne</p>
+        <p class="role">Infirmière praticienne · première ligne</p>
         <dl>
           <dt>Prend</dt><dd>Infections urinaires, otites, maux de gorge, contraception, renouvellements, suivi de tension.</dd>
-          <dt class="no">Ne prend pas</dt><dd>Ce qui sort de son champ : dans ce cas, elle transfère à un médecin de la clinique la journée même, sans nouveau rendez-vous.</dd>
+          <dt class="non">Ne prend pas</dt><dd>Ce qui sort de son champ&nbsp;: elle transfère alors à un médecin la journée même, sans nouveau rendez-vous.</dd>
         </dl>
-      </li>
-      <li>
-        <p class="c">IPS-02</p>
+      </article>
+      <article class="membre rv"><span class="past past--m">Mo</span>
         <h3>Marc-Olivier</h3>
-        <p class="r">Infirmier praticien spécialisé · première ligne</p>
+        <p class="role">Infirmier praticien · première ligne</p>
         <dl>
           <dt>Prend</dt><dd>Plaies, pansements, retrait de points, brûlures superficielles, vaccination, prélèvements.</dd>
-          <dt class="no">Ne prend pas</dt><dd>Les plaies de plus de 24 heures qui montrent des signes d’infection étendue : elles vont à l’urgence.</dd>
+          <dt class="non">Ne prend pas</dt><dd>Les plaies de plus de 24 heures qui montrent une infection étendue&nbsp;: elles vont à l’urgence.</dd>
         </dl>
-      </li>
-      <li>
-        <p class="c">PHY-01</p>
+      </article>
+      <article class="membre rv"><span class="past past--m">Ju</span>
         <h3>Julie</h3>
-        <p class="r">Physiothérapeute · salles 10 et 11</p>
+        <p class="role">Physiothérapeute · salles 10 et 11</p>
         <dl>
-          <dt>Prend</dt><dd>Dos, épaule, genou, cheville. Évaluation de 60 minutes, puis des suivis de 30. Retour au travail progressif.</dd>
-          <dt class="no">Ne prend pas</dt><dd>Ni massothérapie, ni acupuncture, ni ostéopathie : ce n’est pas offert ici et nous ne prenons pas de commission pour vous envoyer ailleurs.</dd>
+          <dt>Prend</dt><dd>Dos, épaule, genou, cheville. Évaluation d’une heure, puis des suivis de trente minutes.</dd>
+          <dt class="non">Ne prend pas</dt><dd>Ni massothérapie, ni acupuncture, ni ostéopathie. Ce n’est pas offert ici et on ne vous vend pas un renvoi.</dd>
         </dl>
-      </li>
-    </ol>
+      </article>
+    </div>
+  </div>
+</section>
 
-    <div class="pied2">
-      <figure>
-        <img src="../../images/secteurs-sites/clinique-5.webp" width="960" height="720" loading="lazy" decoding="async"
-             alt="Une paire de béquilles appuyée contre un mur blanc, à côté de deux chaises coque bleu-vert.">
-        <figcaption class="cap">Les béquilles du corridor de physiothérapie · prêtées, jamais vendues</figcaption>
+<!-- ══ LES RÉSULTATS — le bloc bleu ═════════════════════════════ -->
+<section class="sec sec--bleu" id="resultats">
+  <div class="cont">
+    <p class="etiq rv-t">Les résultats</p>
+    <h2 class="rv-t">On appelle.<br>Même quand c’est normal.</h2>
+    <p class="intro rv-t">«&nbsp;Pas de nouvelle, bonne nouvelle&nbsp;» est une méthode qui repose sur le fait qu’un appel n’a pas été oublié. On préfère appeler tout le monde&nbsp;: c’est plus long, et c’est le seul moyen de savoir qu’on n’a oublié personne.</p>
+
+    <div class="duo duo--inv">
+      <div class="col-ph">
+        <figure class="cadre">
+          <img src="../../images/secteurs-sites/clinique-7.webp" width="960" height="720" loading="lazy" decoding="async" alt="Corridor carrelé vert d’eau : portes fermées, banc bas à gauche et lumière douce de plafond.">
+        </figure>
+        <div class="anneaux" style="grid-template-columns:1fr;margin-top:0">
+          <article class="carte jauge" style="flex-direction:row;align-items:center;gap:clamp(18px,2.4vw,28px)">
+            <div class="anneau" style="width:clamp(92px,8vw,110px);margin-bottom:0">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="piste" cx="60" cy="60" r="52" pathLength="100"></circle>
+                <circle class="arc arc--m" cx="60" cy="60" r="52" pathLength="100" style="--off:70"></circle>
+              </svg>
+              <b class="anneau-n">3<small>j</small></b>
+            </div>
+            <div>
+              <h3>Du prélèvement à l’appel</h3>
+              <p>Trois jours ouvrables. L’anneau est plafonné à dix&nbsp;: au-delà, c’est nous qui relançons le laboratoire, pas vous.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <ul class="points">
+        <li class="rv">
+          <h3>Jamais par courriel ni par texto</h3>
+          <p>Un résultat ne se transmet pas par un moyen qu’on ne contrôle pas. On appelle, ou on vous reçoit. La réception peut confirmer qu’un résultat est arrivé, rien de plus.</p>
+        </li>
+        <li class="rv">
+          <h3>Jamais dans un message vocal</h3>
+          <p>Un résultat anormal n’est pas laissé sur une boîte vocale. On rappelle jusqu’à vous parler, à trois reprises, puis on envoie une lettre.</p>
+        </li>
+        <li class="rv">
+          <h3>Une copie sur demande, gratuite</h3>
+          <p>Vos résultats sont à vous. Demandez-les à l’accueil&nbsp;: ils sont prêts en 48 heures, et il n’y a rien à payer pour les obtenir.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LA VISITE ════════════════════════════════════════════════ -->
+<section class="sec sec--glacier" id="visite">
+  <div class="cont">
+    <p class="etiq rv-t">La visite</p>
+    <h2 class="rv-t">La salle où vous entrez</h2>
+    <p class="intro rv-t">Les deux photographies ci-dessous montrent la même pièce, prise de deux angles. On ne montre pas deux salles pour faire croire qu’il y en a plus&nbsp;: les onze se ressemblent, et celle-ci est représentative.</p>
+
+    <div class="paire">
+      <figure class="rv">
+        <span class="cadre"><img src="../../images/secteurs-sites/clinique-3.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Salle d’examen claire : table d’examen drapée de blanc, bureau à plateau de bois clair et chaise de visiteur."></span>
+        <figcaption>Salle 4, depuis la porte · la table, le bureau, et une chaise pour l’accompagnateur</figcaption>
+      </figure>
+      <figure class="rv">
+        <span class="cadre"><img src="../../images/secteurs-sites/clinique-6.webp" width="960" height="720" loading="lazy" decoding="async" alt="Poste de consultation vu de haut : bureau de bois clair, dossier ouvert et stylo, chaise de visiteur et coin de la table d’examen."></span>
+        <figcaption>La même pièce, vue du coin opposé · le dossier reste papier</figcaption>
+      </figure>
+    </div>
+
+    <p class="intro" style="margin-top:clamp(34px,4vw,58px)"><b>Ce qu’il faut apporter</b> — cinq choses, et l’oubli de l’une d’elles fait reprendre le rendez-vous.</p>
+    <ul class="apporter">
+      <li class="rv"><span class="past">1</span>
+        <h3>Carte et pièce d’identité</h3>
+        <p>La carte sert à retrouver votre dossier sans erreur d’homonyme.</p>
+      </li>
+      <li class="rv"><span class="past">2</span>
+        <h3>Vos médicaments</h3>
+        <p>Les contenants, plutôt qu’une liste écrite de mémoire. Vitamines comprises.</p>
+      </li>
+      <li class="rv"><span class="past">3</span>
+        <h3>Les résultats de l’année</h3>
+        <p>Prises de sang, radiographies, rapports. On n’a pas accès aux dossiers des autres cliniques.</p>
+      </li>
+      <li class="rv"><span class="past">4</span>
+        <h3>Le nom de votre pharmacie</h3>
+        <p>Sans lui, une ordonnance ne part pas à la fin de la consultation.</p>
+      </li>
+      <li class="rv"><span class="past">5</span>
+        <h3>Pour un enfant, le carnet</h3>
+        <p>Le carnet de vaccination lui-même, pas une photo floue. Sans lui, une dose peut être reportée.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ LE PRÊT ══════════════════════════════════════════════════ -->
+<section class="sec sec--blanc" id="pret">
+  <div class="cont">
+    <p class="etiq rv-t">Le matériel</p>
+    <h2 class="rv-t">Le prêt, plutôt<br>que la vente</h2>
+
+    <div class="duo duo--inv">
+      <figure class="rv">
+        <span class="cadre" style="height:clamp(260px,30vw,440px)"><img src="../../images/secteurs-sites/clinique-5.webp" width="960" height="720" loading="lazy" decoding="async" alt="Une paire de béquilles appuyée contre un mur blanc, à côté de deux chaises de salle d’attente."></span>
+        <figcaption>Les béquilles du corridor de physiothérapie · prêtées, jamais vendues</figcaption>
       </figure>
       <div>
-        <p class="eti" style="margin-bottom:18px">Le prêt, plutôt que la vente</p>
-        <p class="tx">Béquilles, canne, attelle de poignet, sac de glace : c’est prêté, sur signature, et rapporté. Nous n’avons pas de boutique et nous n’en aurons pas. Quand l’appareil dont vous avez besoin ne se prête pas, on vous écrit ce que c’est sur un papier et vous l’achetez où vous voulez.</p>
-        <p class="tx">La physiothérapeute ne vous dira pas d’avance combien de séances il vous faut. Elle réévalue à la troisième et vous dit alors ce qu’elle voit, y compris quand c’est « on arrête ».</p>
+        <p class="lede">Béquilles, canne, attelle de poignet, sac de glace&nbsp;: c’est prêté, sur signature, et rapporté. Il n’y a pas de boutique ici, et il n’y en aura pas.</p>
+        <p class="intro">Quand l’appareil dont vous avez besoin ne se prête pas, on vous écrit ce que c’est sur un papier et vous l’achetez où vous voulez. Il n’y a aucun présentoir dans la salle d’attente&nbsp;; l’espace où il serait sert à ranger les béquilles.</p>
+        <p class="intro">Personne ici n’est payé au nombre d’examens demandés ni au nombre de séances données. Quand on vous envoie ailleurs — laboratoire, imagerie, spécialiste — on ne reçoit rien pour l’avoir fait.</p>
+        <p class="intro">La physiothérapeute ne vous dira pas d’avance combien de séances il vous faut. Elle réévalue à la troisième et vous dit alors ce qu’elle voit, y compris quand c’est «&nbsp;on arrête&nbsp;».</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ LES SERVICES ═══════════════════════════════════════ -->
-<section class="sec f-p" id="services">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Les services · durée et tarif</p>
-        <h2 class="tt">douze services,<br>douze durées, douze tarifs</h2>
-      </div>
-      <p class="tx">La durée écrite est celle qui est bloquée à l’horaire, pas une moyenne. Le tarif est celui de la consultation : il est le même le matin, le soir et le samedi, et il ne change pas selon le motif.</p>
-    </div>
+<!-- ══ L'URGENCE — le seul rouge ════════════════════════════════ -->
+<section class="sec sec--glacier" id="urgence">
+  <div class="cont">
+    <p class="etiq rv-t">Ce qui ne relève pas de nous</p>
+    <h2 class="rv-t">Avec un de ces signes,<br>n’attendez pas ici</h2>
+    <p class="intro rv-t">Cette liste est vérifiée à l’inscription, avant que vous ne vous assoyiez. Il n’y a ici ni salle de réanimation, ni imagerie, ni laboratoire&nbsp;: vous faire attendre quarante minutes vous ferait perdre quarante minutes.</p>
 
-    <ol class="svc">
-      <li><p class="c">SRV-01</p><div><h3>Consultation sans rendez-vous</h3><p class="q">Un problème à la fois. Deux problèmes demandent deux places, et il n’y en a que vingt-deux.</p></div><p class="du">20 minutes</p><p class="pr">120 $</p></li>
-      <li><p class="c">SRV-02</p><div><h3>Consultation sur rendez-vous</h3><p class="q">Avec le professionnel de votre dossier quand c’est possible, avec un autre quand ça ne l’est pas — on vous le dit en réservant.</p></div><p class="du">30 minutes</p><p class="pr">145 $</p></li>
-      <li><p class="c">SRV-03</p><div><h3>Première visite, ouverture de dossier</h3><p class="q">Antécédents, médication, examens des cinq dernières années. C’est long parce que c’est fait une seule fois.</p></div><p class="du">45 minutes</p><p class="pr">195 $</p></li>
-      <li><p class="c">SRV-04</p><div><h3>Examen médical complet</h3><p class="q">Examen, prélèvements sur place, revue de la médication. Quatre plages par semaine, le mercredi matin.</p></div><p class="du">60 minutes</p><p class="pr">320 $</p></li>
-      <li><p class="c">SRV-05</p><div><h3>Renouvellement d’ordonnance sans visite</h3><p class="q">Traité au dossier, envoyé à votre pharmacie. Refusé si la dernière visite date de plus de douze mois, et on vous le dit avant de facturer.</p></div><p class="du">au dossier</p><p class="pr">45 $</p></li>
-      <li><p class="c">SRV-06</p><div><h3>Consultation, infirmière praticienne</h3><p class="q">Même durée qu’un rendez-vous médical, tarif plus bas. Si le cas doit passer au médecin, la différence n’est pas facturée deux fois.</p></div><p class="du">30 minutes</p><p class="pr">95 $</p></li>
-      <li><p class="c">SRV-07</p><div><h3>Vaccination ou injection</h3><p class="q">Le tarif est celui de l’acte. Le produit, quand il n’est pas fourni par le programme public, est facturé à son prix coûtant, reçu du fournisseur à l’appui.</p></div><p class="du">15 minutes</p><p class="pr">40 $</p></li>
-      <li><p class="c">SRV-08</p><div><h3>Prélèvement sanguin</h3><p class="q">Le prélèvement se fait ici ; l’analyse est faite et facturée par un laboratoire externe, directement à vous. Rien n’est ajouté par la clinique.</p></div><p class="du">15 minutes</p><p class="pr">35 $</p></li>
-      <li><p class="c">SRV-09</p><div><h3>Pansement, retrait de points</h3><p class="q">Y compris pour des points posés ailleurs. Apportez le papier de l’endroit qui les a posés si vous l’avez.</p></div><p class="du">15 minutes</p><p class="pr">55 $</p></li>
-      <li><p class="c">SRV-10</p><div><h3>Formulaire, certificat, rapport</h3><p class="q">Assurance, école, employeur, invalidité courte durée. Non couvert, jamais rétroactif, et rempli dans les cinq jours ouvrables.</p></div><p class="du">15 minutes</p><p class="pr">60 $</p></li>
-      <li><p class="c">SRV-11</p><div><h3>Physiothérapie, évaluation initiale</h3><p class="q">Une heure. Vous repartez avec un plan écrit et le nombre de séances prévues, révisable à la troisième.</p></div><p class="du">60 minutes</p><p class="pr">110 $</p></li>
-      <li><p class="c">SRV-12</p><div><h3>Physiothérapie, séance de suivi</h3><p class="q">Trente minutes avec la physiothérapeute, pas avec un appareil laissé seul dans une salle.</p></div><p class="du">30 minutes</p><p class="pr">75 $</p></li>
-    </ol>
-    <p class="note">Tarifs en dollars canadiens, taxes incluses quand elles s’appliquent · Payable à la fin de la consultation, reçu remis sur place · Rendez-vous annulé moins de 24 heures d’avance : 50 % du tarif · Les analyses de laboratoire et l’imagerie sont facturées par le fournisseur externe et ne passent pas par nous · Tarifs d’un site de démonstration</p>
+    <div class="urg rv-t">
+      <h3 style="font-size:clamp(19px,1.8vw,25px)">Neuf signes, et ils passent avant tout le reste</h3>
+      <ul class="signes">
+        <li><span class="past past--r">1</span>
+          <div><h3>Douleur ou serrement dans la poitrine</h3>
+          <p>Avec ou sans douleur au bras, au dos ou à la mâchoire. Ne conduisez pas vous-même.</p></div>
+        </li>
+        <li><span class="past past--r">2</span>
+          <div><h3>Difficulté à respirer qui s’aggrave</h3>
+          <p>Souffle court au repos, incapacité à finir une phrase, lèvres ou ongles bleutés.</p></div>
+        </li>
+        <li><span class="past past--r">3</span>
+          <div><h3>Faiblesse soudaine d’un côté</h3>
+          <p>Bras ou jambe qui tombe, bouche croche, parole embrouillée. L’heure exacte du début compte.</p></div>
+        </li>
+        <li><span class="past past--r">4</span>
+          <div><h3>Perte de conscience ou convulsion</h3>
+          <p>Même si la personne est revenue à elle, même si ça n’a duré que quelques secondes.</p></div>
+        </li>
+        <li><span class="past past--r">5</span>
+          <div><h3>Saignement qui ne s’arrête pas</h3>
+          <p>Après dix minutes de pression continue, sans relâcher pour regarder. Ou un saignement qui gicle.</p></div>
+        </li>
+        <li><span class="past past--r">6</span>
+          <div><h3>Coup à la tête avec vomissements</h3>
+          <p>Ou avec somnolence, confusion, ou une pupille plus grande que l’autre.</p></div>
+        </li>
+        <li><span class="past past--r">7</span>
+          <div><h3>Enflure de la gorge ou de la langue</h3>
+          <p>Après une piqûre, un aliment ou un médicament, avec serrement de la gorge.</p></div>
+        </li>
+        <li><span class="past past--r">8</span>
+          <div><h3>Fièvre chez un bébé de moins de trois mois</h3>
+          <p>38 °C ou plus. À cet âge-là, la fièvre se regarde à l’hôpital, pas ici.</p></div>
+        </li>
+        <li><span class="past past--r">9</span>
+          <div><h3>Pensées de vous faire du mal</h3>
+          <p>Appelez le 9-1-1 si le geste est proche. Vous pouvez aussi le dire à l’accueil&nbsp;: on appelle avec vous.</p></div>
+        </li>
+      </ul>
+
+      <ul class="secours">
+        <li><b>9-1-1</b><p>Urgence, ambulance. Vingt-quatre heures sur vingt-quatre, partout au Québec.</p></li>
+        <li><b>8-1-1</b><p>Info-Santé. Une infirmière vous dira si ça peut attendre notre prochaine plage. Jour et nuit, gratuitement.</p></li>
+        <li><b>8-1-1, option 2</b><p>Info-Social. Pour la détresse, l’anxiété, une crise à la maison. Jour et nuit, gratuitement.</p></li>
+      </ul>
+    </div>
   </div>
 </section>
 
-<!-- ══ LA VISITE ══════════════════════════════════════════ -->
-<section class="sec f-p2" id="visite">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">La visite · onze salles, deux angles</p>
-        <h2 class="tt">la salle où vous entrez,<br>et ce qu’il faut apporter</h2>
+<!-- ══ PRENDRE RENDEZ-VOUS — trois étapes, sans script ══════════ -->
+<section class="sec sec--blanc" id="rendez-vous">
+  <div class="cont">
+    <p class="etiq rv-t">Prendre rendez-vous</p>
+    <h2 class="rv-t">Trois étapes, et c’est réglé</h2>
+    <p class="intro rv-t">Tout se fait au téléphone. Choisissez une étape pour voir ce qui s’y passe.</p>
+
+    <div class="parc">
+      <input type="radio" name="parc" id="pe1" checked>
+      <input type="radio" name="parc" id="pe2">
+      <input type="radio" name="parc" id="pe3">
+      <div class="parc-o">
+        <label for="pe1"><span class="past">1</span> Vous appelez</label>
+        <label for="pe2"><span class="past">2</span> On choisit la durée</label>
+        <label for="pe3"><span class="past">3</span> On confirme et on rappelle</label>
       </div>
-      <p class="tx">Les deux photographies ci-dessous montrent la même pièce, la salle 4, prise de deux angles. Nous ne montrons pas deux salles pour faire croire qu’il y en a plus : les onze se ressemblent, et celle-ci est représentative.</p>
-    </div>
-
-    <div class="vis">
-      <figure>
-        <img src="../../images/secteurs-sites/clinique-3.webp" width="1280" height="720" loading="lazy" decoding="async"
-             alt="Salle d’examen claire : table d’examen drapée de blanc, bureau à plateau de bois clair, chaise orange, panneaux blancs à lattes verticales.">
-        <figcaption class="cap">Salle 4 · depuis la porte · 11 m², une fenêtre</figcaption>
-      </figure>
-      <figure>
-        <img src="../../images/secteurs-sites/clinique-6.webp" width="960" height="720" loading="lazy" decoding="async"
-             alt="Vue plongeante d’un poste de consultation : bureau de bois clair, dossier ouvert et stylo, chaise orange, coin de la table d’examen à gauche.">
-        <figcaption class="cap">Salle 4 · la même pièce, vue du coin opposé · le dossier reste papier</figcaption>
-      </figure>
-    </div>
-
-    <p class="eti" style="margin-bottom:22px">Ce qu’il faut apporter · sept choses</p>
-    <div class="apo">
-      <div><p class="n">01</p><div><h3>Carte d’assurance maladie et pièce d’identité</h3><p>Même si la consultation n’est pas couverte : la carte sert à identifier votre dossier sans erreur d’homonyme.</p></div></div>
-      <div><p class="n">02</p><div><h3>Vos médicaments, ou leur liste</h3><p>Les contenants sont plus fiables qu’une liste écrite de mémoire. Vitamines et produits naturels compris.</p></div></div>
-      <div><p class="n">03</p><div><h3>Les résultats des douze derniers mois</h3><p>Prises de sang, radiographies, rapports de spécialiste. Nous n’avons pas accès aux dossiers des autres cliniques.</p></div></div>
-      <div><p class="n">04</p><div><h3>Le nom et le numéro de votre pharmacie</h3><p>Sans ça, une ordonnance ne part pas à la fin de la consultation et vous devez rappeler.</p></div></div>
-      <div><p class="n">05</p><div><h3>Pour un enfant : le carnet de vaccination</h3><p>Le carnet, pas une photo floue du carnet. Sans lui, une dose peut être reportée.</p></div></div>
-      <div><p class="n">06</p><div><h3>Pour la peau : rien sur la zone le matin même</h3><p>Ni crème, ni maquillage, ni fond de teint. Une lésion couverte ne s’examine pas et le rendez-vous se reprend.</p></div></div>
-      <div><p class="n">07</p><div><h3>Pour un prélèvement à jeun : huit heures</h3><p>Rien à manger, l’eau est permise, les médicaments habituels se prennent comme d’habitude sauf avis contraire écrit.</p></div></div>
-    </div>
-    <p class="note">Une personne peut vous accompagner dans la salle · Les salles font 11 m² et la chaise du visiteur est une seule chaise · Pour un enfant, les deux parents sont admis</p>
-  </div>
-</section>
-
-<!-- ══ LES RÉSULTATS ══════════════════════════════════════ -->
-<section class="sec f-s" id="resultats">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Les résultats · délai et méthode</p>
-        <h2 class="tt">on appelle. toujours.<br>même quand c’est normal</h2>
-      </div>
-      <p class="tx">« Pas de nouvelle, bonne nouvelle » est une méthode qui repose sur le fait qu’un appel n’a pas été oublié. Nous préférons appeler tout le monde : c’est plus long, et c’est le seul moyen de savoir qu’on n’a oublié personne.</p>
-    </div>
-
-    <div class="res">
-      <div>
-        <p class="eti">Prélèvement fait ici<br>analyse au laboratoire externe</p>
-        <p class="v"><span class="nb">3</span><span class="un">jours ouvrables</span></p>
-        <div class="jauge" style="--p:30%;--n:10"><i></i></div>
-        <p class="x">Du prélèvement à l’appel. La jauge est plafonnée à dix jours ouvrables : au-delà, c’est nous qui relançons le laboratoire, pas vous.</p>
-      </div>
-      <div>
-        <p class="eti">Imagerie faite ailleurs<br>rapport transmis à la clinique</p>
-        <p class="v"><span class="nb">10</span><span class="un">jours ouvrables</span></p>
-        <div class="jauge" style="--p:100%;--n:10"><i></i></div>
-        <p class="x">Ce délai-là ne dépend pas de nous et nous ne pouvons pas l’accélérer. Nous l’écrivons quand même, parce qu’on nous le demande chaque semaine.</p>
-      </div>
-    </div>
-
-    <ol class="rgl">
-      <li><h3>jamais par courriel ni par texto</h3><p>Un résultat ne se transmet pas par un moyen qu’on ne contrôle pas. On appelle, ou on vous reçoit. La réception peut confirmer qu’un résultat est arrivé, rien de plus.</p></li>
-      <li><h3>jamais dans un message vocal</h3><p>Un résultat anormal n’est pas laissé sur une boîte vocale. On rappelle jusqu’à vous parler, à trois reprises, puis on envoie une lettre.</p></li>
-      <li><h3>une copie sur demande, gratuite</h3><p>Vos résultats sont à vous. Demandez-les à l’accueil, ils sont prêts en 48 heures et il n’y a rien à payer pour les obtenir.</p></li>
-    </ol>
-  </div>
-</section>
-
-<!-- ══ CE QU'ON NE VEND PAS ═══════════════════════════════ -->
-<section class="sec f-p" id="vendre">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Ce qu’on ne vend pas · cinq points</p>
-        <h2 class="tt">une clinique privée<br>où il n’y a rien à acheter</h2>
-      </div>
-      <p class="tx">Une clinique privée facture ses consultations : c’est écrit dans les tarifs, à la durée près. Ce qui suit est la liste de tout ce qu’elle pourrait vous vendre en plus, et qu’elle ne vend pas.</p>
-    </div>
-
-    <ol class="vnd">
-      <li>
-        <p class="n">Nº 01</p>
-        <div>
-          <h3>pas d’adhésion, pas de carte membre</h3>
-          <p>Aucun forfait annuel, aucun abonnement, aucun « accès privilégié » payé d’avance. Vous payez la consultation que vous avez eue, le jour où vous l’avez eue, et vous ne devez rien le reste de l’année.</p>
+      <div class="parc-f">
+        <div class="parc-r">
+          <div>
+            <h3>La réception répond de 7 h 30 à 17 h</h3>
+            <p>C’est la voie la plus rapide, et de loin&nbsp;: la réception voit les désistements de la journée, ce qu’aucun formulaire ne voit. Un motif en trois mots suffit — personne ne vous demandera de détail médical au téléphone, et rien n’est noté au dossier avant que vous voyiez un professionnel.</p>
+          </div>
+          <div>
+            <h3>Un nouveau problème et une première visite ne prennent pas le même temps</h3>
+            <p>C’est pour ça qu’on vous pose deux ou trois questions avant de fixer l’heure. La durée bloquée à l’horaire est la durée réelle, pas une moyenne&nbsp;: c’est ce qui fait qu’un rendez-vous de 10 h commence à 10 h, et non à 10 h 25.</p>
+          </div>
+          <div>
+            <h3>On confirme la veille, et on rappelle si une place se libère</h3>
+            <p>La confirmation se fait par téléphone&nbsp;; aucun rendez-vous n’est confirmé par courriel. Si quelqu’un annule, on rappelle dans l’ordre de la liste d’attente, jamais dans un autre — c’est la seule façon d’être vu plus tôt que sa date.</p>
+          </div>
         </div>
-      </li>
-      <li>
-        <p class="n">Nº 02</p>
-        <div>
-          <h3>pas de bilan proposé au comptoir</h3>
-          <p>Personne à l’accueil ne vous offrira un examen supplémentaire pendant que vous payez. Un examen se demande par un professionnel, pour une raison écrite au dossier, et cette raison vous est dite.</p>
-        </div>
-      </li>
-      <li>
-        <p class="n">Nº 03</p>
-        <div>
-          <h3>rien en vente à la sortie</h3>
-          <p>Aucune vitamine, aucun supplément, aucune crème, aucun appareil, aucun régime. Il n’y a pas de présentoir dans la salle d’attente, et l’espace où il serait sert à ranger les béquilles de prêt.</p>
-        </div>
-      </li>
-      <li>
-        <p class="n">Nº 04</p>
-        <div>
-          <h3>aucune commission, dans aucun sens</h3>
-          <p>Personne ici n’est payé au nombre d’examens demandés ni au nombre de séances données. Quand nous vous envoyons ailleurs — laboratoire, imagerie, spécialiste — nous ne recevons rien pour l’avoir fait.</p>
-        </div>
-      </li>
-      <li>
-        <p class="n">Nº 05</p>
-        <div>
-          <h3>pas de rappel « pensez à revenir »</h3>
-          <p>On ne vous rappelle que pour une raison médicale : un résultat, un suivi convenu, un vaccin dû. Vous ne recevrez pas d’infolettre et votre adresse ne sert qu’à confirmer un rendez-vous.</p>
-        </div>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- ══ QUESTIONS ══════════════════════════════════════════ -->
-<section class="sec f-p2" id="questions">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Questions · celles qu’on nous pose au téléphone</p>
-        <h2 class="tt">huit questions,<br>et leur vraie réponse</h2>
       </div>
-      <p class="tx">Ce sont les huit qui reviennent le plus souvent à la réception. Elles sont écrites ici pour que vous n’ayez pas à appeler pour les poser.</p>
+      <p class="parc-l">Trois étapes · au dernier relevé, la prochaine plage libre, toutes disciplines confondues, était à deux jours.</p>
     </div>
 
-    <div class="faq">
-      <div>
-        <h3>est-ce que le régime public couvre mes consultations ici ?</h3>
-        <p>Non. Nous sommes une clinique privée : les consultations ne sont pas couvertes par le régime public d’assurance maladie. Vous payez sur place et nous remettons un reçu détaillé.</p>
+    <dl class="joindre">
+      <div class="carte">
+        <dt>Par téléphone</dt>
+        <dd><a class="lien" href="tel:0000000000">000 000-0000</a><span class="sous">La réception voit les désistements de la journée. C’est la voie la plus rapide.</span></dd>
       </div>
-      <div>
-        <h3>est-ce que mon assurance va me rembourser ?</h3>
-        <p>Ça dépend de votre contrat, et nous ne le connaissons pas. Nous remettons un reçu conforme ; nous ne faisons pas la réclamation à votre place et nous ne garantissons aucun remboursement.</p>
+      <div class="carte">
+        <dt>Autrement</dt>
+        <dd><a class="lien" href="mailto:courriel@exemple.ca">courriel@exemple.ca</a><span class="sous">Adresse sur demande. Aucun rendez-vous n’est confirmé par courriel&nbsp;: on rappelle.</span></dd>
       </div>
-      <div>
-        <h3>faut-il être inscrit pour venir au sans rendez-vous ?</h3>
-        <p>Non. Le matin est ouvert à tout le monde, dossier ou pas. Venir le matin ne vous inscrit pas non plus : l’inscription passe par une première visite, et son délai est au tableau.</p>
+      <div class="carte">
+        <dt>L’accueil</dt>
+        <dd>
+          <div class="h"><span>Lundi au vendredi</span><b>7 h 30 – 17 h</b></div>
+          <div class="h"><span>Samedi</span><b>8 h – 12 h</b></div>
+          <div class="h"><span>Dimanche</span><b>Fermé</b></div>
+        </dd>
       </div>
-      <div>
-        <h3>pourquoi le délai affiché a changé depuis hier ?</h3>
-        <p>Parce qu’il est relevé deux fois par jour, à 7 h 40 et à 13 h, et qu’une annulation le fait descendre. La date et l’heure du relevé sont écrites à côté de chaque chiffre — si elles sont vieilles de plus d’une demi-journée, dites-le nous.</p>
-      </div>
-      <div>
-        <h3>est-ce que le rendez-vous dure vraiment la durée écrite ?</h3>
-        <p>C’est la durée bloquée à l’horaire. Elle est tenue dans la grande majorité des cas ; quand un rendez-vous déborde, celui d’après commence en retard et on vient vous le dire dans la salle d’attente.</p>
-      </div>
-      <div>
-        <h3>puis-je voir le même professionnel chaque fois ?</h3>
-        <p>Pour un suivi, oui : le rendez-vous est pris avec celui qui vous suit. Au sans rendez-vous, non : vous voyez qui est là ce matin-là, et c’est écrit sur votre numéro.</p>
-      </div>
-      <div>
-        <h3>pourquoi n’y a-t-il personne sur vos photos ?</h3>
-        <p>Parce qu’un visage dans une salle d’attente est un renseignement de santé. Aucune des sept photographies de ce site ne laisse voir un visage — regardez-les une par une, la vérification prend trente secondes.</p>
-      </div>
-      <div>
-        <h3>que se passe-t-il si j’arrive et que c’est plein ?</h3>
-        <p>On vous le dit à la porte, on vous donne le délai du lendemain, et si votre cas ne peut pas attendre on vous dit où aller — y compris quand ce n’est pas ici. On ne vous fait pas asseoir pour vous l’annoncer une heure plus tard.</p>
-      </div>
+    </dl>
+
+    <div class="fin">
+      <a class="btn btn--p" href="tel:0000000000">Appeler la clinique</a>
+      <p style="color:#4e6373;font-size:14.5px;max-width:48ch">Il n’y a pas de service de garde la nuit, et pas de répondeur qui rappelle. En dehors des heures&nbsp;: 8-1-1, ou 9-1-1 si c’est urgent.</p>
     </div>
   </div>
 </section>
 
-<!-- ══ PRENDRE RENDEZ-VOUS ════════════════════════════════ -->
-<section class="sec f-p" id="rdv">
-  <div class="env">
-    <div class="enT">
-      <div>
-        <p class="eti">Prendre rendez-vous</p>
-        <h2 class="tt">une demande,<br>rappelée en une heure ouvrable</h2>
-      </div>
-      <p class="tx">Ce formulaire ne réserve rien : il demande un rappel. La réception vous appelle et fixe l’heure avec vous, parce qu’une plage réservée par erreur est une plage perdue pour quelqu’un d’autre.</p>
-    </div>
+</main>
 
-    <div class="rbar">
-      <div>
-        <p class="eti">Prochaine plage libre<br>toutes disciplines</p>
-        <p class="v"><span class="nb">2</span><span class="un">jours</span></p>
-        <div class="jauge" style="--p:5.9%;--n:34"><i></i></div>
-        <p class="w">Lundi 3 août, 8 h 40, avec l’un des cinq médecins. Relevé du 1<sup>er</sup> août, 9 h 10.</p>
-      </div>
-      <div>
-        <p class="eti">Accueil</p>
-        <p class="w"><b>Lundi au vendredi</b><br>7 h 30 à 17 h</p>
-        <p class="w"><b>Samedi</b><br>8 h à 12 h</p>
-        <p class="w"><b>Dimanche</b><br>fermé</p>
-      </div>
-      <div>
-        <p class="eti">Par téléphone</p>
-        <p class="w gr">000 000-0000</p>
-        <p class="w">C’est la voie la plus rapide : la réception voit les désistements de la journée, que ce formulaire ne voit pas.</p>
-      </div>
-      <div>
-        <p class="eti">Autrement</p>
-        <p class="w gr">courriel@exemple.ca</p>
-        <p class="w">Adresse sur demande.<br>Aucun rendez-vous n’est confirmé par courriel : on rappelle.</p>
-      </div>
+<footer class="pied">
+  <div class="cont">
+    <div class="pied-h">
+      <span class="pied-n"><span class="past past--c">CR</span> Clinique du Riverain</span>
+      <nav class="pied-m">
+        <a href="#haut">Haut de page</a>
+        <a href="#matin">Le matin</a>
+        <a href="#sans">Sans rendez-vous</a>
+        <a href="#equipe">L’équipe</a>
+        <a href="#visite">La visite</a>
+        <a href="#urgence">Urgence</a>
+        <a href="#rendez-vous">Rendez-vous</a>
+      </nav>
     </div>
-
-    <div class="avis">
-      <p class="eti">À lire avant d’écrire</p>
-      <p>N’écrivez aucun renseignement médical dans ce formulaire : ni diagnostic, ni médicament, ni résultat. Un motif en trois mots suffit à choisir la bonne durée. <b>Et si l’un des neuf signes de la section urgence est présent, n’écrivez pas : appelez le 9-1-1.</b></p>
-    </div>
-
-    <form class="form" novalidate>
-      <div class="ch"><label for="nom">Nom</label><input id="nom" name="nom" type="text" placeholder="Prénom et nom" autocomplete="name"></div>
-      <div class="ch"><label for="tel">Téléphone</label><input id="tel" name="tel" type="tel" placeholder="000 000-0000" autocomplete="tel"></div>
-      <div class="ch"><label for="courriel">Courriel</label><input id="courriel" name="courriel" type="email" placeholder="courriel@exemple.ca" autocomplete="email"></div>
-      <div class="ch">
-        <label for="dossier">Avez-vous un dossier ici ?</label>
-        <select id="dossier" name="dossier">
-          <option>Oui, je suis inscrit</option>
-          <option>Non, jamais venu</option>
-          <option>Je ne sais pas</option>
-        </select>
-      </div>
-      <div class="ch">
-        <label for="type">Type de consultation</label>
-        <select id="type" name="type">
-          <option>Nouveau problème — 2 jours</option>
-          <option>Renouvellement d’ordonnance — 3 jours</option>
-          <option>Physiothérapie, suivi — 3 jours</option>
-          <option>Infirmière praticienne — 4 jours</option>
-          <option>Résultats à discuter — 5 jours</option>
-          <option>Suivi régulier — 6 jours</option>
-          <option>Physiothérapie, évaluation — 9 jours</option>
-          <option>Première visite — 24 jours</option>
-          <option>Examen médical complet — 34 jours</option>
-        </select>
-      </div>
-      <div class="ch">
-        <label for="moment">Moment qui vous convient</label>
-        <select id="moment" name="moment">
-          <option>Le matin, avant 11 h</option>
-          <option>Le midi, 11 h à 13 h</option>
-          <option>L’après-midi, après 13 h</option>
-          <option>Le samedi</option>
-          <option>N’importe quand, le plus tôt possible</option>
-        </select>
-      </div>
-      <div class="ch ch--m"><label for="motif">Motif, en trois mots</label><textarea id="motif" name="motif" placeholder="Exemple : douleur au genou · renouvellement · suivi de tension"></textarea></div>
-      <div class="ch ch--case">
-        <input id="ok" name="ok" type="checkbox">
-        <label for="ok">J’accepte d’être rappelé au numéro indiqué. Je n’ai écrit aucun renseignement médical dans ce formulaire.</label>
-      </div>
-      <div class="piedf">
-        <button class="bt" type="submit">Demander un rappel<span class="fl" aria-hidden="true"></span></button>
-        <p class="m">Formulaire inerte · ce site est une démonstration et n’envoie rien</p>
-      </div>
-    </form>
-  </div>
-</section>
-
-<!-- ══ PIED ═══════════════════════════════════════════════ -->
-<footer class="sec f-s">
-  <div class="env">
-    <div class="pied">
-      <div class="pied__mq">
-        <b>clinique du riverain</b>
-        <span>Médecine familiale · Québec</span>
-        <p style="margin-top:20px">Cinq médecins, deux infirmières praticiennes spécialisées, une physiothérapeute. Sur rendez-vous, et sans rendez-vous le matin.</p>
+    <dl class="pied-g">
+      <div>
+        <dt>Joindre</dt>
+        <dd>000 000-0000<br>courriel@exemple.ca<br>Adresse sur demande</dd>
       </div>
       <div>
-        <h4>Joindre</h4>
-        <p>Téléphone<br>000 000-0000</p>
-        <p style="margin-top:14px">Courriel<br><a href="#rdv">courriel@exemple.ca</a></p>
-        <p style="margin-top:14px">Adresse sur demande</p>
+        <dt>Les heures</dt>
+        <dd>Accueil&nbsp;: lun. au ven., 7 h 30 à 17 h · samedi, 8 h à 12 h<br>Sans rendez-vous&nbsp;: lun. au ven., 7 h 30 à 11 h 30 · samedi, 8 h à 11 h<br>Dimanche&nbsp;: fermé</dd>
       </div>
       <div>
-        <h4>Heures</h4>
-        <ul>
-          <li><b>Accueil</b><br>lun. au ven., 7 h 30 à 17 h<br>samedi, 8 h à 12 h</li>
-          <li style="margin-top:14px"><b>Sans rendez-vous</b><br>lun. au ven., 7 h 30 à 11 h 30<br>samedi, 8 h à 11 h</li>
-          <li style="margin-top:14px"><b>Dimanche</b><br>fermé</li>
-        </ul>
+        <dt>En dehors des heures</dt>
+        <dd>Urgence · 9-1-1<br>Info-Santé · 8-1-1, jour et nuit<br>Info-Social · 8-1-1, option 2</dd>
       </div>
-      <div>
-        <h4>En dehors des heures</h4>
-        <ul>
-          <li>Urgence · <b>9-1-1</b></li>
-          <li>Info-Santé · <b>8-1-1</b>, jour et nuit</li>
-          <li>Info-Social · <b>8-1-1</b>, option 2</li>
-        </ul>
-        <p style="margin-top:14px">La clinique n’a pas de service de garde la nuit et n’a pas de répondeur qui rappelle.</p>
-      </div>
-    </div>
-    <div class="bas">
-      <p class="rel"><b>Relevé</b> · Sam. 1 août 2026, 9 h 10 · Sans rendez-vous 40 min · Prochain rendez-vous 2 jours · 8 places restantes · Liste d’attente 31 personnes</p>
-      <p class="demo">Site de démonstration · entreprise fictive · aucun soin réel n’est offert</p>
+    </dl>
+    <div class="pied-b">
+      <p>La Clinique du Riverain est une entreprise fictive. Les délais, les places, les nombres et les coordonnées sont des exemples cohérents entre eux, pas l’offre d’une clinique existante. Aucune marque et aucun produit réel n’est nommé sur cette page.</p>
+      <p>Site de démonstration — aucun script, aucune requête tierce, aucun témoin.</p>
     </div>
   </div>
 </footer>
