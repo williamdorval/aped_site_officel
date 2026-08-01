@@ -62,25 +62,168 @@ const TIRAGES = {
     { n: 3, emploi: "bois d'oeuvre en reserve",
       src: "url:" + PX + "/12278581/pexels-photo-12278581.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/stacks-of-lumbers-in-close-up-photography-12278581/", fen: { x: 0.08, y: 0.10, w: 0.84 } },
-    /* Les chantiers interieurs, en reprojection gnomonique. */
-    { n: 4, emploi: "gros oeuvre, murs de blocs", src: "ph:interior_construction", licence: LIC_PH,
-      page: "https://polyhaven.com/a/interior_construction", yaw: 135, pitch: -6, hfov: 80 },
-    { n: 5, emploi: "sous-sol a finir", src: "ph:interior_construction", licence: LIC_PH,
-      page: "https://polyhaven.com/a/interior_construction", yaw: 270, pitch: -6, hfov: 80 },
+    /* TROIS SOURCES ECARTEES, ET C'EST MOI QUI LES AVAIS CHOISIES.  D-656
+       · `ph:interior_construction` portait « Onduline » imprime en
+         boucle sur la sous-toiture, lisible sur toute la moitie haute
+         du panorama — donc sur les vues 4 ET 5. Une marque reelle
+         dans une demonstration d'entreprise fictive, c'est
+         exactement l'interdit du projet.
+       · `ph:carpentry_shop_02` a 90 degres n'est pas un atelier :
+         c'est une reserve d'etageres de boites de lait en poudre,
+         avec deux marques parfaitement lisibles.
+       Les trois sont parties. Je ne les avais pas REGARDEES — je les
+       avais choisies sur le nom du panorama et sur une
+       planche-contact ou le texte imprime est trop petit pour se
+       voir. Une planche-contact ne remplace pas l'image en taille
+       reelle quand ce qu'on cherche est un mot. */
+    { n: 4, emploi: "chantier interieur, cloisons montees", src: "ph:unfinished_office", licence: LIC_PH,
+      page: "https://polyhaven.com/a/unfinished_office", yaw: 150, pitch: -6, hfov: 82 },
+    /* `small_empty_room_2` a d'abord ete mis ici, et c'est une piece
+       aux murs marbres avec des briques de verre de couleur : ni un
+       sous-sol, ni un chantier. Je l'avais deja ecartee pour cette
+       raison dans un autre tirage, et je l'ai reprise sans regarder. */
+    { n: 5, emploi: "sous-sol a finir", src: "ph:debris_basement_corridor", licence: LIC_PH,
+      page: "https://polyhaven.com/a/debris_basement_corridor", yaw: 0, pitch: -4, hfov: 84 },
     { n: 6, emploi: "atelier de menuiserie", src: "ph:carpentry_shop_01", licence: LIC_PH,
       page: "https://polyhaven.com/a/carpentry_shop_01", yaw: 270, pitch: -4, hfov: 78 },
-    { n: 7, emploi: "atelier, second poste", src: "ph:carpentry_shop_02", licence: LIC_PH,
-      page: "https://polyhaven.com/a/carpentry_shop_02", yaw: 90, pitch: -4, hfov: 78 },
+    { n: 7, emploi: "atelier, second poste", src: "ph:carpentry_shop_01", licence: LIC_PH,
+      page: "https://polyhaven.com/a/carpentry_shop_01", yaw: 90, pitch: -4, hfov: 78 },
     { n: 8, emploi: "combles amenages", src: "ph:pine_attic", licence: LIC_PH,
       page: "https://polyhaven.com/a/pine_attic", yaw: 180, pitch: -6, hfov: 80 },
     { n: 9, emploi: "salle de bain livree", src: "ph:modern_bathroom", licence: LIC_PH,
       page: "https://polyhaven.com/a/modern_bathroom", yaw: 180, pitch: -8, hfov: 80 },
     { n: 10, emploi: "cuisine livree", src: "ph:kiara_interior", licence: LIC_PH,
       page: "https://polyhaven.com/a/kiara_interior", yaw: 180, pitch: -6, hfov: 80 },
-    { n: 11, emploi: "piece finie, plancher neuf", src: "ph:small_empty_house", licence: LIC_PH,
+    /* DEUX TIRAGES GARDES MAIS NON POSES SUR LE SITE.  D-657
+       Le site ecrit, en toutes lettres a la section Services : « On ne
+       fait pas de commercial, pas de multilogement neuf, pas de
+       piscine creusee. » Ces deux images-la ne peuvent donc pas etre
+       montrees comme des chantiers de l'entreprise :
+       · 11 — un mur ocre nu, sans un outil ni une trace de travail :
+         rien n'y prouve qu'un entrepreneur y soit passe ;
+       · 12 — un hall industriel a colonnes et cloisons de tole. Aucune
+         lecture residentielle ne tient : la poser ici contredirait la
+         ligne 705 de la page.
+       Elles restent produites et licenciees — un autre secteur peut en
+       avoir l'emploi. Elles ne sont referencees par aucune page. */
+    { n: 11, emploi: "non posee — piece finie, plancher neuf", src: "ph:small_empty_house", licence: LIC_PH,
       page: "https://polyhaven.com/a/small_empty_house", yaw: 70, pitch: -6, hfov: 80 },
-    { n: 12, emploi: "bureau en chantier", src: "ph:unfinished_office", licence: LIC_PH,
-      page: "https://polyhaven.com/a/unfinished_office", yaw: 150, pitch: -6, hfov: 80 }
+    /* Le 4 tire deja `unfinished_office` a 150 degres : reprendre le
+       meme angle ici recreait exactement le doublon qu'on corrige.
+       Autre panorama, autre sujet. */
+    { n: 12, emploi: "non posee — grand volume industriel", src: "ph:empty_warehouse_01", licence: LIC_PH,
+      page: "https://polyhaven.com/a/empty_warehouse_01", yaw: 200, pitch: -4, hfov: 84 }
+  ],
+
+  /* IMMOBILIER — DIX PROPRIETES, DONC DIX PROPRIETES.  D-658
+     La page annonce dix inscriptions a dix adresses differentes et
+     n'avait QUATRE photos, reprises seize fois. Le meme salon portait
+     « 412, chemin du Vieux-Moulin » et « 77, rue du Coteau-Vert » ; la
+     meme cour etait legendee « terrasse DEVANT la maison » a un
+     endroit et « cour ARRIERE » a un autre. Deux legendes qui se
+     contredisent sur un seul fichier, c'est la question Q1 qui tombe :
+     ce n'est pas vrai, et ca se voit a l'oeil nu en descendant la
+     page.
+     Une adresse = une photo qui n'appartient qu'a elle. Seule
+     exception, assumee : la propriete vedette (n. 2, 12, 16) est
+     photographiee TROIS fois, parce que c'est la meme maison et que
+     les legendes le disent — c'est le contraire d'un doublon. */
+  /* POURQUOI PEXELS ET PAS POLY HAVEN, ICI.
+     Premier tirage fait en panoramas Poly Haven reprojetes : NEUF sur
+     seize etaient a jeter, et je ne l'ai su qu'en les regardant. Une
+     chambre d'hotel avec sa consigne d'evacuation encadree sur la
+     porte, un cloitre a colonnes vendu comme une copropriete, un
+     chateau a lustre vendu comme un cottage de 1989, un patio sous
+     acacias au bord d'un lac africain vendu comme une cour arriere
+     quebecoise, et trois salons si sombres qu'on y voit surtout un
+     televiseur cathodique. La collection Poly Haven est faite pour
+     eclairer des rendus 3D, pas pour montrer des maisons : les scenes
+     residentielles y sont rares, datees et sombres. L'immobilier se
+     photographie, il ne se reprojette pas. */
+  immobilier: [
+    { n: 1, emploi: "heros — sejour d'une inscription", large: true,
+      src: "url:" + PX + "/3935315/pexels-photo-3935315.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/3935315/", fen: { x: 0, y: 0.10, w: 1 } },
+    /* LE TYPE DE LA MAISON DOIT SUIVRE LA FICHE.
+       Premiere passe : une maison a etages posee sur une inscription
+       ecrite « plain-pied 2004 », et une autre a etages sur un
+       « plain-pied 2012 ». C'est le meme defaut que les legendes qui
+       se contredisaient, en plus discret : la photo dit une chose, la
+       fiche en dit une autre, et c'est la photo qu'on croit. Chaque
+       facade est maintenant du type que la fiche annonce ; les
+       inscriptions dont je n'avais pas la bonne facade recoivent un
+       INTERIEUR, qui n'affirme rien sur le nombre d'etages. */
+    { n: 2, emploi: "bien 1 · 412 ch. du Vieux-Moulin — facade (plain-pied)", large: true,
+      src: "url:" + PX + "/10628468/pexels-photo-10628468.jpeg" + GRAND, licence: LIC_PX,
+      /* La fenetre s'arrete a 66 % : au-dela, le NUMERO CIVIQUE de la
+         vraie maison est peint sur le mur, et il ne dit pas 412. Un
+         chiffre lisible qui contredit la fiche est une fausseté comme
+         une autre — on le sort du cadre, on ne compte pas sur la
+         petitesse du rendu. */
+      page: "https://www.pexels.com/photo/10628468/", fen: { x: 0.15, y: 0.10, w: 0.51 } },
+    { n: 3, emploi: "bien 2 · 15 crois. des Aubepines — sejour",
+      src: "url:" + PX + "/28586197/pexels-photo-28586197.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/28586197/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    { n: 4, emploi: "bien 3 · 87 r. des Bouleaux-Blancs — facade (cottage)",
+      src: "url:" + PX + "/8583638/pexels-photo-8583638.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8583638/", fen: { x: 0.09, y: 0.06, w: 0.82 } },
+    { n: 5, emploi: "bien 4 · 230 montee du Cormier — chambre",
+      src: "url:" + PX + "/8135505/pexels-photo-8135505.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8135505/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    { n: 6, emploi: "bien 5 · 6-B r. de la Draveuse — sejour", large: true,
+      src: "url:" + PX + "/7005270/pexels-photo-7005270.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7005270/", fen: { x: 0, y: 0.12, w: 1 } },
+    /* `9811331` etait une fermette ABANDONNEE : peinture partie,
+       galerie effondree, fenetres crevees. La fiche annonce « renovee
+       2019 » a 875 000 $. Une ruine sous ce prix-la, c'est la photo
+       qui traite la fiche de menteuse. */
+    { n: 7, emploi: "bien 6 · 1104 rang du Grand-Brule — facade (fermette)",
+      src: "url:" + PX + "/32150698/pexels-photo-32150698.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/32150698/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    { n: 8, emploi: "bien 7 · 48 imp. des Perdrix — sejour",
+      src: "url:" + PX + "/7027771/pexels-photo-7027771.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7027771/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    { n: 9, emploi: "bien 8 · 320 av. Ferland Ouest — chambre",
+      src: "url:" + PX + "/6782479/pexels-photo-6782479.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6782479/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    { n: 10, emploi: "bien 9 · 77 r. du Coteau-Vert — sejour au foyer", large: true,
+      src: "url:" + PX + "/5353880/pexels-photo-5353880.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/5353880/", fen: { x: 0, y: 0.10, w: 1 } },
+    { n: 11, emploi: "bien 10 · 9 ch. des Quatre-Vents — cuisine",
+      src: "url:" + PX + "/13009887/pexels-photo-13009887.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/13009887/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    /* Le n. 12 sert DEUX fois : fiche vedette et visionneuse 360. Ce
+       n'est pas le doublon qu'on corrige — c'est la meme piece de la
+       meme maison, et les deux legendes le disent. La visionneuse
+       porte trois reperes (« poele a bois », « sortie sur la
+       terrasse », « aller a la cuisine ») : ils doivent pointer sur ce
+       qu'on voit, donc sur CETTE image-la. */
+    { n: 12, emploi: "vedette + visite 360 · salon au foyer, sortie sur la terrasse", large: true,
+      src: "url:" + PX + "/3990600/pexels-photo-3990600.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/3990600/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 13, emploi: "vedette · sejour, exposition sud",
+      src: "url:" + PX + "/35430055/pexels-photo-35430055.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/35430055/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    { n: 14, emploi: "vedette · chambre 2",
+      src: "url:" + PX + "/7019020/pexels-photo-7019020.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7019020/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    /* `12700434` montrait une terrasse qui donne sur QUATRE rangees de
+       maisons a vingt metres. La fiche de la vedette ecrit « terrain
+       de 8 200 pi2 SANS VOISIN ARRIERE ». On garde la phrase, on
+       change la photo. */
+    { n: 15, emploi: "vedette · terrasse et cour arriere",
+      /* Une terrasse d'architecte en beton noir a la galerie, une
+         facade de plain-pied en clin gris sur la fiche : ce n'est pas
+         la meme maison, et les deux photos se regardent a trois
+         ecrans d'ecart. La vue retenue cadre la terrasse et la
+         verdure SANS montrer l'architecture — elle ne contredit rien.
+         `fen.w` porte sur la LARGEUR : sur une source en PORTRAIT, la
+         hauteur calculee est bien plus courte que l'image et le cadre
+         se pose EN HAUT. Deux essais m'ont rendu la cime des arbres et
+         une porte vitree — pas la terrasse. Verifier l'orientation de
+         la source avant de choisir `fen`.  Piege 57 */
+      src: "url:" + PX + "/8180361/pexels-photo-8180361.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8180361/", fen: { x: 0.09, y: 0.04, w: 0.82 } }
   ]
 };
 
