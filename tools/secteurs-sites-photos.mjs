@@ -137,9 +137,15 @@ const TIRAGES = {
     { n: 3, emploi: "salle — bacs de lavage, brique et fenetre sur la ville", large: true,
       src: "url:" + PX + "/7195796/pexels-photo-7195796.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/7195796/", fen: { x: 0, y: 0.08, w: 1 } },
+    /* La fenetre commence a 10 % : un fragment d'enseigne — quatre
+       lettres, « …LISH » — est peint sur le mur du fond, a gauche.
+       Il avait ete « regle » par un `object-position` dans la page.
+       Un `object-position` deplace la fenetre de la mise en page ; le
+       mot reste dans le FICHIER et revient au premier changement de
+       gabarit. On le sort a la source.  D-656 · piege 57 */
     { n: 4, emploi: "salle — bacs de lavage cote clair, mur de couleurs", large: true,
       src: "url:" + PX + "/7195805/pexels-photo-7195805.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/7195805/", fen: { x: 0, y: 0.08, w: 1 } },
+      page: "https://www.pexels.com/photo/7195805/", fen: { x: 0.10, y: 0.08, w: 0.90 } },
     { n: 5, emploi: "coupe — nuque degradee vue de dos, noir et blanc",
       src: "url:" + PX + "/7956486/pexels-photo-7956486.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/7956486/", fen: { x: 0.09, y: 0.18, w: 0.82 } },
