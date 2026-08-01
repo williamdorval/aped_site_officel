@@ -326,7 +326,20 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/7383644/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
     { n: 5, emploi: "studio — projecteurs sur pied, fond neutre",
       src: "url:" + PX + "/53265/pexels-photo-53265.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/53265/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+      page: "https://www.pexels.com/photo/53265/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    /* TOUT LE RAYON « APPAREIL PHOTO » EST ECARTE EN BLOC, et c'est la
+       meme cause que les negatifs : un boitier PORTE LE NOM DE SON
+       FABRICANT grave sur le prisme, en gros, au centre de l'image.
+       Vingt-trois candidats regardes, vingt-trois marques. Un secteur
+       ou l'objet du metier est un support de logo se montre par ce
+       qu'il PRODUIT et par le lieu ou il travaille — le tirage
+       encadre et le studio — jamais par l'outil. */
+    { n: 6, emploi: "tirages — dix epreuves encadrees, accrochage de galerie", large: true,
+      src: "url:" + PX + "/310435/pexels-photo-310435.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/310435/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 7, emploi: "studio — deux boites a lumiere de part et d'autre du fond", large: true,
+      src: "url:" + PX + "/30332804/pexels-photo-30332804.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/30332804/", fen: { x: 0, y: 0.06, w: 1 } }
   ],
 
   construction: [
