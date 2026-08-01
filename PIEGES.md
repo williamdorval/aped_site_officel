@@ -960,3 +960,67 @@ qu'ils tiennent. `tools/planche-secteurs-12.mjs` fait la planche.
 en base64 dans une seule page **tue le navigateur**. Il faut deux
 passes — découper le premier écran de chacune, une page par image, puis
 composer sur des vignettes.
+
+---
+
+### 64 · `animation-fill-mode: both` rend la moitié du site VIDE en capture pleine page
+
+Les neuf sites de secteur n'avaient aucune animation. Le jour où on
+leur en a posé, les deux premières sessions ont écrit `animation: monte
+both` — c'est ce que dit tous les articles sur les animations pilotées
+par le défilement — et **les deux ont photographié une page blanche**.
+Dix blocs entièrement vides sur la boutique ; ni titre ni image sur le
+salon.
+
+Cause : `both` remplit AUSSI l'avant-plage. Un élément qui n'a pas
+encore atteint son `animation-range` garde donc son état de DÉPART,
+c'est-à-dire `opacity: 0`. Une capture pleine page ne déplace pas le
+défilement — Playwright photographie au-delà de la fenêtre sans
+bouger la position. Tout ce qui est sous le pli est avant sa plage,
+donc invisible. **La sonde ne dit rien : le DOM est complet, les
+images sont chargées, le texte est là. Il est seulement transparent.**
+
+**Correctif : `forwards`, jamais `both`.** Hors de la plage, c'est le
+style de base qui tient — et le style de base est la forme FINALE
+(règle 3 de la structure). La bascule vers l'état de départ se fait à
+`entry 0%`, c'est-à-dire au moment où l'élément n'a pas un pixel de
+visible. Le visiteur ne voit aucune différence ; l'aperçu du panneau,
+lui, voit toute la page.
+
+---
+
+### 65 · `view()` mesure la boîte de l'élément QU'ELLE ANIME, pas celle qu'on regarde
+
+Un odomètre sans script est une pile de chiffres qu'on translate. La
+pile fait dix fois la hauteur de sa fenêtre. En posant
+`animation-timeline: view()` sur la pile, `cover 25 %` tombait **un
+écran et demi plus bas** que prévu : les quatre nombres restaient figés
+à mi-course, progression relevée 0,354 alors que la bande était plein
+cadre.
+
+**Correctif :** déclarer la piste sur la BANDE — celle dont la
+géométrie correspond à ce que le visiteur voit — avec `view-timeline`
+nommée, et la hisser jusqu'à l'élément animé par `timeline-scope`.
+
+**Corollaire, trouvé au même endroit :** `overflow: hidden` sur un rail
+de progression **fait du rail un conteneur de défilement**, et un
+`view()` posé sur son remplissage se met à mesurer le remplissage
+*dans le rail* au lieu du rail *dans la page* — progression bloquée à
+1,00, la barre naît pleine. Un `scaleX` depuis la gauche ne sort jamais
+de sa boîte : le `overflow` n'avait aucune raison d'être là.
+
+---
+
+### 66 · `overflow-x: clip` cache un vrai défaut à une sonde `scrollWidth`
+
+Le clip est nécessaire dès qu'un élément arrive de `+60 px` : sans lui,
+la révélation latérale déborde à droite pendant toute sa course. Mais
+il a aussi masqué un accordéon cassé sous 560 px — le nom du service et
+son signe `+` posés sur la même case de grille, le nom partant hors
+écran. `document.documentElement.scrollWidth` répondait « aucun
+débordement », et c'était vrai : le document ne débordait pas, l'enfant
+si.
+
+**Correctif :** mesurer aussi les enfants contre leur COLONNE parente,
+pas seulement le document contre la fenêtre. Et regarder la capture :
+c'est elle qui l'a montré.
