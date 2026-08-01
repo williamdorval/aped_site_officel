@@ -3,33 +3,57 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Salon Brume — coupe, couleur et soin du cheveu, Québec</title>
-<meta name="description" content="Salon de coiffure et d’esthétique à Québec. Un fauteuil ne sert qu’à une personne à la fois : c’est la règle qui décide de tout le reste.">
+<title>Salon Brume · coupe, couleur et soin du cheveu, Québec</title>
+<meta name="description" content="Salon de coiffure et d’esthétique à Québec. Un fauteuil, une personne, du début à la fin : c’est la règle qui décide de tout le reste.">
 <meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" href="data:,">
+<!-- Le titre de couverture est le plus gros élément peint de la page,
+     donc son candidat LCP. Sans préchargement, le didone n'arrive
+     qu'après l'analyse de la feuille : le titre se peint deux fois. -->
+<link rel="preload" href="../../fonts/demos/bodoni-moda-1.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   SALON BRUME — une double page de magazine de mode.
+   SALON BRUME — UN MAGAZINE DE MODE, PAS UN SALON DE BEAUTÉ.
 
-   TROIS COULEURS : blanc #ffffff, noir #0a0a0a, rouge #d81e2e.
-   Gris #6e6e6e pour la légende sur blanc, #a0a0a0 sur noir (le même
-   gris neutre, remonté pour rester lisible — pas une quatrième teinte).
+   ── CE QUI A CHANGÉ LE 2026-08-01, ET POURQUOI ────────────────────
+   La première version tenait la bonne idée et la jouait timidement :
+   titre de 130 px dans une colonne de 45 %, photos de 420 px, trois
+   bandeaux au lieu d’un, un numéro de page décoratif par section.
+   Verdict du propriétaire : « nettement en dessous du niveau ».
+   Les trois références relevées (Salon Heleen Hulsmann, Le Petit
+   Salon, Achilles Heel) tranchent toutes dans le même sens : le titre
+   du premier écran occupe la MOITIÉ de la fenêtre, la photographie
+   est PLEIN CADRE, et l’accent ne sert qu’une fois par écran.
 
-   DEUX FAMILLES : bodoni-moda 700, en bas de casse et très grand, pour
-   l’affichage · archivo 400/600 pour le texte et les capitales
-   espacées. Aucune mono.
+   ── TROIS COULEURS, ET RIEN D’AUTRE ───────────────────────────────
+   blanc #ffffff · noir #0a0a0a · rouge #d81e2e.
+   Deux gris de légende, qui sont le même gris neutre relevé pour
+   rester lisible sur chaque fond : #6e6e6e sur blanc (5,1:1),
+   #a8a8a8 sur noir (8,3:1).
+   Le rouge sur noir tombe à 3,9:1 : il n’y sert donc QUE pour du
+   grand corps et pour les filets, jamais pour du texte courant.
 
-   SIGNATURE : un numéro de page rouge dans la marge de chaque section,
-   et une manchette en capitales espacées au-dessus de chaque titre.
-   Sur les pages noires, le folio se pose dans un carré blanc — un
-   numéro de page en réserve, et du rouge qui reste lisible.
+   ── LA PHOTOGRAPHIE EST TOUTE EN NOIR ET BLANC ────────────────────
+   La direction d’origine gardait deux images de salle en couleur.
+   Regardées en pleine résolution, ces deux-là sont un salon beige
+   dont les fauteuils sont ENCORE SOUS FILM et un salon de barbier
+   vert et brun : deux teintes de plus dans un système qui en compte
+   trois, et deux pièces vides dans un métier qui se juge au geste.
+   Elles sont sorties. Onze images restent, toutes en noir et blanc à
+   fort contraste, toutes cadrées sur une main, un ciseau, une mèche.
 
-   PHOTOGRAPHIE : noir et blanc à fort contraste partout, sauf les deux
-   images de salon, gardées en couleur. C’est ce qui fait la page de
-   mode.
+   ── LA SIGNATURE, UNE SEULE, QUATRE FOIS ──────────────────────────
+   Un titre énorme coupé en deux dans le sens de la lecture : la
+   moitié haute arrive par la droite, la moitié basse par la gauche,
+   et les deux se referment sur la ligne de coupe. Un filet rouge se
+   trace au-dessus. C’est le seul geste de mouvement inventé pour ce
+   site, et c’est celui du métier.
 
-   Angles vifs, aucune ombre, aucun dégradé, aucun flou, aucune courbe.
-   Zéro script, zéro requête tierce.
+   ── ANGLES VIFS, AUCUNE OMBRE, AUCUN DÉGRADÉ, AUCUN FLOU ──────────
+   GSAP et ScrollTrigger sont auto-hébergés. Zéro requête tierce.
+   Rien de ce qui se LIT ne dépend du script : sans lui, la page est
+   simplement immobile, et complète.
    ═══════════════════════════════════════════════════════════════════ */
 
 @font-face{font-family:"bodoni-moda";src:url("../../fonts/demos/bodoni-moda-0.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
@@ -43,586 +67,637 @@
   --blanc:#ffffff;
   --noir:#0a0a0a;
   --rouge:#d81e2e;
-  --gris:#6e6e6e;
   --aff:"bodoni-moda",Didot,"Bodoni MT","Times New Roman",serif;
   --txt:"archivo",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
+  --pad:clamp(18px,4vw,68px);
   --filet:#0a0a0a;
   --leg:#6e6e6e;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--blanc)}
-body{background:var(--blanc);color:var(--noir);font:400 15px/1.62 var(--txt);font-kerning:normal}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--blanc);
+  color-scheme:light}
+body{background:var(--blanc);color:var(--noir);font:400 15px/1.62 var(--txt);
+  font-kerning:normal;overflow-x:clip;text-wrap:pretty}
 img{display:block;max-width:100%}
 ul,ol{list-style:none}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--rouge);outline-offset:3px}
-.noir :focus-visible,.bandeau--rouge :focus-visible{outline-color:var(--blanc)}
+a{color:inherit;-webkit-tap-highlight-color:rgba(216,30,46,.24)}
+a,summary{touch-action:manipulation}
+:focus-visible{outline:2px solid var(--rouge);outline-offset:4px}
+.noir :focus-visible,.couv :focus-visible,.bande :focus-visible{outline-color:var(--blanc)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);
+  white-space:nowrap}
+/* Le saut au contenu : il n'apparaît qu'au clavier, et il se pose
+   par-dessus le titre de couverture sans rien déplacer. */
+.saut{position:absolute;left:-9999px;top:0;z-index:9;background:var(--noir);
+  color:var(--blanc);padding:14px 22px;font:600 11px/1 var(--txt);
+  letter-spacing:.2em;text-transform:uppercase;text-decoration:none}
+.saut:focus-visible{left:0}
 
 /* ── ossature ───────────────────────────────────────────────────── */
-.cont{max-width:1340px;margin:0 auto;padding:0 clamp(18px,4vw,64px)}
-.sec{padding:clamp(76px,11vw,150px) 0;overflow-x:clip}
+/* `env(safe-area-inset-*)` : la couverture et les planches vont d'un
+   bord à l'autre. Sur un téléphone à encoche, sans ça, le libellé de
+   marque passe sous le coin arrondi de l'écran. */
+.cont{max-width:1380px;margin:0 auto;
+  padding-left:max(var(--pad),env(safe-area-inset-left));
+  padding-right:max(var(--pad),env(safe-area-inset-right))}
+.sec{padding:clamp(84px,12vw,168px) 0;overflow-x:clip;position:relative}
 .blanc{background:var(--blanc);color:var(--noir);--filet:#0a0a0a;--leg:#6e6e6e}
-.noir{background:var(--noir);color:var(--blanc);--filet:#ffffff;--leg:#a0a0a0}
-section[id]{scroll-margin-top:10px}
+.noir{background:var(--noir);color:var(--blanc);--filet:#ffffff;--leg:#a8a8a8}
+section[id]{scroll-margin-top:0}
 
-/* ── typographie ────────────────────────────────────────────────── */
+/* ── typographie : le saut est le dispositif ────────────────────── */
 h1,h2,.aff{font-family:var(--aff);font-weight:700;text-transform:lowercase;
-  letter-spacing:-.02em;font-variant-ligatures:common-ligatures}
-h1{font-size:clamp(54px,11.4vw,160px);line-height:.88}
-h2{font-size:clamp(44px,6.6vw,104px);line-height:.9}
-.manchette{font:600 11px/1 var(--txt);letter-spacing:.34em;text-transform:uppercase}
-.folio{display:inline-block;font:600 12.5px/1 var(--txt);letter-spacing:.24em;
-  color:var(--rouge);white-space:nowrap}
-.noir .folio,.pied .folio{background:var(--blanc);padding:8px 11px 7px}
-.chap{font-size:15px;line-height:1.62;max-width:52ch}
-.chap+.chap{margin-top:15px}
-.leg{font:italic 400 13px/1.5 var(--txt);color:var(--leg);max-width:46ch}
+  letter-spacing:-.022em;font-variant-ligatures:common-ligatures}
+h2{font-size:clamp(46px,8.6vw,132px);line-height:.86}
+.chap{font-size:16px;line-height:1.6;max-width:50ch}
+.chap+.chap{margin-top:16px}
+.leg{font:italic 400 12.5px/1.5 var(--txt);color:var(--leg);max-width:44ch;
+  margin-top:14px;padding-top:12px;border-top:1px solid var(--filet)}
 .gris{color:var(--leg)}
 b,strong{font-weight:600}
+.mini{font:600 10.5px/1 var(--txt);letter-spacing:.22em;text-transform:uppercase}
 
-/* ── LA SIGNATURE : la marge, le folio, la réglure verticale ────── */
-.page{display:grid;grid-template-columns:clamp(76px,9vw,140px) minmax(0,1fr)}
-.corps{border-left:1px solid var(--filet);padding-left:clamp(20px,3.2vw,58px);min-width:0}
-.tete{margin-bottom:clamp(40px,5vw,74px)}
-.tete .manchette{display:block;margin-bottom:20px}
-/* Le filet de manchette est le seul filet rouge : il se trace de gauche
-   à droite sous chaque titre, et c'est là que la couleur revient. */
-.regle-x{height:2px;background:var(--rouge);margin-bottom:clamp(26px,3.4vw,44px);
-  transform-origin:left center}
+/* ── LA SIGNATURE : le titre coupé en deux ──────────────────────── */
+/* La moitié haute et la moitié basse sont deux copies superposées,
+   découpées à mi-hauteur. Le lecteur d'écran ne lit que `.vh` : les
+   deux copies sont `aria-hidden`. Le recouvrement d'un pixel évite la
+   couture d'anticrénelage sur la ligne de coupe. */
+.tt{position:relative;display:block;margin-bottom:clamp(30px,4vw,56px)}
+.tt-c{display:block}
+.tt-h{clip-path:inset(0 0 calc(50% - 1px) 0)}
+.tt-b{position:absolute;inset:0;clip-path:inset(calc(50% - 1px) 0 0 0)}
+/* le filet rouge : le seul rouge de la plupart des écrans */
+.regle{height:3px;background:var(--rouge);transform-origin:left center;
+  margin-bottom:clamp(22px,3vw,38px)}
 
-/* ── LE MOUVEMENT ───────────────────────────────────────────────── */
-@keyframes leve{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
-@keyframes venirG{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
-@keyframes venirD{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
-@keyframes trace{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes glisse{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes ouvre{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+/* ── micro-interactions, sur CHAQUE cible ───────────────────────── */
+.lien{position:relative;text-decoration:none;padding-bottom:2px}
+.lien::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:var(--rouge);transform:scaleX(0);transform-origin:left center;
+  transition:transform .22s cubic-bezier(.4,0,.2,1)}
+.lien:hover::after,.lien:focus-visible::after{transform:scaleX(1)}
+.lien:active{color:var(--rouge)}
 
-/* `forwards`, JAMAIS `both` : une animation de défilement n'a pas d'état
-   de repos. Avec `both`, tout ce qui est sous le pli est rempli par
-   l'état de DÉPART — une capture pleine page rend alors une page vide.
-   Avec `forwards`, hors de la plage c'est le style de base qui tient,
-   et le style de base est la forme FINALE. La bascule vers l'état de
-   départ se fait à `entry 0%`, quand l'élément n'a pas un pixel de
-   visible. */
+.bouton{display:inline-block;background:var(--noir);color:var(--blanc);text-decoration:none;
+  padding:18px 30px 17px;font:600 11px/1 var(--txt);letter-spacing:.24em;
+  text-transform:uppercase;border:1px solid var(--noir);white-space:nowrap;
+  transition:background .16s linear,border-color .16s linear,color .16s linear,transform .16s ease}
+.bouton:hover,.bouton:focus-visible{background:var(--rouge);border-color:var(--rouge);color:var(--blanc)}
+.bouton:active{transform:translateY(2px)}
+.noir .bouton,.couv-t .bouton{background:var(--noir);color:var(--blanc);border-color:var(--noir)}
+.noir .bouton{background:var(--blanc);color:var(--noir);border-color:var(--blanc)}
+.noir .bouton:hover,.noir .bouton:focus-visible{background:var(--rouge);border-color:var(--rouge);color:var(--blanc)}
 
-/* 1 · le titre se dévoile sous un masque qui monte.
-   Le rembourrage compensé par une marge négative évite que le masque
-   coupe les jambages : la boîte est plus grande, la mise en page non. */
-.rv{display:block;padding:.16em .06em .2em;margin:-.16em -.06em -.2em;
-  animation:leve forwards;animation-timeline:view();animation-range:entry 0% cover 22%}
-.rv-chg{display:block;padding:.16em .06em .2em;margin:-.16em -.06em -.2em;
-  animation:leve 1s .05s both cubic-bezier(.16,1,.3,1)}
-/* 2 · les images arrivent de côté, en alternance */
-.vg{animation:venirG forwards;animation-timeline:view();animation-range:entry 0% cover 24%}
-.vd{animation:venirD forwards;animation-timeline:view();animation-range:entry 0% cover 24%}
-/* le filet de la manchette se trace de gauche à droite */
-.regle-x{animation:trace forwards;animation-timeline:view();animation-range:entry 0% cover 20%}
+/* ── entête ─────────────────────────────────────────────────────
+   Elle vit DANS la colonne blanche de la couverture, pas au-dessus
+   de toute la fenêtre. Posée en travers, ses trois derniers liens
+   tombaient sur la photographie noire en encre noire : illisibles,
+   et aucune sonde ne l'aurait dit. */
+.tetiere{display:flex;align-items:flex-start;gap:clamp(14px,2.4vw,32px);flex-wrap:wrap}
+.logo{text-decoration:none;display:block}
+.logo b{display:block;font:700 30px/1 var(--aff);letter-spacing:-.025em;text-transform:lowercase}
+.logo span{display:block;margin-top:5px;font:400 9.5px/1 var(--txt);letter-spacing:.26em;
+  text-transform:uppercase;color:var(--leg);white-space:nowrap}
+.menu{display:flex;gap:clamp(13px,1.9vw,26px);flex-wrap:wrap;width:100%;
+  padding-top:clamp(18px,2.6vw,30px);order:3}
+.menu a{font:600 10.5px/1 var(--txt);letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+.etiq{font:600 9.5px/1 var(--txt);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--rouge);border:1px solid var(--rouge);padding:7px 10px 6px;
+  white-space:nowrap;margin:5px 0 0 auto}
+
+/* ── LA COUVERTURE ──────────────────────────────────────────────── */
+/* Le titre est ancré en BAS de la colonne blanche : à 1280 × 800 il
+   commence à 321 px et le bouton se termine à 744 px, donc les deux
+   tiennent dans le premier écran. Piège 63. */
+.couv{position:relative;min-height:100svh;display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,.62fr);
+  border-bottom:1px solid var(--noir)}
+.couv-t{display:flex;flex-direction:column;justify-content:space-between;min-width:0;
+  padding:clamp(22px,3vh,30px) clamp(20px,2.6vw,44px) clamp(34px,5.4vh,56px) var(--pad)}
+.couv-bloc{padding-top:clamp(40px,7vh,90px)}
+.couv h1{font-size:clamp(52px,14.6vw,240px);line-height:.82;margin-bottom:clamp(22px,3vh,34px)}
+.couv-p{font-size:17px;line-height:1.5;max-width:34ch;
+  padding-top:clamp(18px,2.4vh,26px);border-top:3px solid var(--rouge)}
+.couv-b{display:flex;align-items:center;gap:clamp(18px,2.6vw,36px);flex-wrap:wrap;
+  margin-top:clamp(24px,3.4vh,40px)}
+.couv-tel{font:400 10.5px/1.4 var(--txt);letter-spacing:.2em;text-transform:uppercase;color:var(--leg)}
+.couv-tel a{display:block;margin-top:6px;font:700 26px/1 var(--aff);
+  letter-spacing:-.015em;color:var(--noir)}
+.couv-ph{position:relative;background:var(--noir);min-height:52vh;overflow:clip;
+  border-left:3px solid var(--rouge)}
+.couv-ph img{position:absolute;top:-6%;left:0;width:100%;height:112%;object-fit:cover;
+  object-position:52% 46%;filter:grayscale(1) contrast(1.3) brightness(.92)}
+.couv-leg{position:absolute;left:0;right:0;bottom:0;padding:clamp(16px,2.4vw,26px);
+  color:var(--blanc);font:italic 400 12.5px/1.45 var(--txt);
+  background:var(--noir);border-top:1px solid var(--blanc)}
+
+/* ── LE BANDEAU : un seul par page, et il est énorme ───────────── */
+.bande{background:var(--rouge);color:var(--blanc);overflow-x:clip;
+  padding:clamp(14px,2vw,26px) 0;border-top:1px solid var(--rouge);
+  border-bottom:1px solid var(--rouge)}
+.bande-p{display:flex;width:max-content;will-change:transform}
+.mots{font-family:var(--aff);font-weight:700;text-transform:lowercase;
+  letter-spacing:-.022em;font-size:clamp(52px,9vw,140px);line-height:1.04;
+  white-space:nowrap;padding-right:.3em}
+.mots i{font-style:normal;color:var(--noir)}
+
+/* ── DUO : texte étroit + image qui touche le bord de l'écran ───── */
+/* Aucun calcul en `vw` : la colonne d'image est le dernier enfant
+   d'une grille dont la section a perdu son rembourrage de ce côté.
+   C'est un vrai fond perdu, et la barre de défilement ne le casse pas. */
+.duo{display:grid;gap:clamp(26px,4vw,68px);align-items:end;
+  grid-template-columns:minmax(0,.86fr) minmax(0,1fr);
+  padding-left:var(--pad);max-width:1380px;margin:0 auto}
+.duo--g{grid-template-columns:minmax(0,1fr) minmax(0,.86fr);
+  padding-left:0;padding-right:var(--pad)}
+.duo--g>.duo-ph{order:-1}
+.duo-t{padding-bottom:clamp(6px,1.4vw,20px);min-width:0}
+.duo-ph{min-width:0}
+
+/* ── les photographies : GRANDES, et en noir et blanc ──────────── */
+/* Trois traitements, et le choix se fait SOURCE PAR SOURCE.
+   Un seul réglage pour onze images écrase les unes et délave les
+   autres : `contrast(1.42)` sur la nuque, dont les cheveux sont déjà
+   presque noirs, l'a rendue illisible en un aplat. `dur` sert aux
+   sources en couleur qui doivent devenir graphiques, `clair` aux
+   sources déjà sombres qu'il faut au contraire ouvrir. */
+.ph{position:relative;overflow:clip}
+.ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.2)}
+.ph--dur img{filter:grayscale(1) contrast(1.36) brightness(.97)}
+.ph--clair img{filter:grayscale(1) contrast(1.1) brightness(1.1)}
+.h-xxl{height:clamp(420px,74vw,880px)}
+.h-xl{height:clamp(380px,58vw,760px)}
+.h-l{height:clamp(320px,44vw,620px)}
+.h-m{height:clamp(260px,34vw,470px)}
+figcaption.leg{max-width:52ch}
+
+/* ── LA PLANCHE : une image pleine largeur, plein écran ─────────── */
+.planche{position:relative;height:100svh;min-height:520px;overflow:clip;
+  background:var(--noir)}
+.planche img{position:absolute;top:-9%;left:0;width:100%;height:118%;object-fit:cover;
+  object-position:50% 42%;filter:grayscale(1) contrast(1.4) brightness(.9)}
+/* la ligne de coupe : elle descend la planche pendant qu'on la traverse */
+/* La ligne de coupe descend en `translate`, pas en `top` : `top`
+   déclenche une mise en page à chaque image, et la planche fait la
+   hauteur de la fenêtre. `will-change` est posé ici et nulle part
+   ailleurs, sur le seul élément qui bouge à chaque image. */
+.coupe{position:absolute;left:0;right:0;top:0;height:3px;background:var(--rouge);
+  z-index:5;will-change:transform}
+/* Le pavé de texte se pose sur un ENCART OPAQUE à arête franche, pas
+   sur une ombre portée : une ombre de 26 px sur une photographie
+   claire par endroits rend un halo gris qui se lit comme un défaut,
+   et elle ne garantit aucun rapport de contraste. L'encart, lui,
+   donne 15:1 partout et c'est un vrai geste de magazine. */
+.planche-t{position:absolute;left:0;right:0;bottom:0;z-index:3;
+  background:rgba(10,10,10,.9);border-top:1px solid var(--blanc);
+  padding:clamp(20px,2.6vw,34px) 0 clamp(24px,3.4vw,44px)}
+.planche-t h2{color:var(--blanc);margin-bottom:0}
+.planche-t p{color:var(--blanc);margin-top:16px;max-width:46ch;font-size:16px;line-height:1.55}
+
+/* ── LE SOMMAIRE : six gestes, et la durée est une barre ────────── */
+.gestes{margin-top:clamp(26px,4vw,52px);border-top:1px solid var(--filet)}
+.geste{border-bottom:1px solid var(--filet)}
+.geste summary{list-style:none;cursor:pointer;display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(120px,.62fr) auto 26px;
+  gap:clamp(14px,2.6vw,36px);align-items:center;padding:clamp(18px,2.4vw,30px) 0}
+.geste summary::-webkit-details-marker{display:none}
+.geste summary::marker{content:""}
+.nom{font-family:var(--aff);font-weight:700;text-transform:lowercase;
+  letter-spacing:-.022em;font-size:clamp(28px,4.4vw,64px);line-height:.98;
+  transition:transform .2s cubic-bezier(.4,0,.2,1),color .2s linear}
+/* la barre EST la durée : 150 min occupe toute la largeur */
+.rail{height:9px;background:transparent;border-bottom:1px solid var(--filet);
+  position:relative}
+.jauge{position:absolute;left:0;bottom:0;height:9px;background:var(--rouge);
+  width:var(--part);transform-origin:left center}
+/* `tabular-nums` : le nombre est INTERPOLÉ de zéro à sa valeur. Sans
+   chasse fixe, « 8 » et « 1 » n'ont pas la même largeur et la colonne
+   des minutes tremble pendant toute la montée. */
+.min{font:600 12px/1 var(--txt);letter-spacing:.16em;text-transform:uppercase;
+  white-space:nowrap;transition:color .2s linear;font-variant-numeric:tabular-nums}
+.min b{font-family:var(--aff);font-size:21px;letter-spacing:-.01em;font-weight:700;
+  font-variant-numeric:tabular-nums}
+.signe{position:relative;width:24px;height:24px;justify-self:end}
+.signe::before,.signe::after{content:"";position:absolute;background:var(--rouge);
+  transition:transform .24s cubic-bezier(.4,0,.2,1)}
+.signe::before{left:0;right:0;top:11px;height:2px}
+.signe::after{top:0;bottom:0;left:11px;width:2px}
+.geste[open] .signe::after{transform:scaleY(0)}
+.geste summary:hover .nom,.geste summary:focus-visible .nom{transform:translateX(16px);color:var(--rouge)}
+.geste summary:hover .min{color:var(--rouge)}
+.geste summary:active .nom{transform:translateX(9px)}
+/* `:has()` : ouvrir un geste éteint les autres, sans une ligne de script */
+.gestes:has(.geste[open]) .geste:not([open]) .nom{color:var(--leg)}
+.gestes:has(.geste[open]) .geste:not([open]) .jauge{opacity:.34}
+.detail{padding:0 0 clamp(22px,2.6vw,32px);max-width:56ch}
+.detail p+p{margin-top:12px}
+.detail .pt{margin-top:16px;padding-top:12px;border-top:1px solid var(--filet);
+  font:600 11px/1.5 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--rouge)}
+.apres{margin-top:clamp(26px,3.4vw,44px)}
+
+/* ── LA MATIÈRE : trois images, aucun texte entre elles ─────────── */
+.trio{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:clamp(16px,2.6vw,40px);align-items:start;margin-top:clamp(34px,5vw,72px)}
+.trio-a{grid-column:1/span 5}
+.trio-b{grid-column:7/span 6;margin-top:clamp(30px,5vw,84px)}
+.trio-c{grid-column:2/span 4;margin-top:clamp(6px,1.6vw,26px)}
+/* La colonne de texte s'aligne EN HAUT, pas en bas : alignée en bas
+   elle laissait un trou noir de 450 px sous le titre, et un trou
+   n'est un blanc composé que si quelque chose le borde. */
+.trio-x{grid-column:8/span 5;align-self:start;padding-top:clamp(4px,1.2vw,18px)}
+
+/* ── LES POSTES ─────────────────────────────────────────────────── */
+.postes{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(26px,4vw,68px);
+  margin-top:clamp(32px,4.4vw,60px)}
+.postes li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:0 14px;
+  padding:18px 0;border-top:1px solid var(--filet);align-items:baseline;
+  transition:padding-left .2s cubic-bezier(.4,0,.2,1)}
+.postes li:hover{padding-left:10px}
+.postes b{font-family:var(--aff);font-weight:700;font-size:20px;line-height:1;color:var(--rouge)}
+.postes span{font-family:var(--aff);font-weight:700;font-size:clamp(24px,2.6vw,34px);
+  line-height:1;text-transform:lowercase;letter-spacing:-.022em}
+.postes em{grid-column:2;display:block;margin-top:7px;font:italic 400 13px/1.5 var(--txt);color:var(--leg)}
+
+/* ── LE RENDEZ-VOUS ─────────────────────────────────────────────── */
+.fiche{margin-top:clamp(26px,3.4vw,44px);padding-top:clamp(20px,2.6vw,30px);
+  border-top:1px solid var(--filet)}
+.fiche dt{font:600 10.5px/1 var(--txt);letter-spacing:.24em;text-transform:uppercase;color:var(--leg)}
+.fiche dd{font-family:var(--aff);font-weight:700;font-size:25px;line-height:1.2;
+  letter-spacing:-.015em;margin:8px 0 20px}
+.fiche dd:last-of-type{margin-bottom:0}
+.heures{margin-top:clamp(24px,3vw,36px);padding-top:20px;border-top:1px solid var(--filet)}
+.heures li{display:flex;justify-content:space-between;gap:18px;padding:10px 0;font-size:14.5px;
+  border-bottom:1px solid var(--filet)}
+.heures li:last-child{border-bottom:0}
+.heures b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.fiche dd{font-variant-numeric:tabular-nums}
+.couv-tel a{font-variant-numeric:tabular-nums}
+
+/* ── PIED ───────────────────────────────────────────────────────── */
+.pied{background:var(--blanc);color:var(--noir);--filet:#0a0a0a;--leg:#6e6e6e;
+  padding:clamp(56px,7vw,92px) 0 clamp(28px,4vw,42px);border-top:3px solid var(--rouge)}
+.pied-h{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;
+  flex-wrap:wrap;padding-bottom:clamp(26px,3vw,40px);border-bottom:1px solid var(--noir)}
+.pied-h b{font:700 clamp(44px,9vw,132px)/.86 var(--aff);letter-spacing:-.03em;text-transform:lowercase}
+.pied-m{display:flex;gap:clamp(13px,2.2vw,30px);flex-wrap:wrap}
+.pied-m a{font:600 10.5px/1 var(--txt);letter-spacing:.19em;text-transform:uppercase}
+.pied-b{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;
+  padding-top:clamp(22px,2.6vw,32px);font-size:12.5px;line-height:1.6;color:var(--leg)}
+.pied-b p{max-width:58ch}
+.pied-b .demo{color:var(--noir);max-width:40ch;font-weight:600}
+
+/* ── LARGEURS ───────────────────────────────────────────────────── */
+@media (max-width:1100px){
+  .couv{grid-template-columns:1fr;min-height:0}
+  /* L'entête vit DANS cette colonne : lui rajouter le rembourrage
+     qu'elle avait quand l'entête flottait par-dessus poussait le
+     libellé de marque à 140 px du haut de l'écran, sur un vide. */
+  .couv-t{padding-top:clamp(22px,3vh,30px)}
+  .couv-bloc{padding-top:clamp(30px,5vh,56px)}
+  .couv-ph{border-left:0;border-top:3px solid var(--rouge);height:64vh;min-height:340px}
+  .duo,.duo--g{grid-template-columns:1fr;padding-left:var(--pad);padding-right:var(--pad);
+    align-items:start}
+  .duo--g>.duo-ph{order:0}
+  .trio-a{grid-column:1/span 7}
+  .trio-b{grid-column:6/span 7;margin-top:clamp(24px,5vw,60px)}
+  .trio-c{grid-column:1/span 6}
+  .trio-x{grid-column:7/span 6}
+}
+@media (max-width:820px){
+  .postes{grid-template-columns:1fr}
+  .trio-a,.trio-b,.trio-c,.trio-x{grid-column:1/-1;margin-top:0}
+  .trio-x{padding-bottom:0}
+  .menu{width:100%;margin-left:0;order:3;padding-top:14px}
+  /* Le nom sur un rang, la jauge et la durée sous lui, le signe à
+     droite sur les deux : sans zones nommées le nom et le signe se
+     posent sur la même case et le nom sort de sa colonne. Piège 66. */
+  .geste summary{grid-template-columns:minmax(0,1fr) auto 24px;
+    grid-template-areas:"nom nom signe" "rail min signe";gap:12px 14px;align-items:center}
+  .nom{grid-area:nom}
+  .rail{grid-area:rail}
+  .min{grid-area:min}
+  .signe{grid-area:signe;align-self:center}
+}
+@media (max-width:560px){
+  .tetiere .cont{gap:12px}
+  .couv-ph{height:54vh}
+  .planche{height:82svh}
+  .pied-h b{font-size:16vw}
+}
+
+/* ── LE MOUVEMENT, ET SES DEUX GARDE-FOUS ──────────────────────── */
+/* 1 · L'état de repos écrit ici est TOUJOURS la forme FINALE. C'est
+      le script qui pose le départ, avec `fromTo`. Une page sans
+      script, ou dont le script n'a pas fini, est complète et fixe.
+   2 · Le bandeau est la seule animation en CSS pur, parce qu'elle
+      doit tourner même si GSAP n'arrive jamais. `forwards` n'a pas
+      lieu d'être sur une boucle infinie. */
+@keyframes glisse{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.bande-p{animation:glisse 30s linear infinite}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none !important;transition:none !important}
 }
-@supports not (animation-timeline: view()){
-  .rv,.vg,.vd,.regle-x{animation:none;opacity:1;transform:none;clip-path:none}
-}
-
-/* ── micro-interactions ─────────────────────────────────────────── */
-.lien{position:relative;text-decoration:none;padding-bottom:2px}
-.lien::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
-  background:var(--rouge);transform:scaleX(0);transform-origin:left center;
-  transition:transform .2s cubic-bezier(.4,0,.2,1)}
-.lien:hover::after,.lien:focus-visible::after{transform:scaleX(1)}
-.lien:active{color:var(--rouge)}
-
-.bouton{display:inline-block;background:var(--noir);color:var(--blanc);text-decoration:none;
-  padding:16px 26px 15px;font:600 11px/1 var(--txt);letter-spacing:.24em;text-transform:uppercase;
-  border:1px solid var(--noir);
-  transition:background .16s linear,border-color .16s linear,color .16s linear,transform .16s ease}
-.bouton:hover{background:var(--rouge);border-color:var(--rouge);color:var(--blanc)}
-.bouton:active{transform:translateY(1px)}
-.noir .bouton{background:var(--blanc);color:var(--noir);border-color:var(--blanc)}
-.noir .bouton:hover{background:var(--rouge);border-color:var(--rouge);color:var(--blanc)}
-
-/* ── entête ─────────────────────────────────────────────────────── */
-.tetiere{border-bottom:1px solid var(--noir)}
-.tetiere .cont{display:flex;align-items:center;gap:clamp(16px,3vw,44px);
-  min-height:74px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
-.logo{text-decoration:none;display:block}
-.logo b{display:block;font:700 27px/1 var(--aff);letter-spacing:-.02em;text-transform:lowercase}
-.logo span{display:block;margin-top:6px;font:400 9.5px/1 var(--txt);letter-spacing:.28em;
-  text-transform:uppercase;color:var(--gris);white-space:nowrap}
-.menu{display:flex;gap:clamp(14px,2.2vw,30px);margin-left:auto;flex-wrap:wrap}
-.menu a{font:600 10.5px/1 var(--txt);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
-.etiq{font:600 9.5px/1 var(--txt);letter-spacing:.22em;text-transform:uppercase;color:var(--rouge);
-  border:1px solid var(--rouge);padding:6px 9px 5px;white-space:nowrap}
-
-/* ── couverture ─────────────────────────────────────────────────── */
-.couv{display:grid;grid-template-columns:minmax(0,45fr) minmax(0,55fr);
-  min-height:calc(100vh - 76px);border-bottom:1px solid var(--noir)}
-.couv-t{display:flex;flex-direction:column;justify-content:space-between;
-  padding:clamp(28px,3.4vw,44px) clamp(18px,3.6vw,58px) clamp(26px,2.8vw,38px) clamp(18px,4vw,64px)}
-.couv-h{display:flex;align-items:baseline;justify-content:space-between;gap:20px;
-  padding-bottom:16px;border-bottom:2px solid var(--rouge)}
-.couv h1{font-size:clamp(54px,9.4vw,130px);margin:clamp(22px,2.6vw,34px) 0 clamp(18px,2vw,26px)}
-.couv-p{font-size:16px;line-height:1.56;max-width:44ch}
-.couv-b{display:flex;align-items:center;gap:clamp(18px,2.6vw,34px);flex-wrap:wrap;
-  margin-top:clamp(24px,2.8vw,36px);padding-top:clamp(18px,2vw,26px);border-top:1px solid var(--noir)}
-.couv-tel{font:400 12px/1.5 var(--txt);letter-spacing:.18em;text-transform:uppercase;color:var(--gris)}
-.couv-tel a{display:block;margin-top:5px;font:700 24px/1 var(--aff);letter-spacing:-.01em;color:var(--noir)}
-.couv-ph{position:relative;border-left:1px solid var(--noir);min-height:46vh}
-.couv-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:52% 56%}
-.vign{position:absolute;left:0;bottom:0;background:var(--blanc);color:var(--noir);
-  padding:14px 20px 13px;max-width:min(92%,44ch);border-top:1px solid var(--noir);
-  border-right:1px solid var(--noir)}
-.vign i{font-style:italic;font-size:13px;line-height:1.5;color:var(--gris)}
-
-/* ── bandeau défilant ───────────────────────────────────────────── */
-.bandeau{overflow:hidden;border-top:1px solid;border-bottom:1px solid;
-  padding:clamp(16px,2.4vw,30px) 0}
-.bandeau--noir{background:var(--noir);color:var(--blanc);border-color:var(--noir)}
-.bandeau--rouge{background:var(--rouge);color:var(--blanc);border-color:var(--rouge)}
-.bandeau-p{display:flex;width:max-content;animation:glisse 26s linear infinite}
-.bandeau--rouge .bandeau-p{animation-duration:19s}
-.mots{font-family:var(--aff);font-weight:700;text-transform:lowercase;letter-spacing:-.02em;
-  font-size:clamp(46px,7.4vw,116px);line-height:1.06;white-space:nowrap;padding-right:.35em}
-.mots i{font-style:normal;color:var(--rouge)}
-.bandeau--rouge .mots i{color:var(--noir)}
-
-/* ── planche pleine largeur ─────────────────────────────────────── */
-.planche{position:relative;height:clamp(320px,58vw,660px);background:var(--noir)}
-.planche img{width:100%;height:100%;object-fit:cover;object-position:50% 52%}
-.planche .folio{position:absolute;top:22px;right:22px;background:var(--blanc);padding:7px 10px 6px}
-
-/* ── colonnes de texte, avec la réglure entre elles ─────────────── */
-.colonnes{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,3.4vw,52px);position:relative}
-.colonnes>div+div{border-left:1px solid var(--filet);padding-left:clamp(24px,3.4vw,52px)}
-
-/* ── une double : le texte serré, la grande image ───────────────── */
-.double{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
-  gap:clamp(30px,4.4vw,64px);align-items:start;margin-top:clamp(40px,5vw,72px)}
-.double--inv{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
-.double--inv>figure{order:-1}
-.ph{position:relative}
-.ph img{width:100%;object-fit:cover;filter:grayscale(1) contrast(1.18)}
-.ph--coul img{filter:none}
-.ph figcaption{margin-top:14px;padding-top:12px;border-top:1px solid var(--filet)}
-/* une bande : pleine largeur de la colonne, format panoramique */
-.h-b{margin-top:clamp(36px,4.4vw,60px)}
-.h-b img{height:clamp(230px,29vw,420px)}
-.h-xl img{height:clamp(340px,50vw,690px)}
-.h-l img{height:clamp(300px,42vw,540px)}
-.h-m img{height:clamp(250px,33vw,450px)}
-
-/* ── le sommaire : les gestes en accordéon ──────────────────────── */
-.gestes{margin-top:clamp(10px,2vw,22px)}
-.geste{border-top:1px solid var(--filet)}
-.geste:last-of-type{border-bottom:1px solid var(--filet)}
-.geste summary{list-style:none;cursor:pointer;display:grid;
-  grid-template-columns:minmax(0,1fr) auto 24px;gap:clamp(14px,2.4vw,30px);
-  align-items:center;padding:22px 0 20px}
-.geste summary::-webkit-details-marker{display:none}
-.geste summary::marker{content:""}
-.nom{font-family:var(--aff);font-weight:700;text-transform:lowercase;letter-spacing:-.02em;
-  font-size:clamp(27px,4vw,56px);line-height:1;
-  transition:transform .18s cubic-bezier(.4,0,.2,1),color .18s linear}
-.duree{font:600 11px/1 var(--txt);letter-spacing:.2em;text-transform:uppercase;color:var(--leg);
-  white-space:nowrap;transition:color .18s linear}
-.geste summary:hover .nom,.geste summary:focus-visible .nom{transform:translateX(14px);color:var(--rouge)}
-.geste summary:hover .duree{color:var(--rouge)}
-.geste summary:active .nom{transform:translateX(8px)}
-.signe{position:relative;width:22px;height:22px;justify-self:end}
-.signe::before,.signe::after{content:"";position:absolute;background:var(--rouge);
-  transition:transform .2s cubic-bezier(.4,0,.2,1)}
-.signe::before{left:0;right:0;top:10px;height:2px}
-.signe::after{top:0;bottom:0;left:10px;width:2px}
-.geste[open] .signe::after{transform:scaleY(0)}
-.detail{padding:0 0 26px;max-width:56ch;animation:ouvre .26s cubic-bezier(.4,0,.2,1) both}
-.detail p+p{margin-top:12px}
-.detail .pt{margin-top:14px;padding-top:12px;border-top:1px solid var(--filet);
-  font:600 11px/1.5 var(--txt);letter-spacing:.16em;text-transform:uppercase;color:var(--rouge)}
-.noir .detail .pt{color:var(--blanc)}
-.apres{margin-top:clamp(26px,3vw,40px)}
-
-/* ── les crédits : six fauteuils, deux colonnes réglées ─────────── */
-.credits{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(26px,4vw,64px);
-  position:relative;margin-top:clamp(34px,4.4vw,58px)}
-.credits::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--filet)}
-.credits li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 14px;
-  padding:16px 0;border-top:1px solid var(--filet);align-items:baseline}
-.credits li:nth-child(1),.credits li:nth-child(2){border-top:0;padding-top:0}
-.credits li:nth-child(2n){padding-left:clamp(26px,4vw,64px)}
-.credits b{font-family:var(--aff);font-weight:700;font-size:19px;line-height:1;color:var(--rouge)}
-.credits span{font-family:var(--aff);font-weight:700;font-size:26px;line-height:1;
-  text-transform:lowercase;letter-spacing:-.02em}
-.credits em{grid-column:2;display:block;margin-top:6px;font:italic 400 13px/1.5 var(--txt);color:var(--leg)}
-
-/* ── le rendez-vous ─────────────────────────────────────────────── */
-.fiche{margin-top:clamp(28px,3.4vw,44px);padding-top:clamp(22px,2.6vw,32px);
-  border-top:1px solid var(--filet)}
-.fiche dt{font:600 10.5px/1 var(--txt);letter-spacing:.24em;text-transform:uppercase;color:var(--leg)}
-.fiche dd{font-family:var(--aff);font-weight:700;font-size:23px;line-height:1.2;letter-spacing:-.01em;
-  margin:7px 0 18px}
-.fiche dd:last-of-type{margin-bottom:0}
-.heures{margin-top:clamp(24px,3vw,36px);padding-top:20px;border-top:1px solid var(--filet)}
-.heures li{display:flex;justify-content:space-between;gap:18px;padding:9px 0;font-size:14px;
-  border-bottom:1px solid var(--filet)}
-.heures li:last-child{border-bottom:0}
-.heures b{white-space:nowrap}
-
-/* ── pied ───────────────────────────────────────────────────────── */
-.pied{background:var(--noir);color:var(--blanc);--filet:#ffffff;--leg:#a0a0a0;
-  padding:clamp(60px,7vw,96px) 0 clamp(30px,4vw,44px)}
-.pied-h{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;
-  padding-bottom:clamp(26px,3vw,40px);border-bottom:1px solid var(--blanc)}
-.pied-h b{font:700 clamp(40px,7vw,96px)/.9 var(--aff);letter-spacing:-.02em;text-transform:lowercase}
-.pied-m{display:flex;gap:clamp(14px,2.4vw,32px);flex-wrap:wrap}
-.pied-m a{font:600 10.5px/1 var(--txt);letter-spacing:.2em;text-transform:uppercase}
-.pied-b{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;
-  padding-top:clamp(22px,2.6vw,32px);font-size:12.5px;line-height:1.6;color:#a0a0a0}
-.pied-b p{max-width:60ch}
-.pied-b .demo{color:var(--blanc);max-width:44ch}
-
-/* ── largeurs ───────────────────────────────────────────────────── */
-@media (max-width:1080px){
-  .couv{grid-template-columns:1fr;min-height:0}
-  .couv-ph{border-left:0;border-top:1px solid var(--noir);height:56vh;min-height:300px}
-  .double{grid-template-columns:1fr;gap:28px}
-  .double--inv>figure{order:0}
-}
-@media (max-width:860px){
-  .page{grid-template-columns:1fr;gap:16px}
-  .corps{border-left:0;border-top:1px solid var(--filet);padding-left:0;padding-top:20px}
-  .colonnes{grid-template-columns:1fr}
-  .colonnes>div+div{border-left:0;padding-left:0;border-top:1px solid var(--filet);
-    padding-top:20px;margin-top:20px}
-  .credits{grid-template-columns:1fr}
-  .credits::before{display:none}
-  .credits li:nth-child(2){border-top:1px solid var(--filet);padding-top:16px}
-  .credits li:nth-child(2n){padding-left:0}
-  .menu{width:100%;margin-left:0;order:3}
-}
-@media (max-width:560px){
-  .tetiere .cont{gap:12px}
-  .couv-h{flex-wrap:wrap;gap:12px}
-  .couv-ph{height:46vh}
-  /* Le nom, la durée sous lui, le signe à droite sur les deux rangs.
-     Sans les zones nommées, le signe et le nom se posent sur la même
-     case et le nom part hors de la colonne — que le rognage cache. */
-  .geste summary{grid-template-columns:minmax(0,1fr) 22px;
-    grid-template-areas:"nom signe" "duree signe";gap:8px 14px;align-items:start}
-  .nom{grid-area:nom}
-  .duree{grid-area:duree;font-size:10px}
-  .signe{grid-area:signe;align-self:center}
-  .pied-h b{font-size:15vw}
-}
 </style>
 </head>
 <body>
 
-<header class="tetiere">
-  <div class="cont">
-    <a class="logo lien" href="#couverture"><b>salon brume</b><span>Coiffure et esthétique · Québec</span></a>
-    <nav class="menu">
-      <a class="lien" href="#ouverture">L’ouverture</a>
-      <a class="lien" href="#sommaire">Le sommaire</a>
-      <a class="lien" href="#matiere">La matière</a>
-      <a class="lien" href="#maison">La maison</a>
-      <a class="lien" href="#rendez-vous">Le rendez-vous</a>
-    </nav>
-    <span class="etiq">Site de démonstration</span>
-  </div>
-</header>
+<a class="saut" href="#parti">Aller au contenu</a>
 
 <!-- ── COUVERTURE ─────────────────────────────────────────────── -->
 <section class="couv" id="couverture">
   <div class="couv-t">
-    <div>
-      <div class="couv-h">
-        <span class="manchette">Coupe · Couleur · Soin du cheveu</span>
-        <span class="folio">— 01 —</span>
+    <header class="tetiere">
+      <a class="logo lien" href="#couverture"><b translate="no">salon brume</b><span>Coiffure et esthétique · Québec</span></a>
+      <span class="etiq">Site de démonstration</span>
+      <nav class="menu" aria-label="Sections">
+        <a class="lien" href="#parti">Le parti pris</a>
+        <a class="lien" href="#sommaire">Les six gestes</a>
+        <a class="lien" href="#matiere">La matière</a>
+        <a class="lien" href="#maison">La maison</a>
+        <a class="lien" href="#rendez-vous">Le rendez-vous</a>
+      </nav>
+    </header>
+    <div class="couv-bloc">
+      <h1>une tête<br>à la fois</h1>
+      <p class="couv-p">Un fauteuil, une personne, du début à la fin. C’est la seule règle de la maison, et elle décide de tout le reste.</p>
+      <div class="couv-b">
+        <a class="bouton" href="#rendez-vous">Prendre rendez-vous</a>
+        <span class="couv-tel">Par téléphone<a class="lien" href="tel:0000000000">000 000-0000</a></span>
       </div>
-      <h1><span class="rv-chg">une tête<br>à la fois</span></h1>
-      <p class="couv-p">Un fauteuil ne sert qu’à une personne, du début à la fin. C’est la seule règle de la maison, et c’est elle qui décide de la durée d’un rendez-vous, du nombre qu’on en prend dans une journée, et de ce qu’on accepte de faire.</p>
-    </div>
-    <div class="couv-b">
-      <a class="bouton" href="#rendez-vous">Prendre rendez-vous</a>
-      <span class="couv-tel">Par téléphone<a class="lien" href="tel:0000000000">000 000-0000</a></span>
     </div>
   </div>
   <figure class="couv-ph">
-    <img src="../../images/secteurs-sites/coiffure-1.webp" width="1920" height="1080" fetchpriority="high" decoding="async" alt="Deux fauteuils de coiffure en cuir chocolat sur pied chromé, devant un grand miroir à cadre blanc et une vitrine de verre éclairée, sur un sol de pierre claire.">
-    <figcaption class="vign"><i>Deux postes devant le grand miroir. Six en tout, et un seul rendez-vous par poste à la fois.</i></figcaption>
+    <img src="../../images/secteurs-sites/coiffure-10.webp" width="1000" height="1400" fetchpriority="high" decoding="async" alt="Gros plan à contre-jour&nbsp;: une main tient un peigne à dents larges au-dessus d’une mèche, l’autre approche le ciseau, et la lumière derrière détoure chaque cheveu.">
+    <figcaption class="couv-leg">Le peigne tient la tension, le ciseau suit. La lumière vient de derrière&nbsp;: c’est comme ça qu’on voit une ligne avant de la couper.</figcaption>
   </figure>
 </section>
 
-<!-- ── BANDEAU 1 ──────────────────────────────────────────────── -->
-<div class="bandeau bandeau--noir" aria-hidden="true">
-  <div class="bandeau-p">
-    <span class="mots">coupe <i>—</i> couleur <i>—</i> balayage <i>—</i> soin <i>—</i> coiffage <i>—</i> consultation <i>—</i></span>
-    <span class="mots">coupe <i>—</i> couleur <i>—</i> balayage <i>—</i> soin <i>—</i> coiffage <i>—</i> consultation <i>—</i></span>
+<!-- ── LE BANDEAU, UN SEUL ────────────────────────────────────── -->
+<div class="bande" aria-hidden="true">
+  <div class="bande-p">
+    <span class="mots">coupe <i>·</i> couleur <i>·</i> balayage <i>·</i> soin <i>·</i> coiffage <i>·</i> consultation <i>·</i> </span>
+    <span class="mots">coupe <i>·</i> couleur <i>·</i> balayage <i>·</i> soin <i>·</i> coiffage <i>·</i> consultation <i>·</i> </span>
   </div>
 </div>
 
-<!-- ── L’OUVERTURE ────────────────────────────────────────────── -->
-<section class="sec blanc" id="ouverture">
-  <div class="cont">
-    <div class="page">
-      <div><span class="folio">— 03 —</span></div>
-      <div class="corps">
-        <div class="tete">
-          <span class="manchette">Le parti pris</span>
-          <div class="regle-x"></div>
-          <h2><span class="rv">on regarde<br>avant de toucher</span></h2>
-        </div>
+<!-- ── LE PARTI PRIS ──────────────────────────────────────────── -->
+<section class="sec blanc" id="parti">
+  <div class="duo">
+    <div class="duo-t">
+      <div class="regle" aria-hidden="true"></div>
+      <h2 class="tt">
+        <span class="vh">on regarde avant de toucher</span>
+        <span class="tt-c tt-h" aria-hidden="true">on regarde<br>avant de<br>toucher</span>
+        <span class="tt-c tt-b" aria-hidden="true">on regarde<br>avant de<br>toucher</span>
+      </h2>
+      <p class="chap">Le rendez-vous commence à sec, près de la fenêtre, avant tout lavage. Une couleur mouillée ment&nbsp;: elle paraît toujours plus foncée et plus uniforme qu’elle ne l’est. Ce qui se décide dans ces cinq minutes tient pour les deux heures qui suivent.</p>
+      <p class="chap">Ce qu’on trouve s’écrit à votre dossier&nbsp;: la formule, le temps de pose, ce qui a marché et ce qui n’a pas marché. La fois suivante reprend là où la précédente s’est arrêtée, jamais à zéro.</p>
+    </div>
+    <figure class="duo-ph">
+      <div class="ph h-xl js-ph"><img src="../../images/secteurs-sites/coiffure-13.webp" width="1000" height="1400" loading="lazy" decoding="async" alt="Une main ouvre en éventail une longue mèche mouillée au-dessus d’un bac de lavage blanc, les cheveux retombant de part et d’autre des doigts."></div>
+      <figcaption class="leg">Au bac, la mèche s’ouvre en éventail&nbsp;: c’est là qu’on lit la porosité, avant de sortir un bol.</figcaption>
+    </figure>
+  </div>
 
-        <div class="colonnes">
-          <div>
-            <p class="chap">Le rendez-vous commence à sec, près de la fenêtre, avant tout lavage. Une couleur mouillée ment : elle paraît toujours plus foncée et plus uniforme qu’elle ne l’est. Ce qui se décide dans ces cinq minutes-là tient pour les deux heures qui suivent.</p>
-          </div>
-          <div>
-            <p class="chap">Ce qu’on trouve s’écrit à votre dossier — la formule, le temps de pose, ce qui a marché et ce qui n’a pas marché. La fois suivante reprend là où la précédente s’est arrêtée, jamais à zéro.</p>
-          </div>
-        </div>
-
-        <div class="double">
-          <div>
-            <p class="chap">Certaines demandes abîment le cheveu d’une façon qu’un soin ne rattrape pas. Dans ce cas on propose un chemin plus long — deux ou trois séances, espacées d’au moins six semaines — ou on ne prend pas le rendez-vous. On le dit à la consultation, pas une fois que vous êtes assise au fauteuil.</p>
-            <p class="chap">Ce qui n’est pas sur le sommaire ne se fait pas ici : ni extensions, ni lissage permanent, ni perruque.</p>
-          </div>
-          <figure class="ph h-xl vd">
-            <img src="../../images/secteurs-sites/coiffure-5.webp" width="960" height="720" loading="lazy" decoding="async" style="object-position:44% 46%" alt="Nuque dégradée vue de dos : cheveux foncés raccourcis progressivement jusqu’au duvet, sur un fond gris uni.">
-            <figcaption class="leg"><i>La nuque fixe la limite basse d’un dégradé. Une nuque qui tourne en épi ne tient pas une ligne nette plus de dix jours : on le voit à sec, avant de couper.</i></figcaption>
-          </figure>
-        </div>
-      </div>
+  <div class="duo duo--g" style="margin-top:clamp(52px,8vw,124px)">
+    <figure class="duo-ph">
+      <div class="ph ph--clair h-l js-ph"><img src="../../images/secteurs-sites/coiffure-5.webp" width="960" height="720" loading="lazy" decoding="async" style="object-position:44% 46%" alt="Nuque dégradée vue de dos&nbsp;: les cheveux foncés raccourcissent progressivement jusqu’au duvet, sur un fond gris uni."></div>
+      <figcaption class="leg">La nuque fixe la limite basse d’un dégradé. Une nuque qui tourne en épi ne tient pas une ligne nette plus de dix jours, et ça se voit à sec.</figcaption>
+    </figure>
+    <div class="duo-t">
+      <p class="chap">Certaines demandes abîment le cheveu d’une façon qu’aucun soin ne rattrape. Dans ce cas on propose un chemin plus long, deux ou trois séances espacées d’au moins six semaines, ou on ne prend pas le rendez-vous.</p>
+      <p class="chap">On le dit à la consultation, pas une fois que vous êtes installée au fauteuil. Et ce qui n’est pas au sommaire ne se fait pas ici&nbsp;: ni extensions, ni lissage permanent, ni perruque.</p>
     </div>
   </div>
 </section>
 
-<!-- ── PLANCHE ────────────────────────────────────────────────── -->
-<figure class="planche">
-  <img src="../../images/secteurs-sites/coiffure-2.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Rangée de fauteuils de barbier d’époque en cuir vert et chrome, devant des boiseries sombres, un mur de brique et un long miroir.">
-  <span class="folio">— 06 —</span>
+<!-- ── LA PLANCHE&nbsp;: LE GESTE, PLEIN ÉCRAN ─────────────────────── -->
+<figure class="planche js-planche">
+  <img src="../../images/secteurs-sites/coiffure-11.webp" width="1000" height="1400" loading="lazy" decoding="async" alt="Sur un tablier noir, deux mains referment un ciseau sur une mèche claire tenue entre deux doigts.">
+  <span class="coupe js-coupe" aria-hidden="true"></span>
+  <figcaption class="planche-t">
+    <div class="cont">
+      <h2 class="tt">
+        <span class="vh">la ligne se décide sèche</span>
+        <span class="tt-c tt-h" aria-hidden="true">la ligne se<br>décide sèche</span>
+        <span class="tt-c tt-b" aria-hidden="true">la ligne se<br>décide sèche</span>
+      </h2>
+      <p>On coupe sur cheveu humide, on vérifie une fois sec, et on reprend s’il le faut. La reprise fait partie du rendez-vous, pas d’un deuxième.</p>
+    </div>
+  </figcaption>
 </figure>
 
 <!-- ── LE SOMMAIRE ────────────────────────────────────────────── -->
-<section class="sec noir" id="sommaire">
-  <div class="cont">
-    <div class="page">
-      <div><span class="folio">— 08 —</span></div>
-      <div class="corps">
-        <div class="tete">
-          <span class="manchette">Le sommaire</span>
-          <div class="regle-x"></div>
-          <h2><span class="rv">six gestes,<br>et rien d’autre</span></h2>
-        </div>
-
-        <p class="chap gris">La durée écrite est celle qui est réellement bloquée dans l’agenda — pas une moyenne optimiste. Ouvrez un geste pour lire ce qu’il contient.</p>
-
-        <figure class="ph h-b vg">
-          <img src="../../images/secteurs-sites/coiffure-7.webp" width="960" height="720" loading="lazy" decoding="async" style="object-position:50% 44%;filter:grayscale(1) contrast(1.02) brightness(.78)" alt="Gros plan de pinceaux à teinture et de peignes plantés dans un pot métallique, poils clairs contre manches sombres.">
-          <figcaption class="leg"><i>Le poste de couleur. Un pinceau par bol, un bol par tête.</i></figcaption>
-        </figure>
-
-        <div class="gestes">
-              <details class="geste">
-                <summary><span class="nom">coupe</span><span class="duree">45 min</span><span class="signe" aria-hidden="true"></span></summary>
-                <div class="detail">
-                  <p class="chap gris">On coupe sur cheveu humide, on vérifie une fois sec, et on reprend s’il le faut. La reprise fait partie du rendez-vous, pas d’un deuxième.</p>
-                  <p class="pt">Retouche de contour dans les dix jours, sans frais</p>
-                </div>
-              </details>
-
-              <details class="geste">
-                <summary><span class="nom">couleur</span><span class="duree">90 min</span><span class="signe" aria-hidden="true"></span></summary>
-                <div class="detail">
-                  <p class="chap gris">Application aux racines, temps de pose minuté, vérifié deux fois sur une mèche témoin. Revitalisant sur les longueurs, séchage, mise en forme.</p>
-                  <p class="pt">La formule est notée à votre dossier pour la fois suivante</p>
-                </div>
-              </details>
-
-              <details class="geste">
-                <summary><span class="nom">mèches et balayage</span><span class="duree">150 min</span><span class="signe" aria-hidden="true"></span></summary>
-                <div class="detail">
-                  <p class="chap gris">Mèche par mèche, puis patine pour poser le ton. Un blond qui demande trois séances est annoncé comme trois séances dès la consultation, pas découvert en cours de route.</p>
-                  <p class="pt">Le plan est écrit : combien de séances, à quel intervalle</p>
-                </div>
-              </details>
-
-              <details class="geste">
-                <summary><span class="nom">soin du cheveu</span><span class="duree">30 min</span><span class="signe" aria-hidden="true"></span></summary>
-                <div class="detail">
-                  <p class="chap gris">Un soin ne répare rien de cassé. Il rend le cheveu plus souple, plus facile à peigner, et il retarde la casse. On le dit comme ça, et pas autrement.</p>
-                  <p class="pt">Diagnostic sur trois zones : racine, longueur, pointe</p>
-                </div>
-              </details>
-
-              <details class="geste">
-                <summary><span class="nom">coiffage</span><span class="duree">40 min</span><span class="signe" aria-hidden="true"></span></summary>
-                <div class="detail">
-                  <p class="chap gris">On ne fait pas tenir une coiffure trois jours ; on la fait tenir la soirée, et on vous montre comment la défaire sans arracher.</p>
-                  <p class="pt">Attaches et chignons sur cheveu de la veille, plus tenace</p>
-                </div>
-              </details>
-
-              <details class="geste">
-                <summary><span class="nom">consultation couleur</span><span class="duree">20 min</span><span class="signe" aria-hidden="true"></span></summary>
-                <div class="detail">
-                  <p class="chap gris">Elle se prend à part, avant le rendez-vous de couleur, et elle ne se facture pas. On y regarde l’historique, les trois zones, l’élasticité, la porosité et le fond naturel.</p>
-                  <p class="pt">Obligatoire avant une première couleur</p>
-                </div>
-              </details>
-        </div>
-
-        <p class="chap gris apres">Un retard de plus de quinze minutes raccourcit le geste ou le reporte : le rendez-vous suivant commence à l’heure, et il n’y a nulle part où le décaler.</p>
-      </div>
+<section class="sec blanc" id="sommaire">
+  <div class="duo">
+    <div class="duo-t">
+      <div class="regle" aria-hidden="true"></div>
+      <h2 class="tt">
+        <span class="vh">six gestes, et rien d’autre</span>
+        <span class="tt-c tt-h" aria-hidden="true">six gestes,<br>et rien d’autre</span>
+        <span class="tt-c tt-b" aria-hidden="true">six gestes,<br>et rien d’autre</span>
+      </h2>
+      <p class="chap">La barre rouge montre la durée réellement bloquée dans l’agenda, pas une moyenne optimiste. Ouvrez un geste pour lire ce qu’il contient.</p>
     </div>
+    <figure class="duo-ph">
+      <div class="ph h-xl js-ph"><img src="../../images/secteurs-sites/coiffure-12.webp" width="1000" height="1400" loading="lazy" decoding="async" alt="Vue de dos&nbsp;: deux mains séparent une mèche mouillée d’une chevelure sectionnée et relevée, le ciseau posé à plat contre les cheveux."></div>
+      <figcaption class="leg">Une mèche à la fois, prélevée dans une section relevée. C’est ce découpage qui fait tenir une longueur d’un côté à l’autre.</figcaption>
+    </figure>
+  </div>
+
+  <div class="cont">
+    <div class="gestes">
+      <details class="geste">
+        <summary>
+          <span class="nom">coupe</span>
+          <span class="rail" aria-hidden="true"><span class="jauge" style="--part:30%"></span></span>
+          <span class="min"><b class="js-min" data-min="45">45</b>&nbsp;min</span>
+          <span class="signe" aria-hidden="true"></span>
+        </summary>
+        <div class="detail">
+          <p class="chap gris">On coupe sur cheveu humide, on vérifie une fois sec, et on reprend s’il le faut. La reprise fait partie du rendez-vous, pas d’un deuxième.</p>
+          <p class="pt">Retouche de contour dans les dix jours, sans frais</p>
+        </div>
+      </details>
+
+      <details class="geste">
+        <summary>
+          <span class="nom">couleur</span>
+          <span class="rail" aria-hidden="true"><span class="jauge" style="--part:60%"></span></span>
+          <span class="min"><b class="js-min" data-min="90">90</b>&nbsp;min</span>
+          <span class="signe" aria-hidden="true"></span>
+        </summary>
+        <div class="detail">
+          <p class="chap gris">Application aux racines, temps de pose minuté, vérifié deux fois sur une mèche témoin. Revitalisant sur les longueurs, séchage, mise en forme.</p>
+          <p class="pt">La formule est notée à votre dossier pour la fois suivante</p>
+        </div>
+      </details>
+
+      <details class="geste">
+        <summary>
+          <span class="nom">mèches et balayage</span>
+          <span class="rail" aria-hidden="true"><span class="jauge" style="--part:100%"></span></span>
+          <span class="min"><b class="js-min" data-min="150">150</b>&nbsp;min</span>
+          <span class="signe" aria-hidden="true"></span>
+        </summary>
+        <div class="detail">
+          <p class="chap gris">Mèche par mèche, puis patine pour poser le ton. Un blond qui demande trois séances est annoncé comme trois séances dès la consultation, pas découvert en cours de route.</p>
+          <p class="pt">Le plan est écrit&nbsp;: combien de séances, à quel intervalle</p>
+        </div>
+      </details>
+
+      <details class="geste">
+        <summary>
+          <span class="nom">soin du cheveu</span>
+          <span class="rail" aria-hidden="true"><span class="jauge" style="--part:20%"></span></span>
+          <span class="min"><b class="js-min" data-min="30">30</b>&nbsp;min</span>
+          <span class="signe" aria-hidden="true"></span>
+        </summary>
+        <div class="detail">
+          <p class="chap gris">Un soin ne répare rien de cassé. Il rend le cheveu plus souple, plus facile à peigner, et il retarde la casse. On le dit comme ça, et pas autrement.</p>
+          <p class="pt">Diagnostic sur trois zones&nbsp;: racine, longueur, pointe</p>
+        </div>
+      </details>
+
+      <details class="geste">
+        <summary>
+          <span class="nom">coiffage</span>
+          <span class="rail" aria-hidden="true"><span class="jauge" style="--part:27%"></span></span>
+          <span class="min"><b class="js-min" data-min="40">40</b>&nbsp;min</span>
+          <span class="signe" aria-hidden="true"></span>
+        </summary>
+        <div class="detail">
+          <p class="chap gris">On ne fait pas tenir une coiffure trois jours. On la fait tenir la soirée, et on vous montre comment la défaire sans arracher.</p>
+          <p class="pt">Attaches et chignons sur cheveu de la veille, plus tenace</p>
+        </div>
+      </details>
+
+      <details class="geste">
+        <summary>
+          <span class="nom">consultation couleur</span>
+          <span class="rail" aria-hidden="true"><span class="jauge" style="--part:13%"></span></span>
+          <span class="min"><b class="js-min" data-min="20">20</b>&nbsp;min</span>
+          <span class="signe" aria-hidden="true"></span>
+        </summary>
+        <div class="detail">
+          <p class="chap gris">Elle se prend à part, avant le rendez-vous de couleur, et elle ne se facture pas. On y regarde l’historique, les trois zones, l’élasticité, la porosité et le fond naturel.</p>
+          <p class="pt">Obligatoire avant une première couleur</p>
+        </div>
+      </details>
+    </div>
+
+    <p class="chap gris apres">Un retard de plus de quinze minutes raccourcit le geste ou le reporte&nbsp;: le rendez-vous suivant commence à l’heure, et il n’y a nulle part où le décaler.</p>
   </div>
 </section>
 
 <!-- ── LA MATIÈRE ─────────────────────────────────────────────── -->
-<section class="sec blanc" id="matiere">
+<section class="sec noir" id="matiere">
   <div class="cont">
-    <div class="page">
-      <div><span class="folio">— 12 —</span></div>
-      <div class="corps">
-        <div class="tete">
-          <span class="manchette">La matière</span>
-          <div class="regle-x"></div>
-          <h2><span class="rv">la boucle<br>se coupe sèche</span></h2>
-        </div>
+    <div class="regle" aria-hidden="true"></div>
+    <h2 class="tt">
+      <span class="vh">la boucle a son ressort</span>
+      <span class="tt-c tt-h" aria-hidden="true">la boucle<br>a son ressort</span>
+      <span class="tt-c tt-b" aria-hidden="true">la boucle<br>a son ressort</span>
+    </h2>
 
-        <div class="double">
-          <div>
-            <p class="chap">Une boucle se raccourcit en séchant, parfois du tiers. On la coupe donc sèche et mèche par mèche, sans peigne, pour couper là où la boucle vit vraiment — et pas là où l’eau l’a étirée.</p>
-            <p class="chap">Deux chevelures qui demandent la même coupe ne la reçoivent pas de la même façon. Ce qu’on observe avant de sortir les ciseaux tient en trois choses : l’implantation, la densité, et le comportement de la mèche une fois sèche.</p>
-          </div>
-          <figure class="ph h-l vd">
-            <img src="../../images/secteurs-sites/coiffure-6.webp" width="960" height="720" loading="lazy" decoding="async" alt="Chevelure bouclée tenue à pleine main, vue de dos, les doigts écartés dans la masse des boucles.">
-            <figcaption class="leg"><i>Coupe à sec, mèche par mèche. Le ressort de la boucle décide de la longueur, pas le mètre.</i></figcaption>
-          </figure>
-        </div>
-
-        <div class="double double--inv">
-          <figure class="ph h-m vg">
-            <img src="../../images/secteurs-sites/coiffure-8.webp" width="960" height="720" loading="lazy" decoding="async" alt="Vue de dessus d’un bol de coloration rempli de mélange, deux pinceaux à teinture, un peigne à queue et un peigne fin posés sur un comptoir clair.">
-            <figcaption class="leg"><i>Le mélange se prépare devant vous, une fois la consultation faite — jamais avant.</i></figcaption>
-          </figure>
-          <div>
-            <p class="chap">La couleur, elle, se décide au bol. Les racines d’abord, les longueurs seulement si elles en ont besoin. Le temps de pose est minuté et vérifié sur une mèche témoin, à cinq minutes près : c’est la porosité du cheveu qui le fixe, pas l’horloge du salon.</p>
-            <p class="chap">Le dernier rinçage se fait tiède. L’eau chaude ouvre l’écaille et fait partir la couleur plus vite ; les trente dernières secondes changent visiblement la tenue d’une couleur fraîche.</p>
-          </div>
-        </div>
+    <div class="trio">
+      <figure class="trio-a">
+        <div class="ph ph--clair h-l js-ph"><img src="../../images/secteurs-sites/coiffure-6.webp" width="960" height="720" loading="lazy" decoding="async" alt="Chevelure bouclée tenue à pleine main, vue de dos, les doigts écartés dans la masse des boucles."></div>
+        <figcaption class="leg">Coupe à sec, mèche par mèche. C’est le ressort de la boucle qui décide de la longueur, pas le ruban.</figcaption>
+      </figure>
+      <div class="trio-x">
+        <p class="chap">Une boucle se raccourcit en séchant, parfois du tiers. On la coupe donc sèche et sans peigne, pour couper là où elle vit vraiment et non là où l’eau l’a étirée.</p>
+        <p class="chap">Deux chevelures qui demandent la même coupe ne la reçoivent pas de la même façon. Ce qu’on observe avant de sortir les ciseaux tient en trois choses&nbsp;: l’implantation, la densité, et le comportement de la mèche une fois sèche.</p>
       </div>
+      <figure class="trio-b">
+        <div class="ph ph--dur h-xxl js-ph"><img src="../../images/secteurs-sites/coiffure-14.webp" width="1000" height="1400" loading="lazy" decoding="async" alt="Nature morte sur toile écrue&nbsp;: une longue tresse blonde nouée d’un ruban de velours noir dont les deux pans serpentent sur le tissu."></div>
+        <figcaption class="leg">Une tresse tient parce qu’elle est faite sur cheveu de la veille. Sur cheveu du jour, elle glisse avant la fin de la soirée.</figcaption>
+      </figure>
+      <figure class="trio-c">
+        <div class="ph ph--dur h-m js-ph"><img src="../../images/secteurs-sites/coiffure-8.webp" width="960" height="720" loading="lazy" decoding="async" style="object-position:50% 44%" alt="Vue de dessus&nbsp;: un bol de coloration rempli de mélange, deux pinceaux à teinture, un peigne à queue et un peigne fin posés sur un comptoir clair."></div>
+        <figcaption class="leg">Le mélange se prépare devant vous, une fois la consultation faite, jamais avant. Un pinceau par bol, un bol par tête.</figcaption>
+      </figure>
     </div>
+
+    <p class="chap apres">La couleur, elle, se décide au bol. Les racines d’abord, les longueurs seulement si elles en ont besoin. Le temps de pose est vérifié sur une mèche témoin à cinq minutes près&nbsp;: c’est la porosité qui le fixe, pas l’horloge du salon. Le dernier rinçage se fait tiède, et ces trente secondes changent visiblement la tenue d’une couleur fraîche.</p>
   </div>
 </section>
-
-<!-- ── BANDEAU 2 ──────────────────────────────────────────────── -->
-<div class="bandeau bandeau--noir" aria-hidden="true">
-  <div class="bandeau-p">
-    <span class="mots">à sec <i>·</i> au ciseau <i>·</i> au bac <i>·</i> au fer <i>·</i> au peigne large <i>·</i> à la main <i>·</i></span>
-    <span class="mots">à sec <i>·</i> au ciseau <i>·</i> au bac <i>·</i> au fer <i>·</i> au peigne large <i>·</i> à la main <i>·</i></span>
-  </div>
-</div>
 
 <!-- ── LA MAISON ──────────────────────────────────────────────── -->
 <section class="sec blanc" id="maison">
   <div class="cont">
-    <div class="page">
-      <div><span class="folio">— 16 —</span></div>
-      <div class="corps">
-        <div class="tete">
-          <span class="manchette">La maison</span>
-          <div class="regle-x"></div>
-          <h2><span class="rv">six fauteuils,<br>six postes</span></h2>
-        </div>
+    <div class="regle" aria-hidden="true"></div>
+    <h2 class="tt">
+      <span class="vh">six fauteuils, six postes</span>
+      <span class="tt-c tt-h" aria-hidden="true">six fauteuils,<br>six postes</span>
+      <span class="tt-c tt-b" aria-hidden="true">six fauteuils,<br>six postes</span>
+    </h2>
+  </div>
 
-        <figure class="ph h-b vd">
-          <img src="../../images/secteurs-sites/coiffure-4.webp" width="1280" height="720" loading="lazy" decoding="async" style="object-position:50% 62%" alt="Salle du salon côté clair : trois bacs de lavage, un comptoir d’accueil au fond, un mur de tubes de couleur rangés et une longue suspension lumineuse au plafond.">
-          <figcaption class="leg"><i>Côté clair : le mur de couleurs et l’accueil. Il n’y a pas de salle d’attente — si votre plage commence à 10 h, elle commence à 10 h.</i></figcaption>
-        </figure>
+  <figure class="ph ph--dur h-xl js-ph" style="margin-top:clamp(26px,4vw,52px)">
+    <img src="../../images/secteurs-sites/coiffure-4.webp" width="1280" height="720" loading="lazy" decoding="async" style="object-position:50% 58%" alt="Salle du salon côté clair&nbsp;: trois bacs de lavage, un comptoir d’accueil au fond, un mur de tubes de couleur rangés et une longue suspension lumineuse au plafond.">
+  </figure>
 
-        <div class="double double--inv">
-          <figure class="ph h-m vg">
-            <img src="../../images/secteurs-sites/coiffure-3.webp" width="1280" height="720" loading="lazy" decoding="async" style="object-position:38% 58%" alt="Trois bacs de lavage alignés devant un mur de brique, tablettes de produits au-dessus du comptoir et grande fenêtre donnant sur la ville.">
-            <figcaption class="leg"><i>Les bacs, un par poste occupé. Personne ne quitte votre fauteuil pour commencer quelqu’un d’autre pendant un temps de pose.</i></figcaption>
-          </figure>
-          <div>
-            <p class="chap">Vous pouvez demander quelqu’un en particulier, ou laisser l’agenda décider. Dans les deux cas, la plage est bloquée à votre nom du début à la fin : personne ne la partage.</p>
-            <p class="chap">Le prochain rendez-vous se fixe en partant, si vous le voulez — ou plus tard, et jamais sous pression.</p>
-          </div>
-        </div>
-
-        <ol class="credits">
-          <li><b>i</b><span>Maude</span><em>Couleur et correction de couleur</em></li>
-          <li><b>ii</b><span>Théo</span><em>Coupes courtes et dégradés</em></li>
-          <li><b>iii</b><span>Anouk</span><em>Mèches, balayage, éclaircissement</em></li>
-          <li><b>iv</b><span>Salim</span><em>Cheveux bouclés et texturés, coupe à sec</em></li>
-          <li><b>v</b><span>Léa</span><em>Diagnostic et soin du cheveu</em></li>
-          <li><b>vi</b><span>Camille</span><em>Coiffage, attaches et chignons</em></li>
-        </ol>
-
-        <p class="chap apres">Ni photo, ni nom de famille. Un prénom et une spécialité : c’est tout ce qui vous sert à choisir, et vous pouvez aussi laisser l’agenda décider. Le reste leur appartient.</p>
-      </div>
+  <div class="duo duo--g" style="margin-top:clamp(34px,5vw,64px)">
+    <figure class="duo-ph">
+      <div class="ph ph--dur h-l js-ph"><img src="../../images/secteurs-sites/coiffure-3.webp" width="1280" height="720" loading="lazy" decoding="async" style="object-position:38% 58%" alt="Trois bacs de lavage alignés devant un mur de brique, tablettes de produits au-dessus du comptoir et grande fenêtre donnant sur la ville."></div>
+      <figcaption class="leg">Un bac par poste occupé. Personne ne quitte votre fauteuil pour commencer quelqu’un d’autre pendant un temps de pose.</figcaption>
+    </figure>
+    <div class="duo-t">
+      <p class="chap">Il n’y a pas de salle d’attente. Si votre plage commence à 10&nbsp;h, elle commence à 10&nbsp;h, et elle est bloquée à votre nom du début à la fin.</p>
+      <p class="chap">Vous pouvez demander quelqu’un en particulier ou laisser l’agenda décider. Le prochain rendez-vous se fixe en partant, si vous le voulez, ou plus tard, et jamais sous pression.</p>
     </div>
+  </div>
+
+  <div class="cont">
+    <ol class="postes">
+      <li><b>i</b><span>Maude</span><em>Couleur et correction de couleur</em></li>
+      <li><b>ii</b><span>Théo</span><em>Coupes courtes et dégradés</em></li>
+      <li><b>iii</b><span>Anouk</span><em>Mèches, balayage, éclaircissement</em></li>
+      <li><b>iv</b><span>Salim</span><em>Cheveux bouclés et texturés, coupe à sec</em></li>
+      <li><b>v</b><span>Léa</span><em>Diagnostic et soin du cheveu</em></li>
+      <li><b>vi</b><span>Camille</span><em>Coiffage, attaches et chignons</em></li>
+    </ol>
+    <p class="chap apres">Ni photo, ni nom de famille. Un prénom et une spécialité&nbsp;: c’est tout ce qui vous sert à choisir, et vous pouvez aussi laisser l’agenda décider. Le reste leur appartient.</p>
   </div>
 </section>
 
-<!-- ── BANDEAU 3 ──────────────────────────────────────────────── -->
-<div class="bandeau bandeau--rouge" aria-hidden="true">
-  <div class="bandeau-p">
-    <span class="mots">une tête à la fois <i>·</i> une tête à la fois <i>·</i></span>
-    <span class="mots">une tête à la fois <i>·</i> une tête à la fois <i>·</i></span>
-  </div>
-</div>
-
 <!-- ── LE RENDEZ-VOUS ─────────────────────────────────────────── -->
-<section class="sec blanc" id="rendez-vous">
-  <div class="cont">
-    <div class="page">
-      <div><span class="folio">— 21 —</span></div>
-      <div class="corps">
-        <div class="tete">
-          <span class="manchette">Le rendez-vous</span>
-          <div class="regle-x"></div>
-          <h2><span class="rv">on répond avec<br>une plage précise</span></h2>
-        </div>
+<section class="sec noir" id="rendez-vous">
+  <div class="duo duo--g">
+    <figure class="duo-ph">
+      <div class="ph ph--dur h-xl js-ph"><img src="../../images/secteurs-sites/coiffure-9.webp" width="960" height="720" loading="lazy" decoding="async" style="object-position:42% 48%" alt="Miroir circulaire à couronne lumineuse devant un mur ajouré de cylindres, reflétant une fenêtre à croisillons et la façade d’en face."></div>
+      <figcaption class="leg">Le poste du fond, celui qui prend le jour. C’est là qu’on regarde une couleur avant de la toucher.</figcaption>
+    </figure>
+    <div class="duo-t">
+      <div class="regle" aria-hidden="true"></div>
+      <h2 class="tt">
+        <span class="vh">on répond avec une plage précise</span>
+        <span class="tt-c tt-h" aria-hidden="true">on répond<br>avec une<br>plage précise</span>
+        <span class="tt-c tt-b" aria-hidden="true">on répond<br>avec une<br>plage précise</span>
+      </h2>
+      <p class="chap">Appelez ou écrivez en disant ce que vous voulez faire et quand vous êtes libre. On répond dans les vingt-quatre heures ouvrables avec un jour, une heure et une durée bloquée. Jamais «&nbsp;on vous rappelle&nbsp;».</p>
+      <p class="chap">Pour une première couleur, la plage proposée sera d’abord celle de la consultation de vingt minutes. Un rendez-vous se déplace sans frais jusqu’à quarante-huit heures à l’avance&nbsp;; en deçà, la plage reste vide, et quelqu’un d’autre a été refusé pour elle.</p>
 
-        <div class="double double--inv">
-          <div>
-            <figure class="ph h-l vd">
-              <img src="../../images/secteurs-sites/coiffure-9.webp" width="960" height="720" loading="lazy" decoding="async" style="object-position:42% 48%" alt="Miroir circulaire à couronne lumineuse devant un mur ajouré de cylindres, reflétant une fenêtre à croisillons et la façade d’en face.">
-              <figcaption class="leg"><i>Le poste du fond, celui qui prend le jour. C’est là qu’on regarde une couleur avant de la toucher.</i></figcaption>
-            </figure>
-            <p class="chap apres">Un rendez-vous se déplace sans frais jusqu’à quarante-huit heures à l’avance. En deçà, la plage reste vide : elle ne se remplit pas, et quelqu’un d’autre a été refusé pour elle.</p>
-          </div>
+      <dl class="fiche">
+        <dt>Téléphone</dt>
+        <dd><a class="lien" href="tel:0000000000">000 000-0000</a></dd>
+        <dt>Courriel</dt>
+        <dd><a class="lien" href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></dd>
+        <dt>Le salon</dt>
+        <dd>Adresse sur demande, Québec</dd>
+      </dl>
 
-          <div>
-            <p class="chap">Appelez ou écrivez en disant ce que vous voulez faire et quand vous êtes libre. On répond dans les vingt-quatre heures ouvrables avec un jour, une heure et une durée bloquée — jamais « on vous rappelle ».</p>
-            <p class="chap">Pour une première couleur, la plage proposée sera d’abord celle de la consultation de vingt minutes.</p>
+      <ul class="heures">
+        <li><span>Mardi au vendredi</span><b>9&nbsp;h à 19&nbsp;h</b></li>
+        <li><span>Samedi</span><b>9&nbsp;h à 16&nbsp;h</b></li>
+        <li><span>Dimanche et lundi</span><b>Fermé</b></li>
+      </ul>
 
-            <dl class="fiche">
-              <dt>Téléphone</dt>
-              <dd><a class="lien" href="tel:0000000000">000 000-0000</a></dd>
-              <dt>Courriel</dt>
-              <dd><a class="lien" href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></dd>
-              <dt>Le salon</dt>
-              <dd>Adresse sur demande, Québec</dd>
-            </dl>
-
-            <ul class="heures">
-              <li><span>Mardi au vendredi</span><b>9 h – 19 h</b></li>
-              <li><span>Samedi</span><b>9 h – 16 h</b></li>
-              <li><span>Dimanche et lundi</span><b>Fermé</b></li>
-            </ul>
-
-            <p class="apres"><a class="bouton" href="tel:0000000000">Appeler le salon</a></p>
-          </div>
-        </div>
-      </div>
+      <p class="apres"><a class="bouton" href="tel:0000000000">Appeler le salon</a></p>
     </div>
   </div>
 </section>
@@ -631,24 +706,165 @@ b,strong{font-weight:600}
 <footer class="pied">
   <div class="cont">
     <div class="pied-h">
-      <b>salon brume</b>
-      <span class="folio">— 24 —</span>
+      <b translate="no">salon brume</b>
+      <nav class="pied-m" aria-label="Pied de page">
+        <a class="lien" href="#parti">Le parti pris</a>
+        <a class="lien" href="#sommaire">Les six gestes</a>
+        <a class="lien" href="#matiere">La matière</a>
+        <a class="lien" href="#maison">La maison</a>
+        <a class="lien" href="#rendez-vous">Le rendez-vous</a>
+      </nav>
     </div>
     <div class="pied-b">
-      <div>
-        <nav class="pied-m">
-          <a class="lien" href="#ouverture">L’ouverture</a>
-          <a class="lien" href="#sommaire">Le sommaire</a>
-          <a class="lien" href="#matiere">La matière</a>
-          <a class="lien" href="#maison">La maison</a>
-          <a class="lien" href="#rendez-vous">Le rendez-vous</a>
-        </nav>
-        <p style="margin-top:22px">Salon Brume est une entreprise fictive. Les prénoms, les coordonnées et les durées sont des exemples ; aucun établissement, aucune marque et aucun produit réel n’est nommé sur cette page.</p>
-      </div>
-      <p class="demo">Site de démonstration — aucune requête vers un service tiers, aucun témoin, aucun script.</p>
+      <p>Salon Brume est une entreprise fictive. Les prénoms, les coordonnées et les durées sont des exemples&nbsp;; aucun établissement, aucune marque et aucun produit réel n’est nommé sur cette page.</p>
+      <p class="demo">Site de démonstration. Aucune requête vers un service tiers, aucun témoin.</p>
     </div>
   </div>
 </footer>
+
+<script src="../../js/vendor/gsap.min.js" defer></script>
+<script src="../../js/vendor/ScrollTrigger.min.js" defer></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   LE MOUVEMENT.
+
+   Les deux bibliothèques sont chargées en `defer` : elles s'exécutent
+   après l'analyse du document et AVANT `DOMContentLoaded`. Un script
+   en ligne, lui, s'exécute pendant l'analyse — donc AVANT elles. D'où
+   l'attente : sans elle, `gsap` est indéfini et la console porte une
+   erreur, ce qui est pire que pas de script du tout.
+
+   Chaque tween part d'un `fromTo` : l'état de repos écrit dans le CSS
+   est la forme FINALE, et c'est le script qui pose le départ. Une
+   capture pleine page ne peut donc jamais attraper un bloc à moitié
+   masqué, et une page sans script est complète.
+   ═══════════════════════════════════════════════════════════════════ */
+window.addEventListener("DOMContentLoaded", function () {
+  if (!window.gsap || !window.ScrollTrigger) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  var DOUX = "power3.out";
+
+  /* 1 · LA RÉVÉLATION PROPRE AU SITE : LE TITRE COUPÉ.
+     La moitié haute arrive par la droite, la moitié basse par la
+     gauche, et les deux se referment sur la ligne de coupe. C'est le
+     geste du métier, et c'est le seul mouvement inventé ici.
+     Le filet rouge se trace au-dessus, dans le sens de la lecture. */
+  document.querySelectorAll(".tt").forEach(function (t) {
+    var h = t.querySelector(".tt-h"), b = t.querySelector(".tt-b");
+    if (!h || !b) return;
+    var tl = gsap.timeline({ scrollTrigger: { trigger: t, start: "top 88%", once: true } });
+    tl.fromTo(h, { xPercent: 13, opacity: 0 }, { xPercent: 0, opacity: 1, duration: .82, ease: DOUX }, 0)
+      .fromTo(b, { xPercent: -13, opacity: 0 }, { xPercent: 0, opacity: 1, duration: .82, ease: DOUX }, 0);
+  });
+  document.querySelectorAll(".regle").forEach(function (r) {
+    gsap.fromTo(r, { scaleX: 0 }, {
+      scaleX: 1, duration: .7, ease: "power2.inOut",
+      scrollTrigger: { trigger: r, start: "top 92%", once: true }
+    });
+  });
+
+  /* 2 · LES IMAGES S'OUVRENT PAR LE BAS, comme une page qu'on
+     découvre. Le cadre se déplie et l'image se détend de 8 % : sans
+     ce léger sur-cadrage, l'ouverture du masque se lit comme un
+     rideau et non comme une image qui arrive. */
+  document.querySelectorAll(".js-ph").forEach(function (c) {
+    var im = c.querySelector("img");
+    var tl = gsap.timeline({ scrollTrigger: { trigger: c, start: "top 90%", once: true } });
+    tl.fromTo(c, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: .95, ease: "power3.inOut" }, 0);
+    if (im) tl.fromTo(im, { scale: 1.14 }, { scale: 1, duration: 1.25, ease: DOUX }, 0);
+  });
+
+  /* 3 · LA PLANCHE : une parallaxe, et la ligne de coupe qui descend.
+     Aucune épingle. Une scène épinglée réserve sa course dans le flux,
+     et une capture pleine page — qui ne défile pas — la photographie
+     comme une bande vide au milieu du site. La parallaxe donne la
+     même profondeur sans rien réserver. */
+  var pl = document.querySelector(".js-planche");
+  if (pl) {
+    gsap.fromTo(pl.querySelector("img"), { yPercent: -7 }, {
+      yPercent: 0, ease: "none",
+      scrollTrigger: { trigger: pl, start: "top bottom", end: "bottom top", scrub: .6 }
+    });
+    gsap.fromTo(pl.querySelector(".js-coupe"), { y: 0 }, {
+      y: function () { return pl.offsetHeight; }, ease: "none",
+      scrollTrigger: {
+        trigger: pl, start: "top bottom", end: "bottom top", scrub: .35,
+        invalidateOnRefresh: true          /* la course se remesure au redimensionnement */
+      }
+    });
+  }
+
+  /* 4 · LE DISPOSITIF : la durée se compte.
+     Chaque geste porte sa durée réellement bloquée. La jauge se
+     remplit de la gauche, et le nombre roule de zéro jusqu'à elle.
+     Le repos du DOM est déjà le bon nombre : sans script, la page dit
+     « 150 min » sans jamais compter. */
+  document.querySelectorAll(".jauge").forEach(function (j) {
+    gsap.fromTo(j, { scaleX: 0 }, {
+      scaleX: 1, duration: .9, ease: "power2.out",
+      scrollTrigger: { trigger: j, start: "top 95%", once: true }
+    });
+  });
+  document.querySelectorAll(".js-min").forEach(function (n) {
+    var fin = parseInt(n.dataset.min, 10);
+    if (!Number.isFinite(fin)) return;      /* un NaN compterait vers rien */
+    var v = { n: 0 };
+    gsap.to(v, {
+      n: fin, duration: 1.1, ease: "power2.out",
+      onUpdate: function () { n.textContent = Math.round(v.n); },
+      onComplete: function () { n.textContent = fin; },
+      scrollTrigger: { trigger: n, start: "top 95%", once: true }
+    });
+  });
+
+  /* 5 · LE MOUVEMENT CONTINU : le bandeau lit le défilement.
+     La boucle tourne en CSS pur, donc même si GSAP n'arrive jamais.
+     Le script ne fait qu'accélérer et INVERSER sa vitesse selon celle
+     du défilement : la bande dit dans quel sens on va, et à quelle
+     allure. Elle revient au pas quand on s'arrête. */
+  var piste = document.querySelector(".bande-p");
+  if (piste) {
+    var boucle = gsap.to(piste, {
+      xPercent: -50, duration: 30, ease: "none", repeat: -1,
+      modifiers: { xPercent: gsap.utils.unitize(gsap.utils.wrap(-50, 0)) }
+    });
+    piste.style.animation = "none";        /* la boucle CSS passe la main */
+    var repos;
+    ScrollTrigger.create({
+      onUpdate: function (self) {
+        var v = self.getVelocity() / 260;
+        gsap.to(boucle, {
+          timeScale: gsap.utils.clamp(-9, 9, v || 1),
+          duration: .32, overwrite: true
+        });
+        clearTimeout(repos);
+        repos = setTimeout(function () {
+          gsap.to(boucle, { timeScale: 1, duration: .9, ease: "power2.out" });
+        }, 170);
+      }
+    });
+  }
+
+  /* 6 · L'ACCORDÉON s'ouvre à hauteur mesurée. `<details>` bascule
+     instantanément : on rejoue l'ouverture pour que le contenu
+     descende au lieu d'apparaître. La fermeture reste immédiate,
+     parce qu'un contenu qu'on referme n'a rien à raconter. */
+  document.querySelectorAll(".geste").forEach(function (d) {
+    var corps = d.querySelector(".detail");
+    if (!corps) return;
+    d.addEventListener("toggle", function () {
+      if (!d.open) return;
+      gsap.fromTo(corps, { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: .38, ease: "power2.out",
+          clearProps: "height,opacity" });
+    });
+  });
+
+  ScrollTrigger.refresh();
+});
+</script>
 
 </body>
 </html>

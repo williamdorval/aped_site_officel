@@ -164,7 +164,39 @@ const TIRAGES = {
        marque reelle occupent le tiers gauche du comptoir. */
     { n: 9, emploi: "poste — miroir circulaire lumineux sur mur ajoure",
       src: "url:" + PX + "/7750144/pexels-photo-7750144.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/7750144/", fen: { x: 0.30, y: 0.12, w: 0.60 } }
+      page: "https://www.pexels.com/photo/7750144/", fen: { x: 0.30, y: 0.12, w: 0.60 } },
+
+    /* AJOUTES LE 2026-08-01 — LA REFONTE « MAGAZINE ».
+       Les neuf premieres etaient des photos de PIECE : deux salons
+       vides, deux salles de bacs, trois natures mortes. Aucune ne
+       montre le GESTE, et un magazine de mode se tient sur le geste.
+       Les cinq suivantes sont toutes cadrees sur des mains, des
+       ciseaux, une meche : ni visage, ni marque, ni enseigne, ni
+       numero civique — verifiees une par une en pleine resolution.
+       La 10 remplace la 1 au heros : la 1 montrait des fauteuils
+       ENCORE SOUS FILM, c'est-a-dire un salon qui n'a jamais ouvert. */
+    /* CETTE LIGNE A ETE SORTIE DEUX FOIS. La premiere en `xl` :
+       une bande 16/9 sur une source 2:3 ne prend que 37 % de sa
+       hauteur, et 37 % d'un gros plan de main, c'est un POUCE. Le
+       recadrage du noyau verrouille la hauteur sur le rapport de
+       SORTIE : on ne peut pas s'eloigner, seulement trancher. Un
+       format debout prend 93 % de la source et rend la scene entiere.
+       C'est la raison d'etre du format `portrait`. */
+    { n: 10, emploi: "heros — la main, le peigne et le ciseau a contre-jour", portrait: true,
+      src: "url:" + PX + "/6487878/pexels-photo-6487878.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6487878/", fen: { x: 0, y: 0.04, w: 1 } },
+    { n: 11, emploi: "geste — le ciseau ferme sur une meche, tablier noir", portrait: true,
+      src: "url:" + PX + "/8467965/pexels-photo-8467965.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8467965/", fen: { x: 0, y: 0.10, w: 1 } },
+    { n: 12, emploi: "geste — les deux mains separent une meche mouillee au ciseau", portrait: true,
+      src: "url:" + PX + "/19239103/pexels-photo-19239103.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/19239103/", fen: { x: 0, y: 0.04, w: 1 } },
+    { n: 13, emploi: "bac — la main ouvre une meche mouillee au-dessus du bac", portrait: true,
+      src: "url:" + PX + "/23349887/pexels-photo-23349887.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/23349887/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 14, emploi: "nature morte — la tresse et le ruban noir sur toile ecrue", portrait: true,
+      src: "url:" + PX + "/8467968/pexels-photo-8467968.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8467968/", fen: { x: 0, y: 0.08, w: 1 } }
   ],
 
   /* GYM ET ENTRAINEMENT — FONTE NORD.
@@ -677,6 +709,12 @@ const TIRAGES = {
 const XL = { w: 1920, h: 1080 };
 const LARGE = { w: 1280, h: 720 };
 const NORMAL = { w: 960, h: 720 };
+/* `portrait` — ajoute pour la refonte « magazine » de la coiffure.
+   Les trois formats ci-dessus sont tous en PAYSAGE : une double page
+   de magazine se tient sur des images DEBOUT, et recadrer une source
+   2:3 en 4:3 jette la moitie du geste. 1000 x 1400, soit 5:7, la
+   proportion d'une pleine page de revue. */
+const PORTRAIT = { w: 1000, h: 1400 };
 
 const j = (u) => new Promise((ok, no) => {
   https.get(u, { headers: { "user-agent": "aped-secteurs-sites" } }, (r) => {
@@ -763,7 +801,7 @@ for (const secteur of aFaire) {
     const dest = path.join(SORTIE, `${secteur}-${t.n}.webp`);
     REGISTRE.push({ fichier: path.relative(RACINE, dest).replace(/\\/g, "/"), emploi: t.emploi, source: t.src, page: t.page, licence: t.licence });
     if (fs.existsSync(dest) && !FORCER) { console.log("·", path.basename(dest).padEnd(22), "deja present — on n'y touche pas"); continue; }
-    const dim = t.xl ? XL : t.large ? LARGE : NORMAL;
+    const dim = t.xl ? XL : t.large ? LARGE : t.portrait ? PORTRAIT : NORMAL;
     const f = await resoudre(t.src);
     let res;
     if (t.src.startsWith("ph:")) {

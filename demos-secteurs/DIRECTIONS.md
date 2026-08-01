@@ -69,7 +69,7 @@ aucun des neuf n'a droit à l'orange.**
 | **Typographie** | `bodoni-moda` 700 en très grand et en **bas de casse** pour l'affichage · `archivo` pour le texte et les capitales de nav |
 | **Formes** | Angles vifs. Filets noirs de 1 px et **une réglure verticale** entre les colonnes. Le dispositif de signature : un **numéro de page** en rouge dans la marge, comme un magazine |
 | **Mouvement** | Le titre se dévoile **sous un masque qui monte** (`clip-path: inset()`) · les images arrivent **de côté** en alternance · un **bandeau de mots défile** horizontalement en continu · la grille de services est un **accordéon `:has()` / `<details>`** |
-| **Traitement photo** | **Noir et blanc à fort contraste** pour les portraits et les coupes ; couleur seulement pour les deux images de salon. C'est ce qui donne la page de mode |
+| **Traitement photo** | **Noir et blanc à fort contraste, PARTOUT, sans exception.** La première version gardait deux images de salle en couleur — un salon beige dont les fauteuils sont encore sous film de protection, et un salon de barbier vert et brun. Deux teintes de plus dans un système qui en compte trois, et deux pièces VIDES dans un métier qui se juge au geste. Les deux sont sorties de la page. Le cadrage se fait sur une main, un ciseau, une mèche — jamais sur un fauteuil |
 | **Ce qu'on ne fait pas** | Aucun rose, aucun doré, aucune courbe. On ne fait pas « salon de beauté », on fait « éditorial » |
 
 ## 06 · HÉBERGEMENT ET TOURISME — **AUBERGE DES CAPS**
