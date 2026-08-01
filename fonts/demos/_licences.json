@@ -20,6 +20,38 @@
     ]
   },
   {
+    "famille": "archivo",
+    "google": "Archivo:wght@400;600",
+    "role": "grotesque de texte neutre et serree — coiffure, gym",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "archivo-0.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "archivo-1.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "archivo-2.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "archivo-3.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
     "famille": "bodoni-moda",
     "google": "Bodoni+Moda:wght@700",
     "role": "didone a fort contraste — coiffure, esthetique",
@@ -40,6 +72,38 @@
     ]
   },
   {
+    "famille": "cormorant",
+    "google": "Cormorant+Garamond:ital,wght@0,600;1,600",
+    "role": "antique lapidaire fine — hebergement",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "cormorant-0.woff2",
+        "style": "italic",
+        "graisse": "600",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "cormorant-1.woff2",
+        "style": "italic",
+        "graisse": "600",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "cormorant-2.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "cormorant-3.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
     "famille": "dm-serif",
     "google": "DM+Serif+Display",
     "role": "serif tranquille — immobilier",
@@ -55,6 +119,38 @@
         "fichier": "dm-serif-1.woff2",
         "style": "normal",
         "graisse": "400",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
+    "famille": "fraunces",
+    "google": "Fraunces:opsz,wght@9..144,600;9..144,900",
+    "role": "serif douce et gauche — boutique de ceramique",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "fraunces-0.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "fraunces-1.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "fraunces-2.woff2",
+        "style": "normal",
+        "graisse": "900",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "fraunces-3.woff2",
+        "style": "normal",
+        "graisse": "900",
         "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
       }
     ]
@@ -144,6 +240,38 @@
     ]
   },
   {
+    "famille": "karla",
+    "google": "Karla:wght@400;700",
+    "role": "grotesque de texte a l'oeil ouvert — boutique",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "karla-0.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "karla-1.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "karla-2.woff2",
+        "style": "normal",
+        "graisse": "700",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "karla-3.woff2",
+        "style": "normal",
+        "graisse": "700",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
     "famille": "libre-baskerville",
     "google": "Libre+Baskerville:wght@700",
     "role": "serif d'autorite — juridique",
@@ -165,18 +293,30 @@
   },
   {
     "famille": "manrope",
-    "google": "Manrope:wght@800",
+    "google": "Manrope:wght@400;800",
     "role": "humaniste ronde — clinique",
     "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
     "morceaux": [
       {
         "fichier": "manrope-0.woff2",
         "style": "normal",
-        "graisse": "800",
+        "graisse": "400",
         "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
       },
       {
         "fichier": "manrope-1.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "manrope-2.woff2",
+        "style": "normal",
+        "graisse": "800",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "manrope-3.woff2",
         "style": "normal",
         "graisse": "800",
         "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
@@ -199,6 +339,38 @@
         "fichier": "oswald-1.woff2",
         "style": "normal",
         "graisse": "600",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
+    "famille": "outfit",
+    "google": "Outfit:wght@500;800",
+    "role": "geometrique ronde — clinique",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "outfit-0.woff2",
+        "style": "normal",
+        "graisse": "500",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "outfit-1.woff2",
+        "style": "normal",
+        "graisse": "500",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "outfit-2.woff2",
+        "style": "normal",
+        "graisse": "800",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "outfit-3.woff2",
+        "style": "normal",
+        "graisse": "800",
         "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
       }
     ]
@@ -229,6 +401,102 @@
       },
       {
         "fichier": "playfair-3.woff2",
+        "style": "normal",
+        "graisse": "700",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
+    "famille": "plex-sans",
+    "google": "IBM+Plex+Sans:wght@400;600",
+    "role": "sans technique — construction",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "plex-sans-0.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "plex-sans-1.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "plex-sans-2.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "plex-sans-3.woff2",
+        "style": "normal",
+        "graisse": "600",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
+    "famille": "source-serif",
+    "google": "Source+Serif+4:ital,wght@0,400;1,400",
+    "role": "serif de presse — juridique",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "source-serif-0.woff2",
+        "style": "italic",
+        "graisse": "400",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "source-serif-1.woff2",
+        "style": "italic",
+        "graisse": "400",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "source-serif-2.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "source-serif-3.woff2",
+        "style": "normal",
+        "graisse": "400",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ]
+  },
+  {
+    "famille": "space-grotesk",
+    "google": "Space+Grotesk:wght@500;700",
+    "role": "grotesque technique — construction",
+    "licence": "SIL Open Font License 1.1 — https://openfontlicense.org/",
+    "morceaux": [
+      {
+        "fichier": "space-grotesk-0.woff2",
+        "style": "normal",
+        "graisse": "500",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "space-grotesk-1.woff2",
+        "style": "normal",
+        "graisse": "500",
+        "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "fichier": "space-grotesk-2.woff2",
+        "style": "normal",
+        "graisse": "700",
+        "plage": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "fichier": "space-grotesk-3.woff2",
         "style": "normal",
         "graisse": "700",
         "plage": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"

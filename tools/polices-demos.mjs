@@ -45,10 +45,21 @@ const FAMILLES = {
   "instrument-serif": { g: "Instrument+Serif:ital@0;1", role: "serif d'affichage fine — photographe" },
   "libre-baskerville": { g: "Libre+Baskerville:wght@700", role: "serif d'autorite — juridique" },
   "dm-serif": { g: "DM+Serif+Display", role: "serif tranquille — immobilier" },
-  "manrope": { g: "Manrope:wght@800", role: "humaniste ronde — clinique" },
+  "manrope": { g: "Manrope:wght@400;800", role: "humaniste ronde — clinique" },
+  /* --- faces d'affichage ajoutees le 2026-08-01 : douze secteurs,
+     douze personnalites. Aucune ne doit pouvoir passer pour une
+     autre a trois metres. --- */
+  "fraunces": { g: "Fraunces:opsz,wght@9..144,600;9..144,900", role: "serif douce et gauche — boutique de ceramique" },
+  "cormorant": { g: "Cormorant+Garamond:ital,wght@0,600;1,600", role: "antique lapidaire fine — hebergement" },
+  "outfit": { g: "Outfit:wght@500;800", role: "geometrique ronde — clinique" },
+  "space-grotesk": { g: "Space+Grotesk:wght@500;700", role: "grotesque technique — construction" },
   /* --- faces de texte et de detail --- */
   "inter": { g: "Inter:wght@400;600", role: "texte courant neutre" },
   "spectral": { g: "Spectral:ital,wght@0,400;1,400", role: "texte courant serif" },
+  "karla": { g: "Karla:wght@400;700", role: "grotesque de texte a l'oeil ouvert — boutique" },
+  "archivo": { g: "Archivo:wght@400;600", role: "grotesque de texte neutre et serree — coiffure, gym" },
+  "source-serif": { g: "Source+Serif+4:ital,wght@0,400;1,400", role: "serif de presse — juridique" },
+  "plex-sans": { g: "IBM+Plex+Sans:wght@400;600", role: "sans technique — construction" },
   "jetbrains-mono": { g: "JetBrains+Mono:wght@500", role: "micro-libelles et codes" }
 };
 

@@ -1,125 +1,190 @@
 # Le standard des sites de secteur
 
-Ce fichier n'est pas un gabarit. C'est la **barre**, relevée sur les
-trois sites qui font référence dans ce dépôt :
-
-| Référence | Ce qu'elle prouve |
-|---|---|
-| `restau` — CENDRE | Un didone énorme sur une photographie sombre. L'italique comme seconde voix dans la phrase |
-| `demo-carroserie` — MÉRIDIEN | Une grotesque condensée capitale, très lourde, interlignage serré. Un seul orange |
-| `demo-design-int-rieur` — NORDEN | Une transitionnelle posée sur un fond crème. Le calme comme argument |
-
-> **LE TEST, ET IL EST LE SEUL QUI COMPTE.** Mets ta capture pleine
-> page à côté de ces trois-là. **Si on voit laquelle est la tienne,
-> elle n'est pas finie.** « Acceptable » n'est pas « au niveau ».
+Ce fichier n'est pas un gabarit. **Un gabarit est exactement ce qu'il
+interdit.**
 
 ---
 
-## 1 · CE QUI REND CES TROIS SITES FORTS
+## 0 · LA RÈGLE QUI GOUVERNE TOUTES LES AUTRES
 
-Relevé à l'image, pas déduit.
+> **AUCUN SITE DE SECTEUR NE PORTE L'IDENTITÉ D'APED.**
+> Ni sa palette, ni sa typographie, ni ses formes, ni son langage de
+> mouvement.
+
+Cette section du site vend une seule chose : **on sait faire n'importe
+quel style, pour n'importe quel métier.** Douze aperçus qui se
+ressemblent prouvent l'inverse — qu'on sait faire un seul style et
+qu'on le recolle partout. C'est l'accusation qu'on veut éviter, et on
+se l'était infligée tout seuls : le 2026-08-01, les neuf sites écrits
+ici étaient le même document en neuf couleurs — encre, minium,
+grotesque condensée, micro-libellés mono, sections numérotées `01`
+à `10`, filets de 1 px, angles vifs. L'identité d'APED avec d'autres
+mots.
+
+**Ce qui en découle, et qui n'est pas négociable :**
+
+| | |
+|---|---|
+| **Le minium et le ciment sont interdits** | sauf si le métier les appelle vraiment. Trois des douze sont des projets réels et portent déjà de l'orange — **aucun des neuf autres n'a droit à une couleur orange** |
+| **Palette propre à chaque métier** | choisie pour lui, pas héritée |
+| **Pairing typographique propre** | l'affichage d'un site ne se retrouve dans aucun autre |
+| **Langage de formes propre** | certains ont des coins arrondis, des ombres, des dégradés, du flou. **Les interdits d'APED ne s'appliquent PAS à l'intérieur d'un site de secteur** — ils sont là pour montrer notre étendue. Le site APED, lui, les garde |
+| **Langage de mouvement propre** | ce qui bouge, comment, et dans quel sens |
+
+### Le test du côte-à-côte, et il est le seul qui compte
+
+**Deux passes, les deux obligatoires.**
+
+1. **Contre les quatre références.** Mets ta capture pleine page à côté
+   d'elles. Si on voit laquelle est la tienne, elle n'est pas finie.
+2. **Contre les autres secteurs déjà faits.** Mets les captures côte à
+   côte. **On ne doit pas pouvoir deviner qu'elles viennent du même
+   studio.** Si deux se ressemblent, on en refait une.
+
+« Acceptable » n'est pas « au niveau ».
+
+---
+
+## 1 · LES QUATRE RÉFÉRENCES — LA BARRE, RELEVÉE À L'IMAGE
+
+| Référence | Ce qu'elle prouve | Palette |
+|---|---|---|
+| `restau` — CENDRE | Un didone énorme sur une photographie sombre. L'italique comme seconde voix dans la phrase | encre + braise `#e07a3f` |
+| `demo-carroserie` — MÉRIDIEN | Une grotesque condensée capitale, très lourde, interlignage serré. Un seul orange | noir + `#ff5b23` |
+| `demo-design-int-rieur` — NORDEN | Une transitionnelle posée sur un fond crème. Le calme comme argument. **Coins arrondis, ombres douces, une carte en verre dépoli** — et c'est très bien | crème + or `#c9a227` |
+| `MV-deneigement` | Le clair, les coins arrondis, une bande d'ambre en dégradé. Un site de service qui rassure | blanc + ambre |
+
+**Ce que les quatre partagent, et c'est tout ce qu'elles partagent :**
 
 ### 1.1 Une échelle typographique brutale
 
-Le titre du héros fait **90 à 160 px** et occupe une ligne entière de
-la fenêtre. Il n'y a **aucun** intermédiaire entre lui et le texte
-courant de 14–15 px : pas de 24 px, pas de 32 px. Le saut EST le
-dispositif.
-
-| | Héros | Titres de section | Texte | Micro-libellé |
-|---|---|---|---|---|
-| restau | 140 px | 46 px | 14 px | 10 px |
-| carrosserie | 104 px | 44 px | 15 px | 10 px |
-| design | 62 px (dans une carte) | 40 px | 15 px | 10,5 px |
+Le titre du héros fait **90 à 160 px** et occupe une ligne entière de la
+fenêtre. Il n'y a **aucun** intermédiaire entre lui et le texte courant
+de 14–16 px. Le saut EST le dispositif.
 
 Interlignage du héros : **0,88 à 0,96**. Jamais 1,2.
-Chasse : **−0,02 à −0,04 em** sur les capitales lourdes, **0** sur les
-serifs.
 
-### 1.2 Une seule couleur d'accent, et elle ne sert qu'à trois choses
+### 1.2 La photographie porte la page
 
-Le bouton principal · les micro-libellés · les chiffres.
-Rien d'autre. Pas de deuxième accent. Pas de dégradé.
+Le héros est une photographie **plein cadre**. Les grilles d'images ont
+des cases de **400 à 700 px de haut**, pas des vignettes de 200. Une
+image sur laquelle on ne peut pas voir un visage, une texture ou un
+geste n'a rien à faire là.
 
-restau `#e07a3f` · carrosserie `#ff5b23` · design `#c9a227`.
+### 1.3 Un dispositif de signature qui revient
 
-### 1.3 La photographie porte la page
+Un seul par site, trois à cinq fois. C'est lui qu'on reconnaît.
 
-Le héros est une photographie **plein cadre**, sombre, avec un voile.
-Les grilles d'images ont des cases de **400 à 700 px de haut**, pas des
-vignettes de 200. Une image sur laquelle on ne peut pas voir un visage,
-une texture ou un geste n'a rien à faire là.
+### 1.4 Le rythme vertical
 
-### 1.4 Un dispositif de signature qui revient
+Padding de section : **110 à 170 px**. Le héros fait une fenêtre pleine.
+**Jamais deux sections de même fond à la suite.**
 
-- restau : un **bandeau défilant** de mots, en didone, entre les sections ;
-- carrosserie : un **filet plein largeur** au-dessus de chaque étape numérotée ;
-- design : une **ligne verticale à pastilles** qui relie les cinq étapes.
+### 1.5 Le texte courant est petit, étroit, et il y en a peu
 
-Un seul par site. Il revient trois à cinq fois. C'est lui qu'on
-reconnaît.
-
-### 1.5 Le rythme vertical
-
-Padding de section : **110 à 170 px** en haut et en bas. Le héros fait
-une fenêtre pleine. **Jamais deux sections de même fond à la suite** —
-sombre, clair, sombre, ou l'inverse.
-
-### 1.6 Le texte courant est petit et étroit
-
-14–15 px, **46 à 62 caractères** de large, gris à 70 % du contraste du
-titre. Il ne se bat jamais avec l'affichage.
-
-### 1.7 Les micro-libellés
-
-Mono, capitales, **10 à 11 px**, chasse **0,15 à 0,25 em**, dans
-l'accent ou en gris. Ils numérotent (`01`, `SRV-03`), ils nomment
-(`MANIFESTE`, `LE PARCOURS`), ils datent. Ils ne décrivent pas.
+14–16 px, **46 à 62 caractères** de large. **Une page de secteur n'est
+pas un dossier.** Le défaut qui a coulé la première fournée : sept
+tableaux, dix sections numérotées, trois cents lignes de texte. Une
+fiche technique n'a pas de personnalité.
 
 ---
 
-## 2 · CE QUI FAISAIT ÉCHOUER LES DEUX PREMIERS SITES DE SECTEUR
+## 2 · LE MOUVEMENT — CE QUI MANQUAIT LE PLUS
 
-Écrit ici pour que personne ne le refasse.
+Les neuf premiers sites n'avaient **pas une seule** `@keyframes`. Un
+site statique en 2026 se lit comme un gabarit de 2017, et l'aperçu du
+panneau ne montre rien bouger. **Si le visiteur ne voit rien bouger, on
+n'a rien prouvé.**
 
-1. **Aucune échelle.** Le plus gros titre faisait 34 px. Une page dont
-   tout est entre 12 et 34 px est un document, pas un site.
-2. **Aucune photographie plein cadre.** Des vignettes de 196 px dans
-   des cartes. Le sujet ne se voyait pas.
-3. **Trop de tableaux.** Sept tableaux sur une page : c'est une fiche
-   technique, et une fiche technique n'a pas de personnalité.
-4. **Aucun dispositif de signature.** Rien ne revenait.
-5. **Deux, trois, quatre sections du même fond à la suite.**
-6. **Aucune police d'affichage.** La même sans partout, à des tailles
-   voisines.
+### 2.1 Toujours zéro `<script>`
+
+Ça n'a pas changé, et ce n'est pas une contrainte : **les animations
+pilotées par le défilement se font en CSS pur** depuis Chrome 115.
+
+```css
+@keyframes monte { from { opacity:0; transform: translateY(34px) } to { opacity:1; transform:none } }
+
+.reveal{
+  animation: monte forwards;   /* `forwards`, JAMAIS `both` — voir ci-dessous */
+  animation-timeline: view();
+  animation-range: entry 0% cover 26%;
+}
+```
+
+> **`forwards`, jamais `both`, et ça a coûté une demi-page blanche.**
+> Avec `both`, un élément qui n'a pas encore atteint sa plage garde son
+> état de DÉPART — donc `opacity: 0`. Une capture pleine page ne
+> déplace pas le défilement : tout ce qui est sous la ligne de
+> flottaison est avant sa plage, et **la moitié du site sort vide**.
+> C'est ce qu'a rendu la première capture de la boutique : dix blocs
+> entièrement blancs. `forwards` supprime le remplissage d'avant-plage ;
+> l'élément montre alors sa forme finale tant que l'animation n'est pas
+> en vigueur, et bascule à `opacity: 0` au moment exact où sa plage
+> commence — c'est-à-dire quand il est encore **sous** la fenêtre.
+> Le visiteur ne voit aucune différence ; l'aperçu du panneau, lui, voit
+> toute la page.
+
+Une page sans script ne peut pas avoir d'erreur console, et son
+mouvement tourne sur le compositeur.
+
+### 2.2 Les quatre choses qu'il faut, au minimum
+
+1. **Une révélation au défilement** — jamais la même d'un site à
+   l'autre : monter, glisser de côté, se dévoiler sous un masque,
+   grandir depuis 96 %, se décadrer, s'ouvrir en volet.
+2. **Un mouvement continu** — une bande qui défile, une barre qui se
+   remplit, un fond qui se déplace en parallaxe (`animation-timeline:
+   scroll()`), un compteur qui roule.
+3. **Des micro-interactions** — sur **chaque** cible cliquable : le
+   bouton, la carte, le lien de nav, la vignette. `:hover`, `:focus-
+   visible`, `:active`. Une transition de 120 à 260 ms.
+4. **Un dispositif interactif sans script** — `:target`, `:checked` +
+   `~`, `:has()`, `scroll-snap` en défilement latéral, `<details>`.
+   Un par site, et il sert le métier.
+
+### 2.3 Trois garde-fous
+
+- **`animation-range` se termine tôt.** `entry 0% cover 25%` : l'élément
+  est entier dès qu'il est à un quart dans la fenêtre. Une capture fixe
+  ne doit jamais l'attraper à moitié transparent.
+- **`prefers-reduced-motion: reduce` coupe tout**, et l'état de repos
+  est l'état FINAL. Aucune information ne se perd.
+- **`@supports not (animation-timeline: view())`** — les navigateurs
+  sans défilement animé voient la forme finale, jamais une page vide.
+
+```css
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation:none !important; transition:none !important }
+}
+@supports not (animation-timeline: view()){
+  .reveal{ animation:none; opacity:1; transform:none }
+}
+```
 
 ---
 
-## 3 · LES POLICES — LOCALES, UNE PAR PERSONNALITÉ
+## 3 · LES POLICES — LOCALES, UNE PERSONNALITÉ PAR MÉTIER
 
 `node tools/polices-demos.mjs` les télécharge une fois dans
 `fonts/demos/`. **Aucune page ne parle à `fonts.googleapis.com`.**
-Toutes sont sous SIL OFL 1.1 ; le relevé est dans
-`fonts/demos/_licences.json`.
+Toutes sous SIL OFL 1.1 ; relevé dans `fonts/demos/_licences.json`,
+déclarations prêtes à coller dans `fonts/demos/_declarations.css`.
+Chemin depuis un site de secteur : `../../fonts/demos/<fichier>.woff2`.
 
 | Secteur | Affichage | Texte | Détail |
 |---|---|---|---|
-| Construction | `oswald` | `inter` | `jetbrains-mono` |
+| Boutique | `fraunces` | `karla` | `jetbrains-mono` |
+| Coiffure | `bodoni-moda` | `archivo` | — |
+| Hébergement | `cormorant` | `spectral` | `jetbrains-mono` |
+| Gym | `anton` | `archivo` | `jetbrains-mono` |
+| Clinique | `outfit` | `manrope` | — |
 | Immobilier | `dm-serif` | `spectral` | `jetbrains-mono` |
-| Boutique | `syne` | `inter` | `jetbrains-mono` |
-| Coiffure | `bodoni-moda` | `inter` | `jetbrains-mono` |
-| Gym | `anton` | `inter` | `jetbrains-mono` |
-| Hébergement | `playfair` | `spectral` | `jetbrains-mono` |
-| Clinique | `manrope` | `inter` | `jetbrains-mono` |
-| Juridique | `libre-baskerville` | `spectral` | `jetbrains-mono` |
+| Juridique | `libre-baskerville` | `source-serif` | `jetbrains-mono` |
 | Photographe | `instrument-serif` | `inter` | `jetbrains-mono` |
-
-Les déclarations `@font-face` prêtes à coller sont dans
-`fonts/demos/_declarations.css`. Le chemin depuis un site de secteur
-est `../../fonts/demos/<fichier>.woff2`.
+| Construction | `space-grotesk` | `plex-sans` | `jetbrains-mono` |
 
 **Ne charger que les faces utilisées.** Une page qui déclare douze
-familles en télécharge douze.
+familles en télécharge douze. Deux à trois par site, pas plus.
 
 ---
 
@@ -127,33 +192,31 @@ familles en télécharge douze.
 
 1. **Ouvrir chaque image en pleine résolution avant de l'utiliser.**
    Jamais juger sur une planche-contact ni sur le nom du fichier. Un
-   `object-position` de la page ne recadre pas le fichier : il ne sauve
-   rien. *(Trois marques imprimées trouvées comme ça : « Onduline » sur
-   une sous-toiture, « Ricoré » et « NAN » sur des boîtes de lait.)*
+   `object-position` de la page ne recadre pas le fichier.
+   *(Trois marques imprimées trouvées comme ça.)*
 2. **Chercher :** marques imprimées, enseignes, plaques
    d'immatriculation, visages reconnaissables, numéros civiques.
-3. **Une photo par emplacement. Aucune réutilisation.** Dix
-   propriétés = dix jeux de photos. *(Le même salon portait deux
-   adresses différentes.)*
-4. **Chaque légende décrit ce que l'image montre vraiment.** Une cour
-   arrière n'est pas une terrasse avant.
-5. **Une photo ne contredit jamais le texte de la page** — ni le type
-   de bâtiment, ni l'état, ni le prix, ni le voisinage. *Si les deux se
-   contredisent : on change la photo, jamais le texte.*
-6. **Licence documentée** dans le tableau `TIRAGES` de
+3. **Une photo par emplacement. Aucune réutilisation.**
+4. **Chaque légende décrit ce que l'image montre vraiment.**
+5. **Une photo ne contredit jamais le texte de la page.** Si les deux se
+   contredisent : on change la photo, jamais le texte.
+6. **Licence documentée** dans `TIRAGES` de
    `tools/secteurs-sites-photos.mjs`, recopiée dans
    `images/secteurs-sites/_licences.json`.
+7. **Le traitement fait partie de la direction artistique.** Un site de
+   spa ne traite pas ses images comme un site de garage. Le filtre —
+   duotone, désaturation, contraste, virage chaud, format carré ou
+   panoramique — s'écrit dans la DA avant d'être codé.
 
 Sur une source en **portrait**, `fen.w` porte sur la largeur : le cadre
-calculé est plus court que l'image et se pose **en haut**. Télécharger
-la source en 900 px et la regarder avant d'écrire `fen`.
+calculé est plus court que l'image et se pose **en haut**.
 
 ---
 
 ## 5 · CE QUI NE S'ÉCRIT JAMAIS
 
 - Aucun nom d'entreprise réelle, aucun logo, aucune marque ;
-- aucun avis, aucune note, aucun témoignage, aucun prix ;
+- aucun avis, aucune note, aucun témoignage, **aucun prix** ;
 - entreprises fictives, coordonnées neutres (`000 000-0000`,
   `courriel@exemple.ca`, « Adresse sur demande ») ;
 - **on n'invente jamais du contenu pour occuper de l'espace.** Une
@@ -165,33 +228,36 @@ la source en 900 px et la regarder avant d'écrire `fen`.
 
 ## 6 · LA TECHNIQUE
 
-- **Un seul fichier** `demos-secteurs/<secteur>/index.html`, style
-  inclus dans un `<style>`.
-- **Zéro requête tierce.** Images en `../../images/secteurs-sites/`,
-  polices en `../../fonts/demos/`.
-- **Zéro `<script>`.** Tout ce qui bouge se fait en CSS. Le survol,
-  le `:target`, les transitions suffisent. *(Une page sans script ne
-  peut pas avoir d'erreur console, et elle défile sur le compositeur.)*
+- **Un seul fichier** `demos-secteurs/<secteur>/index.html`, style dans
+  un `<style>`.
+- **Zéro requête tierce.** Images `../../images/secteurs-sites/`,
+  polices `../../fonts/demos/`.
+- **Zéro `<script>`.** Voir § 2.
 - **CLS à 0** : `width` et `height` sur **chaque** `<img>`, aux
-  dimensions réelles du fichier.
+  dimensions réelles du fichier (`node tools/_inventaire.mjs <secteur>`).
 - **LCP sous 300 ms** : l'image du héros en `fetchpriority="high"`,
   toutes les autres en `loading="lazy" decoding="async"`.
-- Pas de coin arrondi supérieur à 2 px, pas d'ombre portée molle, pas
-  de flou : ce sont les interdits du site APED, et les démonstrations
-  se regardent à côté de lui.
+- **Zéro erreur console.**
+- **Aucun débordement horizontal de 320 à 1920 px.**
+- Les formes — rayon, ombre, dégradé, flou — sont **libres**, et elles
+  sont un moyen de différencier. Elles se décident dans la DA.
 
 ---
 
 ## 7 · LA CHAÎNE, DANS L'ORDRE
 
-1. Regarder de vraies références du métier ;
-2. `node tools/secteurs-sites-photos.mjs <secteur>` ;
-3. **ouvrir chaque photo, une par une, en taille réelle** ;
-4. écrire le site ;
-5. **l'ouvrir à l'écran et le regarder** — pas une sonde ;
-6. **test du côte-à-côte** contre les trois références ;
-7. `node tools/demos-capture.mjs --ecran --port <port> secteur-<clé>` ;
-8. `node tools/demos-webp.mjs` ;
-9. `node tools/secteurs-markup.mjs <clé>` ;
-10. `node tools/css-critique.mjs` puis `node tools/cascade-check.mjs <port>` ;
-11. commit.
+1. **Écrire la direction artistique AVANT de coder** : palette (hex),
+   typographie, formes, mouvement, traitement photo, référence
+   culturelle. Une ligne par poste.
+2. Regarder de vraies références **primées** du métier ;
+3. `node tools/_inventaire.mjs <secteur>` — dimensions et emplois ;
+4. `node tools/secteurs-sites-photos.mjs <secteur>` s'il en manque ;
+5. **ouvrir chaque photo, une par une, en taille réelle** ;
+6. écrire le site ;
+7. **l'ouvrir à l'écran et le REGARDER** — pas une sonde ;
+8. **test du côte-à-côte**, les deux passes du § 0 ;
+9. `node tools/demos-capture.mjs --ecran --port <port> secteur-<clé>` ;
+10. `node tools/demos-webp.mjs` ;
+11. `node tools/secteurs-markup.mjs <clé>` ;
+12. `node tools/css-critique.mjs` puis `node tools/cascade-check.mjs <port>` ;
+13. commit.
