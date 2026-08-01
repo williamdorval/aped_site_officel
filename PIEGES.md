@@ -817,3 +817,65 @@ par événement.
 **Comment le mesurer :** échantillonner `scrollTop` et la valeur
 appliquée dans la MÊME boucle d'animation, et compter les images où
 l'une a changé sans l'autre. Un écart moyen ne le montre pas.
+
+---
+
+### 57 · Une planche-contact ne répond pas à « une marque est-elle lisible ? »
+
+Douze photos ont été choisies pour un site de démonstration sur le
+**nom** du panorama et sur une planche-contact de vignettes. Trois
+portaient un mot imprimé — deux fois « Onduline » sur une sous-toiture,
+« Ricoré » et « NAN » sur des boîtes de lait en poudre. Rien de tout ça
+n'est visible à la taille d'une vignette.
+
+Pire : un rapport a défendu une des trois en disant que le cadrage
+`object-position: 50% 48%` de la **page** la sauvait. Un
+`object-position` déplace la fenêtre de la mise en page ; il ne touche
+pas au contenu du fichier. La marque était toujours dans l'image, et
+elle réapparaît au premier changement de gabarit.
+
+**Correctif :** quand ce qu'on cherche est un **mot**, ouvrir chaque
+fichier à sa taille réelle, et agrandir la zone douteuse. Un
+agrandissement au plus proche voisin d'une région de 200 × 120 px suffit
+à trancher en une seconde.
+
+**Ce qui ne compte pas comme vérification :** une planche-contact, une
+capture de la page, un `object-position`, la petitesse du rendu final.
+
+---
+
+### 58 · Une fenêtre de recadrage porte sur la LARGEUR — sur une source en portrait, elle photographie le ciel
+
+`fen: { x, y, w }` donne la largeur en fraction de la source ; la
+hauteur en découle du format demandé. Sur une source **portrait**, la
+hauteur calculée est bien plus courte que l'image, et le cadre se pose
+**en haut**. Deux tirages de terrasse ont ainsi rendu la cime des arbres
+et une porte vitrée — jamais la terrasse, qui est au bas de la photo.
+
+**Correctif :** relever l'orientation de la source avant de choisir la
+fenêtre. En pratique : télécharger la source en 900 px, la REGARDER,
+puis écrire `fen`. Une source paysage se recadre par la largeur, une
+source portrait par la hauteur — et si l'outil ne sait faire que la
+largeur, il faut une autre source.
+
+---
+
+### 59 · `position: sticky` n'est pas `position: fixed`, et une sonde qui ne lit que `fixed` la laisse passer
+
+Une couseuse de captures masquait « les éléments fixes » à partir de la
+deuxième tuile pour que la barre du site ne se répète pas. Elle testait
+`getComputedStyle(el).position === "fixed"`. La barre d'un des sites est
+**collante**, pas fixe : elle est passée au travers et s'est imprimée
+**en plein milieu** de la capture, par-dessus la galerie.
+
+**Ce qui ne marche pas non plus :** comparer la position de l'élément à
+`y = 0` puis à `y = 1200`. Une barre collante posée **sous** un bandeau
+d'annonce est à 44 px de haut à l'arrêt et à 0 une fois collée : 44 px
+d'écart, donc « elle bouge », donc pas masquée.
+
+**Correctif :** ne pas demander à l'élément ce qu'il **déclare**,
+mesurer ce qu'il **fait** — relever sa position dans la fenêtre à
+**trois** défilements, tous pris **après** le point de colle. Ce qui n'a
+pas bougé d'un pixel est de la chrome, quel que soit le mot dans le CSS.
+Trois relevés et pas deux : deux suffiraient à faire passer pour de la
+chrome une scène épinglée qui couvre les deux.

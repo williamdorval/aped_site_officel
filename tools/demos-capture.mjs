@@ -237,6 +237,26 @@ async function allerA(page, y) {
 }
 
 const SANS_PLEIN = process.argv.includes("--sans-plein");
+
+/* `--port <n>` — POUR LES PROJETS STATIQUES SEULEMENT.
+   Un site de secteur n'a pas de serveur a lui : il est servi par le
+   `tools/serve.mjs` de la session, dont le numero de port change
+   d'une session a l'autre. Sans ce drapeau il fallait editer la
+   table `PROJETS` a chaque fois — et une table editee a la main
+   finit toujours par etre commitee avec le mauvais numero dedans.
+   Un port illisible ARRETE l'outil : `Number("huit")` vaut `NaN`, et
+   une comparaison avec `NaN` est fausse, donc une sonde de port sur
+   `NaN` echouerait quatre-vingt-dix secondes avant de dire pourquoi.
+   Piege 30. */
+const iPort = process.argv.indexOf("--port");
+let PORT_FORCE = null;
+if (iPort !== -1) {
+  PORT_FORCE = Number(process.argv[iPort + 1]);
+  if (!Number.isInteger(PORT_FORCE) || PORT_FORCE < 1 || PORT_FORCE > 65535) {
+    throw new Error(`--port ${process.argv[iPort + 1]} : ce n'est pas un numero de port.`);
+  }
+}
+
 const cles = process.argv.slice(2).filter((c) => PROJETS[c]);
 const aFaire = cles.length ? cles : Object.keys(PROJETS);
 const R = [];
@@ -251,6 +271,7 @@ for (const cle of aFaire) {
      nettoyage de port : tuer ce qui ecoute sur 8099 fermerait le
      serveur du site lui-meme, en pleine passe. */
   const statique = !!p.statique;
+  if (statique && PORT_FORCE) p.port = PORT_FORCE;
   console.log(`\n=== ${cle} — ${statique ? "fichier statique sur " + p.port : "demarrage sur " + p.port} ===`);
   if (!statique) {
     /* Piege 19 : un serveur deja debout fait echouer le tien en
@@ -465,16 +486,55 @@ for (const cle of aFaire) {
          disparaissait par endroits et se repetait ailleurs. C'est la
          cause exacte des « images superposees » relevees par le
          proprietaire. */
-      const permanents = await page.evaluate(() => {
+      /* `position: sticky` N'EST PAS `position: fixed`.  D-659
+         Releve a l'image sur le site d'immobilier : sa barre de
+         navigation s'est imprimee EN PLEIN MILIEU de la capture, par
+         dessus la galerie de la propriete vedette. La sonde ne
+         retenait que `position === "fixed"` ; une barre collante
+         rend « sticky », passait au travers, et se faisait
+         photographier une fois par tuile.
+         On ne demande donc plus a l'element ce qu'il DECLARE, on
+         mesure ce qu'il FAIT : on releve sa position dans la fenetre
+         a deux defilements differents. Ce qui n'a pas bouge d'un
+         pixel est de la chrome, quel que soit le mot dans le CSS.
+         Une scene epinglee plus bas n'est pas prise a ce piege : a
+         zero elle n'est pas encore collee, donc elle bouge. */
+      const permanents = await page.evaluate(async (hDoc) => {
+        const attendre = async () => {
+          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+          await new Promise((r) => setTimeout(r, 350));
+        };
+        const cands = [...document.querySelectorAll("body *")].filter((el) => {
+          const p = getComputedStyle(el).position;
+          return p === "fixed" || p === "sticky";
+        });
+        /* LES TROIS RELEVES SE PRENNENT TOUS APRES LE POINT DE COLLE.
+           Premiere version : y = 0 puis y = 1200. Une barre collante
+           posee SOUS un bandeau d'annonce est a 44 px de haut a
+           l'arret et a 0 une fois collee — 44 px d'ecart, donc « elle
+           bouge », donc pas masquee. On ne compare donc que des
+           positions ou tout ce qui doit coller a deja colle. Trois
+           releves, pas deux : deux suffiraient a faire passer pour de
+           la chrome une scene epinglee qui couvre les deux. */
+        const releves = [];
+        for (const y of [1200, 2400, Math.max(3600, Math.round(hDoc * 0.6))]) {
+          scrollTo(0, y);
+          await attendre();
+          releves.push(cands.map((el) => el.getBoundingClientRect().top));
+        }
+        scrollTo(0, 0);
+        await attendre();
         const l = [];
         let n = 0;
-        for (const el of document.querySelectorAll("body *")) {
-          if (getComputedStyle(el).position !== "fixed") continue;
+        cands.forEach((el, i) => {
+          const t = releves.map((r) => r[i]);
+          if (Math.max(...t) - Math.min(...t) > 2) return;
           el.setAttribute("data-permanent", "p" + n++);
           l.push(el.getAttribute("data-permanent"));
-        }
+        });
         return l;
-      });
+      }, docH);
+      if (!permanents.length) console.log("   aucun element permanent releve — verifier la capture a l'oeil");
 
       /* --- LA DESCENTE : on tuile, et on repere les bandes --- */
       const pasTuile = Math.round(HAUT * 0.8);

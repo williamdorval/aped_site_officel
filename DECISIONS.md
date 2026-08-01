@@ -512,3 +512,17 @@ place des quatre sites « après ».
 | ID | Décision |
 |---|---|
 | D-654 | Les deux translations du cadre sont écrites **dans l'événement `scroll`**, plus dans un `requestAnimationFrame`. Mesuré avant : sur 18 images où le défilement avançait, le contenu suivait dans la même image **0 fois**. Après : 0 % de retard. Un `scroll` est distribué avant la peinture ; l'étaler sur une image faisait traîner la pile derrière la barre, et une couche en retard par-dessus une image fixe se lit comme du contenu superposé |
+
+### Les photos des sites de secteur — D-655 à D-659
+
+Chantier du 2026-07-31. Les aperçus de secteur montrent de vrais sites
+complets ; encore faut-il que les photos qu'ils portent tiennent les
+quatre questions.
+
+| ID | Décision |
+|---|---|
+| D-655 | Un aperçu de secteur défile **nativement** (`overflow-y: auto`), sans une ligne de script. La section 03 verrouille DEUX pages en pourcentage et a besoin d'un pilote ; ici il n'y a qu'une page. Le défilement natif se fait sur le compositeur, donc sans le retard d'une image de D-654 |
+| D-656 | Une photo se choisit **en la regardant à sa taille réelle**, jamais sur le nom du panorama ni sur une planche-contact. Trois sources écartées après coup portaient une marque imprimée lisible. Un `object-position` de la page ne recadre pas le fichier : il ne sauve rien. Piège 57 |
+| D-657 | Une photo qui **contredit le texte du site** ne se pose pas, même si elle est belle et libre de droits. Le site de construction écrit « on ne fait pas de commercial » : le hall industriel et le mur nu restent produits, licenciés, et **posés nulle part** |
+| D-658 | **Une adresse, une photo qui n'appartient qu'à elle.** Le site d'immobilier annonçait dix propriétés avec quatre photos reprises seize fois, et la même image portait des légendes qui se contredisent — « terrasse DEVANT la maison » ici, « cour ARRIÈRE » là. Q1 tombe, et ça se voit à l'œil nu en descendant la page. Corollaires tenus : le **type** de la façade suit la fiche (pas de maison à étages sur un « plain-pied »), l'**état** suit le prix (pas de ruine à 875 000 $), et le **voisinage** suit le texte (pas quatre rangées de maisons sous « sans voisin arrière »). Seule reprise assumée : la photo du salon sert deux fois, fiche et visite 360 — c'est la même pièce, les deux légendes le disent, et les repères de la visite doivent pointer sur ce qu'on y voit |
+| D-659 | La couseuse de captures ne demande plus à un élément ce qu'il **déclare** (`position: fixed`), elle mesure ce qu'il **fait** : trois relevés de sa position dans la fenêtre, tous pris après le point de colle. Une barre `sticky` s'imprimait en plein milieu d'une capture de 17 829 px. `--port` s'ajoute aux projets statiques pour que le numéro du serveur de session ne soit plus écrit en dur dans la table. Pièges 58 et 59 |
