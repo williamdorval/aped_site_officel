@@ -1,5 +1,47 @@
 # Refonte APED — journal des phases
 
+## EN COURS — les douze secteurs, 2026-07-31
+
+**Ne jamais recommencer un secteur déjà commité.** L'état fait foi ici,
+pas la mémoire d'une session.
+
+| Secteur | Site | Branché | Commit |
+|---|---|---|---|
+| Restauration | `restau` (section 03) | **oui** | `2f2497e` |
+| Garage et mécanique | `demo-carroserie` (section 03) | **oui** | `9633a98` |
+| Paysagement et déneigement | `MV-deneigement` (section 03) | **oui** | `741eaeb` |
+| Construction et rénovation | `demos-secteurs/construction/` | non — reprise des photos en cours | — |
+| Immobilier | `demos-secteurs/immobilier/` | non — zones creuses en correction | — |
+| Boutique en ligne | — | non | — |
+| Coiffure et esthétique | — | non | — |
+| Gym et entraînement | — | non | — |
+| Hébergement et tourisme | — | non | — |
+| Clinique et santé | — | non | — |
+| Services juridiques | — | non | — |
+| Photographe et créatif | — | non | — |
+| *Votre industrie ici* | *carte de proposition* | *sans objet* | — |
+
+**La chaîne, dans l'ordre :**
+1. `node tools/secteurs-sites-photos.mjs <secteur>` — sourcer les
+   photographies, licences écrites dans le tableau `TIRAGES` et
+   recopiées dans `images/secteurs-sites/_licences.json` ;
+2. écrire le site dans `demos-secteurs/<secteur>/index.html`, un seul
+   fichier, aucune requête externe, `noindex` et mention de
+   démonstration ;
+3. `node tools/demos-capture.mjs --ecran secteur-<cle>` — il sait
+   photographier un fichier statique du dépôt sans démarrer de serveur
+   (D-653), à condition que l'entrée existe dans `PROJETS` ;
+4. `node tools/demos-webp.mjs` — tuiles de 1 100 px ;
+5. `node tools/secteurs-markup.mjs <cle>` — branche l'aperçu ;
+6. `node tools/secteurs-vue.mjs 8123 <cle>` — les captures de preuve ;
+7. commit.
+
+**Les trois premiers n'ont rien coûté en octets** : leurs tuiles
+existaient déjà pour la section 03.
+
+---
+
+
 **Phase 7 (la plus récente) : voir `PHASE-7.md`.**
 Les douze chantiers, le retrait de tous les prix publics, et onze défauts
 trouvés en propre — dont trois dans les instruments de mesure eux-mêmes.

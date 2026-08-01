@@ -1,0 +1,86 @@
+[
+ {
+  "fichier": "images/secteurs-sites/construction-1.webp",
+  "emploi": "heros — charpente en cours",
+  "source": "url:https://images.pexels.com/photos/37627682/pexels-photo-37627682.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/new-home-construction-in-elk-grove-37627682/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-2.webp",
+  "emploi": "ossature de bois",
+  "source": "url:https://images.pexels.com/photos/8817834/pexels-photo-8817834.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/construction-of-framework-of-house-with-softwood-materials-8817834/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-3.webp",
+  "emploi": "bois d'oeuvre en reserve",
+  "source": "url:https://images.pexels.com/photos/12278581/pexels-photo-12278581.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/stacks-of-lumbers-in-close-up-photography-12278581/",
+  "licence": "https://www.pexels.com/license/"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-4.webp",
+  "emploi": "gros oeuvre, murs de blocs",
+  "source": "ph:interior_construction",
+  "page": "https://polyhaven.com/a/interior_construction",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-5.webp",
+  "emploi": "sous-sol a finir",
+  "source": "ph:interior_construction",
+  "page": "https://polyhaven.com/a/interior_construction",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-6.webp",
+  "emploi": "atelier de menuiserie",
+  "source": "ph:carpentry_shop_01",
+  "page": "https://polyhaven.com/a/carpentry_shop_01",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-7.webp",
+  "emploi": "atelier, second poste",
+  "source": "ph:carpentry_shop_02",
+  "page": "https://polyhaven.com/a/carpentry_shop_02",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-8.webp",
+  "emploi": "combles amenages",
+  "source": "ph:pine_attic",
+  "page": "https://polyhaven.com/a/pine_attic",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-9.webp",
+  "emploi": "salle de bain livree",
+  "source": "ph:modern_bathroom",
+  "page": "https://polyhaven.com/a/modern_bathroom",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-10.webp",
+  "emploi": "cuisine livree",
+  "source": "ph:kiara_interior",
+  "page": "https://polyhaven.com/a/kiara_interior",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-11.webp",
+  "emploi": "piece finie, plancher neuf",
+  "source": "ph:small_empty_house",
+  "page": "https://polyhaven.com/a/small_empty_house",
+  "licence": "https://polyhaven.com/license"
+ },
+ {
+  "fichier": "images/secteurs-sites/construction-12.webp",
+  "emploi": "bureau en chantier",
+  "source": "ph:unfinished_office",
+  "page": "https://polyhaven.com/a/unfinished_office",
+  "licence": "https://polyhaven.com/license"
+ }
+]
