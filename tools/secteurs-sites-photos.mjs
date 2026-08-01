@@ -238,7 +238,21 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/4753987/", fen: { x: 0.09, y: 0.05, w: 0.82 } },
     { n: 8, emploi: "materiel — disque olympique et collier sur tapis de caoutchouc",
       src: "url:" + PX + "/2261481/pexels-photo-2261481.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/2261481/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+      page: "https://www.pexels.com/photo/2261481/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    /* 9 et 10, ajoutes le 2026-08-01. Il manquait deux choses aux huit
+       premieres : un GESTE — huit natures mortes, pas une seule main —
+       et le ratelier dont la premiere regle de la salle parle. */
+    { n: 9, emploi: "le geste — une main posee sur la barre dans le ratelier", large: true,
+      src: "url:" + PX + "/6389504/pexels-photo-6389504.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6389504/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 10, emploi: "materiel — le ratelier de disques contre le mur de blocs", large: true,
+      /* La fenetre coupe a 11 % a gauche et s'arrete a 81 % : un sac
+         leste porte un NOM DE FABRIQUANT imprime en blanc dans le coin
+         gauche, et le montant de droite porte une plaque de firme
+         vissee. Ni l'un ni l'autre ne se recadre dans la page — on
+         tranche a la source, comme pour le mot « RUN » du heros. */
+      src: "url:" + PX + "/27810162/pexels-photo-27810162.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/27810162/", fen: { x: 0.11, y: 0.04, w: 0.70 } }
   ],
 
   /* HEBERGEMENT ET TOURISME — AUBERGE DES CAPS.
