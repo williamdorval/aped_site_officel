@@ -394,3 +394,60 @@ courriel n'a pas été cliqué.**
 ### La réserve qui domine tout le reste n'a pas bougé
 
 > **AUCUNE mesure de ce projet n'a été prise sur un appareil réel.**
+
+---
+
+## Les douze secteurs, 2026-08-01 — ce qui reste ouvert
+
+### Deux des douze se ressemblent encore, et ce sont les deux projets RÉELS
+
+`01 Restauration` et `02 Garage` sont tous les deux sombres avec un
+orange. Sur la planche des douze c'est la paire la plus proche, et
+elle n'a pas été traitée : ce sont `restau` et `demo-carroserie`, des
+projets vivants hors de ce dépôt. Leurs typographies les séparent —
+un didone contre une grotesque condensée capitale — mais leurs
+premiers écrans se répondent. `03 Paysagement` porte un troisième
+orange. **C'est de cette collision qu'est née la contrainte imposée
+aux neuf autres : aucun n'a droit à l'orange.**
+
+### Le mouvement ne se voit pas dans l'aperçu du panneau
+
+L'aperçu de la section Secteurs est une **suite de captures fixes**
+qu'on parcourt à la molette (D-653). Les animations écrites dans les
+douze sites — parallaxe, volet, masque qui monte, compteurs qui
+roulent — n'y jouent pas : ce qui bouge dans le panneau, c'est le
+défilement. Les tuiles sont photographiées **pendant** que la page
+défile, donc elles montrent des états animés réels, mais **le
+visiteur ne voit un mouvement que s'il ouvre le site.** Changer ça
+demanderait des `<iframe>` vivantes dans la page d'accueil, ce que
+l'architecture actuelle refuse.
+
+### Ce que les neuf sessions ont laissé ouvert, une ligne chacune
+
+| Site | Réserve |
+|---|---|
+| Boutique | L'atelier est la section la plus faible — trois rangs alternés qui ressemblent à une mise en page d'article. Les cartes de la collection ne sont pas cliquables : il n'existe pas de page produit |
+| Boutique | Le changement de fond au défilement **ne se voit pas dans une capture pleine page** : Playwright photographie au défilement 0. La signature est vraie à l'écran, mesurée aux quatre étapes |
+| Coiffure | `coiffure-7` (les pinceaux) est un macro flou ; en noir et blanc il reste plus graphique que descriptif. La plus faible des neuf. Les fauteuils du héros sont encore sous film de protection |
+| Hébergement | Le calendrier annonce des disponibilités **inventées** ; c'est écrit à sa légende. Les intertitres sont en cormorant capitales 18 px — une antique très fine à petite taille, le texte le plus délicat du site |
+| Hébergement | `mix-blend-mode: color` à 44 % refroidit fortement la salle à manger, d'origine très chaude. C'est le cliché qui souffre le plus du virage |
+| Gym | `timeline-scope` demande Chrome 116+, `animation-timeline` seul 115. Entre les deux versions, les compteurs et la jauge du rail restent à leur forme finale — l'information ne se perd pas, le mouvement oui. Le `@supports` ne couvre pas ce trou d'une version |
+| Gym | `gym-3` porte des chiffres et un « PRO » moulés sur les disques ; illisibles après duotone, mais non validés comme absence de marque |
+| Clinique | La photo du héros porte au fond, hors focus, une pancarte « JALE » — une quarantaine de pixels sur 1920, en espagnol, sur un site qui se dit québécois. Jugée illisible à l'écran, pas retouchée |
+| Clinique | Quatre des sept photos sont des corridors ; `clinique-2` est très floue. Elle sert de bande de respiration plutôt que de vignette |
+| Immobilier | `immobilier-4` porte une plaque de numéro civique près du garage — illisible (≈ 12 px à l'affichage), mais elle est là. Le cadrage 4:3 ne permet pas de la couper sans amputer la façade |
+| Immobilier | La couverture reste une photo de plein jour sur une page qui se voulait « éclairée à la lampe ». La phrase a été retirée plutôt que le filtre poussé — un filtre ne transforme pas une pièce en lumière naturelle en pièce à la lampe sans mentir sur la pièce |
+| Juridique | La trame d'impression à 45 % reste franchement visible sur les zones claires de la colonnade. C'est le comportement d'un vrai écran d'impression ; elle se baisse d'une valeur si on la trouve bruyante |
+| Juridique | Vingt mesures de contraste sont **approchées** et non exactes : le papier porte un dégradé, et la remontée s'arrête dessus |
+| Construction | Le « surlignage cyan sur les arêtes » écrit dans la DA **n'est pas fait** — impossible en CSS pur sans détection de contours. Remplacé par une trame cyan posée sur chaque photo. Ce n'est pas ce qui était écrit |
+| Construction | Le décalage des sept étapes n'est visible que sur les **trois premières** : les quatre suivantes finissent leur course avant d'être vraiment à l'écran. Élargir la plage rendrait le mouvement plus voyant mais risquerait une capture à mi-course |
+| Construction | `construction-5` porte un casque jaune au bas de l'image ; le virage bleu le désature au point qu'il ne se lit plus. Gardé parce que la photo était assignée |
+| Construction | 109 mesures de contraste **approchées** : le quadrillage de plan est un dégradé posé sur toute la page |
+| Photographe | `photo-1` et `photo-2` portent une étiquette de texte sur une torche, illisible même à 5×. Employées en second plan, jamais en plein cadre. Si l'interdit « rayon appareil photo » couvre aussi une inscription illisible, il faut les retirer — **et il n'y a rien pour les remplacer** |
+| Photographe | La capture pleine page ne montre que l'œuvre `01` de la série : c'est inhérent à un défilement latéral, pas un défaut |
+
+### La réserve qui domine, et elle n'a pas bougé
+
+**AUCUNE de ces douze pages n'a été vue sur un appareil réel.** Tout
+vient de Chromium sous Playwright sur un poste de bureau Windows,
+relevés « 320 px » et « 390 px » compris.
