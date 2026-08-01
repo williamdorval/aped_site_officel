@@ -161,7 +161,16 @@ em{font-style:normal;color:var(--terre)}
 
 /* ── héros ────────────────────────────────────────────────── */
 .heros{min-height:100vh;display:flex;flex-direction:column;background:var(--encre)}
-.heros-ph{position:relative;flex:1 1 auto;min-height:346px;background:var(--encre-2);overflow:hidden}
+/* LA BANDE PHOTO NE PREND PLUS TOUT LE MOU DISPONIBLE.
+   Relevé sur la planche des douze : à 1280 × 800, `flex:1 1 auto`
+   donnait 543 px à la photo, le titre commençait à 543 et finissait à
+   803 — la troisième ligne, « longtemps. », était coupée par la ligne
+   de flottaison, et le chapeau comme les deux boutons tombaient
+   entièrement sous le pli. C'est le seul des douze héros dans ce cas ;
+   les onze autres finissent leur titre entre 346 et 708 px.
+   La bande est donc bornée : elle garde sa présence, le bloc de titre
+   reprend le mou. Mesuré après : titre de 400 à 660, boutons à 745. */
+.heros-ph{position:relative;flex:0 1 auto;height:clamp(190px,26vh,290px);min-height:190px;background:var(--encre-2);overflow:hidden}
 .heros-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%}
 .heros-et{position:absolute;left:0;bottom:0;background:var(--encre);color:var(--gris-c);
   padding:12px 20px 11px;font-family:var(--det);font-weight:500;font-size:9px;

@@ -14,11 +14,21 @@ pas la mémoire d'une session.
 | Immobilier | `demos-secteurs/immobilier/` | **oui, refait au standard** | `3ff737f` |
 | Boutique en ligne | `demos-secteurs/boutique/` | **oui** | `ae2a5a1` |
 | Coiffure et esthétique | `demos-secteurs/coiffure/` | **oui** | `90cf2c5` |
-| Gym et entraînement | `demos-secteurs/gym/` | photos prêtes (8) — site en écriture | — |
-| Hébergement et tourisme | `demos-secteurs/hotel/` | photos prêtes (8) — site en écriture | — |
-| Clinique et santé | `demos-secteurs/clinique/` | photos prêtes (7) — site à écrire | — |
-| Services juridiques | `demos-secteurs/juridique/` | photos prêtes (5) — site à écrire | — |
-| Photographe et créatif | `demos-secteurs/photo/` | photos prêtes (5) — site à écrire | — |
+| Gym et entraînement | `demos-secteurs/gym/` | **oui** | `1b849c1` |
+| Hébergement et tourisme | `demos-secteurs/hotel/` | **oui** | `78012e4` |
+| Clinique et santé | `demos-secteurs/clinique/` | **oui** | `97a77b4` |
+| Services juridiques | `demos-secteurs/juridique/` | **oui** | `cd5734d` |
+| Photographe et créatif | `demos-secteurs/photo/` | **oui** | `b96fb2e` |
+
+> **LES DOUZE SONT FAITS.** Le panneau compte treize aperçus, dont
+> **douze en site complet** — le treizième est la carte de proposition
+> « votre industrie ici », qui reste une carte.
+>
+> La planche de comparaison des douze premiers écrans, à la même
+> largeur et à la même échelle, est dans
+> `preuves/chantier6-secteurs/planche-douze.png`. C'est elle qui rend
+> le test du côte-à-côte, et elle se refait avec
+> `node tools/planche-secteurs-12.mjs`.
 
 **Les clés sont déjà inscrites** dans `PROJETS` de `demos-capture.mjs` et
 `SECTEURS` de `secteurs-markup.mjs` pour les douze. Les photos des cinq

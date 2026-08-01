@@ -143,7 +143,14 @@ em{font-style:normal;color:var(--minium)}
 .heros>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 84%;z-index:0}
 .heros::after{content:"";position:absolute;inset:0;background:rgba(11,14,17,.58);z-index:1}
 .heros .cont,.heros-pied{position:relative;z-index:2}
-.heros-corps{padding:120px 44px 48px}
+/* 120 px de creux avant le titre poussaient le bouton principal à
+   867 px : 67 px SOUS LA LIGNE DE FLOTTAISON d'un écran de 800.
+   Relevé sur la planche des douze — le seul des douze dans ce cas
+   avec la boutique. Un appel à l'action qu'il faut défiler pour voir
+   n'est pas un appel à l'action. Ramené à 64, il finit à 811 ; les
+   34 px du titre suffisent à le poser au-dessus. */
+.heros-corps{padding:44px 44px 40px}
+.heros h1{margin-bottom:22px}
 .heros h1{font-size:clamp(44px,8.7vw,132px);line-height:.88;letter-spacing:-.025em;margin:26px 0 34px;max-width:16ch}
 .heros h1 em{color:var(--minium)}
 .heros-intro{font-size:16px;line-height:1.6;color:#cdd1d4;max-width:54ch}

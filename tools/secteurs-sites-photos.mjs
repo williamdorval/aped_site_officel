@@ -732,5 +732,29 @@ for (const secteur of aFaire) {
 await nav.close();
 if (R.length) console.table(R);
 console.log("TOTAL :", R.reduce((a, b) => a + b.ko, 0), "Ko pour", R.length, "images");
-fs.writeFileSync(path.join(SORTIE, "_licences.json"), JSON.stringify(REGISTRE, null, 1));
+/* UNE PASSE PARTIELLE NE DOIT PAS EFFACER LES LICENCES DES AUTRES.
+   D-662
+   L'outil reecrivait le registre ENTIER avec les seuls secteurs
+   demandes. Douze secteurs sourcés un par un, et à la fin le fichier
+   ne contenait plus que le dernier — sept lignes sur quatre-vingt-dix.
+   Rien ne le disait : le fichier existait, il était bien formé, il
+   était juste vide de tout le reste.
+   Une licence effacée ne se remarque qu'au moment où quelqu'un la
+   demande, c'est-à-dire trop tard. Le registre est donc FUSIONNÉ
+   quand on ne demande qu'une partie des secteurs, et réécrit en
+   entier seulement sur une passe complète. Même correctif que dans
+   `polices-demos.mjs`, où le piège avait été vu à l'écriture. */
+const cheminReg = path.join(SORTIE, "_licences.json");
+let registre = REGISTRE;
+if (demandes.length && fs.existsSync(cheminReg)) {
+  const ancien = JSON.parse(fs.readFileSync(cheminReg, "utf8"));
+  const neufs = new Set(REGISTRE.map((x) => x.fichier));
+  registre = ancien.filter((x) => !neufs.has(x.fichier)).concat(REGISTRE);
+}
+registre.sort((a, b) => {
+  const s = (x) => x.fichier.replace(/-\d+\.webp$/, "");
+  const n = (x) => Number(/-(\d+)\.webp$/.exec(x.fichier)[1]);
+  return s(a) === s(b) ? n(a) - n(b) : s(a).localeCompare(s(b));
+});
+fs.writeFileSync(cheminReg, JSON.stringify(registre, null, 1));
 console.log("registre des licences :", path.relative(RACINE, path.join(SORTIE, "_licences.json")).replace(/\\/g, "/"));

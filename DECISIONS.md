@@ -526,3 +526,33 @@ quatre questions.
 | D-657 | Une photo qui **contredit le texte du site** ne se pose pas, même si elle est belle et libre de droits. Le site de construction écrit « on ne fait pas de commercial » : le hall industriel et le mur nu restent produits, licenciés, et **posés nulle part** |
 | D-658 | **Une adresse, une photo qui n'appartient qu'à elle.** Le site d'immobilier annonçait dix propriétés avec quatre photos reprises seize fois, et la même image portait des légendes qui se contredisent — « terrasse DEVANT la maison » ici, « cour ARRIÈRE » là. Q1 tombe, et ça se voit à l'œil nu en descendant la page. Corollaires tenus : le **type** de la façade suit la fiche (pas de maison à étages sur un « plain-pied »), l'**état** suit le prix (pas de ruine à 875 000 $), et le **voisinage** suit le texte (pas quatre rangées de maisons sous « sans voisin arrière »). Seule reprise assumée : la photo du salon sert deux fois, fiche et visite 360 — c'est la même pièce, les deux légendes le disent, et les repères de la visite doivent pointer sur ce qu'on y voit |
 | D-659 | La couseuse de captures ne demande plus à un élément ce qu'il **déclare** (`position: fixed`), elle mesure ce qu'il **fait** : trois relevés de sa position dans la fenêtre, tous pris après le point de colle. Une barre `sticky` s'imprimait en plein milieu d'une capture de 17 829 px. `--port` s'ajoute aux projets statiques pour que le numéro du serveur de session ne soit plus écrit en dur dans la table. Pièges 58 et 59 |
+
+### Les douze secteurs au standard — D-660 à D-662
+
+Chantier du 2026-08-01. Les deux premiers sites de secteur ne tenaient
+pas la comparaison avec les trois références du dépôt. La barre a été
+relevée à l'image, écrite en chiffres, et les douze secteurs refaits ou
+écrits contre elle.
+
+| ID | Décision |
+|---|---|
+| D-660 | **`demos-secteurs/STANDARD.md` est la barre, et elle est mesurable.** Héros 90-160 px avec un interlignage sous 1 · **aucun palier entre le titre de section et le texte de 14-15 px** · un seul accent, réservé au bouton principal, aux micro-libellés et aux chiffres · cases d'image de 400 à 700 px · 110 à 170 px de padding · jamais deux fonds identiques à la suite · **un dispositif de signature qui revient quatre à cinq fois**. Ce qui faisait échouer les deux premiers : le plus gros titre faisait 34 px, il n'y avait aucune photographie plein cadre, sept tableaux, aucun dispositif récurrent, et la même sans partout. Une taille `xl` (1920×1080) s'ajoute aux tirages : sur une fenêtre de 1280 en densité 1,5, une image de 1280 est demandée à 1920 px réels et arrive floue |
+| D-661 | **Douze familles de polices sont téléchargées UNE fois dans `fonts/demos/`**, toutes sous SIL OFL 1.1, licences relevées. Une par personnalité : douze sites qui partagent une police sont un gabarit décliné douze fois. Aucune page ne parle à `fonts.googleapis.com` — la règle « zéro requête tierce » ne fait pas d'exception pour les polices |
+| D-662 | **Un outil qui écrit un registre ne doit jamais l'écraser sur une passe partielle.** `secteurs-sites-photos` réécrivait `_licences.json` avec les seuls secteurs demandés : douze secteurs sourcés un par un, et à la fin le fichier ne contenait plus que le dernier — sept lignes sur quatre-vingt-quatre. Rien ne le disait, le fichier était bien formé. Une licence effacée ne se remarque qu'au moment où quelqu'un la demande. Le registre est maintenant fusionné sur une passe partielle et trié |
+
+**LA RÈGLE QUI A COÛTÉ LE PLUS CHER, ET ELLE EST TOMBÉE CINQ FOIS.**
+Un `object-position`, un voile, une bande étroite : ce sont des
+réglages de **mise en page**. Ils cachent une marque du rendu et la
+laissent **dans le fichier**. Au premier changement de gabarit, elle
+revient. Cinq images ont été refaites **à la source** pour cette seule
+raison — une enseigne de salon, un mot peint sur un mur de gym, un
+numéro civique, une collection éditoriale sur des dos de reliures, un
+nom de fabricant sur deux boîtes à lumière.
+
+**Chaque métier a son piège, et il n'est jamais le même :** la marque
+est **imprimée** sur un matériau de construction, **moulée** dans un
+disque de fonte, **gravée** sur le prisme d'un boîtier, **légendée** sur
+la bordure d'un négatif ; en coiffure elle est partout parce qu'un
+salon est un mur de produits ; en hôtellerie le piège n'est pas la
+marque mais le **climat** ; en clinique c'est le **visage**, parce
+qu'un visage dans une salle d'attente est une donnée de santé.

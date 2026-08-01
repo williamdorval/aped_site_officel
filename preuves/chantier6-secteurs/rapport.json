@@ -1,12 +1,105 @@
 {
   "secteurs": [
     {
+      "secteur": "restaurant",
+      "site": true,
+      "actif": true,
+      "course": 3476,
+      "tuiles": 7,
+      "chargees": 6
+    },
+    {
+      "secteur": "boutique",
+      "site": true,
+      "actif": true,
+      "course": 4308,
+      "tuiles": 9,
+      "chargees": 6
+    },
+    {
+      "secteur": "coiffure",
+      "site": true,
+      "actif": true,
+      "course": 5746,
+      "tuiles": 11,
+      "chargees": 6
+    },
+    {
+      "secteur": "gym",
+      "site": true,
+      "actif": true,
+      "course": 5524,
+      "tuiles": 11,
+      "chargees": 6
+    },
+    {
+      "secteur": "hotel",
+      "site": true,
+      "actif": true,
+      "course": 4564,
+      "tuiles": 9,
+      "chargees": 6
+    },
+    {
+      "secteur": "garage",
+      "site": true,
+      "actif": true,
+      "course": 3317,
+      "tuiles": 7,
+      "chargees": 6
+    },
+    {
+      "secteur": "construction",
+      "site": true,
+      "actif": true,
+      "course": 7488,
+      "tuiles": 14,
+      "chargees": 6
+    },
+    {
+      "secteur": "paysagement",
+      "site": true,
+      "actif": true,
+      "course": 1972,
+      "tuiles": 4,
+      "chargees": 4
+    },
+    {
+      "secteur": "clinique",
+      "site": true,
+      "actif": true,
+      "course": 5846,
+      "tuiles": 11,
+      "chargees": 6
+    },
+    {
       "secteur": "immobilier",
       "site": true,
       "actif": true,
       "course": 8212,
       "tuiles": 15,
       "chargees": 6
+    },
+    {
+      "secteur": "juridique",
+      "site": true,
+      "actif": true,
+      "course": 4236,
+      "tuiles": 8,
+      "chargees": 6
+    },
+    {
+      "secteur": "photo",
+      "site": true,
+      "actif": true,
+      "course": 4839,
+      "tuiles": 9,
+      "chargees": 6
+    },
+    {
+      "secteur": "atelier",
+      "site": false,
+      "actif": true
     }
   ],
   "erreurs": []

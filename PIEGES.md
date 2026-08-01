@@ -879,3 +879,84 @@ mesurer ce qu'il **fait** — relever sa position dans la fenêtre à
 pas bougé d'un pixel est de la chrome, quel que soit le mot dans le CSS.
 Trois relevés et pas deux : deux suffiraient à faire passer pour de la
 chrome une scène épinglée qui couvre les deux.
+
+---
+
+### 60 · Un `object-position`, un voile ou une bande étroite ne recadrent PAS le fichier
+
+Cinq fois sur douze secteurs, une marque réelle a été « réglée » en
+déplaçant la fenêtre de la mise en page : un `object-position` qui la
+pousse hors champ, un voile à 88 % qui la noie, une bande de 250 px qui
+n'en montre qu'un tiers. Dans les cinq cas **le mot est resté dans le
+fichier**, et il revient au premier changement de gabarit, au premier
+recadrage, à la première ouverture du `.webp` seul.
+
+Ce qui a été attrapé comme ça : une enseigne de salon, un mot peint sur
+un mur de gym, un numéro civique qui contredisait l'adresse de la
+fiche, une collection éditoriale sur des dos de reliures, un nom de
+fabricant sur deux boîtes à lumière.
+
+**Correctif :** la fenêtre de TIRAGE, dans `secteurs-sites-photos.mjs`.
+On regénère l'image. Un réglage de page ne corrige jamais un défaut de
+fichier.
+
+---
+
+### 61 · Chaque métier porte sa marque autrement, et la chercher au même endroit ne suffit pas
+
+Sur douze secteurs, la marque n'était jamais au même endroit :
+
+| Métier | Où était la marque |
+|---|---|
+| Construction | **imprimée** sur le matériau — panneaux de revêtement, sous-toiture |
+| Gym | **moulée dans la fonte**, au centre du disque : elle ne se recadre pas |
+| Photographe | **gravée sur le prisme** du boîtier — 23 candidats, 23 marques — et **légendée sur la bordure** de chaque négatif |
+| Coiffure | **partout**, parce qu'un salon EST un mur de produits |
+| Juridique | **dorée sur le dos** des seules reliures nettes de la banque |
+
+Et deux secteurs n'ont pas de problème de marque du tout, mais un autre
+piège : en **hôtellerie** c'est le **climat** — une chambre
+méditerranéenne sous « auberge de Charlevoix » ment sur ce que le
+client trouvera ; en **clinique** c'est le **visage**, parce qu'un
+visage dans une salle d'attente est une donnée de santé.
+
+**Correctif :** avant de sourcer un secteur, se demander *où* ce
+métier-là porte son nom. La réponse change à chaque fois.
+
+---
+
+### 62 · Un outil qui écrit un registre l'écrase sur une passe partielle
+
+`secteurs-sites-photos.mjs` réécrivait `_licences.json` avec les seuls
+secteurs demandés en argument. Douze secteurs sourcés un par un, et à
+la fin le fichier ne contenait plus que le dernier — **sept lignes sur
+quatre-vingt-quatre**. Rien ne le signalait : le fichier existait, il
+était bien formé, il était juste vide de tout le reste. Une licence
+effacée ne se remarque qu'au moment où quelqu'un la demande.
+
+**Correctif :** fusionner quand la passe est partielle, réécrire en
+entier seulement quand elle est complète. Le même piège avait été vu à
+l'écriture dans `polices-demos.mjs` et manqué ici.
+
+---
+
+### 63 · Le pli n'est pas une mesure de page, et une capture pleine page ne le montre pas
+
+Deux héros sur douze poussaient leur bouton principal **sous la ligne
+de flottaison** d'un écran de 1280 × 800 : la boutique coupait la
+troisième ligne de son titre à 803 px, la construction posait son
+« demander une soumission » à 867. Les deux passaient tous les
+contrôles — pas de débordement, pas de trou, contraste bon — parce
+qu'aucune sonde ne regarde **ce qui tient dans le premier écran**.
+
+Ça s'est vu sur la **planche des douze premiers écrans**, à la même
+largeur et à la même échelle, pas sur les captures pleine page.
+
+**Correctif :** relever `getBoundingClientRect().bottom` du `h1` et du
+premier appel à l'action sur une fenêtre de 800 px de haut, et exiger
+qu'ils tiennent. `tools/planche-secteurs-12.mjs` fait la planche.
+
+**Piège dans le piège :** composer douze captures de 14 000 à 26 000 px
+en base64 dans une seule page **tue le navigateur**. Il faut deux
+passes — découper le premier écran de chacune, une page par image, puis
+composer sur des vignettes.
