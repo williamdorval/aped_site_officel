@@ -178,7 +178,14 @@ const TIRAGES = {
   gym: [
     { n: 1, emploi: "heros — plateau de force au petit matin, cages et cordes", xl: true,
       src: "url:" + PX + "/6388373/pexels-photo-6388373.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/6388373/", fen: { x: 0, y: 0.06, w: 1 } },
+      /* La fenetre commence a 6 % : une banderole murale porte le mot
+         « RUN » dans le coin gauche de la source. Ce n'est ni une
+         marque ni un nom d'entreprise — c'est un mot anglais peint sur
+         un mur de gym — mais il avait ete mis hors champ par un
+         `object-position` dans la page, et un `object-position` ne
+         recadre pas le fichier : le mot revient au premier changement
+         de gabarit. On tranche a la source, comme pour la coiffure. */
+      page: "https://www.pexels.com/photo/6388373/", fen: { x: 0.06, y: 0.06, w: 0.94 } },
     { n: 2, emploi: "bande pleine largeur — barre chargee au sol, salle dans la brume", xl: true,
       src: "url:" + PX + "/6389516/pexels-photo-6389516.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/6389516/", fen: { x: 0, y: 0.06, w: 1 } },
