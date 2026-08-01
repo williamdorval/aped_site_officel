@@ -1,0 +1,13 @@
+{
+  "secteurs": [
+    {
+      "secteur": "paysagement",
+      "site": true,
+      "actif": true,
+      "course": 1972,
+      "tuiles": 4,
+      "chargees": 4
+    }
+  ],
+  "erreurs": []
+}
