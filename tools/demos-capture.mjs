@@ -178,6 +178,34 @@ const PROJETS = {
     statique: true, port: 8099, chemin: "/demos-secteurs/immobilier/index.html",
     depart: 0, masques: [], retirer: []
   },
+  "secteur-boutique": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/boutique/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+  "secteur-coiffure": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/coiffure/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+  "secteur-gym": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/gym/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+  "secteur-hotel": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/hotel/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+  "secteur-clinique": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/clinique/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+  "secteur-juridique": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/juridique/index.html",
+    depart: 0, masques: [], retirer: []
+  },
+  "secteur-photo": {
+    statique: true, port: 8099, chemin: "/demos-secteurs/photo/index.html",
+    depart: 0, masques: [], retirer: []
+  },
 
   deneigement: {
     dossier: "C:/Users/tiwil/APED-AGENCY/MV-deneigement",

@@ -50,6 +50,152 @@ const GRAND = "?auto=compress&cs=tinysrgb&w=1920";
 /* Chaque ligne = une image, un emploi, une source. `large` sort en
    16/9 pour les bandeaux, sinon en 4/3. */
 const TIRAGES = {
+  /* BOUTIQUE EN LIGNE — GRES DU NORD, CERAMIQUE UTILITAIRE.
+     Une boutique se juge sur ses PHOTOS DE PRODUIT : un objet, un fond
+     propre, une lumiere. Le reste — l'atelier, les mains, la matiere —
+     sert a dire pourquoi l'objet coute ce qu'il coute.
+     Ecartes en regardant les fichiers : `9304545` porte le nom d'un
+     vrai atelier ecrit a la craie sur le mur, `34301756` une tasse
+     avec un mot imprime dessus, `34173322` un poincon de potier
+     lisible dans le fond d'un plat, et `9736330` un visage de trois
+     quarts identifiable. */
+  boutique: [
+    { n: 1, emploi: "heros — claies de sechage, tasses crues en rangs", xl: true,
+      src: "url:" + PX + "/29286722/pexels-photo-29286722.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/29286722/", fen: { x: 0, y: 0.20, w: 1 } },
+    { n: 2, emploi: "bande pleine largeur — champ de bols crus", xl: true,
+      src: "url:" + PX + "/34004100/pexels-photo-34004100.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/34004100/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 3, emploi: "produit — assiette, tasse et deux bols sur fond clair",
+      src: "url:" + PX + "/11065504/pexels-photo-11065504.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/11065504/", fen: { x: 0.09, y: 0.22, w: 0.82 } },
+    /* Source en PAYSAGE 3:2 : une fenetre 4/3 de 82 % de large
+       demanderait 1 181 px sur une image qui n'en a que 1 280 apres
+       reduction — ca passe de justesse et le bas serait vide au moindre
+       arrondi. `w` descend a 0,72. Piege 58 */
+    { n: 4, emploi: "produit — bol et assiette, service en gres",
+      src: "url:" + PX + "/6208156/pexels-photo-6208156.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6208156/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    { n: 5, emploi: "produit — gobelets et bols emboites",
+      src: "url:" + PX + "/6692600/pexels-photo-6692600.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6692600/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    { n: 6, emploi: "produit — pile de tasses et d'assiettes au biscuit",
+      src: "url:" + PX + "/8063881/pexels-photo-8063881.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8063881/", fen: { x: 0.09, y: 0.22, w: 0.82 } },
+    { n: 7, emploi: "produit — la tasse tenue en main, aucun visage",
+      src: "url:" + PX + "/15440835/pexels-photo-15440835.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/15440835/", fen: { x: 0.09, y: 0.28, w: 0.82 } },
+    { n: 8, emploi: "atelier — les mains et l'argile, vue de dessus", large: true,
+      src: "url:" + PX + "/6693557/pexels-photo-6693557.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6693557/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 9, emploi: "atelier — la plaque roulee, outils de tournage", large: true,
+      src: "url:" + PX + "/5642023/pexels-photo-5642023.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/5642023/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 10, emploi: "detail — la barbotine sur les doigts",
+      src: "url:" + PX + "/26792250/pexels-photo-26792250.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/26792250/", fen: { x: 0.14, y: 0.02, w: 0.72 } },
+    /* `11808240` — une etagere sombre sous un plateau de bois — est
+       sortie apres coup : la fenetre 4/3 tombait sur son tiers le plus
+       noir et rendait une image ou l'on ne distingue plus l'objet. Une
+       photo de PRODUIT qui ne montre pas le produit ne sert a rien,
+       et un cadrage ne rattrape pas une exposition. */
+    { n: 11, emploi: "produit — bols emboites, service marbre sur fond uni",
+      src: "url:" + PX + "/6739690/pexels-photo-6739690.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6739690/", fen: { x: 0.09, y: 0.45, w: 0.82 } },
+    { n: 12, emploi: "atelier — pieces crues qui sechent sur le radiateur",
+      src: "url:" + PX + "/6611472/pexels-photo-6611472.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6611472/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+  ],
+
+  /* COIFFURE ET ESTHETIQUE — SALON BRUME.
+     Le secteur ou le rejet a ete le plus lourd : SIX candidats sur
+     quinze portaient une marque reelle. Un salon EST un mur de
+     produits de marque, et les photographes de banque les cadrent
+     sans y penser. Ecartes en ouvrant les fichiers :
+     · `9146943` — une enseigne de cire a cheveux au mur, en clair ;
+     · `7518717` — deux boitiers de produit avec leur slogan lisible ;
+     · `30547693` — « Barber 1 » peint sur le miroir, plus deux
+       marques d'appareils sur le comptoir ;
+     · `3993316` — un autocollant d'un personnage de cinema ;
+     · `853427` — quatre portraits de mannequins encadres au mur :
+       des visages reels, identifiables, dans un site fictif ;
+     · `7750124` — une enseigne au neon reflechie dans le miroir.
+     Ce qui reste ne montre aucun mot et aucun visage. */
+  coiffure: [
+    { n: 1, emploi: "heros — salon clair, lustre de cristal, miroirs pleine hauteur", xl: true,
+      src: "url:" + PX + "/7823407/pexels-photo-7823407.jpeg" + GRAND, licence: LIC_PX,
+      /* A 0,28 la fenetre ne gardait que le lustre et deux metres de
+         mur nu : le SALON etait dessous. Sur une source en portrait,
+         une bande 16/9 ne prend que 37 % de la hauteur — il faut la
+         poser sur le sujet, pas au milieu. */
+      page: "https://www.pexels.com/photo/7823407/", fen: { x: 0, y: 0.55, w: 1 } },
+    /* La fenetre s'arrete a 78 % : au-dela, une tablette de flacons
+       dont les etiquettes commencent a se lire. */
+    { n: 2, emploi: "bande pleine largeur — salon d'epoque, fauteuils verts, damier", xl: true,
+      src: "url:" + PX + "/37764947/pexels-photo-37764947.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/37764947/", fen: { x: 0, y: 0.06, w: 0.78 } },
+    { n: 3, emploi: "salle — bacs de lavage, brique et fenetre sur la ville", large: true,
+      src: "url:" + PX + "/7195796/pexels-photo-7195796.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7195796/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 4, emploi: "salle — bacs de lavage cote clair, mur de couleurs", large: true,
+      src: "url:" + PX + "/7195805/pexels-photo-7195805.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7195805/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 5, emploi: "coupe — nuque degradee vue de dos, noir et blanc",
+      src: "url:" + PX + "/7956486/pexels-photo-7956486.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7956486/", fen: { x: 0.09, y: 0.18, w: 0.82 } },
+    { n: 6, emploi: "texture — boucles tenues a la main, de dos",
+      src: "url:" + PX + "/8377218/pexels-photo-8377218.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8377218/", fen: { x: 0.09, y: 0.14, w: 0.82 } },
+    { n: 7, emploi: "outils — pinceaux et peignes dans un pot d'acier",
+      src: "url:" + PX + "/3993134/pexels-photo-3993134.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/3993134/", fen: { x: 0.09, y: 0.16, w: 0.82 } },
+    /* Fenetre decalee a droite : une etiquette de produit trainait
+       dans le coin superieur gauche de la source. */
+    { n: 8, emploi: "couleur — bol, pinceaux, peigne et meche temoin",
+      src: "url:" + PX + "/8468141/pexels-photo-8468141.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/8468141/", fen: { x: 0.08, y: 0.50, w: 0.90 } },
+    /* Fenetre resserree au centre : deux boitiers de coloration a
+       marque reelle occupent le tiers gauche du comptoir. */
+    { n: 9, emploi: "poste — miroir circulaire lumineux sur mur ajoure",
+      src: "url:" + PX + "/7750144/pexels-photo-7750144.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7750144/", fen: { x: 0.30, y: 0.12, w: 0.60 } }
+  ],
+
+  /* GYM ET ENTRAINEMENT — FONTE NORD.
+     La fonte est un secteur ou la MARQUE EST MOULEE DANS L'OBJET :
+     trois candidats sur onze portaient un nom de fabricant en relief
+     sur le disque — `11058382` (« SPORT FASSI »), `4451119`
+     (« BodyMax »), `949131` (« ROGUE »). Un logo grave dans le metal
+     ne se recadre pas : il occupe le centre de la piece. Ecartes.
+     Les disques retenus ne portent qu'une MASSE (« 20KG »), qui est
+     une specification, pas une marque. */
+  gym: [
+    { n: 1, emploi: "heros — plateau de force au petit matin, cages et cordes", xl: true,
+      src: "url:" + PX + "/6388373/pexels-photo-6388373.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6388373/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 2, emploi: "bande pleine largeur — barre chargee au sol, salle dans la brume", xl: true,
+      src: "url:" + PX + "/6389516/pexels-photo-6389516.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6389516/", fen: { x: 0, y: 0.06, w: 1 } },
+    { n: 3, emploi: "salle — barre posee sur le plancher de bois, cordes au fond", large: true,
+      src: "url:" + PX + "/1552252/pexels-photo-1552252.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/1552252/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 4, emploi: "salle — anneaux, sacs et bar fixe sur mur peint", large: true,
+      src: "url:" + PX + "/6390225/pexels-photo-6390225.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6390225/", fen: { x: 0, y: 0.08, w: 1 } },
+    { n: 5, emploi: "materiel — les barres rangees debout contre la cage",
+      src: "url:" + PX + "/6389856/pexels-photo-6389856.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/6389856/", fen: { x: 0.09, y: 0.22, w: 0.82 } },
+    { n: 6, emploi: "materiel — disque de 20 kg en fonte, mur de brique",
+      src: "url:" + PX + "/4793231/pexels-photo-4793231.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/4793231/", fen: { x: 0.09, y: 0.20, w: 0.82 } },
+    { n: 7, emploi: "materiel — haltere hexagonal et son ombre sur le plancher",
+      src: "url:" + PX + "/4753987/pexels-photo-4753987.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/4753987/", fen: { x: 0.09, y: 0.05, w: 0.82 } },
+    { n: 8, emploi: "materiel — disque olympique et collier sur tapis de caoutchouc",
+      src: "url:" + PX + "/2261481/pexels-photo-2261481.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/2261481/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+  ],
+
   construction: [
     /* LE HEROS PASSE EN `xl`.  D-660
        Le standard demande une photographie PLEIN CADRE. Une image de

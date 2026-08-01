@@ -45,7 +45,14 @@ const SECTEURS = {
   garage: { source: "garage", domaine: "atelier-meridien.ca", etiquette: "Garage et mecanique" },
   paysagement: { source: "deneigement", domaine: "mv-deneigement.ca", etiquette: "Paysagement et deneigement" },
   construction: { source: "secteur-construction", domaine: "construction-lattier.ca", etiquette: "Construction et renovation" },
-  immobilier: { source: "secteur-immobilier", domaine: "ancrage-immobilier.ca", etiquette: "Immobilier" }
+  immobilier: { source: "secteur-immobilier", domaine: "ancrage-immobilier.ca", etiquette: "Immobilier" },
+  boutique: { source: "secteur-boutique", domaine: "gresdunord.ca", etiquette: "Boutique en ligne" },
+  coiffure: { source: "secteur-coiffure", domaine: "salon-brume.ca", etiquette: "Coiffure et esthetique" },
+  gym: { source: "secteur-gym", domaine: "fonte-nord.ca", etiquette: "Gym et entrainement" },
+  hotel: { source: "secteur-hotel", domaine: "auberge-des-caps.ca", etiquette: "Hebergement et tourisme" },
+  clinique: { source: "secteur-clinique", domaine: "clinique-riverain.ca", etiquette: "Clinique et sante" },
+  juridique: { source: "secteur-juridique", domaine: "cabinet-vallieres.ca", etiquette: "Services juridiques" },
+  photo: { source: "secteur-photo", domaine: "atelier-lumen.ca", etiquette: "Photographe et creatif" }
 };
 
 function finDuDiv(html, debut) {
