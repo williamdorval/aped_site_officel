@@ -1487,3 +1487,54 @@
   .mock .sec-pile { transform: translateY(0); }
   .mock .sec-lim i { transform: translate(0, 0); opacity: 1; }
 }
+
+/* == UN SECTEUR MONTRE UN VRAI SITE, PAS UNE MAQUETTE. ==  D-655
+   Ce panneau montrait une carte dessinee a la main : un fragment, une
+   fonction isolee, jolie et abstraite. Un patron de garage ne peut
+   pas juger sur ca — il veut voir un site.
+   C'est maintenant le site entier, photographie a 1 280 px de large,
+   empile en tuiles, et le visiteur y DESCEND.
+
+   AUCUN PILOTE, ET C'EST LA DIFFERENCE AVEC LA SECTION 03.
+   La-bas il faut verrouiller DEUX pages de hauteurs differentes en
+   pourcentage : ca demande du JavaScript. Ici il n'y a qu'une page.
+   Un conteneur en `overflow-y: auto` la fait defiler NATIVEMENT —
+   donc sur le compositeur, donc sans la moindre image de retard
+   (D-654), et sans une ligne de script. Le plus simple est aussi le
+   plus fluide. */
+.mock--site {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-0);
+}
+.mock--site .sec-chrome { flex: 0 0 auto; }
+.sec-vitre {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Le geste ne remonte pas a la page tant qu'on est dedans, et il
+     la lui rend au bout — meme arbitrage qu'en section 03 (D-636). */
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+  background: var(--surface-0);
+}
+@media (any-pointer: coarse) {
+  .sec-vitre { overscroll-behavior: auto; }
+}
+/* LE CONTENEUR EST ATTEIGNABLE AU CLAVIER. Un conteneur defilant sans
+   `tabindex` n'est pas atteignable dans tous les moteurs, et son
+   contenu deviendrait alors inaccessible autrement qu'a la souris. */
+.sec-vitre:focus-visible {
+  outline: var(--focus-w) solid var(--accent-text);
+  outline-offset: calc(var(--focus-w) * -1);
+}
+.sec-vitre img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Une image est glissable par defaut, et le glisser natif vole le
+     geste — la lecon de D-619, appliquee avant de la repayer. */
+  -webkit-user-drag: none;
+}
