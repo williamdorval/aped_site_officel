@@ -88,11 +88,20 @@ for (const f of sources) {
     await img.decode();
     const hSource = img.naturalHeight;
     const h = Math.round((LARGEUR * hSource) / img.naturalWidth);
-    /* UNE DIMENSION DE WEBP NE PEUT PAS DEPASSER 16 383 px, et rien
-       ne le dit : l'encodeur rend une image tronquee ou vide. On
-       arrete l'outil plutot que de livrer un site coupe en deux. */
-    if (h > 16383) {
-      throw new Error(`${LARGEUR}x${h} : au-dela des 16 383 px qu'un WebP peut porter. Baisser la largeur de sortie.`);
+    /* CE GARDE-FOU MESURAIT LA MAUVAISE CHOSE.  D-661 · piege 46
+       Il refusait toute page dont la hauteur de sortie depassait
+       16 383 px — la limite d'une dimension de WebP. Elle etait juste
+       quand l'outil produisait UNE image par site. Depuis D-648 il
+       n'encode plus que des TUILES de 1 100 px : aucune image entiere
+       ne part a l'encodeur, et la limite ne s'applique a rien. Le
+       garde-fou a survecu au correctif et bloquait une page de
+       16 479 px qui se serait convertie sans une plainte.
+       Ce qui borne vraiment, c'est le CANEVAS intermediaire : le
+       moteur refuse au-dela de 65 535 px de cote, et surtout au-dela
+       d'environ 268 millions de pixels d'aire. On mesure donc ca. */
+    const AIRE_MAX = 268000000;
+    if (h > 32000 || LARGEUR * h > AIRE_MAX) {
+      throw new Error(`${LARGEUR}x${h} : au-dela de ce qu'un canevas peut porter (${Math.round((LARGEUR * h) / 1e6)} Mpx). Baisser la largeur de sortie.`);
     }
     /* UN `drawImage` QUI DIVISE PAR PLUS DE DEUX D'UN COUP ALIASE.
        On reduit par demi-pas successifs, comme `secteurs-photos.mjs`. */

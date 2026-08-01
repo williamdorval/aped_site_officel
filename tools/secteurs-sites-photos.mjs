@@ -198,9 +198,15 @@ const TIRAGES = {
      residentielles y sont rares, datees et sombres. L'immobilier se
      photographie, il ne se reprojette pas. */
   immobilier: [
-    { n: 1, emploi: "heros — sejour d'une inscription", large: true,
-      src: "url:" + PX + "/3935315/pexels-photo-3935315.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/3935315/", fen: { x: 0, y: 0.10, w: 1 } },
+    /* Le heros et la bande pleine largeur passent en `xl` : sur une
+       fenetre de 1280 en densite 1,5, une image de 1280 est demandee a
+       1920 px reels et arrive floue. D-660 */
+    /* `3935315` etait un dos de canape en cuir beige qui remplit la
+       moitie basse du cadre : correct dans une carte de 218 px, mort
+       en plein ecran. Un heros se choisit A LA TAILLE OU IL SERA VU. */
+    { n: 1, emploi: "heros — aire ouverte sur la cour, plein cadre", xl: true,
+      src: "url:" + PX + "/280239/pexels-photo-280239.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/280239/", fen: { x: 0, y: 0.06, w: 1 } },
     /* LE TYPE DE LA MAISON DOIT SUIVRE LA FICHE.
        Premiere passe : une maison a etages posee sur une inscription
        ecrite « plain-pied 2004 », et une autre a etages sur un
@@ -280,7 +286,15 @@ const TIRAGES = {
          une porte vitree — pas la terrasse. Verifier l'orientation de
          la source avant de choisir `fen`.  Piege 57 */
       src: "url:" + PX + "/8180361/pexels-photo-8180361.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/8180361/", fen: { x: 0.09, y: 0.04, w: 0.82 } }
+      page: "https://www.pexels.com/photo/8180361/", fen: { x: 0.09, y: 0.04, w: 0.82 } },
+    /* DEUX BANDES REJETEES POUR UN DETAIL QU'ON NE VOIT QU'EN OUVRANT :
+       `12579242` porte une antenne parabolique avec sa MARQUE
+       imprimee dessus, en gros, au premier plan ; `19309671` montre
+       une plaque d'immatriculation lisible et un numero civique. La
+       retenue ne montre ni l'un ni l'autre. */
+    { n: 16, emploi: "bande pleine largeur — rangee de maisons de quartier", xl: true,
+      src: "url:" + PX + "/3958954/pexels-photo-3958954.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/3958954/", fen: { x: 0, y: 0.08, w: 1 } }
   ]
 };
 
