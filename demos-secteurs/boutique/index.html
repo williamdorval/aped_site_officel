@@ -287,6 +287,22 @@ strong{font-weight:700}
 .geste-ph img{width:100%;object-fit:cover}
 .geste-ph--pano img{aspect-ratio:16/9}
 .geste-ph--large img{aspect-ratio:4/3}
+/* TROIS GESTES, TROIS ÉCHELLES — et c'est ce qui manquait.
+   La première version posait trois rangs de même poids : image-texte,
+   texte-image, image-texte. C'est la mise en page d'un ARTICLE, pas
+   d'un catalogue, et c'était la section la plus faible de la page —
+   relevée deux fois à l'image avant d'être corrigée. Chaque geste a
+   maintenant sa forme, et aucune ne revient. */
+.geste--bande{display:block;margin-top:clamp(52px,6.4vw,104px)}
+.geste--bande .geste-ph img{width:100%;aspect-ratio:21/9}
+.geste--bande .geste-t{display:grid;
+  grid-template-columns:minmax(0,.86fr) minmax(0,1.3fr);
+  gap:clamp(28px,4.4vw,72px);margin-top:clamp(26px,2.9vw,44px)}
+.geste--menu{grid-template-columns:minmax(0,.6fr) minmax(0,1.4fr);align-items:flex-end}
+.geste--menu .geste-ph img{aspect-ratio:3/4}
+.geste--detail{grid-template-columns:minmax(0,1.52fr) minmax(0,.48fr);align-items:flex-start}
+.geste--detail .geste-ph{order:2}
+.geste--detail .geste-ph img{aspect-ratio:1}
 .geste h3{margin-bottom:14px}
 /* l'encre, pas l'oxyde : le fond de cette section-là roule du sable
    au céladon, et l'oxyde n'y tient pas 4,5:1 */
@@ -317,8 +333,10 @@ strong{font-weight:700}
   .index a:hover{padding-right:0;padding-left:8px}
 }
 @media (max-width:1000px){
-  .ouv,.ecran,.geste,.geste--inv,.fin,.coll-h{grid-template-columns:1fr}
-  .ecran--inv .ecran-ph,.geste--inv .geste-ph{order:0}
+  .ouv,.ecran,.geste,.geste--inv,.geste--menu,.geste--detail,
+  .geste--bande .geste-t,.fin,.coll-h{grid-template-columns:1fr}
+  .ecran--inv .ecran-ph,.geste--inv .geste-ph,.geste--detail .geste-ph{order:0}
+  .geste--menu .geste-ph img,.geste--detail .geste-ph img{aspect-ratio:4/3}
   .ecran-ph img{max-height:560px}
   .menu{width:100%;margin-left:0;gap:18px}
 }
@@ -494,19 +512,23 @@ strong{font-weight:700}
   <div class="dedans">
     <h2 class="rv">trois gestes, et rien de secret</h2>
 
-    <div class="geste">
-      <div class="geste-ph geste-ph--pano">
+    <!-- 01 · la photo traverse, le texte se range dessous en deux parts -->
+    <div class="geste geste--bande">
+      <div class="geste-ph">
         <img class="gr" src="../../images/secteurs-sites/boutique-9.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux mains étalent une plaque d’argile au rouleau sur une table de travail grise, avec mirettes, estèques, bol d’eau et éponge posés à côté.">
       </div>
-      <div class="gl">
-        <span class="code">GESTE 01</span>
-        <h3>les assiettes ne sont pas tournées</h3>
+      <div class="geste-t gl">
+        <div>
+          <span class="code">GESTE 01</span>
+          <h3>les assiettes ne sont pas tournées</h3>
+        </div>
         <p class="txt">Elles sont étalées au rouleau à 9 mm, puis coupées au gabarit. Une assiette tournée serait plus épaisse au centre et se déformerait au four. La plaque donne une épaisseur constante : c’est ce qui permet d’en empiler douze sans qu’aucune ne berce.</p>
       </div>
     </div>
 
-    <div class="geste geste--inv">
-      <div class="geste-ph geste-ph--pano">
+    <!-- 02 · la photo devient la colonne ÉTROITE, le texte prend la largeur -->
+    <div class="geste geste--menu">
+      <div class="geste-ph">
         <img class="gr" src="../../images/secteurs-sites/boutique-8.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Vue de dessus d’un plan de travail en bois : deux mains posent une galette d’argile sur un linge, entourées de moules de plâtre, d’un pot de barbotine et d’outils de tournage.">
       </div>
       <div class="gl">
@@ -516,8 +538,9 @@ strong{font-weight:700}
       </div>
     </div>
 
-    <div class="geste">
-      <div class="geste-ph geste-ph--large">
+    <!-- 03 · un détail carré, petit, calé à droite d'un texte large -->
+    <div class="geste geste--detail">
+      <div class="geste-ph">
         <img class="gr" src="../../images/secteurs-sites/boutique-10.webp" width="960" height="720" loading="lazy" decoding="async" alt="Détail rapproché : une trace de barbotine grise déposée sur une feuille de papier par un outil de métal noir, à côté de doigts couverts d’argile séchée.">
       </div>
       <div class="gl">
