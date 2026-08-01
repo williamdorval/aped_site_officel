@@ -129,8 +129,18 @@ aucun des neuf n'a droit à l'orange.**
 | **Typographie** | `libre-baskerville` 700 pour l'affichage · `source-serif` pour le texte · `jetbrains-mono` pour les références d'article |
 | **Formes** | Angles vifs. **Colonnes de journal** (2 à 4), **réglures horizontales** entre chaque bloc, filets doubles au-dessus des titres. Signature : un **bandeau de manchette** en tête de chaque section |
 | **Mouvement** | Le texte se révèle **colonne par colonne, de gauche à droite** · une **règle horizontale se trace** avant chaque titre · les domaines de pratique sont un **`:target` qui change l'article affiché**, sans script · survol : le lien prend un **soulignement qui se trace** |
-| **Traitement photo** | **Peu de photos, très grandes.** Traitement **duotone bordeaux/papier**, comme une trame de journal |
-| **Ce qu'on ne fait pas** | Pas de poignée de main, pas de balance, pas de colonnade |
+| **Traitement photo** | **Cinq photos, très grandes** — et c'est une décision, pas un manque. Trente-quatre candidats regardés pour en ajouter, aucun retenu : un rayon de bibliothèque est un mur de MARQUES, les salles de réunion libres sont meublées en orange, les stores d'ordinateur n'ont pas de sujet. Une page de quotidien porte peu d'images et beaucoup de texte. Traitement **duotone bordeaux/papier, tramé à 45°** |
+| **Ce qu'on ne fait pas** | Pas de poignée de main, pas de balance, pas de marteau de juge |
+
+> **LA COLONNADE — LA LIGNE A ÉTÉ LEVÉE, ET VOICI POURQUOI.** La
+> première version de cette DA écrivait « pas de colonnade », parce
+> qu'un avocat photographié devant des colonnes est le cliché du
+> métier. Quatre des cinq photos disponibles SONT de l'architecture
+> classique, et le triage a montré qu'il n'y avait rien à mettre à la
+> place. Ce qui a été retenu : **une colonnade en duotone bordeaux
+> tramé n'est plus un cliché de cabinet, c'est un ornement de une** —
+> à condition que la légende dise que ce n'est pas le bureau. La
+> ligne interdit donc l'homme devant les colonnes, pas la colonne.
 
 ## 11 · PHOTOGRAPHE ET CRÉATIF — **ATELIER LUMEN**
 
