@@ -57,20 +57,34 @@ const MESURE = () => {
     const q = m[1].split(/[,\s/]+/).filter(Boolean).map(parseFloat);
     return { c: [q[0], q[1], q[2]], a: q.length > 3 ? q[3] : 1 };
   };
-  function fond(el) {
-    let n = el;
+  /* Deux lectures du même fond, et il faut les deux.
+     `exact` s'arrête net sur une image ou un dégradé : ce qui n'est
+     pas calculable depuis les styles ne compte ni comme échec ni
+     comme succès.
+     `approche` continue et prend la première couleur opaque
+     DESSOUS. Sur la construction, le quadrillage de plan est un
+     `repeating-linear-gradient` posé sur toute la page : la lecture
+     exacte rend « 208 hors calcul » et ne dit plus rien. La lecture
+     approchée dit le ratio contre le bleu de plan, ce qui est la
+     bonne réponse à 8 % d'opacité de trait — mais ce n'est pas une
+     mesure aux pixels peints, et c'est écrit comme tel.  D-639 */
+  function fond(el, approche) {
+    let n = el, image = false;
     while (n && n !== document.documentElement) {
       const cs = getComputedStyle(n);
-      if (cs.backgroundImage && cs.backgroundImage !== "none") return null;
+      if (cs.backgroundImage && cs.backgroundImage !== "none") {
+        if (!approche) return null;
+        image = true;
+      }
       const c = rgb(cs.backgroundColor);
-      if (c && c.a >= 0.95) return c.c;
+      if (c && c.a >= 0.95) return { c: c.c, image };
       n = n.parentElement;
     }
     const b = rgb(getComputedStyle(document.body).backgroundColor);
-    return b && b.a >= 0.95 ? b.c : null;
+    return b && b.a >= 0.95 ? { c: b.c, image } : null;
   }
   const echecs = [];
-  let horsCalcul = 0, mesures = 0, min = 99, minQuoi = "";
+  let horsCalcul = 0, approches = 0, mesures = 0, min = 99, minQuoi = "";
   for (const el of document.querySelectorAll("body *")) {
     if (el.closest("[aria-hidden='true'], template, svg")) continue;
     const t = [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim())
@@ -86,22 +100,23 @@ const MESURE = () => {
     if (!r.width || !r.height) continue;
     const fg = rgb(cs.color);
     if (!fg || fg.a < 0.9) continue;
-    const bg = fond(el);
+    const bg = fond(el, true);
     if (bg === null) { horsCalcul++; continue; }
     const px = parseFloat(cs.fontSize);
     const gras = parseInt(cs.fontWeight, 10) >= 700;
     /* Seuil WCAG AA : 3:1 pour du grand texte — 24 px, ou 18,66 px
        en gras — et 4,5:1 pour tout le reste. */
     const seuil = px >= 24 || (px >= 18.66 && gras) ? 3 : 4.5;
-    const l1 = lum(fg.c), l2 = lum(bg);
+    const l1 = lum(fg.c), l2 = lum(bg.c);
     const ct = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
     mesures++;
+    if (bg.image) approches++;
     if (ct < min) { min = ct; minQuoi = `${t.slice(0, 30)} · ${Math.round(px)}px`; }
     if (ct < seuil) {
-      echecs.push({ ct: Math.round(ct * 100) / 100, seuil, px: Math.round(px), t: t.slice(0, 40) });
+      echecs.push({ ct: Math.round(ct * 100) / 100, seuil, px: Math.round(px), t: t.slice(0, 40), approche: bg.image });
     }
   }
-  return { echecs, horsCalcul, mesures, min: Math.round(min * 100) / 100, minQuoi };
+  return { echecs, horsCalcul, approches, mesures, min: Math.round(min * 100) / 100, minQuoi };
 };
 
 const b = await chromium.launch();
@@ -124,7 +139,7 @@ for (const cle of aFaire) {
     await p.waitForTimeout(400);
     const r = await p.evaluate(MESURE);
     ligne[`${w}px`] = r.echecs.length ? `${r.echecs.length} ÉCHEC` : `ok (min ${r.min})`;
-    if (r.horsCalcul) ligne[`${w}px`] += ` [${r.horsCalcul} hors calcul]`;
+    if (r.approches) ligne[`${w}px`] += ` [${r.approches} approché]`;
     total += r.echecs.length;
     pires = pires.concat(r.echecs.map((e) => ({ ...e, w })));
   }
@@ -141,5 +156,5 @@ if (total) {
   process.exitCode = 1;
 } else {
   console.log(`\n${R.length} site(s) × ${LARGEURS.length} largeurs : aucun échec de contraste calculable.`);
-  console.log(`Ce qui porte un fond en image ou en dégradé n'est pas calculable ici — ça se mesure à l'image.`);
+  console.log("Les mesures « approché » sont prises contre la première couleur OPAQUE sous une image ou un dégradé — pas aux pixels peints.");
 }

@@ -4,1024 +4,797 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Atelier Lumen — combien de fichiers, et quand vous les recevez</title>
-<meta name="description" content="Photographe à Québec. Portrait d’entreprise, architecture, produit. Nombre de fichiers retenus, délai de livraison, droits d’usage écrits, accès aux fichiers pendant cinq ans. Site de démonstration.">
+<title>Atelier Lumen — architecture, intérieur, objet</title>
+<meta name="description" content="Atelier Lumen, photographe à Québec. Architecture, intérieur et objet. Huit images montrées en grand, sans retouche. Nombre de fichiers retenus, délai de livraison et droits d’usage écrits avant la séance. Site de démonstration.">
 <style>
 /* ─────────────────────────────────────────────────────────────
    ATELIER LUMEN — site de démonstration
-   Affichage instrument-serif (romain + italique, bas de casse)
-   Texte inter · détail jetbrains-mono
-   Dispositif de signature : LE REPÈRE DE COUPE — quatre équerres
-   de 1 px posées en dehors des angles d’un bloc, et sous le bloc
-   une ligne unique : cartouche mono à gauche, légende à droite.
-   Cinq occurrences : héros, planche 01, planche 02, planche 03,
-   formulaire 04. Il ne se pose que sur ce qui est un tirage.
-   Aucun script. Aucune requête tierce.
+   Une salle d’exposition la lumière éteinte : le noir n’est pas
+   un fond, c’est le mur.
+
+   Trois valeurs, et rien d’autre : noir #000, blanc #fff,
+   gris #8a8a8a. AUCUNE couleur d’accent — c’est le parti pris,
+   et c’est ce qui sépare cette page des onze autres.
+
+   Affichage  instrument-serif (romain ET italique), jusqu’à 150 px
+   Texte      inter 400, 13–14 px
+   Données    jetbrains-mono 500, 10 px
+
+   DISPOSITIF DE SIGNATURE — la fiche technique : sous chaque
+   image, trois lignes en mono alignées à DROITE (le sujet,
+   l’année, une donnée de prise de vue). Quinze occurrences.
+
+   MOUVEMENT — le plus lent et le plus rare du dépôt.
+   1 · les images apparaissent par un fondu long, opacité SEULE,
+       aucun déplacement ;
+   2 · rien d’autre ne bouge au défilement — les titres sont posés ;
+   3 · la série est un défilement latéral plein écran en scroll-snap,
+       chaque œuvre porte son propre compteur ;
+   4 · au survol, la légende se déplie vers le bas (0fr → 1fr) ;
+   5 · micro-interactions en blanc sur noir, jamais une couleur.
+
+   Aucun script. Aucune requête tierce. Aucun traitement d’image :
+   un photographe ne repeint pas ses tirages.
    ───────────────────────────────────────────────────────────── */
 
+/* ── polices : trois familles, et seulement celles-là ────────── */
 @font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-0.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-1.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-2.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-3.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:"inter";src:url("../../fonts/demos/inter-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"inter";src:url("../../fonts/demos/inter-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-2.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-3.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 
 :root{
-  --papier:#fbfaf8;      /* le fond dominant — ce site est le plus clair du lot */
-  --craie:#f0eeea;       /* le second papier, un cran plus gris */
-  --noir:#0e0e0e;        /* la seule bande sombre */
-  --encre:#0a0a0a;
-  --gris:#4a4a48;        /* texte courant sur papier — 9,3:1 */
-  --gris2:#6d6b66;       /* mono discret sur papier — 5,3:1 */
-  --clair:#b3b0a9;       /* texte courant sur noir — 8,7:1 */
-  --rep:#d8452e;         /* LE repère — équerres, filets, grands chiffres (≥24px) */
-  --rep-t:#c0361f;       /* le même rouge, creusé, pour le texte sous 24 px — 5,3:1 */
-  --rep-s:#f0644a;       /* le même rouge, ouvert, sur la bande noire — 6,1:1 */
-  --filet:rgba(10,10,10,.16);
-  --filet-f:rgba(10,10,10,.09);
-  --filet-s:rgba(251,250,248,.20);
+  --noir:#000000;
+  --blanc:#ffffff;
+  --gris:#8a8a8a;          /* 6,08:1 sur le noir — le seul gris */
+  --trait:rgba(255,255,255,.22);
   --aff:"instrument-serif",Georgia,"Times New Roman",serif;
   --txt:"inter",-apple-system,"Segoe UI",Arial,sans-serif;
-  --mno:"jetbrains-mono",ui-monospace,monospace;
-  --pad:clamp(20px,4.4vw,64px);
+  --mno:"jetbrains-mono",ui-monospace,"Courier New",monospace;
+  /* MARGES ÉNORMES : 17 % de la fenêtre de chaque côté. */
+  --marge:17vw;
+  --sec:146px;
 }
+@media (max-width:1100px){ :root{ --marge:9vw; --sec:120px } }
+@media (max-width:640px){ :root{ --marge:24px; --sec:92px } }
 
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+html{-webkit-text-size-adjust:100%; background:var(--noir)}
 body{
-  margin:0; background:var(--papier); color:var(--encre);
-  font-family:var(--txt); font-size:15px; line-height:1.62;
+  margin:0; background:var(--noir); color:var(--blanc);
+  font-family:var(--txt); font-size:14px; line-height:1.76;
   font-kerning:normal; text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+  overflow-x:clip;                    /* clip, jamais hidden — piège 66 */
+  -webkit-font-smoothing:antialiased;
 }
 img{display:block; max-width:100%}
 a{color:inherit}
-h1,h2,h3,h4,p,ul,ol,dl,dd,figure,blockquote{margin:0}
+h1,h2,h3,p,ul,ol,dl,dd,figure,figcaption{margin:0}
 ul,ol{padding:0; list-style:none}
-:focus-visible{outline:2px solid var(--rep-t); outline-offset:3px}
+em{font-style:italic}
+:focus-visible{outline:2px solid var(--blanc); outline-offset:4px}
 
-/* ── grille ─────────────────────────────────────────────── */
-.in{max-width:1280px; margin:0 auto; padding-left:var(--pad); padding-right:var(--pad)}
-.sec{padding-top:118px; padding-bottom:118px}
-.sec--l{padding-top:160px; padding-bottom:160px}
-.p{background:var(--papier)}
-.c{background:var(--craie)}
-.n{background:var(--noir); color:var(--clair)}
+/* ── LE MOUVEMENT ───────────────────────────────────────────
+   Un seul keyframe pour toute la page : l’opacité. Aucun
+   déplacement, aucune échelle. C’est la révélation de ce site,
+   et elle n’appartient qu’à lui. */
+@keyframes paraitre{ from{ opacity:0 } to{ opacity:1 } }
 
-/* ── typographie ────────────────────────────────────────── */
-.mic{
-  font-family:var(--mno); font-size:10.5px; font-weight:500;
-  letter-spacing:.22em; text-transform:uppercase; color:var(--rep-t);
-  display:flex; align-items:center; gap:12px;
+/* le fondu de chargement : 900 ms, vraies millisecondes, sur la
+   seule image qui touche les bords. `forwards`, jamais `both`. */
+.fondu{ animation:paraitre .9s linear forwards }
+
+/* le fondu au défilement : la plage s’étale sur un quart du
+   parcours de couverture — c’est long, et ça se remarque.
+   `forwards` : hors plage, c’est la forme FINALE qui tient. */
+.rv{ animation:paraitre linear forwards; animation-timeline:view(); animation-range:entry 0% cover 25% }
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation:none !important; transition:none !important }
 }
-.mic::before{content:""; width:26px; height:1px; background:var(--rep); flex:none}
-/* Sur une PHOTO, le rouge du micro-libellé ne passe pas : mesuré 2,16:1
-   et 2,44:1 sur les pixels réels du héros, fenêtre la plus claire.
-   Les deux libellés posés sur photo passent donc en papier (7,8:1) ;
-   le rouge y reste sur les équerres et sur le bouton. */
-.n .mic{color:var(--papier)}
-.n .mic::before{background:rgba(251,250,248,.72)}
+@supports not (animation-timeline: view()){
+  .rv{ animation:none; opacity:1; transform:none }
+}
 
+/* ── grille ─────────────────────────────────────────────────── */
+.in{ padding-left:var(--marge); padding-right:var(--marge) }
+.sec{ padding-top:var(--sec); padding-bottom:var(--sec) }
+
+/* ── typographie ────────────────────────────────────────────── */
+.mono{
+  font-family:var(--mno); font-size:10px; font-weight:500;
+  letter-spacing:.26em; text-transform:uppercase; color:var(--gris);
+  line-height:1.9;
+}
+h1{
+  font-family:var(--aff); font-weight:400; color:var(--blanc);
+  font-size:clamp(44px,8.6vw,132px); line-height:.94; letter-spacing:-.005em;
+}
 h2{
-  font-family:var(--aff); font-weight:400;
-  font-size:clamp(34px,4.1vw,52px); line-height:.98; letter-spacing:0;
-  margin-top:24px; max-width:19ch;
+  font-family:var(--aff); font-weight:400; color:var(--blanc);
+  font-size:clamp(34px,5.4vw,80px); line-height:.94; letter-spacing:-.005em;
+  max-width:16ch;
 }
-/* la tête de section tient sur toute la largeur : titre à gauche,
-   chapô à droite, alignés par le bas. Sans ça, la moitié droite
-   de chaque section reste vide sur 400 px. */
-.tete{display:grid; grid-template-columns:1.12fr 1fr; gap:0 70px; align-items:end}
-.tete .mic{grid-column:1/-1}
-.tete h2{grid-column:1; max-width:none}
-.tete .chapo{grid-column:2; margin-top:0; margin-bottom:5px; max-width:44ch}
-h2 em, h1 em, .ph em{font-style:italic}
-.chapo{max-width:56ch; color:var(--gris); margin-top:26px}
-.n .chapo{color:var(--clair)}
-.txt{max-width:58ch; color:var(--gris)}
-.txt + .txt{margin-top:15px}
-.note{font-size:13px; color:var(--gris2); max-width:64ch}
-.mono{font-family:var(--mno); font-size:11.5px; letter-spacing:.08em; color:var(--gris2)}
-strong{font-weight:600; color:var(--encre)}
-.n strong{color:var(--papier)}
+.enonce{
+  font-family:var(--aff); font-weight:400; color:var(--blanc);
+  font-size:clamp(30px,4.4vw,64px); line-height:1.02; max-width:19ch;
+}
+.txt{ color:var(--gris); max-width:54ch; font-size:14px }
+.txt + .txt{ margin-top:18px }
+.txt b{ color:var(--blanc); font-weight:400 }
+.petit{ font-size:13px; color:var(--gris); max-width:62ch }
 
-/* ── LE REPÈRE DE COUPE ─────────────────────────────────── */
-.rep{position:relative}
-.rep::before,.rep::after,.rep>.eq::before,.rep>.eq::after{
-  content:""; position:absolute; width:19px; height:19px; pointer-events:none;
-  border:1px solid var(--rep);
+/* ── liens et boutons — blanc sur noir, jamais une couleur ──── */
+.lien{ position:relative; text-decoration:none; color:var(--blanc); display:inline-block }
+.lien::after{
+  content:""; position:absolute; left:0; right:0; bottom:-3px; height:1px;
+  background:var(--blanc); transform:scaleX(0); transform-origin:left center;
+  transition:transform .34s ease;
 }
-.rep::before{top:-10px; left:-10px; border-right:0; border-bottom:0}
-.rep::after{top:-10px; right:-10px; border-left:0; border-bottom:0}
-.rep>.eq::before{bottom:-10px; left:-10px; border-right:0; border-top:0}
-.rep>.eq::after{bottom:-10px; right:-10px; border-left:0; border-top:0}
-.cart{
-  display:flex; flex-wrap:wrap; gap:8px 28px; justify-content:space-between;
-  align-items:baseline; margin-top:22px;
-}
-.cart b{
-  font-family:var(--mno); font-size:10.5px; font-weight:500;
-  letter-spacing:.2em; text-transform:uppercase; color:var(--rep-t);
-}
-.cart span{font-size:12.5px; color:var(--gris2); max-width:62ch}
-.n .cart b{color:var(--rep-s)}
-.n .cart span{color:var(--clair)}
+.lien:hover::after,.lien:focus-visible::after{ transform:scaleX(1) }
 
-/* ── barre ──────────────────────────────────────────────── */
-.barre{position:absolute; top:0; left:0; right:0; z-index:5}
-.barre__in{
-  max-width:1280px; margin:0 auto; padding:26px var(--pad) 0;
-  display:flex; align-items:center; gap:30px;
+.btn{
+  display:inline-block; font-family:var(--txt); font-size:13px; letter-spacing:.02em;
+  text-decoration:none; color:var(--blanc); background:transparent;
+  border:1px solid var(--gris); padding:16px 30px; cursor:pointer;
+  transition:background .24s ease, color .24s ease, border-color .24s ease;
+}
+.btn:hover,.btn:focus-visible{ background:var(--blanc); color:var(--noir); border-color:var(--blanc) }
+.btn:active{ background:var(--gris); border-color:var(--gris); color:var(--noir) }
+
+/* ── barre ──────────────────────────────────────────────────── */
+.barre{
+  display:flex; align-items:baseline; gap:36px;
+  padding-top:30px; padding-left:var(--marge); padding-right:var(--marge);
 }
 .marque{
-  font-family:var(--aff); font-size:23px; line-height:1; text-decoration:none;
-  color:var(--papier); letter-spacing:.01em;
+  font-family:var(--aff); font-size:22px; line-height:1;
+  text-decoration:none; color:var(--blanc); letter-spacing:.005em;
 }
-.marque span{
-  display:block; font-family:var(--mno); font-size:9.5px; letter-spacing:.24em;
-  text-transform:uppercase; color:rgba(251,250,248,.88); margin-top:6px;
-}
-.nav{display:flex; gap:24px; margin-left:auto}
+.nav{ display:flex; gap:26px; margin-left:auto }
 .nav a{
-  font-size:12.5px; text-decoration:none; color:rgba(251,250,248,.86);
-  border-bottom:1px solid transparent; padding-bottom:2px; transition:border-color .18s
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.22em;
+  text-transform:uppercase; text-decoration:none; color:var(--blanc);
+  opacity:.55; transition:opacity .24s ease;
 }
-.nav a:hover{border-bottom-color:var(--rep)}
+.nav a:hover,.nav a:focus-visible{ opacity:1 }
 .demo{
-  font-family:var(--mno); font-size:9.5px; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--papier); border:1px solid rgba(251,250,248,.34); padding:6px 10px;
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--gris);
 }
 
-/* ── boutons ────────────────────────────────────────────── */
-.btn{
-  display:inline-block; font-size:13.5px; font-weight:600; text-decoration:none;
-  padding:15px 26px; border:1px solid var(--rep-t); background:var(--rep-t);
-  color:var(--papier); transition:background .18s,border-color .18s; cursor:pointer;
-  font-family:var(--txt);
+/* ── héros — un écran presque vide ──────────────────────────── */
+.hero{
+  min-height:84vh; min-height:84svh;
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding-top:150px; padding-bottom:34px;
 }
-.btn:hover{background:var(--encre); border-color:var(--encre)}
-.btn--v{background:transparent; color:var(--papier); border-color:rgba(251,250,248,.46)}
-.btn--v:hover{background:var(--papier); color:var(--encre); border-color:var(--papier)}
-.btn--e{background:transparent; color:var(--encre); border-color:var(--encre)}
-.btn--e:hover{background:var(--encre); color:var(--papier)}
-
-/* ── héros ──────────────────────────────────────────────── */
-.hero{position:relative; min-height:760px; height:100vh; display:flex; overflow:hidden; background:var(--noir)}
-.hero__img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:38% 50%}
-.hero__voile{position:absolute; inset:0; background:rgba(8,8,8,.58)}
-.hero__in{
-  position:relative; z-index:2; max-width:1280px; width:100%; margin:0 auto;
-  padding:0 var(--pad) 46px; display:flex; flex-direction:column; justify-content:flex-end;
-}
-.hero__mic{color:var(--papier)}
-.hero__mic::before{background:rgba(251,250,248,.72)}
-h1{
-  font-family:var(--aff); font-weight:400; color:var(--papier);
-  font-size:clamp(48px,11.4vw,152px); line-height:.88; letter-spacing:0;
-  margin-top:26px; max-width:15ch;
-}
-.hero__bas{
-  display:flex; flex-wrap:wrap; gap:34px 60px; align-items:flex-end;
-  margin-top:40px; padding-bottom:34px;
-}
-.hero__bas p{max-width:47ch; color:rgba(251,250,248,.86); font-size:15px}
-.hero__act{display:flex; gap:12px; flex-wrap:wrap}
-.hero__rep{position:absolute; inset:26px; pointer-events:none}
-.hero__cart{
-  position:absolute; left:0; right:0; bottom:-2px;
-  display:flex; flex-wrap:wrap; gap:6px 26px; justify-content:space-between; align-items:baseline;
-}
-.hero__cart b{
-  font-family:var(--mno); font-size:10.5px; font-weight:500;
-  letter-spacing:.2em; text-transform:uppercase; color:var(--papier);
-}
-.hero__cart span{font-size:11.5px; color:rgba(251,250,248,.78)}
-
-/* ── chiffres ───────────────────────────────────────────── */
-.chif{
-  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
-  background:var(--filet); border-top:1px solid var(--filet); border-bottom:1px solid var(--filet);
+.hero h1{ margin-top:30px; max-width:14ch }
+.hero .txt{ margin-top:34px; max-width:50ch }
+.hero__act{ display:flex; flex-wrap:wrap; gap:14px; margin-top:40px }
+.hero__pied{
+  display:flex; flex-wrap:wrap; gap:8px 40px; justify-content:space-between;
   margin-top:70px;
 }
-.chif>div{background:var(--papier); padding:30px 26px 32px}
-.chif b{
-  display:block; font-family:var(--aff); font-weight:400; color:var(--rep);
-  font-size:clamp(46px,5.6vw,72px); line-height:.9; letter-spacing:0;
-}
-.chif u{
-  display:block; text-decoration:none; font-family:var(--mno); font-size:10.5px;
-  letter-spacing:.2em; text-transform:uppercase; color:var(--gris2); margin-top:12px;
-}
-.chif p{font-size:13px; color:var(--gris); margin-top:12px; line-height:1.5}
 
-/* ── planches ───────────────────────────────────────────── */
-.planche{margin-top:78px}
-.planche img{width:100%; height:auto}
-.pl--e{max-width:880px; margin-left:auto; margin-right:auto}
-.pl--h{height:440px; overflow:hidden}
-.pl--h img{height:100%; object-fit:cover; object-position:50% 44%}
+/* ── LA FICHE TECHNIQUE — le dispositif de signature ────────── */
+.fiche{
+  display:flex; flex-direction:column; align-items:flex-end;
+  text-align:right; margin-top:20px; min-height:102px;
+}
+.fiche__m{ font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--gris); line-height:1.85 }
+.fiche__m b,.fiche__m span{ display:block }
+.fiche__m b{ color:var(--blanc); font-weight:500 }
+/* la légende se déplie vers le bas — 0fr → 1fr, 400 ms */
+.depli{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s ease; width:100%; }
+.depli>p{
+  overflow:hidden; min-height:0; margin:0; padding-top:0;
+  font-size:12.5px; line-height:1.65; color:var(--gris); max-width:52ch;
+  margin-left:auto; opacity:0; transition:opacity .4s ease;
+}
+.oeu:hover .depli,.oeu:focus-within .depli,
+.fig:hover .depli,.fig:focus-within .depli{ grid-template-rows:1fr }
+.oeu:hover .depli>p,.oeu:focus-within .depli>p,
+.fig:hover .depli>p,.fig:focus-within .depli>p{ opacity:1; padding-top:14px }
 
-/* ── prestations ────────────────────────────────────────── */
-.bande-i{margin-top:64px; height:400px; overflow:hidden}
-.bande-i img{width:100%; height:100%; object-fit:cover; object-position:50% 46%}
-.presta{margin-top:78px; border-top:1px solid var(--filet)}
-.presta li{
-  display:grid; grid-template-columns:minmax(230px,1fr) 1.55fr minmax(150px,auto);
-  gap:26px 44px; padding:44px 0; border-bottom:1px solid var(--filet); align-items:start;
-}
-.presta h3{
-  font-family:var(--aff); font-weight:400; font-size:clamp(28px,3.1vw,40px);
-  line-height:1; letter-spacing:0;
-}
-.presta h3 u{
-  display:block; text-decoration:none; font-family:var(--mno); font-size:10.5px;
-  letter-spacing:.22em; color:var(--rep-t); margin-bottom:14px; text-transform:uppercase;
-}
-.spec{display:grid; grid-template-columns:repeat(3,1fr); gap:18px 20px; margin-bottom:20px}
-.spec div{border-left:1px solid var(--filet); padding-left:14px}
-.spec dt{
-  font-family:var(--mno); font-size:9.5px; letter-spacing:.18em; text-transform:uppercase;
-  color:var(--gris2);
-}
-.spec dd{margin:6px 0 0; font-size:14px; font-weight:600}
-.prix{text-align:right}
-.prix b{
-  display:block; font-family:var(--aff); font-weight:400; color:var(--rep);
-  font-size:clamp(34px,3.6vw,46px); line-height:1; letter-spacing:0; white-space:nowrap;
-}
-.prix u{
-  display:block; text-decoration:none; font-family:var(--mno); font-size:9.5px;
-  letter-spacing:.18em; text-transform:uppercase; color:var(--gris2); margin-top:10px;
-}
+/* ── l’image qui touche les bords — une seule fois ──────────── */
+.pleine{ margin:0 }
+.pleine img{ width:100%; height:auto }
+.pleine .fiche{ padding-left:var(--marge); padding-right:var(--marge); margin-top:20px }
 
-/* ── listes de faits ────────────────────────────────────── */
-.faits{display:grid; grid-template-columns:1fr 1fr; gap:0 64px; margin-top:70px}
-.faits div{padding:26px 0; border-top:1px solid var(--filet)}
+/* ── figures courantes ──────────────────────────────────────── */
+.fig{ margin:0 }
+.fig img{ width:100%; height:auto }
+.fig--m{ max-width:760px }
+.fig--d{ margin-left:auto }
+
+/* ── LA SÉRIE — défilement latéral plein écran ──────────────── */
+.serie{
+  display:flex; overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory; overscroll-behavior-x:contain;
+  scrollbar-width:thin; scrollbar-color:var(--gris) var(--noir);
+}
+.serie::-webkit-scrollbar{ height:6px }
+.serie::-webkit-scrollbar-track{ background:var(--noir) }
+.serie::-webkit-scrollbar-thumb{ background:var(--gris) }
+.oeu{
+  flex:0 0 100%; scroll-snap-align:start; margin:0;
+  min-height:92vh; min-height:92svh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:56px var(--marge) 48px;
+}
+.oeu__n{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.26em;
+  color:var(--gris); text-align:right; margin-bottom:22px;
+}
+.oeu__n b{ color:var(--blanc); font-weight:500 }
+.oeu img{ width:100%; height:auto; max-height:62vh; object-fit:contain }
+.oeu:focus-visible{ outline:2px solid var(--blanc); outline-offset:-14px }
+.fig:focus-visible{ outline:2px solid var(--blanc); outline-offset:8px }
+
+/* ── les faits ──────────────────────────────────────────────── */
+.faits{ margin-top:74px; display:grid; gap:46px 70px; grid-template-columns:1fr 1fr }
 .faits dt{
-  font-family:var(--mno); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--rep-t);
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--blanc);
 }
-.faits dd{margin:11px 0 0; color:var(--gris); max-width:48ch; font-size:14.5px}
-.faits dd b{color:var(--encre); font-weight:600}
+.faits dd{ margin:14px 0 0; color:var(--gris); font-size:13.5px; max-width:46ch }
+.faits dd b{ color:var(--blanc); font-weight:400 }
 
-.cols3{display:grid; grid-template-columns:repeat(3,1fr); gap:0 1px; background:var(--filet); margin-top:70px}
-.cols3>div{background:var(--papier); padding:34px 30px 38px}
-.cols3 h3{
-  font-family:var(--mno); font-size:10.5px; font-weight:500; letter-spacing:.2em;
-  text-transform:uppercase; color:var(--rep-t); padding-bottom:20px;
-  border-bottom:1px solid var(--filet); margin-bottom:22px;
-}
-.cols3 li{
-  padding:11px 0 11px 20px; position:relative; font-size:14px; color:var(--gris);
-  border-bottom:1px solid var(--filet-f);
-}
-.cols3 li:last-child{border-bottom:0}
-.cols3 li::before{
-  content:""; position:absolute; left:0; top:22px; width:9px; height:1px; background:var(--rep);
-}
-
-/* ── bande sombre ───────────────────────────────────────── */
-.bande{position:relative; min-height:600px; display:flex; align-items:center; overflow:hidden; background:var(--noir)}
-.bande__img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 54%}
-.bande__voile{position:absolute; inset:0; background:rgba(8,8,8,.66)}
-.bande__in{position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:120px var(--pad); width:100%}
-.ph{
-  font-family:var(--aff); font-weight:400; color:var(--papier);
-  font-size:clamp(30px,4.3vw,55px); line-height:1.02; max-width:20ch; margin-top:26px;
-}
-
-/* ── déroulé ────────────────────────────────────────────── */
-.heures{margin-top:70px; border-top:1px solid var(--filet)}
-.heures li{
-  display:grid; grid-template-columns:150px 1fr; gap:20px 44px;
-  padding:26px 0; border-bottom:1px solid var(--filet);
-}
+/* ── la journée ─────────────────────────────────────────────── */
+.heures{ margin-top:74px }
+.heures li{ display:grid; grid-template-columns:132px 1fr; gap:16px 44px; padding:24px 0 }
 .heures b{
-  font-family:var(--mno); font-size:13px; font-weight:500; letter-spacing:.06em;
-  color:var(--rep-t); white-space:nowrap;
+  font-family:var(--mno); font-size:11px; font-weight:500; letter-spacing:.1em;
+  color:var(--blanc); white-space:nowrap;
 }
-.heures h3{font-size:15px; font-weight:600}
-.heures p{margin-top:7px; color:var(--gris); max-width:62ch; font-size:14.5px}
+.heures h3{ font-family:var(--aff); font-weight:400; font-size:26px; line-height:1.06 }
+.heures p{ margin-top:9px; color:var(--gris); font-size:13.5px; max-width:56ch }
 
-/* ── préparer ───────────────────────────────────────────── */
-.prep{display:grid; grid-template-columns:250px 1fr; gap:0 64px; margin-top:70px; align-items:stretch}
-.prep__img{overflow:hidden; min-height:100%}
-.prep__img img{width:100%; height:100%; min-height:620px; object-fit:cover; object-position:5% 50%}
-.prep ol{display:grid; grid-template-columns:1fr 1fr; gap:0 48px; align-content:start}
-.prep li{padding:22px 0; border-top:1px solid var(--filet)}
+/* ── préparer ───────────────────────────────────────────────── */
+.prep{ margin-top:74px; display:grid; gap:38px 70px; grid-template-columns:1fr 1fr }
 .prep li b{
-  display:block; font-family:var(--mno); font-size:11px; letter-spacing:.16em;
-  color:var(--rep-t); margin-bottom:9px;
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  color:var(--blanc); display:block; margin-bottom:11px;
 }
-.prep li p{font-size:14px; color:var(--gris)}
-.prep li p b{display:inline; font-family:var(--txt); font-size:14px; letter-spacing:0; color:var(--encre); font-weight:600}
+.prep li p{ color:var(--gris); font-size:13.5px; max-width:44ch }
+.prep li p em{ color:var(--blanc); font-style:normal }
 
-/* ── questions ──────────────────────────────────────────── */
-.qs{display:grid; grid-template-columns:1fr 1fr; gap:0 64px; margin-top:70px}
-.qs div{padding:28px 0; border-top:1px solid var(--filet)}
-.qs h3{font-family:var(--aff); font-weight:400; font-size:25px; line-height:1.1; letter-spacing:0}
-.qs p{margin-top:12px; color:var(--gris); font-size:14.5px; max-width:50ch}
-
-/* ── devis ──────────────────────────────────────────────── */
-.devis{display:grid; grid-template-columns:1.7fr 1fr; gap:0 70px; margin-top:74px; align-items:start}
-.form{display:grid; grid-template-columns:1fr 1fr; gap:20px 22px}
-.f-l{grid-column:1/-1}
+/* ── écrire ─────────────────────────────────────────────────── */
+.form{ margin-top:64px; display:grid; grid-template-columns:1fr 1fr; gap:34px 44px; max-width:760px }
+.f-l{ grid-column:1/-1 }
 .form label{
-  display:block; font-family:var(--mno); font-size:9.5px; letter-spacing:.2em;
-  text-transform:uppercase; color:var(--gris2); margin-bottom:9px;
+  display:block; font-family:var(--mno); font-size:10px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase; color:var(--gris); margin-bottom:12px;
 }
 .form input,.form select,.form textarea{
-  width:100%; font-family:var(--txt); font-size:14px; color:var(--encre);
-  background:var(--papier); border:1px solid var(--filet); border-radius:0;
-  padding:13px 14px; appearance:none;
+  width:100%; font-family:var(--txt); font-size:14px; color:var(--blanc);
+  background:transparent; border:0; border-bottom:1px solid var(--gris);
+  border-radius:0; padding:9px 0; appearance:none;
+  transition:border-color .24s ease;
 }
-.form textarea{resize:vertical; min-height:118px}
-.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--rep-t); outline:none}
-.suite{margin-bottom:40px}
-.suite li{display:grid; grid-template-columns:34px 1fr; gap:0 12px; padding:18px 0; border-top:1px solid var(--filet)}
-.suite li b{font-family:var(--mno); font-size:11px; letter-spacing:.16em; color:var(--rep-t)}
-.suite li p{font-size:13.5px; color:var(--gris)}
-.coord{border-top:1px solid var(--filet); padding-top:26px}
+.form textarea{ resize:vertical; min-height:96px; line-height:1.7 }
+.form select{ cursor:pointer }
+.form select option{ background:var(--noir); color:var(--blanc) }
+.form input::placeholder,.form textarea::placeholder{ color:var(--gris); opacity:1 }
+.form input:hover,.form select:hover,.form textarea:hover{ border-bottom-color:var(--blanc) }
+/* Le filet qui blanchit ne remplace PAS l’anneau de focus : cinq
+   arrêts au clavier étaient sans anneau tant qu’un `outline:none`
+   traînait ici. Le filet marque la saisie, l’anneau marque le focus. */
+.form input:focus,.form select:focus,.form textarea:focus{ border-bottom-color:var(--blanc) }
+
+.coord{ margin-top:74px; display:grid; grid-template-columns:repeat(3,1fr); gap:34px 60px; max-width:760px }
 .coord dt{
-  font-family:var(--mno); font-size:9.5px; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--gris2); margin-top:22px;
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--gris); margin-bottom:12px;
 }
-.coord dt:first-child{margin-top:0}
-.coord dd{margin:7px 0 0; font-size:15px; font-weight:600}
-.coord dd a{text-decoration:none; border-bottom:1px solid var(--rep)}
+.coord dd{ margin:0; font-size:14px; color:var(--blanc) }
+.coord dd span{ display:block; color:var(--gris); font-size:13px }
 
-/* ── pied ───────────────────────────────────────────────── */
-.pied{background:var(--papier); border-top:1px solid var(--filet); padding:96px 0 54px}
-.pied__m{
-  font-family:var(--aff); font-weight:400; font-size:clamp(46px,8vw,104px);
-  line-height:.9; letter-spacing:0;
+/* ── pied ───────────────────────────────────────────────────── */
+.pied{ padding-top:150px; padding-bottom:56px }
+.pied__m{ font-family:var(--aff); font-weight:400; font-size:clamp(44px,9vw,132px); line-height:.92 }
+.pied__g{ margin-top:66px; display:grid; grid-template-columns:1fr 1fr; gap:40px 70px; max-width:760px }
+.pied__g h3{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--gris); margin-bottom:16px;
 }
-.pied__g{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:40px 60px; margin-top:56px}
-.pied__g h4{
-  font-family:var(--mno); font-size:9.5px; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--gris2); margin-bottom:16px;
-}
-.pied__g li{margin-bottom:9px; font-size:14px}
-.pied__g a{text-decoration:none; color:var(--gris)}
-.pied__g a:hover{color:var(--rep-t)}
-.pied__av{
-  margin-top:56px; padding-top:26px; border-top:1px solid var(--filet);
-  font-size:12.5px; color:var(--gris2); max-width:92ch;
-}
+.pied__g li{ margin-bottom:10px; font-size:14px }
+.pied__av{ margin-top:80px; font-size:12.5px; color:var(--gris); max-width:88ch }
 .pied__bas{
-  display:flex; flex-wrap:wrap; gap:10px 26px; justify-content:space-between;
-  margin-top:26px; font-family:var(--mno); font-size:10px; letter-spacing:.18em;
-  text-transform:uppercase; color:var(--gris2);
+  display:flex; flex-wrap:wrap; gap:10px 40px; justify-content:space-between;
+  margin-top:34px; font-family:var(--mno); font-size:10px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase; color:var(--gris);
 }
 
-/* ── largeurs ───────────────────────────────────────────── */
-@media (max-width:1080px){
-  .presta li{grid-template-columns:1fr; gap:22px}
-  .prix{text-align:left}
-  .devis{grid-template-columns:1fr; gap:56px}
-  .pied__g{grid-template-columns:1fr 1fr}
+/* ── largeurs ───────────────────────────────────────────────── */
+/* Sans survol — téléphone, tablette — la légende est ouverte :
+   aucune information ne dépend d’un geste qui n’existe pas. */
+@media (hover:none){
+  .depli{ grid-template-rows:1fr }
+  .depli>p{ opacity:1; padding-top:14px }
 }
-@media (max-width:1080px){
-  .tete{grid-template-columns:1fr; gap:0}
-  .tete .chapo{grid-column:1; margin-top:26px; max-width:56ch}
+@media (max-width:1100px){
+  .hero{ padding-top:110px }
+  .nav{ display:none }
+  .oeu img{ max-height:56vh }
 }
-@media (max-width:900px){
-  .chif{grid-template-columns:1fr 1fr}
-  .cols3{grid-template-columns:1fr; gap:1px 0}
-  .faits,.qs{grid-template-columns:1fr; gap:0}
-  .prep{grid-template-columns:1fr; gap:44px}
-  .prep__img{height:340px; min-height:0}
-  .prep__img img{min-height:0; object-position:8% 34%}
-  .prep ol{grid-template-columns:1fr; gap:0}
-  .nav{display:none}
-  .hero__in{padding-bottom:86px}
+@media (max-width:820px){
+  .faits,.prep,.form,.pied__g{ grid-template-columns:1fr }
+  .coord{ grid-template-columns:1fr; gap:26px }
+  .fiche{ min-height:0 }
+  .depli{ grid-template-rows:1fr }
+  .depli>p{ opacity:1; padding-top:14px }
 }
-@media (max-width:680px){
-  .sec{padding-top:84px; padding-bottom:84px}
-  .sec--l{padding-top:104px; padding-bottom:104px}
-  .chif{grid-template-columns:1fr}
-  .spec{grid-template-columns:1fr}
-  .form{grid-template-columns:1fr}
-  .heures li{grid-template-columns:1fr; gap:8px}
-  .bande-i{height:260px}
-  /* le cartouche du héros est posé au bas du cadre : sous 680 px les
-     boutons s’empilent et viennent le percuter. On lui rend la place. */
-  .hero__in{padding-bottom:104px}
-  .hero__bas{gap:26px; padding-bottom:0}
-  .hero__act{width:100%}
-  .hero__act .btn{flex:1 1 auto; text-align:center}
-  .pied__g{grid-template-columns:1fr}
-  .demo{display:none}
-}
-@media (max-width:420px){
-  .hero{min-height:820px}
-  .hero__in{padding-bottom:136px}
+@media (max-width:640px){
+  body{ font-size:14px }
+  .barre{ gap:18px; padding-top:22px }
+  .demo{ font-size:9px; letter-spacing:.16em }
+  .hero{ padding-top:78px; min-height:auto }
+  .hero__pied{ margin-top:52px }
+  .heures li{ grid-template-columns:1fr; gap:10px; padding:20px 0 }
+  .oeu{ min-height:auto; padding:44px var(--marge) 40px }
+  .oeu img{ max-height:none }
+  .pied{ padding-top:110px }
 }
 </style>
 </head>
 <body>
 
-<!-- ══ HÉROS ══════════════════════════════════════════════ -->
-<header class="barre">
-  <div class="barre__in">
-    <a class="marque" href="#haut">atelier lumen<span>photographe · québec</span></a>
-    <nav class="nav" aria-label="Sections">
-      <a href="#prestations">Prestations</a>
-      <a href="#fichiers">Fichiers</a>
-      <a href="#droits">Droits d’usage</a>
-      <a href="#seance">La séance</a>
-      <a href="#retouche">Retouche</a>
-      <a href="#questions">Questions</a>
-    </nav>
-    <span class="demo">Site de démonstration</span>
-  </div>
+<!-- ══ BARRE ══════════════════════════════════════════════════ -->
+<header class="barre" id="haut">
+  <a class="marque" href="#haut">atelier lumen</a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#serie">La série</a>
+    <a href="#recevez">Ce que vous recevez</a>
+    <a href="#atelier">L’atelier</a>
+    <a href="#ecrire">Écrire</a>
+  </nav>
+  <span class="demo">Site de démonstration</span>
 </header>
 
-<section class="hero" id="haut">
-  <img class="hero__img" src="../../images/secteurs-sites/photo-1.webp" width="1920" height="1080" alt="Studio : un fond de papier beige déroulé entre deux pieds, un grand parapluie noir à droite, un rideau noir au fond, et le grain de la pellicule visible sur toute l’image." fetchpriority="high">
-  <div class="hero__voile"></div>
-  <div class="hero__rep rep"><i class="eq"></i>
-    <div class="hero__cart">
-      <b>Planche 00 · Studio, fond papier déroulé · Québec</b>
-      <span>Séance de portrait d’entreprise, avant la première personne.</span>
+<!-- ══ HÉROS — un écran presque vide ══════════════════════════ -->
+<section class="hero in">
+  <div>
+    <p class="mono">Atelier Lumen — photographe — Québec</p>
+    <h1>architecture, intérieur, <em>objet</em>.</h1>
+    <p class="txt">Huit images, montrées en grand et sans retouche. Le nombre de fichiers retenus, le délai de livraison et les droits d’usage sont écrits avant la séance.</p>
+    <div class="hero__act">
+      <a class="btn" href="#serie">Voir la série</a>
+      <a class="btn" href="#ecrire">Écrire à l’atelier</a>
     </div>
   </div>
-  <div class="hero__in">
-    <p class="mic hero__mic">Portrait d’entreprise · Architecture · Produit</p>
-    <h1>vous savez combien d’images, et <em>quand</em>.</h1>
-    <div class="hero__bas">
-      <p>Le nombre de fichiers retenus, le délai de livraison et les droits d’usage sont écrits avant la séance, pas après. Les fichiers restent accessibles cinq ans.</p>
-      <div class="hero__act">
-        <a class="btn" href="#devis">Demander un devis</a>
-        <a class="btn btn--v" href="#prestations">Les trois prestations</a>
-      </div>
-    </div>
+  <div class="hero__pied">
+    <span class="mono">Huit œuvres — sept en défilement latéral</span>
+    <span class="mono">Studio à Québec, et sur place</span>
   </div>
 </section>
 
-<!-- ══ LE PRINCIPE ════════════════════════════════════════ -->
-<section class="sec sec--l p" id="principe">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Le principe</p>
-      <h2>un devis de photographie tient en <em>quatre chiffres</em>.</h2>
-      <p class="chapo">Combien d’heures sur place, combien de fichiers retenus, combien de jours avant la livraison, combien de temps vous y avez accès. Tout le reste — le matériel, la méthode, le nombre de déclenchements — est notre problème, pas le vôtre.</p>
+<!-- ══ L’IMAGE QUI TOUCHE LES BORDS — une seule fois ══════════ -->
+<figure class="pleine fig" tabindex="0">
+  <img class="fondu" src="../../images/secteurs-sites/photo-8.webp" width="1920" height="1080" fetchpriority="high" alt="Une rampe d’escalier blanche coupe en diagonale un mur de béton brut ; sous elle, deux grilles de ventilation à lames, et à droite un grand panneau métallique nervuré. Image en noir et blanc.">
+  <figcaption class="fiche">
+    <div class="fiche__m">
+      <b>Escalier extérieur, béton</b>
+      <span>2024</span>
+      <span>35 mm · f/8 · 1/160 s</span>
     </div>
+    <div class="depli"><p>Une rampe blanche traverse un mur de béton brut ; deux grilles de ventilation en bas, un panneau métallique nervuré à droite. Noir et blanc, aucune retouche.</p></div>
+  </figcaption>
+</figure>
 
-    <div class="chif">
-      <div>
-        <b>24</b>
-        <u>fichiers</u>
-        <p>Retenus au minimum pour un portrait d’entreprise. C’est un plancher, pas un plafond.</p>
-      </div>
-      <div>
-        <b>10</b>
-        <u>jours ouvrables</u>
-        <p>Entre la séance et le lien de téléchargement. Le délai est au contrat.</p>
-      </div>
-      <div>
-        <b>5</b>
-        <u>ans</u>
-        <p>Durée d’accès aux fichiers. Un rappel part 60 jours avant la fermeture.</p>
-      </div>
-      <div>
-        <b>40</b>
-        <u>kilomètres</u>
-        <p>Autour de Québec, sans frais de déplacement. Au-delà, c’est écrit au devis.</p>
-      </div>
-    </div>
-
-    <figure class="planche pl--e">
-      <div class="rep"><i class="eq"></i>
-        <img src="../../images/secteurs-sites/photo-5.webp" width="960" height="720" loading="lazy" decoding="async" alt="Deux projecteurs à volets placés aux bords opposés d’un cadre presque entièrement blanc ; un pied à roulettes entre dans le bas de l’image, à gauche.">
-      </div>
-      <figcaption class="cart">
-        <b>Planche 01 · Deux sources, cadre vide · 4:3</b>
-        <span>Un fond blanc n’est pas une absence de décision : c’est deux sources, mesurées, à la même hauteur.</span>
-      </figcaption>
-    </figure>
-  </div>
+<!-- ══ LE PROPOS — presque rien à l’écran ════════════════════ -->
+<section class="sec in">
+  <p class="enonce">On photographie des lieux et des <em>objets</em>. Pas de personnes — c’est une limite, et elle est écrite.</p>
+  <p class="txt" style="margin-top:44px">Architecture, intérieur, objet. En studio à Québec ou sur place, dans un rayon de 40&#8239;km. Ce qui sort de là est montré tel quel&#8239;: pas de filtre, pas de ciel rapporté, pas de couleur changée.</p>
 </section>
 
-<!-- ══ PRESTATIONS ════════════════════════════════════════ -->
-<section class="sec sec--l c" id="prestations">
+<!-- ══ LA SÉRIE — défilement latéral plein écran ══════════════ -->
+<section id="serie">
   <div class="in">
-    <div class="tete">
-      <p class="mic">Prestations</p>
-      <h2>trois prestations, trois grilles de <em>livraison</em>.</h2>
-      <p class="chapo">Une prestation, c’est une durée sur place, un nombre de fichiers, un délai et un montant. Les quatre sont sur la même ligne, ici comme au devis.</p>
-    </div>
+    <p class="mono">La série</p>
+    <h2 style="margin-top:26px">sept œuvres, une par <em>écran</em>.</h2>
+    <p class="txt" style="margin-top:34px">Faites glisser vers la droite. Chaque œuvre occupe une fenêtre entière et porte son numéro. Au survol, la légende se déplie&#8239;; au clavier, la touche de tabulation passe de l’une à l’autre.</p>
+  </div>
 
-    <div class="bande-i">
-      <img src="../../images/secteurs-sites/photo-7.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Studio sombre : deux grandes boîtes à lumière allumées de part et d’autre d’un fond de papier ocre, des rouleaux de fond de couleur rangés contre le mur à gauche.">
-    </div>
+  <div class="serie" style="margin-top:70px">
 
-    <ul class="presta">
-      <li>
-        <h3><u>PRS-01</u>Portrait d’entreprise</h3>
-        <div>
-          <dl class="spec">
-            <div><dt>Sur place</dt><dd>2 h</dd></div>
-            <div><dt>Fichiers retenus</dt><dd>24 minimum</dd></div>
-            <div><dt>Livraison</dt><dd>10 jours ouvrables</dd></div>
-          </dl>
-          <p class="txt">Studio ou vos bureaux. Douze personnes dans les deux heures, quatorze si la liste est prête et que les gens sont dans la pièce à l’heure ; au-delà, une heure de plus par tranche de sept. Fond papier ou fond de bureau — le choix se fait avant, pas pendant.</p>
+    <figure class="oeu" tabindex="0">
+      <p class="oeu__n"><b>01</b> / 07</p>
+      <img class="rv" src="../../images/secteurs-sites/photo-9.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Façade de béton clair vue en contre-plongée : des fenêtres verticales au vitrage vert foncé, décalées d’un rang à l’autre.">
+      <figcaption class="fiche">
+        <div class="fiche__m">
+          <b>Façade, fenêtres en quinconce</b>
+          <span>2024</span>
+          <span>85 mm · f/9 · 1/250 s</span>
         </div>
-        <p class="prix"><b>650 $</b><u>avant taxes</u></p>
-      </li>
-      <li>
-        <h3><u>PRS-02</u>Architecture et intérieurs</h3>
-        <div>
-          <dl class="spec">
-            <div><dt>Sur place</dt><dd>4 h</dd></div>
-            <div><dt>Fichiers retenus</dt><dd>35 minimum</dd></div>
-            <div><dt>Livraison</dt><dd>15 jours ouvrables</dd></div>
-          </dl>
-          <p class="txt">Verticales redressées sur tous les fichiers livrés. Deux passages de lumière par pièce quand la fenêtre et le plafonnier ne s’accordent pas. Pour les extérieurs, une date de repli est inscrite au contrat : si le ciel empêche la prise, la reprise ne coûte rien.</p>
-        </div>
-        <p class="prix"><b>1 250 $</b><u>avant taxes</u></p>
-      </li>
-      <li>
-        <h3><u>PRS-03</u>Produit, en studio</h3>
-        <div>
-          <dl class="spec">
-            <div><dt>Par référence</dt><dd>3 fichiers</dd></div>
-            <div><dt>Minimum</dt><dd>20 références</dd></div>
-            <div><dt>Livraison</dt><dd>12 jours ouvrables</dd></div>
-          </dl>
-          <p class="txt">Face, trois-quarts, détail. Fond blanc détouré ou fond gris, décidé sur la première référence puis tenu sur toute la série. Deux exemplaires de chaque référence à fournir : le second sert quand le premier prend une poussière sous la lumière.</p>
-        </div>
-        <p class="prix"><b>22 $</b><u>la référence</u></p>
-      </li>
-    </ul>
-
-    <p class="note" style="margin-top:30px">Prix avant taxes. Déplacement sans frais dans un rayon de 40 km de Québec ; au-delà, 0,68 $ le kilomètre et le temps de route à demi-tarif, chiffré au devis. Une deuxième demi-journée le même jour se facture au même taux horaire que la première.</p>
-  </div>
-</section>
-
-<!-- ══ LIVRAISON ══════════════════════════════════════════ -->
-<section class="sec sec--l p" id="fichiers">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Livraison</p>
-      <h2>ce que vous recevez, <em>dans le détail</em>.</h2>
-      <p class="chapo">Six lignes. Elles ne changent pas d’une prestation à l’autre, et elles sont recopiées telles quelles sur le devis.</p>
-    </div>
-
-    <dl class="faits">
-      <div>
-        <dt>Format</dt>
-        <dd><b>JPEG qualité 10</b> pour tous les fichiers retenus. <b>TIFF 16 bits</b> sur demande, sans frais, sur les fichiers destinés à l’impression.</dd>
-      </div>
-      <div>
-        <dt>Résolution</dt>
-        <dd>Côté long <b>6 000 px</b>, 300 ppp. Une seconde version web, côté long 2 000 px, est livrée en même temps et dans le même dossier.</dd>
-      </div>
-      <div>
-        <dt>Espace colorimétrique</dt>
-        <dd><b>sRGB</b> pour le web, profil incorporé. Espace colorimétrique large pour l’impression, sur la version TIFF.</dd>
-      </div>
-      <div>
-        <dt>Nommage</dt>
-        <dd><b>lumen_&lt;mandat&gt;_&lt;aaaammjj&gt;_&lt;001&gt;</b>. Numérotation continue, jamais réutilisée d’un mandat à l’autre. Pour les portraits, le nom de la personne remplace le numéro — d’où l’orthographe exacte demandée avant.</dd>
-      </div>
-      <div>
-        <dt>Dépôt</dt>
-        <dd>Un lien de téléchargement privé, à votre nom. <b>Aucun compte à créer</b>, aucun logiciel à installer, et le lien ne dépend d’aucun de vos autres fournisseurs.</dd>
-      </div>
-      <div>
-        <dt>Durée d’accès</dt>
-        <dd><b>Cinq ans</b> à partir de la date de livraison. Un rappel part 60 jours avant la fermeture ; après, l’archive est détruite et la reprise est impossible.</dd>
-      </div>
-    </dl>
-
-    <div class="cols3">
-      <div>
-        <h3>Ce qui n’est pas livré</h3>
-        <ul>
-          <li>Les fichiers RAW.</li>
-          <li>Les prises non retenues.</li>
-          <li>Les fichiers de travail en cours de retouche.</li>
-          <li>Les captures d’essai de lumière.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Pourquoi</h3>
-        <ul>
-          <li>Un RAW n’est pas une image : c’est une mesure, illisible sans le réglage qui va avec.</li>
-          <li>Une prise non retenue l’a été pour une raison — un cadrage raté, un œil fermé, un reflet.</li>
-          <li>Le TIFF 16 bits couvre tous les usages d’impression qu’un RAW couvrirait.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Le tri, comment</h3>
-        <ul>
-          <li>Vous choisissez dans la planche complète, pas dans une pré-sélection.</li>
-          <li>Le nombre annoncé est un plancher : s’il y en a plus de bonnes, elles sont livrées.</li>
-          <li>S’il ne reste rien qui vous convient, la séance est reprise une fois, sans frais.</li>
-        </ul>
-      </div>
-    </div>
-
-    <figure class="planche">
-      <div class="rep pl--h"><i class="eq"></i>
-        <img src="../../images/secteurs-sites/photo-6.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Dix épreuves en noir et blanc, encadrées de noir sous passe-partout blanc, accrochées sur un mur blanc en deux rangées de cinq.">
-      </div>
-      <figcaption class="cart">
-        <b>Planche 02 · Dix épreuves retenues · Accrochage 5 × 2</b>
-        <span>Le tirage n’est pas compris au devis. La commande se passe chez le laboratoire de votre choix, avec le fichier livré.</span>
-      </figcaption>
-    </figure>
-  </div>
-</section>
-
-<!-- ══ LA BANDE ═══════════════════════════════════════════ -->
-<section class="bande n">
-  <img class="bande__img" src="../../images/secteurs-sites/photo-2.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Studio monté, en noir et blanc : un tabouret à roulettes portant un ordinateur portable, deux pieds d’éclairage, un boîtier sur trépied, une grande boîte octogonale et des câbles au sol devant un fond blanc.">
-  <div class="bande__voile"></div>
-  <div class="bande__in">
-    <p class="mic">Le montage</p>
-    <p class="ph">le montage est fait avant votre arrivée. l’heure que vous payez <em>commence quand vous entrez</em>.</p>
-  </div>
-</section>
-
-<!-- ══ DROITS D’USAGE ═════════════════════════════════════ -->
-<section class="sec sec--l p" id="droits">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Droits d’usage</p>
-      <h2>ce que vous pouvez en faire, <em>écrit</em>.</h2>
-      <p class="chapo">Une licence d’usage n’est pas une formalité : c’est la moitié de ce que vous achetez. Voici la nôtre, en trois colonnes, dans les mêmes mots que le contrat.</p>
-    </div>
-
-    <div class="cols3">
-      <div>
-        <h3>Compris, sans délai</h3>
-        <ul>
-          <li>Usage commercial sur vos propres supports : site, réseaux sociaux, infolettre, imprimés, salons, communiqués, présentations.</li>
-          <li>Aucune limite de tirage, aucune limite de territoire.</li>
-          <li>Aucun renouvellement à payer : la licence ne s’éteint pas.</li>
-          <li>Recadrage et passage en noir et blanc pour vos besoins de mise en page.</li>
-          <li>Le crédit photo n’est pas obligatoire sur vos supports.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Non compris</h3>
-        <ul>
-          <li>La revente ou la cession des fichiers à un tiers.</li>
-          <li>L’achat d’espace publicitaire : affichage, presse payante, préroll vidéo.</li>
-          <li>Le dépôt en banque d’images, la vôtre comme une autre.</li>
-          <li>Une modification qui change le sens de l’image — fusion, ajout d’un élément, changement de couleur d’un produit.</li>
-          <li>L’usage par une entreprise sœur qui n’est pas nommée au contrat.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Si vous voulez plus</h3>
-        <ul>
-          <li>Une extension écrite, tarifée à la campagne et signée avant diffusion.</li>
-          <li>Une cession complète est possible sur les images de produit ; elle se chiffre au devis.</li>
-          <li>En presse, le crédit reste obligatoire : c’est la loi du support, pas la nôtre.</li>
-          <li>Le portfolio : les images peuvent être montrées comme travail. Une confidentialité de 24 mois s’ajoute au contrat sans frais, sur demande.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ LA SÉANCE ══════════════════════════════════════════ -->
-<section class="sec sec--l c" id="seance">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Déroulé</p>
-      <h2>deux heures de portrait, <em>heure par heure</em>.</h2>
-      <p class="chapo">L’horaire ci-dessous est celui d’un portrait d’entreprise de douze personnes, chez vous. Pour l’architecture et le produit, il double, mais il garde la même forme.</p>
-    </div>
-
-    <figure class="planche">
-      <div class="rep"><i class="eq"></i>
-        <img src="../../images/secteurs-sites/photo-3.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Studio sombre vu de face : un fond blanc éclairé, deux boîtes octogonales sur pieds, une grille de projecteurs au plafond, un sac et du matériel posés au sol.">
-      </div>
-      <figcaption class="cart">
-        <b>Planche 03 · Studio monté, fond blanc · 16:9</b>
-        <span>L’état dans lequel la pièce se trouve à l’heure zéro : rien ne se règle une fois que quelqu’un est devant le fond.</span>
+        <div class="depli"><p>Le béton a vieilli par plaques, le vitrage est vert bouteille. Le décalage d’un rang à l’autre est ce qui tient l’image&#8239;; il fallait le prendre bien en face.</p></div>
       </figcaption>
     </figure>
 
-    <ol class="heures">
-      <li>
-        <b>H − 1 : 00</b>
-        <div>
-          <h3>Montage</h3>
-          <p>Deux sources, un fond, une table de tri. Une prise de courant suffit. Rien à faire de votre côté, et personne n’a besoin d’être là.</p>
+    <figure class="oeu" tabindex="0">
+      <p class="oeu__n"><b>02</b> / 07</p>
+      <img class="rv" src="../../images/secteurs-sites/photo-10.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Le haut d’un bâtiment clair sur un ciel gris pâle : une couronne de fines barres d’acier verticales entoure les derniers étages vitrés.">
+      <figcaption class="fiche">
+        <div class="fiche__m">
+          <b>Couronne d’acier, ciel couvert</b>
+          <span>2023</span>
+          <span>135 mm · f/8 · 1/400 s</span>
         </div>
-      </li>
-      <li>
-        <b>H + 0 : 00</b>
-        <div>
-          <h3>Réglage sur la première personne</h3>
-          <p>Trois minutes : hauteur, distance, exposition. Ces trois minutes ne se reprennent pas ensuite, c’est ce qui tient le rythme après.</p>
+        <div class="depli"><p>Un ciel couvert n’est pas une mauvaise journée&#8239;: c’est la seule lumière qui laisse lire les barres d’acier sans les brûler.</p></div>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu" tabindex="0">
+      <p class="oeu__n"><b>03</b> / 07</p>
+      <img class="rv" src="../../images/secteurs-sites/photo-11.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Contre-plongée sur des tours de verre : les reflets d’une façade voisine dessinent un V au-dessus d’un angle vitré.">
+      <figcaption class="fiche">
+        <div class="fiche__m">
+          <b>Base d’une tour, verre</b>
+          <span>2024</span>
+          <span>24 mm · f/11 · 1/200 s</span>
         </div>
-      </li>
-      <li>
-        <b>H + 0 : 05</b>
-        <div>
-          <h3>Portraits, six à huit minutes par personne</h3>
-          <p>Dans l’ordre de la liste que vous avez fournie. Chaque personne voit deux ou trois images à l’écran avant de repartir ; on reprend tout de suite si quelque chose cloche.</p>
+        <div class="depli"><p>Le V n’est pas dans le bâtiment&#8239;: c’est le reflet de celui d’en face. Il n’apparaît que depuis un point, et il disparaît trois pas plus loin.</p></div>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu" tabindex="0">
+      <p class="oeu__n"><b>04</b> / 07</p>
+      <img class="rv" src="../../images/secteurs-sites/photo-12.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux pans de mur clair encadrent une fente vitrée vert sombre où se reflètent les planchers d’un bâtiment voisin.">
+      <figcaption class="fiche">
+        <div class="fiche__m">
+          <b>Fente vitrée, mur clair</b>
+          <span>2025</span>
+          <span>200 mm · f/5,6 · 1/500 s</span>
         </div>
-      </li>
-      <li>
-        <b>H + 0 : 50</b>
-        <div>
-          <h3>Pause de dix minutes</h3>
-          <p>Le matériel reste en place et rien n’est déplacé — c’est ce qui garantit que la personne 12 est éclairée comme la personne 1.</p>
+        <div class="depli"><p>Deux murs presque blancs, et entre eux une bande de verre sombre. Au téléobjectif, l’écart entre les deux pans se referme et l’ouverture devient une ligne.</p></div>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu" tabindex="0">
+      <p class="oeu__n"><b>05</b> / 07</p>
+      <img class="rv" src="../../images/secteurs-sites/photo-13.webp" width="1280" height="720" loading="lazy" decoding="async" alt="L’angle d’un bâtiment de béton clair sous un ciel bleu franc ; un bandeau vertical de trois fenêtres étroites, encadrées de brun, descend au milieu.">
+      <figcaption class="fiche">
+        <div class="fiche__m">
+          <b>Angle de béton, ciel dégagé</b>
+          <span>2023</span>
+          <span>70 mm · f/10 · 1/320 s</span>
         </div>
-      </li>
-      <li>
-        <b>H + 1 : 45</b>
-        <div>
-          <h3>Vérification à l’écran, sur place</h3>
-          <p>On passe la planche complète avec la personne responsable. Un manquant se rattrape maintenant, pas dans dix jours.</p>
+        <div class="depli"><p>Le crépi tient toute la surface, et un seul bandeau de fenêtres la coupe. Les verticales sont redressées&#8239;: c’est fait sur tous les fichiers livrés.</p></div>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu" tabindex="0">
+      <p class="oeu__n"><b>06</b> / 07</p>
+      <img class="rv" src="../../images/secteurs-sites/photo-14.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Deux formes de céramique blanche aux courbes ondulées, en studio, et leur ombre portée sur le mur clair à droite.">
+      <figcaption class="fiche">
+        <div class="fiche__m">
+          <b>Céramique, ombre portée</b>
+          <span>2025</span>
+          <span>90 mm · f/16 · 1/60 s</span>
         </div>
-      </li>
-      <li>
-        <b>H + 2 : 00</b>
-        <div>
-          <h3>Démontage</h3>
-          <p>Vingt minutes, hors des deux heures facturées. Le tri commence le soir même ; le décompte des dix jours ouvrables part le lendemain.</p>
+        <div class="depli"><p>Blanc sur blanc. L’objet ne se détache que par son ombre&#8239;: c’est elle qu’on place en premier, l’objet vient ensuite.</p></div>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu" tabindex="0">
+      <p class="oeu__n"><b>07</b> / 07</p>
+      <img class="rv" src="../../images/secteurs-sites/photo-15.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux roses rouges dans une lumière rasante : l’une ouverte au premier plan sur sa tige, l’autre plus bas à droite ; le fond est un mur gris dans l’ombre.">
+      <figcaption class="fiche">
+        <div class="fiche__m">
+          <b>Deux roses, lumière rasante</b>
+          <span>2025</span>
+          <span>100 mm · f/4 · 1/125 s</span>
         </div>
-      </li>
-    </ol>
+        <div class="depli"><p>Une seule source, très basse, et le reste du mur laissé dans l’ombre. Le rouge n’a pas été relevé&#8239;: c’est celui que la lumière a donné.</p></div>
+      </figcaption>
+    </figure>
+
   </div>
 </section>
 
-<!-- ══ PRÉPARER ═══════════════════════════════════════════ -->
-<section class="sec sec--l p" id="preparer">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Avant</p>
-      <h2>ce qu’il faut préparer, et <em>rien de plus</em>.</h2>
-      <p class="chapo">Six points. Ils prennent une heure à régler la veille, et ils valent une heure de séance. Rien d’autre n’est demandé : le matériel, l’électricité et le rangement sont de notre côté.</p>
-    </div>
+<!-- ══ CE QUE VOUS RECEVEZ ═══════════════════════════════════ -->
+<section class="sec in" id="recevez">
+  <p class="mono">Ce que vous recevez</p>
+  <h2 style="margin-top:26px">six lignes, et elles sont <em>au contrat</em>.</h2>
 
-    <div class="prep">
-      <div class="prep__img">
-        <img src="../../images/secteurs-sites/photo-4.webp" width="960" height="720" loading="lazy" decoding="async" alt="Un projecteur de studio seul sur son pied devant un mur blanc, sous un plafond noir à tubes fluorescents ; un bureau et une chaise à gauche.">
-      </div>
-      <ol>
-        <li>
-          <b>01</b>
-          <p>Une pièce de <b>4 m sur 5 m</b>, dégagée sur trois mètres devant un mur, et une prise de courant à moins de six mètres. Une salle de réunion vide fait l’affaire.</p>
-        </li>
-        <li>
-          <b>02</b>
-          <p>La <b>liste des personnes</b>, dans l’ordre de passage, avec l’orthographe exacte des noms : c’est elle qui sert au nommage des fichiers, et une correction après coup renomme toute la série.</p>
-        </li>
-        <li>
-          <b>03</b>
-          <p>Des <b>vêtements unis</b>. Les rayures fines et les motifs serrés créent du moiré à 6 000 px — ça se voit à l’impression, et ça ne se retire pas.</p>
-        </li>
-        <li>
-          <b>04</b>
-          <p>Aucun maquillage n’est prévu à la séance. Un <b>miroir</b> et dix minutes dans la pièce d’à côté suffisent, et évitent que les gens attendent devant le fond.</p>
-        </li>
-        <li>
-          <b>05</b>
-          <p>Architecture : <b>lumières allumées</b>, stores à la même hauteur, surfaces dégagées, poubelles sorties. Les meubles ne se déplacent pas — si une pièce doit changer, elle change avant.</p>
-        </li>
-        <li>
-          <b>06</b>
-          <p>Produit : <b>deux exemplaires</b> de chaque référence, propres, avec la liste des codes. Un objet neuf sous une boîte à lumière montre chaque trace de doigt.</p>
-        </li>
-      </ol>
+  <dl class="faits">
+    <div>
+      <dt>Fichiers retenus</dt>
+      <dd><b>35 au minimum</b> pour un mandat d’architecture ou d’intérieur. Pour l’objet&#8239;: trois fichiers par référence, vingt références au minimum. C’est un plancher, pas un plafond.</dd>
     </div>
-  </div>
+    <div>
+      <dt>Livraison</dt>
+      <dd><b>15 jours ouvrables</b> entre la séance et le lien de téléchargement. Le décompte part le lendemain de la prise. Le délai est écrit au contrat.</dd>
+    </div>
+    <div>
+      <dt>Format</dt>
+      <dd><b>JPEG qualité 10</b>, côté long 6&#8239;000&#8239;px, 300&#8239;ppp, sRGB. Une seconde version web, côté long 2&#8239;000&#8239;px, dans le même dossier. TIFF 16 bits sur demande, sans frais.</dd>
+    </div>
+    <div>
+      <dt>Droits d’usage</dt>
+      <dd><b>Usage commercial sur vos propres supports</b>, sans limite de tirage ni de territoire, sans renouvellement à payer. La revente, la cession à un tiers et l’achat d’espace publicitaire ne sont pas compris&#8239;: ils s’ajoutent par écrit, avant diffusion.</dd>
+    </div>
+    <div>
+      <dt>Accès aux fichiers</dt>
+      <dd><b>Cinq ans</b> à partir de la date de livraison. Un rappel part 60 jours avant la fermeture&#8239;; après, l’archive est détruite et la reprise est impossible. Téléchargez le dossier complet le jour de la livraison.</dd>
+    </div>
+    <div>
+      <dt>Ce qui n’est pas livré</dt>
+      <dd>Les fichiers <b>RAW</b>, les prises non retenues, les fichiers de travail. Un RAW n’est pas une image&#8239;: c’est une mesure, illisible sans le réglage qui va avec. Le TIFF 16 bits couvre tous les usages d’impression.</dd>
+    </div>
+  </dl>
+
+  <figure class="fig fig--d" tabindex="0" style="margin-top:92px; max-width:900px">
+    <img class="rv" src="../../images/secteurs-sites/photo-6.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Dix épreuves en noir et blanc, encadrées de noir sous passe-partout blanc, accrochées sur un mur blanc en deux rangées de cinq.">
+    <figcaption class="fiche">
+      <div class="fiche__m">
+        <b>Accrochage, dix épreuves</b>
+        <span>2025</span>
+        <span>50 mm · f/5,6 · 1/30 s</span>
+      </div>
+      <div class="depli"><p>Le tirage n’est pas compris. La commande se passe chez le laboratoire de votre choix, avec le fichier livré&#8239;— c’est le vôtre.</p></div>
+    </figcaption>
+  </figure>
 </section>
 
-<!-- ══ RETOUCHE ═══════════════════════════════════════════ -->
-<section class="sec sec--l c" id="retouche">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Retouche</p>
-      <h2>ce qui est corrigé, ce qui ne l’est <em>jamais</em>.</h2>
-      <p class="chapo">La liste est fermée des deux côtés. Elle ne se négocie pas pendant la séance, elle se lit avant — et c’est la même pour tout le monde, dans la même séance.</p>
-    </div>
+<!-- ══ LA LUMIÈRE — un écran presque vide ════════════════════ -->
+<section class="sec in">
+  <h2>deux sources, et rien à <em>cacher</em>.</h2>
+  <p class="txt" style="margin-top:34px">Un fond blanc n’est pas une absence de décision&#8239;: c’est deux sources mesurées, à la même hauteur, et un cadre qu’on garde vide tant que rien ne mérite d’y entrer.</p>
 
-    <div class="cols3">
-      <div>
-        <h3>D’office, sur chaque fichier retenu</h3>
-        <ul>
-          <li>Cadrage et horizon.</li>
-          <li>Balance des blancs, densité, contraste.</li>
-          <li>Poussières sur le capteur et sur le fond.</li>
-          <li>Reflets sur les verres de lunettes, quand une seconde prise le permet.</li>
-          <li>Boutons, rougeurs et marques passagères.</li>
-          <li>Fils, peluches et faux plis sur les vêtements.</li>
-          <li>Prises, sorties de secours et gicleurs dans les plans d’architecture.</li>
-        </ul>
+  <figure class="fig" tabindex="0" style="margin-top:80px">
+    <img class="rv" src="../../images/secteurs-sites/photo-5.webp" width="960" height="720" loading="lazy" decoding="async" alt="Deux projecteurs à volets placés aux bords opposés d’un cadre presque entièrement blanc ; un pied à roulettes entre dans le bas de l’image, à gauche.">
+    <figcaption class="fiche">
+      <div class="fiche__m">
+        <b>Deux sources, cadre vide</b>
+        <span>2025</span>
+        <span>50 mm · f/11 · 1/200 s</span>
       </div>
-      <div>
-        <h3>Jamais</h3>
-        <ul>
-          <li>Amincir une silhouette.</li>
-          <li>Effacer une ride, une cicatrice, un tatouage, un grain de peau permanent.</li>
-          <li>Rajeunir un visage.</li>
-          <li>Changer la couleur réelle d’un produit.</li>
-          <li>Ajouter un ciel qui n’était pas là.</li>
-          <li>Remplacer une tête d’une prise à l’autre.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Pourquoi cette limite</h3>
-        <ul>
-          <li>Un portrait d’entreprise sert à ce qu’on vous reconnaisse à l’accueil.</li>
-          <li>Une image de produit sert à ce que l’objet reçu soit celui qui a été vu.</li>
-          <li>Les deux échouent dès qu’on corrige au-delà de ce que la lumière a fait.</li>
-          <li>Une retouche hors liste se demande à la pièce, avant la livraison, et se facture à l’heure.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+      <div class="depli"><p>Les deux projecteurs sont aux bords opposés&#8239;; entre eux, il n’y a rien. Un pied à roulettes entre par le bas, à gauche, et c’est tout ce qui reste de l’atelier.</p></div>
+    </figcaption>
+  </figure>
 </section>
 
-<!-- ══ QUESTIONS ══════════════════════════════════════════ -->
-<section class="sec sec--l p" id="questions">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Questions</p>
-      <h2>les huit questions qui reviennent <em>au téléphone</em>.</h2>
-      <p class="chapo">Les réponses ci-dessous sont celles du contrat, dans les mêmes termes. Si une question ne s’y trouve pas, elle se pose au téléphone — et la réponse vient s’ajouter ici.</p>
-    </div>
+<!-- ══ L’ATELIER — un écran plein ════════════════════════════ -->
+<section class="sec in" id="atelier">
+  <p class="mono">L’atelier</p>
+  <h2 style="margin-top:26px">le montage est fait <em>avant</em> votre arrivée.</h2>
+  <p class="txt" style="margin-top:34px">Le studio est monté, mesuré et vérifié avant l’heure convenue. Les heures comptées commencent quand la première prise est possible, pas quand le premier pied sort de son sac.</p>
 
-    <div class="qs">
-      <div>
-        <h3>Que se passe-t-il si j’annule ?</h3>
-        <p>Sans frais jusqu’à 48 h avant. Ensuite, la moitié de la prestation. Un report pour cause de maladie ne coûte rien, une fois.</p>
+  <figure class="fig" tabindex="0" style="margin-top:82px">
+    <img class="rv" src="../../images/secteurs-sites/photo-2.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Studio monté, en noir et blanc : un tabouret portant un ordinateur portable, un appareil sur trépied, deux pieds d’éclairage et une grande boîte octogonale devant un fond blanc.">
+    <figcaption class="fiche">
+      <div class="fiche__m">
+        <b>Studio monté, avant la séance</b>
+        <span>2024</span>
+        <span>24 mm · f/5,6 · 1/125 s</span>
       </div>
-      <div>
-        <h3>Est-ce que je peux avoir les RAW ?</h3>
-        <p>Non. Ce sont des fichiers de travail, non calibrés, qui n’affichent pas la même image d’un logiciel à l’autre. Le TIFF 16 bits couvre tous les usages d’impression, et il est livré sans frais sur demande.</p>
+      <div class="depli"><p>La table de tri est à gauche, la source principale à droite. Rien ne bouge une fois que la première image est faite&#8239;: c’est ce qui garantit que la dernière ressemble à la première.</p></div>
+    </figcaption>
+  </figure>
+
+  <figure class="fig fig--d" tabindex="0" style="margin-top:92px; max-width:840px">
+    <img class="rv" src="../../images/secteurs-sites/photo-7.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Studio sombre : deux grandes boîtes à lumière allumées de part et d’autre d’un fond de papier ocre, des rouleaux de fond de couleur rangés contre le mur à gauche.">
+    <figcaption class="fiche">
+      <div class="fiche__m">
+        <b>Fond ocre, deux boîtes</b>
+        <span>2023</span>
+        <span>35 mm · f/4 · 1/80 s</span>
       </div>
-      <div>
-        <h3>Combien de personnes en deux heures ?</h3>
-        <p>Douze, et quatorze si la liste est prête et que les gens sont dans la pièce à l’heure. Au-delà, une heure de plus par tranche de sept personnes.</p>
+      <div class="depli"><p>Deux boîtes à lumière de part et d’autre du fond, et rien devant. Les rouleaux de fond sont rangés contre le mur&#8239;; le choix se fait avant la séance, pas pendant.</p></div>
+    </figcaption>
+  </figure>
+
+  <figure class="fig" tabindex="0" style="margin-top:92px; max-width:840px">
+    <img class="rv" src="../../images/secteurs-sites/photo-3.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Plateau vu de face : un fond blanc éclairé, deux boîtes octogonales sur pieds, une grille de projecteurs au plafond et du matériel posé au sol.">
+    <figcaption class="fiche">
+      <div class="fiche__m">
+        <b>Plateau, fond blanc</b>
+        <span>2023</span>
+        <span>20 mm · f/8 · 1/50 s</span>
       </div>
-      <div>
-        <h3>Et si aucune image ne me convient ?</h3>
-        <p>Vous choisissez dans la planche complète, pas dans une sélection faite pour vous. S’il ne reste rien, la séance est reprise une fois, sans frais.</p>
-      </div>
-      <div>
-        <h3>Travaillez-vous hors de Québec ?</h3>
-        <p>Oui. Sans frais dans un rayon de 40 km. Au-delà, 0,68 $ le kilomètre et le temps de route à demi-tarif, chiffrés au devis avant la séance.</p>
-      </div>
-      <div>
-        <h3>Et la météo, pour l’architecture ?</h3>
-        <p>Une date de repli est inscrite au contrat. Si le ciel empêche la prise, l’extérieur se reprend à cette date sans frais ; les intérieurs, eux, se font quand même.</p>
-      </div>
-      <div>
-        <h3>Qui garde les fichiers si je change de fournisseur web ?</h3>
-        <p>Vous. Le lien de téléchargement est à votre nom et ne passe par aucun de vos prestataires. Téléchargez le dossier complet le jour de la livraison : c’est votre copie, et elle ne dépend de personne.</p>
-      </div>
-      <div>
-        <h3>Facturez-vous un acompte ?</h3>
-        <p>Trente pour cent à la signature du devis, le solde à la livraison du lien. Aucun fichier n’est retenu en otage : le lien s’ouvre à la facture, pas au paiement.</p>
-      </div>
-    </div>
-  </div>
+      <div class="depli"><p>L’état dans lequel la pièce se trouve à l’heure zéro. Une prise de courant suffit&#8239;; la grille du plafond n’est pas utilisée.</p></div>
+    </figcaption>
+  </figure>
 </section>
 
-<!-- ══ DEVIS ══════════════════════════════════════════════ -->
-<section class="sec sec--l c" id="devis">
-  <div class="in">
-    <div class="tete">
-      <p class="mic">Demande de devis</p>
-      <h2>dites ce que vous devez montrer. <em>on chiffre.</em></h2>
-      <p class="chapo">Réponse sous un jour ouvrable, avec les quatre chiffres et la licence d’usage, écrits. Rien à signer pour recevoir un devis.</p>
-    </div>
+<!-- ══ UNE JOURNÉE, HEURE PAR HEURE ══════════════════════════ -->
+<section class="sec in">
+  <p class="mono">Le déroulé</p>
+  <h2 style="margin-top:26px">une journée, <em>heure par heure</em>.</h2>
+  <p class="txt" style="margin-top:34px">L’horaire ci-dessous est celui d’un mandat d’intérieur de six pièces. Pour l’objet en studio, il se resserre&#8239;; pour un extérieur, il suit le ciel. Il garde la même forme.</p>
 
-    <div class="devis">
+  <ol class="heures">
+    <li>
+      <b>H − 1&#8239;:&#8239;00</b>
       <div>
-        <div class="rep"><i class="eq"></i>
-          <div class="form">
-            <div>
-              <label for="nom">Nom et prénom</label>
-              <input id="nom" name="nom" type="text" autocomplete="name" placeholder="Prénom Nom">
-            </div>
-            <div>
-              <label for="ent">Entreprise</label>
-              <input id="ent" name="ent" type="text" autocomplete="organization" placeholder="Nom de l’entreprise">
-            </div>
-            <div>
-              <label for="crl">Courriel</label>
-              <input id="crl" name="crl" type="email" autocomplete="email" placeholder="courriel@exemple.ca">
-            </div>
-            <div>
-              <label for="tel">Téléphone</label>
-              <input id="tel" name="tel" type="tel" autocomplete="tel" placeholder="000 000-0000">
-            </div>
-            <div>
-              <label for="prs">Prestation</label>
-              <select id="prs" name="prs">
-                <option>Portrait d’entreprise</option>
-                <option>Architecture et intérieurs</option>
-                <option>Produit, en studio</option>
-                <option>Je ne sais pas encore</option>
-              </select>
-            </div>
-            <div>
-              <label for="lieu">Lieu</label>
-              <select id="lieu" name="lieu">
-                <option>En studio</option>
-                <option>Dans nos bureaux</option>
-                <option>Sur un chantier ou un site</option>
-                <option>À déterminer</option>
-              </select>
-            </div>
-            <div>
-              <label for="date">Date souhaitée</label>
-              <input id="date" name="date" type="date">
-            </div>
-            <div>
-              <label for="nb">Personnes ou références</label>
-              <input id="nb" name="nb" type="text" inputmode="numeric" placeholder="12 personnes · 40 références">
-            </div>
-            <div class="f-l">
-              <label for="msg">Ce que les images doivent servir</label>
-              <textarea id="msg" name="msg" placeholder="Site refait, fiches produits, dossier de presse, page équipe…"></textarea>
-            </div>
-            <div class="f-l">
-              <button class="btn" type="button">Envoyer la demande</button>
-            </div>
-          </div>
-        </div>
-        <p class="cart">
-          <b>Formulaire 04 · Demande de devis · Sans envoi</b>
-          <span>Formulaire de démonstration : il n’envoie rien, et rien n’est enregistré.</span>
-        </p>
+        <h3>Repérage</h3>
+        <p>La lumière du jour se relève pièce par pièce avant qu’un seul pied sorte de son sac. C’est ce relevé qui fixe l’ordre de passage, et il ne se refait pas ensuite.</p>
       </div>
+    </li>
+    <li>
+      <b>H + 0&#8239;:&#8239;00</b>
+      <div>
+        <h3>La première pièce</h3>
+        <p>Trois quarts d’heure&#8239;: hauteur d’appareil, verticales, exposition. Les cinq suivantes vont trois fois plus vite parce que celle-là a été faite lentement.</p>
+      </div>
+    </li>
+    <li>
+      <b>H + 0&#8239;:&#8239;45</b>
+      <div>
+        <h3>Les pièces suivantes</h3>
+        <p>Une pièce, deux points de vue. Deux passages de lumière quand la fenêtre et le plafonnier ne s’accordent pas&#8239;; un seul quand ils s’accordent.</p>
+      </div>
+    </li>
+    <li>
+      <b>H + 3&#8239;:&#8239;00</b>
+      <div>
+        <h3>Les extérieurs</h3>
+        <p>Selon le ciel. Une date de repli est inscrite au contrat&#8239;: si la lumière n’y est pas, l’extérieur se reprend à cette date sans frais, et les intérieurs se font quand même.</p>
+      </div>
+    </li>
+    <li>
+      <b>H + 3&#8239;:&#8239;45</b>
+      <div>
+        <h3>Vérification à l’écran</h3>
+        <p>On passe la planche complète avec la personne responsable, sur place. Un plan manquant se rattrape maintenant, pas dans quinze jours.</p>
+      </div>
+    </li>
+    <li>
+      <b>H + 4&#8239;:&#8239;00</b>
+      <div>
+        <h3>Démontage</h3>
+        <p>Vingt minutes, hors des heures comptées. Le tri commence le soir même&#8239;; le décompte des quinze jours ouvrables part le lendemain.</p>
+      </div>
+    </li>
+  </ol>
 
-      <aside>
-        <ol class="suite">
-          <li><b>01</b><p>Une réponse écrite sous un jour ouvrable : les quatre chiffres, la licence d’usage, et ce qui n’est pas compris.</p></li>
-          <li><b>02</b><p>Un appel de quinze minutes si la prestation n’est pas évidente. Il sert à retirer des choses du devis, pas à en ajouter.</p></li>
-          <li><b>03</b><p>Deux dates proposées. La date retenue et le délai de livraison sont inscrits au devis avant l’acompte.</p></li>
-        </ol>
-        <dl class="coord">
-          <dt>Téléphone</dt>
-          <dd><a href="tel:0000000000">000 000-0000</a></dd>
-          <dt>Courriel</dt>
-          <dd><a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></dd>
-          <dt>Studio</dt>
-          <dd>Adresse du studio sur demande<br><span class="mono">Québec, et 40 km autour</span></dd>
-          <dt>Heures de studio</dt>
-          <dd><span class="mono">LUN – VEN · 8 h – 18 h</span><br><span class="mono">SAM · sur entente</span></dd>
-        </dl>
-        <p class="note" style="margin-top:30px">Une demande de devis n’engage à rien. Si la prestation ne correspond pas à ce dont vous avez besoin, on le dit dans la réponse — c’est plus rapide pour tout le monde que de chiffrer une séance qui ne servira pas.</p>
-      </aside>
-    </div>
-  </div>
+  <figure class="fig fig--d" tabindex="0" style="margin-top:92px; max-width:880px">
+    <img class="rv" src="../../images/secteurs-sites/photo-1.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Un fond de papier ocre déroulé entre deux pieds, un grand parapluie noir à droite et un rideau noir au fond ; le grain de la pellicule est visible sur toute l’image.">
+    <figcaption class="fiche">
+      <div class="fiche__m">
+        <b>Studio, fond papier déroulé</b>
+        <span>2024</span>
+        <span>28 mm · f/4 · 1/60 s</span>
+      </div>
+      <div class="depli"><p>Le fond est déroulé, le parapluie est ouvert, et personne n’est encore entré. C’est l’heure zéro, et elle n’est pas comptée.</p></div>
+    </figcaption>
+  </figure>
 </section>
 
-<!-- ══ PIED ═══════════════════════════════════════════════ -->
-<footer class="pied">
-  <div class="in">
-    <p class="pied__m">atelier lumen</p>
-    <div class="pied__g">
-      <div>
-        <h4>L’atelier</h4>
-        <p class="txt" style="font-size:14px">Photographe à Québec. Portrait d’entreprise, architecture, produit. Studio et sur place. Le nombre de fichiers, le délai et la licence sont écrits avant la séance.</p>
+<!-- ══ CE QU’IL FAUT PRÉPARER ════════════════════════════════ -->
+<section class="sec in">
+  <p class="mono">Avant</p>
+  <h2 style="margin-top:26px">ce qu’il faut préparer, et <em>rien de plus</em>.</h2>
+  <p class="txt" style="margin-top:34px">Six points. Ils prennent une heure à régler la veille, et ils valent une heure de séance. Le matériel, l’électricité et le rangement sont de notre côté.</p>
+
+  <ol class="prep">
+    <li>
+      <b>01</b>
+      <p><em>Lumières allumées</em>, stores à la même hauteur, et des ampoules de même température dans une même pièce. Deux blancs différents dans un plan se voient, et ne se corrigent pas ensemble.</p>
+    </li>
+    <li>
+      <b>02</b>
+      <p><em>Surfaces dégagées</em>&#8239;: câbles, télécommandes, boîtes de mouchoirs, poubelles sorties. Ce qui traîne se retire sur place, et ça se paie en minutes.</p>
+    </li>
+    <li>
+      <b>03</b>
+      <p><em>Les meubles ne se déplacent pas</em> pendant la séance. Si une pièce doit changer, elle change avant&#8239;: après, on ne revient pas en arrière sans tout refaire.</p>
+    </li>
+    <li>
+      <b>04</b>
+      <p><em>Une prise de courant</em> à moins de six mètres du point de vue le plus éloigné. Une rallonge suffit&#8239;; deux commencent à se voir dans le plan.</p>
+    </li>
+    <li>
+      <b>05</b>
+      <p><em>Deux exemplaires</em> de chaque référence pour l’objet, propres, avec la liste des codes. Un objet neuf sous une boîte à lumière montre chaque trace de doigt.</p>
+    </li>
+    <li>
+      <b>06</b>
+      <p><em>La liste des plans attendus</em>, dans l’ordre. C’est elle qui sert au nommage des fichiers, et une correction après coup renomme toute la série.</p>
+    </li>
+  </ol>
+
+  <figure class="fig" tabindex="0" style="margin-top:92px; max-width:720px">
+    <img class="rv" src="../../images/secteurs-sites/photo-4.webp" width="960" height="720" loading="lazy" decoding="async" alt="Un coin de travail : une table longue avec un écran et une chaise à gauche, un flash de studio seul sur son pied au centre, des stores clairs à droite.">
+    <figcaption class="fiche">
+      <div class="fiche__m">
+        <b>Coin de tri, flash sur pied</b>
+        <span>2024</span>
+        <span>35 mm · f/2,8 · 1/40 s</span>
       </div>
-      <div>
-        <h4>Les pages</h4>
-        <ul>
-          <li><a href="#prestations">Prestations et prix</a></li>
-          <li><a href="#fichiers">Ce que vous recevez</a></li>
-          <li><a href="#droits">Droits d’usage</a></li>
-          <li><a href="#seance">Déroulé d’une séance</a></li>
-          <li><a href="#preparer">Ce qu’il faut préparer</a></li>
-          <li><a href="#retouche">Retouche</a></li>
-          <li><a href="#questions">Questions</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Joindre</h4>
-        <ul>
-          <li><a href="tel:0000000000">000 000-0000</a></li>
-          <li><a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></li>
-          <li>Adresse du studio sur demande</li>
-          <li><a href="#devis">Demander un devis</a></li>
-        </ul>
-      </div>
+      <div class="depli"><p>Une table, un écran, une source. C’est là que la planche se trie le soir de la séance, avant que le décompte des jours ouvrables commence.</p></div>
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ══ ÉCRIRE ════════════════════════════════════════════════ -->
+<section class="sec in" id="ecrire">
+  <p class="mono">Écrire</p>
+  <h2 style="margin-top:26px">dites ce qu’il y a à <em>photographier</em>.</h2>
+  <p class="txt" style="margin-top:34px">Réponse écrite sous un jour ouvrable&#8239;: le nombre de fichiers, le délai et la licence d’usage. Rien à signer pour recevoir une réponse.</p>
+
+  <div class="form">
+    <div>
+      <label for="nom">Nom</label>
+      <input id="nom" name="nom" type="text" autocomplete="name" placeholder="Prénom Nom">
     </div>
-    <p class="pied__av">Atelier Lumen est une entreprise fictive. Cette page est un site de démonstration : les coordonnées sont neutres, le formulaire n’envoie rien et n’enregistre rien, et les montants servent uniquement à montrer comment un photographe peut afficher une grille de livraison et une licence d’usage. Les photographies illustrent des studios et des accrochages ; elles ne représentent pas le travail d’un prestataire réel.</p>
-    <div class="pied__bas">
-      <span>Site de démonstration</span>
-      <span>Québec · QC</span>
-      <span>Aucun script · Aucune requête tierce</span>
+    <div>
+      <label for="crl">Courriel</label>
+      <input id="crl" name="crl" type="email" autocomplete="email" placeholder="courriel@exemple.ca">
     </div>
+    <div>
+      <label for="typ">Ce que c’est</label>
+      <select id="typ" name="typ">
+        <option>Architecture</option>
+        <option>Intérieur</option>
+        <option>Objet, en studio</option>
+        <option>Je ne sais pas encore</option>
+      </select>
+    </div>
+    <div>
+      <label for="lieu">Lieu</label>
+      <input id="lieu" name="lieu" type="text" placeholder="Québec, ou ailleurs">
+    </div>
+    <div class="f-l">
+      <label for="msg">Ce qu’il y a à photographier</label>
+      <textarea id="msg" name="msg" placeholder="Six pièces, un extérieur, une quarantaine de références…"></textarea>
+    </div>
+    <div class="f-l">
+      <button class="btn" type="button">Envoyer</button>
+      <p class="petit" style="margin-top:22px">Formulaire de démonstration&#8239;: il n’envoie rien, et rien n’est enregistré.</p>
+    </div>
+  </div>
+
+  <dl class="coord">
+    <div>
+      <dt>Téléphone</dt>
+      <dd><a class="lien" href="tel:0000000000">000 000-0000</a></dd>
+    </div>
+    <div>
+      <dt>Courriel</dt>
+      <dd><a class="lien" href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></dd>
+    </div>
+    <div>
+      <dt>Studio</dt>
+      <dd>Adresse sur demande<span>Québec, et 40&#8239;km autour</span></dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ══ PIED ══════════════════════════════════════════════════ -->
+<footer class="pied in">
+  <p class="pied__m">atelier lumen</p>
+  <div class="pied__g">
+    <div>
+      <h3>Les pages</h3>
+      <ul>
+        <li><a class="lien" href="#serie">La série</a></li>
+        <li><a class="lien" href="#recevez">Ce que vous recevez</a></li>
+        <li><a class="lien" href="#atelier">L’atelier</a></li>
+        <li><a class="lien" href="#ecrire">Écrire</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Joindre</h3>
+      <ul>
+        <li><a class="lien" href="tel:0000000000">000 000-0000</a></li>
+        <li><a class="lien" href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></li>
+        <li>Adresse sur demande</li>
+      </ul>
+    </div>
+  </div>
+  <p class="pied__av">Atelier Lumen est une entreprise fictive et cette page est un <b>site de démonstration</b>&#8239;: les coordonnées sont neutres, le formulaire n’envoie rien et n’enregistre rien. Les photographies montrent de l’architecture, des objets et des studios&#8239;; elles ne représentent le travail d’aucun prestataire réel. Elles sont affichées sans traitement — c’est la seule façon honnête de montrer une photographie.</p>
+  <div class="pied__bas">
+    <span>Site de démonstration</span>
+    <span>Québec — QC</span>
+    <span>Aucun script — aucune requête tierce</span>
   </div>
 </footer>
 
