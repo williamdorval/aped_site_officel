@@ -253,7 +253,9 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/19921278/", fen: { x: 0, y: 0.06, w: 1 } },
     { n: 3, emploi: "salle d'examen — table, bureau et fauteuil", large: true,
       src: "url:" + PX + "/7789602/pexels-photo-7789602.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/7789602/", fen: { x: 0, y: 0.20, w: 1 } },
+      /* Source en PORTRAIT : a 0,20 la fenetre 16/9 ne gardait que du
+         mur nu, la table d'examen etait dessous. Piege 58 */
+      page: "https://www.pexels.com/photo/7789602/", fen: { x: 0, y: 0.42, w: 1 } },
     { n: 4, emploi: "corridor — portes vitrees, sol clair", large: true,
       src: "url:" + PX + "/16571738/pexels-photo-16571738.jpeg" + GRAND, licence: LIC_PX,
       page: "https://www.pexels.com/photo/16571738/", fen: { x: 0, y: 0.22, w: 1 } },
@@ -267,7 +269,7 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/7789610/", fen: { x: 0.09, y: 0.18, w: 0.82 } },
     { n: 7, emploi: "corridor — lumiere douce, portes fermees",
       src: "url:" + PX + "/6234630/pexels-photo-6234630.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/6234630/", fen: { x: 0.14, y: 0.02, w: 0.72 } }
+      page: "https://www.pexels.com/photo/6234630/", fen: { x: 0.14, y: 0.42, w: 0.72 } }
   ],
 
   /* SERVICES JURIDIQUES — CABINET VALLIERES.

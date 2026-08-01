@@ -1,65 +1,51 @@
 [
  {
-  "fichier": "images/secteurs-sites/coiffure-1.webp",
-  "emploi": "heros — salon clair, lustre de cristal, miroirs pleine hauteur",
-  "source": "url:https://images.pexels.com/photos/7823407/pexels-photo-7823407.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/7823407/",
+  "fichier": "images/secteurs-sites/clinique-1.webp",
+  "emploi": "heros — salle d'attente claire, accueil et sieges",
+  "source": "url:https://images.pexels.com/photos/8459996/pexels-photo-8459996.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/8459996/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/coiffure-2.webp",
-  "emploi": "bande pleine largeur — salon d'epoque, fauteuils verts, damier",
-  "source": "url:https://images.pexels.com/photos/37764947/pexels-photo-37764947.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/37764947/",
+  "fichier": "images/secteurs-sites/clinique-2.webp",
+  "emploi": "bande pleine largeur — corridor vitre et rangee de sieges",
+  "source": "url:https://images.pexels.com/photos/19921278/pexels-photo-19921278.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/19921278/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/coiffure-3.webp",
-  "emploi": "salle — bacs de lavage, brique et fenetre sur la ville",
-  "source": "url:https://images.pexels.com/photos/7195796/pexels-photo-7195796.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/7195796/",
+  "fichier": "images/secteurs-sites/clinique-3.webp",
+  "emploi": "salle d'examen — table, bureau et fauteuil",
+  "source": "url:https://images.pexels.com/photos/7789602/pexels-photo-7789602.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/7789602/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/coiffure-4.webp",
-  "emploi": "salle — bacs de lavage cote clair, mur de couleurs",
-  "source": "url:https://images.pexels.com/photos/7195805/pexels-photo-7195805.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/7195805/",
+  "fichier": "images/secteurs-sites/clinique-4.webp",
+  "emploi": "corridor — portes vitrees, sol clair",
+  "source": "url:https://images.pexels.com/photos/16571738/pexels-photo-16571738.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/16571738/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/coiffure-5.webp",
-  "emploi": "coupe — nuque degradee vue de dos, noir et blanc",
-  "source": "url:https://images.pexels.com/photos/7956486/pexels-photo-7956486.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/7956486/",
+  "fichier": "images/secteurs-sites/clinique-5.webp",
+  "emploi": "detail — bequilles appuyees au mur, sieges de la salle",
+  "source": "url:https://images.pexels.com/photos/13185365/pexels-photo-13185365.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/13185365/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/coiffure-6.webp",
-  "emploi": "texture — boucles tenues a la main, de dos",
-  "source": "url:https://images.pexels.com/photos/8377218/pexels-photo-8377218.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/8377218/",
+  "fichier": "images/secteurs-sites/clinique-6.webp",
+  "emploi": "bureau — poste de consultation, chaises visiteurs",
+  "source": "url:https://images.pexels.com/photos/7789610/pexels-photo-7789610.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/7789610/",
   "licence": "https://www.pexels.com/license/"
  },
  {
-  "fichier": "images/secteurs-sites/coiffure-7.webp",
-  "emploi": "outils — pinceaux et peignes dans un pot d'acier",
-  "source": "url:https://images.pexels.com/photos/3993134/pexels-photo-3993134.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/3993134/",
-  "licence": "https://www.pexels.com/license/"
- },
- {
-  "fichier": "images/secteurs-sites/coiffure-8.webp",
-  "emploi": "couleur — bol, pinceaux, peigne et meche temoin",
-  "source": "url:https://images.pexels.com/photos/8468141/pexels-photo-8468141.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/8468141/",
-  "licence": "https://www.pexels.com/license/"
- },
- {
-  "fichier": "images/secteurs-sites/coiffure-9.webp",
-  "emploi": "poste — miroir circulaire lumineux sur mur ajoure",
-  "source": "url:https://images.pexels.com/photos/7750144/pexels-photo-7750144.jpeg?auto=compress&cs=tinysrgb&w=1920",
-  "page": "https://www.pexels.com/photo/7750144/",
+  "fichier": "images/secteurs-sites/clinique-7.webp",
+  "emploi": "corridor — lumiere douce, portes fermees",
+  "source": "url:https://images.pexels.com/photos/6234630/pexels-photo-6234630.jpeg?auto=compress&cs=tinysrgb&w=1920",
+  "page": "https://www.pexels.com/photo/6234630/",
   "licence": "https://www.pexels.com/license/"
  }
 ]

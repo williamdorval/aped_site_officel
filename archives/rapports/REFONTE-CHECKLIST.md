@@ -7,18 +7,27 @@ pas la mémoire d'une session.
 
 | Secteur | Site | Branché | Commit |
 |---|---|---|---|
-| Restauration | `restau` (section 03) | **oui** | `2f2497e` |
-| Garage et mécanique | `demo-carroserie` (section 03) | **oui** | `9633a98` |
-| Paysagement et déneigement | `MV-deneigement` (section 03) | **oui** | `741eaeb` |
-| Construction et rénovation | `demos-secteurs/construction/` | **oui** | `1e5f2ff` + `9f341ba` |
-| Immobilier | `demos-secteurs/immobilier/` | **oui** | `aa701fc` + `9f341ba` |
-| Boutique en ligne | — | non | — |
-| Coiffure et esthétique | — | non | — |
-| Gym et entraînement | — | non | — |
-| Hébergement et tourisme | — | non | — |
-| Clinique et santé | — | non | — |
-| Services juridiques | — | non | — |
-| Photographe et créatif | — | non | — |
+| Restauration | `restau` (section 03) | **oui** | `2f2497e` — vérifié 2026-08-01 |
+| Garage et mécanique | `demo-carroserie` (section 03) | **oui** | `9633a98` — vérifié 2026-08-01 |
+| Paysagement et déneigement | `MV-deneigement` (section 03) | **oui** | `741eaeb` — vérifié 2026-08-01 |
+| Construction et rénovation | `demos-secteurs/construction/` | **oui, refait au standard** | `9014550` |
+| Immobilier | `demos-secteurs/immobilier/` | **oui, refait au standard** | `3ff737f` |
+| Boutique en ligne | `demos-secteurs/boutique/` | **oui** | `ae2a5a1` |
+| Coiffure et esthétique | `demos-secteurs/coiffure/` | **oui** | `90cf2c5` |
+| Gym et entraînement | `demos-secteurs/gym/` | photos prêtes (8) — site en écriture | — |
+| Hébergement et tourisme | `demos-secteurs/hotel/` | photos prêtes (8) — site en écriture | — |
+| Clinique et santé | `demos-secteurs/clinique/` | photos prêtes (7) — site à écrire | — |
+| Services juridiques | `demos-secteurs/juridique/` | photos prêtes (5) — site à écrire | — |
+| Photographe et créatif | `demos-secteurs/photo/` | photos prêtes (5) — site à écrire | — |
+
+**Les clés sont déjà inscrites** dans `PROJETS` de `demos-capture.mjs` et
+`SECTEURS` de `secteurs-markup.mjs` pour les douze. Les photos des cinq
+derniers sont générées, regardées une par une et commitées : il ne reste
+qu'à écrire le site, le capturer et le brancher.
+
+**La barre à tenir est dans `demos-secteurs/STANDARD.md`.** Les quatre
+sites déjà faits au standard sont les étalons de NIVEAU — on ne les copie
+pas, on ne les redescend pas.
 | *Votre industrie ici* | *carte de proposition* | *sans objet* | — |
 
 **La chaîne, dans l'ordre :**
