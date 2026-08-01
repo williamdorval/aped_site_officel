@@ -25,7 +25,13 @@ const TYPES = {
 http
   .createServer((req, res) => {
     let rel = decodeURIComponent(req.url.split("?")[0]);
-    if (rel === "/") rel = "/index.html";
+    /* TOUT CHEMIN QUI FINIT PAR UNE BARRE EST UN DOSSIER, et un
+       dossier sert son `index.html` — pas un 404. Sans cette ligne,
+       `/demos-secteurs/boutique/` rendait la page d'erreur alors que
+       le fichier existait : le serveur ne traitait que la racine.
+       Douze sites de démonstration inaccessibles à l'adresse qu'on
+       tape naturellement, et le 404 le disait mal. */
+    if (rel.endsWith("/")) rel += "index.html";
     const file = path.join(ROOT, rel);
     if (!file.startsWith(ROOT)) {
       res.writeHead(403).end();
@@ -46,5 +52,23 @@ http
       });
       res.end(buf);
     });
+  })
+  /* UN PORT DÉJÀ PRIS DOIT CRIER. Piège 19.
+     Un second `serve.mjs` lancé sur un port occupé mourait sans qu'on
+     le voie : l'ancien serveur continuait de répondre 200, et il
+     servait la version d'AVANT la correction. Ça vient d'arriver une
+     fois de plus, sur cette ligne-ci — la correction du routage des
+     dossiers ne prenait pas, et rien ne disait pourquoi. */
+  .on("error", (e) => {
+    if (e.code === "EADDRINUSE") {
+      console.error(
+        `\nLE PORT ${PORT} EST DÉJÀ PRIS.\n` +
+        `Un serveur y répond déjà, et il sert peut-être une version périmée.\n` +
+        `Arrête-le d'abord, ou lance celui-ci sur un autre port :\n` +
+        `  node tools/serve.mjs ${PORT + 1}\n`
+      );
+      process.exit(1);
+    }
+    throw e;
   })
   .listen(PORT, () => console.log("http://localhost:" + PORT));
