@@ -355,7 +355,68 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/310435/", fen: { x: 0, y: 0.06, w: 1 } },
     { n: 7, emploi: "studio — deux boites a lumiere de part et d'autre du fond", large: true,
       src: "url:" + PX + "/30332804/pexels-photo-30332804.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/30332804/", fen: { x: 0, y: 0.06, w: 1 } }
+      page: "https://www.pexels.com/photo/30332804/", fen: { x: 0, y: 0.06, w: 1 } },
+
+    /* LES HUIT ŒUVRES — 2026-08-01.
+       Le site montrait SEPT images, toutes du materiel de studio :
+       des boites a lumiere, un flash nu, des projecteurs. Un portfolio
+       de photographe SANS PHOTOGRAPHIE est un site vide, et c'est le
+       defaut le plus grave des douze secteurs.
+
+       CE QU'ON A CHANGE, ET POURQUOI ON A CHANGE LE METIER PLUTOT QUE
+       LA VERITE. L'atelier annoncait « portrait d'entreprise,
+       architecture, produit ». Aucune source libre ne donne un
+       portrait d'entreprise sans visage identifiable ; montrer une
+       prestation de portrait sans une seule image de portrait serait
+       une faussete par omission. L'atelier fait donc de
+       l'ARCHITECTURE, de l'INTERIEUR et de l'OBJET — trois pratiques
+       qui se photographient sans personne dedans.
+
+       UN REJET QUI JUSTIFIE A LUI SEUL LA REGLE DE LA PLEINE
+       RESOLUTION : `26316117`, deux cruches de terre dans une lumiere
+       rasante, tres belle image. La cruche porte « CACHACA » et
+       « NHEGO » MOULES EN RELIEF sur la panse, parfaitement lisibles.
+       Invisible sur une planche-contact, evident en taille reelle.
+
+       LES SOURCES EN PORTRAIT. Six des huit sont en 2:3 ou 4:5. Une
+       sortie 16/9 n'y prend que 37 a 45 % de la hauteur : le cadre se
+       pose EN HAUT si `fen.y` vaut zero. Chaque `y` ci-dessous est
+       calcule pour tomber sur le sujet, pas sur le ciel.  Piege 57 */
+    { n: 8, emploi: "oeuvre · architecture — sous-face de dalle et rampe, noir et blanc", xl: true,
+      src: "url:" + PX + "/2747599/pexels-photo-2747599.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/2747599/", fen: { x: 0, y: 0.30, w: 1 } },
+    { n: 9, emploi: "oeuvre · architecture — facade de beton, fenetres vertes en quinconce", large: true,
+      src: "url:" + PX + "/9473066/pexels-photo-9473066.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/9473066/", fen: { x: 0, y: 0.08, w: 1 } },
+    /* La fenetre se resserre a 76 % : a pleine largeur, le sujet ne
+       faisait qu'un tiers du cadre et les deux autres tiers etaient du
+       ciel vide. On serre, et l'air reste voulu. */
+    { n: 10, emploi: "oeuvre · architecture — volume clair et couronne d'acier sur le ciel", large: true,
+      src: "url:" + PX + "/3467152/pexels-photo-3467152.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/3467152/", fen: { x: 0.16, y: 0.22, w: 0.76 } },
+    /* La tour en contre-plongee perd toute sa fuite dans un 16/9 pris
+       en haut : ce qui tient, c'est le V de reflets a la BASE. */
+    { n: 11, emploi: "oeuvre · architecture — le V de reflets a la base d'une tour de verre", large: true,
+      src: "url:" + PX + "/1662159/pexels-photo-1662159.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/1662159/", fen: { x: 0, y: 0.45, w: 1 } },
+    { n: 12, emploi: "oeuvre · architecture — une fenetre unique dans un mur clair", large: true,
+      src: "url:" + PX + "/1870768/pexels-photo-1870768.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/1870768/", fen: { x: 0, y: 0.30, w: 1 } },
+    { n: 13, emploi: "oeuvre · architecture — bandeau de fenetres etroites sur un angle de beton", large: true,
+      src: "url:" + PX + "/16271998/pexels-photo-16271998.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/16271998/", fen: { x: 0, y: 0.10, w: 1 } },
+    { n: 14, emploi: "oeuvre · objet — ceramique blanche et son ombre portee, en studio", xl: true,
+      src: "url:" + PX + "/10726947/pexels-photo-10726947.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/10726947/", fen: { x: 0, y: 0.10, w: 1 } },
+    /* LA LEGENDE A ETE REECRITE APRES AVOIR REGARDE LA COUPE. La
+       source montre deux roses dans un vase peint ; un 16/9 sur une
+       source 2:3 ne prend que 30 % de la hauteur, et le vase est
+       DEHORS. La premiere ligne disait « deux roses dans un vase
+       peint » — la coupe ne montre aucun vase. On decrit ce que
+       l'image montre, jamais ce que la source contenait. */
+    { n: 15, emploi: "oeuvre · objet — deux roses dans la lumiere rasante, fond d'ombre", large: true,
+      src: "url:" + PX + "/11900137/pexels-photo-11900137.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/11900137/", fen: { x: 0.10, y: 0.27, w: 0.80 } }
   ],
 
   construction: [
