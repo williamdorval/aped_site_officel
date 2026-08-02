@@ -601,16 +601,23 @@ figure.cliche{ margin-top:26px; position:relative }
   }
 
   /* ── LE FOLIO ────────────────────────────────────────────────────
-     Dans la MARGE, hors de la justification : x=20, lecture de bas en
-     haut, à hauteur de la première ligne de la manchette. C'est la
-     seule chose qui vit dans la marge, et c'est ce qui fait qu'on lit
-     une page et pas un écran. */
+     Dans la MARGE, hors de la justification : x=20, à hauteur de la
+     première ligne de la manchette. C'est la seule chose qui vit dans
+     la marge, et c'est ce qui fait qu'on lit une page et pas un écran.
+
+     IL ÉTAIT TOURNÉ À 90°, ET IL NE L'EST PLUS.  D-697
+     Un texte vertical dans une marge est un tic d'agence — la
+     signature la plus reconnaissable des portfolios primés, et donc
+     précisément ce qu'on ne veut pas quand on prouve qu'on sait faire
+     douze styles. Et l'argument de métier ne tenait pas : un
+     quotidien ne tourne PAS son folio, il l'imprime à plat. Le folio
+     reste dans la marge, il se lit horizontalement, sur deux lignes
+     courtes. */
   .folio{
-    left:20px; top:500px; margin:0;
-    writing-mode:vertical-rl;
-    transform:rotate(180deg);
-    font:600 11px/1 "archivo", system-ui, sans-serif;
-    letter-spacing:3px;
+    left:20px; top:492px; margin:0;
+    width:46px;
+    font:600 11px/1.5 "archivo", system-ui, sans-serif;
+    letter-spacing:2px;
   }
 
   /* ── LES RÉGLURES ────────────────────────────────────────────────
@@ -650,7 +657,15 @@ figure.cliche{ margin-top:26px; position:relative }
          width="1000" height="1400"
          fetchpriority="high" decoding="async"
          alt="Deux mains tiennent une mèche claire ; la lame d’un ciseau se ferme dessus, devant un tablier noir. Noir et blanc.">
-    <figcaption class="legende">Fig. 1 — la lame se ferme sur la mèche. Atelier, Québec.</figcaption>
+    <!-- PAS DE « FIG. 1 » ICI.  D-697  La boutique porte déjà un
+         système de légendes de spécimen (« FIG. 01 · ASSIETTE ET
+         TASSE »), repris d'Ōmbia, et c'est SON dispositif de
+         signature. Les deux écrans sont voisins sur la planche des
+         douze : deux légendes « FIG. » côte à côte cessent d'être une
+         convention de métier et deviennent un tic de studio. La
+         légende reste, elle décrit la photographie ; c'est la
+         numérotation qui part. -->
+    <figcaption class="legende">La lame se ferme sur la mèche. Atelier, Québec.</figcaption>
   </figure>
 
   <p class="masthead">brume</p>
@@ -689,7 +704,10 @@ figure.cliche{ margin-top:26px; position:relative }
     <span class="l l2"><span class="t">une lame</span></span>
   </h1>
 
-  <p class="folio">N° 01 — Brume</p>
+  <!-- La coupure est ÉCRITE, pas subie : à plat dans une marge de
+       46 px, « N° 01 — Brume » se cassait sur le tiret et laissait
+       « 01 — » pendre en fin de ligne. -->
+  <p class="folio">N° 01<br>Brume</p>
 
   <div class="filets" aria-hidden="true">
     <i class="h1f"></i>
