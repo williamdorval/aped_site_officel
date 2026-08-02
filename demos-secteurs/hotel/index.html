@@ -59,6 +59,10 @@
   --mx:72px;            /* marge gauche et droite */
   --mt:48px;            /* marge haute */
   --mb:52px;            /* marge basse — volontairement inégale */
+  --chasse:.44em;       /* la chasse de la marque. Déclarée ici parce
+                           que la PLAQUE s'en sert pour retirer la
+                           chasse morte de la dernière lettre, et que
+                           les deux doivent changer ensemble. */
   --retrait:40px;       /* le texte est renfoncé de 40 px de plus que le
                            filet, pour que le filet lise comme un objet
                            posé dans la marge et non comme un
@@ -162,7 +166,12 @@ img{display:block}
 .coord{display:flex;align-items:flex-start;gap:14px}
 .tel{font:500 11px/14px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.16em;color:var(--os)}
 .sep{flex:none;width:1px;height:10px;margin-top:3px;background:rgba(169,139,79,.55)}
-.demo{font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,224,205,.62)}
+/* 72 % D'OS, ET PLUS 62 % : la matière a changé sous cette ligne.
+   Sur le mur d'épinettes plein de la version précédente, 62 % rendait
+   5,84:1 — lisible sans crier, c'était la cote. Sur le lacis de
+   branches enneigées, 62 % tombe à 3,58:1 au pire pixel MÊME sous le
+   voile du haut. 72 % rend 5,71:1 en moyenne et reste discret. */
+.demo{font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,224,205,.72)}
 
 .nav{display:flex;gap:36px}
 .nav a{
@@ -183,36 +192,21 @@ img{display:block}
 }
 .nav a:hover::after,.nav a:focus-visible::after{transform:scaleX(1)}
 
-/* ── 8 · LE FILET DE LAITON — LE GESTE, ET IL EST SEUL ────────────
-   « LE RELEVÉ » : une jauge de marée. Ancré par le BAS (y = 848, la
-   même ligne que le bouton et que le cartouche), 412 px de haut,
-   donc y = 436 dans une fenêtre de 900 px.
-   Linéaire, et c'est délibéré : une sortie en ease-out ferait bouger
-   la fraction capturée de 20 points pour 40 ms d'écart, un
-   remplissage linéaire ne la bouge que de 2,2 points. */
+/* ── 8 · LE FILET DE LAITON — UN OBJET POSÉ DANS LA MARGE ─────────
+   Il NE BOUGE PLUS. Il portait le geste de la version précédente ;
+   un trait d'1 px ne survit pas à la réduction du panneau (0,29 →
+   0,29 px), et un écran dont le geste ne survit pas est un écran
+   fixe (piège 57). Le geste est descendu sur la plaque, plus bas.
+   Le filet redevient ce qu'il est : une hairline de laiton à .55 —
+   la même valeur que le séparateur du haut et que la bordure du
+   cartouche, une seule graisse pour tous les filets de l'écran.
+   Ancré par le BAS (y = 848, la ligne que partagent le bouton et le
+   cartouche), 412 px de haut, donc y = 436. */
 .filet{
   position:absolute;left:var(--mx);bottom:var(--mb);z-index:3;
   width:1px;height:412px;
-  background:rgba(232,224,205,.16);   /* la ligne fantôme */
+  background:rgba(169,139,79,.55);
 }
-.filet::after{
-  content:"";position:absolute;top:0;right:0;bottom:0;left:0;
-  background:var(--laiton);
-  transform:scaleY(1);                /* ÉTAT DE REPOS = ÉTAT FINAL */
-  transform-origin:50% 100%;
-}
-/* L'ÉTAT DE DÉPART NE VIT QUE SOUS `no-preference`.
-   Écrit dans la règle de base, `scaleY(0)` serait la forme de repos :
-   un moteur qui ne sait pas animer, ou un visiteur en mouvement
-   réduit, verrait un filet VIDE. Écrit ici, il n'existe que
-   lorsqu'on a le droit de bouger — et pendant les 400 ms de retard
-   le filet est déjà à zéro, donc aucun clignotement au chargement.
-   `forwards` et jamais `both` : après 2200 ms la dernière image tient
-   toute seule, et rien ne dépend du remplissage d'avant-plage. */
-@media (prefers-reduced-motion:no-preference){
-  .filet::after{transform:scaleY(0);animation:releve 1800ms linear 400ms forwards}
-}
-@keyframes releve{ from{transform:scaleY(0)} to{transform:scaleY(1)} }
 
 /* ── 9 À 14 · LE BAS : LA PLAQUE, PUIS LE CARTOUCHE ───────────────
    Ancré par le bas à 52 px. Les deux blocs partagent la ligne
@@ -232,11 +226,55 @@ img{display:block}
 .marque{
   margin-top:21px;
   font:600 21px/21px "cormorant",Georgia,serif;
-  letter-spacing:.44em;text-transform:uppercase;color:var(--os);
+  letter-spacing:var(--chasse);text-transform:uppercase;color:var(--os);
   overflow-wrap:break-word;
 }
+
+/* ── LE GESTE, ET IL EST SEUL — « LA LAISSE » ─────────────────────
+   Une plaque de laiton pleine masse qui court de gauche à droite
+   sous le nom, comme la laisse de haute mer le long d'une grève.
+
+   POURQUOI UNE PLAQUE ET PAS UN FILET. Le panneau des réalisations
+   réduit la capture de 1440 à 421 px, soit 0,29. La règle qui en
+   sort : à 1440, un geste photographié pèse au moins 12 px dans sa
+   plus petite dimension et se déplace d'au moins 40 px (piège 57).
+   Ici : 16 px de haut — 4,6 px réduits — et un bord de fuite qui
+   parcourt toute la largeur du nom, 516 px, soit 150 px réduits.
+
+   POURQUOI ELLE EST LARGE COMME L'ENCRE DU NOM, AU PIXEL, SANS
+   NOMBRE MAGIQUE. `.marque` est un bloc dans une colonne
+   `align-items:flex-start` : sa boîte fait exactement l'encre PLUS
+   la chasse morte de la dernière lettre. `100% − var(--chasse)`
+   retire cette chasse morte. La plaque se recote donc toute seule si
+   la fonte, le corps ou la chasse changent — et la chasse change
+   sous 1080 px, où la variable est réécrite.
+
+   LINÉAIRE, ET C'EST DÉLIBÉRÉ : une sortie en ease-out ferait bouger
+   la fraction capturée de 20 points pour 40 ms d'écart, un
+   remplissage linéaire ne la bouge que de 2,2 points. */
+.marque::after{
+  content:"";display:block;
+  width:calc(100% - var(--chasse));height:16px;
+  margin-top:14px;
+  background:var(--laiton);
+  transform:scaleX(1);                /* ÉTAT DE REPOS = ÉTAT FINAL */
+  transform-origin:0 50%;
+}
+/* L'ÉTAT DE DÉPART NE VIT QUE SOUS `no-preference`.
+   Écrit dans la règle de base, `scaleX(0)` serait la forme de repos :
+   un moteur qui ne sait pas animer, ou un visiteur en mouvement
+   réduit, verrait une plaque VIDE. Écrit ici, il n'existe que
+   lorsqu'on a le droit de bouger — et pendant les 400 ms de retard
+   la plaque est déjà à zéro, donc aucun clignotement au chargement.
+   `forwards` et jamais `both` : après 2200 ms la dernière image tient
+   toute seule, et rien ne dépend du remplissage d'avant-plage. */
+@media (prefers-reduced-motion:no-preference){
+  .marque::after{transform:scaleX(0);animation:laisse 1800ms linear 400ms forwards}
+}
+@keyframes laisse{ from{transform:scaleX(0)} to{transform:scaleX(1)} }
+
 .promesse{
-  margin-top:20px;
+  margin-top:18px;
   font:italic 400 16px/1.55 "spectral",Georgia,serif;
   color:rgba(232,224,205,.76);
 }
@@ -325,7 +363,13 @@ a:focus-visible{outline:1px solid var(--laiton);outline-offset:6px}
   .plaque{margin-left:0}
   .cartouche{width:100%;max-width:288px;height:auto}
   .filet{left:24px;top:38%;bottom:36px;height:auto}
-  .marque{letter-spacing:.30em}
+  /* La chasse change, DONC la plaque se recote : elle lit la même
+     variable, et sa largeur suit sans qu'on y touche. */
+  .marque{--chasse:.30em}
+  /* Le voile du haut n'a plus de ligne à protéger une fois la barre
+     repassée en flux — mais la nav vient s'y poser tout de même : il
+     reste, et il monte à 70 % de la hauteur de la barre. */
+  .voile-haut{height:150px}
   /* Aucune largeur maximale sur la promesse : ses deux lignes font
      350 px, soit 52 signes — déjà dans la fourchette. Une borne en
      `ch` les cassait en quatre à 768 px pour rien. */
@@ -333,12 +377,12 @@ a:focus-visible{outline:1px solid var(--laiton);outline-offset:6px}
 @media (max-width:520px){
   .coord{flex-direction:column;gap:10px}
   .sep{display:none}
-  .marque{letter-spacing:.22em}
+  .marque{--chasse:.22em}
   .bouton{width:100%;max-width:236px}
 }
 
 /* ── MOUVEMENT RÉDUIT : TOUT S'ARRÊTE, RIEN NE SE PERD ────────────
-   Le filet est à 100 % dès le premier rendu. Il ne porte aucune
+   La plaque est pleine dès le premier rendu. Elle ne porte aucune
    information — c'est le seul objet de l'écran qu'on ait le droit
    d'animer, et donc le seul qu'on ait le droit d'éteindre. */
 @media (prefers-reduced-motion:reduce){
@@ -351,11 +395,12 @@ a:focus-visible{outline:1px solid var(--laiton);outline-offset:6px}
 <main class="ecran">
 
   <img class="photo"
-       src="../../images/secteurs-sites/hotel-1.webp"
+       src="../../images/secteurs-sites/hotel-2.webp"
        width="1920" height="1080"
        fetchpriority="high" decoding="sync"
-       alt="L’auberge de bois devant l’anse gelée, un panache de fumée à la cheminée, le mur d’épinettes derrière.">
+       alt="Les pavillons de bois de l’auberge, éclairés et montés sur pilotis dans la forêt d’arbres nus sous la neige, à la tombée du jour ; quelques promeneurs sur la passerelle.">
   <div class="nappe" aria-hidden="true"></div>
+  <div class="voile-haut" aria-hidden="true"></div>
   <div class="degrade" aria-hidden="true"></div>
 
   <span class="filet" aria-hidden="true"></span>
