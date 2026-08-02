@@ -53,6 +53,12 @@ const FAMILLES = {
   "cormorant": { g: "Cormorant+Garamond:ital,wght@0,600;1,600", role: "antique lapidaire fine — hebergement" },
   "outfit": { g: "Outfit:wght@500;800", role: "geometrique ronde — clinique" },
   "space-grotesk": { g: "Space+Grotesk:wght@500;700", role: "grotesque technique — construction" },
+  /* --- la seule ETENDUE du depot, ajoutee le 2026-08-01 pour
+     l'immobilier. Archivo porte un axe de chasse `wdth` de 62,5 a
+     125 ; on demande l'instance 125, l'inverse exact de l'ultra-
+     condensee du gym. Deux graisses : 500 pour les capitales
+     courantes, 700 pour le titre. --- */
+  "archivo-exp": { g: "Archivo:wdth,wght@125,500;125,700", role: "grotesque ETENDUE (wdth 125) — immobilier, et nulle part ailleurs" },
   /* --- faces de texte et de detail --- */
   "inter": { g: "Inter:wght@400;600", role: "texte courant neutre" },
   "spectral": { g: "Spectral:ital,wght@0,400;1,400", role: "texte courant serif" },
