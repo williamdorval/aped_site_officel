@@ -267,6 +267,8 @@ Cause et correctif : `PIEGES.md`.
 72. **Un masque posé avant une attente est effacé par ce qui se reconstruit pendant** — l'hydratation React a rendu le numéro du client en clair après « 9 nœuds masqués ». Masquer DEUX fois, dont une juste avant le déclenchement, et **vérifier dans le texte rendu** : un masque non vérifié peut être défait en silence. Et un vérificateur qui attrape son propre remplacement ne vérifie rien.
 73. **Un outil de contraste écrit à la hâte ment quatre fois de suite** — la boîte au lieu du glyphe · l'anticrénelage au lieu du corps · la couleur déclarée au lieu de la couverture réelle · le déplacement d'UN canal alors que Windows fait de l'anticrénelage de sous-pixels. `tools/pire-pixel.mjs`.
 74. **Quand un outil de pixels contredit une arithmétique triviale, c'est l'outil qui a tort** — prune sur argile rend 8,29:1 en trois lignes de calcul. J'ai « corrigé » deux fois un écran qui n'avait rien, et écrasé une décision de composition. Mesurer la valeur DÉCLARÉE avant de croire un instrument neuf. *(Vrai quand même : assombrir le fond sous une encre semi-transparente ne change pas le rapport — les deux termes descendent ensemble.)*
+75. **Une clôture de commentaire CSS cassée avale la règle suivante, et l'outil de contrôle rend « ok »** — 56 % de la surface d'un écran avait disparu, `demos-controle` disait « 0 mal ». Compter les `/*` et les `*/`.
+76. **Un outil de contraste qui ne remonte que les ANCÊTRES ne voit pas une masse posée en FRÈRE** — quatre échecs à « 1:1 » sur du texte à 9,4:1. Sous une masse en frère comme sous une photo, l'arbitre est `tools/pire-pixel.mjs`.
 
 ## RÉSERVES — à ne jamais oublier
 

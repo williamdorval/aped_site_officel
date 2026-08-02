@@ -1205,7 +1205,7 @@ n'a pas un pixel plein — et **`-webkit-text-fill-color` et non
 `color`**, parce que `color: transparent` efface aussi les bordures,
 qui valent `currentColor` par défaut.
 
-### 73 bis · ET LE SIGNALEMENT DE DÉPART ÉTAIT FAUX AUSSI
+### 74 · (73 bis) ET LE SIGNALEMENT DE DÉPART ÉTAIT FAUX AUSSI
 
 Une fois l'outil juste, l'écran mesuré avec **ses valeurs d'origine**
 rend **5,78 au pire pixel**. Il n'a jamais été en défaut.
@@ -1228,3 +1228,41 @@ L'observation sur l'alpha, elle, reste vraie et vaut d'être gardée :
 assombrit**, donc les deux termes du rapport descendent ensemble et le
 quotient ne bouge pas. Sur un fond qu'on ne contrôle pas, ou l'encre
 est opaque, ou son fond est un aplat.
+
+---
+
+### 75 · Une clôture de commentaire CSS cassée avale la règle suivante — et l'outil de contrôle rend « ok »
+
+En éditant un `<style>` inline, un `*/` perdu fait avaler la règle qui
+suit par le commentaire. Deux fois de suite sur le même écran. La
+**masse bordeaux avait disparu** de la page — 56 % de la surface — et
+`demos-controle.mjs` rendait **« ok, 0 mal »** : il vérifie la
+véracité du contenu, pas la présence de la composition.
+
+Le défaut a été attrapé **à l'image**, jamais par un test. C'est le
+cas général : un outil qui ne mesure pas la chose ne dit rien de la
+chose, et son silence se lit comme un feu vert.
+
+> **Compter les `/*` et les `*/` après toute édition d'un bloc de
+> style.** Un déséquilibre arrête l'outil. Et pour tout ce qui se
+> regarde : la capture est la preuve, pas le test qui passe.
+
+### 76 · Un outil de contraste qui ne remonte que les ANCÊTRES ne voit pas une masse posée en FRÈRE
+
+`demos-contraste.mjs` cherche le fond en remontant la chaîne des
+parents jusqu'à la première surface opaque. Une masse de couleur qui
+est un **frère** du texte — un aplat en `position: absolute` posé
+derrière, très courant dès qu'un titre traverse une frontière de fond
+— lui est totalement invisible. Il a rendu **quatre échecs à « 1:1 »
+sur du texte mesuré à 9,4:1**.
+
+Ce n'est pas le même défaut que le 45 (un fond en dégradé rend
+`rgba(0,0,0,0)`) ni que le 73 (la boîte au lieu du glyphe) : ici
+l'outil trouve *un* fond, réel, opaque — mais pas celui qui est
+**peint sous les lettres**.
+
+> Contourner en déclarant le fond sur le porteur du texte **répare
+> l'écran, pas l'outil** — et un contournement survit toujours au
+> correctif (piège 46). Sous une masse en frère comme sous une
+> photographie, l'arbitre reste `tools/pire-pixel.mjs`, qui mesure ce
+> qui est **peint**.
