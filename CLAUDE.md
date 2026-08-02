@@ -245,6 +245,9 @@ Cause et correctif : `PIEGES.md`.
 50. **Deux pages de hauteurs différentes ne peuvent pas partager une course en pixels** — verrouiller en pourcentage, ou piloter.
 51. `:focus-visible` ne s'arme pas sur un `focus()` de script — pour mesurer l'anneau, tabuler.
 52. Une image déclarée n'est pas une image chargée — `complete && naturalWidth > 0`, pas la présence de l'attribut.
+53. **Une seule bande plate n'est pas une capture plate** — tout écran bien composé a une bande calme (un capot, un ciel, un bandeau). Juger sur la MÉDIANE, ou sur trois bandes plates de suite. Un seuil posé sur le minimum mesure le cas particulier.
+54. **Geler les animations gèle aussi le préchargeur** — un compteur arrêté à « 89 % » n'est pas un premier écran. Vérifier que l'état qu'on fige est celui de la chose, pas de ce qui la précède.
+55. **Un dépôt voisin peut être en chantier pendant qu'on le photographie** — lire son `git status` et l'horodatage de ses fichiers avant de conclure d'une erreur de build.
 
 ## RÉSERVES — à ne jamais oublier
 

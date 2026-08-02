@@ -1024,3 +1024,72 @@ si.
 **Correctif :** mesurer aussi les enfants contre leur COLONNE parente,
 pas seulement le document contre la fenêtre. Et regarder la capture :
 c'est elle qui l'a montré.
+
+## AJOUTÉS LE 2026-08-01, CHANTIER DU PREMIER ÉCRAN
+
+### 53 · Une seule bande plate n'est pas une capture plate
+
+**Le verdict.** `ecrans-secteurs.mjs` a refusé le premier écran du
+garage : « CAPTURE PLATE — pire bande 5,2 < 6 ». Bandes relevées :
+`[26.9, 6.6, 99.3, 101.2, 80, 22.5, 29.4, 5.2]`.
+
+**Ce que l'image montrait.** Un premier écran excellent — titre en
+grotesque condensée de 120 px sur trois lignes, photographie de capot
+de voiture sombre en plein cadre, deux boutons, une barre de
+navigation. La bande à 5,2 était **le capot noir**, en bas. La bande à
+6,6 était le haut de la même voiture.
+
+**La cause.** Le détecteur cherchait « une image vide » et mesurait
+« la bande la plus calme ». Ce n'est pas la même question. Piège 15,
+rejoué : *un détecteur doit distinguer ce qui est plat EXPRÈS.* Tous
+les écrans bien composés ont une bande calme — un bandeau plein, un
+ciel, un capot, un mur de couleur, une marge. Un écran qui n'en a
+aucune est un écran chargé.
+
+**Le correctif.** Deux critères, et l'un des deux suffit à refuser :
+la **médiane** des huit bandes sous le seuil (l'image entière est
+vide), ou **trois bandes plates consécutives** (un tiers de l'écran
+est mort). Une bande isolée ne dit rien.
+
+> **La règle générale :** un seuil posé sur le minimum d'un
+> échantillon mesure le cas particulier, pas la population. Le
+> minimum d'une distribution saine descend bas — c'est sa définition.
+
+### 54 · Geler les animations gèle aussi le préchargeur
+
+**Le verdict.** Première capture du restaurant : un écran noir, le
+mot-marque au centre, et **« 89 % »** dessous. 62 Ko pour une image de
+2880 × 1800.
+
+**La cause.** Pour que deux passes rendent la même image, l'outil met
+**toutes** les animations en pause et pose leur temps local à
+l'instant photogénique : `document.getAnimations().forEach(a => {
+a.pause(); a.currentTime = t })`. C'est juste — et c'est exactement ce
+qui a figé le compteur du préchargeur à quatre-vingt-neuf pour cent,
+avant que la page qu'on voulait photographier ait seulement paru.
+
+Le gel déterministe suppose que **ce qui joue est ce qu'on veut
+voir**. Un préchargeur, un rideau d'entrée, un compteur de chargement
+ne sont pas le sujet : ils sont ce qui empêche de le voir.
+
+**Le correctif.** Deux réglages, par écran :
+`figer: false` pour les pages qui ne sont pas dessinées autour d'un
+instant — on les laisse finir ; et `attente`, le temps qu'il faut au
+rideau pour se lever avant que quoi que ce soit d'autre commence.
+
+> **La règle générale :** avant de figer un état, s'assurer que c'est
+> l'état de la chose, et pas celui de ce qui la précède.
+
+### 55 · Un dépôt voisin peut être en chantier pendant qu'on le photographie
+
+`MV-deneigement` a rendu une page d'erreur Next.js : `Module not
+found: Can't resolve '@/components/layout/Footer'`. Le fichier
+`Footer.tsx` **existait**, horodaté à la minute de la capture — 40
+fichiers modifiés, un composant supprimé, une refonte en cours dans
+une autre session.
+
+Rien n'était cassé chez nous, et rien n'était cassé chez eux : on a
+photographié entre deux enregistrements. **Avant de conclure d'une
+capture prise sur un projet qu'on ne pilote pas, regarder son
+`git status` et l'horodatage de ses fichiers.** Un arbre sale est un
+avertissement, pas un décor.

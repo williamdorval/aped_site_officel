@@ -1,4 +1,22 @@
-# Les douze directions artistiques
+# Les douze directions artistiques — PREMIÈRE FOURNÉE, DÉPASSÉE
+
+> **CE FICHIER N'EST PLUS LA RÉFÉRENCE.** Depuis le 2026-08-01, la DA
+> de chaque métier vit dans `demos-secteurs/plans/<clé>.md`, et elle
+> est écrite **à partir de trois références mondiales relevées et
+> regardées** — ce qui manquait ici. Quand les deux se contredisent,
+> **c'est le plan qui gagne**, et il dit pourquoi.
+>
+> Ce qu'on lui doit encore : la **carte des douze**, ci-dessous, qui
+> reste le seul endroit où la distance entre les métiers se voit d'un
+> coup d'œil. Les noms d'entreprise fictifs viennent d'ici aussi, et
+> les plans les gardent quand ils tiennent.
+>
+> Les écarts déjà actés par les plans : **04** s'appelle *Grès
+> Saulnier* et non *Grès du Nord* (une douzaine d'ateliers réels
+> portent le second) · **05** passe du rouge de signalisation
+> `#d81e2e` (5,07 : 1) au cramoisi `#a5122b` (7,7 : 1) · **09** quitte
+> nuit + or — le cliché du métier — pour l'ivoire · **10** assombrit
+> son gris de légende, qui échouait à 4,34 : 1 sur du mono de 10 px.
 
 Une par métier. **Écrites avant de coder, et écrites ensemble** — parce
 qu'une DA ne se juge pas seule : elle se juge à côté des onze autres.

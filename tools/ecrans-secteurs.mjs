@@ -64,16 +64,27 @@ const QUALITE = 0.82;
    de déclencher. Ce n'est pas un délai de confort — c'est le moment
    où le geste de l'écran est à mi-course, et donc VISIBLE sur une
    image arrêtée (D-685). Un écran sans geste garde 1400, le temps
-   que tout se pose. */
+   que tout se pose.
+
+   `figer: false` : les trois projets RÉELS ne sont pas dessinés
+   autour d'un instant photogénique, et geler leurs animations est
+   ACTIVEMENT NUISIBLE — la première passe a photographié le
+   préchargeur du restaurant arrêté à « 89 % », parce que le gel a
+   figé le compteur au lieu de le laisser finir. Pour eux : on attend
+   que la page se pose, et on déclenche.
+
+   `attente` : les millisecondes d'attente en plus, avant tout le
+   reste. Un préchargeur qui compte jusqu'à cent n'a pas fini à
+   1,4 seconde. */
 const ECRANS = {
-  restaurant: { projet: "restau", instant: 1400 },
+  restaurant: { projet: "restau", instant: 1400, figer: false, attente: 7000 },
   boutique: { statique: "boutique", instant: 1400 },
   coiffure: { statique: "coiffure", instant: 1400 },
   gym: { statique: "gym", instant: 1400 },
   hotel: { statique: "hotel", instant: 1400 },
-  garage: { projet: "garage", instant: 1400 },
+  garage: { projet: "garage", instant: 1400, figer: false, attente: 4000 },
   construction: { statique: "construction", instant: 1400 },
-  paysagement: { projet: "deneigement", instant: 1400 },
+  paysagement: { projet: "deneigement", instant: 1400, figer: false, attente: 5000 },
   clinique: { statique: "clinique", instant: 1400 },
   immobilier: { statique: "immobilier", instant: 1400 },
   juridique: { statique: "juridique", instant: 1400 },
@@ -125,10 +136,33 @@ async function attendrePort(port, limite = 60000) {
 /* ── LA PLATITUDE, PAR TRANCHES ─────────────────────────────────
    Une capture uniforme n'est pas une capture, et une moyenne
    d'ensemble cache une image riche en haut et vide en bas. On mesure
-   l'écart-type de luminance sur huit bandes. Sous le seuil, l'outil
-   ARRÊTE : livrer du vide en silence est le défaut qu'on a déjà payé
-   deux fois. */
+   l'écart-type de luminance sur huit bandes.
+
+   MAIS UNE SEULE BANDE PLATE N'EST PAS UN DÉFAUT, ET LE PREMIER
+   VERDICT DE CET OUTIL ÉTAIT FAUX.  Piège 15, encore lui : un
+   détecteur doit distinguer ce qui est plat EXPRÈS. Le premier écran
+   du garage a été refusé sur une pire bande à 5,2 — c'était le capot
+   noir de la voiture, en bas de l'image, et la capture était
+   excellente. Un bandeau plein, un ciel, un capot, un mur de couleur :
+   tous les écrans bien composés ont une bande calme.
+
+   Deux critères, et il faut les DEUX pour refuser :
+     · la MÉDIANE des huit bandes sous le seuil — l'image entière est
+       vide, pas seulement son bord ;
+     · ou TROIS bandes plates de suite — un tiers de l'écran mort. */
 const SEUIL_PLATITUDE = 6;
+function verdictPlatitude(bandes) {
+  const tri = [...bandes].sort((a, b) => a - b);
+  const mediane = (tri[3] + tri[4]) / 2;
+  let suite = 0, pire = 0;
+  for (const b of bandes) { suite = b < SEUIL_PLATITUDE ? suite + 1 : 0; if (suite > pire) pire = suite; }
+  return {
+    mediane: +mediane.toFixed(1),
+    suite: pire,
+    plate: mediane < SEUIL_PLATITUDE || pire >= 3,
+    raison: mediane < SEUIL_PLATITUDE ? `médiane ${mediane.toFixed(1)} < ${SEUIL_PLATITUDE}` : (pire >= 3 ? `${pire} bandes plates de suite` : ""),
+  };
+}
 async function platitude(page, fichier) {
   return page.evaluate(async (u) => {
     const img = new Image();
@@ -310,23 +344,38 @@ try {
       return Number.isFinite(v) && v >= 0 ? v : null;
     });
     const t = instant ?? def.instant;
+    if (def.attente) await page.waitForTimeout(def.attente);
     await page.waitForTimeout(Math.min(t, 1400));
-    const gelees = await page.evaluate((ms) => {
-      const a = document.getAnimations();
-      for (const an of a) { try { an.pause(); an.currentTime = ms; } catch {} }
-      return a.length;
-    }, t);
+    let gelees = 0;
+    if (def.figer !== false) {
+      gelees = await page.evaluate((ms) => {
+        const a = document.getAnimations();
+        for (const an of a) { try { an.pause(); an.currentTime = ms; } catch {} }
+        return a.length;
+      }, t);
+    }
+
+    /* LE BADGE DE DÉVELOPPEMENT DE NEXT.JS EST DANS L'IMAGE, et il n'a
+       rien à y faire : une pastille rouge « 1 Issue » en bas à gauche
+       du premier écran d'un projet. Il vit dans un `<nextjs-portal>`
+       à racine d'ombre — on le retire du document, pas de son ombre. */
+    await page.evaluate(() => {
+      for (const s of ["nextjs-portal", "[data-nextjs-toast]", "#__next-build-watcher", "vite-error-overlay"]) {
+        document.querySelectorAll(s).forEach((e) => e.remove());
+      }
+    });
     await page.waitForTimeout(160);   // laisser une image se peindre
 
     const fPng = path.join(SORTIE_PNG, `${cle}.png`);
     await page.screenshot({ path: fPng });               // pas `fullPage` : c'est UN écran
 
     const plat = await platitude(utilitaire, fPng);
+    const v = verdictPlatitude(plat.bandes);
     const fWebp = path.join(SORTIE_WEBP, `ecran-${cle}.webp`);
     let ko = 0;
-    if (plat.pire < SEUIL_PLATITUDE) {
+    if (v.plate) {
       echecs++;
-      console.log(`✗ ${cle.padEnd(13)} CAPTURE PLATE — pire bande ${plat.pire} < ${SEUIL_PLATITUDE}  ${JSON.stringify(plat.bandes)}`);
+      console.log(`✗ ${cle.padEnd(13)} CAPTURE PLATE — ${v.raison}  ${JSON.stringify(plat.bandes)}`);
       console.log(`  la capture reste dans ${path.relative(RACINE, fPng)} pour être REGARDÉE ; rien n'est écrit en WebP`);
     } else {
       ko = Math.round((await versWebp(utilitaire, fPng, fWebp)) / 1024);
@@ -336,8 +385,8 @@ try {
       echecs++;
       for (const e of erreurs.slice(0, 4)) console.log(`    console: ${e.slice(0, 160)}`);
     }
-    rapport.push({ cle, ko, bandes: plat.bandes, pire: plat.pire, images: img, erreurs: erreurs.length });
-    if (!GARDER_PNG && plat.pire >= SEUIL_PLATITUDE) fs.unlinkSync(fPng);
+    rapport.push({ cle, ko, bandes: plat.bandes, mediane: v.mediane, suitePlate: v.suite, instant: t, images: img, erreurs: erreurs.length });
+    if (!GARDER_PNG && !v.plate) fs.unlinkSync(fPng);
     await page.close();
   }
 } finally {
