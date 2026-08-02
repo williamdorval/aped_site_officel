@@ -152,7 +152,7 @@ Tout ce bloc exige `html.compo-hero` (posée par `main.js`, retirée
 | # | Nom | Fichier:ligne | Fonction | Élément ciblé | Déclencheur | Durée | Condition / verrou | Verbe | Niveau |
 |---|---|---|---|---|---|---|---|---|---|
 | A43 | filet de section | app.css | classe posée par `motion.js` (`is-set`) et `main.js` (`is-current`) | `.section-rule` | scroll | `background-image` **`--t-3` = 380 ms** `--e-snap` | `is-set` exige GSAP (vague 2) ; `is-current` non | V3 | N1+N2 |
-| A44 | soudure longue | app.css | classe posée par `langue.js`, retirée à **860 ms** | `.seuil-soudure-longue .seuil-filet` | franchissement du seuil 09, à 96 % | `background-image` **860 ms** `--e-snap` | GSAP + palier < 2 | V3 | N2 |
+| A44 | soudure longue | app.css | classe posée par `langue.js`, retirée à **860 ms** | `.seuil-soudure-longue .seuil-filet` | franchissement d'un seuil `data-verbe="souder"`, à 96 % | `background-image` **860 ms** `--e-snap` | **AUCUNE CIBLE depuis le 2026-08-03** : le seul seuil en `souder` était `08 → 09`, parti avec la section Agence. Le code des deux côtés — règle CSS et bloc `langue.js` — subsiste et tourne à vide | V3 | N2 |
 | A45 | soudure de liste | app.css | classes posées par `langue.js`, retirées à **+420 ms** | `[data-souder] > *::before` (5 `dl.project-facts`) | scroll, `top 86%` | `background-size` **380 ms** `--e-snap`, décalage `i * 55 ms` | tombe au **palier 2** (`langue.js` + `app.css`) | V3 | N2 |
 | A46 | `soudure-etat` | app.css | déclenchée par `say` `main.js` | `.form-status.is-ok::after`, `.is-err::after` | réponse d'envoi | **`--t-3` = 380 ms** `--e-snap` `both` | `animation: none` sous mouvement réduit | V3 | N1 |
 | A47 | validation de champ | app.css | `markField` `main.js` ; `is-valid` retirée à **2 400 ms** | `.field.is-valid input/select/textarea` | soumission | `border-color` **240 ms** | **jamais sacrifié** ; `is-valid` n'est posée que sur un champ qui **sort** de l'erreur | V3 | N1 |
@@ -246,7 +246,7 @@ au **palier 2** avec les autres dégagements de modale.
 | A92 | réticule de la pointe | app.css | `pointe.js` | `.pointe i` | déplacement du pointeur | `width` / `height` / `opacity` **160 ms** | `display: none` sous `pointer: coarse` **et** sous mouvement réduit | V4 | N3 |
 | A93 | étiquette de la pointe | app.css | `langue.js` | `.pointe-mot` | entrée dans une zone | `opacity` **160 ms** — le **`transform` n'a pas de transition**, il suit le pointeur image par image | `display: none` aux paliers **1 et 2** ; exige `pointer: fine` **et** palier 0 (`langue.js`) | V4 | N3 |
 | A94 | attirance des cibles | app.css | `poserAimant` `pointe.js` | `.btn`, `.btn-icon`, `.cell`, `.sector-pills button`, `.rail-list a`, `.nav-links a` | pointeur proche | `transform` **240 ms** `--e-snap`, amplitude **16 %** de l'écart × (1−d) | `pointe.js` s'arrête au premier `touchstart` | V2 | N3 |
-| A95 | bascule de thème (page) | base.css | `applyTheme` `main.js` ; classe retirée à **560 ms** | `html.theme-shifting *:not(svg)` | clic sur la bascule, ou changement système | `background-color`, `border-color`, `color`, `fill` **`--t-4` = 520 ms** `--e-drive` | classe `theme-shifting` ; s'applique à **tout le document** | V4 | N1 |
+| ~~A95~~ | ~~bascule de thème (page)~~ | — | — | — | — | — | **SUPPRIMÉE le 2026-08-03, D-635.** Elle posait une transition de couleur sur `*:not(svg):not(svg *)` : **3 549 éléments sur 3 969**, quatre propriétés chacun. Mesuré à 1440×900, cinq endroits, trois allers-retours : pire image **549,9 ms**, p95 entre 183 et 400 ms partout, 200 images sur 790 au-dessus de 20 ms. Et elle était **redondante** — la bascule passe déjà sous le couvert de la trame (A177), donc il n'y avait rien à fondre ; le fondu ajoutait une queue de 300 ms après le retrait du couvercle. Un fondu de page entière contredisait V4, qui dit qu'un état roule d'un cran. Après retrait : pire image **83,4 ms**, p95 16,8 à 33,4 ms, et 2 354 images relevées sur la même durée au lieu de 790 — **18,8 i/s → 56 i/s**. | — | — |
 
 ### 1.9 · `404.html` — la ligne déraillée
 
@@ -306,7 +306,7 @@ sous `prefers-reduced-motion` (il pose alors `html.reduced-motion`).
 | A119 | montée des blocs | motion.js | boucle `.rise` | parents de `.rise` — **plus aucune cible depuis le 2026-08-02** : `.tour` a perdu la classe, `.hero-cta.rise` est exclue | scroll, `top 86%` | **0,58 s** `power3.out`, décalage **0,07 s**, `y 28 → 0`, `opacity 0.1 → 1` | `immediateRender: false` | V2 | N2 |
 | A119b | **entrée du cadre de la visite** | motion.js | bloc `6. LE CADRE DE LA VISITE` | `.tour-cadre` | scroll, `top 84%`, `once` | **0,62 s** `power3.out`, `clipPath inset(0 0 100% 0) → inset(0 0 0% 0)` — **haut vers bas** | `immediateRender: false` ; l'état de repos est la forme finale. Remplace le fondu générique de `.rise`, qui ne se réclamait d'aucun verbe sur le seul objet de la section | **V1** | N2 |
 | A119c | soudure du manifeste | tour360.css | classe `is-soude` posée par l'`onComplete` de A119b | `.tour-manifeste` (fond en trame) | fin de A119b | **380 ms** `--e-snap`, trame de grains → trait plein | sous mouvement réduit `motion.js` s'arrête : le filet reste en **grains**, ce qui est un état de repos légitime et ne perd aucune information | **V3** | N2 |
-| A119d | les trois gestes | motion.js | `[data-settle]` (A123) | `.tour-gestes > li` | scroll, `top 84%`, `once` | voir A123 | mécanisme générique, pas un mouvement de plus | **V2** | N2 |
+| ~~A119d~~ | ~~les trois gestes~~ | **SUPPRIMÉE le 2026-08-03 (D-632)** avec `ul.tour-gestes` : le pied de trois gestes expliquait avant le clic des gestes qu'on ne peut pas faire, et répétait le pupitre une fois dedans. Le mécanisme générique `[data-settle]` (A134) redevient sans cible. | — | — | — | — | — | — |
 | A120 | compteurs | motion.js | boucle `[data-count]` | `[data-count]` | scroll, `top 90%` | **1,1 s** `power2.out` | **aucune cible dans `index.html`** — code sans emploi | V4 | N2 |
 | ~~A121~~ | ~~rail des services~~ | **SUPPRIMÉE le 2026-07-30** avec `motion.js` bloc 6. Le pin s'armait 284 px trop tôt à chaque arrivée par ancre et la scène se téléportait de 280 px en une image ; le bouton « suivant » visait au-delà de `st.end` et éjectait le visiteur. `CHANTIER-SERVICES.md § 1`. | — | — | — | — | — | — |
 | ~~A122~~ | ~~jauge du rail~~ | **SUPPRIMÉE le 2026-07-30** — plus de rail, donc plus de jauge à synchroniser. | — | — | — | — | — | — |
@@ -325,8 +325,8 @@ sous `prefers-reduced-motion` (il pose alors `html.reduced-motion`).
 | A132 | schéma de l'écart | motion.js | `[data-ecart]` | `.ecart-barre` ×2, `.ecart-pont`, `.ecart-pont b` | scroll, `top 82%`, `once` | **0,62 s** décalage **0,16 s** ; pont **0,46 s** à `−0,12` ; libellé **0,28 s** à `−0,10` | — | V3 | N2 |
 | A133 | titres de section | motion.js | `couperEnLignes` | `.head h2` (9) → boîtes `.ligne` | scroll, **`top bottom`**, `once` | **0,3 s** `power2.out`, retard **`i × 0,06 s`**, `clipPath inset(0 100% 0 0) → 0` | découpage **paresseux**, un titre à la fois ; balaie **de gauche à droite** | V1 | N2 |
 | A134 | blocs qui se reprennent | motion.js | boucle `[data-settle]` | `[data-settle] > *` | scroll, `top 84%`, `once` | **0,54 s** `power3.out`, retard `i × 0,07 s`, `x ±26` | **aucune cible dans `index.html`** — code sans emploi | V2 | N2 |
-| A134b | **les trois faits de l'agence** | motion.js | bloc `12ter`, boucle `.agc-faits li` (3) | `i.agc-filet` puis `.agc-roul i` | scroll, `top 84%`, `once`, décalage **0,08 s** par rangée | filet **0,42 s** `power2.out` `scaleX 0 → 1` **gauche→droite**, puis chiffre **0,34 s** `power3.out` `yPercent 105 → 0` à `−0,14` | `immediateRender: false` ; `y: 0` explicite pour purger la base pixel (piège 33). **Aucun fondu** : un chiffre à moitié transparent se lit comme une panne, pas comme un mouvement (piège 70) | **V3 puis V4** | N2 |
-| A135 | preuves de l'agence | motion.js | boucle `.agc-eng` (4) | `.pr-l i` · `.pr-egal` · `.pr-case s` · `.pr-ligne--suite` · `.pr-r b` · `.pr-sem i` | scroll, `top 78%`, `once` | **0,5 s** · **0,26 s** `power4.out` à `−0,08` · **0,2 s** décalage 0,12 · **0,26 s** · **0,24 s** décalage 0,1 · **0,28 s** décalage 0,07 | — | V3 + V2 | N2 |
+| ~~A134b~~ | ~~les trois faits de l'agence~~ | **SUPPRIMÉE le 2026-08-03** avec la section 09 · Agence et le bloc `12ter` de `motion.js` (D-628). Elle n'avait vécu qu'un jour. Archivé dans `archives/2026-08-03-agence/blocs-12bis-12ter.js`. | — | — | — | — | — | — |
+| ~~A135~~ | ~~preuves de l'agence~~ | **SUPPRIMÉE le 2026-08-03** avec le bloc `12bis` de `motion.js` (D-520), même archive. Avec elle partent les six sélecteurs `.pr-*`, qui ne sont plus atteints par rien. | — | — | — | — | — | — |
 | A136 | filet du programme de référence | motion.js | — | `.referral-line b` | scroll, `top 82%` → `bottom 62%` | **scrub 0,5**, `scaleX 0 → 1` | — | V3 | N2 |
 | A137 | preuves de référence | motion.js | boucle `.ref-preuve` (3) | `.rp-bulle` · `.rp-signature path` · `.rp-avis` · `.rp-etat` | scroll, `top 84%`, `once` | **0,34 s** `power3.out` · **0,72 s** `power2.inOut` (`strokeDashoffset 220 → 0`) · **0,26 s** décalage 0,1 · **0,24 s** à `−0,06` | seul tracé SVG du site, assumé | V2 + V3 | N2 |
 | A138 | filet « ce qui arrive après » | motion.js | — | `.suite-fil b` | scroll, `top 84%` → `bottom 66%` | **scrub 0,5**, `scaleX 0 → 1` | — | V3 | N2 |
@@ -339,25 +339,25 @@ Le fichier **entier** rend la main si GSAP est absent **ou** sous
 
 | # | Nom | Fichier:ligne | Fonction | Élément ciblé | Déclencheur | Durée | Condition / verrou | Verbe | Niveau |
 |---|---|---|---|---|---|---|---|---|---|
-| A140 | G3 · nom du seuil | langue.js | `frontieres` | `.seuil-nom` (13) | `IntersectionObserver`, **94 %** | **0,3 s** `power2.out`, `clipPath` gauche→droite | G3 est écrit **avant** le `return` du palier 2, mais son observateur est poussé dans `jetables` par `auFranchissement` : l'escalade au palier 2 le **tue** pour toute frontière pas encore franchie (`monterAuPalier`, ) | V1 | N2 |
+| A140 | G3 · nom du seuil | langue.js | `frontieres` | `.seuil-nom` (**11** depuis le 2026-08-03) | `IntersectionObserver`, **94 %** | **0,3 s** `power2.out`, `clipPath` gauche→droite | G3 est écrit **avant** le `return` du palier 2, mais son observateur est poussé dans `jetables` par `auFranchissement` : l'escalade au palier 2 le **tue** pour toute frontière pas encore franchie (`monterAuPalier`, ) | V1 | N2 |
 | A141 | G4 · volet, avec trame | langue.js | **tombe au palier 1** | `.seuil[data-verbe="volet"]` — **02, 05, 06, pied** | `IntersectionObserver`, **92 %** | **420 ms**, vie de tuile **190 ms**, maille `clamp(28, h/4.5, 64)` | exige **palier 0** et `window.APED_TRAME` | V1+V3 | N2 |
 | A142 | G4 · volet, sans trame | langue.js | **tombe au palier 1** | idem | ScrollTrigger `top 92%`, `once` | **0,44 s** `power3.out`, `clipPath` selon `data-sens` | palier **1** (repli d'arête de règle) | V1 | N2 |
-| A143 | G4 · dégager, avec trame | langue.js | **tombe au palier 1** | cible `data-cible` — **03** (`.shot`), **11** (`.faq-item`), **12** (`.cell`) | `IntersectionObserver`, **90 %** | **440 ms**, vie **200 ms** | palier 0 + `APED_TRAME` | V1+V3 | N2 |
+| A143 | G4 · dégager, avec trame | langue.js | **tombe au palier 1** | cible `data-cible` — **03** (`.ba:first-of-type .ba-scene`), **10** (`.faq-item`), **11** (`.cell`) | `IntersectionObserver`, **90 %** | **440 ms**, vie **200 ms** | palier 0 + `APED_TRAME` | V1+V3 | N2 |
 | A144 | G4 · dégager, sans trame | langue.js | **tombe au palier 1** | idem | ScrollTrigger `top 90%`, `once` | **0,46 s** `power3.out` | palier 1 | V1 | N2 |
 | A145 | G4 · aligner | langue.js | **tombe au palier 1** | `data-cible` — **04** (`.sector-group`), **07** (`.vs-row`), **08** (`.parc-etape`) | `IntersectionObserver`, **88 %** | **0,42 s** `power2.out`, décalage **0,05 s**, `x ±26 → 0`, `clearProps` | paliers 0 et 1 ; tombe au palier 2 | V2 | N2 |
-| A146 | G4 · souder long | langue.js | **tombe au palier 1** | `.seuil-filet` du seuil **09** | `IntersectionObserver`, **96 %** | classe `en-soudure-longue` posée puis retirée à **860 ms** → déclenche A44 | paliers 0 et 1 | V3 | N2 |
-| A147 | G4 · cran | langue.js | **tombe au palier 1** | `.referral-max .num` — seuil **10** | `IntersectionObserver`, **74 %** | `APED_ROULER(num, "500 $")` puis, **2 images** plus tard, la valeur lue dans le document | exige `window.APED_ROULER` (`main.js`) | V4 | N2 |
+| A146 | G4 · souder long | langue.js | **tombe au palier 1** | `.seuil-filet` d'un seuil `souder` | `IntersectionObserver`, **96 %** | classe `en-soudure-longue` posée puis retirée à **860 ms** → déclenche A44. **Aucune cible depuis le 2026-08-03** : voir A44 | paliers 0 et 1 | V3 | N2 |
+| A147 | G4 · cran | langue.js | **tombe au palier 1** | `.referral-max .num` — seuil **09** (était 10) | `IntersectionObserver`, **74 %** | `APED_ROULER(num, "500 $")` puis, **2 images** plus tard, la valeur lue dans le document | exige `window.APED_ROULER` (`main.js`) | V4 | N2 |
 | A148 | découpage des lettres | langue.js `decouper` | file `requestIdleCallback` | tous les `.btn` | temps morts, ou `pointerenter` / `focusin` en secours | — | **pose `data-lettres`, `--i`, `--n`, `--p`** → sans ce découpage, A29, A30, A31, A33 n'existent pas | V4 | N2 |
 | A149 | repositionnement | langue.js | `positionner` | `.btn[data-lettres]` | `resize`, anti-rebond **220 ms** | — | — | — | — |
 | A150 | encrage des chapôs | langue.js | `decouperMots` | `.head p` → `.mot-encre` | scroll, **`top 92%`**, `once` | **0,34 s** `power1.out`, décalage `min(0.05, 0.62 / n)`, `opacity 0.34 → 1`, `clearProps` | **exige palier 0** ( et 886) ; départ posé **sur tous les mots à la fois**, jamais scrubbé | V1 | N3 |
 | A151 | `[data-degage]` | langue.js | — | `.footer-mega` (**seule cible**, `index.html`, `data-degage="haut"`) | scroll, `top 86%`, `once` | **0,46 s** `power3.out` | `immediateRender: false` | V1 | N2 |
-| A152 | sous-titres | langue.js | — | `.project-meta h3`, `.cell h3`, `.sector-group h3`, `.parc-txt h3`, `.agc-txt h3` | scroll, `top 90%`, `once` | **0,26 s** `power2.out`, `clipPath` gauche→droite | **exige palier 0** | V1 | N3 |
+| A152 | sous-titres | langue.js | — | `.cell h3`, `.sector-group h3`, `.parc-txt h3` — `.agc-txt h3` retiré le 2026-08-03 avec la section 09 | scroll, `top 90%`, `once` | **0,26 s** `power2.out`, `clipPath` gauche→droite | **exige palier 0** | V1 | N3 |
 | A153 | soudure des listes | langue.js | — | `[data-souder] > *` (5 `dl`) | scroll, `top 86%`, `once` | classes posées à `i × 55 ms`, retirées **420 ms** plus tard → déclenche A45 | tombe au **palier 2** | V3 | N2 |
 | A154 | recomposition des secteurs | langue.js | `recomposer` | 10 premiers enfants de `.sec-page` | `aped:secteur` (`main.js`) ou première entrée de `#sectorPreview` à `top 88%` | **0,44 s** `power3.out`, décalage **0,035 s**, `clearProps: transform,opacity` | tombe au **palier 2** ; départ « pile » (11 px / −7 px, borné à 5) sur changement de métier, départ « filets » (amplitude 0,5) à la première entrée | V2 | N2 |
 | A155 | parallaxe de la vitrine | langue.js | `gsap.quickTo` | `#mockStage` | `pointermove` sur `#sectorPreview` | **0,5 s** `power3.out`, amplitude **±7 px** en x, **±4 px** en y | exige `pointer: fine` **et palier 0** | V2 | N3 |
 | A156 | vitesses différenciées | langue.js | — | `.project-meta` (5) | scroll, `top bottom` → `bottom top` | **scrub 0,8**, `y 22 → −22` | **exige palier 0** ; `will-change` posé à ≥64em (`app.css`) | V2 | N3 |
 | A157 | FLIP de la FAQ | langue.js | `faq` | `.faq-item` suivants | clic sur un `summary` | **0,38 s** `power3.out`, `y dy → 0`, `overwrite: auto` | tombe au **palier 2** ; aucun `preventDefault`, le natif reste intact | V2 | N1 |
-| A158 | étiquette de la pointe | langue.js | — | `.pointe-mot` | `pointerover` sur `.shot-vue`, `.sector-preview`, `.tour-stage` | déplacement **immédiat** (pas de transition sur `transform`) ; l'opacité suit A93 | exige `pointer: fine` **et palier 0** | V4 | N3 |
+| A158 | étiquette de la pointe | langue.js | — | `.pointe-mot` | `pointerover` sur **deux** zones : `.sector-preview` (« Choisir un métier ») et `.tour-stage` (« Regarder autour ») | déplacement **immédiat** (pas de transition sur `transform`) ; l'opacité suit A93. **La position se pose dans `pointerover`, pas seulement dans `pointermove`** — D-633, 2026-08-03 : un curseur immobile que le défilement fait survoler n'émet aucun `pointermove`, et l'étiquette s'allumait en **(0, 0)**, un aplat noir « REGARDER AUTOUR » sur le logo | exige `pointer: fine` **et palier 0** | V4 | N3 |
 | A159 | ouverture de modale | langue.js | écouteur `aped:modal` | `.modal-panel` | `openModal` `main.js` | **0,26 s** `power3.out`, `clipPath inset(0 0 100% 0) → 0`, `y −10 → 0`, `clearProps` | tombe au **palier 2** → repli sur A60 | V1 | N1 |
 | A160 | trame de modale | langue.js | **tombe au palier 1** | voile dans le `<dialog>` | **tombe au palier 1** | **300 ms**, vie **150 ms**, maille **40**, graine **907**, `z: 9` | **palier 0 seulement** ; le voile est posé **dans** la modale, jamais dans `<body>` (couche supérieure) | V1+V3 | N1 |
 | A161 | fermeture de modale | langue.js | écouteur `aped:modal-ferme` | `.modal-panel` | `closeModal` `main.js` | **0,22 s** `power2.in`, réciproque exacte | tombe au palier 2 ; jamais émis sous mouvement réduit (`main.js`) | V1 | N1 |
@@ -421,9 +421,12 @@ Le fichier **entier** rend la main si GSAP est absent **ou** sous
 | A195 | passage d'une pièce à l'autre | tour360.js | clic sur une pastille du plan | `.tour-stage` | clic sur `.tour-map-room` | **couvrir 240 ms** (vie 130) → `loadScene` → **dégager 300 ms** (vie 150) ; maille **48**, graine **727**, `z: 6` | exige `APED_TRAME` **et** pas de mouvement réduit ; sinon `loadScene` immédiat | V1+V3 | N1 |
 | A196 | chargement de la visite | tour360.js | clic sur `[data-tour-start]` | `.tour`, le bouton | clic | classe `is-loading` → A28 (`btn-load`, 1,1 s infinie) | — | — | N1 |
 
-**Total catalogué : 196 entrées** — 99 en CSS pur (dont **45 blocs
-`@keyframes`**, 44 noms distincts), 97 pilotées ou déclenchées par
-JavaScript.
+**Total catalogué : 193 entrées** — 99 en CSS pur (dont **45 blocs
+`@keyframes`**, 44 noms distincts), 94 pilotées ou déclenchées par
+JavaScript. Trois entrées sont tombées le 2026-08-03 avec la section
+09 · Agence et le pied de la visite : A119d, A134b, A135. Aucune
+d'elles n'était en CSS — le bloc `20. A PROPOS` d'`app.css` ne portait
+pas un seul `@keyframes`.
 
 ---
 
@@ -441,7 +444,7 @@ marche pas ».
 | `aped-sans-popup` | `sessionStorage` | `main.js` | jamais par le site — **posée par les outils Playwright** | jamais | `vu = true` → `ouvrir` rend la main , et `main.js` fait un `return` avant d'armer les trois déclencheurs. **A49→A56 (tout le cadeau) invisibles.** C'est l'interrupteur des outils de mesure, pas une règle produit. |
 | `aped-cadeau` | `localStorage` | plus jamais | plus jamais | **`main.js`, à chaque chargement** | rien — clé morte, effacée exprès pour ne pas rejouer l'ancien défaut |
 | `aped-cadeau-donne` | `localStorage` | plus jamais | plus jamais | **`main.js`** | rien — idem |
-| `aped-theme` | `localStorage` | `index.html` (avant le premier rendu), `main.js`, `main.js` | `main.js` dans `applyTheme` | jamais | si elle existe, `suivreSysteme` rend la main : **le thème ne suit plus le système**, donc A95 et A177 ne se déclenchent plus tout seuls au coucher du soleil |
+| `aped-theme` | `localStorage` | `index.html` (avant le premier rendu), `main.js`, `main.js` | `main.js` dans `applyTheme` | jamais | si elle existe, `suivreSysteme` rend la main : **le thème ne suit plus le système**, donc A177 ne se déclenche plus toute seule au coucher du soleil (A95 n'existe plus) |
 
 ### 2.2 · Type de navigation
 
@@ -465,7 +468,7 @@ marche pas ».
 | `entree-attend` | `main.js` — **immédiatement**, sans se demander si c'est utile | `main.js` dans `lever` · `main.js` dans `finir` | dès que `document.fonts.ready` **et** `#heroPlate.is-live`/`.is-fallback` ; plafond **`2500 − performance.now`** ms | met en **pause** A1, A4, A6, A7, A8, A9, A12, A13, A15, **A20→A24**. `animation-play-state` est une **liste** (`running, paused`) sur la jauge, l'état et le rouleau : la première animation continue, la seconde attend |
 | `compo-hero` | `main.js` | `main.js`, **3 200 ms après `lever`** | — | **A20→A26**, c'est-à-dire toute la composition du hero. Classe **distincte** de `entree-on` : accrochée à `entree-on`, les cinq derniers pas (retards 1 140 → 1 470 ms) voyaient leur animation annulée en vol |
 | `entree-saut` | `main.js` | `main.js` dans `finir` | premier `pointerdown` ou `keydown` en capture | remplace A1/A4/A7/A9/A13 par A2/A5/A17/A18 (`!important`), et A20/A22 par A25/A26 |
-| `theme-shifting` | `main.js` et `main.js` | à **560 ms** (`main.js`, `1020`) | bascule de thème | A95, la transition globale de 520 ms sur tout le document |
+| ~~`theme-shifting`~~ | — | — | — | **N'existe plus depuis le 2026-08-03 (D-635)** : la classe, son minuteur et la règle de `base.css` sont retirés, y compris dans le script inline de `404.html`. |
 | `has-pointe` | `pointe.js` | `pointe.js` | premier `pointermove` avec pointeur fin | rien de listé ici — marqueur d'état |
 
 ### 2.4 · `data-palier` sur `<html>`
@@ -527,7 +530,7 @@ s'anime pas » sans erreur en console.
 | **`data-images`** | `langue.js` | après 90 images mesurées | aucune règle CSS — **sonde de diagnostic seulement** | rien |
 | **`data-passage`** sur les voiles | `trame.js` | à chaque passage | aucune règle CSS — sert aux **outils de mesure** | un test qui compte les voiles ne peut pas dire lequel manque |
 | **`.pointe`, `.pointe-h`, `.pointe-v`** | `pointe.js` — créés en JS | premier `pointermove` fin | tout le § `.pointe` (679-704) | pas de réticule |
-| **`.pointe-mot`** | `langue.js` — créé en JS | premier `pointerover` sur une des trois zones | `.pointe-mot` | pas d'étiquette |
+| **`.pointe-mot`** | `langue.js` — créé en JS | premier `pointerover` sur une des **deux** zones (`.sector-preview`, `.tour-stage`) | `.pointe-mot` | pas d'étiquette |
 | **`.tour-hs`, `tabindex`, `role`** | `tour360.js` (`equiper`) | création des points de passage par Pannellum | `.pnlm-hotspot.tour-hs` (tour360.css) | les pastilles gardent le sprite rond de Pannellum |
 | **`.derail-go`** sur `<html>` | `404.html` | init | A96, A97, A98 | la ligne est déjà dehors et déjà barrée — repli correct |
 
@@ -580,7 +583,7 @@ le `<template>` et que `tour360.js` a monté le visionneur.
 | `(max-width: 26em)` · `(max-width: 30em)` · `(max-width: 40em)` | `app.css, 2739` · `tour360.css` | mises en page, pas d'animation |
 | `(prefers-reduced-transparency: reduce)` | `app.css` | retire la trame de `.cell--lead::before` |
 | `(forced-colors: active)` | `base.css` | force les filets et jauges en `Highlight` |
-| `(prefers-color-scheme: dark)` | `index.html` · `main.js` | thème de départ, et A95/A177 au changement système |
+| `(prefers-color-scheme: dark)` | `index.html` · `main.js` | thème de départ, et A177 au changement système |
 
 ---
 
@@ -711,9 +714,9 @@ Liste de ce qu'on pourrait croire animé et qui ne l'est pas.
 | **L'opacité d'un texte est scrubbée quelque part** | **Nulle part.** C'est interdit : une animation scrubbée n'a pas d'état de repos. Les seules propriétés scrubbées du site sont `y`, `rotation`, `scaleX`, `scaleY` — jamais l'opacité d'un porteur de texte | A116, A124, A136, A138, A156, A162 |
 | **Le thème bascule en fondu** | Plus depuis la phase 10. `document.startViewTransition` — qui **était un fondu** — a été remplacé par deux passages de trame (220 + 260 ms) | main.js |
 | **Le compteur du calculateur roule d'un cran** | Non, et c'est un arbitrage explicite : il suit un curseur qu'on bouge en continu, donc il est tiré par un **ressort** (k = 90, d = 22). Un odomètre sur une valeur qui change 60 fois par seconde ne donne pas 60 crans, il donne du bruit | main.js, 2315-2321 |
-| **Les douze frontières portent toutes la trame** | Non : **sept sur treize** (02, 03, 05, 06, 11, 12, pied). Les cinq autres gardent aligner / souder / cran. Douze passages identiques feraient le tic que la phase 9 refusait | langue.js |
+| **Les frontières portent toutes la trame** | Non : **sept sur onze** — les quatre `volet` (02, 05, 06, pied) et les trois `degager` (03, 10, 11). Les quatre autres gardent `aligner` ou `cran`. Onze passages identiques feraient le tic que la phase 9 refusait | langue.js |
 | **Il y a douze séparateurs entre les sections** | Non. Un trait posé douze fois fabrique exactement les blocs qu'on veut supprimer. C'est le **même objet** — le seuil — qui traverse et se transforme | app.css |
-| **Le fond bascule ciment ↔ encre par section** | Non : **quatre bandes seulement** portent `data-dress="encre"` — les seuils 02, 05, 06 et 12 (pied) | index.html, 1465, 1523, 2451 |
+| **Le fond bascule ciment ↔ encre par section** | Non : **trois bandes seulement** portent `data-dress="encre"` — les seuils qui entrent en **05**, en **06** et dans le **pied** (`data-de="11"`). La bande du seuil 02 est redevenue claire le 2026-07-31 (D-570, l'arc de luminance) | index.html |
 | **`[data-count]` anime des compteurs** | **Aucune cible dans le document.** Le code de `motion.js` est sans emploi ; il subsiste comme repli documenté | motion.js |
 | **`[data-settle]` fait arriver des blocs décalés** | **Aucune cible dans le document.** `index.html` documente explicitement pourquoi les plaques ne le portent pas | motion.js |
 | **Les cinq filets de la fiche technique passent par `motion.js`** | Non, **exclus** par `motion.js`. Ils se soudent dans la séquence, en CSS, au rythme de `--e`. Ils gardent `data-section-rule` uniquement pour le filet de section active | motion.js |
@@ -789,16 +792,24 @@ DOM.
 
 | ID | Quoi | Fichier | Déclencheur | Durée / course | Verbe | Palier |
 |---|---|---|---|---|---|---|
-| A197 | ~~Balayage du volet de la descente~~ — **SUPPRIMÉE le 2026-07-31** : elle se jouait entièrement hors écran (D-592). La plaque d'encre est déjà là, arête de grains en tête, et c'est le DÉFILEMENT qui la découvre — V1 dans sa définition exacte | app.css | — | piste 240 vh, arête `--s-4` en trois rangs | V1 (arête = matière V3) | sas-ok |
-| A198 | La forge — la limaille tombe puis s'aligne en « Essayez. », déterministe par graine | sas.js | progression **0,45→0,88** du même scrub, `LISSE = 0.45` | ~5 000 grains de 2 px, densité 1 — voir A204 et A205 | V2 (les grains se reprennent) | sas-ok |
-| A199 | Le mot bascule — visibilité en une image à **p ≥ 0,90**, jamais un fondu. Le canevas se vide au même instant : la limaille ne griffonne plus par-dessus (D-588) | sas.js · `.est-la` | cran de progression | 1 image | V4 | sas-ok |
-| A200 | Fil minium de la descente — naît **sous** le mot, tire vers la pièce. Il partait à `top: 50 %`, donc à travers le « y » (D-590) | sas.js | scrub **p 0,91→1** | scaleY 0→1, depuis `50 % + 7,5 vw` | V3 | sas-ok |
-| A201 | Calque de la remontée — se dégage vers le haut sur le Calculateur | sas.js | scrub, `top 85% → +=115vh` | translation −102 % | V1 | sas-ok |
-| A202 | Fil de la clôture — se soude dans la bande « Fin de la traversée » | sas.js | scrub, piste 12→00, `top bottom → bottom bottom` | scaleY 0→1 | V3 | sas-ok |
+| A197 | ~~Balayage du volet de la descente~~ — **SUPPRIMÉE le 2026-07-31** : elle se jouait entièrement hors écran (D-592). La plaque d'encre est déjà là, arête de grains en tête, et c'est le DÉFILEMENT qui la découvre — V1 dans sa définition exacte | app.css | — | piste **150 vh** depuis D-630, arête `--s-4` en trois rangs | V1 (arête = matière V3) | sas-ok |
+| A198 | La forge — la limaille tombe puis s'aligne en « Essayez. », déterministe par graine | sas.js | progression **ÉPINGLÉE `q` 0,02→0,58** du même scrub, `LISSE = 0.45` | ~5 000 grains de 2 px, densité 1 — voir A204 et A205 | V2 (les grains se reprennent) | sas-ok |
+| A199 | Le mot bascule — visibilité en une image à **q ≥ 0,58**, jamais un fondu. Le canevas se vide au même instant : la limaille ne griffonne plus par-dessus (D-588). **Son repos n'est plus `visibility: hidden` en CSS** (D-631) : c'est `.sas-actif`, posée par `armer()`, qui le retire — GSAP absent, la piste rendait 150vh d'encre vide | sas.js · `.est-la` | cran de progression | 1 image | V4 | sas-ok |
+| A200 | Fil minium de la descente — naît **sous** le mot, tire vers la pièce. Il partait à `top: 50 %`, donc à travers le « y » (D-590) | sas.js | scrub **q 0,60→1** | scaleY 0→1, depuis `50 % + 7,5 vw` | V3 | sas-ok |
+| A201 | Calque de la remontée — se dégage vers le haut sur le Calculateur. **Il vit désormais dans `div.sas-cache`, qui rogne** (D-629) : nu, il peignait 1 193 px d'encre par-dessus la section Visite dans trois états sur quatre | sas.js | scrub, `top 85% → +=115vh` | translation −102 % | V1 | sas-ok |
+| A202 | Fil de la clôture — se soude dans la bande « Fin de la traversée » | sas.js | scrub, piste 11→00, `top bottom → bottom bottom` | scaleY 0→1 | V3 | sas-ok |
 | A203 | L'assemblage du rail — le contrat du voyage à l'arrivée | app.css (D-584) | horloges de `compo-hero`, retard 160 ms + 36 ms/station | 520 ms, 28 px, ζ = 1 | V2 | avec la séquence d'entrée |
 
 Preuves : `node tools/sas-check.mjs` — 11 captures par sas, écarts
 0,13–47,7 % ; traversée complète 60 i/s pile, 0 image > 20 ms / 763.
+
+> **Ces preuves-là ont été prises en mouvement RÉDUIT, et c'est
+> précisément le mode où les sas n'existent pas** (`html.sas-ok` se
+> décide dans le `<head>` avec `!prefers-reduced-motion`). Piège 84.
+> Depuis le 2026-08-03, un sas se photographie avec
+> `node tools/sas-sequence.mjs` — relief et écart de pixels entre
+> images consécutives, en mouvement plein — et une section derrière
+> un sas avec `node tools/plaques.mjs <ancre> <nom>`.
 
 ---
 
@@ -806,9 +817,20 @@ Preuves : `node tools/sas-check.mjs` — 11 captures par sas, écarts
 
 | # | Ce qui bouge | Fichier | Déclencheur | Course | Verbe | Palier |
 |---|---|---|---|---|---|---|
-| A204 | **La forge — chute** : chaque grain tombe jusqu'à sa hauteur finale, décalé latéralement. Il se forme un banc de limaille plus large que le mot | sas.js (D-587) | scrub `LISSE = 0.45`, p 0,45 → 0,70 | 0,35 à 1,25 fois la hauteur du canevas, vers le bas | V2 | sas-ok, palier 0 |
-| A205 | **La forge — alignement** : les grains se reprennent à l'horizontale, le banc se compacte et les lettres apparaissent d'elles-mêmes | sas.js (D-587) | scrub, p 0,70 → 0,88 | ± 7,5 % de la largeur du canevas, ζ = 1 | V2 | sas-ok, palier 0 |
-| A206 | **Le CRAN de la forge** : à p = 0,90 le canevas se vide et le vrai mot est là. Une seule image sépare l'un de l'autre | sas.js (D-588) | scrub, seuil 0,90 | bascule de `visibility` | V4 | sas-ok, palier 0 |
+| A204 | **La forge — chute** : chaque grain tombe jusqu'à sa hauteur finale, décalé latéralement. Il se forme un banc de limaille plus large que le mot | sas.js (D-587) | scrub `LISSE = 0.45`, **q** 0,02 → ~0,35 | 0,35 à 1,25 fois la hauteur du canevas, vers le bas | V2 | sas-ok, palier 0 |
+| A205 | **La forge — alignement** : les grains se reprennent à l'horizontale, le banc se compacte et les lettres apparaissent d'elles-mêmes | sas.js (D-587) | scrub, **q** ~0,35 → 0,58 | ± 7,5 % de la largeur du canevas, ζ = 1 | V2 | sas-ok, palier 0 |
+| A206 | **Le CRAN de la forge** : à **q = 0,58** le canevas se vide et le vrai mot est là. Une seule image sépare l'un de l'autre | sas.js (D-588) | scrub, seuil q 0,58 | bascule de `visibility` | V4 | sas-ok, palier 0 |
+
+> **`q` N'EST PAS `p`, ET LA DIFFÉRENCE EST TOUTE LA CORRECTION DE
+> D-630.** `p` est la progression du ScrollTrigger sur la piste
+> entière ; `q` est la progression **épinglée**, celle où 0 = la
+> plaque vient de se caler et 1 = elle repart. Une scène collante
+> n'est épinglée qu'à partir de 100vh de course (piège 35), donc le
+> point d'épinglage vaut `100vh / course` : **0,42** quand la piste
+> faisait 240vh, **0,67** depuis qu'elle en fait 150. Les bornes
+> écrites en dur pour 0,42 auraient joué toute la forge hors champ.
+> `sas.js` relève le point d'épinglage dans `onRefresh` — donc aussi
+> après un changement de largeur, qui change `innerHeight`.
 | A207 | **Le rattrapage du rail des services** : entre deux crans de molette, la position rejoint sa cible sur le rythme d'affichage | main.js (D-599) | `scroll` + rAF | facteur 0,22 par image, converge en ~0,35 s | — | tombe avec le rail |
 | A208 | **La chaîne d'automatisation** du panneau 02 : une pièce de minium parcourt quatre stations, chacune se coche d'un cran en passant | app.css (D-603) | permanente, panneau ouvert | 7,2 s, 285 px, 4 crans | V2 + V4 | **tombe aux paliers 2 et 3**, marques conservées |
 | A209 | **La soudure de la chaîne** : le fil minium se ferme derrière la pièce | app.css (D-603) | idem | `scaleX` 0 → 1 par quarts | V3 | idem |

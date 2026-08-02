@@ -13,8 +13,8 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 - [Les plages](#plages)
 - [Comment lire cet index](#lire)
-- [Les treize entrées](#entrees) — [01](#s01) [02](#s02) [03](#s03) [04](#s04) [05](#s05) [06](#s06) [07](#s07) [08](#s08) [09](#s09) [10](#s10) [11](#s11) [12](#s12) [pied](#pied)
-- [Ce qui est commun aux douze](#commun)
+- [Les douze entrées](#entrees) — [01](#s01) [02](#s02) [03](#s03) [04](#s04) [05](#s05) [06](#s06) [07](#s07) [08](#s08) [09](#s09) [10](#s10) [11](#s11) [pied](#pied)
+- [Ce qui est commun aux onze](#commun)
 - [Anomalies relevées](#anomalies)
 
 ---
@@ -26,19 +26,18 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 | № | Section | Ancre | `index.html` | l. | `css/app.css` | JS | autres |
 |---|---|---|---|---:|---|---|---|
-| 01 | **Accueil** | `#top` | 224-280 | 57 | 1764-2027 · 1260-1542 | `main.js` 114-219 | — |
-| 02 | **Services** | `#services` | 281-917 | 637 | 2028-2722 | `main.js` 220-664 | — |
-| 03 | **Réalisations** | `#realisations` | 918-1756 | 839 | 2723-4773 | `main.js` 665-1001 | — |
-| 04 | **Secteurs** | `#demos` | 1757-1979 | 223 | 4774-4900 | `main.js` 2466-2716 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
-| 05 | **Visite 360** | `#visite` | 1980-2106 | 127 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2107-2267 | 161 | 4901-5037 | `main.js` 2246-2465 | — |
-| 07 | **Comparatif** | `#comparatif` | 2268-2392 | 125 | 5038-5195 | — | — |
-| 08 | **Processus** | `#processus` | 2393-2528 | 136 | 5196-5381 | `main.js` 1002-1038 | — |
-| 09 | **Agence** | `#apropos` | 2529-2649 | 121 | 5382-5536 | — | — |
-| 10 | **Référence** | `#reference` | 2650-2724 | 75 | 5537-5651 | — | — |
-| 11 | **Questions** | `#faq` | 2725-2800 | 76 | 5652-5685 | `langue.js` 613-641 | — |
-| 12 | **Contact** | `#contact` | 2801-2933 | 133 | 5686-5884 | `main.js` 1566-1611 · `main.js` 1612-1677 · `main.js` 1678-1769 | — |
-| — | **Pied de page** | `#footer` | 2934-2986 | 53 | 5885-5945 | `main.js` 3004-3024 | — |
+| 01 | **Accueil** | `#top` | 222-278 | 57 | 1798-2061 · 1294-1576 | `main.js` 114-219 | — |
+| 02 | **Services** | `#services` | 279-915 | 637 | 2062-2756 | `main.js` 220-664 | — |
+| 03 | **Réalisations** | `#realisations` | 916-1754 | 839 | 2757-4807 | `main.js` 665-1001 | — |
+| 04 | **Secteurs** | `#demos` | 1755-1977 | 223 | 4808-4934 | `main.js` 2426-2676 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 05 | **Visite 360** | `#visite` | 1978-2121 | 144 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
+| 06 | **Calculateur** | `#calculateur` | 2122-2280 | 159 | 4935-5099 | `main.js` 2248-2425 | — |
+| 07 | **Comparatif** | `#comparatif` | 2281-2405 | 125 | 5100-5257 | — | — |
+| 08 | **Processus** | `#processus` | 2406-2541 | 136 | 5258-5443 | `main.js` 1002-1038 | — |
+| 09 | **Référence** | `#reference` | 2542-2616 | 75 | 5444-5558 | — | — |
+| 10 | **Questions** | `#faq` | 2617-2692 | 76 | 5559-5592 | `langue.js` 613-641 | — |
+| 11 | **Contact** | `#contact` | 2693-2825 | 133 | 5593-5791 | `main.js` 1568-1613 · `main.js` 1614-1679 · `main.js` 1680-1771 | — |
+| — | **Pied de page** | `#footer` | 2826-2877 | 52 | 5792-5852 | `main.js` 2964-2984 | — |
 
 <!-- PLAGES:FIN -->
 
@@ -57,10 +56,20 @@ entre. Le seuil qui ouvre `#services` porte donc
 `data-de="01" data-vers="02"` — c'est la frontière **vers** la 02, pas
 la frontière de la 01.
 
-**Douze `[data-seuil]` pour douze sections plus un pied.** L'accueil
+**Onze `[data-seuil]` pour onze sections plus un pied.** L'accueil
 (`#top`) n'en porte aucun : c'est la première section, rien ne la
-précède. Les onze autres en portent un chacune, plus celui du pied
-(`data-de="12" data-vers="00"`).
+précède. Les dix autres en portent un chacune, plus celui du pied
+(`data-de="11" data-vers="00"`). La section 09 · Agence a été retirée
+le 2026-08-03 — `archives/2026-08-03-agence/` — et les trois qui la
+suivaient ont reculé d'un cran : Référence 10→09, Questions 11→10,
+Contact 12→11.
+
+> **Les bannières de commentaire d'`index.html` n'ont PAS suivi.**
+> `FRONTIERE 10 · 09 vers 10`, `FRONTIERE 11 · 10 vers 11` et
+> `FRONTIERE 12 · 11 vers 12` ouvrent en réalité les seuils
+> `08→09`, `09→10` et `10→11`. Les attributs sont justes ; c'est le
+> commentaire qui est en retard d'un cran, et une recherche textuelle
+> par numéro de frontière tombe donc à côté. Voir « anomalies ».
 
 **`data-dress="encre"` habille la bande de seuil, pas la section.**
 Trois bandes seulement depuis le 2026-07-31 : celles qui entrent dans
@@ -73,9 +82,10 @@ claire (D-570, l'arc de luminance). Le repérage d'un seuil se fait par
 **La chambre noire.** `#visite` est la seule section sombre du site,
 dans les deux thèmes : elle adopte le jeu de jetons du thème OPPOSÉ
 (D-572). Les trois sas : descente (04→05, moment impossible — forge du
-mot « Essayez. »), remontée (05→06, calque qui se dégage vers le
-haut), clôture (12→00, le fil se soude dans la bande). Détail :
-`REFONTE-IMMERSIVE.md`, moteur `js/sas.js`.
+mot « Essayez. », piste **150vh** depuis D-630), remontée (05→06,
+calque qui se dégage vers le haut, et son volet vit désormais DANS un
+`div.sas-cache` qui le rogne — D-629), clôture (11→00, le fil se soude
+dans la bande). Détail : `REFONTE-IMMERSIVE.md`, moteur `js/sas.js`.
 
 **`css/app.css` est la seule source de style.** `critique.css` et
 `differe.css` sont fabriqués par `node tools/css-critique.mjs` et ne
@@ -91,7 +101,7 @@ sous-blocs. C'est ce que `plages.mjs` lit pour calculer les bornes.
 ---
 
 <a id="entrees"></a>
-# LES TREIZE ENTRÉES
+# LES DOUZE ENTRÉES
 
 <a id="s01"></a>
 ## 01 · Accueil
@@ -248,15 +258,24 @@ figure.sector-preview#sectorPreview > #mockStage` →
 | **JS** | `js/tour360.js` (entier) · `js/main.js` pose le déclencheur `[data-tour-start]` · `js/trame.js` pour le passage d'une pièce à l'autre · `js/motion.js` bloc `6. LE CADRE DE LA VISITE` |
 
 **Composants** : seuil → en-tête (`p.head-index` « Démo · Immobilier »,
-h2, chapô) → `div.tour[data-tour]` contenant **le cadre à trois
-étages** `div.tour-cadre` : `p.tour-manifeste` (nom + les trois pièces)
-→ `div.tour-stage[data-tour-stage]` avec `<img>` d'affiche et
-`p.tour-lieu` (« 01 · Terrasse ») → `div.tour-pupitre` (`div.tour-enter`
-= note + bouton `[data-tour-start]` / `[data-tour-label]`, **et**
-`p.tour-encours` qui prend sa place une fois la visite ouverte). Puis
-le pied `div.tour-pied` : `ul.tour-gestes[data-settle]` (trois gestes
-nommés) et `p.fine.tour-source` (provenance des panoramas et du
-moteur).
+h2, chapô de **sept mots**) → `div.tour[data-tour]` contenant **le
+cadre à trois étages** `div.tour-cadre` : `p.tour-manifeste` (nom + les
+trois pièces) → `div.tour-stage[data-tour-stage]` avec `<img>` d'affiche
+et `p.tour-lieu` (« 01 · Terrasse ») → `div.tour-pupitre`
+(`div.tour-enter` = `p.tour-enter-note` + bouton `[data-tour-start]` /
+`[data-tour-label]`, **et** `p.tour-encours` qui prend sa place une fois
+la visite ouverte). Puis, **hors du cadre**, `p.fine.tour-source` —
+provenance des panoramas et licence du moteur.
+
+> **Le pied de trois gestes n'existe plus** (D-632, 2026-08-03).
+> `div.tour-pied` et `ul.tour-gestes[data-settle]` sont partis : ils
+> nommaient avant le clic des gestes qu'on ne peut pas encore faire,
+> et répétaient le pupitre une fois dedans. Le mode d'emploi vit
+> maintenant dans `p.tour-encours` seul, qui nomme aussi le clavier.
+> `p.tour-source` est devenue une **légende de cadre** d'une ligne,
+> sans filet — un second trait à 24 px du premier fait une rayure,
+> pas une structure. Conséquence à connaître : `[data-settle]` n'a
+> de nouveau **aucune cible** dans le document.
 
 > **LE CONTRAT AVEC LE LECTEUR EST FAIT DE SÉLECTEURS.** `tour360.js`
 > ne connaît que `[data-tour]`, `[data-tour-stage]`, `[data-tour-start]`,
@@ -266,6 +285,15 @@ moteur).
 > Preuve que le lecteur fonctionne : `node tools/visite-sequence.mjs`,
 > 19 constats et 7 images. Lire son en-tête avant de s'en servir : il
 > photographie en **mouvement réduit**, et la raison est mesurée.
+
+> **ET C'EST EXACTEMENT CE QUI A CACHÉ D-629 PENDANT DEUX JOURS.**
+> `html.sas-ok` se décide dans le `<head>` avec
+> `!prefers-reduced-motion` : en mouvement réduit, **la géométrie des
+> sas n'existe pas**. Une planche prise dans ce mode ne peut
+> structurellement pas voir un défaut de sas — et le volet du calque
+> de la remontée recouvrait 88 % de cette section-ci. Pour juger la
+> 05, `node tools/plaques.mjs visite <nom>` : mouvement **plein** par
+> défaut. Piège 84.
 
 <a id="s06"></a>
 ## 06 · Calculateur
@@ -322,45 +350,23 @@ résumé `p.sr-only`) → `p.label.ecart-sous` → `div.vs#vsTable` (6 ×
 (4 × `li.parc-etape[data-parc]`, chacune avec son `.parc-vis` : On se
 parle, On dessine, On code, On met en ligne).
 
+> **LA SECTION 09 · AGENCE A ÉTÉ RETIRÉE le 2026-08-03.** Ancre
+> `#apropos`, bloc CSS `20. A PROPOS`, blocs `12ter` et `12bis` de
+> `js/motion.js`, `.agc-txt h3` dans la liste des sous-titres de
+> `js/langue.js`, et le seuil `08 → 09` en `souder` qui était **le
+> seul sans `data-cible`**. Tout est dans
+> `archives/2026-08-03-agence/`. Les blocs `21.` à `24.` d'`app.css`
+> ont **gardé leurs numéros** : il n'y a plus de `20.`, et c'est
+> voulu — renuméroter quatre bannières pour combler un trou fait
+> mentir tous les `grep` du dépôt d'un coup.
+
 <a id="s09"></a>
-## 09 · Agence
-
-| | |
-|---|---|
-| **Ancre** | `#apropos` |
-| **Seuil** | `08 → 09` · nom **« Agence »** |
-| **Verbe / sens** | `data-verbe="souder"` `data-sens="droite"` — **seul seuil sans `data-cible`** ; pas de trame |
-| **Fond encre** | non |
-| **Blocs CSS** | `20. A PROPOS` |
-| **JS** | `js/motion.js` blocs `12ter. LES TROIS FAITS DE L'AGENCE` et `12bis. LES QUATRE PREUVES DE L'AGENCE` · `js/langue.js` bloc `3. DEGAGER` (les `.agc-txt h3`) |
-
-**Composants**, en **trois mouvements de calibres volontairement
-éloignés** — c'est ce que la section n'avait pas :
-
-1. **L'énoncé** — `div.agc-tete > div.head.agc-head` (h2 « Vous parlez
-   à la personne qui code. » + chapô à 46ch). La moitié droite ne porte
-   rien : c'est elle qui donne l'échelle.
-2. **Les trois faits**, au calibre d'affiche — `ul.agc-faits[data-agc-faits]`,
-   3 × `li` : `b.num > span.agc-roul > i` (le chiffre, 80 px, dans sa
-   fenêtre de cran), la glose chassée à droite, et `i.agc-filet` qui se
-   soude. **1** interlocuteur · **0** gabarit acheté · **12 h** de délai.
-3. **Les quatre engagements** en pas numérotés — `ol.agc-liste[data-agc][data-settle]`,
-   4 × `li.agc-eng` : `p.agc-num` dans une gouttière de 3 rem, `div.agc-txt`
-   (h3 à 32 px + corps), `figure.agc-preuve` **sans boîte**, rattachée
-   par un filet. Le prix est dit au départ · Rien ne se code sans votre
-   accord · Le code vous appartient · Ça va vite.
-
-> **Retiré le 2026-08-02** : `div.agc-plaque` (la plaque de matière de
-> 358 px, `aria-hidden`, qui ne disait rien) et la colonne collante
-> `4fr / 7fr` qui laissait 300 px de vide non borné sous les faits.
-
-<a id="s10"></a>
-## 10 · Référence
+## 09 · Référence
 
 | | |
 |---|---|
 | **Ancre** | `#reference` |
-| **Seuil** | `09 → 10` · nom **« Référence »** |
+| **Seuil** | `08 → 09` · nom **« Référence »** |
 | **Verbe / sens** | `data-verbe="cran"` `data-sens="droite"` `data-cible=".referral-max .num"` — **seule frontière en V4 · CRAN** ; pas de trame |
 | **Fond encre** | non pour la bande de seuil — mais la section porte le seul aplat sombre de la page dans **les deux thèmes** |
 | **Blocs CSS** | `21. REFERENCE` |
@@ -374,13 +380,13 @@ parle, On dessine, On code, On met en ligne).
 `i.referral-line` → `div.referral-foot` (bouton `modal-refer` +
 mention fine).
 
-<a id="s11"></a>
-## 11 · Questions
+<a id="s10"></a>
+## 10 · Questions
 
 | | |
 |---|---|
 | **Ancre** | `#faq` |
-| **Seuil** | `10 → 11` · nom **« Questions »** |
+| **Seuil** | `09 → 10` · nom **« Questions »** |
 | **Verbe / sens** | `data-verbe="degager"` `data-sens="droite"` `data-cible=".faq-item"` — porte la trame |
 | **Fond encre** | non |
 | **Blocs CSS** | `22. FAQ` · `.faq-item::before` dans le bloc des micro-états |
@@ -398,13 +404,13 @@ maintenance, propriété, technologies, résultat, région.
 > non `innerText` pour cette raison : les réponses vivent dans des
 > `<details>` repliés, qu'`innerText` ne voit pas.
 
-<a id="s12"></a>
-## 12 · Contact
+<a id="s11"></a>
+## 11 · Contact
 
 | | |
 |---|---|
 | **Ancre** | `#contact` |
-| **Seuil** | `11 → 12` · nom **« Contact »** |
+| **Seuil** | `10 → 11` · nom **« Contact »** |
 | **Verbe / sens** | `data-verbe="degager"` `data-sens="bas"` `data-cible=".cell"` — porte la trame |
 | **Fond encre** | non |
 | **Blocs CSS** | `23. CONTACT` |
@@ -424,7 +430,7 @@ temps) → `ul.contact-sur` (4 réassurances) → `p.contact-direct`
 | | |
 |---|---|
 | **Ancre** | aucune — le pied n'est pas dans le rail ; `#contenu` sur `<main>` sert au lien d'évitement |
-| **Seuil** | `12 → 00` · nom **« Fin de la traversée »** · `div.seuil.seuil--pied` |
+| **Seuil** | `11 → 00` · nom **« Fin de la traversée »** · `div.seuil.seuil--pied` |
 | **Verbe / sens** | `data-verbe="volet"` `data-sens="bas"` `data-cible=".footer-mark"` — porte la trame |
 | **Fond encre** | **oui** |
 | **Blocs CSS** | `24. PIED DE PAGE` · `.footer-mark` · `.footer-docs-mot` |
@@ -441,12 +447,21 @@ document**) → `div.footer-legal`.
 ---
 
 <a id="commun"></a>
-# CE QUI EST COMMUN AUX DOUZE
+# CE QUI EST COMMUN AUX ONZE
+
+> **Les bannières de bloc disent toujours « DOUZE », et on ne les
+> renomme pas.** `1bis. LES DOUZE SEUILS` (`app.css`),
+> `0bis. LES DOUZE FRONTIERES` (`langue.js`),
+> `LA DOUZIEME FRONTIERE` (`main.js`) sont les poignées de `grep`
+> du dépôt : les renommer casserait toutes les adresses de ce
+> document et de `ANIMATIONS.md` pour corriger un chiffre. Elles
+> désignent le mécanisme, pas le compte — qui est **onze** depuis le
+> 2026-08-03.
 
 | Objet | HTML | Bloc CSS | JS |
 |---|---|---|---|
-| Les douze seuils | `[data-seuil]` ×12 | `1bis. LES DOUZE SEUILS` | `langue.js` `0bis. LES DOUZE FRONTIERES` · `main.js` `G2 · LE CRAN DE LA FRONTIERE` |
-| En-tête de section | `.head` ×11 | `2. EN-TETE DE SECTION` | `motion.js` `10. Titres de section` (`couperEnLignes()`) · `langue.js` `2. LES MOTS` (`decouperMots()`) |
+| Les onze seuils | `[data-seuil]` ×11 | `1bis. LES DOUZE SEUILS` | `langue.js` `0bis. LES DOUZE FRONTIERES` · `main.js` `G2 · LE CRAN DE LA FRONTIERE` |
+| En-tête de section | `.head` ×9 (dont `.faq-head.head`) | `2. EN-TETE DE SECTION` | `motion.js` `10. Titres de section` (`couperEnLignes()`) · `langue.js` `2. LES MOTS` (`decouperMots()`) |
 | Navigation, en-tête collant | `nav` | `3. NAVIGATION` | `main.js` |
 | Rail / index collant | `#railList` | `5. INDEX COLLANT` · `N1 · LE CURSEUR DU RAIL` | `main.js` `Index collant`, barre de lecture |
 | Menu plein écran | `.menu` | `6. MENU PLEIN ECRAN` | `main.js` `Menu plein ecran` |
@@ -465,39 +480,55 @@ document**) → `div.footer-legal`.
 # ANOMALIES RELEVÉES
 
 1. **`[data-settle]` n'a plus aucune cible.** `js/motion.js` bloc 11
-   anime `$$("[data-settle]")`. Le bloc tourne à vide.
+   anime `$$("[data-settle]")`. Le bloc tourne à vide. Il en avait
+   deux jusqu'au 2026-08-03 — `ol.agc-liste` et `ul.tour-gestes` —
+   parties avec la section 09 et avec le pied de la visite.
 
 2. **`[data-count]` n'a plus aucune cible.** `js/motion.js` bloc 5 et
    le repli de mouvement réduit itèrent sur `[data-count]`. Les
    compteurs de la bande de spécification ont été remplacés, puis
    retirés.
 
-3. **Deux frontières portent le même numéro dans les bannières de
-   commentaire** : `FRONTIERE 12 · 11 vers 12` et
-   `FRONTIERE 12 · 12 vers le pied`. Les attributs, eux, sont distincts
-   (`11→12` et `12→00`) — la collision est dans le commentaire seul,
-   mais elle rend la recherche textuelle ambiguë.
+3. **Trois bannières de frontière sont en retard d'un cran.**
+   `FRONTIERE 10 · 09 vers 10`, `FRONTIERE 11 · 10 vers 11` et
+   `FRONTIERE 12 · 11 vers 12` ouvrent les seuils `08→09`, `09→10` et
+   `10→11` ; le commentaire du troisième sas dit encore
+   « 12 vers le pied » pour `11→00`. **Les attributs sont justes** —
+   c'est sur eux que travaillent `main.js` et `langue.js`, jamais sur
+   le commentaire. Ce qui casse est la recherche textuelle par numéro
+   de frontière, et rien d'autre.
 
-4. **`#visite` est la seule section ouverte en colonne 0.** Les onze
+4. **`#visite` est la seule section ouverte en colonne 0.** Les dix
    autres sont indentées de deux espaces dans `<main>`. Cosmétique,
    mais elle casse la lecture par indentation du document.
 
-5. **`#apropos` est le seul seuil sans `data-cible`.** Son G4 est
-   `souder`, qui n'a pas besoin d'une cible externe — seule
-   irrégularité de la table des douze.
+5. **Trois seuils n'ont pas de `data-cible` : `01→02`, `04→05` et
+   `05→06`.** Tous trois en `volet` — le volet balaye la section
+   entière, il n'a rien d'extérieur à viser. Le seul cas irrégulier de
+   la table, le `souder` de l'Agence, est parti avec elle.
 
-6. **Aucune ancre morte.** Vérifié : 27 `href="#…"` distincts contre
-   176 `id` du document, zéro référence non résolue (symboles SVG
-   `#i-*` compris).
+6. **Aucune ancre morte.** Revérifié le 2026-08-03 après le retrait de
+   la 09 : **31** `href="#…"` distincts contre **190** `id` du
+   document, zéro référence non résolue (symboles SVG `#i-*` compris).
+   Plus **aucun lien** vers `#apropos`, `404.html` compris — il en
+   reste une règle CSS orpheline, voir l'anomalie 8.
 
-7. **`content-visibility: auto` s'applique à 8 sections sur 12, plus le
+7. **`content-visibility: auto` s'applique à 7 sections sur 11, plus le
    pied** : `#visite`, `#calculateur`, `#comparatif`, `#processus`,
-   `#apropos`, `#reference`, `#faq`, `#contact`, `.footer`, chacune
+   `#reference`, `#faq`, `#contact`, `.footer`, chacune
    avec son `contain-intrinsic-size` relevé à 1440×900. Sont
    volontairement exclues `#top`, `#services`, `#realisations` et
    `#demos`. **À savoir avant toute mesure** : hors écran,
-   `getBoundingClientRect()` rend sur ces neuf blocs la hauteur
+   `getBoundingClientRect()` rend sur ces huit blocs la hauteur
    *réservée*, pas la réelle. Voir `PIEGES.md § 4`.
+
+8. **Une règle orpheline survit à la section 09** :
+   `#apropos { contain-intrinsic-size: auto 1108px; }` est restée dans
+   `css/app.css`, juste sous celle de `#processus`. Elle n'a plus de
+   cible et ne coûte rien — mais c'est un sélecteur mort dans la
+   feuille source, et le prochain qui cherchera « où est passée
+   l'Agence » le trouvera là. Le reste du bloc `20. A PROPOS` est
+   bien parti.
 
 8. **`<footer class="footer">` est imbriqué dans `<main class="shell">`**
    et perd donc son rôle `contentinfo`. Voir `RESERVES.md`.

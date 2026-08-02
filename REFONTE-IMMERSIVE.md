@@ -207,3 +207,41 @@ légitime : `images/og.png` (qui CONTREDIT le site — « 24 h » contre
 404, les couvertures des deux PDF si retenu. Bible de style + feuille
 VISUELS-PROMPTS.xlsx + variantes + rejets motivés. Tout visuel qui a
 l'air généré est rejeté ; en cas d'hésitation, il ne passe pas.
+
+---
+
+## 11 · CE QUI A CHANGÉ DEPUIS — mise à jour du 2026-08-03
+
+Ce document reste le **document de conception du 2026-07-31** : les
+sections précédentes disent ce qui était décidé ce jour-là, et le § 7
+est un verdict daté, pas un état. Quatre choses ne s'y lisent plus.
+
+**La table du § 7 compte douze sections ; il y en a onze.** La 09 ·
+Agence a été retirée le 2026-08-03 (`archives/2026-08-03-agence/`) et
+les trois suivantes ont reculé d'un cran — Référence 09, Questions 10,
+Contact 11. **L'arc de luminance n'est pas touché** : il portait sur
+les actes, pas sur les numéros. Le seul monde sombre reste
+05 → 06 ; la plaque de Référence reste un objet encadré ; la coda du
+pied reste encre. Le sas 3 s'écrit maintenant `11 → 00`.
+
+**Le sas 1 fait 150vh, pas 240.** Le § 4 annonçait « ~120 vh » ; le
+code a construit 240, puis est descendu à 150 le 2026-08-03 (D-630).
+2 160 px de molette à 900 de haut pour un mot, c'était vingt-deux
+crans. À 150vh il en coûte treize. **Conséquence non évidente** : une
+scène collante n'est épinglée qu'à partir de 100vh de course, donc le
+point d'épinglage vaut `100vh / course` — il passe de 0,42 à 0,67, et
+les bornes de la chorégraphie ne peuvent plus être des constantes.
+`sas.js` les déduit d'une mesure prise dans `onRefresh`.
+
+**Le volet du sas 2 vit dans une voie qui le rogne.** Le § 4 décrit un
+calque « zéro pixel de page ajouté » — c'est vrai, et c'était
+précisément le problème : posé nu en `top: 0` puis remonté de 102 %, il
+ne sortait pas du document, il peignait **par-dessus la section qui
+précède**. 1 193 px d'encre sur `#visite`, dans trois états sur quatre.
+`div.sas-cache` borne la voie (D-629).
+
+**Et le budget de dégradation du § 8 a un angle mort mesuré.** La ligne
+« palier 2 — volet instantané » est exactement l'état où `sas.js` pose
+lui-même `yPercent: -102`, donc l'état où le défaut ci-dessus était le
+plus franc. Un budget de dégradation se **photographie** palier par
+palier, pas seulement au palier 0 : c'est la leçon du piège 84.

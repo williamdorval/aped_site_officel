@@ -2,7 +2,7 @@
 
 Site vitrine **statique** d'une agence web québécoise : HTML + CSS + JS
 vanilla + GSAP. Pas de React, pas de build (sauf `tools/css-critique.mjs`
-qui découpe le CSS). Treize sections, une seule page, deux PDF.
+qui découpe le CSS). Onze sections, une seule page, deux PDF.
 **Zéro requête tierce** — aucun CDN, traceur, témoin ni police distante.
 
 Ce fichier est un **aiguilleur** : ce qu'il ne faut jamais faire, et où
@@ -18,7 +18,7 @@ dans le document qui la porte.
 | **un mouvement** | `ANIMATIONS.md` — une ligne par animation : fichier, déclencheur, durée, verrou, verbe, niveau |
 | **pourquoi le code est comme ça** | `DECISIONS.md` + `decisions/`. Le code porte l'identifiant : `grep D-042` trouve les deux bouts |
 | **un chiffre, un seuil, un outil de mesure** | `MESURES.md` |
-| **une mesure qui rend un verdict surprenant** | `PIEGES.md` — 82 faux verdicts déjà payés |
+| **une mesure qui rend un verdict surprenant** | `PIEGES.md` — 85 faux verdicts déjà payés |
 | **ce qui n'est pas prouvé, pas fini** | `RESERVES.md` |
 | **quels skills charger** | `DESIGN-STACK.md` |
 | **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` — le chantier du 2026-07-31 |
@@ -273,8 +273,11 @@ Cause et correctif : `PIEGES.md`.
 78. Une capture d'ÉLÉMENT ne compose pas une toile WebGL — `page.screenshot()`, jamais `element.screenshot()`.
 79. Le `clip` d'une capture de page ne partage pas son origine avec `boundingBox()` — photographier la fenêtre, borner au décodage.
 80. **Un `scrollTo` vers une section n'y arrive jamais quand des sas grandissent la page** — la cible recule plus vite qu'on n'avance (mesuré : 2 128 à 3 555 px sous la fenêtre, six fois). Traverser toute la page, puis `scrollIntoViewIfNeeded`, puis VÉRIFIER où est l'objet dans l'image.
-81. **Sous mouvement plein, une section derrière un sas se photographie en noir** — identique sur le code d'avant (relief 0,0 des deux côtés, 75,9 et 58,5 en mouvement réduit). Ce n'est pas une régression : c'est pourquoi toutes les planches du dépôt photographient en mouvement réduit.
+81. **Sous mouvement plein, une section derrière un sas se photographie en noir** — relief 0,0 des deux côtés d'un A/B. ⚠ **La conclusion « donc c'est un artefact » était FAUSSE** : identique des deux côtés voulait dire que le défaut préexistait. C'en était un, réparé par D-629. Voir 84.
 82. **Un sélecteur d'enfant sans chevron mange ce qu'il ne cible pas** — `.agc-faits span` a attrapé la fenêtre du cran dans `b.num` et ramené un chiffre de 80 px à 15. `getComputedStyle` du parent disait « 80px » ; seule la géométrie rendue disait la vérité.
+83. **Un voile en `pointer-events: none` est invisible à `elementFromPoint`** — ma sonde rendait « img.tour-poster » sur les neuf points d'une scène entièrement recouverte d'encre. Et `getBoundingClientRect()` ignore le rognage d'un ancêtre : après correctif, elle disait toujours « recouvre 88 % ». Une sonde du DOM ne juge ni d'un recouvrement, ni d'un rognage — seule l'image le peut.
+84. **Une planche en mouvement réduit ne peut pas voir un défaut de sas** — `sas-ok` n'est jamais posée sous `prefers-reduced-motion`, donc la géométrie qu'on veut vérifier n'existe pas au moment où on la photographie. Un harnais qui neutralise le mouvement pour être stable neutralise aussi ce qu'il devait mesurer. `tools/plaques.mjs`.
+85. **`String.prototype.replace` interprète `$$` dans la chaîne de REMPLACEMENT** comme un `$` littéral : remplacer par `$$(".a, .b")` écrit `$(".a, .b")` en silence, et un `querySelector` unique reçoit un `.forEach`. Erreur de page, aucune erreur de syntaxe. Utiliser une fonction de remplacement.
 
 ## RÉSERVES — à ne jamais oublier
 

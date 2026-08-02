@@ -1370,6 +1370,21 @@ n'ont jamais rencontré le problème.
 > automatique. Et **quand un instrument neuf contredit le code, mesurer
 > le code d'avant avant de s'accuser** (piège 74, autre visage).
 
+> ### ⚠ CE PIÈGE A RENDU UN FAUX ACQUITTEMENT — corrigé le 2026-08-03
+>
+> Les deux relevés « relief 0,0 » ci-dessus sont exacts. La conclusion
+> qu'on en a tirée était fausse. **« Identique des deux côtés » ne veut
+> pas dire « artefact de mesure » : ça veut dire que le défaut existait
+> déjà des deux côtés.** Le volet du sas de la remontée posait 1 193 px
+> d'encre par-dessus la section Visite dans trois états sur quatre —
+> c'était un défaut de production, pas une bizarrerie du harnais, et
+> une planche en mouvement plein ne mentait pas. Cause et correctif :
+> **D-629**, et le mécanisme qui l'a caché : **piège 84**.
+>
+> Ce que le piège 81 garde de vrai : la géométrie des sas ne s'observe
+> **pas** en mouvement réduit. Ce qu'il faut cesser de lire dedans :
+> « donc on photographie en mouvement réduit ». C'est l'inverse.
+
 ---
 
 ### 82 · Un sélecteur d'enfant sans chevron mange le parent qu'il ne cible pas
@@ -1385,3 +1400,70 @@ est sur l'ENFANT, pas sur lui. Seule la géométrie le disait.
 > Un descendant qui hérite d'un calibre se cible avec `>`. Et quand une
 > valeur déclarée ne se voit pas, lire la géométrie **rendue**, pas la
 > propriété du parent.
+
+---
+
+### 83 · Un voile en `pointer-events: none` est INVISIBLE à `elementFromPoint`
+
+Cherchant pourquoi la section Visite se photographiait noire, la sonde
+interrogeait neuf points de la scène avec `elementFromPoint` et
+demandait ce qui était au-dessus. Elle a rendu **`img.tour-poster` sur
+les neuf**, c'est-à-dire « rien ne recouvre », sur une scène
+**entièrement recouverte d'encre**. Le volet du sas porte
+`pointer-events: none` : le test d'atteinte le traverse comme s'il
+n'existait pas. Une couche qui ne prend pas le pointeur peint quand
+même.
+
+Second temps, une fois le correctif posé. La sonde mesurait le
+recouvrement avec `getBoundingClientRect()` du volet — et elle a
+continué de dire **« recouvre 88 % »** alors que l'écran était propre.
+`getBoundingClientRect()` rend la boîte **de l'élément**, pas ce qui en
+survit au rognage d'un ancêtre : le volet garde ses 130vh à
+`translateY(-102%)`, il est simplement hors de la voie qui le rogne.
+
+> Une sonde du DOM ne peut juger **ni d'un recouvrement, ni d'un
+> rognage**. Les deux se voient dans l'image, et nulle part ailleurs.
+> C'est le piège 25 par deux portes différentes le même jour.
+
+---
+
+### 84 · Une planche en mouvement réduit ne peut PAS voir un défaut de sas
+
+`html.sas-ok` se décide dans le `<head>`, avant la première mise en
+page, avec `!matchMedia("(prefers-reduced-motion: reduce)")`. Sans la
+classe, **un sas EST sa bande de seuil** : la piste n'a pas de hauteur,
+le calque n'existe pas, le volet n'est pas positionné. Donc la
+géométrie qu'on veut vérifier **n'existe pas au moment où on la
+photographie**.
+
+Toutes les planches du dépôt photographiaient en mouvement réduit —
+c'est ce que le piège 81 recommandait, et c'est ce qui rendait les
+images déterministes. **110 planches de la passe « avant » du
+2026-08-03 déclarent saine une section qui rendait un aplat noir en
+production.** Aucune n'était fausse ; aucune ne regardait la chose.
+
+> Un harnais qui neutralise le mouvement pour être stable neutralise
+> aussi ce qu'il devait mesurer. Quand la chose à juger **dépend** du
+> mode de mouvement, photographier dans le mode où elle existe :
+> `node tools/plaques.mjs <ancre> <nom>`, mouvement plein par défaut,
+> et le RELIEF de chaque image comme verdict.
+
+---
+
+### 85 · `String.prototype.replace` lit `$$` comme un `$` littéral
+
+Dans la **chaîne de remplacement**, `$` est un caractère spécial :
+`$&`, `$1`, `` $` ``, et `$$` qui vaut un dollar littéral. Une passe
+d'outillage qui remplaçait `$(".a")` par `$$(".a, .b")` a donc écrit
+`$(".a, .b")` dans le fichier — **silencieusement**. Un `querySelector`
+unique s'est retrouvé à recevoir un `.forEach`.
+
+Erreur de page à l'exécution, **aucune erreur de syntaxe**, aucun
+avertissement, et un diff qui a l'air juste tant qu'on lit le motif
+plutôt que le résultat.
+
+> Utiliser une **fonction** de remplacement — `replace(motif, () =>
+> remplacement)` — qui ne réinterprète rien. Et relire le fichier
+> écrit, pas la chaîne qu'on croyait écrire : c'est le même
+> raisonnement que le piège 72, où un masque non vérifié avait été
+> défait en silence.

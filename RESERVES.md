@@ -600,18 +600,30 @@ pas finie.
 
 1. **L'entrée du cadre en V1 · DÉGAGER n'a jamais été photographiée
    en mouvement.** `tools/visite-sequence.mjs` prend ses images en
-   mouvement réduit, où l'animation ne joue pas. La raison est mesurée
-   (pièges 78 à 82) mais la réserve reste entière : **le mouvement du
-   cadre est déclaré, pas prouvé en image.** La règle B du projet
-   demande cinq captures et l'écart entre deux consécutives ; ce
-   mouvement-là ne les a pas.
+   mouvement réduit, où l'animation ne joue pas. La raison était
+   mesurée (pièges 78 à 82) mais la réserve reste entière : **le
+   mouvement du cadre est déclaré, pas prouvé en image.** La règle B du
+   projet demande cinq captures et l'écart entre deux consécutives ; ce
+   mouvement-là ne les a pas. **Depuis le 2026-08-03 l'instrument
+   existe** — `tools/plaques.mjs` photographie en mouvement plein — mais
+   il n'a pas été pointé sur A119b, et la réserve ne se ferme pas parce
+   qu'un outil est disponible.
 
-2. **Une section derrière un sas rend un aplat noir en capture sous
-   mouvement plein.** Vrai sur le code d'avant comme sur celui d'après,
-   donc pas une régression du chantier — mais **personne n'a vérifié si
-   un visiteur réel qui arrive par une ancre voit la même chose.** Si
-   oui, c'est un défaut de production, et il est plus grave que tout ce
-   que ce chantier a corrigé. À instruire.
+2. **TRANCHÉE le 2026-08-03 — c'était un vrai défaut de production, et
+   il est réparé.** La réserve demandait si un visiteur voyait le même
+   noir que la capture. Réponse : oui, et pas à cause de la capture.
+   `.sas--calque .sas-volet` portait `top: 0; height: 130vh;
+   transform: translateY(-102%)` — or `top: 0` est le haut du **sas**,
+   donc monter de 102 % ne sortait pas du document : ça posait
+   **1 193 px d'encre par-dessus les 130vh qui précèdent**, soit 88 %
+   de `#visite`, mesuré à 1440 × 900. **Trois états sur quatre étaient
+   couvrants** — le repos CSS, GSAP absent, et l'escalade de palier où
+   `sas.js` pose lui-même `yPercent: -102`. Seul le scrub actif était
+   sain. Un `div.sas-cache` rogne désormais la voie du volet : hors
+   d'elle, il n'existe plus, quel que soit l'état (**D-629**).
+   **La cause du faux acquittement de la veille** : « identique sur le
+   code d'avant » avait été lu comme « artefact du harnais ». C'était
+   « le défaut préexistait ». Pièges **81** (amendé), **83** et **84**.
 
 3. **Le `pointe` (`langue.js` § 8) affiche encore « Regarder autour »
    au survol de `.tour-stage` AVANT le lancement**, c'est-à-dire à un
@@ -619,23 +631,73 @@ pas finie.
    qu'on a refusé d'écrire (D-624), mais elle existait déjà et n'a pas
    été touchée.
 
-4. **Les trois faits de l'Agence n'ont pas de source affichée.**
-   « 1 interlocuteur », « 0 gabarit acheté », « 12 h de délai » sont
-   défendables et cohérents avec le hero, mais **le visiteur n'a rien
-   pour les vérifier** — Q2 des quatre questions n'est satisfaite que
-   par la cohérence interne du document. Les mettre à 80 px augmente
-   d'autant le coût s'ils sont contestés.
+4. **SANS OBJET le 2026-08-03 — la section 09 · Agence est retirée.**
+   La réserve portait sur ses trois faits sans source affichée.
+   « 1 interlocuteur » et « 12 h de délai » survivent au socle du hero,
+   où ils étaient déjà, et où **la même réserve Q2 s'applique** : le
+   visiteur n'a rien pour les vérifier hors de la cohérence interne du
+   document. Ce qui change est seulement le calibre — 15 px au socle
+   contre 80 px en affiche —, donc le coût s'ils sont contestés. « 0
+   gabarit acheté » n'est plus affiché nulle part.
 
-5. **`.tour-encours` est `aria-hidden`.** Le mode d'emploi visible une
-   fois la visite ouverte n'est donc pas annoncé aux lecteurs d'écran ;
-   il double `ul.tour-gestes`, qui l'est. C'est un choix, pas un
-   oubli — mais il n'a pas été validé avec un lecteur d'écran, et
-   **aucun lecteur d'écran réel n'a jamais parcouru ce site.**
+5. **`.tour-encours` est `aria-hidden`, et depuis le 2026-08-03 il n'a
+   plus de doublure.** Le mode d'emploi visible une fois la visite
+   ouverte n'est annoncé à **aucun** lecteur d'écran : il doublait
+   `ul.tour-gestes`, qui était annoncé, et ce pied est parti avec
+   D-632. **La réserve s'est donc aggravée, pas résolue.** Ce qui la
+   borne : le lecteur reste pilotable au clavier — `tour360.js`
+   rééquipe chaque point de passage avec `tabindex`, `role` et un nom
+   accessible —, donc l'usage n'est pas perdu, seule l'annonce du mode
+   d'emploi l'est. **Aucun lecteur d'écran réel n'a jamais parcouru ce
+   site**, ni avant ni après.
 
-6. **L'écart entre les mouvements 2 et 3 de l'Agence a été réglé à
-   l'œil**, sur une seule largeur, puis vérifié à trois. Aucune règle
-   ne dit pourquoi 64 px et pas 72.
+6. **SANS OBJET le 2026-08-03** — l'écart de 64 px entre les mouvements
+   2 et 3 de l'Agence n'existe plus avec la section.
 
 7. **La planche avant/après ne comporte qu'UNE passe « avant ».** Le
    protocole du piège 29 en demande trois de chaque côté. Le plancher
    de bruit est donc estimé sur les deux passes « après » seulement.
+
+---
+
+## Le noir de la Visite — 2026-08-03
+
+### Les 110 planches « avant » de ce chantier ne prouvent PAS la réparation
+
+Elles sont dans `preuves/2026-08-03-cinq/avant/` et elles ont été
+prises au **palier 0**, sur une page pilotée à la molette : le seul
+des quatre états où le volet du calque était sain. **Le défaut ne s'y
+manifeste pas** — ni avant le correctif, ni après. Comparer ces
+planches à celles d'après ne peut donc rien dire de D-629, dans un
+sens comme dans l'autre.
+
+**Ce qui prouve la réparation est l'A/B au palier 2**, l'état où
+`sas.js` pose lui-même `gsap.set(volet, { yPercent: -102 })` et où le
+volet peignait. Une planche au palier 0 est une preuve de
+non-régression **du reste de la page** ; ce n'est pas la preuve du
+correctif, et il ne faut pas la citer comme telle.
+
+### Trois états sur quatre ont été raisonnés, un seul a été photographié
+
+Le repos CSS, GSAP absent et l'escalade de palier sont les trois états
+couvrants. La mesure de 1 193 px et l'image entièrement noire ont été
+relevées à **1440 × 900**, sur l'un d'eux. **Les deux autres sont
+déduits de la règle CSS**, pas photographiés un par un — c'est le même
+`translateY(-102%)` sur le même `top: 0`, mais le dépôt n'en garde pas
+trois images.
+
+### La course de 150vh est un arbitrage, et il n'a pas été mesuré sur un visiteur
+
+37 % de molette en moins est un fait arithmétique — 2 160 px contre
+1 350 à 900 de haut. « C'est le bon compromis » n'en est pas un :
+personne n'a regardé quelqu'un descendre ce sas. La forge se voit
+encore, ça `tools/sas-sequence.mjs` le montre ; **qu'elle se voie
+assez, non.**
+
+### Et la réserve qui gouverne tout le reste n'a pas bougé
+
+> **AUCUNE mesure de ce projet n'a été prise sur un appareil réel.**
+> Y compris celles de cette journée : `plaques.mjs` et
+> `sas-sequence.mjs` tournent sous Chromium/Playwright sur un poste de
+> bureau Windows. Le palier 2 n'a jamais été atteint autrement qu'en
+> bridant le processeur.

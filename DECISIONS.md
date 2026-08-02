@@ -732,3 +732,168 @@ captures « noires » étaient des captures d'ailleurs.
 Et le juge de paix, à reprendre : **le même noir sort du code d'AVANT
 le chantier**, dans un worktree servi sur un autre port. Quand un
 instrument neuf accuse, mesurer le code d'avant avant de s'accuser.
+
+---
+
+# 2026-08-03 · LE NOIR ÉTAIT VRAI — D-629 à D-633
+
+La veille, le noir de la section Visite a été classé « artefact du
+harnais » parce qu'il sortait **identique** du code d'avant. Le
+raisonnement était faux d'une marche : identique des deux côtés ne
+veut pas dire « ce n'est pas un défaut », ça veut dire **« le défaut
+était déjà là »**. Il l'était depuis le 2026-07-31, en production, et
+il couvrait 88 % d'une section.
+
+Ce que la journée a fait : réparer ça, retirer une section qui ne
+gagnait pas sa place, et raccourcir un sas qui coûtait vingt-deux
+crans de molette pour un mot.
+
+## Le défaut, et pourquoi rien ne l'a vu
+
+`.sas--calque .sas-volet` — le volet de la remontée 05→06 — portait
+lui-même `top: 0; height: 130vh; z-index: 6; transform:
+translateY(-102%)`. `top: 0` est le haut du **sas** : monter de 102 %
+ne le sort pas du document, ça le pose **par-dessus les 130vh qui
+précèdent**. Mesuré à 1440 × 900 : **1 193 px d'encre sur `#visite`,
+soit 88 % de la section**, entièrement noire à l'image.
+
+Trois états sur quatre étaient couvrants — le repos CSS, GSAP absent,
+et l'escalade de palier, où `sas.js` pose lui-même
+`gsap.set(volet, { yPercent: -102 })`. **Seul le scrub actif était
+sain**, c'est-à-dire l'unique état dans lequel un visiteur au palier 0
+traverse la page à la main. C'est ce qui a permis au défaut de vivre
+trois jours.
+
+Et rien ne l'a vu parce que **rien ne pouvait le voir** :
+
+| L'instrument | Ce qu'il rendait | Pourquoi |
+|---|---|---|
+| 110 planches de captures | « saine » | prises en mouvement **réduit**, où `sas-ok` n'est jamais posée : la géométrie des sas n'existe pas — **piège 84** |
+| `elementFromPoint`, neuf points | « `img.tour-poster` », donc rien au-dessus | le volet porte `pointer-events: none` — **piège 83** |
+| `getBoundingClientRect()` du volet, après correctif | « recouvre 88 % » | il rend la boîte de l'élément, pas ce qui survit au rognage d'un ancêtre — **piège 83** |
+| `sas-check.mjs`, `theme-check.mjs`, `captures-fixe.mjs` | « ok » | tous en mouvement réduit, pour la même raison |
+
+## Ce qui a été décidé
+
+**D-629 · Le volet ne peut plus peindre hors de sa voie.** Un élément
+`div.sas-cache` (`position: absolute; top: 0; height: 130vh;
+overflow: hidden; z-index: 6; pointer-events: none`) enveloppe le
+volet, qui passe en `inset: 0` à l'intérieur. **C'est la voie qui
+rogne et qui porte la couche** ; le volet n'est plus qu'un aplat. Hors
+de la voie, il n'existe pas — dans **tous** les états, y compris ceux
+qu'aucun scrub ne pilote. Corriger l'animation aurait laissé les trois
+états morts en place ; c'est la géométrie qu'il fallait borner, pas le
+mouvement.
+
+**D-630 · La course du sas « Essayez. » passe de 240vh à 150vh, et les
+bornes cessent d'être écrites en dur.** À 240vh le sas coûtait
+**2 160 px de molette** sur une fenêtre de 900 — vingt-deux crans pour
+un mot. Le moment était bon et trop cher : on payait l'entrée de la
+pièce en défilement mort. À 150vh il en coûte 1 350, treize crans,
+**37 % de moins**, et la pièce arrive tout de suite après le mot.
+
+Ce qui a dû bouger avec : une scène collante n'est épinglée qu'à
+partir de 100vh de course (piège 35), donc le point d'épinglage vaut
+`100vh / course` — **0,42 à 240vh, 0,67 à 150vh**. Les bornes de la
+chorégraphie, écrites pour 0,42, auraient joué **toute la forge avant
+l'épinglage**, c'est-à-dire hors champ : le sas raccourci n'aurait plus
+rien montré du tout. `sas.js` relève désormais le point d'épinglage
+dans `onRefresh` — donc aussi après un changement de largeur, qui
+change `innerHeight` — et raisonne en progression **épinglée** `q` :
+forge de q 0,02 à 0,58, CRAN à 0,58, le mot se lit et le fil tire de
+0,60 à 1,00. Le mot tient 42 % de la course épinglée : « se forge, se
+lit, et laisse passer ».
+
+**D-631 · Le repos du mot forgé n'est plus un état de départ.**
+`.sas-mot` était `visibility: hidden` en CSS, et seule `.est-la`,
+posée par le script, le rendait — la règle 3 du projet interdit
+exactement ça. GSAP absent, la piste gardait ses 150vh d'encre et il
+n'y avait **rien dedans** : un aplat noir de 1 350 px sans un mot. Le
+mot est donc visible par défaut, et c'est `.sas-actif` — posée par
+`armer()`, donc seulement quand le script pilote vraiment — qui le
+retire jusqu'au CRAN.
+
+**D-632 · La Visite perd son pied de trois gestes.** Trois titres et
+trois phrases, posés **avant** le clic, pour expliquer des gestes
+qu'on ne peut pas encore faire — plus de surface de texte que le cadre
+n'avait de photo. Et une fois la visite ouverte, ils répétaient mot
+pour mot ce que dit le pupitre. Le mode d'emploi vit maintenant dans
+`.tour-encours` seul, qui nomme aussi le clavier. Dans le même
+mouvement : le paragraphe de trois phrases du `.head` devient **sept
+mots** — ce qui restait était ce que le titre ne dit pas ; la note du
+pupitre passe de « Hébergé chez nous. Rien ne se télécharge avant
+votre clic. » à « Elle s'ouvre ici, dans la page. » — la première
+parlait d'octets à un patron de garage, la seconde répond à la seule
+question qu'on se pose devant un bouton ; et `.tour-source` devient
+une **légende de cadre** d'une ligne, sans filet, parce que deux
+traits à 24 px l'un de l'autre font une rayure et pas une structure.
+**Le lecteur 360 n'a pas été touché** — `tour360.js` est identique au
+commit près, et les six sélecteurs de son contrat aussi.
+
+**D-633 · L'étiquette de la pointe pose sa position dans
+`pointerover`.** `is-on` était ajoutée au survol, mais le `translate`
+n'était écrit qu'au premier `pointermove`. Or **un curseur immobile
+que le défilement fait survoler n'en produit aucun** : la page glisse
+sous la pointe, `pointerover` part, et l'étiquette s'allume à sa
+position de départ — **(0, 0)**, un aplat noir « REGARDER AUTOUR » posé
+sur le logo, en haut à gauche de l'écran. Vu à l'image, jamais par une
+sonde.
+
+## La section 09 · Agence est retirée
+
+Elle avait eu son chantier la veille (D-625 à D-628) et elle était
+bonne. **Ce qui se vérifie, énoncé par énoncé** : « 1 interlocuteur »
+et « 12 h de délai » sont déjà au socle du hero (« Un seul
+interlocuteur », « Réponse en 12 h ») ; « Le code vous appartient » y
+est aussi (« Tout vous appartient — le code, l'hébergement,
+l'adresse ») **et** dans la FAQ ; « Le prix est dit au départ » et
+« Ça va vite » ont chacun leur question dans la FAQ ; « Rien ne se
+code sans votre accord » est le deuxième temps du Processus. Le seul
+énoncé qui ne vivait nulle part ailleurs était **« 0 gabarit
+acheté »**.
+
+C'est une décision du propriétaire, pas un verdict de mesure, et elle
+n'est pas reprise ici avec plus d'assurance qu'elle n'en a été donnée.
+Ce que le dépôt peut soutenir seul : **six des sept énoncés** de la
+section étaient tenus ailleurs, et une section qui répète est une
+section qu'on saute.
+
+Le site passe de douze à **onze** sections. Renumérotation :
+Référence 10→09, Questions 11→10, Contact 12→11 ; les seuils vont de
+`01→02` à `11→00` ; le compteur du rail dit « 11 sections restantes » ;
+le menu plein écran renumérote Questions 08→07 et Contact 09→08.
+Tout est dans `archives/2026-08-03-agence/`.
+
+**Deux numéros ne sont PAS réattribués, et c'est la décision.** Le
+bloc `20. A PROPOS` d'`app.css` laisse un trou entre `19.` et `21.` ;
+`motion.js` en laisse un à `12bis` / `12ter`. Renuméroter quatre
+bannières pour combler un trou ferait mentir **d'un coup** toutes les
+adresses de `SECTIONS.md`, d'`ANIMATIONS.md` et de `decisions/` — un
+numéro manquant coûte moins cher qu'un index faux. Même arbitrage pour
+les bannières `<!-- FRONTIERE nn -->` d'`index.html`, restées en
+retard d'un cran : ce sont des commentaires, les attributs font foi,
+et c'est écrit dans les anomalies de `SECTIONS.md`.
+
+**Une conséquence à connaître** : le seuil `08 → 09` était le seul en
+`souder`, et le seul sans `data-cible`. A44 et A146 (`ANIMATIONS.md`)
+n'ont plus de cible et tournent à vide des deux côtés. `[data-settle]`
+non plus, pour la seconde fois.
+
+## Ce que ça a coûté en instruments
+
+Trois pièges de plus — **83, 84, 85** — et deux outils qui n'existaient
+pas :
+
+- **`tools/plaques.mjs`** — planches d'une ou plusieurs sections, 5
+  largeurs × 2 thèmes, **en mouvement PLEIN par défaut**, avec le
+  RELIEF de chaque image. C'est la réponse directe au piège 84 : un
+  harnais qui neutralise le mouvement pour être stable neutralise
+  aussi ce qu'il devait mesurer ;
+- **`tools/sas-sequence.mjs`** — la séquence du sas de descente,
+  relief et **écart de pixels entre images consécutives**, ce qu'exige
+  la règle B. Écrit pour répondre à « la forge se voit-elle encore à
+  150vh ».
+
+Et la leçon qui gouverne les deux : **quand un instrument neuf accuse,
+on mesure le code d'avant — mais si le code d'avant accuse aussi, ce
+n'est pas l'instrument qui a tort.**

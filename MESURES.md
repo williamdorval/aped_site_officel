@@ -80,7 +80,9 @@ complète**, pas un numéro de port.
 |---|---|
 | `code-nu.mjs --comparer a b` | le code **privé de tous ses commentaires**, espaces normalisés. Deux fichiers identiques après cette réduction ont exactement le même comportement. C'est l'invariant du chantier de structure |
 | `cascade-check.mjs` | **0 écart** obligatoire après toute régénération du CSS. Compare 44 propriétés calculées sur tous les éléments, feuille découpée contre feuille entière |
-| `captures-fixe.mjs <nom> [adresse]` | planche **déterministe** : 5 largeurs × 2 thèmes × 12 vues + page entière, en mouvement réduit et `content-visibility` levé. **Plancher de bruit : 4 images sur 130**, toutes à 768 px — les 126 autres rendent 0,0000 % |
+| `captures-fixe.mjs <nom> [adresse]` | planche **déterministe** : 5 largeurs × 2 thèmes × **11** vues + page entière, en mouvement réduit et `content-visibility` levé. **Plancher de bruit : 4 images sur 130**, toutes à 768 px — les 126 autres rendent 0,0000 %. ⚠ **En mouvement réduit, `html.sas-ok` n'est jamais posée : cet outil ne peut structurellement pas voir un défaut de sas** (piège 84). Pour ça, `plaques.mjs` |
+| `plaques.mjs <ancre[,ancre…]> <nom> [--reduit] [--base=URL]` | **2026-08-03.** Planches d'une ou plusieurs sections, 5 largeurs × 2 thèmes, **en mouvement PLEIN par défaut**, et le **RELIEF** (écart-type de luminance) de chaque image. Un aplat noir rend ~0 : c'est le relief qui dit si quelque chose est peint, pas l'existence du fichier. Écrit parce que 110 planches en mouvement réduit avaient déclaré saine une section entièrement noire |
+| `sas-sequence.mjs [nom] [--n=N] [--zone=a,b] [--base=URL]` | **2026-08-03.** La séquence du sas de descente : relief de chaque image **et écart de pixels entre deux consécutives** — ce qu'exige la règle B, et ce que dix images ne prouvent pas à elles seules (piège 54) |
 | `captures-comparer.mjs --avant A1,A2,A3 --apres B1,B2,B3` | **la seule forme qui rende un verdict.** Déclare BRUIT toute image qui bouge *à l'intérieur* d'un groupe, puis ne conclut que sur le reste. **Trois passes de chaque côté** : avec deux, le calculateur n'avait pas flanché et ressortait en faux positif |
 | `commentaires.mjs` | outil de fabrication, exécuté une fois : déplace les blocs de commentaire de 4 lignes ou plus vers `decisions/` |
 
@@ -100,7 +102,7 @@ complète**, pas un numéro de port.
 
 | Outil | Ce qu'il rend |
 |---|---|
-| `theme-check.mjs` | parité clair/sombre, contrastes, débordement, 12 sections × 2 thèmes × 5 largeurs. **Ses captures ne sont pas déterministes** — voir `PIEGES.md` § 29 |
+| `theme-check.mjs` | parité clair/sombre, contrastes, débordement, **11** sections × 2 thèmes × 5 largeurs. **Ses captures ne sont pas déterministes** — voir `PIEGES.md` § 29 |
 | `deborde.mjs` | contenu **coupé** par un `overflow`, à 9 largeurs |
 | `prix-check.mjs` | tout montant en dollars, source **et** texte rendu |
 | `contraste-arret.mjs` | contraste **à l'arrêt**, à N positions de défilement |
@@ -127,7 +129,7 @@ complète**, pas un numéro de port.
 | `pdf.mjs` · `couvertures.mjs` | les deux documents et leurs couvertures |
 | `cadeau-check.mjs` · `cadeau-scene.mjs` · `cadeau-e2e.mjs` | déclenchement et contenu · l'entrée est une arête · le parcours complet |
 | `ab-structure.mjs <avant> <apres> [n]` | A/B **apparié** de LCP, CLS et poids du chemin critique : n passes alternées, médiane des **différences** |
-| `plages.mjs [verifier\|ecrire]` | les plages de lignes des 13 sections, **générées** depuis le code. `verifier` sort 1 si `SECTIONS.md` a dérivé |
+| `plages.mjs [verifier\|ecrire]` | les plages de lignes des **12** entrées — onze sections plus le pied —, **générées** depuis le code. `verifier` sort 1 si `SECTIONS.md` a dérivé |
 
 Quatre outils sont partis dans `archives/outils-perimes/` le 2026-07-30 :
 `services-check.mjs`, `projets-check.mjs`, `plaques-vie.mjs`,
@@ -155,7 +157,7 @@ un rapport vide, et redeviennent la preuve si le bloc revient.
 | texte sous 4,5:1 à l'arrêt, 61 positions | **0** (était 8) | 0 |
 | fenêtre illisible au survol, aller et retour | **aucune** | aucune |
 | formulaires qui livrent | **6 / 6**, par le repli `mailto:` | 6 / 6 |
-| échecs de contraste, 12 sections × 2 thèmes × 5 largeurs | **0** | 0 |
+| échecs de contraste, 12 sections × 2 thèmes × 5 largeurs *(relevé du 2026-07-29 ; le site en compte 11 depuis le 2026-08-03)* | **0** | 0 |
 | arrêts au clavier sans anneau de focus | **0 sur 100** | 0 |
 
 ### Section 02 · Services, seconde refonte du 2026-07-30
@@ -274,6 +276,14 @@ Les trois prennent un **port**, pas une adresse.
 | Outil | Ce qu'il rend |
 |---|---|
 | `sas-check.mjs [adresse]` | activation et géométrie des trois pistes · le verbe absorbé · séquence de 11 captures par sas avec écart de pixels consécutifs · hauteurs réelles des sections c-v **mesurées à l'écran** (piège 34) · arrivée par ancre après la re-visée (attendre 2,2 s — mesurer avant, c'est mesurer le navigateur) · erreurs console |
+
+> **Ces chiffres-là ont été relevés en mouvement réduit**, le mode où
+> `html.sas-ok` n'est jamais posée — donc le mode où les sas n'ont pas
+> de géométrie (**piège 84**). Ils restent vrais pour ce qu'ils
+> mesurent ; ils ne disent **rien** de ce qui est peint. Le défaut du
+> volet de la remontée (D-629) leur a survécu trois jours. Pour juger
+> une peinture derrière un sas : `plaques.mjs` et `sas-sequence.mjs`,
+> tous deux en mouvement plein.
 
 ### Chiffres de référence — refonte immersive, 2026-07-31, 1440×900 clair
 

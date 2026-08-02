@@ -91,10 +91,12 @@ les dépendances restent dans la même vague que ce dont elles dépendent
 
 ## 3 · `index.html`
 
-Page unique. Contient **tout** le contenu du site : douze sections, six
+Page unique. Contient **tout** le contenu du site : onze sections, six
 modales, le popup cadeau, le pied, et le `<template>` des treize aperçus.
+La section 09 · Agence (`#apropos`) est partie le 2026-08-03 —
+`archives/2026-08-03-agence/`.
 
-> **Les plages de lignes des douze sections vivent dans `SECTIONS.md`**,
+> **Les plages de lignes des onze sections vivent dans `SECTIONS.md`**,
 > où elles sont **générées** par `node tools/plages.mjs` et vérifiables
 > par `node tools/plages.mjs verifier`. Elles ne sont pas recopiées ici :
 > une adresse écrite à deux endroits dérive à l'un des deux.
@@ -111,34 +113,44 @@ modales, le popup cadeau, le pied, et le `<template>` des treize aperçus.
 | `<header class="nav">` | wordmark, `.nav-links`, bouton thème, CTA |
 | `#menu` | menu plein écran, `hidden` au repos |
 | `<aside class="rail" id="rail">` + `#railList` | index collant |
-| `<main class="shell" id="contenu">` | les douze sections, dans l'ordre du rail — voir `SECTIONS.md` |
+| `<main class="shell" id="contenu">` | les onze sections, dans l'ordre du rail — voir `SECTIONS.md` |
 | `<footer class="footer">` | ⚠️ **à l'intérieur de `<main>`** : il perd son rôle `contentinfo`. Voir `RESERVES.md` |
 | `<dialog class="cadeau" id="cadeau">` | le popup cadeau. `<dialog>` natif : piège de focus, inertie, Échap et couche supérieure gratuits |
 | `#modal-start` · `#modal-booking` · `#modal-project` · `#modal-urgent` · `#modal-refer` · `#modal-estimate` | les six modales, toutes en `role="dialog" aria-modal="true" hidden` |
 | bloc d'injection des scripts | les deux vagues — voir § 2 |
 
-### Les treize seuils, tels qu'ils sont écrits dans le document
+### Les onze seuils, tels qu'ils sont écrits dans le document
 
 Chaque seuil porte `data-seuil`, `data-de`, `data-vers`, `data-dress`,
 `data-verbe`, `data-sens`, et parfois `data-cible`.
 
 | de → vers | `dress` | `verbe` (G4) | `sens` | `cible` |
 |---|---|---|---|---|
-| 01 → 02 | **encre** | volet | bas | — |
-| 02 → 03 | clair | degager | bas | `.ba:first-of-type .ba-cadre` |
+| 01 → 02 | clair | volet | bas | — |
+| 02 → 03 | clair | degager | bas | `.ba:first-of-type .ba-scene` |
 | 03 → 04 | clair | aligner | droite | `.sector-group` |
 | 04 → 05 | **encre** | volet | bas | — |
 | 05 → 06 | **encre** | volet | **haut** | — |
 | 06 → 07 | clair | aligner | droite | `.vs-row` |
 | 07 → 08 | clair | aligner | droite | `.parc-etape` |
-| 08 → 09 | clair | souder | droite | — |
-| 09 → 10 | clair | cran | droite | `.referral-max .num` |
-| 10 → 11 | clair | degager | droite | `.faq-item` |
-| 11 → 12 | clair | degager | bas | `.cell` |
-| 12 → 00 | **encre** | volet | bas | `.footer-mark` |
+| 08 → 09 | clair | cran | droite | `.referral-max .num` |
+| 09 → 10 | clair | degager | droite | `.faq-item` |
+| 10 → 11 | clair | degager | bas | `.cell` |
+| 11 → 00 | **encre** | volet | bas | `.footer-mark` |
 
-Les quatre bandes d'encre sont celles qui **entrent** en 02, en 05, en 06
-et dans le **pied** (`data-de="12"`).
+Les **trois** bandes d'encre sont celles qui **entrent** en 05, en 06 et
+dans le **pied** (`data-de="11"`). Celle du seuil 02 est redevenue
+claire le 2026-07-31 (D-570, l'arc de luminance).
+
+> **Le `souder` a disparu de la table.** C'était le seuil `08 → 09`,
+> celui de la section Agence, et le seul sans `data-cible`. Il part
+> avec elle le 2026-08-03 ; les trois seuils suivants reculent d'un
+> cran. `A44` et `A146` (`ANIMATIONS.md`) n'ont plus de cible et
+> tournent à vide des deux côtés — règle CSS et bloc `langue.js`.
+>
+> **Les bannières `<!-- FRONTIERE nn -->` d'`index.html` n'ont pas
+> suivi** : les trois dernières annoncent 10, 11 et 12 pour des seuils
+> `08→09`, `09→10` et `10→11`. Les attributs font foi.
 
 ### Ce que `index.html` ne contient PAS
 
@@ -192,13 +204,19 @@ Mise en page, composants, sections, micro-états, budget de dégradation.
 | 17. CALCULATEUR - deux moities, le resultat vit a droite |
 | 18. COMPARATIF - deux barres nues par tache |
 | 19. PROCESSUS - le parcours d'atelier |
-| 20. A PROPOS - trois mouvements, trois calibres |
 | 21. REFERENCE - le bloc sombre, dans LES DEUX themes |
 | 22. FAQ - deux colonnes, accordeon |
 | 23. CONTACT - cinq cellules pour cinq entrees, aucune vide |
 | 24. PIED DE PAGE |
 | 25. PAGE 404 - index deraille |
 | 26. POINTS DE RUPTURE |
+
+**Il n'y a plus de bloc `20.`, et le trou reste.** `20. A PROPOS` est
+parti le 2026-08-03 avec la section Agence ; les blocs `21.` à `24.`
+gardent leurs numéros. Renuméroter quatre bannières pour combler un
+trou ferait mentir d'un coup toutes les adresses de `SECTIONS.md` et
+d'`ANIMATIONS.md` — un numéro manquant coûte moins cher qu'un index
+faux.
 
 Après les blocs numérotés viennent, dans l'ordre : la phase 8 (les
 micro-états, un sous-bloc par état), puis le budget de dégradation
@@ -255,7 +273,7 @@ n'y a pas d'aperçu, donc rien à styler.
 Ne contient pas la légende des secteurs — elle reste dans le document et
 reste stylée par `app.css`.
 
-### `css/tour360.css` — 501 lignes
+### `css/tour360.css` — 453 lignes, 12,4 Ko
 
 Feuille autonome de la visite. Ne dépend que des jetons. Charge **après**
 `css/vendor/pannellum.css`, dont elle ferme deux dettes : l'anneau de focus
@@ -264,12 +282,18 @@ et l'état de focus des points de passage.
 
 Depuis le 2026-08-02 elle porte aussi **le contenant** du lecteur, et pas
 seulement le lecteur : `.tour-cadre` (les trois étages), `.tour-manifeste`,
-`.tour-lieu`, `.tour-pupitre` / `.tour-encours`, `.tour-pied`,
-`.tour-gestes`, `.tour-source`. C'est ce qui garde l'invariant **« aucune
-règle `.tour` dans `app.css` »**. Contrepartie à connaître : cette feuille
-arrive en **vague 2**, donc rien de ce qu'elle porte ne doit être
-nécessaire à la lecture — la hauteur de la scène est réservée par les
-attributs `width` / `height` de l'affiche, pas par le CSS.
+`.tour-lieu`, `.tour-pupitre` / `.tour-encours`, `.tour-source`. C'est ce
+qui garde l'invariant **« aucune règle `.tour` dans `app.css` »**.
+Contrepartie à connaître : cette feuille arrive en **vague 2**, donc rien
+de ce qu'elle porte ne doit être nécessaire à la lecture — la hauteur de
+la scène est réservée par les attributs `width` / `height` de l'affiche,
+pas par le CSS.
+
+**Passée de 501 à 453 lignes le 2026-08-03** (D-632) : `.tour-pied` et
+`.tour-gestes`, avec leur grille à trois pistes inégales, sont partis
+avec le pied de trois gestes. `.tour-source` perd son filet et sa
+colonne pour devenir une légende de cadre — deux traits à 24 px l'un de
+l'autre font une rayure, pas une structure.
 
 ### `css/vendor/pannellum.css`
 
@@ -371,7 +395,7 @@ dessous. Aucun carrousel, aucun morph.
 
 Sort immédiatement si `window.Limaille` est absent.
 
-### `js/motion.js` — 687 lignes, 32 Ko — **vague 2**, après GSAP
+### `js/motion.js` — 348 lignes, 13 Ko — **vague 2**, après GSAP
 
 Les chorégraphies liées au défilement. Chaque animation porte son **niveau
 N1 / N2 / N3** en commentaire. `transform` et `opacity` uniquement, aucun
@@ -385,16 +409,19 @@ N1 / N2 / N3** en commentaire. `transform` et `opacity` uniquement, aucun
 | **3. Filets de section — N1 + N2.** C'est le **G1** des frontières : le filet se soude dès `top 97%`, il annonce la section avant qu'elle arrive |
 | 4. Montée des blocs |
 | 5. Compteurs de la bande de spécification |
-| 6. Le rail des services — N1 + N2 (consomme `window.APED_SVC`, ) |
-| 7. Défilement interne des captures de projet |
+| **6. Le cadre de la visite** — V1 · DÉGAGER, sens bas (le rail des services, qui portait ce numéro, est parti le 2026-07-30) |
 | 8. Ligne du processus · 8bis. Les 4 composants du parcours |
 | 9. Piste du comparatif · 9bis. Le schéma de l'écart |
 | 10. Titres de section |
 | 11. Blocs qui se reprennent |
 | 12. Frise du processus, défilement latéral |
-| 12bis. Les 4 preuves de l'agence |
 | 13. Programme de référence · 13bis. « Ce qui arrive après » |
 | 14. Recalcul après chargement des images |
+
+Les blocs **7** (défilement interne des captures de projet), **12bis**
+(les 4 preuves de l'agence) et **12ter** (les 3 faits de l'agence)
+n'existent plus ; leurs numéros ne sont pas réattribués, pour la même
+raison que le trou du bloc `20.` d'`app.css`.
 
 **Ne contient pas** : l'orientation (elle est dans `main.js`), les quatre
 verbes (ils sont dans `langue.js`), et **aucun scrub d'opacité sur un
@@ -481,6 +508,8 @@ impressions.
 | `serve.mjs` | Serveur statique minimal, zéro dépendance. `node tools/serve.mjs [port]`. |
 | `cine.mjs` | **Bibliothèque, pas un test.** `filmer / planche / cadence / plancheFenetre` via `Page.startScreencast` du protocole DevTools : une image à chaque peinture, horodatée. Existe parce que `page.screenshot` coûte 120 à 950 ms et **rate** une transition. |
 | `vue.mjs` | Une capture ciblée d'une section : `node tools/vue.mjs #contact [largeur] [thème] [décalage]`. |
+| `plaques.mjs <ancre[,ancre…]> <nom> [--reduit] [--base=URL]` | **Ajouté le 2026-08-03.** Planches d'une ou plusieurs sections, 5 largeurs × 2 thèmes, et le **RELIEF** (écart-type de luminance) de chaque image — c'est lui qui dit si quelque chose est peint, pas le fait qu'un fichier existe. **Il photographie en mouvement PLEIN par défaut, et c'est sa raison d'être** : `html.sas-ok` se décide dans le `<head>` avec `!prefers-reduced-motion`, donc en mouvement réduit la géométrie des sas **n'existe pas**. 110 planches du dépôt ont déclaré saine une section entièrement noire pour cette seule raison. `--reduit` reste là pour comparer. Pare aussi les pièges 44, 67 et 80 : traverse toute la page une fois, puis pilote au pas en relisant la position. |
+| `sas-sequence.mjs [nom] [--n=N] [--zone=a,b] [--base=URL]` | **Ajouté le 2026-08-03.** La séquence du sas de descente — relief de chaque image **et écart de pixels entre deux consécutives**, ce qu'exige la règle B. Écrit pour répondre à « la forge se voit-elle encore à 150vh », c'est-à-dire après que le point d'épinglage est passé de 0,42 à 0,67. `--zone` resserre sur une part de la course. |
 
 ### Preuves de comportement
 
@@ -577,13 +606,13 @@ impressions.
 
 | Fichier | Quand le lire |
 |---|---|
-| **`CLAUDE.md`** | toujours : c'est l'aiguilleur. Les interdits, les seuils, les 4 verbes, les 29 erreurs déjà commises, et la table « si tu travailles sur X, lis Y » |
+| **`CLAUDE.md`** | toujours : c'est l'aiguilleur. Les interdits, les seuils, les 4 verbes, les 85 erreurs déjà commises, et la table « si tu travailles sur X, lis Y » |
 | **`SECTIONS.md`** | une demande nomme une section. **Seul document du dépôt qui porte des numéros de ligne**, et ils sont générés par `node tools/plages.mjs` |
 | **`ARCHITECTURE.md`** | ce fichier. Tu sais quoi changer, pas où |
 | **`ANIMATIONS.md`** | avant de toucher à un mouvement. Une ligne par animation, avec son verbe et son verrou |
 | **`DECISIONS.md`** | avant de renverser un choix. Plus l'index de `decisions/`, un fichier par fichier source |
 | **`MESURES.md`** | avant d'annoncer un chiffre, ou pour choisir un outil |
-| **`PIEGES.md`** | une mesure rend un verdict surprenant. 29 faux verdicts déjà payés |
+| **`PIEGES.md`** | une mesure rend un verdict surprenant. 85 faux verdicts déjà payés |
 | **`RESERVES.md`** | avant d'écrire « vérifié » |
 | **`DESIGN-STACK.md`** | quels skills charger, et lesquels sont hors périmètre |
 
@@ -623,7 +652,7 @@ Ils passaient au vert sur du vide : le piège 17.
 | Fichier / dossier | Rôle |
 |---|---|
 | **`archives/`** | **Ajouté le 2026-07-30.** Ce qui a été retiré du site, avec l'argument et les mesures. **Rien n'y est supprimé : tout y est recollable.** Cinq entrées, chacune avec son `README.md` : `2026-07-30-plaques-accueil/` (markup, CSS, JS, et le registre des huit affirmations), `2026-07-30-services-images/` (les 4 `.webp` **et `svc-images.mjs`, qui porte leur licence** — une provenance ne survit pas dans un binaire), `2026-07-30-projets-images/` (les 5 `real-*.webp` sans licence, l'ancienne section 03, et les trois blocs de JS morts), **`2026-08-01-sites-longs/`** (les neuf pages longues de secteur retirées au chantier du premier écran, et la liste de ce qui reste en service), `rapports/` (les rapports de phases closes) et `outils-perimes/` (dont `refs-2026-07/`, les 14 sondes d'un seul usage). |
-| **`404.html`** (159 lignes) | Page introuvable, `noindex`. **Elle charge `css/app.css` en entier**, pas le couple critique/différé : trois `<link>` en tête (`tokens`, `base`, `app`). Même script en ligne de thème que `index.html`, mais **sans** la décision de séquence d'entrée. Contient l'index complet des 12 sections en liens `index.html#…` , avec une ligne « déraillée ». Son style vit dans `css/app.css` § 25 . |
+| **`404.html`** (159 lignes) | Page introuvable, `noindex`. **Elle charge `css/app.css` en entier**, pas le couple critique/différé : trois `<link>` en tête (`tokens`, `base`, `app`). Même script en ligne de thème que `index.html`, mais **sans** la décision de séquence d'entrée. Contient l'index complet des **11** sections en liens `index.html#…`, avec une ligne « déraillée ». La ligne `09 · Agence` en est partie le 2026-08-03 : une 404 qui renvoie vers une ancre morte est une 404 qui en fabrique une seconde. Son style vit dans `css/app.css` § 25 . |
 | **`package.json`** | `devDependencies` uniquement : `playwright`, `gsap`, `puppeteer-core`, `shadcn`, `@tabler/icons`. **Aucune dépendance de production, aucun script de build déclaré.** GSAP est copié dans `js/vendor/`, il n'est pas résolu depuis `node_modules` à l'exécution. Les icônes Tabler sont la source du sprite inline. |
 | **`components.json`** | Config shadcn. Cible un projet **React + Tailwind** (`css/styles.css`, alias `components/ui`) qui **n'existe pas ici**. Sert uniquement à donner au MCP `shadcn` la liste des registries : `@magic-ui`, `@aceternity`, `@kokonutui`, `@kibo-ui`. `shadcn add` n'écrit pas de code utilisable sur ce site vanilla — le MCP sert à **chercher et lire**, puis à porter à la main. |
 | **`.mcp.json`** | Un seul serveur, au niveau projet : `shadcn` via `npx shadcn@latest mcp`. Le serveur `playwright` est configuré au niveau utilisateur, pas ici. |
@@ -675,6 +704,22 @@ des sections, portant le seuil de sa frontière. Descente et clôture :
 `.sas-piste > .sas-scene` collante ; remontée : calque sans piste
 (D-568). Styles : `app.css § 1ter`, préfixe `sas-` dans la liste
 CRITIQUES de `css-critique.mjs`.
+
+**Ce que le 2026-08-03 y a changé** — `decisions/` D-629 à D-631 :
+
+- **le volet de la remontée vit dans `div.sas-cache`**, qui porte
+  `overflow: hidden` et le `z-index`. Le volet n'est plus qu'un aplat
+  en `inset: 0` à l'intérieur. Nu, il peignait 1 193 px d'encre
+  **par-dessus la section qui précède** dans trois états sur quatre —
+  repos CSS, GSAP absent, escalade de palier. Un `top: 0` suivi d'un
+  `translateY(-102%)` ne sort pas du document, il remonte dedans ;
+- **la piste de la descente passe de 240vh à 150vh**, et les bornes de
+  la chorégraphie ne sont plus écrites en dur : `sas.js` déduit le
+  point d'épinglage de `innerHeight / hauteur de piste` dans
+  `onRefresh`, puis raisonne en progression **épinglée** ;
+- **`.sas-mot` n'a plus d'état de départ dans le CSS** : il est visible
+  au repos, et c'est `.sas-actif` — posée par `armer()` — qui le
+  retire jusqu'au CRAN.
 
 **La chambre noire** : `#visite` porte les jetons du thème opposé
 (D-572) — aucun nouveau couple de couleurs n'existe dans le projet.
