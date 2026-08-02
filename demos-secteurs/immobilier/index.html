@@ -125,9 +125,10 @@ a{ color:inherit; text-decoration:none }
    Aucun mot ne se pose dessus, jamais, même pas un crédit. */
 /* Au repli, la bande reste plus haute que 0,59 × sa largeur : à ce
    rapport-là le cadrage rogne par les CÔTÉS, donc il écarte le bord
-   gauche de la source — où traînent un bac roulant et la maison
-   voisine. Une hauteur fixe laisserait la source entière à l'écran
-   dès 768 px. Et c'est une hauteur, pas un `aspect-ratio` : un
+   gauche de la source — où traînent une voiture rouge, un bac
+   roulant vert et deux maisons voisines dont une à bardage vert.
+   Une hauteur fixe laisserait la source entière à l'écran dès
+   768 px. Et c'est une hauteur, pas un `aspect-ratio` : un
    `min-height` se TRANSFÈRE en largeur minimale à travers le
    rapport, et la page débordait de 58 px à 320. */
 .vue{
@@ -135,9 +136,13 @@ a{ color:inherit; text-decoration:none }
   background:var(--ivoire);
   height:clamp(260px, 64vw, 700px);
 }
+/* 78 % et pas 82 : à 78 le sommet du pignon tombe à x = 293, soit
+   18 px À DROITE de la lisière du volet — la maison sort du volet
+   par sa pointe. À 82 il tombe à 257, sous le volet, et l'écran
+   arrêté ne montre plus qu'une pente de toit. Relevé, pas estimé. */
 .photo{
   width:100%; height:100%;
-  object-fit:cover; object-position:82% 50%;
+  object-fit:cover; object-position:78% 50%;
   /* Aucun duotone, aucun virage chaud : le bardage descend du blanc
      laiteux vers le gris pierre, le ciel du cyan vers le bleu de
      Prusse. Le ciel reste bleu, et c'est le seul endroit de l'écran
@@ -220,9 +225,19 @@ a{ color:inherit; text-decoration:none }
 
 /* ── LA FICHE DE LOT ──────────────────────────────────────────────
    Trois colonnes. L'unité est SORTIE du nombre : sans ça,
-   « 178 M² » et « 2004 » ne peuvent pas se caler sur la même
+   « 178 M² » et « 2021 » ne peuvent pas se caler sur la même
    verticale. Les chiffres sont en `dm-serif` — l'affichage sert à
-   écrire des nombres autant qu'à écrire le titre. */
+   écrire des nombres autant qu'à écrire le titre.
+
+   UN SEUL CHIFFRE DOMINE. Cinq rangs de même poids ne composent
+   pas : ils tabulent. Le registre est donc coupé en deux — la
+   superficie habitable seule, à 84 px, et les quatre autres en
+   liste, à 24 px. Rapport × 3,5. C'est la superficie et pas le
+   terrain parce que la photographie montre le BÂTIMENT : le chiffre
+   qui domine doit décrire ce qu'on voit. L'ouverture et la
+   fermeture du registre sont en encre, les quatre séparations en
+   filet pierre : la hiérarchie est portée par le corps, pas par une
+   quatrième épaisseur de trait. */
 .fiche{ margin:30px 0 0; border-bottom:1px solid var(--encre) }
 .rang{
   display:grid;
@@ -240,6 +255,39 @@ a{ color:inherit; text-decoration:none }
 /* L'unité ne prend pas l'approche des libellés : sur deux signes,
    0,14 em n'écarte pas des mots, il décolle le « ² » du « M ». */
 .rang .u{ grid-column:3; margin:0; font-size:11px; line-height:1; color:var(--pierre) }
+
+/* Le rang maître : le libellé prend sa ligne, le chiffre tombe
+   dessous en pleine chasse. C'est LUI qui porte le filet d'encre
+   qui ouvre le registre — pas la fiche, sinon les deux se
+   superposeraient et l'ouverture ferait 2 px. */
+.maitre{
+  display:block; padding:20px 0 22px;
+  border-top:1px solid var(--encre);
+}
+.maitre dt{ font-size:11px; line-height:1.45; letter-spacing:.14em; color:var(--pierre) }
+.maitre .n{
+  display:inline-block; margin:12px 0 0;
+  font-family:"dm-serif", Georgia, serif; font-weight:400;
+  font-size:clamp(52px, 14vw, 84px); line-height:.9;
+}
+.maitre .u{ display:inline-block; margin:0 0 0 12px; font-size:11px; color:var(--pierre) }
+
+/* LE FILIGRANE — la seconde lecture, et la seule qu'il y ait.
+   Le numéro de lot une deuxième fois, très grand, en contre-forme :
+   l'intérieur des chiffres est l'ivoire de la page, leur contour est
+   le filet de 1 px. Aucune valeur n'est ajoutée à la palette et
+   aucun caractère n'est peint en `#cfc9bf` — ce sont des TRAITS de
+   1 px, comme les séparations des rangs, simplement pliés en
+   chiffres. Il ne passe jamais derrière un libellé gris pierre :
+   pierre sur ivoire ne rend que 4,69 : 1, et le moindre trait plus
+   sombre derrière ferait tomber sous 4,5. Il ne croise que de
+   l'encre, qui garde 11,3 : 1 sur le filet. Il n'existe qu'à partir
+   de 1200 px : plus bas, il n'y a pas la place.
+   Il vit HORS de la `<dl>` — celle-ci n'admet que des `dt`, des `dd`
+   et des `div` de groupe — et il passe DESSOUS par l'ordre du
+   document, pas par un `z-index` : les deux sont positionnés, le
+   premier écrit est le premier peint. */
+.filigrane{ display:none; margin:0 }
 
 /* L'ESPACE FINE INSÉCABLE, ET POURQUOI ELLE EST ÉPAULÉE.
    `&#8239;` avance de 0,109 em dans DM Serif Display, soit 3,5 px à
@@ -373,21 +421,27 @@ a:focus-visible,
     font-size:calc(12 * var(--s)); line-height:calc(20 * var(--s));
   }
 
-  /* Cinq rangs de 64 px. Filets séparateurs en y = 436, 500, 564,
-     628, 692 ; filet de fermeture en ENCRE à y = 756 — plus lourd,
-     parce qu'il ferme le registre. La troisième colonne fait
-     69 px : le chiffre se cale à droite sur x = 1308, l'unité part
-     à gauche de x = 1320. */
+  /* LE REGISTRE, y 424 → 752, en deux temps.
+     · un BLOC MAÎTRE de 168 px, ouvert par un filet 1 px ENCRE en
+       y = 424 : libellé en 11 px sur la ligne de base y = 456,
+       chiffre en 84 px sur la ligne de base y = 552 ;
+     · QUATRE RANGS de 40 px, séparés par des filets 1 px pierre en
+       y = 592, 632, 672, 712, et fermés par un filet 1 px ENCRE en
+       y = 752. Libellé, chiffre et unité partagent une seule ligne
+       de base, haut + 26 — c'est ce qui en fait une LISTE et non
+       cinq compositions.
+     La troisième colonne fait 69 px : le chiffre se cale à droite
+     sur x = 1308, l'unité part à gauche de x = 1320. */
   .fiche{
     position:absolute;
-    top:calc(436 * var(--s));
+    top:calc(424 * var(--s));
     left:calc(63 * var(--s)); right:calc(63 * var(--s));
     margin:0;
   }
   .rang{
     grid-template-columns:auto minmax(0, 1fr) calc(69 * var(--s));
     align-items:start; column-gap:0; row-gap:0;
-    height:calc(64 * var(--s)); padding:0;
+    height:calc(40 * var(--s)); padding:0;
   }
   .rang dt{
     padding-top:calc(16 * var(--s));                        /* base = haut + 26 */
@@ -395,14 +449,61 @@ a:focus-visible,
     white-space:nowrap;
   }
   .rang .n{
-    padding-top:calc(20 * var(--s));                        /* base = haut + 48 */
-    font-size:calc(32 * var(--s)); line-height:calc(32 * var(--s));
+    padding-top:calc(5 * var(--s));                         /* base = haut + 26 */
+    font-size:calc(24 * var(--s)); line-height:calc(24 * var(--s));
     white-space:nowrap;
   }
   .rang .u{
-    padding-top:calc(38 * var(--s));                        /* base = haut + 48 */
+    padding-top:calc(16 * var(--s));                        /* base = haut + 26 */
     padding-left:calc(12 * var(--s));
     font-size:calc(11 * var(--s)); line-height:calc(11 * var(--s));
+  }
+
+  /* Le bloc maître reprend la même grille de trois colonnes — le
+     chiffre reste cloué sur la verticale 1308, sinon la hiérarchie
+     casserait la seule colonne qui tient le registre debout. Ce qui
+     change est le corps et la hauteur, rien d'autre. */
+  .maitre{
+    display:grid; height:calc(168 * var(--s)); padding:0;
+    border-top:1px solid var(--encre);
+  }
+  .maitre dt{
+    grid-column:1; justify-self:start;
+    padding-top:calc(22 * var(--s));                        /* base y = 456 */
+    margin:0;
+  }
+  .maitre .n{
+    grid-column:2; justify-self:end; margin:0;
+    padding-top:calc(55 * var(--s));                        /* base y = 552 */
+    font-size:calc(84 * var(--s)); line-height:calc(84 * var(--s));
+    white-space:nowrap;
+  }
+  .maitre .u{
+    grid-column:3; justify-self:start; margin:0;
+    padding-top:calc(118 * var(--s));                       /* base y = 552 */
+    padding-left:calc(12 * var(--s));
+    font-size:calc(11 * var(--s)); line-height:calc(11 * var(--s));
+  }
+
+  /* Le filigrane occupe la seule zone franchement vide du registre :
+     sous le libellé du bloc maître, à gauche du chiffre de 84 px,
+     y 470 → 592. Il est calé À GAUCHE sur x = 784 et s'arrête avant
+     x = 1160 — la première mesure l'avait fait courir jusqu'à 1308,
+     donc DERRIÈRE le 178, et les deux masses se sont annulées :
+     un filigrane qui recouvre le chiffre dominant n'est plus une
+     seconde lecture, c'est un troisième objet. Il tient maintenant
+     le quart vide du bloc, et les deux masses se répondent en
+     diagonale — pâle en bas à gauche, pleine en bas à droite. */
+  .filigrane{
+    display:block; position:absolute;
+    left:calc(63 * var(--s));                               /* x = 784 */
+    right:calc(280 * var(--s));                             /* s'arrête avant x = 1160 */
+    top:calc(470 * var(--s)); height:calc(122 * var(--s));
+    margin:0; text-align:left; white-space:nowrap;
+    font-family:"dm-serif", Georgia, serif; font-weight:400;
+    font-size:calc(94 * var(--s)); line-height:calc(122 * var(--s));
+    color:var(--ivoire);
+    -webkit-text-stroke:1px var(--filet);
   }
 
   /* Bouton 280 × 48 en x 784 → 1064, y 800 → 848. Les coordonnées
@@ -442,10 +543,10 @@ a:focus-visible,
 
   <figure class="vue">
     <img class="photo"
-         src="../../images/secteurs-sites/immobilier-2.webp"
-         width="1280" height="720"
+         src="../../images/secteurs-sites/immobilier-16.webp"
+         width="1920" height="1080"
          fetchpriority="high" decoding="async"
-         alt="Façade d’un plain-pied : pignon à bardage gris, porche et porte d’entrée, ciel dégagé.">
+         alt="Façade d’une maison à étage, vue de trois quarts : pignon en bardeaux ardoise, fenêtres à volets, porche à colonnes sur soubassement de pierre, ciel couvert.">
     <div class="volet" aria-hidden="true"></div>
   </figure>
 
@@ -478,19 +579,17 @@ a:focus-visible,
 
       <p class="soustitre">Chaque propriété est décrite par ses chiffres avant de l’être par ses adjectifs.</p>
 
+      <p class="filigrane" aria-hidden="true">4<span class="f">&#8239;</span>782<span class="f">&#8239;</span>106</p>
+
       <dl class="fiche">
-        <div class="rang">
-          <dt>NUMÉRO DE LOT</dt>
-          <dd class="n">4<span class="f">&#8239;</span>782<span class="f">&#8239;</span>106</dd>
-        </div>
-        <div class="rang">
+        <div class="rang maitre">
           <dt>SUPERFICIE HABITABLE</dt>
           <dd class="n">178</dd>
           <dd class="u">M²</dd>
         </div>
         <div class="rang">
           <dt>TERRAIN</dt>
-          <dd class="n">1<span class="f">&#8239;</span>042</dd>
+          <dd class="n">608</dd>
           <dd class="u">M²</dd>
         </div>
         <div class="rang">
@@ -499,7 +598,11 @@ a:focus-visible,
         </div>
         <div class="rang">
           <dt>ANNÉE DE CONSTRUCTION</dt>
-          <dd class="n">2004</dd>
+          <dd class="n">2021</dd>
+        </div>
+        <div class="rang">
+          <dt>NUMÉRO DE LOT</dt>
+          <dd class="n">4<span class="f">&#8239;</span>782<span class="f">&#8239;</span>106</dd>
         </div>
       </dl>
 

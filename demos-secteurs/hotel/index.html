@@ -98,10 +98,28 @@ img{display:block}
    étranger : feuillus nus chargés de neige, sol enneigé, pavillons de
    bois à toit sombre, brunante bleue.
 
-   Le traitement est mesuré, pas choisi : la neige bleue de la
-   brunante tombe de #b9cfe3 à #2a363d, le bois éclairé des pavillons
-   passe de l'ambre au brun sourd, et il ne reste que 59 pixels
-   « chauds » sur 1 296 000 — 0,05 ‰, les carreaux allumés. */
+   Le traitement est mesuré, pas choisi. Composite relevé en canvas
+   avec le recouvrement exact : la neige du sol passe de #69b8eb
+   (Y 0,433, saturation 55 %) à #475b67 (Y 0,098, 31 %) — bleu > vert
+   > rouge, donc LA NEIGE RESTE BLEUE ; la neige des branches tombe à
+   #263238 ; les troncs à #263136, froids eux aussi.
+
+   CE QU'IL RESTE DE CHAUD, ET IL EST COMPTÉ : 61 pixels sur
+   1 296 000 — 0,047 ‰ — satisfont « rouge > vert et rouge > bleu ».
+   Ce sont les carreaux allumés des pavillons ; le plus saturé rend
+   #392c24, soit 37 %. `saturate(.26)` les ramène à ZÉRO, et les deux
+   planches sont indiscernables à l'œil : on garde .34 parce que ces
+   soixante-et-un pixels sont la seule chose de l'écran qui dise
+   qu'il y a quelqu'un, et parce que .26 rabat aussi la saturation de
+   la neige de 31 à 27 %.
+
+   Le compte a d'abord rendu 2 798 pixels chauds, et c'était FAUX :
+   ils étaient tous posés sur les lignes de texte. Chromium sous
+   Windows rend le texte en anticrénelage de SOUS-PIXELS et
+   `-webkit-font-smoothing:antialiased` n'y change rien — une frange
+   rouge de sous-pixel satisfait le test sans qu'aucune couleur
+   chaude soit dans la page. On ne compte que les couches d'image,
+   tout le reste retiré du document. */
 /* ── L'ORDRE DE PEINTURE, ÉCRIT PLUTÔT QUE SUBI ───────────────────
    Un descendant STATIQUE se peint sous un descendant POSITIONNÉ,
    même quand il vient après lui dans le document. En dessous de
@@ -197,15 +215,19 @@ img{display:block}
    un trait d'1 px ne survit pas à la réduction du panneau (0,29 →
    0,29 px), et un écran dont le geste ne survit pas est un écran
    fixe (piège 57). Le geste est descendu sur la plaque, plus bas.
-   Le filet redevient ce qu'il est : une hairline de laiton à .55 —
-   la même valeur que le séparateur du haut et que la bordure du
-   cartouche, une seule graisse pour tous les filets de l'écran.
+   Le filet redevient ce qu'il est : un objet posé dans la marge.
    Ancré par le BAS (y = 848, la ligne que partagent le bouton et le
-   cartouche), 412 px de haut, donc y = 436. */
+   cartouche), 412 px de haut, donc y = 436.
+
+   LAITON PLEIN, ET PAS .55 comme le séparateur du haut ou la bordure
+   du cartouche : mesuré sur la page rendue, .55 sur ce fond tombe à
+   2,54:1 et le trait s'efface. Plein, il rend 5,52:1 — le seuil des
+   non-textes est 3:1. La bordure du cartouche, elle, a le droit de
+   rester à .55 : elle est posée sur un aplat, pas sur la photo. */
 .filet{
   position:absolute;left:var(--mx);bottom:var(--mb);z-index:3;
   width:1px;height:412px;
-  background:rgba(169,139,79,.55);
+  background:var(--laiton);
 }
 
 /* ── 9 À 14 · LE BAS : LA PLAQUE, PUIS LE CARTOUCHE ───────────────
@@ -252,10 +274,25 @@ img{display:block}
    LINÉAIRE, ET C'EST DÉLIBÉRÉ : une sortie en ease-out ferait bouger
    la fraction capturée de 20 points pour 40 ms d'écart, un
    remplissage linéaire ne la bouge que de 2,2 points. */
-.marque::after{
-  content:"";display:block;
+   LA COURSE EST DESSINÉE EN CREUX, et ce n'est pas décoratif : sur
+   l'image ARRÊTÉE, une plaque à 61 % sans course visible se lit
+   comme un filet court qu'on a voulu court. Avec la course derrière,
+   elle se lit comme un objet qui n'a pas fini. C'est le seul moyen
+   qu'une capture fixe dise « mouvement ». Au repos la plaque
+   recouvre sa course au pixel : les deux ont la même boîte.
+
+   Les deux pseudo-éléments sont ABSOLUS et la place est réservée par
+   `padding-bottom` — un positionné se peint au-dessus d'un statique,
+   et il fallait que le laiton passe par-dessus la course, pas
+   dessous. Ordre du document : `::before` la course, `::after` le
+   laiton. */
+.marque{position:relative;padding-bottom:30px}   /* 14 de vide + 16 de plaque */
+.marque::before,.marque::after{
+  content:"";position:absolute;left:0;bottom:0;
   width:calc(100% - var(--chasse));height:16px;
-  margin-top:14px;
+}
+.marque::before{background:rgba(232,224,205,.12)}
+.marque::after{
   background:var(--laiton);
   transform:scaleX(1);                /* ÉTAT DE REPOS = ÉTAT FINAL */
   transform-origin:0 50%;

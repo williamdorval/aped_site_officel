@@ -29,16 +29,16 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | 01 | **Accueil** | `#top` | 224-280 | 57 | 1764-2027 · 1260-1542 | `main.js` 114-219 | — |
 | 02 | **Services** | `#services` | 281-917 | 637 | 2028-2722 | `main.js` 220-664 | — |
 | 03 | **Réalisations** | `#realisations` | 918-1756 | 839 | 2723-4772 | `main.js` 665-1001 | — |
-| 04 | **Secteurs** | `#demos` | 1757-1986 | 230 | 4773-4899 | `main.js` 2466-2719 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
-| 05 | **Visite 360** | `#visite` | 1987-2056 | 70 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2057-2217 | 161 | 4900-5036 | `main.js` 2246-2465 | — |
-| 07 | **Comparatif** | `#comparatif` | 2218-2342 | 125 | 5037-5194 | — | — |
-| 08 | **Processus** | `#processus` | 2343-2478 | 136 | 5195-5380 | `main.js` 1002-1038 | — |
-| 09 | **Agence** | `#apropos` | 2479-2571 | 93 | 5381-5463 | — | — |
-| 10 | **Référence** | `#reference` | 2572-2646 | 75 | 5464-5578 | — | — |
-| 11 | **Questions** | `#faq` | 2647-2722 | 76 | 5579-5612 | `langue.js` 613-641 | — |
-| 12 | **Contact** | `#contact` | 2723-2855 | 133 | 5613-5811 | `main.js` 1566-1611 · `main.js` 1612-1677 · `main.js` 1678-1769 | — |
-| — | **Pied de page** | `#footer` | 2856-2908 | 53 | 5812-5872 | `main.js` 3007-3027 | — |
+| 04 | **Secteurs** | `#demos` | 1757-1990 | 234 | 4773-4899 | `main.js` 2466-2719 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 05 | **Visite 360** | `#visite` | 1991-2060 | 70 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
+| 06 | **Calculateur** | `#calculateur` | 2061-2221 | 161 | 4900-5036 | `main.js` 2246-2465 | — |
+| 07 | **Comparatif** | `#comparatif` | 2222-2346 | 125 | 5037-5194 | — | — |
+| 08 | **Processus** | `#processus` | 2347-2482 | 136 | 5195-5380 | `main.js` 1002-1038 | — |
+| 09 | **Agence** | `#apropos` | 2483-2575 | 93 | 5381-5463 | — | — |
+| 10 | **Référence** | `#reference` | 2576-2650 | 75 | 5464-5578 | — | — |
+| 11 | **Questions** | `#faq` | 2651-2726 | 76 | 5579-5612 | `langue.js` 613-641 | — |
+| 12 | **Contact** | `#contact` | 2727-2859 | 133 | 5613-5811 | `main.js` 1566-1611 · `main.js` 1612-1677 · `main.js` 1678-1769 | — |
+| — | **Pied de page** | `#footer` | 2860-2912 | 53 | 5812-5872 | `main.js` 3007-3027 | — |
 
 <!-- PLAGES:FIN -->
 
