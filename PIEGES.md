@@ -1177,3 +1177,41 @@ que le masque venait de POSER. Un numéro de remplacement satisfait
 **Un motif n'a survécu que si ce qu'il attrape n'est pas son propre
 remplacement.** Le contrôle compare la prise à la chaîne de
 substitution avant de crier.
+
+### 59 · Le contraste sur une photographie ne se calcule pas, il se PHOTOGRAPHIE — et la mesure a trois pièges d'affilée
+
+`demos-contraste.mjs` remonte jusqu'à la première surface **opaque**.
+Sous une photographie il s'arrête et rend « approché ». L'écran de
+l'auberge y passait à **5,67 · ok aux trois largeurs** pendant que
+trois de ses blocs étaient réellement sous 4,5. Piège 45, appliqué au
+contraste : *un fond en image n'est pas un fond absent.*
+
+`tools/pire-pixel.mjs` mesure ce qui est peint — deux captures, avec
+et sans encre. Il a fallu **trois essais**, et chacun a rendu un faux
+verdict avant d'être corrigé.
+
+| Essai | Ce qu'il gardait | Ce qu'il a rendu |
+|---|---|---|
+| 1 | tout pixel du rectangle englobant | **2,46:1** sur un mot-marque net — il mesurait le ciel **entre** un « A » et un « u » |
+| 2 | tout pixel ayant bougé de plus de 64 | **1,13:1 sur les neuf blocs** — il mesurait l'**anticrénelage**, dont la couleur composée est presque celle du fond. Piège 8, rejoué |
+| 3 | 85 % de la distance vers la couleur **déclarée** | « **aucun pixel d'encre** » sur trois blocs — leur encre est posée à `rgba(…, .72)` et ne parcourt jamais que 72 % de cette distance. Un silence qui se lit comme « rien à signaler » |
+
+Ce qui décide enfin : **le déplacement maximal observé dans la boîte**
+sert de cible, et on garde les pixels qui l'atteignent à 85 %. Plus
+aucune hypothèse sur l'alpha, le mode de fusion ou ce que le moteur a
+décidé. Et **densité 2** : à densité 1 une mono de 10 px n'a pas un
+seul pixel de couverture pleine.
+
+### 59 bis · Assombrir le fond sous une encre TRANSPARENTE ne change pas le rapport
+
+Le correctif évident — épaissir le voile — a fait passer le pire pixel
+de 4,23 à 4,26. Rien.
+
+**Une encre posée à `rgba(…, .72)` est composée sur ce même fond.**
+L'assombrir assombrit l'encre d'autant : les deux termes du rapport
+descendent ensemble et le quotient ne bouge pas. Le seul levier est
+**l'opacité de l'encre**. `.72 → .88` a rendu 4,23 → 6,06.
+
+> **La règle : sur un fond qu'on ne contrôle pas, un texte
+> semi-transparent n'a pas de plancher de contraste.** Ou il est
+> opaque, ou son fond est un aplat.

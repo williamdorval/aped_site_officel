@@ -120,8 +120,9 @@ img{display:block}
    ces pixels-là sont la seule chose de l'écran qui dise qu'il y a
    quelqu'un — et c'est exactement ce que la passe du côte-à-côte
    demandait en remontant la luminosité. À `brightness(.60)` il n'y en
-   avait que 61 (0,047 ‰) ; le compte suit la luminosité, il se
-   reprend avec `hotel-chaud2`.
+   avait que 61 (0,047 ‰) : LE COMPTE SUIT LA LUMINOSITÉ et se
+   reprend chaque fois qu'elle bouge — page rendue, `.haut`, `.bas` et
+   `.filet` RETIRÉS du document, puis balayage des pixels.
 
    Le compte a d'abord rendu 2 798 pixels chauds, et c'était FAUX :
    ils étaient tous posés sur les lignes de texte. Chromium sous
@@ -164,9 +165,9 @@ img{display:block}
   position:absolute;left:0;right:0;bottom:0;z-index:2;height:500px;
   background:linear-gradient(180deg,
     rgba(9,18,15,0)   0,
-    rgba(9,18,15,.22) 20%,
-    rgba(9,18,15,.55) 42%,
-    rgba(9,18,15,.82) 62%,
+    rgba(9,18,15,.34) 20%,
+    rgba(9,18,15,.66) 42%,
+    rgba(9,18,15,.86) 62%,
     rgba(9,18,15,.94) 84%,
     rgba(9,18,15,.97) 100%);
 }
@@ -177,9 +178,10 @@ img{display:block}
    Y = 0,011, sur lequel la nav mesurait déjà 13,22:1.
 
    La nouvelle matière est l'inverse — un lacis de branches chargées
-   de neige, clair et haché. Sans voile, le PIRE PIXEL sous le numéro
-   de téléphone rend 3,82:1, sous la mention de démonstration 2,20:1,
-   sous la nav 3,23:1. Une moyenne à 12,87 n'excuse pas une hampe de
+   de neige, clair et haché. Sans voile, à la luminosité en place, le
+   PIRE PIXEL sous le numéro de téléphone rend 2,29:1, sous la mention
+   de démonstration 1,62:1, sous la nav 1,87:1 — et les moyennes
+   disent 11,88 · 5,35 · 7,30. Une moyenne n'excuse pas une hampe de
    « 5 » posée sur une branche blanche.
 
    IL EST RÉGLÉ SUR LA LUMINOSITÉ, PAS UNE FOIS POUR TOUTES. À
@@ -191,15 +193,15 @@ img{display:block}
    7,78 · 4,35 · 6,41 — SANS rendre la luminosité gagnée : la bande
    0→400 garde L 46,2 et σ 29,4, contre 38,7 et 22,5 quand la
    photographie était à .60. Toute reprise de `brightness` se
-   rejoue ici, avec `voile-tune`. La mention, elle, passe de 62 % à
+   rejoue ici. La mention, elle, passe de 62 % à
    72 % d'os pour finir de payer sa part.
 
    La photographie reste intacte de y = 210 à y = 400. */
 .voile-haut{
   position:absolute;top:0;left:0;right:0;z-index:2;height:210px;
   background:linear-gradient(180deg,
-    rgba(9,18,15,.82) 0,
-    rgba(9,18,15,.48) 45%,
+    rgba(9,18,15,.90) 0,
+    rgba(9,18,15,.58) 45%,
     rgba(9,18,15,0)   100%);
 }
 
@@ -215,8 +217,9 @@ img{display:block}
    Sur le mur d'épinettes plein de la version précédente, 62 % rendait
    5,84:1 — lisible sans crier, c'était la cote. Sur le lacis de
    branches enneigées, 62 % tombe à 3,58:1 au pire pixel MÊME sous le
-   voile du haut. 72 % rend 5,71:1 en moyenne et reste discret. */
-.demo{font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,224,205,.72)}
+   voile du haut. 72 % rend 7,05:1 en moyenne — 4,35:1 au pire
+   pixel — et reste discret. */
+.demo{font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,224,205,.88)}
 
 .nav{display:flex;gap:36px}
 .nav a{
@@ -269,7 +272,7 @@ img{display:block}
 .surtitre{
   font:500 11px/14px "jetbrains-mono",ui-monospace,monospace;
   letter-spacing:.22em;text-transform:uppercase;
-  color:rgba(232,224,205,.76);   /* en os, pas en laiton : le laiton
+  color:rgba(232,224,205,.90);   /* en os, pas en laiton : le laiton
                                     tombe à 3,88:1 à cette hauteur */
 }
 .marque{
@@ -341,7 +344,7 @@ img{display:block}
 .promesse{
   margin-top:18px;
   font:italic 400 16px/1.55 "spectral",Georgia,serif;
-  color:rgba(232,224,205,.76);
+  color:rgba(232,224,205,.90);
 }
 .promesse span{display:block}
 /* 3,2 px : le pas entre les deux lignes vaut 28 px au tableau du

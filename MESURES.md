@@ -376,6 +376,7 @@ différées, hors du chemin critique. `critique.css` : 53 Ko.
 | `refs-releve.mjs <url> <clé> 1440` | le premier écran d'une référence + `releve.json` : polices, `h1` px et interlignage, fonds, bibliothèques | rien — mais **un `h1` mesuré à 9 px est un titre de référencement masqué**, pas le titre visible. Le chiffre seul fait écrire n'importe quoi ; ouvrir le PNG |
 | `ecrans-secteurs.mjs [clé…]` | `images/realisations/ecran-<clé>.webp`, 1440 × 900, densité 2 | une capture plate (médiane des 8 bandes < 6, **ou** 3 bandes plates de suite) · un port illisible · une image jamais chargée |
 | `demos-controle.mjs <clé>` | prix, notes, débordement à 6 largeurs, requêtes tierces, erreurs console, % de texte sans JS | — |
+| `pire-pixel.mjs <clé> <sél…>` | **le contraste sous l'encre PEINTE**, deux captures avec et sans texte, densité 2, on ne garde que les pixels à 85 % de couverture | un texte que `demos-contraste.mjs` déclare « ok » parce qu'il s'arrête à la première surface opaque : l'auberge passait à 5,67 avec trois blocs réellement sous 4,5 |
 | `planche-secteurs-12.mjs [480]` | la planche des douze, même échelle, une seule passe | une planche dont une image n'a pas chargé · **et elle DIT ce qui manque** au lieu de rendre neuf cases pour douze |
 | `secteurs-markup.mjs [clé…]` | l'aperçu du panneau | une découpe qui change le nombre de `<section>` ou de `.mock` |
 
