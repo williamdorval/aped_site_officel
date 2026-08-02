@@ -499,3 +499,36 @@ vient de Chromium sous Playwright sur un poste de bureau Windows,
 relevés « 320 px » et « 390 px » compris. La piste latérale de
 l'auberge est précisément ce qui se juge au doigt, et personne ne l'a
 touchée du doigt.
+
+## Le chantier du premier écran — 2026-08-01, troisième passe
+
+### Ce que je n'ai PAS refait, et pourquoi
+
+**Trois des douze écrans ne sont pas de ce chantier.** `restaurant`
+(CENDRE), `garage` (MÉRIDIEN) et `paysagement` (MV Déneigement) sont
+des projets qui vivent dans des dépôts voisins. Ils ont été
+**rephotographiés** à 1440 × 900 comme les neuf autres — même échelle,
+même traitement — mais leur composition n'a pas été retouchée. Les
+redessiner aurait voulu dire modifier un projet qu'on ne m'a pas
+demandé de toucher, et pour MV Déneigement, un projet **en cours de
+refonte dans une autre session au moment même de la capture**.
+
+Conséquence assumée : sur la planche des douze, ces trois-là n'ont pas
+reçu la même passe de travail que les neuf autres. `restaurant` et
+`garage` tiennent le côte-à-côte — leur premier écran est bon. Le
+verdict sur `paysagement` est **suspendu** tant que sa refonte n'est
+pas finie.
+
+### Ce qui reste ouvert
+
+| | |
+|---|---|
+| **`paysagement` n'a pas de capture valable** | son dépôt ne compilait pas à l'heure de la prise de vue (`Module not found: '@/components/layout/Footer'`, fichier présent mais réécrit à la minute près). À refaire quand la refonte voisine sera posée. **La planche est à onze sur douze tant que ça dure.** |
+| **`restaurant` rend une erreur de console** | « Hydration failed because the server rendered text didn't match the client ». Elle est dans le projet voisin, en mode développement, et je n'y ai pas touché. Elle n'affecte pas l'image, mais elle est réelle |
+| **Les trois projets réels n'ont pas de `<meta name="aped-instant">`** | ils ne sont pas dessinés autour d'un instant photogénique, donc ils sont capturés « posés » et non à mi-geste. C'est un choix, pas un oubli — mais ça veut dire que **trois des douze aperçus ne prouvent aucun mouvement** |
+| **Aucune des douze références mondiales n'a été relue par un humain** | les trois références de chaque métier ont été trouvées, relevées à 1440 px et regardées **par un sous-agent**. Le choix « c'est celle-là, la meilleure du métier » n'a été validé par personne d'autre |
+| **L'échelle de 0,29 n'a pas été jugée sur un vrai écran** | elle est calculée, et la capture le confirme. Mais « le texte paraît petit comme sur un vrai écran » est un jugement d'œil, et il se prend devant un moniteur — pas dans un rapport |
+| **`tools/proto-secteurs.html` et `.css` sont périmés** | ils décrivent les douze maquettes dessinées retirées par D-681. Ils passent encore, en ne mesurant plus rien |
+
+> Et la réserve qui les gouverne toutes tient toujours : **aucune
+> mesure de ce projet n'a été prise sur un appareil réel.**

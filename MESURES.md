@@ -366,3 +366,55 @@ différées, hors du chemin critique. `critique.css` : 53 Ko.
 - le calendrier de réservation n'offrait **aucune date** un 31 du mois ;
 - l'animation permanente **repartait** au palier 2 ;
 - un dessin rendait en noir plein faute de règle CSS applicable.
+
+## LES DOUZE PREMIERS ÉCRANS — 2026-08-01
+
+### Les outils de cette chaîne
+
+| Outil | Ce qu'il rend | Ce qu'il REFUSE de rendre |
+|---|---|---|
+| `refs-releve.mjs <url> <clé> 1440` | le premier écran d'une référence + `releve.json` : polices, `h1` px et interlignage, fonds, bibliothèques | rien — mais **un `h1` mesuré à 9 px est un titre de référencement masqué**, pas le titre visible. Le chiffre seul fait écrire n'importe quoi ; ouvrir le PNG |
+| `ecrans-secteurs.mjs [clé…]` | `images/realisations/ecran-<clé>.webp`, 1440 × 900, densité 2 | une capture plate (médiane des 8 bandes < 6, **ou** 3 bandes plates de suite) · un port illisible · une image jamais chargée |
+| `demos-controle.mjs <clé>` | prix, notes, débordement à 6 largeurs, requêtes tierces, erreurs console, % de texte sans JS | — |
+| `planche-secteurs-12.mjs [480]` | la planche des douze, même échelle, une seule passe | une planche dont une image n'a pas chargé · **et elle DIT ce qui manque** au lieu de rendre neuf cases pour douze |
+| `secteurs-markup.mjs [clé…]` | l'aperçu du panneau | une découpe qui change le nombre de `<section>` ou de `.mock` |
+
+### La géométrie du panneau, relevée
+
+Le cadre d'aperçu, à chaque largeur de fenêtre (`#mockStage`) :
+
+| Fenêtre | Scène | Échelle de la capture 1440 |
+|---:|---:|---:|
+| 1920 | 621 px | **0,431** |
+| 1600 | 487 px | 0,338 |
+| **1440** | **421 px** | **0,292** |
+| 1280 | 360 px | 0,250 |
+| 1024 | 386 px | 0,268 |
+| 900 | 837 px | 0,581 |
+| 600 | 557 px | 0,387 |
+| 390 | 348 px | 0,242 |
+
+**Ce que ça veut dire pour la lisibilité.** À 1440, un texte courant de
+15 px rend **4,4 px** dans le cadre. C'est illisible, et c'est la
+commande : on ne lit pas un moniteur posé à trois mètres, on en
+reconnaît la forme. Le titre du héros, lui, passe de 90–160 px à
+26–47 px — assez pour se lire.
+
+**Ce qui rendait l'effet de loupe.** Les tuiles étaient photographiées
+à **760 px** de large, donc dans la mise en page tablette, puis
+affichées à 421 px : facteur 0,55 sur une composition déjà tassée. Le
+correctif n'est pas de réduire l'image, c'est de **photographier
+large**.
+
+### Les trois faux verdicts de ce chantier
+
+Détail : `PIEGES.md § 53, 54, 55`.
+
+1. **Une seule bande plate n'est pas une capture plate** — le capot
+   noir d'une voiture a fait refuser un premier écran excellent. Un
+   seuil posé sur le **minimum** d'un échantillon mesure le cas
+   particulier ; on juge sur la médiane.
+2. **Geler les animations gèle aussi le préchargeur** — « 89 % » n'est
+   pas un premier écran.
+3. **Un dépôt voisin peut être en chantier pendant qu'on le
+   photographie** — un `Module not found` sur un fichier qui existe.
