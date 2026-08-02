@@ -1027,7 +1027,7 @@ c'est elle qui l'a montré.
 
 ## AJOUTÉS LE 2026-08-01, CHANTIER DU PREMIER ÉCRAN
 
-### 53 · Une seule bande plate n'est pas une capture plate
+### 67 · Une seule bande plate n'est pas une capture plate
 
 **Le verdict.** `ecrans-secteurs.mjs` a refusé le premier écran du
 garage : « CAPTURE PLATE — pire bande 5,2 < 6 ». Bandes relevées :
@@ -1055,7 +1055,7 @@ est mort). Une bande isolée ne dit rien.
 > échantillon mesure le cas particulier, pas la population. Le
 > minimum d'une distribution saine descend bas — c'est sa définition.
 
-### 54 · Geler les animations gèle aussi le préchargeur
+### 68 · Geler les animations gèle aussi le préchargeur
 
 **Le verdict.** Première capture du restaurant : un écran noir, le
 mot-marque au centre, et **« 89 % »** dessous. 62 Ko pour une image de
@@ -1080,7 +1080,7 @@ rideau pour se lever avant que quoi que ce soit d'autre commence.
 > **La règle générale :** avant de figer un état, s'assurer que c'est
 > l'état de la chose, et pas celui de ce qui la précède.
 
-### 55 · Un dépôt voisin peut être en chantier pendant qu'on le photographie
+### 69 · Un dépôt voisin peut être en chantier pendant qu'on le photographie
 
 `MV-deneigement` a rendu une page d'erreur Next.js : `Module not
 found: Can't resolve '@/components/layout/Footer'`. Le fichier
@@ -1094,7 +1094,7 @@ capture prise sur un projet qu'on ne pilote pas, regarder son
 `git status` et l'horodatage de ses fichiers.** Un arbre sale est un
 avertissement, pas un décor.
 
-### 56 · Un masque figé à mi-course sur du TEXTE ne se lit pas comme un mouvement
+### 70 · Un masque figé à mi-course sur du TEXTE ne se lit pas comme un mouvement
 
 **Le verdict.** Sur la planche des douze, deux écrans rendaient un
 titre coupé net : « deux doigt | une » pour le salon de coiffure,
@@ -1121,7 +1121,7 @@ couleur pleine. **Jamais une lettre coupée en deux.** Si le geste
 porte sur du texte, on le photographie **fini**, et on met le
 mouvement ailleurs.
 
-### 57 · Un geste d'un pixel n'existe plus à l'échelle où on le regarde
+### 71 · Un geste d'un pixel n'existe plus à l'échelle où on le regarde
 
 L'aperçu du panneau réduit la capture de 1440 à **421 px, soit 0,29**.
 Un filet de 1 px y devient **0,29 px** : le moteur l'étale en un gris
@@ -1141,7 +1141,7 @@ Corollaire : un geste qui repose sur un **déplacement** de moins de
 40 px à 1440 se lit comme du bruit une fois réduit. Ce qui bouge doit
 bouger d'une distance qu'on voit à 0,29.
 
-### 58 · Un masque posé avant l'hydratation est effacé par l'hydratation
+### 72 · Un masque posé avant l'hydratation est effacé par l'hydratation
 
 **Le verdict.** La capture du déneigeur est sortie avec **le numéro de
 téléphone du client en clair**, alors que l'outil avait annoncé
@@ -1166,7 +1166,7 @@ y avait cinq secondes d'attente : largement de quoi.
 > attente doit être **revérifiée après** l'attente. Ce qui a du
 > JavaScript peut tout reconstruire pendant qu'on patiente.
 
-### 58 bis · Un vérificateur qui attrape son propre remplacement ne vérifie rien
+### 72 bis · Un vérificateur qui attrape son propre remplacement ne vérifie rien
 
 Le premier jet du vérificateur ci-dessus a refusé la capture sur
 `000 000-0000` et `courriel@exemple.ca` — c'est-à-dire sur les chaînes
@@ -1178,40 +1178,53 @@ que le masque venait de POSER. Un numéro de remplacement satisfait
 remplacement.** Le contrôle compare la prise à la chaîne de
 substitution avant de crier.
 
-### 59 · Le contraste sur une photographie ne se calcule pas, il se PHOTOGRAPHIE — et la mesure a trois pièges d'affilée
+### 73 · Un outil de contraste écrit à la hâte ment QUATRE fois de suite
 
 `demos-contraste.mjs` remonte jusqu'à la première surface **opaque**.
-Sous une photographie il s'arrête et rend « approché ». L'écran de
-l'auberge y passait à **5,67 · ok aux trois largeurs** pendant que
-trois de ses blocs étaient réellement sous 4,5. Piège 45, appliqué au
-contraste : *un fond en image n'est pas un fond absent.*
+Sous une photographie il s'arrête et rend « approché » : il ne mesure
+pas ce qui est peint. Piège 45, appliqué au contraste.
 
-`tools/pire-pixel.mjs` mesure ce qui est peint — deux captures, avec
-et sans encre. Il a fallu **trois essais**, et chacun a rendu un faux
-verdict avant d'être corrigé.
+Un sous-agent a signalé que l'écran de l'auberge tombait à 4,35:1 sous
+sa mention. J'ai écrit `tools/pire-pixel.mjs` pour vérifier — deux
+captures, avec et sans encre, on compare. **Il a rendu un faux verdict
+quatre fois avant d'être juste**, et à chaque fois le chiffre était
+crédible.
 
-| Essai | Ce qu'il gardait | Ce qu'il a rendu |
-|---|---|---|
-| 1 | tout pixel du rectangle englobant | **2,46:1** sur un mot-marque net — il mesurait le ciel **entre** un « A » et un « u » |
-| 2 | tout pixel ayant bougé de plus de 64 | **1,13:1 sur les neuf blocs** — il mesurait l'**anticrénelage**, dont la couleur composée est presque celle du fond. Piège 8, rejoué |
-| 3 | 85 % de la distance vers la couleur **déclarée** | « **aucun pixel d'encre** » sur trois blocs — leur encre est posée à `rgba(…, .72)` et ne parcourt jamais que 72 % de cette distance. Un silence qui se lit comme « rien à signaler » |
+| # | Ce qu'il gardait | Ce qu'il a rendu | La cause |
+|---|---|---|---|
+| 1 | tout pixel du rectangle englobant | **2,46:1** sur un mot-marque net | il mesurait le ciel **entre** un « A » et un « u » |
+| 2 | tout pixel ayant bougé de plus de 64 | **1,13:1 sur les neuf blocs** | il mesurait l'**anticrénelage**, dont la couleur composée est presque celle du fond. Piège 8 |
+| 3 | 85 % de la distance vers la couleur **déclarée** | « **aucun pixel d'encre** » sur trois blocs | leur encre est posée à `rgba(…, .72)` et ne parcourt jamais 85 % de cette distance. Un silence qui se lit comme « rien à signaler » |
+| 4 | 85 % du déplacement **maximal d'un canal** | **2,76:1** sur un sous-titre à 8,29 déclaré | Chromium sous Windows fait de l'anticrénelage de **SOUS-PIXELS** : un bord de glyphe peut avoir son rouge déplacé à fond et son bleu à peine |
 
-Ce qui décide enfin : **le déplacement maximal observé dans la boîte**
-sert de cible, et on garde les pixels qui l'atteignent à 85 %. Plus
-aucune hypothèse sur l'alpha, le mode de fusion ou ce que le moteur a
-décidé. Et **densité 2** : à densité 1 une mono de 10 px n'a pas un
-seul pixel de couverture pleine.
+Ce qui décide enfin : **le déplacement MINIMAL des trois canaux**,
+comparé au maximum de ce minimum dans la boîte. Un pixel n'est du corps
+de lettre que s'il a bougé sur les trois. Plus deux réglages sans
+lesquels rien ne tient : **densité 2** — à densité 1 une mono de 10 px
+n'a pas un pixel plein — et **`-webkit-text-fill-color` et non
+`color`**, parce que `color: transparent` efface aussi les bordures,
+qui valent `currentColor` par défaut.
 
-### 59 bis · Assombrir le fond sous une encre TRANSPARENTE ne change pas le rapport
+### 73 bis · ET LE SIGNALEMENT DE DÉPART ÉTAIT FAUX AUSSI
 
-Le correctif évident — épaissir le voile — a fait passer le pire pixel
-de 4,23 à 4,26. Rien.
+Une fois l'outil juste, l'écran mesuré avec **ses valeurs d'origine**
+rend **5,78 au pire pixel**. Il n'a jamais été en défaut.
 
-**Une encre posée à `rgba(…, .72)` est composée sur ce même fond.**
-L'assombrir assombrit l'encre d'autant : les deux termes du rapport
-descendent ensemble et le quotient ne bouge pas. Le seul levier est
-**l'opacité de l'encre**. `.72 → .88` a rendu 4,23 → 6,06.
+Entre-temps j'avais « corrigé » deux choses : épaissi le voile — sans
+effet, 4,23 → 4,26 — puis remonté l'opacité de trois textes de 72 % à
+88 %. **Le second a fait passer le chiffre**, donc j'ai cru avoir
+trouvé. J'avais seulement déplacé un artefact de mesure, en écrasant au
+passage une décision de composition : la discrétion de ces libellés
+était voulue et cotée.
 
-> **La règle : sur un fond qu'on ne contrôle pas, un texte
-> semi-transparent n'a pas de plancher de contraste.** Ou il est
-> opaque, ou son fond est un aplat.
+> **Ce qui aurait évité les deux : mesurer la valeur DÉCLARÉE avant de
+> croire un instrument neuf.** Prune `#4A3742` sur argile `#E7DFD2`
+> rend 8,29:1 — trois lignes de calcul, aucune capture. **Quand un
+> outil de pixels contredit une arithmétique triviale, c'est l'outil
+> qui a tort**, et on ne touche à rien tant qu'on ne sait pas pourquoi.
+
+L'observation sur l'alpha, elle, reste vraie et vaut d'être gardée :
+**une encre semi-transparente est composée sur le fond qu'on
+assombrit**, donc les deux termes du rapport descendent ensemble et le
+quotient ne bouge pas. Sur un fond qu'on ne contrôle pas, ou l'encre
+est opaque, ou son fond est un aplat.

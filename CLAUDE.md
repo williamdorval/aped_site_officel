@@ -18,7 +18,7 @@ dans le document qui la porte.
 | **un mouvement** | `ANIMATIONS.md` — une ligne par animation : fichier, déclencheur, durée, verrou, verbe, niveau |
 | **pourquoi le code est comme ça** | `DECISIONS.md` + `decisions/`. Le code porte l'identifiant : `grep D-042` trouve les deux bouts |
 | **un chiffre, un seuil, un outil de mesure** | `MESURES.md` |
-| **une mesure qui rend un verdict surprenant** | `PIEGES.md` — 60 faux verdicts déjà payés |
+| **une mesure qui rend un verdict surprenant** | `PIEGES.md` — 74 faux verdicts déjà payés |
 | **ce qui n'est pas prouvé, pas fini** | `RESERVES.md` |
 | **quels skills charger** | `DESIGN-STACK.md` |
 | **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` — le chantier du 2026-07-31 |
@@ -245,14 +245,14 @@ Cause et correctif : `PIEGES.md`.
 50. **Deux pages de hauteurs différentes ne peuvent pas partager une course en pixels** — verrouiller en pourcentage, ou piloter.
 51. `:focus-visible` ne s'arme pas sur un `focus()` de script — pour mesurer l'anneau, tabuler.
 52. Une image déclarée n'est pas une image chargée — `complete && naturalWidth > 0`, pas la présence de l'attribut.
-53. **Une seule bande plate n'est pas une capture plate** — tout écran bien composé a une bande calme (un capot, un ciel, un bandeau). Juger sur la MÉDIANE, ou sur trois bandes plates de suite. Un seuil posé sur le minimum mesure le cas particulier.
-54. **Geler les animations gèle aussi le préchargeur** — un compteur arrêté à « 89 % » n'est pas un premier écran. Vérifier que l'état qu'on fige est celui de la chose, pas de ce qui la précède.
-55. **Un dépôt voisin peut être en chantier pendant qu'on le photographie** — lire son `git status` et l'horodatage de ses fichiers avant de conclure d'une erreur de build.
-56. **Un masque figé à mi-course sur du TEXTE se lit comme un mot tronqué**, pas comme un mouvement — même raison que l'interdit du scrub d'opacité. Un geste photographié à mi-course doit avoir un état intermédiaire lisible : une bande, un filet, un chiffre entre deux crans. Jamais une lettre coupée.
-57. **Un geste d'un pixel n'existe plus à 0,29** — l'aperçu réduit 1440 à 421 px. À 1440, un geste photographié pèse au moins **12 px** dans sa plus petite dimension, et se déplace d'au moins 40 px. Sinon l'écran est fixe là où on le regarde le plus.
-58. **Un masque posé avant une attente est effacé par ce qui se reconstruit pendant** — l'hydratation React a rendu le numéro du client en clair après « 9 nœuds masqués ». Masquer DEUX fois, dont une juste avant le déclenchement, et **vérifier dans le texte rendu** : un masque non vérifié peut être défait en silence. Et un vérificateur qui attrape son propre remplacement ne vérifie rien.
-59. **Le contraste sur une photographie se PHOTOGRAPHIE** — un outil qui remonte à la première surface opaque rend « ok » sur du texte réellement sous 4,5. Et la mesure au pixel a trois pièges d'affilée : la boîte au lieu du glyphe · l'anticrénelage au lieu du corps · la couleur déclarée au lieu de la couverture réelle. `tools/pire-pixel.mjs`.
-60. **Assombrir le fond sous une encre TRANSPARENTE ne change pas le rapport** — les deux termes descendent ensemble. Sur un fond qu'on ne contrôle pas, ou l'encre est opaque, ou son fond est un aplat.
+67. **Une seule bande plate n'est pas une capture plate** — tout écran bien composé a une bande calme (un capot, un ciel, un bandeau). Juger sur la MÉDIANE, ou sur trois bandes plates de suite. Un seuil posé sur le minimum mesure le cas particulier.
+68. **Geler les animations gèle aussi le préchargeur** — un compteur arrêté à « 89 % » n'est pas un premier écran. Vérifier que l'état qu'on fige est celui de la chose, pas de ce qui la précède.
+69. **Un dépôt voisin peut être en chantier pendant qu'on le photographie** — lire son `git status` et l'horodatage de ses fichiers avant de conclure d'une erreur de build.
+70. **Un masque figé à mi-course sur du TEXTE se lit comme un mot tronqué**, pas comme un mouvement — même raison que l'interdit du scrub d'opacité. Un geste photographié à mi-course doit avoir un état intermédiaire lisible : une bande, un filet, un chiffre entre deux crans. Jamais une lettre coupée.
+71. **Un geste d'un pixel n'existe plus à 0,29** — l'aperçu réduit 1440 à 421 px. À 1440, un geste photographié pèse au moins **12 px** dans sa plus petite dimension, et se déplace d'au moins 40 px. Sinon l'écran est fixe là où on le regarde le plus.
+72. **Un masque posé avant une attente est effacé par ce qui se reconstruit pendant** — l'hydratation React a rendu le numéro du client en clair après « 9 nœuds masqués ». Masquer DEUX fois, dont une juste avant le déclenchement, et **vérifier dans le texte rendu** : un masque non vérifié peut être défait en silence. Et un vérificateur qui attrape son propre remplacement ne vérifie rien.
+73. **Un outil de contraste écrit à la hâte ment quatre fois de suite** — la boîte au lieu du glyphe · l'anticrénelage au lieu du corps · la couleur déclarée au lieu de la couverture réelle · le déplacement d'UN canal alors que Windows fait de l'anticrénelage de sous-pixels. `tools/pire-pixel.mjs`.
+74. **Quand un outil de pixels contredit une arithmétique triviale, c'est l'outil qui a tort** — prune sur argile rend 8,29:1 en trois lignes de calcul. J'ai « corrigé » deux fois un écran qui n'avait rien, et écrasé une décision de composition. Mesurer la valeur DÉCLARÉE avant de croire un instrument neuf. *(Vrai quand même : assombrir le fond sous une encre semi-transparente ne change pas le rapport — les deux termes descendent ensemble.)*
 
 ## RÉSERVES — à ne jamais oublier
 

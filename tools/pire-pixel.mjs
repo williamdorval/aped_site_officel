@@ -67,10 +67,23 @@ const boites = await p.evaluate(({ ss, d }) => ss.flatMap((s) => [...document.qu
 })), { ss: sels, d: DENS });
 if (!boites.length) throw new Error("aucun élément trouvé — sélecteurs faux ?");
 
+/* LES DEUX CAPTURES DOIVENT ÊTRE LE MÊME INSTANT. Entre elles il
+   s'écoule un quart de seconde ; si une animation tourne, ce qui a
+   bougé se lit comme de l'encre. On fige d'abord. */
+await p.evaluate(() => { for (const a of document.getAnimations()) { try { a.pause(); a.currentTime = 3000; } catch {} } });
+await p.waitForTimeout(180);
 const avecEncre = await p.screenshot();
+
+/* `color: transparent` EFFACE AUSSI LES BORDURES, et c'est un
+   troisième faux verdict : `border-color` vaut `currentColor` par
+   défaut. Un filet qui disparaît dans la capture « sans encre » se
+   lit comme un déplacement énorme, donc comme du corps de lettre, et
+   l'outil rend 2,76:1 en mesurant un filet sur son fond. On neutralise
+   le REMPLISSAGE du texte, pas la couleur : `-webkit-text-fill-color`
+   ne touche ni les bordures, ni les `currentColor` d'arrière-plan. */
 await p.evaluate(() => {
   const st = document.createElement("style");
-  st.textContent = "*{color:transparent !important;text-shadow:none !important;-webkit-text-stroke:0 !important}";
+  st.textContent = "*{-webkit-text-fill-color:transparent !important;text-shadow:none !important;-webkit-text-stroke:0 !important}";
   document.head.appendChild(st);
 });
 await p.waitForTimeout(240);
@@ -103,7 +116,7 @@ const res = await p.evaluate(async ({ a, b, boites, SEUIL }) => {
        l'alpha, le mode de fusion et ce que le moteur a décidé. */
     let max = 0;
     for (let i = 0; i < da.length; i += 4) {
-      const d = Math.max(Math.abs(da[i] - db[i]), Math.abs(da[i + 1] - db[i + 1]), Math.abs(da[i + 2] - db[i + 2]));
+      const d = Math.min(Math.abs(da[i] - db[i]), Math.abs(da[i + 1] - db[i + 1]), Math.abs(da[i + 2] - db[i + 2]));
       if (d > max) max = d;
     }
     let pire = Infinity, somme = 0, n = 0, pireXY = null;
@@ -120,7 +133,7 @@ const res = await p.evaluate(async ({ a, b, boites, SEUIL }) => {
          ceux qui l'ont parcourue à 85 % ou plus — le corps de la
          lettre, pas son bord. */
       if (max < 24) break;                   // encre et fond confondus : rien à mesurer
-      const parcouru = Math.max(Math.abs(da[i] - db[i]), Math.abs(da[i + 1] - db[i + 1]), Math.abs(da[i + 2] - db[i + 2]));
+      const parcouru = Math.min(Math.abs(da[i] - db[i]), Math.abs(da[i + 1] - db[i + 1]), Math.abs(da[i + 2] - db[i + 2]));
       if (parcouru / max < 0.85) continue;   // bord de glyphe, pas corps
       const r = rap(Y(da[i], da[i + 1], da[i + 2]), Y(db[i], db[i + 1], db[i + 2]));
       if (r < pire) { pire = r; const k = i / 4; pireXY = `${Math.round((bo.x + (k % w)) / 2)},${Math.round((bo.y + Math.floor(k / w)) / 2)}`; }

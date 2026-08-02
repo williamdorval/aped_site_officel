@@ -535,6 +535,7 @@ pas finie.
 | **Le relevé « marco » de la coiffure est introuvable** | sa planche de côté-à-côte n'a que trois cases au lieu de quatre. L'outil le dit au lieu de rendre trois cases pour quatre |
 | **Aucune des références n'a été relue par un humain** | les trois références de chaque métier ont été trouvées, relevées à 1440 px et regardées **par un sous-agent**. Le choix « c'est celle-là, la meilleure du métier » n'a été validé par personne d'autre |
 | **L'échelle de 0,29 n'a pas été jugée sur un vrai écran** | elle est calculée, mesurée, et la capture le confirme. Mais « le texte paraît petit comme sur un vrai écran » est un jugement d'œil, et il se prend devant un moniteur |
+| **Un seul écran a été mesuré au pixel peint** | `tools/pire-pixel.mjs` n'a tourné que sur l'auberge et la boutique, avec des sélecteurs écrits à la main. Les dix autres n'ont que le verdict « approché » de `demos-contraste.mjs`, qui ne voit pas ce qui est peint sous une image. Le risque est faible — eux seuls posent du texte sur une photographie — mais il n'est pas mesuré |
 | **`tools/proto-secteurs.html` et `.css` sont périmés** | ils décrivent les douze maquettes dessinées retirées par D-681. Ils passent encore, en ne mesurant plus rien |
 
 > Et la réserve qui les gouverne toutes tient toujours : **aucune
