@@ -50,6 +50,46 @@
      pas et que le standard exige. Elle est posée sur la ligne de
      base du surtitre (y = 120), alignée à droite sur x = 1376,
      dans le gris pierre des libellés — l'espace y était vide.
+
+     LA SECONDE PASSE — deux défauts nommés, deux corrections
+     ------------------------------------------------------------
+     A · LA PHOTOGRAPHIE NE TENAIT PAS SA MOITIÉ D'ÉCRAN.
+         `immobilier-2` est un plain-pied large photographié de
+         face. Découpée en portrait 720 × 900, une façade large ne
+         rend qu'un morceau de mur : la tranche visible de 445 px
+         était du bardage plat sur ses deux tiers hauts et une porte
+         de garage sur son tiers bas. Le défaut est GÉOMÉTRIQUE, pas
+         photographique — le rapport de la boîte est 0,80 quand
+         toutes les sources sont en paysage.
+         Les seize ont été rejugées SUR LEUR TRANCHE, pas sur
+         l'image entière. `immobilier-1` reste écartée : ses
+         coussins jaune-vert sont présents à tous les cadrages, y
+         compris à 100 % (2,48 % de vert mesuré dans la bande
+         visible). `immobilier-10` et `-12` ont de la profondeur mais
+         l'une porte un manteau de cheminée franchement orange et un
+         téléviseur au centre, l'autre est un intérieur vide et
+         terne. `immobilier-16` est retenue : le plan l'avait écartée
+         parce que l'IMAGE ENTIÈRE montre une rangée, mais la
+         TRANCHE n'en montre qu'une seule maison, de trois quarts —
+         pignon complet, diagonale de toit, arête verticale sur
+         toute la hauteur, porche en fuite, soubassement de pierre.
+         Elle est en 1920 × 1080 : 864 px de source pour 720 px
+         affichés, donc RÉDUITE, quand `immobilier-2` était agrandie
+         de 1,25. C'est la plus définie des deux.
+     B · CINQ RANGS DE MÊME POIDS NE COMPOSENT PAS, ILS TABULENT.
+         Un seul chiffre domine maintenant — la superficie habitable
+         à 84 px — et les quatre autres tombent à 24 px, sur une
+         seule ligne de base par rang. Rapport × 3,5. La seconde
+         lecture est le numéro de lot en filigrane, en contre-forme
+         de 1 px, dans le quart vide du bloc maître.
+     C · TROIS CHIFFRES ONT SUIVI L'IMAGE. La fiche doit décrire ce
+         que le visiteur VOIT : la maison est à étage et neuve —
+         jeune arbre tuteuré, plantations récentes, paillis frais —
+         donc l'année passe de 2004 à 2021 ; les lots de ce
+         lotissement sont étroits, donc le terrain passe de
+         1 042 m² à 608 m², qu'une façade de ~13 m rend défendable.
+         Le texte alternatif est réécrit : « plain-pied » et « ciel
+         dégagé » étaient devenus faux.
      ============================================================ -->
 
 <!-- L'instant du geste, en millisecondes. Voir l'écart 1 ci-dessus. -->
@@ -123,18 +163,26 @@ a{ color:inherit; text-decoration:none }
 
 /* ── LA PHOTOGRAPHIE ──────────────────────────────────────────────
    Aucun mot ne se pose dessus, jamais, même pas un crédit. */
-/* Au repli, la bande reste plus haute que 0,59 × sa largeur : à ce
-   rapport-là le cadrage rogne par les CÔTÉS, donc il écarte le bord
-   gauche de la source — où traînent une voiture rouge, un bac
-   roulant vert et deux maisons voisines dont une à bardage vert.
-   Une hauteur fixe laisserait la source entière à l'écran dès
-   768 px. Et c'est une hauteur, pas un `aspect-ratio` : un
-   `min-height` se TRANSFÈRE en largeur minimale à travers le
-   rapport, et la page débordait de 58 px à 320. */
+/* Au repli, la bande est CARRÉE, et la cote se calcule.
+   La source fait 1920 × 1080, donc un rapport de 1,778. Sous
+   `cover`, la part de largeur de source qu'une boîte laisse voir
+   vaut (L / H) / 1,778 ; avec `object-position: 78 %`, son bord
+   gauche tombe à 0,78 × (1 − cette part). Le bord gauche de la
+   source porte une voiture rouge, un bac roulant vert et deux
+   maisons voisines dont une à BARDAGE VERT, qui court jusqu'à 33 %.
+   Pour rester à droite de 33 % il faut (L / H) ≤ 1,00 : la boîte
+   doit être au moins carrée. À 64vw — la valeur de la première
+   passe, calculée pour une source de 1280 × 720 — le bord gauche
+   tombait à 12 % et le voisin vert entrait en plein cadre dès
+   390 px. Le plafond est 1200 px parce qu'au-delà c'est la
+   composition de 1440 qui prend la main.
+   Et c'est une hauteur, pas un `aspect-ratio` : un `min-height` se
+   TRANSFÈRE en largeur minimale à travers le rapport, et la page
+   débordait de 58 px à 320. */
 .vue{
   position:relative; overflow:hidden;
   background:var(--ivoire);
-  height:clamp(260px, 64vw, 700px);
+  height:min(100vw, 1200px);
 }
 /* 78 % et pas 82 : à 78 le sommet du pignon tombe à x = 293, soit
    18 px À DROITE de la lisière du volet — la maison sort du volet
@@ -143,11 +191,17 @@ a{ color:inherit; text-decoration:none }
 .photo{
   width:100%; height:100%;
   object-fit:cover; object-position:78% 50%;
-  /* Aucun duotone, aucun virage chaud : le bardage descend du blanc
-     laiteux vers le gris pierre, le ciel du cyan vers le bleu de
-     Prusse. Le ciel reste bleu, et c'est le seul endroit de l'écran
-     où la couleur d'accent existe sans avoir été posée. */
-  filter:saturate(.86) contrast(1.05) brightness(1.02);
+  /* Aucun duotone, aucun virage chaud. Le ciel est couvert : le bleu
+     de cette photographie n'est plus celui du ciel mais celui du
+     pignon en bardeaux et des volets, et c'est le seul endroit de
+     l'écran où la couleur d'accent existe sans avoir été posée.
+     0,74 et plus 0,86 : le seul poste de couleur qui contredise la
+     palette est la bande de plantation au pied de la façade, et
+     0,74 est la valeur la plus basse qui l'éteigne SANS griser les
+     volets. Mesuré sur la tranche de 720 × 900 : vert 2,86 → 2,58 %,
+     chaud 9,20 → 6,92 %, bleu 17,0 → 14,65 %. À 0,62 le bleu tombe
+     avec le vert et la façade devient un gris uniforme. */
+  filter:saturate(.74) contrast(1.05) brightness(1.02);
 }
 
 /* ── LE VOLET DE CADASTRE — le seul geste de l'écran ──────────────
@@ -296,7 +350,8 @@ a{ color:inherit; text-decoration:none }
    0,09 em ajoutés la portent à 6,4 px — un cinquième de cadratin,
    la valeur d'une vraie espace fine. Le caractère, lui, reste
    celui du plan : la chaîne copiée garde ses espaces fines. */
-.n .f{ letter-spacing:.09em }
+.n .f,
+.filigrane .f{ letter-spacing:.09em }
 
 .pied{
   display:flex; flex-wrap:wrap; align-items:center;

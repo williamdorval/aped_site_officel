@@ -61,9 +61,71 @@
       ambiguïté à la ligne qu'il souligne, pas à celle d'en dessous —
       à 6 px de blanc il tombait au milieu et soulignait les deux.
 
+   4. LE HAUT D'ENCRE DE L1 TOMBAIT À y = −1, PAS À y = 0. Mesuré,
+      pas déduit : le mur décalé de +100 px, la barre haute du E de
+      « UNE » lue au sous-pixel, la rangée −1 rendait une luminance
+      de 11 — du noir PLEIN, couverture 100 %, et la rangée −2 de
+      l'acide pur. Une rangée entière de capitale était donc coupée
+      par le bord de la fenêtre (deux rangées d'appareil à densité 2).
+      Tout le mur — les cinq lignes ET les quatre filets — descend
+      de 1 px, soit 0,00657 F. La cote du plan est alors tenue aux
+      DEUX bouts : cap-top de L1 à 0, pied de L5 à 711, bandeau à
+      712. Et les cinq bandes de l'aplat, qui n'ont pas bougé,
+      tombent toutes MIEUX : le débord de capitale au-dessus d'un
+      cran passe de 1,5 px à 0,5 px.
+
+   ── LES DEUX JAMBAGES, ET POURQUOI ILS NE SE RÈGLENT PAS AU CORPS ─
+   Le jambage du Q d'Anton descend de 0,0925 em sous la ligne de
+   base ; l'accent du « À » monte à 1,1 em au-dessus. L'avance de
+   ligne est de 138,84 px et la capitale ronde de 132,08 : un
+   jambage entre donc de 7,3 px dans la ligne d'en dessous, et
+   l'accent de 28,6 px dans celle d'au-dessus. AUCUN corps ne les
+   dégage dans les 712 px disponibles — il faudrait un interlignage
+   de 0,96, plus lâche que les 0,88 à 0,96 de tous les autres
+   écrans, c'est-à-dire perdre la seule chose qui distingue ce mur.
+   La correction est donc éditoriale et géométrique, jamais
+   typographique.
+
+   · L2 PERD SON Q.  « DES PLAQUES. » posait le jambage du Q à
+     x 473 → 516, exactement sur le O de « MONDE » : le mot se
+     LISAIT « MÓNDE ». Un chevauchement de jambages est un idiome
+     d'affiche ; faire lire un autre mot n'en est pas un. Il n'y a
+     pas de décalage qui sauve la ligne — les deux seuls creux de
+     L3 mesurent 43 et 45 px pour un jambage de 44, et il faudrait
+     viser à 1,6 px près. On retire donc le Q du mot :
+     « DE LA FONTE. ». La phrase reste une description de la pièce,
+     sans un adjectif, et le mur nomme maintenant la matière dont
+     la salle porte le nom — le titre contient le logotype.
+
+   · L5 RENTRE DE 200 px.  Le Q de « QUI » posait son jambage sur
+     le A de « À », et le Q AVALAIT l'accent : 689 pixels communs,
+     l'accent entièrement noyé dans la panse. « À VOIX HAUTE. » se
+     lisait « A VOIX HAUTE. » — encore un autre mot. Les colonnes
+     vides de L4 ont été relevées au pixel : [208, 261], [793, 840],
+     [1065, 1117]. L'accent mesure 35 px de large et se tient à
+     17 px du bord d'encre de L5. Un retrait de 200 px le pose donc
+     à x 217 → 251, CENTRÉ dans le creux entre « QUI » et
+     « COMPTE » — 9 px à gauche, 10 px à droite — et il n'y a plus
+     un seul pixel commun entre les deux lignes. L'accent monte
+     dans un blanc, juste au-dessus de sa propre lettre : les deux
+     lignes s'emboîtent au lieu de se cogner. Le jambage du Q de L4,
+     lui, retombe dans l'acide nu et pend sous son filet : c'est une
+     signature, plus un défaut.
+     Le retrait est exprimé en F, donc il suit le mur à toutes les
+     largeurs et l'accent reste dans son creux.
+
+   ── CE QUE LE RETRAIT RÈGLE EN PASSANT ──────────────────────────
+   Le drapeau de droite mesurait 629 · 755 · 734 · 1437 · 771 : la
+   moitié droite du mur était un aplat acide vide, 669 px de marge,
+   et l'escalier du plan était cassé (L5 plus longue que L3). Il
+   mesure maintenant 629 · 703 · 734 · 1437 · 971 — trois courtes
+   qui montent, une qui explose au bord, une qui retombe SANS
+   revenir au départ. La marge de droite passe de 669 à 469 px,
+   sous les 480 que le plan demande.
+
    Tout le reste du plan est tenu tel quel : fond acide plein cadre,
-   mur à x = 0 et y = 0, bandeau noir de 188 px collé au bord bas,
-   aucune nav en haut, un seul blanc, un seul geste, aucun chiffre.
+   mur à y = 0, bandeau noir de 188 px collé au bord bas, aucune nav
+   en haut, un seul blanc, un seul geste, aucun chiffre.
 
    ── LE GESTE : « LE CRAN » ──────────────────────────────────────
    Un aplat pleine largeur se pose derrière UNE ligne à la fois et
@@ -151,12 +213,17 @@ body{
 .l{position:absolute;left:0;display:block;line-height:1;white-space:nowrap;color:var(--noir)}
 /* `margin-left` négatif : on purge l'approche gauche d'Anton pour que
    le FÛT de la première lettre tombe sur x = 0, pas son blanc.
-   Valeur mesurée glyphe par glyphe (U 0,01563 em · D et E 0,03125). */
-.l1{font-size:var(--F);top:calc(-0.06362 * var(--F));margin-left:calc(-0.01563 * var(--F))}
-.l2{font-size:var(--F);top:calc( 0.84830 * var(--F));margin-left:calc(-0.03125 * var(--F))}
-.l3{font-size:var(--F);top:calc( 1.76023 * var(--F));margin-left:calc(-0.03125 * var(--F))}
-.l4{font-size:calc(1.18982 * var(--F));top:calc(2.66007 * var(--F));margin-left:calc(-0.01860 * var(--F))}
-.l5{font-size:var(--F);top:calc( 3.74720 * var(--F));margin-left:calc(-0.01563 * var(--F))}
+   Valeur mesurée glyphe par glyphe (U 0,01563 em · D et E 0,03125).
+   Les cinq `top` portent le décalage de +1 px (0,00657 F) qui remet
+   le haut d'encre de L1 sur y = 0 — voir le point 4 en tête. */
+.l1{font-size:var(--F);top:calc(-0.05705 * var(--F));margin-left:calc(-0.01563 * var(--F))}
+.l2{font-size:var(--F);top:calc( 0.85487 * var(--F));margin-left:calc(-0.03125 * var(--F))}
+.l3{font-size:var(--F);top:calc( 1.76680 * var(--F));margin-left:calc(-0.03125 * var(--F))}
+.l4{font-size:calc(1.18982 * var(--F));top:calc(2.66664 * var(--F));margin-left:calc(-0.01860 * var(--F))}
+/* L5 RENTRE DE 200 px (1,31363 F), moins la purge d'approche du À.
+   Le retrait pose l'accent du « À » dans le creux de L4 entre
+   « QUI » et « COMPTE », et sort L5 de sous le jambage du Q. */
+.l5{font-size:var(--F);top:calc( 3.75377 * var(--F));margin-left:calc(1.31363 * var(--F) - 0.01563 * var(--F))}
 
 /* LA TRACE. Un filet de 2 px, de x = 0 à la largeur d'encre de la
    ligne, posé dans le blanc qui la sépare de la suivante. Il paraît
@@ -164,10 +231,10 @@ body{
    L'état de repos est `opacity:1` : sans animation, les quatre
    filets sont là. */
 .t{position:absolute;left:0;height:calc(0.01314 * var(--F));background:var(--noir);opacity:1}
-.t1{top:calc(0.87252 * var(--F));width:calc(4.13379 * var(--F));animation:parait 220ms step-end forwards}
-.t2{top:calc(1.78444 * var(--F));width:calc(4.96777 * var(--F));animation:parait 440ms step-end forwards}
-.t3{top:calc(2.69637 * var(--F));width:calc(4.84131 * var(--F));animation:parait 660ms step-end forwards}
-.t4{top:calc(3.77142 * var(--F));width:calc(9.45824 * var(--F));animation:parait 880ms step-end forwards}
+.t1{top:calc(0.87909 * var(--F));width:calc(4.13379 * var(--F));animation:parait 220ms step-end forwards}
+.t2{top:calc(1.79101 * var(--F));width:calc(4.61912 * var(--F));animation:parait 440ms step-end forwards}
+.t3{top:calc(2.70294 * var(--F));width:calc(4.84131 * var(--F));animation:parait 660ms step-end forwards}
+.t4{top:calc(3.77799 * var(--F));width:calc(9.45824 * var(--F));animation:parait 880ms step-end forwards}
 @keyframes parait{from{opacity:0}to{opacity:1}}
 
 /* L'APLAT. Un rectangle pleine largeur qui échange les deux couleurs
@@ -308,7 +375,7 @@ body{
 
   <h1 class="mur">
     <span class="l l1">UNE BARRE.</span>
-    <span class="l l2">DES PLAQUES.</span>
+    <span class="l l2">DE LA FONTE.</span>
     <span class="l l3">ET DU MONDE</span>
     <span class="l l4">QUI COMPTE TES REPS</span>
     <span class="l l5">À VOIX HAUTE.</span>
