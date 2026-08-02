@@ -2290,113 +2290,128 @@
         </div>
       </div>
     <div class="wrap band">
-      <div class="head" style="margin-top: var(--s-6);">
+      <div class="head">
         <h2>À la main contre automatisé.</h2>
         <!-- B5 · « OBSERVEES CHEZ DES PME » NE CITAIT RIEN.  D-058 -->
         <p>Six tâches tirées de notre document sur l’automatisation, où chaque chiffre porte sa source. Les vôtres sortiront de l’appel.</p>
       </div>
 
-      <!-- LE SCHEMA. Il manquait, et c'est lui qui porte la section.  D-059 -->
-      <div class="ecart" data-ecart>
-        <!-- A8 · LE CADRE ETAIT LA FAUSSETE, PAS LE TABLEAU.  D-060 -->
-        <p class="label">Six tâches d’administration, chronométrées bout à bout, pour toute l’entreprise</p>
+      <!-- LE TOTAL ET SON DETAIL, COTE A COTE.  D-639
+           Empiles, ils demandaient 1 054 px : un ecran et quart pour
+           une idee. Ils ne peuvent PAS partager une piste — le resume
+           est a l'echelle de la journee, le detail a celle d'une
+           tache, et les mettre sur la meme regle graduee fabriquerait
+           exactement la fausse comparaison que cette section existe
+           pour eviter. Mais ils peuvent partager une LIGNE : le total
+           a gauche, sa decomposition a droite, deux colonnes qu'on ne
+           confond pas. La hauteur devient le plus grand des deux au
+           lieu de leur somme. -->
+      <div class="vs-deux">
+        <!-- LE RESUME EST LE MEME OBJET, AU CALIBRE D'AFFICHE.  D-638
+             Il parlait une autre langue que le tableau qu'il resume :
+             une barre grise, une barre minium, et un « pont » en
+             accolade portant une pastille. Trois idees graphiques pour
+             dire ce que le detail dit en une. Meme grammaire
+             maintenant — plein pour ce qui reste, trame pour ce qui
+             part — a la seule echelle qui change : celle de la journee
+             entiere. Le detail devient litteralement sa decomposition.
+             440 minutes a la main, 104 automatisees, 336 de moins. -->
+        <div class="ecart" data-ecart>
+          <p class="label">Six tâches d’administration, chronométrées bout à bout, pour toute l’entreprise</p>
 
-        <div class="ecart-corps">
-          <div class="ecart-rang ecart-rang--axe" aria-hidden="true">
-            <span></span>
-            <div class="ecart-axe">
-              <i style="--t:0%"><b>0 h</b></i>
-              <i style="--t:25%"><b>2 h</b></i>
-              <i style="--t:50%"><b>4 h</b></i>
-              <i style="--t:75%"><b>6 h</b></i>
-              <i style="--t:100%"><b>8 h</b></i>
+          <div class="ecart-grand" style="--m:100%;--a:23.6%">
+            <div class="ecart-piste" aria-hidden="true">
+              <i class="vs-tout"></i>
+              <i class="vs-reste" data-bar="auto"></i>
             </div>
-            <span></span>
+            <p class="ecart-bornes" aria-hidden="true">
+              <span class="ecart-borne ecart-borne--reste"><b>1 h 44</b>une fois automatisé</span>
+              <span class="ecart-borne ecart-borne--part"><b>7 h 20</b>à la main</span>
+            </p>
           </div>
 
-          <div class="ecart-rang">
-            <p class="ecart-nom">À la main</p>
-            <div class="ecart-piste"><i class="ecart-barre ecart-barre--main" style="--p:91.7%"></i></div>
-            <p class="ecart-val num">7 h 20</p>
-          </div>
+          <p class="ecart-gain"><b>− 5 h 36</b> par jour</p>
 
-          <div class="ecart-rang">
-            <p class="ecart-nom">Une fois automatisé</p>
-            <div class="ecart-piste"><i class="ecart-barre ecart-barre--auto" style="--p:21.7%"></i></div>
-            <p class="ecart-val num">1 h 44</p>
-          </div>
+          <!-- Le schema est decoratif pour un lecteur d'ecran : la
+               meme information lui est donnee en une phrase. -->
+          <p class="sr-only">Ces six tâches d’administration, chronométrées bout à bout pour toute l’entreprise : sept heures vingt à la main, une heure quarante-quatre une fois automatisé. L’écart est de cinq heures trente-six par jour.</p>
+        </div>
 
-          <div class="ecart-rang ecart-rang--pont" aria-hidden="true">
-            <span></span>
-            <div class="ecart-piste">
-              <i class="ecart-pont"><b class="num">5 h 36 rendus, chaque jour</b></i>
+        <!-- LE DETAIL, TACHE PAR TACHE.  D-061 -->
+        <p class="label ecart-sous">Le détail, tâche par tâche</p>
+        <!-- UNE BARRE PAR TACHE, EN DEUX MATIERES.  D-638
+             C'etait « 60 min → 15 min · 75 % » : trois nombres et une
+             fleche par rangee, que personne ne lit. Et douze barres
+             pour six taches — deux longueurs a apparier soi-meme a
+             chaque ligne.
+             Une seule barre maintenant, et elle ne compare pas : elle
+             MONTRE CE QU'ON RETIRE. Encre pleine de zero jusqu'a la
+             duree automatisee — ce qui reste. Trame de la jusqu'a la
+             duree manuelle — ce qui part. Un cran vertical a la
+             bascule. C'est V3 : la trame est la matiere de la soudure,
+             et le plein est le trait soude.
+             Toutes les pistes partagent origine ET echelle (100 min,
+             la plus longue duree manuelle du tableau) : sans ca, six
+             barres ne se classent pas entre elles.
+             Le pourcentage est parti. 70 · 75 · 75 · 75 · 80 · 85 :
+             six valeurs dans un mouchoir, qui ne classent rien. Les
+             minutes vont de 30 a 80 et elles classent. Tri par minutes
+             economisees, decroissant. -->
+        <div class="vs" id="vsTable">
+          <div class="vs-row" data-manual="100" data-auto="20" style="--m:100.0%;--a:20.0%">
+            <p class="vs-task">Statut de commande ou de dossier</p>
+            <div class="vs-track" aria-hidden="true">
+              <i class="vs-tout"></i>
+              <i class="vs-reste" data-bar="auto"></i>
             </div>
-            <span></span>
+            <p class="vs-gain"><b>− 80</b> min</p>
+            <p class="sr-only">Statut de commande ou de dossier : 100 minutes à la main, 20 une fois automatisé, 80 de moins.</p>
           </div>
-        </div>
-
-        <!-- Le schema est decoratif pour un lecteur d'ecran : la
-             meme information lui est donnee en une phrase. -->
-        <p class="sr-only">Ces six tâches d’administration, chronométrées bout à bout pour toute l’entreprise : sept heures vingt à la main, une heure quarante-quatre une fois automatisé. L’écart est de cinq heures trente-six par jour.</p>
-      </div>
-
-      <!-- LE DETAIL, TACHE PAR TACHE.  D-061 -->
-      <p class="label ecart-sous">Le détail, tâche par tâche</p>
-      <div class="vs" id="vsTable">
-        <div class="vs-row" data-manual="60" data-auto="15" style="--m:60%;--a:15%">
-          <p class="vs-task">Feuilles de temps et demandes de congé</p>
-          <div class="vs-track">
-            <i class="vs-manual" data-bar="manual"></i>
-            <i class="vs-auto" data-bar="auto"></i>
+          <div class="vs-row" data-manual="90" data-auto="23" style="--m:90.0%;--a:23.0%">
+            <p class="vs-task">Conciliation bancaire</p>
+            <div class="vs-track" aria-hidden="true">
+              <i class="vs-tout"></i>
+              <i class="vs-reste" data-bar="auto"></i>
+            </div>
+            <p class="vs-gain"><b>− 67</b> min</p>
+            <p class="sr-only">Conciliation bancaire : 90 minutes à la main, 23 une fois automatisé, 67 de moins.</p>
           </div>
-          <p class="vs-nums"><b>60</b> min <span aria-hidden="true">→</span> <b>15</b> min</p>
-          <p class="vs-gain">75 %</p>
-        </div>
-        <div class="vs-row" data-manual="60" data-auto="9" style="--m:60%;--a:9%">
-          <p class="vs-task">Relance des soumissions sans réponse</p>
-          <div class="vs-track">
-            <i class="vs-manual" data-bar="manual"></i>
-            <i class="vs-auto" data-bar="auto"></i>
+          <div class="vs-row" data-manual="90" data-auto="27" style="--m:90.0%;--a:27.0%">
+            <p class="vs-task">Compte rendu d’appel et mise à jour du fichier clients</p>
+            <div class="vs-track" aria-hidden="true">
+              <i class="vs-tout"></i>
+              <i class="vs-reste" data-bar="auto"></i>
+            </div>
+            <p class="vs-gain"><b>− 63</b> min</p>
+            <p class="sr-only">Compte rendu d’appel et mise à jour du fichier clients : 90 minutes à la main, 27 une fois automatisé, 63 de moins.</p>
           </div>
-          <p class="vs-nums"><b>60</b> min <span aria-hidden="true">→</span> <b>9</b> min</p>
-          <p class="vs-gain">85 %</p>
-        </div>
-        <div class="vs-row" data-manual="90" data-auto="27" style="--m:90%;--a:27%">
-          <!-- D1, troisieme et derniere occurrence de « CRM ». -->
-          <p class="vs-task">Compte rendu d’appel et mise à jour du fichier clients</p>
-          <div class="vs-track">
-            <i class="vs-manual" data-bar="manual"></i>
-            <i class="vs-auto" data-bar="auto"></i>
+          <div class="vs-row" data-manual="60" data-auto="9" style="--m:60.0%;--a:9.0%">
+            <p class="vs-task">Relance des soumissions sans réponse</p>
+            <div class="vs-track" aria-hidden="true">
+              <i class="vs-tout"></i>
+              <i class="vs-reste" data-bar="auto"></i>
+            </div>
+            <p class="vs-gain"><b>− 51</b> min</p>
+            <p class="sr-only">Relance des soumissions sans réponse : 60 minutes à la main, 9 une fois automatisé, 51 de moins.</p>
           </div>
-          <p class="vs-nums"><b>90</b> min <span aria-hidden="true">→</span> <b>27</b> min</p>
-          <p class="vs-gain">70 %</p>
-        </div>
-        <div class="vs-row" data-manual="100" data-auto="20" style="--m:100%;--a:20%">
-          <p class="vs-task">Statut de commande ou de dossier</p>
-          <div class="vs-track">
-            <i class="vs-manual" data-bar="manual"></i>
-            <i class="vs-auto" data-bar="auto"></i>
+          <div class="vs-row" data-manual="60" data-auto="15" style="--m:60.0%;--a:15.0%">
+            <p class="vs-task">Feuilles de temps et demandes de congé</p>
+            <div class="vs-track" aria-hidden="true">
+              <i class="vs-tout"></i>
+              <i class="vs-reste" data-bar="auto"></i>
+            </div>
+            <p class="vs-gain"><b>− 45</b> min</p>
+            <p class="sr-only">Feuilles de temps et demandes de congé : 60 minutes à la main, 15 une fois automatisé, 45 de moins.</p>
           </div>
-          <p class="vs-nums"><b>100</b> min <span aria-hidden="true">→</span> <b>20</b> min</p>
-          <p class="vs-gain">80 %</p>
-        </div>
-        <div class="vs-row" data-manual="90" data-auto="23" style="--m:90%;--a:23%">
-          <p class="vs-task">Conciliation bancaire</p>
-          <div class="vs-track">
-            <i class="vs-manual" data-bar="manual"></i>
-            <i class="vs-auto" data-bar="auto"></i>
+          <div class="vs-row" data-manual="40" data-auto="10" style="--m:40.0%;--a:10.0%">
+            <p class="vs-task">Réactivation des clients inactifs</p>
+            <div class="vs-track" aria-hidden="true">
+              <i class="vs-tout"></i>
+              <i class="vs-reste" data-bar="auto"></i>
+            </div>
+            <p class="vs-gain"><b>− 30</b> min</p>
+            <p class="sr-only">Réactivation des clients inactifs : 40 minutes à la main, 10 une fois automatisé, 30 de moins.</p>
           </div>
-          <p class="vs-nums"><b>90</b> min <span aria-hidden="true">→</span> <b>23</b> min</p>
-          <p class="vs-gain">75 %</p>
-        </div>
-        <div class="vs-row" data-manual="40" data-auto="10" style="--m:40%;--a:10%">
-          <p class="vs-task">Réactivation des clients inactifs</p>
-          <div class="vs-track">
-            <i class="vs-manual" data-bar="manual"></i>
-            <i class="vs-auto" data-bar="auto"></i>
-          </div>
-          <p class="vs-nums"><b>40</b> min <span aria-hidden="true">→</span> <b>10</b> min</p>
-          <p class="vs-gain">75 %</p>
         </div>
       </div>
     </div>

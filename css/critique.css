@@ -1288,6 +1288,23 @@ html.entree-saut .hero-fiche .fiche-rule,
    passent d'un cran. Reste 866 px : les onglets, les trois curseurs,
    les deux chiffres et le panneau dans une seule bande de 605. */
 #calculateur > .band { padding-block: var(--s-7); }
+/* == 18. COMPARATIF - deux barres nues par tache == */
+/* LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.  D-638
+   Il portait son propre vocabulaire : une barre grise, une barre
+   minium, un axe de cinq graduations et un « pont » en accolade avec
+   une pastille. Quatre idees graphiques pour dire ce que six rangees
+   disent en une, quinze centimetres plus bas. Il reprend maintenant
+   la grammaire du detail — plein pour ce qui reste, trame pour ce qui
+   part — et seule l'echelle change : la journee entiere au lieu d'une
+   tache. L'axe est parti : un axe est une legende, et le public ne
+   lit pas les legendes. Les deux bornes sont ecrites sous la piste,
+   chacune sous son bout. */
+/* L'ECHELLE.  D-638
+   1 125 px a 1440x900 pour six rangees et un resume : la section
+   demandait un ecran et quart pour une idee qui tient en un coup
+   d'oeil. Rien n'a ete retire de plus — ce sont les respirations qui
+   passent d'un cran, la ou elles ne separaient plus rien. */
+#comparatif > .band { padding-block: var(--s-7); }
 .fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
 /* --- 768 px : compositions asymetriques --- */
 @media (min-width: 48em) {
