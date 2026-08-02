@@ -1140,3 +1140,40 @@ Les deux échelles ne demandent pas la même chose.
 Corollaire : un geste qui repose sur un **déplacement** de moins de
 40 px à 1440 se lit comme du bruit une fois réduit. Ce qui bouge doit
 bouger d'une distance qu'on voit à 0,29.
+
+### 58 · Un masque posé avant l'hydratation est effacé par l'hydratation
+
+**Le verdict.** La capture du déneigeur est sortie avec **le numéro de
+téléphone du client en clair**, alors que l'outil avait annoncé
+« 9 nœuds masqués ». Le masque avait bien été posé. Il avait aussi été
+défait.
+
+**La cause.** La page est en React. Son hydratation a échoué —
+« Hydration failed because the server rendered text didn't match the
+client. As a result this tree will be regenerated on the client » —
+et la reconstruction de l'arbre a **remplacé les nœuds de texte** que
+le masque venait de réécrire. Entre le masquage et le déclenchement il
+y avait cinq secondes d'attente : largement de quoi.
+
+**Le correctif, en deux temps.**
+1. **Masquer deux fois** : une fois tôt, et une fois **juste avant le
+   déclenchement**, après toutes les attentes.
+2. **Vérifier.** Un masque qu'on ne vérifie pas est un masque qui peut
+   être défait en silence. Les motifs sont relus dans le texte RENDU,
+   et un seul survivant **arrête la capture**.
+
+> **La règle générale :** toute modification du DOM faite avant une
+> attente doit être **revérifiée après** l'attente. Ce qui a du
+> JavaScript peut tout reconstruire pendant qu'on patiente.
+
+### 58 bis · Un vérificateur qui attrape son propre remplacement ne vérifie rien
+
+Le premier jet du vérificateur ci-dessus a refusé la capture sur
+`000 000-0000` et `courriel@exemple.ca` — c'est-à-dire sur les chaînes
+que le masque venait de POSER. Un numéro de remplacement satisfait
+évidemment le motif « un numéro de téléphone ». L'outil rendait donc
+« masquage défait » sur un masquage parfaitement appliqué.
+
+**Un motif n'a survécu que si ce qu'il attrape n'est pas son propre
+remplacement.** Le contrôle compare la prise à la chaîne de
+substitution avant de crier.

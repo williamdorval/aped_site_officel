@@ -292,14 +292,28 @@ try {
       };
     });
 
-    /* LE MASQUAGE EST TEXTUEL, PAS STRUCTUREL. On remplace des
+    /* ── LE MASQUAGE, ET IL SE PASSE DEUX FOIS ──────────────────
+       LE MASQUAGE EST TEXTUEL, PAS STRUCTUREL. On remplace des
        chaînes dans les nœuds de texte ; retirer un élément
        déplacerait tout ce qui suit et on photographierait une mise
-       en page qui n'existe pas. */
+       en page qui n'existe pas.
+
+       DEUX FOIS, PARCE QU'UNE FOIS NE TIENT PAS.  Piège 58.
+       Le premier passage a été effacé sous nos yeux : la page du
+       déneigeur a raté son hydratation React (« Hydration failed…
+       this tree will be regenerated on the client »), React a
+       reconstruit l'arbre, et le numéro de téléphone est revenu —
+       en clair, dans la capture, sans que rien ne le dise. On masque
+       donc AVANT l'attente et de nouveau JUSTE AVANT le déclenchement.
+
+       ET ON VÉRIFIE. Un masque qu'on ne vérifie pas est un masque
+       qui peut être défait en silence : après la seconde passe, les
+       motifs sont relus dans le texte RENDU, et un seul survivant
+       arrête la capture. */
     const p = def.projet ? PROJETS[def.projet] : null;
-    let remplaces = 0;
-    if (p && (p.masques.length || p.retirer.length)) {
-      remplaces = await page.evaluate(({ masques, retirer }) => {
+    const masquer = async () => {
+      if (!p || (!p.masques.length && !p.retirer.length)) return 0;
+      return page.evaluate(({ masques, retirer }) => {
         let n = 0;
         const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         const noeuds = [];
@@ -316,7 +330,8 @@ try {
         masques: p.masques.map(([re, par]) => [re.source, re.flags, par]),
         retirer: p.retirer,
       });
-    }
+    };
+    let remplaces = await masquer();
 
     /* ── L'INSTANT, ET IL NE SE JOUE PAS AU CHRONOMÈTRE ─────────
        Un mouvement ne compte que s'il se voit sur l'image arrêtée
@@ -364,10 +379,41 @@ try {
         document.querySelectorAll(s).forEach((e) => e.remove());
       }
     });
+    /* Seconde passe de masquage, puis vérification — voir plus haut. */
+    remplaces += await masquer();
+    /* UN VÉRIFICATEUR QUI ATTRAPE SON PROPRE REMPLACEMENT NE VÉRIFIE
+       RIEN.  Le premier jet a refusé la capture sur « 000 000-0000 »
+       et « courriel@exemple.ca » — c'est-à-dire sur les chaînes que
+       le masque venait de POSER : elles satisfont évidemment le motif
+       qu'elles remplacent. Un motif n'a survécu que si ce qu'il
+       attrape n'est PAS son propre remplacement. */
+    const survivants = p ? await page.evaluate(({ masques, retirer }) => {
+      const txt = document.body.innerText;
+      const out = [];
+      for (const [motif, drapeaux, par] of masques) {
+        const m = txt.match(new RegExp(motif, drapeaux.includes("g") ? drapeaux : drapeaux + "g"));
+        if (m) for (const x of new Set(m)) if (x !== par) out.push(x);
+      }
+      for (const r of retirer) if (txt.includes(r)) out.push(r);
+      return [...new Set(out)];
+    }, {
+      masques: p.masques.map(([re, par]) => [re.source, re.flags, par]),
+      retirer: p.retirer,
+    }) : [];
+
     await page.waitForTimeout(160);   // laisser une image se peindre
 
     const fPng = path.join(SORTIE_PNG, `${cle}.png`);
     await page.screenshot({ path: fPng });               // pas `fullPage` : c'est UN écran
+
+    if (survivants.length) {
+      echecs++;
+      console.log(`✗ ${cle.padEnd(13)} MASQUAGE DÉFAIT — ${survivants.length} motif(s) encore lisible(s) : ${survivants.slice(0, 6).join(" · ")}`);
+      console.log(`  la capture reste dans ${path.relative(RACINE, fPng)} ; rien n'est écrit en WebP`);
+      rapport.push({ cle, ko: 0, survivants, images: img, erreurs: erreurs.length });
+      await page.close();
+      continue;
+    }
 
     const plat = await platitude(utilitaire, fPng);
     const v = verdictPlatitude(plat.bandes);
