@@ -28,17 +28,17 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 |---|---|---|---|---:|---|---|---|
 | 01 | **Accueil** | `#top` | 224-280 | 57 | 1764-2027 · 1260-1542 | `main.js` 114-219 | — |
 | 02 | **Services** | `#services` | 281-917 | 637 | 2028-2722 | `main.js` 220-664 | — |
-| 03 | **Réalisations** | `#realisations` | 918-1756 | 839 | 2723-4772 | `main.js` 665-1001 | — |
-| 04 | **Secteurs** | `#demos` | 1757-1979 | 223 | 4773-4899 | `main.js` 2466-2716 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
-| 05 | **Visite 360** | `#visite` | 1980-2049 | 70 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2050-2210 | 161 | 4900-5036 | `main.js` 2246-2465 | — |
-| 07 | **Comparatif** | `#comparatif` | 2211-2335 | 125 | 5037-5194 | — | — |
-| 08 | **Processus** | `#processus` | 2336-2471 | 136 | 5195-5380 | `main.js` 1002-1038 | — |
-| 09 | **Agence** | `#apropos` | 2472-2564 | 93 | 5381-5463 | — | — |
-| 10 | **Référence** | `#reference` | 2565-2639 | 75 | 5464-5578 | — | — |
-| 11 | **Questions** | `#faq` | 2640-2715 | 76 | 5579-5612 | `langue.js` 613-641 | — |
-| 12 | **Contact** | `#contact` | 2716-2848 | 133 | 5613-5811 | `main.js` 1566-1611 · `main.js` 1612-1677 · `main.js` 1678-1769 | — |
-| — | **Pied de page** | `#footer` | 2849-2901 | 53 | 5812-5872 | `main.js` 3004-3024 | — |
+| 03 | **Réalisations** | `#realisations` | 918-1756 | 839 | 2723-4773 | `main.js` 665-1001 | — |
+| 04 | **Secteurs** | `#demos` | 1757-1979 | 223 | 4774-4900 | `main.js` 2466-2716 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 05 | **Visite 360** | `#visite` | 1980-2106 | 127 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
+| 06 | **Calculateur** | `#calculateur` | 2107-2267 | 161 | 4901-5037 | `main.js` 2246-2465 | — |
+| 07 | **Comparatif** | `#comparatif` | 2268-2392 | 125 | 5038-5195 | — | — |
+| 08 | **Processus** | `#processus` | 2393-2528 | 136 | 5196-5381 | `main.js` 1002-1038 | — |
+| 09 | **Agence** | `#apropos` | 2529-2649 | 121 | 5382-5536 | — | — |
+| 10 | **Référence** | `#reference` | 2650-2724 | 75 | 5537-5651 | — | — |
+| 11 | **Questions** | `#faq` | 2725-2800 | 76 | 5652-5685 | `langue.js` 613-641 | — |
+| 12 | **Contact** | `#contact` | 2801-2933 | 133 | 5686-5884 | `main.js` 1566-1611 · `main.js` 1612-1677 · `main.js` 1678-1769 | — |
+| — | **Pied de page** | `#footer` | 2934-2986 | 53 | 5885-5945 | `main.js` 3004-3024 | — |
 
 <!-- PLAGES:FIN -->
 
@@ -245,14 +245,27 @@ figure.sector-preview#sectorPreview > #mockStage` →
 | **Verbe / sens** | `data-verbe="volet"` `data-sens="bas"` — porte la trame |
 | **Fond encre** | **oui** |
 | **Blocs CSS** | **`css/tour360.css` entier**. **Aucune règle `.tour` dans `css/app.css`** |
-| **JS** | `js/tour360.js` (entier) · `js/main.js` pose le déclencheur `[data-tour-start]` · `js/trame.js` pour le passage d'une pièce à l'autre |
+| **JS** | `js/tour360.js` (entier) · `js/main.js` pose le déclencheur `[data-tour-start]` · `js/trame.js` pour le passage d'une pièce à l'autre · `js/motion.js` bloc `6. LE CADRE DE LA VISITE` |
 
 **Composants** : seuil → en-tête (`p.head-index` « Démo · Immobilier »,
-h2, chapô) → `div.tour.rise[data-tour] >
-div.tour-stage.plate[data-tour-stage]` avec `<img>` d'affiche →
-`div.tour-enter` (libellé, note, bouton `[data-tour-start]` +
-`[data-tour-label]`) → 2 × `p.fine` (mode d'emploi clavier, puis
-provenance des panoramas et du moteur).
+h2, chapô) → `div.tour[data-tour]` contenant **le cadre à trois
+étages** `div.tour-cadre` : `p.tour-manifeste` (nom + les trois pièces)
+→ `div.tour-stage[data-tour-stage]` avec `<img>` d'affiche et
+`p.tour-lieu` (« 01 · Terrasse ») → `div.tour-pupitre` (`div.tour-enter`
+= note + bouton `[data-tour-start]` / `[data-tour-label]`, **et**
+`p.tour-encours` qui prend sa place une fois la visite ouverte). Puis
+le pied `div.tour-pied` : `ul.tour-gestes[data-settle]` (trois gestes
+nommés) et `p.fine.tour-source` (provenance des panoramas et du
+moteur).
+
+> **LE CONTRAT AVEC LE LECTEUR EST FAIT DE SÉLECTEURS.** `tour360.js`
+> ne connaît que `[data-tour]`, `[data-tour-stage]`, `[data-tour-start]`,
+> `[data-tour-label]`, `[data-tour-poster]` et les classes `.is-loading`
+> / `.is-live`. Tout le reste du cadre est libre — mais renommer un de
+> ces six-là casse la visite **en silence**.
+> Preuve que le lecteur fonctionne : `node tools/visite-sequence.mjs`,
+> 19 constats et 7 images. Lire son en-tête avant de s'en servir : il
+> photographie en **mouvement réduit**, et la raison est mesurée.
 
 <a id="s06"></a>
 ## 06 · Calculateur
@@ -319,13 +332,27 @@ parle, On dessine, On code, On met en ligne).
 | **Verbe / sens** | `data-verbe="souder"` `data-sens="droite"` — **seul seuil sans `data-cible`** ; pas de trame |
 | **Fond encre** | non |
 | **Blocs CSS** | `20. A PROPOS` |
-| **JS** | `js/motion.js` bloc `12bis. LES QUATRE PREUVES DE L'AGENCE` · `js/langue.js` bloc `3. DEGAGER` (les `.agc-txt h3`) |
+| **JS** | `js/motion.js` blocs `12ter. LES TROIS FAITS DE L'AGENCE` et `12bis. LES QUATRE PREUVES DE L'AGENCE` · `js/langue.js` bloc `3. DEGAGER` (les `.agc-txt h3`) |
 
-**Composants** : seuil → `div.agc-tete` (`div.head` avec h2 « Vous
-parlez à la personne qui code. », `div.agc-plaque`, `ul.agc-faits`) →
-`ol.agc-liste[data-agc]` (4 × `li.agc-eng`, chacun `h3` + preuve
-`figure.agc-preuve`) : Le prix est dit au départ · Rien ne se code sans
-votre accord · Le code vous appartient · Ça va vite.
+**Composants**, en **trois mouvements de calibres volontairement
+éloignés** — c'est ce que la section n'avait pas :
+
+1. **L'énoncé** — `div.agc-tete > div.head.agc-head` (h2 « Vous parlez
+   à la personne qui code. » + chapô à 46ch). La moitié droite ne porte
+   rien : c'est elle qui donne l'échelle.
+2. **Les trois faits**, au calibre d'affiche — `ul.agc-faits[data-agc-faits]`,
+   3 × `li` : `b.num > span.agc-roul > i` (le chiffre, 80 px, dans sa
+   fenêtre de cran), la glose chassée à droite, et `i.agc-filet` qui se
+   soude. **1** interlocuteur · **0** gabarit acheté · **12 h** de délai.
+3. **Les quatre engagements** en pas numérotés — `ol.agc-liste[data-agc][data-settle]`,
+   4 × `li.agc-eng` : `p.agc-num` dans une gouttière de 3 rem, `div.agc-txt`
+   (h3 à 32 px + corps), `figure.agc-preuve` **sans boîte**, rattachée
+   par un filet. Le prix est dit au départ · Rien ne se code sans votre
+   accord · Le code vous appartient · Ça va vite.
+
+> **Retiré le 2026-08-02** : `div.agc-plaque` (la plaque de matière de
+> 358 px, `aria-hidden`, qui ne disait rien) et la colonne collante
+> `4fr / 7fr` qui laissait 300 px de vide non borné sous les faits.
 
 <a id="s10"></a>
 ## 10 · Référence

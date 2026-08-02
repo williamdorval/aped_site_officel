@@ -111,6 +111,34 @@
   });
 
 
+  /* 6. LE CADRE DE LA VISITE — V1 · DEGAGER, sens BAS.  D-623
+     Le cadre remplacait sa venue par le fondu generique de `.rise` :
+     un mouvement qui ne se reclame d'aucun des quatre verbes, sur le
+     seul objet de la section. Il se DEGAGE maintenant sous une arete
+     franche qui balaye du HAUT vers le BAS — c'est un panneau, et un
+     panneau se decouvre dans le sens ou on le lit.
+
+     L'etat de repos reste la forme FINALE : `inset(0 0 0 0)` n'est
+     jamais ecrit dans le CSS, et `immediateRender: false` empeche la
+     vague 2 de faire disparaitre un cadre deja peint. */
+  var cadre = $(".tour-cadre");
+  if (cadre) {
+    gsap.fromTo(cadre,
+      { clipPath: "inset(0 0 100% 0)" },
+      {
+        clipPath: "inset(0 0 0% 0)",
+        duration: 0.62,
+        ease: ease,
+        immediateRender: false,
+        scrollTrigger: { trigger: cadre, start: "top 84%", once: true },
+        /* V3 · SOUDER. L'arete finie, la trame du manifeste se
+           ressoude en trait plein : le cadre annonce qu'il est pret. */
+        onComplete: function () { cadre.classList.add("is-soude"); }
+      }
+    );
+  }
+
+
   /* 8. Ligne du processus.  D-506 */
   /* LE FIL SE REMPLIT, station par station, et sa portion pleine  D-507 */
   $$(".parc-etape").forEach(function (etape) {
@@ -267,6 +295,30 @@
 
   /* 12. Frise du processus — N2, defilement lateral.  D-518 */
   /* La frise horizontale a ete remplacee par le parcours vertical  D-519 */
+
+  /* 12ter. LES TROIS FAITS DE L'AGENCE — V3 · SOUDER puis V4 · CRAN.  D-628
+     Le filet du fait se soude de gauche a droite, et le chiffre roule
+     d'un cran dans sa fenetre une fois le trait pose. Deux verbes, un
+     seul geste, dans l'ordre : on trace la ligne, puis on y depose le
+     chiffre. Aucun fondu — un chiffre a moitie transparent se lit
+     comme une panne, pas comme un mouvement (piege 70). */
+  $$(".agc-faits li").forEach(function (fait, i) {
+    var filet = $(".agc-filet", fait);
+    var roul = $(".agc-roul i", fait);
+    var tl = gsap.timeline({
+      scrollTrigger: { trigger: fait, start: "top 84%", once: true },
+      delay: i * 0.08
+    });
+    if (filet) tl.fromTo(filet,
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.42, ease: "power2.out", immediateRender: false });
+    /* `y: 0` explicite : GSAP lirait un `transform` CSS de repos comme
+       une base en PIXELS et animerait `yPercent` par-dessus. Piege 33. */
+    if (roul) tl.fromTo(roul,
+      { yPercent: 105, y: 0 },
+      { yPercent: 0, y: 0, duration: 0.34, ease: "power3.out", immediateRender: false },
+      "-=0.14");
+  });
 
   /* 12bis. LES QUATRE PREUVES DE L'AGENCE — N2.  D-520 */
   $$(".agc-eng").forEach(function (eng) {

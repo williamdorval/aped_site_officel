@@ -157,3 +157,29 @@ bouger à cette taille-là ?*
 C'est le seul dossier de preuves dont le verdict est **un jugement
 d'œil et pas une mesure**. Il l'assume : une planche où deux écrans se
 ressemblent est un échec que nul outil ne signalera.
+
+---
+
+## Chantier 8 · La Visite 360 marche toujours — `2026-08-02-visite-360/`
+
+`node tools/visite-sequence.mjs 2026-08-02-visite-360`
+
+Refait après le chantier qui a refait **tout ce qui entoure** le
+lecteur. Le lecteur lui-même n'a pas été touché : ce dossier le prouve.
+
+| Ce qu'il faut voir | Fichiers |
+|---|---|
+| L'affiche, l'étiquette de lieu, le pupitre avec le bouton | `0-affiche.png` |
+| Le chargement, le bouton passé à « Chargement… » | `1-chargement.png` |
+| La visite vivante : commandes, plan, passages, pupitre passé en mode d'emploi | `2-vivante-terrasse.png` |
+| La flèche du clavier a tourné la pièce | `3-clavier-droite.png` |
+| Le glissement a tourné la pièce | `4-glissement-souris.png` |
+| Le SALON, ses **deux** passages, le plan qui suit | `5-piece-salon.png` |
+| Un passage cliqué dans l'image change encore de pièce | `6-piece-par-passage.png` |
+| Les 19 constats, les écarts, les réserves | `RAPPORT.md` |
+
+**Ce que la planche ne prouve pas, et le dit :** l'entrée du cadre en
+V1 · DÉGAGER. Elle est prise en **mouvement réduit**, où l'animation ne
+joue pas — et la raison est mesurée, pas supposée : sous mouvement
+plein et défilement programmatique, la scène rend un aplat noir, sur le
+code d'avant le chantier **comme** sur celui d'après (pièges 78 à 82).

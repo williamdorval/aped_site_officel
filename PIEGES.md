@@ -1294,3 +1294,94 @@ une propriété de mise en page.
 > **en capture**, et la capture se **regarde**. Voisin du 75 : deux
 > fois de suite ici, l'outil de contrôle a rendu « ok » sur un écran
 > dont il manquait un morceau.
+
+---
+
+### 78 · Une capture d'élément ne compose pas une toile WebGL
+
+`element.screenshot()` de Playwright rendait le panorama de la Visite
+360 en **aplat noir** dès qu'un pointeur avait appuyé dans le lecteur.
+L'écart de pixels annonçait alors **75 %** entre deux états qui
+n'avaient pas bougé, et **0,6 %** entre deux pièces différentes —
+c'est-à-dire l'inverse de la vérité.
+
+`page.screenshot()` compose la même couche et rend la pièce.
+
+> Sous SwiftShader, toute preuve d'un lecteur WebGL passe par une
+> capture de **fenêtre**, jamais par une capture d'élément.
+
+---
+
+### 79 · Le `clip` d'une capture de page ne se lit pas dans le repère de `boundingBox()`
+
+Suite du 78. Passé à `page.screenshot({ clip })` avec les coordonnées
+rendues par `boundingBox()`, à 6 000 px du haut du document, l'outil a
+photographié une bande d'encre vide : cadre noir, bandeau absent,
+pupitre absent. Les deux mesures ne partagent pas leur origine.
+
+> Photographier la fenêtre entière et **borner la comparaison au
+> décodage**, chaque image portant la fenêtre où se trouvait l'objet.
+
+---
+
+### 80 · Un `scrollTo` vers une section n'y arrive pas quand des sas grandissent la page
+
+Le cœur de l'affaire, et il a coûté cinq fausses pistes avant d'être vu.
+`scrollTo(0, hautDeLaSection)` ne s'y pose **jamais** : les sas ajoutent
+de la hauteur *au fur et à mesure* de la descente, donc la cible recule
+plus vite qu'on n'avance. Mesure : à six décalages différents, le cadre
+de la visite est resté **entre 2 128 et 3 555 px sous la fenêtre**.
+
+Toutes les captures « noires » étaient donc des captures **d'ailleurs**.
+Et les constats du DOM passaient quand même, parce que Playwright amène
+lui-même un élément dans le champ avant de cliquer dessus : l'interaction
+avait lieu, la photo non.
+
+Une boucle de correction ne sauve pas : elle poursuit une cible qui
+bouge avec elle. Trois tentatives, dont une partie à **5 156 px**.
+
+> Traverser **toute** la page une fois — ce qui fixe sa hauteur
+> définitive — puis laisser `scrollIntoViewIfNeeded()` amener l'objet.
+> Et **vérifier où est l'objet dans l'image**, au lieu de le supposer.
+
+---
+
+### 81 · Sous mouvement plein, une section derrière un sas se photographie en noir
+
+Une fois le cadre réellement dans le champ, il rendait **encore** noir.
+Le DOM ne disait rien : `clip-path` à sa forme finale, opacité 1, aucune
+transformation, `elementFromPoint` trouvait bien le lecteur.
+
+Mesure A/B, worktree du code d'avant servi sur un autre port :
+
+| | mouvement réduit | mouvement plein |
+|---|---|---|
+| **avant le chantier** | relief **75,9** | relief **0,0** |
+| **après le chantier** | relief **58,5** | relief **0,0** |
+
+Identique des deux côtés : ce n'est pas une régression, c'est ce que
+font les sas quand on les traverse au script. C'est aussi pourquoi
+toutes les planches du dépôt photographient en **mouvement réduit** et
+n'ont jamais rencontré le problème.
+
+> Un lecteur qui doit être **vivant** sur la photo se photographie
+> quand même en mouvement réduit, si son moteur n'en dépend pas —
+> `tour360.js` ne lit `prefers-reduced-motion` que pour la dérive
+> automatique. Et **quand un instrument neuf contredit le code, mesurer
+> le code d'avant avant de s'accuser** (piège 74, autre visage).
+
+---
+
+### 82 · Un sélecteur d'enfant sans chevron mange le parent qu'il ne cible pas
+
+`.agc-faits span { font-size: var(--fs-6) }` visait la glose. La fenêtre
+du cran est **aussi** un `span`, à l'intérieur du `b.num` qui porte les
+80 px : la règle l'a attrapée, lui a posé 15 px et l'a chassée à droite.
+Le chiffre d'affiche mesurait **7 px de large**. Déclaré à 80, rendu à 15.
+
+`getComputedStyle(.num).fontSize` rendait bien `80px` — la règle qui tue
+est sur l'ENFANT, pas sur lui. Seule la géométrie le disait.
+
+> Un descendant qui hérite d'un calibre se cible avec `>`. Et quand une
+> valeur déclarée ne se voit pas, lire la géométrie **rendue**, pas la
+> propriété du parent.

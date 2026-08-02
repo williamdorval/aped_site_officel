@@ -635,3 +635,100 @@ temps le premier écran — le seul qui compte — restait à 5 sur 10.
 | D-695 | **Douze agents qui cherchent « le meilleur site de leur métier » convergent tous vers le goût de l'année.** Quatre des neuf démos étaient du serif sur crème ; cinq des douze étaient une photo sombre avec un titre lourd. Chaque écran reçoit donc une **cellule exclusive** — palette, typographie, composition, traitement photo — et ce qui est exclusif à l'un est **interdit** aux onze autres. La matrice se décide AVANT la recherche, sinon la recherche la dissout |
 | D-696 | **Les trois projets réels ne se réécrivent pas pour soigner leur vignette.** Restauration, garage et déneigement vivent dans des dépôts voisins et appartiennent à des clients. Sur eux, seul l'**instant de la prise de vue** se choisit. Conséquence assumée, et c'est le plus gros angle mort de la section : ce sont les trois qui se ressemblent le plus — même orange de bouton, même photo sombre, même titre blanc massif — parce qu'ils sortent de la même main |
 | D-697 | **Un texte tourné à 90° dans une marge est un tic d'agence, pas une convention de métier.** Le folio de la coiffure était vertical au nom de la « page de journal ». Un quotidien n'a jamais tourné son folio : il l'imprime à plat. Le verdict vient de `design-taste-frontend` § 9, relevé sur le **texte rendu** et non sur la source. Même passe : deux écrans **voisins sur la planche** portaient une légende « FIG. » — la boutique en a fait son dispositif de signature, repris d'Ōmbia ; la coiffure l'avait aussi. Deux « FIG. » côte à côte cessent d'être une convention et deviennent un tic de studio. Ce qu'on garde contre le skill, et sciemment : **le cadratin** (son interdit vise l'anglais de marketing ; en français c'est une ponctuation courante) et **les mentions de lieu** (le skill autorise lui-même le lieu physique réel, et pour un garage la ville EST l'information) |
+
+---
+
+# 2026-08-02 · VISITE 360 ET AGENCE — LE CONTENANT, PAS LE CONTENU
+
+Deux sections, deux problèmes opposés. La Visite avait un excellent
+lecteur dans un mauvais emballage. L'Agence n'avait jamais eu de
+chantier et ça se voyait.
+
+**Le lecteur 360 n'a pas été touché.** `js/tour360.js` est identique
+au commit près. Ce qui a changé est autour de lui.
+
+## Ce qu'on a mesuré avant de décider
+
+Quinze références de démonstration produit et quinze de section
+« agence » ont été ouvertes, capturées et regardées (420 captures).
+Trois constats ont commandé le reste :
+
+1. **Aucune référence n'empile deux paragraphes pleine largeur sous
+   un lecteur.** Les mentions vivent latéralement, sur la médiane du
+   média, ou repliées. Nous en avions **130 mots empilés** — plus de
+   surface que l'offre.
+2. **La plaque d'entrée mangeait 36 % de la photo** au 16:9, et 52 %
+   au 4:3 du téléphone. On ne vendait plus la pièce, on vendait un
+   aplat noir.
+3. L'Agence portait ce que les rapports appellent **« le pavé
+   équilibré »** : tout entre 15 et 40 px, rien à 90, rien à 11. On
+   pouvait découper n'importe quelle bande de 300 px sans savoir
+   laquelle. Et la colonne collante laissait **300 px de vide qu'aucune
+   arête ne bornait** — un vide qui se lit comme un oubli.
+
+## Ce qui a été décidé
+
+**D-620 · Le cadre à trois étages.** Manifeste des pièces, pièce,
+pupitre, dans un seul trait. Même objet que le panneau de la section
+04, mais à l'échelle de la section entière : les deux ne se confondent
+pas.
+
+**D-622 · Le pupitre ne se replie jamais.** `.is-live` masque
+`.tour-enter` — règle d'origine, inchangée. Mais un étage qui
+disparaît en pleine visite ferait remonter le pied de 62 px sous les
+yeux du visiteur. Le pupitre garde sa hauteur et **échange son
+contenu** : l'entrée cède la place à ce qu'on peut faire une fois
+dedans. Mesuré : 89 px avant, 89 px après.
+
+**D-624 · Une étiquette de lieu, pas une pastille de geste.** Les
+références posent « Press and drag to orbit » sur leur lecteur. Nous
+ne pouvons pas : **tant qu'on n'a pas cliqué, glisser ne fait rien.**
+La pastille serait fausse jusqu'au chargement. L'étiquette dit donc ce
+qui est vérifiable à l'œil — « 01 · Terrasse » — et les trois gestes
+sont nommés sous le cadre, là où ils sont vrais.
+
+**D-625 · L'Agence en trois mouvements de calibres éloignés.**
+L'énoncé (38 px), les trois faits (80 px), les quatre engagements
+(32 px sur une gouttière de 11 px). Ce qui manquait n'était pas une
+image : c'était un **événement de grille**.
+
+**D-626 · Les trois faits portent l'image.** « 0 gabarit acheté » est
+l'argument le plus rare du site et il était composé à 24 px dans une
+colonne de 360. Au calibre d'affiche, en rangées pleine largeur, la
+glose chassée à droite. C'est ce qui remplace la photo d'équipe qu'on
+n'a pas et qu'on n'inventera pas.
+
+**D-627 · Les preuves sortent de leur boîte.** Elles étaient posées
+sur `--surface-2` avec une bordure : quatre cartes, dans une page qui
+n'en porte aucune ailleurs. Un aplat plus un cadre annonce une
+élévation qui n'existe pas.
+
+**La plaque d'atelier (`.agc-plaque`) est retirée.** 358 × 150 px,
+`aria-hidden`, sans légende : elle ne disait rien. La remplacer par
+une matière plus grande aurait été remplir un vide — l'anti-patron
+exact que les références décrivent. Les chiffres au calibre d'affiche
+sont le visuel, et ils sont vrais.
+
+## Les verbes, un par mouvement
+
+| | Où | Verbe |
+|---|---|---|
+| A119b | entrée du cadre, arête franche haut→bas | **V1 · DÉGAGER** |
+| A119c | trame du manifeste qui se ressoude | **V3 · SOUDER** |
+| A119d | les trois gestes qui se reprennent | **V2 · S'ALIGNER** |
+| A134b | filet du fait, puis chiffre d'un cran | **V3 puis V4** |
+| A135 | les quatre preuves | V3 + V2 |
+
+Le seuil 08 → 09 est en **souder** : ce sont les trois filets des faits
+qui le portent. Aucun mouvement ajouté sans verbe.
+
+## Ce que ça a coûté en instruments
+
+Cinq fausses pistes avant de pouvoir photographier le lecteur vivant.
+Pièges **78 à 82**. La plus chère : `scrollTo` vers une section
+n'y arrive jamais quand des sas grandissent la page — toutes les
+captures « noires » étaient des captures d'ailleurs.
+
+Et le juge de paix, à reprendre : **le même noir sort du code d'AVANT
+le chantier**, dans un worktree servi sur un autre port. Quand un
+instrument neuf accuse, mesurer le code d'avant avant de s'accuser.

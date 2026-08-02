@@ -18,7 +18,7 @@ dans le document qui la porte.
 | **un mouvement** | `ANIMATIONS.md` — une ligne par animation : fichier, déclencheur, durée, verrou, verbe, niveau |
 | **pourquoi le code est comme ça** | `DECISIONS.md` + `decisions/`. Le code porte l'identifiant : `grep D-042` trouve les deux bouts |
 | **un chiffre, un seuil, un outil de mesure** | `MESURES.md` |
-| **une mesure qui rend un verdict surprenant** | `PIEGES.md` — 74 faux verdicts déjà payés |
+| **une mesure qui rend un verdict surprenant** | `PIEGES.md` — 82 faux verdicts déjà payés |
 | **ce qui n'est pas prouvé, pas fini** | `RESERVES.md` |
 | **quels skills charger** | `DESIGN-STACK.md` |
 | **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` — le chantier du 2026-07-31 |
@@ -270,6 +270,11 @@ Cause et correctif : `PIEGES.md`.
 75. **Une clôture de commentaire CSS cassée avale la règle suivante, et l'outil de contrôle rend « ok »** — 56 % de la surface d'un écran avait disparu, `demos-controle` disait « 0 mal ». Compter les `/*` et les `*/`.
 76. **Un outil de contraste qui ne remonte que les ANCÊTRES ne voit pas une masse posée en FRÈRE** — quatre échecs à « 1:1 » sur du texte à 9,4:1. Sous une masse en frère comme sous une photo, l'arbitre est `tools/pire-pixel.mjs`.
 77. **`order` réordonne aussi l'ORDRE DE PEINTURE** — une photo à `order: 8` a effacé un bandeau à `order: 1`. DOM juste, rectangle juste, couleur juste, texte rendu présent, 0 erreur, `demos-controle` « ok ». Vu en rouvrant l'image, par rien d'autre.
+78. Une capture d'ÉLÉMENT ne compose pas une toile WebGL — `page.screenshot()`, jamais `element.screenshot()`.
+79. Le `clip` d'une capture de page ne partage pas son origine avec `boundingBox()` — photographier la fenêtre, borner au décodage.
+80. **Un `scrollTo` vers une section n'y arrive jamais quand des sas grandissent la page** — la cible recule plus vite qu'on n'avance (mesuré : 2 128 à 3 555 px sous la fenêtre, six fois). Traverser toute la page, puis `scrollIntoViewIfNeeded`, puis VÉRIFIER où est l'objet dans l'image.
+81. **Sous mouvement plein, une section derrière un sas se photographie en noir** — identique sur le code d'avant (relief 0,0 des deux côtés, 75,9 et 58,5 en mouvement réduit). Ce n'est pas une régression : c'est pourquoi toutes les planches du dépôt photographient en mouvement réduit.
+82. **Un sélecteur d'enfant sans chevron mange ce qu'il ne cible pas** — `.agc-faits span` a attrapé la fenêtre du cran dans `b.num` et ramené un chiffre de 80 px à 15. `getComputedStyle` du parent disait « 80px » ; seule la géométrie rendue disait la vérité.
 
 ## RÉSERVES — à ne jamais oublier
 

@@ -1982,48 +1982,105 @@
     <div class="head" style="margin-top: var(--s-6);">
       <p class="head-index">Démo · Immobilier</p>
       <h2>L’acheteur fait le tour avant de prendre rendez-vous.</h2>
-      <p>Trois pièces, un seul lien. Il arrive sur la terrasse, entre au salon, monte à la chambre, depuis son téléphone et sans rien installer. Vous arrêtez d’ouvrir la porte à des gens qui repartent après deux minutes.</p>
+      <p>Trois pièces, un seul lien. Il arrive sur la terrasse, entre au salon, monte à la chambre, depuis son téléphone. Vous arrêtez d’ouvrir la porte à des gens qui repartent après deux minutes.</p>
     </div>
 
-    <div class="tour rise" data-tour>
-      <div class="tour-stage plate" data-tour-stage>
-        <img
-          class="tour-poster"
-          src="images/tour/poster.webp"
-          width="1040"
-          height="585"
-          alt="Terrasse pavée d’une maison de campagne blanche : un bassin, une table et des chaises en fer forgé, une grande baie vitrée ouvrant sur le salon."
-          loading="lazy"
-          decoding="async"
-          fetchpriority="low"
-          data-tour-poster
-        />
+    <!-- LE CONTENANT DU LECTEUR.  D-620
+         Le lecteur lui-meme ne bouge pas d'une ligne : `[data-tour]`,
+         `[data-tour-stage]`, `[data-tour-start]`, `[data-tour-label]`
+         et `[data-tour-poster]` sont le contrat de `js/tour360.js`.
+         Ce qui change est autour — un CADRE a trois etages : le
+         manifeste des pieces en haut, la piece au milieu, l'entree en
+         bas. La plaque d'entree quitte l'INTERIEUR de la scene, ou
+         elle mangeait 36 % de la photo, pour devenir l'etage bas du
+         cadre. `.is-live` la masque toujours : c'est la meme regle. -->
+    <div class="tour" data-tour>
+      <div class="tour-cadre">
 
-        <div class="tour-enter">
-          <p class="label">Visite 360 · 3 pièces</p>
-          <p class="tour-enter-note">Terrasse, salon, chambre. Rien ne se télécharge avant votre clic.</p>
-          <button class="btn btn--primary btn--lg" type="button" data-tour-start>
-            <span data-tour-label>Entrer dans la visite</span>
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-          </button>
+        <p class="tour-manifeste">
+          <span class="tour-quoi">Visite 360</span>
+          <span class="tour-pieces" aria-hidden="true">
+            <span><b>01</b>Terrasse</span><span><b>02</b>Salon</span><span><b>03</b>Chambre</span>
+          </span>
+        </p>
+
+        <div class="tour-stage" data-tour-stage>
+          <img
+            class="tour-poster"
+            src="images/tour/poster.webp"
+            width="1040"
+            height="585"
+            alt="Terrasse pavée d’une maison de campagne blanche : un bassin, une table et des chaises en fer forgé, une grande baie vitrée ouvrant sur le salon."
+            loading="lazy"
+            decoding="async"
+            fetchpriority="low"
+            data-tour-poster
+          />
+          <!-- L'ETIQUETTE DE LIEU.  D-624
+               Relevé sur Basement, Giraffe360 et Halo Lab : une
+               etiquette mono accrochee au bas du media. Ce qu'elle dit
+               est verifiable a l'oeil — l'affiche EST la terrasse, et
+               c'est la piece 01 du manifeste au-dessus.
+               Ce qu'elle ne dit PAS : « glisser pour regarder autour ».
+               Tant qu'on n'a pas cliqué, glisser ne fait rien. Une
+               pastille de geste serait fausse jusqu'au chargement ; les
+               trois gestes sont nommes sous le cadre, ou ils sont
+               vrais. -->
+          <p class="tour-lieu" aria-hidden="true">01 · Terrasse</p>
         </div>
+
+        <!-- L'ETAGE BAS NE SE REPLIE JAMAIS.  D-622
+             `.is-live` masque `.tour-enter` — c'est la regle d'origine
+             et elle ne change pas. Mais un etage qui disparait en
+             pleine visite fait remonter tout le pied de 62 px sous les
+             yeux du visiteur. Le pupitre garde donc sa hauteur et
+             echange son contenu : l'entree cede la place a ce qu'on
+             peut faire une fois dedans. -->
+        <div class="tour-pupitre">
+          <div class="tour-enter">
+            <p class="tour-enter-note">Hébergé chez nous. Rien ne se télécharge avant votre clic.</p>
+            <button class="btn btn--primary btn--lg" type="button" data-tour-start>
+              <span data-tour-label>Entrer dans la visite</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+            </button>
+          </div>
+          <p class="tour-encours" aria-hidden="true">Glissez pour regarder autour. Cliquez un passage, ou une pièce du plan, pour changer de pièce.</p>
+        </div>
+
       </div>
 
-      <!-- D3 · D4 — LA MENTION LEGALE RESTE, LE JARGON PART DEVANT.  D-053 -->
-      <p class="fine">
-        La pièce s’ouvre tout de suite, puis se précise d’elle-même. Tout est hébergé chez nous :
-        votre visite ne dépend d’aucun service extérieur.
-        Au clavier : flèches pour regarder autour, + et − pour le cadrage, tabulation pour atteindre
-        les passages d’une pièce à l’autre. Le plan en bas à gauche fait la même chose à la souris.
-      </p>
-      <p class="fine">
-        Panoramas de démonstration : les trois pièces sont celles d’une même propriété, Lythwood Lodge
-        (KwaZulu-Natal), photographiées par Greg Zaal et publiées par
-        <a href="https://polyhaven.com/license" rel="noopener noreferrer">Poly Haven en CC0</a> —
-        domaine public, usage commercial libre, aucune attribution exigée. Ce ne sont pas nos prises
-        de vue : la démonstration montre le lecteur, pas la séance de photo.
-        Crédits techniques : moteur Pannellum 2.5.7, licence MIT, servi depuis ce serveur.
-      </p>
+      <!-- LE PIED : CE QU'ON PEUT FAIRE A GAUCHE, D'OU CA VIENT A DROITE.
+           Les deux paragraphes de mentions pesaient 130 mots empiles sur
+           toute la largeur — plus de surface que l'offre elle-meme. Le
+           mode d'emploi devient trois gestes nommes AVANT le clic ; la
+           provenance se range a droite, en mono, comme le pied de la
+           section Reference.  D-621 -->
+      <div class="tour-pied">
+        <!-- V2 · S'ALIGNER. Les trois gestes arrivent decales et se
+             reprennent : c'est le mecanisme generique `[data-settle]`
+             du site, pas un quarante-et-unieme mouvement. -->
+        <ul class="tour-gestes" data-settle>
+          <li>
+            <b>Regarder autour</b>
+            <span>Glissez dans l’image, ou les flèches du clavier.</span>
+          </li>
+          <li>
+            <b>Changer de pièce</b>
+            <span>Cliquez un passage, tabulez jusqu’à lui, ou passez par le plan en bas à gauche.</span>
+          </li>
+          <li>
+            <b>Cadrer</b>
+            <span>Molette, ou les touches + et −.</span>
+          </li>
+        </ul>
+
+        <p class="fine tour-source">
+          Panoramas de démonstration : Lythwood Lodge, KwaZulu-Natal, photographiés par Greg Zaal et
+          publiés par <a href="https://polyhaven.com/license" rel="noopener noreferrer">Poly Haven en
+          CC0</a>. Ce ne sont pas nos prises de vue. Moteur Pannellum 2.5.7, licence MIT, servi depuis
+          ce serveur.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -2481,27 +2538,55 @@
       </div>
     <div class="wrap band">
 
+      <!-- TROIS MOUVEMENTS, PAS QUATRE RANGEES IDENTIQUES.  D-625
+           Le defaut de cette section n'etait pas l'absence d'image :
+           c'etait l'absence d'EVENEMENT DE GRILLE. Tout y tenait entre
+           15 et 40 px — rien a 90, rien a 11 — et on pouvait decouper
+           n'importe quelle bande de 300 px sans distinguer laquelle.
+           Elle se lit maintenant en trois temps de calibres tres
+           differents : l'enonce, les trois faits au calibre d'affiche,
+           les quatre engagements en pas numerotes. -->
       <div class="agc" style="margin-top: var(--s-6);">
 
         <div class="agc-tete">
-          <div class="head" style="margin-bottom: 0;">
+          <div class="head agc-head" style="margin-bottom: 0;">
             <h2>Vous parlez à la personne qui code.</h2>
             <p>APED est une agence québécoise. Pas de sous-traitance à l’autre bout du monde, pas de gestionnaire de compte entre vous et le clavier.</p>
           </div>
-
-          <!-- La plaque d'atelier : la meme matiere que le hero, a
-               l'echelle d'un bloc. Elle remplace la photo d'equipe
-               generique que ce genre de section porte d'habitude. -->
-          <div class="agc-plaque" aria-hidden="true"></div>
-
-          <ul class="agc-faits">
-            <li><b class="num">1</b><span>Interlocuteur, du premier appel à la mise en ligne</span></li>
-            <li><b class="num">0</b><span>Gabarit acheté. On repart de la page blanche chaque fois</span></li>
-            <li><b class="num">12 h</b><span>Le délai de réponse, jours ouvrables</span></li>
-          </ul>
         </div>
 
-        <ol class="agc-liste" data-agc>
+        <!-- LES TROIS FAITS PORTENT L'IMAGE.  D-626
+             « 0 gabarit acheté » est l'argument le plus rare du site et
+             il etait compose a 24 px dans une colonne de 360. Il passe
+             au calibre d'affiche, en rangees pleine largeur, la glose
+             chassee a droite : c'est ce qui remplace la photo d'equipe
+             qu'on n'a pas et qu'on n'inventera pas.
+             V4 · CRAN — chaque chiffre roule d'un cran dans sa fenetre.
+             Aucun fondu : un chiffre a moitie fondu n'est pas un
+             chiffre, c'est une panne. -->
+        <ul class="agc-faits" data-agc-faits>
+          <li>
+            <b class="num"><span class="agc-roul"><i>1</i></span></b>
+            <span>Interlocuteur, du premier appel à la mise en ligne</span>
+            <i class="agc-filet" aria-hidden="true"></i>
+          </li>
+          <li>
+            <b class="num"><span class="agc-roul"><i>0</i></span></b>
+            <span>Gabarit acheté. On repart de la page blanche chaque fois</span>
+            <i class="agc-filet" aria-hidden="true"></i>
+          </li>
+          <li>
+            <b class="num"><span class="agc-roul"><i>12 h</i></span></b>
+            <span>Le délai de réponse, jours ouvrables</span>
+            <i class="agc-filet" aria-hidden="true"></i>
+          </li>
+        </ul>
+
+        <!-- V2 · S'ALIGNER. Les quatre engagements arrivent decales et
+             se reprennent — le mecanisme generique du site, pas un
+             mouvement de plus. Le seuil 08 vers 09 est en SOUDER : ce
+             sont les trois filets des faits qui le portent, au-dessus. -->
+        <ol class="agc-liste" data-agc data-settle>
 
           <li class="agc-eng">
             <p class="agc-num num">01</p>

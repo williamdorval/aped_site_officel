@@ -192,7 +192,7 @@ Mise en page, composants, sections, micro-états, budget de dégradation.
 | 17. CALCULATEUR - deux moities, le resultat vit a droite |
 | 18. COMPARATIF - deux barres nues par tache |
 | 19. PROCESSUS - le parcours d'atelier |
-| 20. A PROPOS - trio asymetrique, jamais trois colonnes egales |
+| 20. A PROPOS - trois mouvements, trois calibres |
 | 21. REFERENCE - le bloc sombre, dans LES DEUX themes |
 | 22. FAQ - deux colonnes, accordeon |
 | 23. CONTACT - cinq cellules pour cinq entrees, aucune vide |
@@ -255,12 +255,21 @@ n'y a pas d'aperçu, donc rien à styler.
 Ne contient pas la légende des secteurs — elle reste dans le document et
 reste stylée par `app.css`.
 
-### `css/tour360.css` — 411 lignes
+### `css/tour360.css` — 501 lignes
 
 Feuille autonome de la visite. Ne dépend que des jetons. Charge **après**
 `css/vendor/pannellum.css`, dont elle ferme deux dettes : l'anneau de focus
 du conteneur (`outline: 0` chez Pannellum alors qu'il pose `tabIndex = 0`)
 et l'état de focus des points de passage.
+
+Depuis le 2026-08-02 elle porte aussi **le contenant** du lecteur, et pas
+seulement le lecteur : `.tour-cadre` (les trois étages), `.tour-manifeste`,
+`.tour-lieu`, `.tour-pupitre` / `.tour-encours`, `.tour-pied`,
+`.tour-gestes`, `.tour-source`. C'est ce qui garde l'invariant **« aucune
+règle `.tour` dans `app.css` »**. Contrepartie à connaître : cette feuille
+arrive en **vague 2**, donc rien de ce qu'elle porte ne doit être
+nécessaire à la lecture — la hauteur de la scène est réservée par les
+attributs `width` / `height` de l'affiche, pas par le CSS.
 
 ### `css/vendor/pannellum.css`
 

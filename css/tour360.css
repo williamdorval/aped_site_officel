@@ -3,8 +3,63 @@
 /* == Bloc == */
 .tour {
   display: grid;
-  gap: var(--s-4);
+  gap: var(--s-6);
 }
+
+/* LE CADRE A TROIS ETAGES.  D-620
+   Un seul trait fait le tour des trois etages : le manifeste des
+   pieces, la piece, le pupitre. C'est le meme objet que le panneau de
+   la section 04 — un cadre plat, un bandeau mono, aucun rayon, aucune
+   ombre — mais a l'echelle de la section entiere au lieu d'une
+   colonne, pour que les deux ne se confondent pas. */
+.tour-cadre {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-2);
+}
+
+/* L'etage haut repond a « qu'est-ce que je regarde » avant le clic :
+   le nom de la chose a gauche, les trois pieces a droite. */
+.tour-manifeste {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  /* `base.css` donne a tout `p` un `max-width: var(--measure)`. Sur un
+     bandeau qui doit tenir la largeur du cadre, il le ramenait a
+     477 px sur 1048 : le nom collait aux pieces, et l'etage haut ne
+     faisait plus le tour de la photo. */
+  max-width: none;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  /* V3 · SOUDER. Le filet du bas est une TRAME de grains, la meme que
+     `.section-rule`, et il se ressoude quand le cadre a fini de se
+     degager. Ce n'est pas un degrade : c'est un grain. */
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--rule-strong) 0 2px,
+    transparent 2px 4px
+  );
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 100% var(--rule-w);
+  transition: background-image var(--t-3) var(--e-snap);
+}
+
+.tour-cadre.is-soude .tour-manifeste {
+  background-image: linear-gradient(90deg, var(--rule-strong) 0 100%);
+}
+
+.tour-quoi { color: var(--accent-text); font-weight: 700; }
+
+.tour-pieces { display: flex; gap: var(--s-5); color: var(--ink-muted); }
+.tour-pieces > span { display: flex; align-items: baseline; gap: var(--s-2); }
+.tour-pieces b { color: var(--ink); font-weight: 700; }
 
 .tour-stage {
   position: relative;
@@ -19,6 +74,55 @@
   .tour-stage { aspect-ratio: 4 / 3; }
 }
 
+/* LE PUPITRE. Sa hauteur est reservee une fois pour toutes : c'est ce
+   qui empeche le pied de la section de remonter quand la visite
+   s'ouvre et que `.tour-enter` disparait.  D-622 */
+.tour-pupitre {
+  display: grid;
+  padding: var(--s-4);
+  border-top: var(--rule-w) solid var(--rule);
+}
+
+.tour-pupitre > * { min-height: 3.5rem; }
+
+.tour-encours {
+  display: none;
+  align-items: center;
+  max-width: none;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.tour[data-tour].is-live .tour-encours { display: flex; }
+
+/* L'etiquette de lieu, posee sur l'affiche.  D-624
+   Elle est sur photo, donc elle ne suit pas le theme : elle suit son
+   fond, comme l'ancienne plaque d'entree. Aplat franc, rayon 0.
+   Elle disparait des que la visite est vivante — le plan du lecteur
+   occupe alors ce coin, et c'est lui qui dit ou on est. */
+.tour-lieu {
+  position: absolute;
+  left: var(--s-4);
+  bottom: var(--s-4);
+  z-index: 2;
+  margin: 0;
+  max-width: none;
+  padding: var(--s-2) var(--s-3);
+  background: #101211;
+  border: var(--rule-w) solid rgb(242 243 241 / 0.28);
+  color: #f2f3f1;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.tour[data-tour].is-live .tour-lieu { display: none; }
+
 /* Affiche plate. C'est la seule chose que la section pese avant  D-335 */
 .tour-poster {
   position: absolute;
@@ -29,42 +133,97 @@
   object-fit: cover;
 }
 
-/* LA PLAQUE D'ENTREE — aplat franc, jamais un degrade.  D-336 */
+/* L'ENTREE QUITTE LA PHOTO.  D-336 · revu D-620
+   La plaque etait posee DANS la scene, en `inset: auto 0 0 0` : elle
+   mangeait 36 % de la piece au 16:9, et 52 % au 4:3 du telephone. On
+   ne vendait plus la piece, on vendait un aplat noir. Elle devient
+   l'etage bas du cadre : la photo est entiere, et l'appel a l'action
+   se lit sur le ciment comme partout ailleurs sur le site. */
 .tour-enter {
-  position: absolute;
-  inset: auto 0 0 0;
-  display: grid;
-  align-content: end;
-  justify-items: start;
-  gap: var(--s-3);
-  padding: clamp(1rem, 2.4vw, 1.75rem);
-  background: #101211;
-  border-top: var(--rule-w) solid rgb(242 243 241 / 0.24);
-}
-
-/* Le texte de l'incrustation est toujours sur photo sombre : il ne
-   suit pas le theme, il suit son fond. */
-.tour-enter .label,
-.tour-enter .tour-enter-note {
-  color: #f2f3f1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-5);
 }
 
 .tour-enter-note {
   font-family: var(--font-data);
   font-size: var(--fs-8);
   line-height: 1.5;
-  max-width: 46ch;
+  max-width: none;
+  color: var(--ink-muted);
 }
 
 .tour[data-tour].is-live .tour-enter,
 .tour[data-tour].is-live .tour-poster { display: none; }
 
-/* Pendant le chargement la plaque prend tout le cadre : c'est le
-   seul moment ou elle doit couvrir la photo, parce que ce qui se
-   passe alors n'est pas la photo mais l'attente. Toujours un aplat. */
-.tour[data-tour].is-loading .tour-enter {
-  inset: 0;
-  background: #101211;
+/* == LE PIED DE SECTION ==  D-621
+   A gauche les trois gestes, nommes, en colonne unique sous 64em et
+   en trois colonnes au-dessus. A droite la provenance, alignee a
+   droite comme le pied de la section Reference : c'est la meme
+   fonction — une mention qui doit rester lisible sans jamais peser
+   autant que ce qu'elle accompagne. */
+.tour-pied {
+  display: grid;
+  gap: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: var(--rule-w) solid var(--rule);
+}
+
+.tour-gestes {
+  display: grid;
+  gap: var(--s-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tour-gestes li { display: grid; gap: var(--s-2); }
+
+.tour-gestes b {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.tour-gestes span {
+  font-size: var(--fs-7);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 34ch;
+}
+
+/* LA PROVENANCE EST UN PIED, PAS UNE COLONNE.  D-621
+   Mise a cote des gestes, elle leur disputait la ligne du haut et
+   rendait quatre colonnes la ou il y a trois gestes. Elle descend
+   d'un cran, seule, alignee a droite : c'est la place que le meme
+   genre de mention occupe deja au pied de la section Reference. */
+.tour-source {
+  color: var(--ink-muted);
+  padding-top: var(--s-4);
+  border-top: var(--rule-w) solid var(--rule);
+}
+
+@media (min-width: 64em) {
+  /* LE PIED PARTAGE SES COLONNES AVEC LES GESTES.  D-621
+     « Jamais trois colonnes egales » : les trois gestes n'ont pas la
+     meme longueur, leurs colonnes non plus. Le pied porte la MEME
+     definition de pistes, si bien que la provenance commence
+     exactement au bord de la deuxieme colonne. Bornee a la main, son
+     filet demarrait 85 px avant ce bord a 1920 px : un trait aligne
+     sur rien se voit tout de suite, et on ne sait pas dire pourquoi. */
+  .tour-pied,
+  .tour-gestes {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
+    column-gap: var(--s-7);
+  }
+  .tour-gestes { grid-column: 1 / -1; }
+  .tour-gestes span { max-width: none; }
+  .tour-source { grid-column: 2 / -1; text-align: right; max-width: none; }
 }
 
 /* Message d'echec (moteur absent, WebGL absent, fichier illisible). */

@@ -593,3 +593,49 @@ pas finie.
     Chromium sous Playwright, machine de bureau Windows. La réduction
     à 421 px est simulée. Le repli sous 720 px de plusieurs écrans n'a
     jamais été regardé à l'image.
+
+---
+
+## Visite 360 et Agence — 2026-08-02
+
+1. **L'entrée du cadre en V1 · DÉGAGER n'a jamais été photographiée
+   en mouvement.** `tools/visite-sequence.mjs` prend ses images en
+   mouvement réduit, où l'animation ne joue pas. La raison est mesurée
+   (pièges 78 à 82) mais la réserve reste entière : **le mouvement du
+   cadre est déclaré, pas prouvé en image.** La règle B du projet
+   demande cinq captures et l'écart entre deux consécutives ; ce
+   mouvement-là ne les a pas.
+
+2. **Une section derrière un sas rend un aplat noir en capture sous
+   mouvement plein.** Vrai sur le code d'avant comme sur celui d'après,
+   donc pas une régression du chantier — mais **personne n'a vérifié si
+   un visiteur réel qui arrive par une ancre voit la même chose.** Si
+   oui, c'est un défaut de production, et il est plus grave que tout ce
+   que ce chantier a corrigé. À instruire.
+
+3. **Le `pointe` (`langue.js` § 8) affiche encore « Regarder autour »
+   au survol de `.tour-stage` AVANT le lancement**, c'est-à-dire à un
+   moment où glisser ne fait rien. Même faute que la pastille de geste
+   qu'on a refusé d'écrire (D-624), mais elle existait déjà et n'a pas
+   été touchée.
+
+4. **Les trois faits de l'Agence n'ont pas de source affichée.**
+   « 1 interlocuteur », « 0 gabarit acheté », « 12 h de délai » sont
+   défendables et cohérents avec le hero, mais **le visiteur n'a rien
+   pour les vérifier** — Q2 des quatre questions n'est satisfaite que
+   par la cohérence interne du document. Les mettre à 80 px augmente
+   d'autant le coût s'ils sont contestés.
+
+5. **`.tour-encours` est `aria-hidden`.** Le mode d'emploi visible une
+   fois la visite ouverte n'est donc pas annoncé aux lecteurs d'écran ;
+   il double `ul.tour-gestes`, qui l'est. C'est un choix, pas un
+   oubli — mais il n'a pas été validé avec un lecteur d'écran, et
+   **aucun lecteur d'écran réel n'a jamais parcouru ce site.**
+
+6. **L'écart entre les mouvements 2 et 3 de l'Agence a été réglé à
+   l'œil**, sur une seule largeur, puis vérifié à trois. Aucune règle
+   ne dit pourquoi 64 px et pas 72.
+
+7. **La planche avant/après ne comporte qu'UNE passe « avant ».** Le
+   protocole du piège 29 en demande trois de chaque côté. Le plancher
+   de bruit est donc estimé sur les deux passes « après » seulement.
