@@ -4,10 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<!-- L'instant de capture. Les trois cotes durent 760 ms, décalées de
-     0 / 140 / 280 ms. À 640 ms elles sont à 84 % · 66 % · 47 % : trois
-     longueurs différentes, trois chiffres encore éteints. -->
-<meta name="aped-instant" content="640">
+<!-- L'instant de capture. Cinq traits partent en décalé : les deux
+     cotes du titre sont FINIES et lettrées, les deux lignes de
+     construction et la cote du bâti sont EN VOL, à trois longueurs
+     différentes. Voir « LE GESTE » plus bas pour l'arithmétique. -->
+<meta name="aped-instant" content="1100">
 <title>CORDEAU — entrepreneur général · site de démonstration</title>
 <meta name="description" content="CORDEAU, entrepreneur général fictif. Rénovation et agrandissement résidentiels. Écran de démonstration.">
 <style>
@@ -40,18 +41,12 @@
   --t30:#4d6176;
   --t16:#2e455d;
   --t08:#1c354f;
-  /* LA TAILLE DU TITRE EST RELEVÉE, PAS DÉCRÉTÉE. Le plan part de
-     130 px et exige que la ligne 2 mesure 1320 px — la largeur de la
-     feuille, comme le mot de Haven touche ses deux marges. Mesuré :
-     « AVANT DE DÉMOLIR » rend 1123,9 px à 130 px. La taille juste est
-     donc 130 × 1320 / 1123,9 = 152,68 px, et c'est le plan lui-même
-     qui tranche : « on ajuste la taille, jamais le texte ».
-     CE QUI EN DÉCOULE, ET QUI S'ÉCARTE DU PLAN : l'interlignage tombe
-     de 0,92 à 0,79 (120 px sur 152,68). On garde 120 px fixes plutôt
-     que le rapport, parce que le bloc de titre DOIT faire 240 px —
-     c'est ce que la cote C2 affiche, et un chiffre de cote qui ment
-     coûte plus cher qu'un interlignage serré. Les deux lignes sont
-     capitales et sans jambage : à 0,79 rien ne se touche. */
+  /* LA TAILLE DU TITRE EST RELEVÉE, PAS DÉCRÉTÉE. La ligne 2 doit
+     mesurer 1320 px — la largeur de la feuille, comme le mot de Haven
+     touche ses deux marges. Mesuré : « AVANT DE DÉMOLIR » rend
+     1123,9 px à 130 px. La taille juste est donc
+     130 × 1320 / 1123,9 = 152,68 px. Relevé après rendu : 1319,98 px.
+     Écart : 0,02 px. */
   --titre: min(152.68px, (100vw - 120px) * 0.1156667);
 }
 
@@ -65,11 +60,17 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* ── LE PAPIER — quadrillage continu, immobile, plein écran ──────
-   Pas fin 12 px, ligne forte tous les 60 px. Sur 1440 × 900 :
-   120 × 75 cases fines, 24 × 15 cases fortes, aucune case tronquée.
-   Motif SVG en ligne, remplissages rectangulaires : un pixel entier
-   à chaque trait, aucune interpolation.                          */
+/* ── LE PAPIER — TROIS DENSITÉS, ET CHACUNE A SA RAISON ──────────
+   On ne quadrille que ce qu'on mesure.
+   · la MARGE (les 60 px hors cadre) n'a aucun quadrillage : elle
+     porte les repères de zone, et rien d'autre ;
+   · au-dessus de la première cote (y = 420), seules les lignes
+     fortes de 60 px : le titre est posé sur du papier, pas sur une
+     moustiquaire ;
+   · sous 420, le module fin de 12 px s'ajoute : c'est le champ du
+     relevé, et c'est là que tout se mesure.
+   Le cadre contient exactement 110 × 65 cases fines et 22 × 13 cases
+   fortes : aucune case tronquée nulle part.                        */
 .papier{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
 /* ── LA FEUILLE — le cadre en retrait de 60 px ─────────────────── */
@@ -98,8 +99,7 @@ h1{
   font-size:min(92px,(100vw - 48px) * 0.1156667);
   /* 1,02 et pas 0,92 : l'accent du « É » culmine à 0,987 em. Sous
      0,99 d'interlignage il remonte au-dessus de la ligne de base de
-     « ON DESSINE » et se lit comme une virgule. Même relevé qu'au
-     grand format, même correction. */
+     « ON DESSINE » et se lit comme une virgule. */
   line-height:1.02;
   letter-spacing:-0.02em;
   color:var(--trait);
@@ -124,50 +124,34 @@ h1{
 
 a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offset:3px}
 
-/* ── LA PLAQUE PHOTOGRAPHIQUE — annotée, jamais cotée ───────────
-   La photo devient une plaque bleue monochrome : luminosité de
-   l'image, teinte du lit #0a2540. Le quadrillage la traverse.    */
-/* Le contour de la plaque est posé PAR-DESSUS, pas en bordure : une
-   bordure décalerait la boîte de rembourrage d'un pixel, et le
-   quadrillage de la photo ne serait plus dans l'axe de celui du fond. */
-.plaque{
-  position:relative;margin:24px 0 0;width:100%;aspect-ratio:16/9;
-  background:var(--plan);isolation:isolate;
-}
-.plaque::after{content:"";position:absolute;inset:0;border:1px solid var(--cyan);pointer-events:none}
-/* CADRAGE RELEVÉ, PAS DÉCRÉTÉ. Le plan disait 42 % ; à 42 % la ligne
-   de sol tombe hors du cadre et la maison est coupée à mi-mur. À 52 %
-   la fenêtre de 312 px contient les deux toits ET l'assise : c'est une
-   élévation, ce que veut une feuille de dessin. */
-.plaque img{
-  display:block;width:100%;height:100%;object-fit:cover;object-position:50% 52%;
-  filter:grayscale(1) contrast(1.15) brightness(0.60);
-  mix-blend-mode:luminosity;
-}
-/* LE QUADRILLAGE SUR LA PHOTO EST UN VOILE, PAS UN GRILLAGE. Sur le
-   fond, le trait de quadrillage est PLUS CLAIR que le champ ; posé
-   opaque sur une photo en demi-teinte il devient PLUS SOMBRE qu'elle,
-   la polarité s'inverse et l'image se lit derrière une clôture.
-   Mesuré à l'image, tour 1. On rend le voile transparent pour que le
-   module traverse à poids apparent égal. */
-.papier-photo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.30}
-.bulle{
-  position:absolute;width:20px;height:20px;border:1px solid var(--cyan);
-  font-family:"jetbrains-mono",monospace;font-weight:500;font-size:10px;line-height:18px;
-  text-align:center;color:var(--cyan);background:transparent;
-}
-/* 01 relevé de 12 px vers le bas et la droite par rapport au plan :
-   à (144, 600) la pointe du renvoi tombait dans le ciel, à l'arête de
-   l'avant-toit. À (156, 612) elle se pose sur le poteau d'angle de
-   l'ossature neuve. Une bulle qui désigne le vide ne désigne rien. */
-.b1{left:11.4285%;top:26.9230%}
-.b2{left:77.1428%;top:73.0769%}
-/* Les lignes de renvoi : 48 px à 45°, terminées par un carré plein
-   de 3 px. Elles désignent, elles ne mesurent pas. */
-.renvoi{position:absolute;width:48px;height:1px;background:var(--cyan);transform-origin:0 50%}
-.renvoi::after{content:"";position:absolute;right:-1px;top:-1px;width:3px;height:3px;background:var(--cyan)}
-.r1{left:calc(11.4285% + 20px);top:calc(26.9230% + 20px);transform:rotate(45deg)}
-.r2{left:77.1428%;top:73.0769%;transform:rotate(225deg)}
+/* ── LE RELEVÉ PHOTOGRAPHIQUE ───────────────────────────────────
+   CE N'EST PLUS UNE PHOTOGRAPHIE DANS UN CADRE.
+   1 · Elle est TIRÉE AUX DEUX ENCRES de la feuille : un duotone SVG
+       envoie le noir sur #0a2540 et le blanc sur #e8eef5. Il ne
+       reste pas un pixel chaud dans l'image.
+   2 · Elle est TRAMÉE au module de la feuille : un masque rayé de
+       12 px (9 d'image, 3 de plan) — le pas du quadrillage, pas une
+       seconde fréquence. C'est un tirage tramé, pas une photo.
+   3 · Elle est DÉCOUPÉE SUR LE MODULE : son contour supérieur est le
+       relevé du bâtiment, quantifié à 12 px. Au-dessus, il n'y a plus
+       de ciel — il y a la feuille. C'est ce point-là qui fait que
+       l'image appartient au dessin : elle n'a pas de cadre.
+   Le contour est relevé dans les pixels de la source (planche de
+   repères, pas de 120 px) puis arrondi vers le HAUT au module, pour
+   qu'il enveloppe le bâti sans jamais l'entamer.                  */
+.plaque{position:relative;margin:24px 0 0;width:100%;aspect-ratio:840/348;background:var(--plan);overflow:hidden}
+.vue{position:absolute;inset:0;overflow:hidden}
+.vue img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 52%}
+/* Repli : si le duotone SVG ne se résout pas, on garde le gris —
+   jamais un pixel chaud sur cette feuille.
+   LA VALEUR EST CALÉE SUR LE TITRE, PAS SUR L'IMAGE. Le duotone
+   envoie le blanc sur #e8eef5, c'est-à-dire sur la couleur EXACTE du
+   titre : à luminosité pleine, le parement de la maison pèse autant
+   que « ON DESSINE » et les deux se disputent l'écran. On descend
+   donc la source avant le duotone — le relevé est une encre de
+   demi-teinte, le titre reste la seule masse pleine. */
+.vue img{filter:grayscale(1) contrast(1.6) brightness(0.58)}
+.vue img{filter:grayscale(1) contrast(1.7) brightness(0.64) url(#duo)}
 
 /* ── LA LÉGENDE ────────────────────────────────────────────────── */
 .legende{margin:24px 0 0}
@@ -182,7 +166,7 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
 .cle{color:var(--cyan)}
 
 /* ── LE CARTOUCHE ──────────────────────────────────────────────── */
-.cartouche{margin:24px 0 0;border:1px solid var(--t78)}
+.cartouche{margin:24px 0 0;border:1px solid var(--t78);background:var(--plan)}
 .cartouche-tete{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;height:56px;padding:12px 12px 0;line-height:1}
 .cartouche-tete .nom-c{font-weight:700;font-size:28px;letter-spacing:-0.01em;color:var(--trait)}
 .cartouche-tete .role{font-family:"jetbrains-mono",monospace;font-weight:500;font-size:10px;letter-spacing:0.16em;color:var(--t62)}
@@ -195,11 +179,10 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
 .cartouche dt{width:120px;font-size:10px;letter-spacing:0.16em;color:var(--t62)}
 .cartouche dd{width:calc(100% - 120px);font-size:11px;color:var(--t78);border-left:1px solid var(--t30)}
 
-/* ── LES FILETS ET LES REPÈRES — dessinés, jamais bordés ───────── */
+/* ── CE QUI NE VIT QUE SUR LA GRANDE FEUILLE ───────────────────── */
 .f{position:absolute;background:var(--t30)}
-.f-504{background:var(--t16)}
 .f-cart-g,.f-cart-h{background:var(--t78)}
-.reperes-h,.reperes-v,.cote,.f{display:none}
+.reperes-h,.reperes-v,.cote,.f,.trace,.etiq,.bulle,.renvoi{display:none}
 
 /* ── LA BANDE DE COORDONNÉES ───────────────────────────────────── */
 .coordonnees{
@@ -216,10 +199,11 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
    sous les 900 px.
    ═══════════════════════════════════════════════════════════════ */
 @media (min-width:1024px) and (min-height:780px){
+  .papier{inset:60px;width:auto;height:auto}
   .feuille{position:fixed;inset:60px;padding:0;z-index:1}
   .cadre{display:block;position:absolute;inset:0;border:1px solid var(--t78);pointer-events:none}
 
-  .reperes-h,.reperes-v,.f{display:block}
+  .reperes-h,.reperes-v,.f,.trace,.etiq,.bulle,.renvoi{display:block}
 
   /* Onze zones de 120 px en haut, chiffres centrés à 120, 240 … 1320,
      ligne de base y = 44. Un tiret de 8 px traverse le cadre à
@@ -251,28 +235,108 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   .nav{flex-wrap:nowrap;gap:24px;white-space:nowrap}
   .f-tete{left:0;right:0;top:36px;height:1px}
 
-  /* Le titre. La ligne 2 est dessinée à la largeur de la feuille :
-     elle touche le cadre à gauche et à droite.
-     LE PLAN COTAIT y = 132 → 372, deux lignes de 120 px. Relevé au
-     tour 1 : à 120 px d'interlignage, l'accent aigu du « É » de
-     DÉMOLIR remonte à 18 px AU-DESSUS de la ligne de base de
-     « ON DESSINE » et se pose juste après le E final — une capture
-     ouverte le lit comme une virgule. L'accent culmine à 0,99 em :
-     aucun interlignage inférieur à 151 px ne l'écarte, et 151 px
-     ferait buter le titre sur le sous-titre. On descend donc la ligne
-     2 de 18 px — interlignage 138, bloc de 276 — et on remonte le
-     bloc à y = 108 pour ne pas croiser la cote C1. L'accent vit alors
-     entièrement sous la ligne de base de la ligne 1, à sa place.
-     C2 se relève en conséquence : 276, et non 240. */
+  /* Le titre, y = 108 → 384. La ligne 2 est dessinée à la largeur de
+     la feuille : elle touche le cadre à gauche et à droite.
+     Interlignage 138 et non 120 : à 120 l'accent aigu du « É » de
+     DÉMOLIR remonte au-dessus de la ligne de base de « ON DESSINE »
+     et se lit comme une virgule. L'accent culmine à 0,99 em. */
   h1{position:absolute;left:0;top:48px;margin:0;font-size:var(--titre);line-height:138px;white-space:nowrap}
 
-  /* Sous-titre, y = 420 → 474. Bouton, 300 × 48, x = 1080 → 1380. */
+  /* Sous-titre et bouton, y = 420 → 474. */
   .sous-titre{position:absolute;left:0;top:360px;margin:0;font-size:19px;line-height:27px;width:min(560px,100% - 480px);max-width:none}
   .bouton{position:absolute;right:0;top:360px;margin:0;width:300px;max-width:none}
-  .f-504{left:0;right:0;top:444px;height:1px}
 
-  /* La plaque, 840 × 312, elle partage l'arête basse du cadre. */
-  .plaque{position:absolute;left:0;bottom:0;margin:0;width:min(840px,100% - 480px);height:312px;aspect-ratio:auto}
+  /* ── LE RELEVÉ, 840 × 348, y = 480 → 828 ──────────────────────
+     LE CADRAGE EST CALCULÉ, PAS CHOISI. Le bâti occupe, dans la
+     source de 1920 × 1080, le rectangle (265, 215) → (1720, 890) —
+     relevé sur une planche de repères au pas de 120 px. Pour que sa
+     hauteur remplisse EXACTEMENT les 348 px de la plaque, l'échelle
+     vaut 348 / 675 = 0,5156 : l'image est donc posée à 990 × 557,
+     décalée de (−92, −111). Le faîte tombe alors sur y = 0 et
+     l'assise sur y = 348, au pixel. C'est ce qui rend la cote C3
+     vraie par construction.
+     `object-fit: cover` ne sait pas faire ça : il cadre au plus
+     serré, pas au bâti.
+     LE BÂTI EST CALÉ SUR LE CADRE, PAS CENTRÉ. Première passe : il
+     flottait à 48 px du filet gauche et le relevé avait l'air posé
+     là. Le mur de l'ossature neuve est vertical : on le fait tomber
+     SUR le filet. Le relevé touche alors la feuille à gauche et la
+     ligne de niveau en bas — deux calages, aucun flottement. */
+  .plaque{position:absolute;left:0;top:420px;margin:0;width:840px;height:348px;aspect-ratio:auto;background:none;overflow:visible}
+  /* LE CONTOUR EST RELEVÉ, PAS DESSINÉ. Première passe : posé
+     d'après une planche de repères au pas de 120 px sur la source —
+     il coupait le toit de la maison existante et laissait 55 px
+     d'arbres au-dessus de l'égout droit. Seconde passe : la plaque a
+     été rendue À SA TAILLE FINALE, non découpée, sous une réglette de
+     24 px, et le sommet du bâti relevé tous les 25 px. Les valeurs
+     ci-dessous sont ces relevés arrondis vers le HAUT au module de
+     12 px — le contour enveloppe le bâti, il ne l'entame jamais. */
+  .vue{
+    clip-path:polygon(
+      0 348px, 0 120px, 24px 120px, 24px 96px, 60px 96px, 60px 84px,
+      96px 84px, 96px 72px, 132px 72px, 132px 60px, 168px 60px, 168px 48px,
+      204px 48px, 204px 36px, 276px 36px, 276px 24px, 324px 24px, 324px 0,
+      396px 0, 396px 12px, 432px 12px, 432px 48px, 528px 48px, 528px 60px,
+      564px 60px, 564px 72px, 708px 72px, 708px 84px, 732px 84px, 732px 348px);
+  }
+  .vue img{position:absolute;width:990px;height:557px;left:-140px;top:-111px;object-fit:fill}
+
+  /* Le module de 12 px traverse le tirage : la plaque est posée à
+     y = 420 de la feuille, un multiple de 60 — aucune phase à
+     rattraper, le quadrillage de l'image est dans l'axe de celui du
+     papier. Voile transparent : posé opaque sur une demi-teinte, le
+     trait deviendrait plus SOMBRE que l'image et la polarité
+     s'inverserait. */
+  .papier-photo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.34}
+
+  /* Le contour tracé : la même polyligne, à l'encre du traceur. */
+  .trace{position:absolute;left:0;top:0;width:840px;height:348px;pointer-events:none;overflow:visible}
+
+  /* ── LES DEUX LIGNES DE CONSTRUCTION ──────────────────────────
+     Elles SORTENT du relevé et vont mourir dans la marge — c'est ce
+     qui coud l'image à la feuille. Elles sont vraies : la ligne de
+     faîte passe au sommet du bâti (y = 480 absolu, le haut de la
+     plaque), la ligne de niveau à son assise (y = 828, le bas). */
+  /* DEUX PIXELS, ET C'EST LA SEULE ÉPAISSEUR QUI DÉROGE. Le reste de
+     la feuille est à 1 px. Mais ces deux traits-là sont les seuls
+     qu'on voie BOUGER, et l'écran est regardé à 0,29 : un trait de
+     1 px y pèse 0,29 px et le geste n'existe plus (piège 71).
+     À 2 px il se voit. Et le cordeau, dans un vrai chantier, claque
+     un trait plus large que celui du tire-ligne. */
+  .ligne{position:absolute;height:2px;background:var(--cyan);transform-origin:0 50%}
+  .l-faite{left:-30px;top:420px;width:630px}
+  .l-niveau{left:-30px;top:768px;width:906px}
+  .etiq{
+    position:absolute;font-family:"jetbrains-mono",monospace;font-weight:500;
+    font-size:10px;line-height:12px;letter-spacing:0.14em;color:var(--cyan);
+  }
+  /* Les deux étiquettes sont posées à l'ORIGINE de leur ligne, pas à
+     son extrémité : la ligne se trace, et une étiquette calée sur un
+     bout qui n'est pas encore arrivé flotterait toute seule sur
+     l'image arrêtée. FAÎTE passe SOUS sa ligne — au-dessus, elle
+     buterait sur la deuxième ligne du sous-titre, qui finit à 474. */
+  .e-faite{left:6px;top:424px}
+  .e-niveau{left:6px;top:752px}
+
+  /* Les bulles de repère : des CARRÉS, jamais des cercles — un
+     cercle est un rayon. Elles désignent, elles ne mesurent pas :
+     une cote posée sur une photographie serait une mesure qu'on ne
+     peut pas défendre. */
+  .bulle{
+    position:absolute;width:20px;height:20px;border:1px solid var(--cyan);
+    font-family:"jetbrains-mono",monospace;font-weight:500;font-size:10px;line-height:18px;
+    text-align:center;color:var(--cyan);background:var(--plan);
+  }
+  .renvoi{position:absolute;width:48px;height:1px;background:var(--cyan);transform-origin:0 50%}
+  .renvoi::after{content:"";position:absolute;right:-1px;top:-1px;width:3px;height:3px;background:var(--cyan)}
+  /* Les deux bulles sont posées SUR le relevé, jamais sur le papier
+     vide : une bulle qui flotte à côté du dessin ne désigne rien.
+     01 tombe dans l'ossature neuve, 02 sur le parement conservé, et
+     chaque pointe de renvoi touche ce que sa légende décrit. */
+  .b1{left:24px;top:156px}
+  .r1{left:44px;top:176px;transform:rotate(45deg)}
+  .b2{left:564px;top:168px}
+  .r2{left:564px;top:188px;transform:rotate(135deg)}
 
   /* La colonne de droite, largeur 444, calée sur le cadre. */
   .legende{position:absolute;right:0;top:468px;margin:0;width:444px}
@@ -292,9 +356,8 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   .cartouche dd{width:calc(100% - 144px);border-left:0}
   .f-cart-v{right:300px;bottom:0;width:1px;height:112px}
 
-  /* La bande de coordonnées, hors cadre, y = 864. */
-  /* `height:auto` et non 12 px : sous 1440 la bande passe sur deux
-     lignes, et une boîte de 12 px la ferait déborder sous le bord. */
+  /* La bande de coordonnées, hors cadre, y = 864.
+     `height:auto` : sous 1440 la bande passe sur deux lignes. */
   .coordonnees{position:fixed;left:60px;right:60px;bottom:24px;padding:0;height:auto;line-height:12px;gap:6px 24px}
 }
 
@@ -318,12 +381,8 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   }
 
   /* C1 — horizontale, y = 396, de x = 60 à l'extrémité droite de la
-     ligne 1 du titre. Elle croît de gauche à droite : le sens de
-     lecture. */
-  /* 812 est RELEVÉ, pas estimé : « ON DESSINE » rend 812,2 px à
-     152,68 px de corps. Le plan annonçait 819 sur une taille de
-     départ de 130 px ; c'est le chiffre qui se corrige, jamais la
-     cote. Écart au relevé : 0,2 px. */
+     ligne 1 du titre. 812 est RELEVÉ : « ON DESSINE » rend 812,2 px
+     à 152,68 px de corps. Écart au relevé : 0,2 px. */
   .c1{left:0;top:336px;width:var(--l);height:0;--l:812px}
   .c1 .att{top:-16px;width:1px;height:32px}
   .c1 .att-d{left:calc(100% - 1px)}
@@ -333,27 +392,43 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   .c1 .valeur{left:50%;top:0;transform:translate(-50%,-50%)}
 
   /* C2 — verticale, x = 36, de y = 108 à y = 384 : la hauteur du
-     bloc de titre, relevée après rendu. Attaches de x = 60 à x = 30. */
+     bloc de titre. */
   .c2{left:-24px;top:48px;width:0;height:var(--l);--l:276px}
-  .c2 .att{left:-6px;width:30px;height:1px}
-  .c3 .att{left:-12px;width:32px;height:1px}
+  /* C3 — verticale, x = 36, de y = 480 à y = 828 : la hauteur du
+     bâti relevé, du faîte au niveau. Les deux lignes de construction
+     sont ses lignes d'attache, et elles sont visibles. */
+  .c3{left:-24px;top:420px;width:0;height:var(--l);--l:348px}
+  .c2 .att,.c3 .att{left:-6px;width:30px;height:1px}
   .cote .att-b{top:calc(100% - 1px)}
   .c2 .trait,.c3 .trait{left:0;top:0;width:1px;height:100%;transform-origin:50% 0}
   .c2 .fl-deb,.c3 .fl-deb{left:-2px;top:0;border-bottom:8px solid var(--cyan);border-left:2.5px solid transparent;border-right:2.5px solid transparent}
   .c2 .fl-fin,.c3 .fl-fin{left:-2px;top:calc(100% - 8px);border-top:8px solid var(--cyan);border-left:2.5px solid transparent;border-right:2.5px solid transparent}
   .c2 .valeur,.c3 .valeur{left:0;top:50%;transform:translate(-50%,-50%) rotate(-90deg)}
-
-  /* C3 — verticale, x = 912, de y = 528 à y = 840 : la hauteur de la
-     plaque. */
-  .c3{left:852px;top:468px;width:0;height:var(--l);--l:312px}
 }
 
 /* ═══════════════════════════════════════════════════════════════
    LE GESTE — LE TRAIT DE CORDEAU
-   La feuille est déjà entièrement dessinée au chargement. Seules
-   les trois cotes se tracent, à vitesse constante, flèche en tête.
-   La valeur ne s'allume qu'à 100 %, d'un coup, sans fondu.
-   L'état de repos est l'état FINAL : sans animation, tout est là.
+   Le cordeau est le premier trait de tout chantier : la ligne à la
+   craie qu'on claque au sol avant la première coupe. La feuille est
+   déjà entièrement dessinée au chargement ; SEULS LES CINQ TRAITS
+   D'INSTRUMENT se tracent, à vitesse constante — un traceur avance
+   à vitesse constante, et ça rend l'instant de capture calculable
+   au pixel. La valeur ne s'allume qu'à 100 %, d'un coup, sans
+   fondu : le traceur pose la plume et lettre le chiffre.
+
+   À t = 1100 ms, l'instant déclaré dans le `<head>` :
+     C1        700 ms · départ    0 → FINI, 812 lettré
+     C2        700 ms · départ  150 → FINI, 276 lettré
+     niveau    900 ms · départ  300 → 88,9 %  (805 px sur 906)
+     faîte     800 ms · départ  480 → 77,5 %  (488 px sur 630)
+     C3        700 ms · départ  700 → 57,1 %  (199 px sur 348),
+                                      chiffre encore éteint
+   Deux cotes finies et lettrées, trois traits en vol à trois
+   longueurs différentes. Un trait qui n'a pas rejoint son attache
+   est une incomplétude LISIBLE : l'œil sait qu'il doit joindre les
+   deux bouts. C'est ce qui rend le mouvement visible sur une image
+   arrêtée — et aucun de ces traits ne porte de texte, donc aucun mot
+   n'est photographié tronqué.
    ═══════════════════════════════════════════════════════════════ */
 @keyframes cordeau-x{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes cordeau-y{from{transform:scaleY(0)}to{transform:scaleY(1)}}
@@ -361,25 +436,21 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
 @keyframes pointe-y{from{transform:translateY(calc(-1 * var(--l)))}to{transform:translateY(0)}}
 @keyframes lettrer{0%{visibility:hidden;animation-timing-function:steps(1,end)}100%{visibility:visible}}
 
-.c1 .trait{animation:cordeau-x 760ms linear 0ms both}
-.c1 .fl-fin{animation:pointe-x 760ms linear 0ms both}
-.c2 .trait{animation:cordeau-y 760ms linear 140ms both}
-.c2 .fl-fin{animation:pointe-y 760ms linear 140ms both}
-.c3 .trait{animation:cordeau-y 760ms linear 280ms both}
-.c3 .fl-fin{animation:pointe-y 760ms linear 280ms both}
-.c1 .valeur{animation:lettrer 760ms linear 0ms both}
-.c2 .valeur{animation:lettrer 760ms linear 140ms both}
-.c3 .valeur{animation:lettrer 760ms linear 280ms both}
+.c1 .trait{animation:cordeau-x 700ms linear 0ms both}
+.c1 .fl-fin{animation:pointe-x 700ms linear 0ms both}
+.c1 .valeur{animation:lettrer 700ms linear 0ms both}
+.c2 .trait{animation:cordeau-y 700ms linear 150ms both}
+.c2 .fl-fin{animation:pointe-y 700ms linear 150ms both}
+.c2 .valeur{animation:lettrer 700ms linear 150ms both}
+.l-niveau{animation:cordeau-x 900ms linear 300ms both}
+.l-faite{animation:cordeau-x 800ms linear 480ms both}
+.c3 .trait{animation:cordeau-y 700ms linear 700ms both}
+.c3 .fl-fin{animation:pointe-y 700ms linear 700ms both}
+.c3 .valeur{animation:lettrer 700ms linear 700ms both}
 
-/* Un moteur qui ignore le fondu de luminosité voit la photographie
-   traitée, jamais un rectangle vide. */
-@supports not (mix-blend-mode:luminosity){
-  .plaque img{mix-blend-mode:normal;filter:grayscale(1) contrast(1.1) brightness(0.5)}
-}
-
-/* Mouvement réduit : les trois cotes sont tracées entières, les
-   trois chiffres allumés. Aucune information perdue, aucune
-   information inversée. */
+/* Mouvement réduit : les cinq traits sont tracés entiers, les trois
+   chiffres allumés. Aucune information perdue, aucune information
+   inversée. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
 }
@@ -387,31 +458,41 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
 </head>
 <body>
 
-<!-- LE PAPIER. Motif de 12 px, ligne forte tous les 60 px. Il couvre
-     la totalité de la surface, y compris par-dessus la photographie :
-     c'est ce détail-là qui fait que la photo appartient au dessin au
-     lieu d'être collée dessus. -->
+<!-- LE PAPIER. Deux densités dans le cadre, aucune dans la marge. -->
 <svg class="papier" aria-hidden="true" focusable="false">
   <defs>
     <pattern id="mod" width="12" height="12" patternUnits="userSpaceOnUse">
       <rect x="0" y="0" width="1" height="12" fill="#1c354f"/>
       <rect x="0" y="0" width="12" height="1" fill="#1c354f"/>
     </pattern>
+    <pattern id="fort" width="60" height="60" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="1" height="60" fill="#2e455d"/>
+      <rect x="0" y="0" width="60" height="1" fill="#2e455d"/>
+    </pattern>
     <pattern id="mod5" width="60" height="60" patternUnits="userSpaceOnUse">
       <rect width="60" height="60" fill="url(#mod)"/>
       <rect x="0" y="0" width="1" height="60" fill="#2e455d"/>
       <rect x="0" y="0" width="60" height="1" fill="#2e455d"/>
     </pattern>
-    <!-- Le même motif décalé de 12 px : la plaque commence à y = 528,
-         qui est un multiple de 12 mais pas de 60. Le décalage remet
-         les lignes fortes de la photo dans l'axe de celles du fond. -->
-    <pattern id="modP" width="60" height="60" patternUnits="userSpaceOnUse" patternTransform="translate(0 12)">
-      <rect width="60" height="60" fill="url(#mod)"/>
-      <rect x="0" y="0" width="1" height="60" fill="#2e455d"/>
-      <rect x="0" y="0" width="60" height="1" fill="#2e455d"/>
-    </pattern>
+
+    <!-- LE DUOTONE DE LA FEUILLE. La luminance de la photographie est
+         renvoyée sur les DEUX ENCRES du dessin : le noir sur #0a2540,
+         le blanc sur #e8eef5. `color-interpolation-filters="sRGB"`
+         est obligatoire — en linéaire, la table s'applique à des
+         valeurs qui ne sont pas celles qu'on a calculées. -->
+    <filter id="duo" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.039 0.910"/>
+        <feFuncG type="table" tableValues="0.145 0.933"/>
+        <feFuncB type="table" tableValues="0.251 0.961"/>
+      </feComponentTransfer>
+    </filter>
   </defs>
-  <rect width="100%" height="100%" fill="url(#mod5)"/>
+  <!-- au-dessus de la première cote : lignes fortes seules -->
+  <rect x="0" y="0" width="100%" height="360" fill="url(#fort)"/>
+  <!-- le champ du relevé : le module fin s'ajoute -->
+  <rect x="0" y="360" width="100%" height="100%" fill="url(#mod5)"/>
 </svg>
 
 <main class="feuille">
@@ -456,35 +537,44 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   <p class="sous-titre">Rénovation et agrandissement résidentiels. On relève l'existant, on dessine, on chiffre, puis on démolit.</p>
 
   <a class="bouton" href="#joindre">Demander un relevé</a>
-  <i class="f f-504" aria-hidden="true"></i>
 
   <figure class="plaque">
-    <img src="../../images/secteurs-sites/construction-1.webp" width="1920" height="1080"
-         alt="Agrandissement à ossature de bois greffé sur une maison de bois existante : les fermes du nouveau toit sont posées, le parement de l'ancien mur est déposé par endroits."
-         fetchpriority="high" decoding="async">
-    <svg class="papier-photo" aria-hidden="true" focusable="false"><rect width="100%" height="100%" fill="url(#modP)"/></svg>
+    <div class="vue">
+      <img src="../../images/secteurs-sites/construction-1.webp" width="1920" height="1080"
+           alt="Agrandissement à ossature de bois greffé sur une maison de bois existante : les fermes du nouveau toit sont posées, les ouvertures de l'ancien mur sont condamnées au contreplaqué."
+           fetchpriority="high" decoding="async">
+      <svg class="papier-photo" aria-hidden="true" focusable="false"><rect width="100%" height="100%" fill="url(#mod5)"/></svg>
+    </div>
+    <svg class="trace" viewBox="0 0 840 348" aria-hidden="true" focusable="false">
+      <polyline fill="none" stroke="#3fc8e8" stroke-width="1" shape-rendering="crispEdges"
+        points="0.5,348 0.5,120 24,120 24,96 60,96 60,84 96,84 96,72 132,72 132,60 168,60 168,48 204,48 204,36 276,36 276,24 324,24 324,0.5 396,0.5 396,12 432,12 432,48 528,48 528,60 564,60 564,72 708,72 708,84 732,84 732,348"/>
+    </svg>
     <span class="bulle b1" aria-hidden="true">01</span>
     <i class="renvoi r1" aria-hidden="true"></i>
     <span class="bulle b2" aria-hidden="true">02</span>
     <i class="renvoi r2" aria-hidden="true"></i>
   </figure>
 
+  <!-- Les deux lignes de construction, et leurs étiquettes. Elles
+       traversent le relevé et vont mourir dans la marge. -->
+  <i class="ligne l-niveau" aria-hidden="true"></i>
+  <i class="ligne l-faite" aria-hidden="true"></i>
+  <span class="etiq e-faite" aria-hidden="true">FAÎTE</span>
+  <span class="etiq e-niveau" aria-hidden="true">NIVEAU</span>
+
   <div class="cote c3" aria-hidden="true">
     <i class="att att-h"></i><i class="att att-b"></i>
     <i class="trait"></i>
     <i class="fl fl-deb"></i><i class="fl fl-fin"></i>
-    <span class="valeur">312</span>
+    <span class="valeur">348</span>
   </div>
 
   <div class="legende">
     <span class="intitule">LÉGENDE</span>
     <p><span class="cle">01</span> · AGRANDISSEMENT GREFFÉ SUR LE BÂTI EXISTANT</p>
-    <!-- LA LÉGENDE DÉCRIT CE QUE LA PHOTOGRAPHIE MONTRE, PAS CE QUE
-         LE PLAN AVAIT PRÉVU. Le plan écrivait « PAREMENT DÉPOSÉ » ;
-         à l'endroit désigné par 02, le parement de bois est en place
-         — ce sont les OUVERTURES qui sont condamnées au contreplaqué.
-         On corrige la légende : une légende qui contredit son image
-         est la première chose qu'un visiteur vérifie. -->
+    <!-- LA LÉGENDE DÉCRIT CE QUE LA PHOTOGRAPHIE MONTRE. À l'endroit
+         désigné par 02, le parement de bois est en place — ce sont
+         les OUVERTURES qui sont condamnées au contreplaqué. -->
     <p><span class="cle">02</span> · MUR EXISTANT CONSERVÉ, OUVERTURES CONDAMNÉES</p>
   </div>
 
@@ -500,7 +590,7 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
       <dt>PROJET</dt><dd>RÉNOVATION ET AGRANDISSEMENT</dd>
       <dt>ÉCHELLE</dt><dd>1:1 — UNITÉ : PIXEL</dd>
       <dt>FEUILLE</dt><dd>1 / 1</dd>
-      <dt>RÉVISION</dt><dd>B — 2026-08-01</dd>
+      <dt>RÉVISION</dt><dd>C — 2026-08-01</dd>
     </dl>
   </div>
 </main>

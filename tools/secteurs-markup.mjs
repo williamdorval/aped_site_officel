@@ -37,25 +37,32 @@ const RACINE = path.resolve(ICI, "..");
 const PAGE = path.join(RACINE, "index.html");
 const VERIFIER = process.argv.includes("--verifier");
 
-/* Le domaine et l'étiquette de chaque aperçu.
+/* L'étiquette de métier de chaque aperçu, et rien d'autre.
+
+   IL Y AVAIT UN DOMAINE ICI, ET C'ÉTAIT LA SOURCE.  D-693
+   Les treize `data-hote` ont été retirés d'`index.html` ; ce
+   générateur les aurait TOUS RÉÉCRITS au prochain lancement. Piège
+   46 pris par l'autre bout : le correctif n'avait pas atteint ce qui
+   fabrique. Une correction de véracité se fait partout, en une fois —
+   y compris dans l'outil qui régénère.
 
    « un site que nous avons codé », et rien de plus : neuf des douze
    sont des démonstrations, trois sont des projets. Une formule qui
    reste vraie pour les douze vaut mieux qu'une formule flatteuse
    qu'il faudrait défendre au téléphone. Règle A. */
 const SECTEURS = {
-  restaurant: { domaine: "bistro-nordet.ca", etiquette: "Restauration", metier: "un restaurant" },
-  boutique: { domaine: "gres-saulnier.ca", etiquette: "Boutique en ligne", metier: "une boutique en ligne" },
-  coiffure: { domaine: "salon-brume.ca", etiquette: "Coiffure et esthétique", metier: "un salon de coiffure" },
-  gym: { domaine: "fonte-nord.ca", etiquette: "Gym et entraînement", metier: "une salle d'entraînement" },
-  hotel: { domaine: "anse-a-givre.ca", etiquette: "Hébergement et tourisme", metier: "une auberge" },
-  garage: { domaine: "atelier-meridien.ca", etiquette: "Garage et mécanique", metier: "un garage" },
-  construction: { domaine: "construction-lattier.ca", etiquette: "Construction et rénovation", metier: "un entrepreneur général" },
-  paysagement: { domaine: "mv-deneigement.ca", etiquette: "Paysagement et déneigement", metier: "un déneigeur" },
-  clinique: { domaine: "clinique-riverain.ca", etiquette: "Clinique et santé", metier: "une clinique" },
-  immobilier: { domaine: "arpent-immobilier.ca", etiquette: "Immobilier", metier: "un courtier immobilier" },
-  juridique: { domaine: "cabinet-vallieres.ca", etiquette: "Services juridiques", metier: "un cabinet d'avocats" },
-  photo: { domaine: "atelier-lumen.ca", etiquette: "Photographe et créatif", metier: "un photographe" },
+  restaurant: { etiquette: "Restauration", metier: "un restaurant" },
+  boutique: { etiquette: "Boutique en ligne", metier: "une boutique en ligne" },
+  coiffure: { etiquette: "Coiffure et esthétique", metier: "un salon de coiffure" },
+  gym: { etiquette: "Gym et entraînement", metier: "une salle d'entraînement" },
+  hotel: { etiquette: "Hébergement et tourisme", metier: "une auberge" },
+  garage: { etiquette: "Garage et mécanique", metier: "un garage" },
+  construction: { etiquette: "Construction et rénovation", metier: "un entrepreneur général" },
+  paysagement: { etiquette: "Paysagement et déneigement", metier: "un déneigeur" },
+  clinique: { etiquette: "Clinique et santé", metier: "une clinique" },
+  immobilier: { etiquette: "Immobilier", metier: "un courtier immobilier" },
+  juridique: { etiquette: "Services juridiques", metier: "un cabinet d'avocats" },
+  photo: { etiquette: "Photographe et créatif", metier: "un photographe" },
 };
 
 function finDuDiv(html, debut) {
@@ -94,7 +101,7 @@ for (const cle of aFaire) {
      qui tient le CLS à zéro. */
   const neuf =
     `<div class="mock mock--ecran${garderOn ? " is-on" : ""}" data-mock="${cle}"\n` +
-    `       data-hote="${s.domaine}" data-metier="${s.etiquette}">\n` +
+    `       data-metier="${s.etiquette}">\n` +
     `    <img src="${rel}" width="1440" height="900"\n` +
     `         alt="Premier écran d'un site que nous avons codé pour ${s.metier}."\n` +
     `         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />\n` +
@@ -102,7 +109,7 @@ for (const cle of aFaire) {
 
   html = html.slice(0, debut) + neuf + html.slice(fin);
   const ko = Math.round(fs.statSync(path.join(RACINE, rel)).size / 1024);
-  rapport.push({ secteur: cle, domaine: s.domaine, ko });
+  rapport.push({ secteur: cle, metier: s.etiquette, ko });
 }
 
 const sectionsApres = (html.match(/<section\b/gi) || []).length;
