@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#000000">
+<title>Atelier Lumen — architecture, intérieur, objet</title>
+<!-- Les deux faces qui peignent le titre, préchargées : elles sont
+     le LCP de la page. Le reste suit en `swap`. -->
+<link rel="preload" href="../../fonts/demos/instrument-serif-3.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/demos/instrument-serif-1.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="description" content="Atelier Lumen, photographe à Québec. Architecture, intérieur et objet. Onze œuvres montrées en grand, sans retouche. Nombre de fichiers, délai et droits d’usage écrits avant la séance. Site de démonstration.">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   ATELIER LUMEN — site de démonstration
+   Une salle d’exposition la lumière éteinte : le noir n’est pas
+   un fond, c’est LE MUR. Et un mur de salle n’est jamais nu —
+   c’est un mur où il y a quelque chose.
+
+   Trois valeurs, et rien d’autre : noir #000, blanc #fff,
+   gris #8a8a8a. AUCUNE couleur d’accent — c’est le parti pris,
+   et c’est ce qui sépare cette page des onze autres. La seule
+   couleur de la page vient des œuvres.
+
+   Affichage  instrument-serif (romain ET italique), jusqu’à 118 px
+   Texte      inter 400, 13–14 px
+   Données    jetbrains-mono 500, 10 px
+
+   LA RÈGLE TYPOGRAPHIQUE, ET ELLE EXPLIQUE TOUT LE RESTE :
+   il n’y a que DEUX tailles sur cette page — l’énorme et la
+   minuscule. Aucun paragraphe gris n’a le droit de dépasser
+   trois lignes ; tout ce qui est un FAIT devient une ligne de
+   registre en mono. C’est ce qui a tué le « milieu de page sage ».
+
+   DISPOSITIF DE SIGNATURE — le cartel : sous chaque image,
+   deux lignes en mono alignées à DROITE, sur son bord. Numéro et
+   titre en blanc, année et données de prise de vue en gris.
+   Quatorze occurrences.
+
+   LE PREMIER ÉCRAN — un mur, pas un titre sur du vide. Deux
+   œuvres à fond perdu, bord à bord, occupent tout ce qui reste
+   sous le titre. Les mots gardent la marge énorme ; les œuvres
+   touchent les bords. C’est la seule opposition de la page.
+
+   L’ACCROCHAGE EST VERTICAL, et c’est une décision, pas un
+   défaut. Un rail latéral ne montre qu’une œuvre sur onze dans
+   une capture — et l’aperçu du panneau APED EST une capture.
+   Le mouvement latéral n’a pas disparu : il est passé DANS les
+   œuvres à fond perdu, qui panoramiquent au défilement.
+
+   MOUVEMENT — le plus lent et le plus rare du dépôt.
+   1 · les images paraissent par un fondu long, opacité seule ;
+   2 · les œuvres accrochées dérivent de 26 px du côté où elles
+       sont accrochées — jamais plus ;
+   3 · les trois œuvres à fond perdu PANORAMIQUENT (GSAP) ;
+   4 · au survol, le cartel se déplie vers le bas (0fr → 1fr) ;
+   5 · micro-interactions en blanc sur noir, jamais une couleur.
+
+   Aucune requête tierce. Aucun traitement d’image : un
+   photographe ne repeint pas ses tirages.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── polices : trois familles, et seulement celles-là ────────── */
+@font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-0.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-1.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-2.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-3.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"inter";src:url("../../fonts/demos/inter-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"inter";src:url("../../fonts/demos/inter-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+
+:root{
+  --noir:#000000;
+  --blanc:#ffffff;
+  --gris:#8a8a8a;          /* 6,08:1 sur le noir — le seul gris */
+  --trait:rgba(255,255,255,.20);
+  --aff:"instrument-serif",Georgia,"Times New Roman",serif;
+  --txt:"inter",-apple-system,"Segoe UI",Arial,sans-serif;
+  --mno:"jetbrains-mono",ui-monospace,"Courier New",monospace;
+  /* MARGES ÉNORMES pour les MOTS. Les ŒUVRES, elles, touchent
+     les bords : c’est la seule opposition de la page. */
+  --marge:17vw;
+  --sec:150px;
+}
+@media (max-width:1100px){ :root{ --marge:9vw; --sec:118px } }
+@media (max-width:640px){ :root{ --marge:24px; --sec:88px } }
+
+*,*::before,*::after{box-sizing:border-box}
+html{
+  -webkit-text-size-adjust:100%; background:var(--noir); scroll-behavior:smooth;
+  color-scheme:dark;                  /* barres et champs natifs sombres */
+}
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto } }
+body{
+  margin:0; background:var(--noir); color:var(--blanc);
+  font-family:var(--txt); font-size:14px; line-height:1.76;
+  font-kerning:normal; text-rendering:optimizeLegibility;
+  overflow-x:clip;                    /* clip, jamais hidden — piège 66 */
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block; max-width:100%}
+a{color:inherit}
+h1,h2,h3,p,ul,ol,dl,dd,figure,figcaption,fieldset{margin:0}
+ul,ol{padding:0; list-style:none}
+fieldset{border:0; padding:0; min-width:0}
+em{font-style:italic}
+:focus-visible{outline:2px solid var(--blanc); outline-offset:4px}
+a,button,label,select,input,textarea,summary{
+  touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+}
+[id]{ scroll-margin-top:28px }
+
+/* LE LIEN D’ÉVITEMENT — 23 arrêts au clavier, dont 9 œuvres.
+   Il n’apparaît qu’au focus, et il porte son anneau. */
+.saut{
+  position:absolute; left:-9999px; top:0; z-index:9;
+  background:var(--blanc); color:var(--noir); padding:14px 22px;
+  font-size:13px; text-decoration:none;
+}
+.saut:focus{ left:0 }
+
+/* ── LE MOUVEMENT ───────────────────────────────────────────
+   Un seul keyframe porte toute la page : l’opacité. Les œuvres
+   accrochées y ajoutent 26 px de dérive, du côté où elles sont
+   accrochées. C’est tout, et c’est voulu : sur un mur, un tirage
+   ne fait pas d’acrobatie, il se pose. */
+@keyframes paraitre{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes poser-d{ from{ opacity:0; transform:translateX(26px) } to{ opacity:1; transform:none } }
+@keyframes poser-g{ from{ opacity:0; transform:translateX(-26px) } to{ opacity:1; transform:none } }
+
+/* le fondu de chargement : 1,1 s, vraies millisecondes, sur le
+   mur du premier écran. `forwards`, jamais `both` — piège 64. */
+.fondu{ animation:paraitre 1.1s linear forwards }
+.fondu--t{ animation-delay:.18s }
+
+/* le fondu au défilement : la plage s’étale sur un quart du
+   parcours de couverture — c’est long, et ça se remarque.
+   `forwards` : hors plage, c’est la forme FINALE qui tient. */
+.rv{ animation:paraitre linear forwards; animation-timeline:view(); animation-range:entry 0% cover 26% }
+.rv--d{ animation-name:poser-d }
+.rv--g{ animation-name:poser-g }
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation:none !important; transition:none !important }
+}
+@supports not (animation-timeline: view()){
+  .rv{ animation:none; opacity:1; transform:none }
+}
+
+/* ── grille ─────────────────────────────────────────────────── */
+.in{ padding-left:var(--marge); padding-right:var(--marge) }
+.sec{ padding-top:var(--sec); padding-bottom:var(--sec) }
+.filet{ height:1px; background:var(--trait); border:0 }
+
+/* ── typographie — DEUX tailles, l’énorme et la minuscule ───── */
+.mono{
+  font-family:var(--mno); font-size:10px; font-weight:500;
+  letter-spacing:.26em; text-transform:uppercase; color:var(--gris);
+  line-height:1.9;
+}
+h1{
+  font-family:var(--aff); font-weight:400; color:var(--blanc);
+  /* 164 px à 1440. Mesuré contre la référence, pas choisi : à
+     121 px, le titre faisait la moitié de la hauteur du sien sur
+     la planche côte-à-côte, et ça se voyait. */
+  font-size:clamp(56px,11.4vw,168px); line-height:.89; letter-spacing:-.012em;
+}
+h2{
+  font-family:var(--aff); font-weight:400; color:var(--blanc);
+  font-size:clamp(38px,5.2vw,78px); line-height:.94; letter-spacing:-.006em;
+  max-width:15ch; text-wrap:balance;
+}
+/* L’énoncé est le plus fort de la page après le titre : c’est la
+   seule phrase qui dit une limite, et une limite se lit en gros. */
+.enonce{
+  font-family:var(--aff); font-weight:400; color:var(--blanc);
+  font-size:clamp(36px,6.2vw,96px); line-height:1.02; letter-spacing:-.006em;
+  max-width:16ch;
+}
+/* Trois lignes, pas quatre : au-delà, ça redevient un dossier. */
+.txt{ color:var(--gris); max-width:44ch; font-size:14px; text-wrap:pretty }
+.txt b{ color:var(--blanc); font-weight:400 }
+.petit{ font-size:13px; color:var(--gris); max-width:60ch; text-wrap:pretty }
+
+/* ── liens et boutons — blanc sur noir, jamais une couleur ──── */
+.lien{ position:relative; text-decoration:none; color:var(--blanc); display:inline-block }
+.lien::after{
+  content:""; position:absolute; left:0; right:0; bottom:-3px; height:1px;
+  background:var(--blanc); transform:scaleX(0); transform-origin:left center;
+  transition:transform .34s ease;
+}
+.lien:hover::after,.lien:focus-visible::after{ transform:scaleX(1) }
+
+.btn{
+  display:inline-block; font-family:var(--txt); font-size:13px; letter-spacing:.02em;
+  white-space:nowrap; text-decoration:none; color:var(--blanc); background:transparent;
+  border:1px solid var(--gris); padding:15px 28px; cursor:pointer;
+  transition:background .24s ease, color .24s ease, border-color .24s ease, transform .18s ease;
+}
+.btn:hover,.btn:focus-visible{ background:var(--blanc); color:var(--noir); border-color:var(--blanc) }
+.btn:active{ transform:translateY(1px); background:var(--gris); border-color:var(--gris); color:var(--noir) }
+.btn--p{ border-color:var(--blanc) }
+
+/* ── barre ──────────────────────────────────────────────────── */
+.barre{
+  display:flex; align-items:baseline; gap:36px;
+  padding:26px var(--marge) 0;
+}
+.marque{
+  font-family:var(--aff); font-size:22px; line-height:1;
+  text-decoration:none; color:var(--blanc); letter-spacing:.005em;
+}
+.nav{ display:flex; gap:26px; margin-left:auto }
+.nav a{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.22em;
+  text-transform:uppercase; text-decoration:none; color:var(--blanc);
+  opacity:.55; transition:opacity .24s ease;
+}
+.nav a:hover,.nav a:focus-visible{ opacity:1 }
+.demo{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--gris);
+}
+
+/* ── HÉROS — LE MUR ─────────────────────────────────────────
+   Sous le titre, tout ce qui reste de la fenêtre est occupé par
+   DEUX œuvres à fond perdu. Le premier écran n’est plus une
+   ligne de titre sur du noir : c’est un accrochage. */
+.hero__mot{ padding-top:30px }
+.hero h1{ max-width:14ch; line-height:.90 }
+.hero__bas{
+  display:flex; flex-wrap:wrap; align-items:flex-end; gap:20px 60px;
+  justify-content:space-between; margin-top:20px;
+}
+.hero__act{ display:flex; flex-wrap:wrap; gap:12px }
+
+/* LE CARTEL DU MUR SE POSE AU-DESSUS DE SON TIRAGE, SUR LE NOIR.
+   Posé SUR l’image, il tombait en blanc sur du béton clair :
+   invisible, et un échec de contraste. Un cartel de salle est de
+   toute façon accroché à CÔTÉ du tirage, jamais dessus — et il
+   reste avec le sien quand la colonne se replie. */
+.mur{
+  display:grid; grid-template-columns:1fr .48fr; gap:16px;
+  height:clamp(392px,70vh,800px); margin-top:30px;
+}
+.mur__p{ display:flex; flex-direction:column; min-width:0; margin:0; overflow:hidden }
+.mur__p .cartel{
+  margin:0; padding:11px 8px 13px 2px;
+  border-top:1px solid var(--trait); flex:0 0 auto;
+}
+.mur__p img{ flex:1 1 auto; min-height:0; width:100%; height:100%; object-fit:cover }
+
+/* ── LE CARTEL — le dispositif de signature ─────────────────
+   Deux lignes en mono, alignées à droite, sur le bord de
+   l’image. Numéro et titre en blanc, année et prise de vue en
+   gris. Au survol, une phrase se déplie vers le bas. */
+.cartel{ display:flex; flex-direction:column; align-items:flex-end; text-align:right; margin-top:16px }
+.cartel__t{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--blanc); line-height:1.8;
+}
+.cartel__d{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--gris); line-height:1.8;
+}
+.depli{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .42s ease; width:100% }
+.depli>p{
+  overflow:hidden; min-height:0; margin:0; padding-top:0;
+  font-size:12.5px; line-height:1.65; color:var(--gris); max-width:50ch;
+  margin-left:auto; opacity:0; transition:opacity .42s ease;
+}
+.oeu:hover .depli,.oeu:focus-within .depli{ grid-template-rows:1fr }
+.oeu:hover .depli>p,.oeu:focus-within .depli>p{ opacity:1; padding-top:12px }
+.cartel__t + .cartel__d{ margin-top:1px }
+
+/* ── L’ACCROCHAGE ──────────────────────────────────────────── */
+.salle__t{ display:flex; flex-wrap:wrap; align-items:flex-end; gap:26px 60px; justify-content:space-between }
+.filtre{ position:relative; display:flex; gap:24px; align-items:baseline }
+.filtre legend{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%) }
+.filtre input{ position:absolute; opacity:0; width:1px; height:1px; pointer-events:none }
+.filtre label{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--gris); cursor:pointer;
+  padding-bottom:5px; border-bottom:1px solid transparent;
+  transition:color .24s ease, border-color .24s ease;
+}
+.filtre label:hover{ color:var(--blanc) }
+.filtre input:checked + label{ color:var(--blanc); border-bottom-color:var(--blanc) }
+.filtre input:focus-visible + label{ outline:2px solid var(--blanc); outline-offset:4px }
+.salle:has(#f-arc:checked) .oeu[data-g="objet"]{ display:none }
+.salle:has(#f-obj:checked) .oeu[data-g="arc"]{ display:none }
+@supports not selector(:has(*)){ .filtre{ display:none } }
+
+/* L’écart d’accrochage vaut aussi ENTRE un groupe et la bande à
+   fond perdu qui le suit : sans lui, la dernière œuvre du groupe
+   touchait presque la bande. */
+.oeuvres{ margin-top:74px; margin-bottom:clamp(84px,9vw,132px) }
+.oeuvres:last-child{ margin-bottom:0 }
+.oeu{ margin:0 0 clamp(84px,9vw,132px) }
+.oeu:last-child{ margin-bottom:0 }
+.oeu img{ width:100%; height:auto }
+.oeu:focus-visible{ outline:2px solid var(--blanc); outline-offset:10px }
+/* accrochage : la largeur et le côté changent à chaque œuvre —
+   sur un mur de salle, deux tirages ne font jamais la même taille */
+.h-d{ margin-left:auto }
+.h-g{ margin-right:auto }
+
+/* ── LES BANDES À FOND PERDU — le panoramique ──────────────
+   Le mouvement latéral de la série n’a pas disparu, il est passé
+   ICI : l’image est plus large que son cadre et glisse pendant
+   qu’on la longe. Sans épinglage, donc sans course vide dans le
+   flux — et le cadre reste couvert à toute progression. */
+.bande{ margin:0 0 clamp(84px,9vw,132px) }
+.bande__c{ overflow:hidden; height:clamp(320px,72vh,660px) }
+.bande__c img{ width:114%; max-width:none; height:100%; object-fit:cover; margin-left:-7% }
+.bande .cartel{ padding-right:var(--marge) }
+
+/* ── LE REGISTRE — les faits, jamais en paragraphes ────────── */
+.reg{ margin-top:70px; display:grid; gap:64px 80px; grid-template-columns:1fr 1fr }
+.reg__h{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--gris);
+  padding-bottom:16px; border-bottom:1px solid var(--trait); margin-bottom:8px;
+}
+.reg dl{ margin:0 }
+.reg dt{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--blanc); margin-top:26px;
+}
+.reg dd{ margin:8px 0 0; color:var(--gris); font-size:13.5px; max-width:42ch }
+.reg dd b{ color:var(--blanc); font-weight:400 }
+
+/* ── LA JOURNÉE — quatre colonnes, douze mots chacune ──────── */
+.jour{ margin-top:70px; display:grid; grid-template-columns:repeat(4,1fr); gap:34px 44px }
+.jour li{ border-top:1px solid var(--trait); padding-top:16px }
+.jour b{
+  display:block; font-family:var(--mno); font-size:10px; font-weight:500;
+  letter-spacing:.2em; color:var(--gris);
+}
+.jour h3{ font-family:var(--aff); font-weight:400; font-size:24px; line-height:1.06; margin-top:10px }
+.jour p{ margin-top:8px; color:var(--gris); font-size:13px }
+
+/* ── écrire ─────────────────────────────────────────────────── */
+.form{ margin-top:58px; display:grid; grid-template-columns:1fr 1fr; gap:32px 44px; max-width:740px }
+.f-l{ grid-column:1/-1 }
+.form label{
+  display:block; font-family:var(--mno); font-size:10px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase; color:var(--gris); margin-bottom:12px;
+}
+.form input,.form select,.form textarea{
+  width:100%; font-family:var(--txt); font-size:14px; color:var(--blanc);
+  background:transparent; border:0; border-bottom:1px solid var(--gris);
+  border-radius:0; padding:9px 0; appearance:none;
+  transition:border-color .24s ease;
+}
+.form textarea{ resize:vertical; min-height:92px; line-height:1.7 }
+.form select{ cursor:pointer }
+.form select option{ background:var(--noir); color:var(--blanc) }
+.form input::placeholder,.form textarea::placeholder{ color:var(--gris); opacity:1 }
+.form input:hover,.form select:hover,.form textarea:hover{ border-bottom-color:var(--blanc) }
+/* Le filet qui blanchit ne remplace PAS l’anneau de focus : cinq
+   arrêts au clavier étaient sans anneau tant qu’un `outline:none`
+   traînait ici. Le filet marque la saisie, l’anneau marque le focus. */
+.form input:focus,.form select:focus,.form textarea:focus{ border-bottom-color:var(--blanc) }
+
+.coord{ margin-top:70px; display:grid; grid-template-columns:repeat(3,1fr); gap:32px 60px; max-width:740px }
+.coord dt{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--gris); margin-bottom:12px;
+}
+.coord dd{ margin:0; font-size:14px; color:var(--blanc) }
+.coord dd span{ display:block; color:var(--gris); font-size:13px }
+
+/* ── pied ───────────────────────────────────────────────────── */
+.pied{ padding-top:150px; padding-bottom:54px }
+.pied__m{ font-family:var(--aff); font-weight:400; font-size:clamp(44px,9vw,132px); line-height:.92 }
+.pied__g{ margin-top:62px; display:grid; grid-template-columns:1fr 1fr; gap:38px 70px; max-width:740px }
+.pied__g h3{
+  font-family:var(--mno); font-size:10px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--gris); margin-bottom:16px;
+}
+.pied__g li{ margin-bottom:10px; font-size:14px }
+.pied__av{ margin-top:76px; font-size:12.5px; color:var(--gris); max-width:82ch }
+.pied__bas{
+  display:flex; flex-wrap:wrap; gap:10px 40px; justify-content:space-between;
+  margin-top:32px; font-family:var(--mno); font-size:10px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase; color:var(--gris);
+}
+
+/* ── largeurs ───────────────────────────────────────────────── */
+/* Sans survol — téléphone, tablette — le cartel est déplié :
+   aucune information ne dépend d’un geste qui n’existe pas. */
+@media (hover:none){
+  .depli{ grid-template-rows:1fr }
+  .depli>p{ opacity:1; padding-top:12px }
+}
+@media (max-width:1100px){
+  .nav{ display:none }
+  .oeu[style]{ max-width:none !important }
+  .jour{ grid-template-columns:repeat(2,1fr) }
+}
+@media (max-width:820px){
+  .reg,.form,.pied__g{ grid-template-columns:1fr }
+  .coord{ grid-template-columns:1fr; gap:24px }
+  .depli{ grid-template-rows:1fr }
+  .depli>p{ opacity:1; padding-top:12px }
+  /* La colonne se replie : chaque cartel descend AVEC son tirage,
+     et la hauteur redevient automatique. */
+  .mur{ grid-template-columns:1fr; height:auto; gap:34px }
+  .mur__p img{ height:clamp(240px,44vh,420px) }
+}
+@media (max-width:640px){
+  .barre{ gap:16px; padding-top:20px }
+  .demo{ font-size:9px; letter-spacing:.16em }
+  .hero__mot{ padding-top:32px }
+  .jour{ grid-template-columns:1fr; gap:26px }
+  .bande__c{ height:clamp(240px,52vh,420px) }
+  .pied{ padding-top:106px }
+}
+</style>
+</head>
+<body>
+
+<a class="saut" href="#accrochage">Aller à l’accrochage</a>
+
+<!-- ══ BARRE ══════════════════════════════════════════════════ -->
+<header class="barre" id="haut">
+  <a class="marque" href="#haut">atelier lumen</a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#accrochage">L’accrochage</a>
+    <a href="#ecrit">Ce qui est écrit</a>
+    <a href="#atelier">L’atelier</a>
+    <a href="#ecrire">Écrire</a>
+  </nav>
+  <span class="demo">Site de démonstration</span>
+</header>
+
+<!-- ══ HÉROS — LE MUR ════════════════════════════════════════
+     Le titre garde la marge énorme ; les deux œuvres touchent les
+     bords et occupent tout le reste de la fenêtre. -->
+<section class="hero">
+  <div class="hero__mot in">
+    <h1>architecture, intérieur, <em>objet</em>.</h1>
+    <div class="hero__bas">
+      <p class="txt">Onze œuvres, montrées en grand et sans retouche. Studio à Québec, et sur place.</p>
+      <div class="hero__act">
+        <a class="btn btn--p" href="#accrochage">Voir l’accrochage</a>
+        <a class="btn" href="#ecrire">Écrire à l’atelier</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="mur">
+    <figure class="mur__p">
+      <figcaption class="cartel">
+        <span class="cartel__t">01 · Escalier extérieur, béton</span>
+        <span class="cartel__d">2024 · 35 mm · f/8 · 1/160 s</span>
+      </figcaption>
+      <img class="fondu" src="../../images/secteurs-sites/photo-8.webp" width="1920" height="1080" fetchpriority="high" decoding="async" alt="Une rampe d’escalier blanche coupe en diagonale un mur de béton brut ; sous elle, deux grilles de ventilation à lames, et à droite un grand panneau métallique nervuré. Image en noir et blanc.">
+    </figure>
+    <figure class="mur__p">
+      <figcaption class="cartel">
+        <span class="cartel__t">02 · Arête en chevron</span>
+        <span class="cartel__d">2024 · 24 mm · f/8 · 1/200 s</span>
+      </figcaption>
+      <img class="fondu fondu--t" src="../../images/secteurs-sites/photo-16.webp" width="1000" height="1400" fetchpriority="high" decoding="async" alt="Contre-plongée sur l’arête d’un volume de béton brut : trois bandeaux en chevron se superposent et ouvrent un losange de ciel gris au centre.">
+    </figure>
+  </div>
+</section>
+
+<!-- ══ L’ÉNONCÉ — un écran, une phrase ═══════════════════════ -->
+<section class="sec in">
+  <h2 class="enonce">Ni personne, ni ciel rapporté, ni couleur changée. Ce que l’appareil a vu, <em>et rien d’autre</em>.</h2>
+  <p class="txt" style="margin-top:42px">Architecture, intérieur, objet. En studio à Québec ou sur place, dans un rayon de 40&#8239;km.</p>
+</section>
+
+<!-- ══ L’ACCROCHAGE — neuf œuvres, à la verticale ════════════
+     Vertical, et c’est une décision : un rail latéral ne montre
+     qu’une œuvre sur onze dans une capture. -->
+<section class="salle" id="accrochage">
+  <div class="in salle__t">
+    <div>
+      <p class="mono">L’accrochage</p>
+      <h2 style="margin-top:22px">onze œuvres, de <em>2023 à 2025</em>.</h2>
+    </div>
+    <fieldset class="filtre">
+      <legend>Filtrer l’accrochage</legend>
+      <input type="radio" id="f-tout" name="filtre" checked><label for="f-tout">Tout</label>
+      <input type="radio" id="f-arc" name="filtre"><label for="f-arc">Architecture</label>
+      <input type="radio" id="f-obj" name="filtre"><label for="f-obj">Objet</label>
+    </fieldset>
+  </div>
+
+  <div class="oeuvres in">
+
+    <figure class="oeu h-d" data-g="arc" tabindex="0" style="max-width:880px">
+      <img class="rv rv--d" src="../../images/secteurs-sites/photo-13.webp" width="1280" height="720" loading="lazy" decoding="async" alt="L’angle d’un bâtiment de béton clair sous un ciel bleu franc ; un bandeau vertical de trois fenêtres étroites, encadrées de brun, descend au milieu.">
+      <figcaption class="cartel">
+        <span class="cartel__t">03 · Angle de béton, ciel dégagé</span>
+        <span class="cartel__d">2023 · 70 mm · f/10 · 1/320 s</span>
+        <span class="depli"><p>Le crépi tient toute la surface, et un seul bandeau de fenêtres la coupe. Les verticales sont redressées&#8239;: c’est fait sur tous les fichiers livrés.</p></span>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu h-g" data-g="arc" tabindex="0" style="max-width:600px">
+      <img class="rv rv--g" src="../../images/secteurs-sites/photo-9.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Façade de béton clair vue en contre-plongée : des fenêtres verticales au vitrage vert foncé, décalées d’un rang à l’autre.">
+      <figcaption class="cartel">
+        <span class="cartel__t">04 · Façade, fenêtres en quinconce</span>
+        <span class="cartel__d">2024 · 85 mm · f/9 · 1/250 s</span>
+        <span class="depli"><p>Le béton a vieilli par plaques, le vitrage est vert bouteille. Le décalage d’un rang à l’autre est ce qui tient l’image.</p></span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- œuvre 05 — à fond perdu, elle panoramique -->
+  <figure class="bande oeu" data-g="arc" tabindex="0">
+    <div class="bande__c"><img class="rv" src="../../images/secteurs-sites/photo-11.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Contre-plongée sur des tours de verre : les reflets d’une façade voisine dessinent un V au-dessus d’un angle vitré."></div>
+    <figcaption class="cartel">
+      <span class="cartel__t">05 · Base d’une tour, reflets en V</span>
+      <span class="cartel__d">2024 · 24 mm · f/11 · 1/160 s</span>
+      <span class="depli"><p>Le V n’est pas dans le bâtiment&#8239;: c’est le reflet de celui d’en face. Il n’apparaît que depuis un point, et il disparaît trois pas plus loin.</p></span>
+    </figcaption>
+  </figure>
+
+  <div class="oeuvres in" style="margin-top:0">
+
+    <figure class="oeu h-d" data-g="arc" tabindex="0" style="max-width:480px">
+      <img class="rv rv--d" src="../../images/secteurs-sites/photo-17.webp" width="1000" height="1400" loading="lazy" decoding="async" alt="Façade de béton en noir et blanc : une dalle rectangulaire tachée de coulures sort en porte-à-faux au-dessus de rangs de fenêtres horizontales.">
+      <figcaption class="cartel">
+        <span class="cartel__t">06 · Dalle en porte-à-faux</span>
+        <span class="cartel__d">2025 · 135 mm · f/7,1 · 1/500 s</span>
+        <span class="depli"><p>La dalle ne tient à rien de visible. Il fallait la prendre par-dessous, à l’heure où la coulure du béton porte encore son ombre.</p></span>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu h-g" data-g="arc" tabindex="0" style="max-width:760px">
+      <img class="rv rv--g" src="../../images/secteurs-sites/photo-10.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Le haut d’un bâtiment clair sur un ciel gris pâle : une couronne de fines barres d’acier verticales entoure les derniers étages vitrés.">
+      <figcaption class="cartel">
+        <span class="cartel__t">07 · Couronne d’acier, ciel couvert</span>
+        <span class="cartel__d">2023 · 180 mm · f/8 · 1/640 s</span>
+        <span class="depli"><p>Un ciel couvert n’est pas une mauvaise journée&#8239;: c’est la seule lumière qui laisse lire les barres d’acier sans les brûler.</p></span>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu h-d" data-g="arc" tabindex="0" style="max-width:620px">
+      <img class="rv rv--d" src="../../images/secteurs-sites/photo-12.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux pans de mur clair encadrent une fente vitrée vert sombre où se reflètent les planchers d’un bâtiment voisin.">
+      <figcaption class="cartel">
+        <span class="cartel__t">08 · Fente vitrée, mur clair</span>
+        <span class="cartel__d">2025 · 200 mm · f/5,6 · 1/500 s</span>
+        <span class="depli"><p>Deux murs presque blancs, et entre eux une bande de verre sombre. Au téléobjectif, l’écart se referme et l’ouverture devient une ligne.</p></span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- œuvre 09 — à fond perdu, elle panoramique -->
+  <figure class="bande oeu" data-g="objet" tabindex="0">
+    <div class="bande__c"><img class="rv" src="../../images/secteurs-sites/photo-14.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Une pièce de céramique blanche aux lobes ondulés, en studio, et son ombre portée sur le mur clair à droite."></div>
+    <figcaption class="cartel">
+      <span class="cartel__t">09 · Céramique, ombre portée</span>
+      <span class="cartel__d">2025 · 90 mm · f/16 · 1/60 s</span>
+      <span class="depli"><p>Blanc sur blanc. L’objet ne se détache que par son ombre&#8239;: c’est elle qu’on place en premier, l’objet vient ensuite.</p></span>
+    </figcaption>
+  </figure>
+
+  <div class="oeuvres in" style="margin-top:0">
+
+    <figure class="oeu h-g" data-g="objet" tabindex="0" style="max-width:820px">
+      <img class="rv rv--g" src="../../images/secteurs-sites/photo-18.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Des branches de saule à chatons, dans un pot de céramique cannelé, devant un mur de marbre sombre ; une lumière rasante projette leur ombre à gauche.">
+      <figcaption class="cartel">
+        <span class="cartel__t">10 · Branches et leur ombre</span>
+        <span class="cartel__d">2024 · 50 mm · f/2,8 · 1/200 s</span>
+        <span class="depli"><p>Une seule source, très basse, à droite du cadre. L’ombre portée occupe plus de place que l’objet, et c’est elle le sujet.</p></span>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu h-d" data-g="objet" tabindex="0" style="max-width:660px">
+      <img class="rv rv--d" src="../../images/secteurs-sites/photo-15.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux roses rouges dans une lumière rasante : l’une ouverte au premier plan sur sa tige, l’autre plus bas à droite ; le fond est un mur gris dans l’ombre.">
+      <figcaption class="cartel">
+        <span class="cartel__t">11 · Deux roses, lumière rasante</span>
+        <span class="cartel__d">2025 · 100 mm · f/4 · 1/125 s</span>
+        <span class="depli"><p>Une seule source, et le reste du mur laissé dans l’ombre. Le rouge n’a pas été relevé&#8239;: c’est celui que la lumière a donné.</p></span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══ CE QUI EST ÉCRIT — un registre, pas des paragraphes ═══ -->
+<section class="sec in" id="ecrit">
+  <h2>six lignes, et elles sont <em>au contrat</em>.</h2>
+
+  <div class="reg">
+    <div>
+      <p class="reg__h">Ce qui est livré</p>
+      <dl>
+        <dt>Fichiers retenus</dt>
+        <dd><b>35 au minimum</b> en architecture. En objet&#8239;: trois par référence, vingt références au minimum.</dd>
+        <dt>Délai</dt>
+        <dd><b>15 jours ouvrables</b> entre la séance et le lien de téléchargement.</dd>
+        <dt>Format</dt>
+        <dd><b>JPEG qualité 10</b>, côté long 6&#8239;000&#8239;px, 300&#8239;ppp. TIFF 16 bits sur demande, sans frais.</dd>
+      </dl>
+    </div>
+    <div>
+      <p class="reg__h">Ce qui est à vous</p>
+      <dl>
+        <dt>Droits d’usage</dt>
+        <dd><b>Vos propres supports</b>, sans limite de tirage ni de territoire. La revente s’ajoute par écrit.</dd>
+        <dt>Accès aux fichiers</dt>
+        <dd><b>Cinq ans.</b> Un rappel part 60 jours avant la fermeture de l’archive.</dd>
+        <dt>Ce qui n’est pas livré</dt>
+        <dd>Les <b>RAW</b> et les prises écartées. Un RAW est une mesure, pas une image.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ══ L’ATELIER ═════════════════════════════════════════════ -->
+<section id="atelier">
+  <div class="sec in" style="padding-bottom:0">
+    <h2 class="enonce">Le montage est fait <em>avant</em> votre arrivée.</h2>
+    <p class="txt" style="margin-top:42px">Les heures comptées commencent quand la première prise est possible, pas quand le premier pied sort de son sac.</p>
+  </div>
+
+  <!-- la bande de l’atelier — elle panoramique aussi -->
+  <figure class="bande" style="margin-top:clamp(64px,7vw,104px)">
+    <div class="bande__c"><img class="rv" src="../../images/secteurs-sites/photo-3.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Plateau vu de face dans une salle noire : un fond blanc éclairé, deux boîtes octogonales sur pieds, une grille de projecteurs au plafond et du matériel posé au sol."></div>
+    <figcaption class="cartel">
+      <span class="cartel__t">Plateau, fond blanc</span>
+      <span class="cartel__d">Québec · 20 mm · f/8 · 1/50 s</span>
+    </figcaption>
+  </figure>
+
+  <div class="in">
+    <ol class="jour" style="margin-top:clamp(64px,7vw,104px)">
+      <li>
+        <b>H − 1&#8239;:&#8239;00</b>
+        <h3>Repérage</h3>
+        <p>La lumière du jour se relève pièce par pièce.</p>
+      </li>
+      <li>
+        <b>H + 0&#8239;:&#8239;00</b>
+        <h3>Première pièce</h3>
+        <p>Trois quarts d’heure. Les suivantes vont trois fois plus vite.</p>
+      </li>
+      <li>
+        <b>H + 3&#8239;:&#8239;00</b>
+        <h3>Extérieurs</h3>
+        <p>Selon le ciel. Une date de repli est inscrite au contrat.</p>
+      </li>
+      <li>
+        <b>H + 3&#8239;:&#8239;45</b>
+        <h3>Vérification</h3>
+        <p>La planche complète se passe sur place, avec vous.</p>
+      </li>
+    </ol>
+
+    <figure class="oeu h-g" tabindex="0" style="max-width:700px; margin-top:clamp(76px,8vw,116px)">
+      <img class="rv rv--g" src="../../images/secteurs-sites/photo-7.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Studio sombre : deux grandes boîtes à lumière allumées de part et d’autre d’un fond de papier ocre, des rouleaux de fond de couleur rangés contre le mur à gauche.">
+      <figcaption class="cartel">
+        <span class="cartel__t">Fond ocre, deux boîtes</span>
+        <span class="cartel__d">Québec · 35 mm · f/4 · 1/80 s</span>
+        <span class="depli"><p>Le choix du fond se fait avant la séance, pas pendant. Une fois la première image faite, plus rien ne bouge.</p></span>
+      </figcaption>
+    </figure>
+
+    <figure class="oeu h-d" tabindex="0" style="max-width:860px; margin-top:clamp(76px,8vw,116px)">
+      <img class="rv rv--d" src="../../images/secteurs-sites/photo-6.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Dix épreuves en noir et blanc, encadrées de noir sous passe-partout blanc, accrochées sur un mur blanc en deux rangées de cinq.">
+      <figcaption class="cartel">
+        <span class="cartel__t">Accrochage, dix épreuves</span>
+        <span class="cartel__d">Québec · 50 mm · f/5,6 · 1/30 s</span>
+        <span class="depli"><p>Le tirage n’est pas compris. La commande se passe chez le laboratoire de votre choix, avec le fichier livré&#8239;: il est à vous.</p></span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══ ÉCRIRE ════════════════════════════════════════════════ -->
+<section class="sec in" id="ecrire">
+  <p class="mono">Écrire</p>
+  <h2 style="margin-top:22px">dites ce qu’il y a à <em>photographier</em>.</h2>
+  <p class="txt" style="margin-top:34px">Réponse écrite sous un jour ouvrable&#8239;: le nombre de fichiers, le délai, la licence.</p>
+
+  <div class="form">
+    <div>
+      <label for="nom">Nom</label>
+      <input id="nom" name="nom" type="text" autocomplete="name" placeholder="Prénom Nom">
+    </div>
+    <div>
+      <label for="crl">Courriel</label>
+      <input id="crl" name="crl" type="email" inputmode="email" autocomplete="email" spellcheck="false" autocapitalize="off" placeholder="courriel@exemple.ca">
+    </div>
+    <div>
+      <label for="typ">Ce que c’est</label>
+      <select id="typ" name="typ">
+        <option>Architecture</option>
+        <option>Intérieur</option>
+        <option>Objet, en studio</option>
+        <option>Je ne sais pas encore</option>
+      </select>
+    </div>
+    <div>
+      <label for="lieu">Lieu</label>
+      <input id="lieu" name="lieu" type="text" placeholder="Québec, ou ailleurs">
+    </div>
+    <div class="f-l">
+      <label for="msg">Ce qu’il y a à photographier</label>
+      <textarea id="msg" name="msg" placeholder="Six pièces, un extérieur, une quarantaine de références…"></textarea>
+    </div>
+    <div class="f-l">
+      <button class="btn btn--p" type="button">Écrire à l’atelier</button>
+      <p class="petit" style="margin-top:20px">Formulaire de démonstration&#8239;: il n’envoie rien, et rien n’est enregistré.</p>
+    </div>
+  </div>
+
+  <dl class="coord">
+    <div>
+      <dt>Téléphone</dt>
+      <dd><a class="lien" href="tel:0000000000">000 000-0000</a></dd>
+    </div>
+    <div>
+      <dt>Courriel</dt>
+      <dd><a class="lien" href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></dd>
+    </div>
+    <div>
+      <dt>Studio</dt>
+      <dd>Adresse sur demande<span>Québec, et 40&#8239;km autour</span></dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ══ PIED ══════════════════════════════════════════════════ -->
+<footer class="pied in">
+  <p class="pied__m">atelier lumen</p>
+  <div class="pied__g">
+    <div>
+      <h3>Les pages</h3>
+      <ul>
+        <li><a class="lien" href="#accrochage">L’accrochage</a></li>
+        <li><a class="lien" href="#ecrit">Ce qui est écrit</a></li>
+        <li><a class="lien" href="#atelier">L’atelier</a></li>
+        <li><a class="lien" href="#ecrire">Écrire</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Joindre</h3>
+      <ul>
+        <li><a class="lien" href="tel:0000000000">000 000-0000</a></li>
+        <li><a class="lien" href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></li>
+        <li>Adresse sur demande</li>
+      </ul>
+    </div>
+  </div>
+  <p class="pied__av">Atelier Lumen est une entreprise fictive et cette page est un <b>site de démonstration</b>&#8239;: les coordonnées sont neutres, le formulaire n’envoie rien et n’enregistre rien. Les photographies montrent de l’architecture, des objets et des studios&#8239;; elles ne représentent le travail d’aucun prestataire réel. Elles sont affichées sans traitement — c’est la seule façon honnête de montrer une photographie.</p>
+  <div class="pied__bas">
+    <span>Site de démonstration</span>
+    <span>Québec — QC</span>
+    <span>Aucune requête tierce</span>
+  </div>
+</footer>
+
+<script src="../../js/vendor/gsap.min.js"></script>
+<script src="../../js/vendor/ScrollTrigger.min.js"></script>
+<script>
+/* LE PANORAMIQUE — la seule chose que le script fait, et la seule
+   qu’il fasse mieux que le CSS.
+
+   Les trois œuvres à fond perdu sont plus larges que leur cadre.
+   Pendant qu’on les longe, le cadrage glisse latéralement : c’est
+   le mouvement de la série, ramené DANS le flux vertical.
+
+   TROIS CONTRAINTES QUI DICTENT L’ÉCRITURE :
+   · pas d’épinglage — une scène collante réserve une course vide
+     et n’est de toute façon épinglée qu’au-delà de 100vh ;
+   · le cadre reste COUVERT à toute progression, y compris à zéro :
+     une capture pleine page ne défile pas, elle photographie
+     chaque bande à sa progression de départ ;
+   · l’amplitude se recalcule au redimensionnement.
+
+   `prefers-reduced-motion` coupe tout : le cadrage reste au
+   centre, aucune information ne se perd. */
+(function () {
+  "use strict";
+  if (!window.gsap || !window.ScrollTrigger) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var cadres = document.querySelectorAll(".bande__c");
+  Array.prototype.forEach.call(cadres, function (cadre, i) {
+    var im = cadre.querySelector("img");
+    if (!im) return;
+    /* L’image fait 114 % du cadre et démarre à −7 % : il reste
+       7 % de jeu de chaque côté. On en dépense 5,5 — la marge
+       restante est ce qui garantit qu’aucun bord ne se découvre. */
+    var sens = i % 2 === 0 ? -1 : 1;
+    gsap.fromTo(
+      im,
+      { xPercent: sens * -4.8 },
+      {
+        xPercent: sens * 4.8,
+        ease: "none",
+        scrollTrigger: {
+          trigger: cadre,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.6,
+          invalidateOnRefresh: true
+        }
+      }
+    );
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -22,6 +22,7 @@ dans le document qui la porte.
 | **ce qui n'est pas prouvé, pas fini** | `RESERVES.md` |
 | **quels skills charger** | `DESIGN-STACK.md` |
 | **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` — le chantier du 2026-07-31 |
+| **un écran de secteur** (les douze métiers) | `demos-secteurs/STANDARD.md` — la loi · `demos-secteurs/plans/<clé>.md` — les références relevées et la DA du métier · `ARCHITECTURE.md § 10` — les fichiers |
 | **les preuves d'un chantier** | `preuves/LISEZ-MOI.md` — un dossier par chantier, l'outil qui le refait, et ce qu'il faut voir dans chaque image |
 | **l'historique** | `archives/rapports/` |
 
@@ -88,6 +89,27 @@ une planche dont le plancher de bruit n'a pas été mesuré.**
   (`css/tokens.css`). Le minium apparaît une fois en pleine masse au
   hero, puis seulement là où le visiteur peut **agir** : CTA primaire,
   index actif, chiffre du calculateur, filet de la section active.
+
+> **CES INTERDITS S'ARRÊTENT À LA PORTE DE `demos-secteurs/`.** Les
+> douze écrans de métier ont **le droit** aux coins arrondis, aux
+> ombres, aux dégradés et au flou — c'est précisément ce qui prouve
+> notre étendue. Ce qui tient là-bas aussi : aucun prix, aucune requête
+> tierce, aucun nom réel, `prefers-reduced-motion` respecté. Et une
+> règle de plus, non négociable : **aucun écran de secteur ne porte
+> l'identité d'APED** — ni sa palette, ni sa typographie, ni ses
+> formes, ni ses quatre verbes. `demos-secteurs/STANDARD.md`.
+
+## LES DOUZE ÉCRANS DE SECTEUR — un écran, pas un site
+
+Chaque métier de la section 04 est **un seul premier écran**, arrêté,
+photographié à **1440 × 900** puis réduit dans le cadre du panneau —
+c'est la réduction qui lui donne l'échelle d'un vrai moniteur. **Aucune
+page longue, aucun défilement dans l'aperçu.** Neuf pages longues ont
+été retirées le 2026-08-01 : `archives/2026-08-01-sites-longs/`.
+
+Un mouvement ne compte que s'il **se voit sur l'image arrêtée** — une
+bande à mi-course, un trait à moitié tracé, un chiffre entre deux
+crans. Sinon il n'existe pas.
 
 ## LES QUATRE VERBES — la grammaire, il n'y en a pas d'autres
 
@@ -161,15 +183,11 @@ plein · **1** allégé (< 64em, `pointer: coarse`, ≤ 4 cœurs ou ≤ 4 Go) ·
 (`prefers-reduced-motion`). **L'escalade est à sens unique.** Ordre de
 chute et ce qui n'est **jamais** sacrifié : `ANIMATIONS.md`.
 
-**Le budget des SAS** (les trois pistes de l'arc de luminance) :
-`html.sas-ok` se décide dans le `<head>` AVANT la première mise en
-page — largeur ≥ 64em, pointeur fin, > 4 cœurs, > 4 Go, pas de
-mouvement réduit. Sans la classe, un sas EST sa bande de seuil : le
-téléphone reçoit la page d'avant le chantier, zéro coût. Si le palier
-monte en cours de route, les sas se FIGENT à leur forme finale sans
-jamais rendre leur hauteur — une piste qui se replie en pleine lecture
-fait sauter la page. Le mot forgé reste : l'information ne dépend
-jamais de l'animation.
+**Le budget des SAS** : `html.sas-ok` se décide dans le `<head>` AVANT
+la première mise en page. Sans la classe, un sas EST sa bande de seuil
+— zéro coût. Un sas déjà ouvert **se fige** à sa forme finale et ne
+rend **jamais** sa hauteur : une piste qui se replie en pleine lecture
+fait sauter la page. `REFONTE-IMMERSIVE.md`.
 
 ## LES ERREURS DÉJÀ COMMISES — une ligne chacune
 
@@ -204,7 +222,29 @@ Cause et correctif : `PIEGES.md`.
 27. Deux mécanismes sur le même pseudo-élément : le plus spécifique tue l'autre, en silence.
 28. Un bridage trop fort rend le palier 2 inatteignable, et l'outil appelle ça un échec.
 29. **Une planche de captures d'une page qui bouge n'est pas une preuve de non-régression** — utiliser `tools/captures-fixe.mjs`, et soustraire son plancher de bruit avec **trois** passes de chaque côté : `captures-comparer.mjs --avant A1,A2,A3 --apres B1,B2,B3`.
-30. **Un paramètre qui vaut `NaN` rend « aucune différence » sur n'importe quoi** — toute comparaison avec `NaN` est fausse. Un paramètre illisible doit arrêter l'outil, jamais retomber en silence sur une valeur par défaut.
+30. Un paramètre qui vaut `NaN` rend « aucune différence » sur n'importe quoi — un paramètre illisible doit ARRÊTER l'outil, jamais retomber en silence sur un défaut.
+31. Un `lastIndexOf` sur une balise fermante commune coupe tout le document — borner par deux marqueurs uniques, compter les `<section>` avant et après.
+32. Une marge `auto` peut se lire autrement et se poser au même pixel — comparer la géométrie, pas la valeur calculée.
+33. **GSAP lit un `transform` CSS de repos comme une base en PIXELS et anime `yPercent` par-dessus** — purger avec un `y: 0` explicite dans le `fromTo`.
+34. Une section `content-visibility` rend sa hauteur RÉSERVÉE même après une traverse — la mesurer pendant qu'elle est à l'écran, en s'arrêtant dessus.
+35. Une scène collante n'est épinglée qu'à partir de 100vh de course — ce qu'on y joue avant se joue hors champ.
+36. **Un test qui synthétise l'événement ne teste pas le geste** — `mouse.down` + `mouse.move`, et exiger que la valeur SUIVE le curseur.
+37. Une image est glissable par défaut : le navigateur émet `pointercancel` et retire le geste.
+38. Une sonde de port en IPv4 ment sur un serveur qui écoute en IPv6 — interroger `localhost`.
+39. `decode()` ne rejette jamais sur une image jamais demandée : toute attente porte sa propre limite.
+40. **Un sélecteur de masquage par sous-chaîne de classe peut effacer la page** — `[class*="cursor"]` attrape `cursor-none`. Une capture plate doit ARRÊTER l'outil.
+41. Un calendrier qui ouvre sur le mois courant peut n'offrir aucune date — ouvrir sur le mois du premier jour réservable, **et le poser aussi dans la remise à zéro**.
+42. Une dégradation par palier ne s'hérite pas toute seule : `[data-palier="1"]` ne mord plus à « 2 ». Écrire les trois valeurs.
+43. Un cadre qui défile peut n'avoir rien à faire défiler — vérifier `scrollHeight > clientHeight` avant de conclure d'un geste sans effet.
+44. **`fullPage` ne photographie pas une scène épinglée** — une scène collante se capture écran par écran, en défilant.
+45. Un fond en dégradé n'est pas un fond absent : `backgroundColor` rend `rgba(0,0,0,0)` alors que la page est peinte.
+46. **Un contournement survit toujours au correctif** — quand la cause est réparée, chercher et retirer la rustine, sinon elle masque la prochaine panne.
+47. Rendre un conteneur défilant peut tuer un glissement qui marchait — `overflow` crée un contexte qui vole le `pointermove`.
+48. L'injection tactile ne se remet pas entre deux gestes — réinitialiser explicitement, sinon le second geste part de l'état du premier.
+49. Un élément fixe au sommet et un élément épinglé plus bas ne sont pas la même chose — ne pas mesurer l'un pour conclure de l'autre.
+50. **Deux pages de hauteurs différentes ne peuvent pas partager une course en pixels** — verrouiller en pourcentage, ou piloter.
+51. `:focus-visible` ne s'arme pas sur un `focus()` de script — pour mesurer l'anneau, tabuler.
+52. Une image déclarée n'est pas une image chargée — `complete && naturalWidth > 0`, pas la présence de l'attribut.
 
 ## RÉSERVES — à ne jamais oublier
 
@@ -220,37 +260,3 @@ Les autres réserves ouvertes — FormSubmit jamais activé, la cause
 périmés qui passent en ne mesurant rien, `images/og.png` qui contredit
 le site, la piste des Services jamais touchée du doigt — sont dans
 `RESERVES.md`.
-
-31. **Un `lastIndexOf` sur une balise fermante commune coupe tout le
-   document** — borner une découpe par deux marqueurs uniques, et
-   compter les `<section>` avant et après.
-32. **Une marge `auto` peut se lire autrement et se poser au même
-   pixel** — comparer la géométrie avant de conclure d'une valeur
-   calculée.
-33. **GSAP lit un `transform` CSS de repos comme une base en PIXELS et
-   anime `yPercent` PAR-DESSUS** — un volet dont le repos est
-   `translateY(-102%)` joue sa course déjà hors écran. Purger avec un
-   `y: 0` explicite dans le `fromTo`.
-34. **Une section `content-visibility` rend sa hauteur RÉSERVÉE même
-   après une traverse** — elle ressaute dès qu'elle ressort de
-   l'écran. Une hauteur réelle se mesure PENDANT que la section est
-   visible, en s'arrêtant dessus.35. **Une scène collante n'est épinglée qu'à partir de 100vh de
-   course** — tout mouvement qu'on y joue avant se joue hors champ.
-36. **Un test qui synthétise l'événement ne teste pas le geste** —
-   pour un glissement, `mouse.down` + `mouse.move`, et exiger que la
-   valeur SUIVE le curseur, pas seulement qu'elle bouge.
-37. **Une image est glissable par défaut** : le navigateur émet
-   `pointercancel` et retire le geste en cours.
-38. **Une sonde de port en IPv4 ment sur un serveur qui écoute en
-   IPv6** — interroger `localhost`, pas une famille d'adresses.
-39. **`decode()` ne rejette jamais sur une image jamais demandée** :
-   toute attente sur une promesse de la page porte sa propre limite.
-40. **Un sélecteur de masquage par sous-chaîne de classe peut effacer
-   la page** — `[class*="cursor"]` attrape `cursor-none`. Et une
-   capture plate doit ARRÊTER l'outil, jamais partir en silence.
-41. **Un calendrier qui ouvre sur le mois courant peut n'offrir aucune
-   date** — ouvrir sur le mois du premier jour réservable, et le poser
-   dans la remise à zéro, pas seulement à l'initialisation.
-42. **Une dégradation par palier ne s'hérite pas toute seule** : un
-   sélecteur `[data-palier="1"]` ne mord plus quand l'attribut vaut
-   « 2 ». Écrire les trois valeurs.

@@ -1,0 +1,1184 @@
+/* Retire de css/secteurs.css le 2026-08-01 — les douze maquettes dessinees.
+   Le balisage correspondant est dans archives/ et dans git. */
+
+/* == 01 · RESTAURATION — la carte imprimee et l'heure qu'on choisit ==  D-305 */
+.sec-page--carte {
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  align-content: stretch;
+  gap: 1em;
+}
+.sec-carte-tete {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.3em 0.8em;
+  align-items: center;
+  padding-bottom: 0.7em;
+  border-bottom: 2px solid var(--ink);
+}
+.sec-carte-tete .sec-ens { font-size: 1.9em; line-height: 1; }
+.sec-carte-tete > span {
+  grid-column: 1;
+  font-family: var(--font-data);
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+.sec-carte-tete .sec-btn { grid-column: 2; grid-row: 1 / span 2; }
+.sec-carte {
+  display: grid;
+  align-content: space-evenly;
+  gap: 0.55em;
+}
+.sec-crow { display: flex; align-items: baseline; gap: 0.7em; }
+.sec-crow b {
+  font-weight: 600;
+  font-size: 1.02em;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Le filet de conduite. Il est en `order` pour s'intercaler entre le
+   plat et le prix sans un element de plus dans le markup. */
+.sec-crow::before {
+  content: "";
+  order: 1;
+  flex: 1 0 1.2em;
+  align-self: center;
+  height: var(--rule-w);
+  background: var(--rule-strong);
+}
+.sec-crow em {
+  order: 2;
+  flex: none;
+  font-family: var(--font-data);
+  font-size: 0.92em;
+  color: var(--ink);
+}
+.sec-crow span {
+  order: 3;
+  flex: none;
+  font-family: var(--font-data);
+  font-size: 0.72em;
+  color: var(--ink-muted);
+}
+.sec-resa { display: grid; gap: 0.5em; }
+.sec-chips {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5em;
+  padding-bottom: 0.4em;
+}
+.sec-chips i {
+  display: block;
+  padding: 0.5em 0.2em;
+  border: var(--rule-w) solid var(--rule-strong);
+  font-family: var(--font-data);
+  font-style: normal;
+  font-size: 0.82em;
+  text-align: center;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Le choix est un FILET d'accent sous la pastille, jamais un aplat
+   sous le texte : l'encre sur le minium ne donne que 3,66:1. */
+.sec-sel {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: calc(25% - 0.375em);
+  height: 3px;
+  background: var(--accent);
+}
+.sec-pied-inv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.2em;
+  padding: 0.6em 0.8em;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-family: var(--font-data);
+  font-size: 0.76em;
+  letter-spacing: 0.06em;
+}
+.sec-pied-inv b { color: var(--accent-on-inverse); font-weight: 500; }
+
+.mock.is-on .sec-sel { animation: sec-sel 4s steps(1) infinite; }
+@keyframes sec-sel {
+  0%, 24% { transform: translateX(0); }
+  25%, 49% { transform: translateX(calc(100% + 0.5em)); }
+  50%, 74% { transform: translateX(calc(200% + 1em)); }
+  75%, 100% { transform: translateX(calc(300% + 1.5em)); }
+}
+
+/* == 02 · BOUTIQUE — la grille de produits et le tiroir de panier ==  D-306 */
+.sec-page--shop {
+  position: relative;
+  /* 10,8 em et non 9,6 : mesure du prototype, « Passer a la caisse »  D-307 */
+  grid-template-columns: minmax(0, 1fr) 10.8em;
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  gap: 0.9em;
+}
+.sec-shop-main { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0.7em; min-height: 0; overflow: hidden; }
+.sec-fil {
+  display: flex;
+  gap: 0.45em;
+  align-items: baseline;
+  padding-bottom: 0.5em;
+  border-bottom: var(--rule-w) solid var(--rule);
+  font-family: var(--font-data);
+  font-size: 0.76em;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.sec-fil b { color: var(--ink); font-weight: 500; }
+.sec-grille3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 0.7em;
+  min-height: 0;
+}
+.sec-tuile { display: grid; grid-template-rows: minmax(0, 1fr) auto auto; gap: 0.25em; min-height: 0; }
+.sec-tuile > i { display: block; min-height: 0; overflow: hidden; }
+.sec-tuile b {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sec-tuile em {
+  font-family: var(--font-data);
+  font-size: 0.78em;
+  color: var(--ink-muted);
+}
+.sec-panier {
+  display: grid;
+  align-content: start;
+  gap: 0.45em;
+  padding: 0.8em 0.75em;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  min-width: 0;
+}
+.sec-panier > b {
+  font-family: var(--font-data);
+  font-size: 0.76em;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--accent-on-inverse);
+  padding-bottom: 0.4em;
+  border-bottom: var(--rule-w) solid rgb(128 128 128 / 0.4);
+}
+.sec-prow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  font-size: 0.78em;
+}
+.sec-prow span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-prow em { flex: none; font-family: var(--font-data); font-size: 0.94em; }
+.sec-ptot {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  margin-top: 0.3em;
+  padding-top: 0.5em;
+  border-top: var(--rule-w) solid rgb(128 128 128 / 0.4);
+  font-size: 0.9em;
+  font-weight: 700;
+}
+.sec-ptot em { font-family: var(--font-data); }
+.sec-livr { font-family: var(--font-data); font-size: 0.68em; line-height: 1.5; }
+.sec-panier .sec-btn { margin-top: 0.2em; }
+/* Le bandeau d'ajout monte sur la vignette. Il se deplace de 100 %  D-308 */
+.sec-ajout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.34em 0.45em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-data);
+  font-size: 0.72em;
+  letter-spacing: 0.06em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateY(100%);
+}
+.mock.is-on .sec-ajout { animation: sec-ajout 3.6s var(--e-brake) infinite; }
+@keyframes sec-ajout {
+  0%, 24% { transform: translateY(100%); }
+  40%, 88% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+/* == 03 · COIFFURE — la journee en creneaux ==  D-309 */
+.sec-page--agenda {
+  /* Les six creneaux prennent le `1fr` : c'est la journee qui doit
+     remplir le cadre, pas le pied de page. */
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-content: stretch;
+  gap: 0.8em;
+}
+.sec-ag-tete {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8em;
+  padding-bottom: 0.6em;
+  border-bottom: var(--rule-w) solid var(--rule-strong);
+}
+.sec-ag-tete .sec-ens { font-size: 1.35em; margin-right: auto; }
+/* Les six rangees sont EXPLICITES et egales. C'est ce qui permet au  D-310 */
+.sec-ag {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+  gap: 0.15em 0.7em;
+  padding-left: 0.5em;
+  min-height: 0;
+}
+.sec-heure {
+  font-family: var(--font-data);
+  font-size: 0.8em;
+  color: var(--ink-muted);
+  align-self: center;
+  white-space: nowrap;
+}
+.sec-slot {
+  display: flex;
+  /* `baseline` collait le texte en haut d'une rangee etiree : la
+     moitie basse de chaque creneau restait vide. */
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.42em 0.6em;
+  border-left: 2px solid var(--rule-strong);
+  background: var(--surface-0);
+}
+.sec-slot b { font-size: 0.9em; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-slot span { font-family: var(--font-data); font-size: 0.74em; color: var(--ink-muted); white-space: nowrap; }
+.sec-slot em { margin-left: auto; font-family: var(--font-data); font-size: 0.78em; white-space: nowrap; }
+.sec-slot i {
+  flex: none;
+  font-style: normal;
+  font-family: var(--font-data);
+  font-size: 0.68em;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.sec-slot.is-libre { border-left-color: var(--accent); }
+.sec-slot.is-libre i { color: var(--accent-text); }
+/* Le curseur descend les creneaux et s'arrete sur le premier libre.
+   Pas de rebond : la limaille ne depasse jamais. */
+.sec-curseur {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0.35em;
+  height: calc((100% - 5 * 0.15em) / 6);
+  background: var(--accent);
+}
+.mock.is-on .sec-curseur { animation: sec-curseur 4.4s var(--e-brake) infinite; }
+@keyframes sec-curseur {
+  0%, 10% { transform: translateY(0); }
+  26% { transform: translateY(calc(100% + 0.15em)); }
+  42% { transform: translateY(calc(200% + 0.3em)); }
+  58%, 100% { transform: translateY(calc(300% + 0.45em)); }
+}
+.sec-ag-pied {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1em;
+  padding-top: 0.55em;
+  border-top: var(--rule-w) solid var(--rule);
+  font-family: var(--font-data);
+  font-size: 0.74em;
+  color: var(--ink-muted);
+}
+.sec-ag-pied b { color: var(--accent-text); font-weight: 500; }
+
+/* == 04 · GYM — l'horaire de la semaine et les places qui restent ==  D-311 */
+.sec-page--gym {
+  /* La grille d'horaire prend sa hauteur NATURELLE et les jauges  D-312 */
+  grid-template-rows: auto auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: 0.8em;
+}
+.sec-gym-tete { display: flex; align-items: baseline; gap: 0.7em; }
+.sec-gym-tete .sec-ens { font-size: 1.3em; margin-right: auto; }
+.sec-semaine {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
+  min-height: 0;
+  gap: 2px;
+  background: var(--rule);
+  border: var(--rule-w) solid var(--rule-strong);
+  padding: 2px;
+}
+.sec-jtete {
+  padding: 0.35em 0.2em;
+  background: var(--surface-0);
+  font-family: var(--font-data);
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--ink-muted);
+}
+/* Trois lignes par cellule — heure, cours, entraineur — et elles se  D-313 */
+.sec-cell {
+  display: grid;
+  gap: 0.15em;
+  padding: 0.45em 0.4em;
+  min-height: 0;
+  background: var(--surface-2);
+  align-content: start;
+}
+.sec-cell em {
+  font-family: var(--font-data);
+  font-size: 0.62em;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sec-cell b {
+  font-family: var(--font-data);
+  font-size: 0.68em;
+  font-weight: 500;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+.sec-cell span {
+  font-size: 0.72em;
+  line-height: 1.2;
+  color: var(--ink);
+  overflow: hidden;
+}
+.sec-cell--vide {
+  background-color: var(--surface-1);
+  background-image: repeating-linear-gradient(-45deg, transparent 0 4px, var(--rule) 4px 5px);
+}
+.sec-cap { display: grid; align-content: space-evenly; gap: 0.4em; }
+.sec-caprow {
+  display: grid;
+  grid-template-columns: minmax(0, 9.6em) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6em;
+}
+.sec-caprow > span { font-size: 0.82em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-caprow > i {
+  display: block;
+  height: 0.72em;
+  background: var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+.sec-caprow > i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--f);
+  background: var(--accent);
+  transform-origin: left center;
+}
+.sec-caprow > em {
+  font-family: var(--font-data);
+  font-size: 0.76em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.sec-caprow.is-plein > em { color: var(--accent-text); }
+.mock.is-on .sec-caprow > i::after { animation: sec-jauge 3.6s var(--e-brake) infinite; }
+.mock.is-on .sec-caprow:nth-child(2) > i::after { animation-delay: 0.14s; }
+.mock.is-on .sec-caprow:nth-child(3) > i::after { animation-delay: 0.28s; }
+@keyframes sec-jauge {
+  0%, 6% { transform: scaleX(0); }
+  38%, 100% { transform: scaleX(1); }
+}
+
+/* == 05 · HEBERGEMENT — le calendrier et le total de sejour ==  D-314 */
+.sec-page--hotel {
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  gap: 1em;
+}
+.sec-hcol { display: grid; align-content: stretch; gap: 0.5em; min-height: 0; }
+.sec-hcol--visu { grid-template-rows: minmax(0, 1fr) auto auto auto; }
+.sec-hcol--cal { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.sec-hcol .sec-titre { font-size: 1.45em; }
+.sec-hspecs {
+  display: grid;
+  gap: 0.22em;
+  font-family: var(--font-data);
+  font-size: 0.74em;
+  color: var(--ink-muted);
+}
+.sec-hspecs span::before { content: "— "; }
+.sec-cal-tete {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  padding-bottom: 0.45em;
+  border-bottom: var(--rule-w) solid var(--rule-strong);
+  font-family: var(--font-data);
+  font-size: 0.78em;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+/* L'en-tete des jours est SORTI de la grille des dates. Les six  D-315 */
+.sec-cal-jours,
+.sec-cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.14em;
+}
+.sec-cal-jours { padding-bottom: 0.3em; border-bottom: var(--rule-w) solid var(--rule); }
+.sec-cal-jours > i {
+  font-family: var(--font-data);
+  font-style: normal;
+  font-size: 0.66em;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--ink-muted);
+}
+.sec-cal { position: relative; grid-auto-rows: minmax(0, 1fr); align-content: stretch; min-height: 0; }
+.sec-cal > i {
+  display: grid;
+  place-items: center;
+  padding: 0.2em 0.1em;
+  font-family: var(--font-data);
+  font-style: normal;
+  font-size: 0.76em;
+  text-align: center;
+  color: var(--ink);
+}
+.sec-cal > i.is-hors { color: var(--ink-muted); }
+/* La plage est un LAVIS borde, pas un aplat : le numero du jour
+   reste en encre pleine dessus, donc lisible. Un aplat de minium
+   sous les chiffres tombait a 3,66:1. */
+.sec-plage {
+  position: absolute;
+  left: calc(100% / 7 * 1);
+  top: calc(100% / 5 * 2);
+  width: calc(100% / 7 * 4);
+  height: calc(100% / 5);
+  background: var(--accent-wash);
+  border: 2px solid var(--accent);
+  transform-origin: left center;
+  pointer-events: none;
+}
+.mock.is-on .sec-plage { animation: sec-plage 3.8s var(--e-brake) infinite; }
+@keyframes sec-plage {
+  0%, 10% { transform: scaleX(0.25); }
+  44%, 100% { transform: scaleX(1); }
+}
+.sec-htot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding-top: 0.5em;
+  border-top: 2px solid var(--ink);
+}
+.sec-htot span { font-family: var(--font-data); font-size: 0.76em; color: var(--ink-muted); }
+.sec-htot em {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5em;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* == 06 · GARAGE — le bon de travail chiffre ==  D-316 */
+.sec-page--bon {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-content: stretch;
+  gap: 0.85em;
+}
+.sec-bon-tete {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25em 0.8em;
+  padding-bottom: 0.6em;
+  border-bottom: 2px solid var(--ink);
+}
+.sec-bon-tete b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.35em;
+  letter-spacing: 0.04em;
+}
+.sec-bon-tete span {
+  grid-column: 1;
+  font-family: var(--font-data);
+  font-size: 0.76em;
+  color: var(--ink-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sec-bon-tete .sec-badge { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.sec-bon {
+  position: relative;
+  display: grid;
+  align-content: space-evenly;
+  gap: 0.32em;
+  padding-left: 0.9em;
+}
+.sec-brow {
+  display: grid;
+  grid-template-columns: 5.3em minmax(0, 1fr) 2em 4.4em;
+  gap: 0.55em;
+  align-items: baseline;
+  padding-bottom: 0.3em;
+  border-bottom: var(--rule-w) solid var(--rule);
+  font-size: 0.86em;
+}
+.sec-brow > span:nth-child(1),
+.sec-brow > span:nth-child(3),
+.sec-brow > span:nth-child(4) { font-family: var(--font-data); font-size: 0.9em; white-space: nowrap; }
+.sec-brow > span:nth-child(3),
+.sec-brow > span:nth-child(4) { text-align: right; }
+.sec-brow > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-brow--tete {
+  font-family: var(--font-data);
+  font-size: 0.68em;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  border-bottom-color: var(--rule-strong);
+}
+.sec-brow--tete > span:nth-child(1),
+.sec-brow--tete > span:nth-child(3),
+.sec-brow--tete > span:nth-child(4) { font-size: 1em; }
+/* L'accolade de somme descend le long des lignes : le devis se
+   ferme sous les yeux du client. */
+.sec-accolade {
+  position: absolute;
+  left: 0;
+  top: 1.6em;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  transform-origin: top center;
+}
+.mock.is-on .sec-accolade { animation: sec-accolade 3.6s var(--e-brake) infinite; }
+@keyframes sec-accolade {
+  0%, 8% { transform: scaleY(0); }
+  46%, 100% { transform: scaleY(1); }
+}
+.sec-somme {
+  display: grid;
+  gap: 0.22em;
+  justify-self: end;
+  min-width: 11em;
+}
+.sec-somme > div { display: flex; justify-content: space-between; gap: 1.4em; font-family: var(--font-data); font-size: 0.8em; color: var(--ink-muted); }
+.sec-somme .sec-somme--tot {
+  margin-top: 0.25em;
+  padding-top: 0.4em;
+  border-top: 2px solid var(--ink);
+  font-size: 1.05em;
+  color: var(--ink);
+}
+.sec-somme .sec-somme--tot em { color: var(--accent-text); font-weight: 700; }
+
+/* == 07 · CONSTRUCTION — l'echeancier de chantier ==  D-317 */
+.sec-page--chantier {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-content: stretch;
+  gap: 0.85em;
+}
+.sec-ch-tete {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2em 0.8em;
+  align-items: center;
+}
+.sec-ch-tete .sec-titre { grid-column: 1; }
+.sec-ch-tete .sec-sh { grid-column: 1; }
+.sec-ch-tete .sec-badge { grid-column: 2; grid-row: 1 / span 2; }
+.sec-gantt {
+  position: relative;
+  display: grid;
+  align-content: space-evenly;
+  gap: 0.3em;
+  padding: 0.5em 0;
+  border-top: var(--rule-w) solid var(--rule-strong);
+  border-bottom: var(--rule-w) solid var(--rule-strong);
+}
+/* L'echelle de mois partage EXACTEMENT la geometrie des rangees de  D-318 */
+.sec-gtete {
+  display: grid;
+  grid-template-columns: 6.4em minmax(0, 1fr) 2.6em;
+  gap: 0.5em;
+  font-family: var(--font-data);
+  font-size: 0.68em;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+.sec-gmois { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); font-style: normal; }
+.sec-gmois span { border-left: var(--rule-w) solid var(--rule); padding-left: 0.35em; }
+.sec-grow {
+  display: grid;
+  grid-template-columns: 6.4em minmax(0, 1fr) 2.6em;
+  gap: 0.5em;
+  align-items: center;
+}
+.sec-grow > span {
+  font-size: 0.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sec-gbar { position: relative; height: 0.8em; background: var(--rule); }
+.sec-gbar i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--x);
+  width: var(--w);
+  background: var(--rule-strong);
+}
+.sec-gbar i.is-fait { background: var(--accent); }
+.sec-grow > em {
+  font-family: var(--font-data);
+  font-size: 0.72em;
+  text-align: right;
+  color: var(--ink-muted);
+}
+/* Le trait du jour balaye l'echeancier : le temps avance, et les  D-319 */
+.sec-gzone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6.9em;
+  right: 3.1em;
+  pointer-events: none;
+}
+.sec-jour-j {
+  position: absolute;
+  inset: 0;
+  border-left: 2px solid var(--accent-text);
+}
+.mock.is-on .sec-jour-j { animation: sec-jourj 5.6s linear infinite; }
+@keyframes sec-jourj {
+  0%, 5% { transform: translateX(0); opacity: 1; }
+  90% { transform: translateX(100%); opacity: 1; }
+  96%, 100% { transform: translateX(100%); opacity: 0.1; }
+}
+.sec-ch-pied {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1.4em;
+  font-family: var(--font-data);
+  font-size: 0.74em;
+  color: var(--ink-muted);
+}
+.sec-ch-pied b { color: var(--ink); font-weight: 500; }
+
+/* == 08 · PAYSAGEMENT — le territoire et la tournee ==  D-320 */
+.sec-page--terr {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  gap: 0.9em;
+}
+.sec-plan {
+  position: relative;
+  min-height: 0;
+  /* Le fond n'est plus un aplat gris : c'est un parcellaire. Un  D-321 */
+  background-color: var(--surface-1);
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 5.4%, var(--rule) 5.4% 6%, transparent 6% 12%),
+    repeating-linear-gradient(0deg, transparent 0 8.2%, var(--rule) 8.2% 9%, transparent 9% 18%);
+  border: var(--rule-w) solid var(--rule-strong);
+  overflow: hidden;
+}
+.sec-rue { position: absolute; background: var(--rule-strong); }
+.sec-rue--h1 { left: 0; right: 0; top: 20%; height: 2px; }
+.sec-rue--h2 { left: 0; right: 0; top: 47%; height: 3px; }
+.sec-rue--h3 { left: 0; right: 0; top: 74%; height: 2px; }
+.sec-rue--v1 { top: 0; bottom: 0; left: 24%; width: 2px; }
+.sec-rue--v2 { top: 0; bottom: 0; left: 58%; width: 3px; }
+.sec-rue--v3 { top: 0; bottom: 0; left: 83%; width: 2px; }
+.sec-secteur {
+  position: absolute;
+  left: 8%;
+  top: 12%;
+  right: 9%;
+  bottom: 14%;
+  border: 2px solid var(--accent);
+  background: var(--accent-wash);
+}
+.sec-plan-lbl {
+  position: absolute;
+  left: 0.5em;
+  bottom: 0.5em;
+  padding: 0.3em 0.5em;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-family: var(--font-data);
+  font-size: 0.68em;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+/* Le passage : chaque carre est une entree deneigee. Ils
+   s'encliquettent l'un apres l'autre le long de la rue. */
+.sec-passe { position: absolute; inset: 0; pointer-events: none; }
+.sec-passe i {
+  position: absolute;
+  width: 8.4%;
+  height: 6.5%;
+  background: var(--accent);
+  transform: scale(1);
+  transform-origin: center;
+}
+.sec-passe i:nth-child(1) { left: 12%; top: 22%; }
+.sec-passe i:nth-child(2) { left: 22%; top: 22%; }
+.sec-passe i:nth-child(3) { left: 32%; top: 22%; }
+.sec-passe i:nth-child(4) { left: 42%; top: 22%; }
+.sec-passe i:nth-child(5) { left: 52%; top: 22%; }
+.sec-passe i:nth-child(6) { left: 60%; top: 32%; }
+.sec-passe i:nth-child(7) { left: 60%; top: 42%; }
+.sec-passe i:nth-child(8) { left: 52%; top: 49%; }
+.sec-passe i:nth-child(9) { left: 42%; top: 49%; }
+.sec-passe i:nth-child(10) { left: 32%; top: 49%; }
+.sec-passe i:nth-child(11) { left: 22%; top: 49%; }
+.sec-passe i:nth-child(12) { left: 25%; top: 62%; }
+.sec-passe i:nth-child(13) { left: 35%; top: 62%; }
+.sec-passe i:nth-child(14) { left: 45%; top: 62%; }
+.sec-passe i:nth-child(15) { left: 55%; top: 62%; }
+.sec-passe i:nth-child(16) { left: 65%; top: 62%; }
+.sec-passe i:nth-child(17) { left: 75%; top: 76%; }
+.sec-passe i:nth-child(18) { left: 65%; top: 76%; }
+.mock.is-on .sec-passe i { animation: sec-passe 4.6s var(--e-brake) infinite; }
+.mock.is-on .sec-passe i:nth-child(1) { animation-delay: 0.00s; }
+.mock.is-on .sec-passe i:nth-child(2) { animation-delay: 0.10s; }
+.mock.is-on .sec-passe i:nth-child(3) { animation-delay: 0.20s; }
+.mock.is-on .sec-passe i:nth-child(4) { animation-delay: 0.30s; }
+.mock.is-on .sec-passe i:nth-child(5) { animation-delay: 0.40s; }
+.mock.is-on .sec-passe i:nth-child(6) { animation-delay: 0.50s; }
+.mock.is-on .sec-passe i:nth-child(7) { animation-delay: 0.60s; }
+.mock.is-on .sec-passe i:nth-child(8) { animation-delay: 0.70s; }
+.mock.is-on .sec-passe i:nth-child(9) { animation-delay: 0.80s; }
+.mock.is-on .sec-passe i:nth-child(10) { animation-delay: 0.90s; }
+.mock.is-on .sec-passe i:nth-child(11) { animation-delay: 1.00s; }
+.mock.is-on .sec-passe i:nth-child(12) { animation-delay: 1.10s; }
+.mock.is-on .sec-passe i:nth-child(13) { animation-delay: 1.20s; }
+.mock.is-on .sec-passe i:nth-child(14) { animation-delay: 1.30s; }
+.mock.is-on .sec-passe i:nth-child(15) { animation-delay: 1.40s; }
+.mock.is-on .sec-passe i:nth-child(16) { animation-delay: 1.50s; }
+.mock.is-on .sec-passe i:nth-child(17) { animation-delay: 1.60s; }
+.mock.is-on .sec-passe i:nth-child(18) { animation-delay: 1.70s; }
+@keyframes sec-passe {
+  0%, 4% { transform: scale(0); }
+  14%, 100% { transform: scale(1); }
+}
+.sec-tcol { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0.5em; min-height: 0; }
+.sec-trow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding-bottom: 0.28em;
+  border-bottom: var(--rule-w) solid var(--rule);
+  font-size: 0.82em;
+}
+.sec-trow span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-trow em {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-data);
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+.sec-trow.is-fait em { color: var(--accent-text); }
+.sec-tliste { display: grid; align-content: space-evenly; gap: 0.2em; min-height: 0; }
+.sec-tpied {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding-top: 0.5em;
+  border-top: 2px solid var(--ink);
+}
+.sec-tpied b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6em;
+  line-height: 1;
+  color: var(--accent-text);
+}
+.sec-tpied span { font-family: var(--font-data); font-size: 0.74em; color: var(--ink-muted); }
+
+/* == 09 · CLINIQUE — la prise de rendez-vous en trois etapes ==  D-322 */
+.sec-page--rdv {
+  position: relative;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  align-content: stretch;
+  gap: 0.8em;
+}
+.sec-etapes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5em; }
+.sec-etape {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.4em 0.5em;
+  border-top: 3px solid var(--rule-strong);
+  min-width: 0;
+}
+.sec-etape b {
+  flex: none;
+  font-family: var(--font-data);
+  font-size: 0.78em;
+  color: var(--ink-muted);
+}
+.sec-etape span {
+  font-family: var(--font-data);
+  font-size: 0.74em;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sec-etape.is-on { border-top-color: var(--accent); }
+.sec-etape.is-on b,
+.sec-etape.is-on span { color: var(--accent-text); }
+.sec-rdv-tete { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.2em 0.8em; align-items: baseline; }
+.sec-rdv-tete b { font-family: var(--font-display); font-weight: 800; font-size: 1.4em; letter-spacing: -0.02em; }
+.sec-rdv-tete span { grid-column: 1; font-family: var(--font-data); font-size: 0.76em; color: var(--ink-muted); }
+.sec-rdv-tete em { grid-column: 2; grid-row: 1 / span 2; font-family: var(--font-data); font-size: 0.8em; color: var(--ink); }
+.sec-plages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: space-evenly;
+  gap: 0.45em;
+}
+.sec-plages i {
+  display: block;
+  padding: 0.5em 0.2em;
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-0);
+  font-family: var(--font-data);
+  font-style: normal;
+  font-size: 0.8em;
+  text-align: center;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sec-plages i.is-pris {
+  background-color: var(--surface-1);
+  background-image: repeating-linear-gradient(-45deg, transparent 0 3px, var(--rule) 3px 4px);
+  color: var(--ink);
+  border-style: dashed;
+}
+.sec-plages i.is-choisi { border: 2px solid var(--accent); }
+.sec-conf {
+  display: grid;
+  gap: 0.15em;
+  padding: 0.6em 0.75em;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+}
+.sec-conf b { font-size: 0.95em; font-weight: 700; }
+.sec-conf span { font-family: var(--font-data); font-size: 0.74em; }
+.sec-conf em { font-family: var(--font-data); font-size: 0.74em; color: var(--accent-on-inverse); }
+.mock.is-on .sec-conf { animation: sec-conf 4s var(--e-brake) infinite; }
+@keyframes sec-conf {
+  0%, 22% { transform: translateY(115%); opacity: 0; }
+  40%, 92% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(115%); opacity: 0; }
+}
+
+/* == 10 · IMMOBILIER — la fiche de propriete ==  D-323 */
+.sec-page--fiche {
+  grid-template-rows: minmax(0, 1fr) auto auto auto;
+  align-content: stretch;
+  gap: 0.7em;
+}
+/* Le fond du puits est la valeur de base des plaques, pas un jeton :  D-324 */
+/* LES PHOTOGRAPHIES.  D-325 */
+/* Le cadrage vertical est REGLE, pas laisse au hasard. Un  D-326 */
+/* LA PHOTO EST POSITIONNEE EN ABSOLU, et c'est ce qui fait marcher  D-327 */
+.sec-photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 72%;
+}
+
+/* La bande : une photo large, et a cote une colonne de vignettes.  D-328 */
+.sec-bande {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.4em;
+  align-items: stretch;
+}
+.sec-bande > i { position: relative; display: block; overflow: hidden; min-height: 6.4em; }
+.sec-vign { display: grid; gap: 0.4em; align-content: start; }
+.sec-vign--serre { grid-auto-flow: row; grid-auto-rows: 1fr; }
+.sec-vign img { display: block; width: 3.2em; height: 100%; min-height: 1.8em; object-fit: cover; }
+/* Sur la fiche de propriete les vignettes courent en ligne sous le
+   panoramique : c'est la disposition d'une vraie fiche. */
+.sec-page--fiche .sec-vign { grid-auto-flow: column; justify-content: start; }
+.sec-page--fiche .sec-vign img { width: 4.2em; height: 3.1em; }
+
+.sec-visu { position: relative; min-height: 0; overflow: hidden; background: #101211; }
+.sec-visu > i {
+  display: grid;
+  position: absolute;
+  inset: 0;
+  width: 168%;
+}
+.sec-hot {
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  padding: 0.32em 0.55em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-data);
+  font-size: 0.72em;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.sec-visu b {
+  position: absolute;
+  left: 0.5em;
+  bottom: 0.5em;
+  padding: 0.32em 0.55em;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-family: var(--font-data);
+  font-weight: 400;
+  font-size: 0.7em;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.mock.is-on .sec-visu > i { animation: sec-pano 9s ease-in-out infinite alternate; }
+@keyframes sec-pano {
+  from { transform: translateX(0); }
+  to { transform: translateX(-40.5%); }
+}
+.sec-prix { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.15em 0.8em; align-items: baseline; }
+.sec-prix b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.75em;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.sec-prix span {
+  grid-column: 1;
+  font-family: var(--font-data);
+  font-size: 0.76em;
+  color: var(--ink-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sec-prix .sec-badge { grid-column: 2; grid-row: 1 / span 2; }
+.sec-specs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5em;
+  padding-top: 0.55em;
+  border-top: 2px solid var(--ink);
+}
+.sec-specs > div { display: grid; gap: 0.1em; min-width: 0; }
+.sec-specs em {
+  font-family: var(--font-data);
+  font-size: 0.66em;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sec-specs b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.sec-courtier {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 1.1em;
+  font-family: var(--font-data);
+  font-size: 0.74em;
+  color: var(--ink-muted);
+}
+.sec-courtier b { color: var(--ink); font-weight: 500; }
+
+/* == 11 · JURIDIQUE — la convention et son echeancier ==  D-329 */
+.sec-page--dossier {
+  position: relative;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: 0.9em;
+}
+.sec-jur-tete {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2em 0.8em;
+  align-items: baseline;
+  padding-bottom: 0.6em;
+  border-bottom: 2px solid var(--ink);
+}
+.sec-jur-tete .sec-titre { grid-column: 1; }
+.sec-jur-tete .sec-sh { grid-column: 1; }
+.sec-jur-tete > em {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  font-family: var(--font-data);
+  font-size: 0.76em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.sec-jur { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.1em; min-height: 0; }
+.sec-arts {
+  display: grid;
+  align-content: space-evenly;
+  gap: 0.45em;
+  padding-left: 0.8em;
+  border-left: 2px solid var(--rule-strong);
+}
+.sec-art { display: flex; gap: 0.6em; align-items: baseline; min-width: 0; }
+.sec-art em {
+  flex: none;
+  width: 2.1em;
+  font-family: var(--font-data);
+  font-size: 0.78em;
+  color: var(--accent-text);
+}
+.sec-art span {
+  font-size: 0.85em;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sec-delais { display: grid; align-content: start; gap: 0.4em; min-width: 0; }
+.sec-drow {
+  display: grid;
+  grid-template-columns: 3.7em minmax(0, 1fr);
+  gap: 0.5em;
+  align-items: baseline;
+  padding-bottom: 0.3em;
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+.sec-drow em { font-family: var(--font-data); font-size: 0.74em; color: var(--ink-muted); white-space: nowrap; }
+.sec-drow span { font-size: 0.82em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-dcpt { display: flex; align-items: baseline; gap: 0.5em; margin-top: 0.2em; }
+.sec-dcpt b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.2em;
+  line-height: 1;
+  color: var(--accent-text);
+}
+.sec-dcpt span { font-family: var(--font-data); font-size: 0.72em; line-height: 1.3; color: var(--ink-muted); }
+/* Le tampon tombe et s'arrete net. Aucun rebond : la limaille
+   n'est pas elastique. */
+.sec-tampon {
+  position: absolute;
+  right: 1.6em;
+  bottom: 1.6em;
+  padding: 0.35em 0.7em;
+  border: 2px solid var(--accent-text);
+  font-family: var(--font-data);
+  font-size: 0.9em;
+  letter-spacing: 0.16em;
+  color: var(--accent-text);
+  transform: rotate(-7deg);
+  white-space: nowrap;
+}
+.mock.is-on .sec-tampon { animation: sec-tampon 3.8s var(--e-brake) infinite; }
+@keyframes sec-tampon {
+  0%, 18% { transform: rotate(-7deg) scale(2.1); opacity: 0; }
+  34%, 90% { transform: rotate(-7deg) scale(1); opacity: 1; }
+  100% { transform: rotate(-7deg) scale(1); opacity: 0; }
+}
+
+/* == 12 · PHOTOGRAPHE — l'index et la planche ==  D-330 */
+.sec-page--photo {
+  grid-template-columns: 12.4em minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  gap: 0.9em;
+  padding: 0;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+}
+.sec-index { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0.6em; padding: 1.15em 0 1.15em 1.15em; min-height: 0; }
+.sec-index > b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95em;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+}
+.sec-iliste { display: grid; align-content: center; gap: 0.5em; }
+.sec-irow {
+  display: grid;
+  grid-template-columns: 1.7em minmax(0, 1fr) auto;
+  gap: 0.4em;
+  align-items: baseline;
+  padding-bottom: 0.35em;
+  border-bottom: var(--rule-w) solid rgb(128 128 128 / 0.35);
+}
+.sec-irow em { font-family: var(--font-data); font-size: 0.72em; opacity: 0.75; }
+.sec-irow span { font-size: 0.86em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-irow i { font-family: var(--font-data); font-style: normal; font-size: 0.68em; opacity: 0.75; }
+.sec-irow.is-on em,
+.sec-irow.is-on i { color: var(--accent-on-inverse); opacity: 1; }
+.sec-irow.is-on { border-bottom-color: var(--accent-on-inverse); }
+.sec-ipied { display: grid; gap: 0.15em; font-family: var(--font-data); font-size: 0.68em; }
+.sec-planche { position: relative; overflow: hidden; min-height: 0; }
+.sec-pile { position: absolute; left: 0; right: 0; top: 0; height: 300%; display: grid; grid-template-rows: repeat(3, 1fr); }
+.sec-pile > i { display: block; min-height: 0; }
+.sec-exif {
+  position: absolute;
+  left: 0.6em;
+  right: 0.6em;
+  bottom: 0.6em;
+  padding: 0.35em 0.5em;
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-family: var(--font-data);
+  font-size: 0.68em;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mock.is-on .sec-pile { animation: sec-pile 6.6s var(--e-drive) infinite; }
+@keyframes sec-pile {
+  0%, 26% { transform: translateY(0); }
+  33%, 59% { transform: translateY(-33.3333%); }
+  66%, 92% { transform: translateY(-66.6666%); }
+  99%, 100% { transform: translateY(0); }
+}
+

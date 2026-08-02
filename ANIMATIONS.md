@@ -257,28 +257,30 @@ au **palier 2** avec les autres dégagements de modale.
 | A98 | index qui apparaît | app.css | `html.js.derail-go .derail-row:not(--lost)` | **tombe au palier 1** | `opacity` **380 ms** `--e-snap`, retard **`var(--i) * 45ms`** | **tombe au palier 1** | — | N2 |
 | A99 | ligne d'index | app.css, 4268 | `.derail-row a`, `.derail-row a::after` | survol | `padding-left` / `transform` **240 ms** | — | V3 | N3 |
 
-### 1.10 · `css/secteurs.css` — les treize maquettes
+### 1.10 · `css/secteurs.css` — il n'en reste qu'UNE
 
-Feuille **injectée par JavaScript** (`index.html`). Toutes ces
-animations sont `infinite` et ne tournent que sur `.mock.is-on` ;
-toutes sont coupées par `animation: none !important` sous mouvement
-réduit (`secteurs.css`).
+Feuille **injectée par JavaScript** (`index.html`).
 
-| # | Nom | Fichier:ligne | Élément ciblé | Durée | Verbe | Niveau |
+> **Douze des treize maquettes dessinées ont été RETIRÉES le
+> 2026-08-01** (D-681). Chaque secteur montre maintenant la capture de
+> son propre premier écran ; le balisage `.sec-sel`, `.sec-plage`,
+> `.sec-passe`… n'existe plus depuis la refonte des aperçus, et leur
+> CSS ne l'atteignait plus depuis. **A100 à A111 n'ont jamais cessé
+> d'être documentées alors qu'elles ne tournaient plus** — la feuille
+> est passée de 1 582 à 290 lignes, 12 `@keyframes` en moins.
+> Recollables : `archives/2026-08-01-css-secteurs-maquettes.css`.
+
+Seul le treizième aperçu — « Votre industrie ici » — est encore
+dessiné, parce qu'il ne montre aucun site : il montre la **matière**.
+
+| # | Nom | Fichier | Élément ciblé | Durée | Verbe | Niveau |
 |---|---|---|---|---|---|---|
-| A100 | `sec-sel` | secteurs.css | `.sec-sel` | **4 s** **`steps(1)`** `infinite` | V4 | N3 |
-| A101 | `sec-ajout` | secteurs.css | `.sec-ajout` | **3,6 s** `--e-brake` `infinite` | V4 | N3 |
-| A102 | `sec-curseur` | secteurs.css | `.sec-curseur` | **4,4 s** `--e-brake` `infinite` | V4 | N3 |
-| A103 | `sec-jauge` | secteurs.css | `.sec-caprow > i::after` | **3,6 s** `--e-brake` `infinite`, retards **0,14 / 0,28 s** | — | N3 |
-| A104 | `sec-plage` | secteurs.css | `.sec-plage` | **3,8 s** `--e-brake` `infinite` | V2 | N3 |
-| A105 | `sec-accolade` | secteurs.css | `.sec-accolade` | **3,6 s** `--e-brake` `infinite` | V3 | N3 |
-| A106 | `sec-jourj` | secteurs.css | `.sec-jour-j` | **5,6 s** `linear` `infinite` | — | N3 |
-| A107 | `sec-passe` | secteurs.css | `.sec-passe i` ×18 | **4,6 s** `--e-brake` `infinite`, retards **0 à 1,70 s** par pas de 0,10 | V2 | N3 |
-| A108 | `sec-conf` | secteurs.css | `.sec-conf` | **4 s** `--e-brake` `infinite` | V1 | N3 |
-| A109 | `sec-pano` | secteurs.css | `.sec-visu > i` | **9 s** `ease-in-out` `infinite alternate` | — | N3 |
-| A110 | `sec-tampon` | secteurs.css | `.sec-tampon` | **3,8 s** `--e-brake` `infinite` | V4 | N3 |
-| A111 | `sec-pile` | secteurs.css | `.sec-pile` | **6,6 s** `--e-drive` `infinite` | V4 | N3 |
-| A112 | `sec-grain` | secteurs.css | `.sec-lim i` | **5,4 s** `--e-brake` `infinite`, retards **0,09 / 0,18 / 0,27 s** | V2 | N2 |
+| A112 | `sec-grain` | secteurs.css | `.sec-lim i` ×63 | **5,4 s** `--e-brake` `infinite`, retards **0,09 / 0,18 / 0,27 s** | V2 | N2 |
+
+Coupée par `animation: none !important` sous mouvement réduit, avec
+son état de repos écrit — `translate(0, 0)`, `opacity: 1` : les grains
+sont **assemblés**, jamais dispersés. L'information ne dépend pas de
+l'animation.
 
 ### 1.11 · `css/tour360.css`
 
@@ -507,7 +509,7 @@ s'anime pas » sans erreur en console.
 | **`--y` / `--h` / `--sec-progress`** | `main.js`, `2604-2612` | changement de section, puis chaque rAF de défilement | `.rail-curseur { height: var(--h, 0px); transform: translateY(var(--y, 0px)) }` | curseur à hauteur **0 px**, donc invisible |
 | **`--read`** | `main.js` | rAF de défilement | `.read-progress i { width: var(--read, 0%) }` | barre de lecture à **0 %** |
 | **`[open]`** sur `.svc-detail` | natif — `<details>` | clic ou Entrée sur le `<summary>` | l'état ouvert de la carte (via `:has`) **et** les six animations d'écran A70→A76 | rien : la fiche s'ouvre quand même. C'est tout l'intérêt d'avoir choisi le natif |
-| **`.is-on`** sur `.mock` | `main.js` (`showSector`) | survol/focus d'une pastille, ou minuteur tactile | **les treize animations de `secteurs.css` A100→A112** + `.mock.is-on { content-visibility: visible; opacity: 1 }` | rien ne bouge, rien n'est même mis en page |
+| **`.is-on`** sur `.mock` | `main.js` (`showSector`) | survol/focus d'une pastille, ou minuteur tactile | **A112, la seule animation qui reste dans `secteurs.css`** (D-681) + `.mock.is-on { content-visibility: visible; opacity: 1 }` | rien ne bouge, rien n'est même mis en page |
 | **les treize `.mock` eux-mêmes** | `main.js` — clonés depuis `<template id="tplSecteurs">` | init | tout `css/secteurs.css` | **sans JavaScript il n'y a aucune maquette**, donc 55 Ko de CSS sans cible |
 | **`.is-parcours`** sur `.shot` | `main.js` (`activer`) | survol 520 ms / clic / Entrée | `.shot.is-parcours .shot-etat i { animation: shot-bat… }` | pas de battement |
 | **`.is-live`** sur `#heroPlate` | `hero.js`, après composition des ≈ 25 000 cibles | `document.fonts.ready` | `.hero-plate.is-live canvas { display: block }` · `.hero-plate.is-live .plate-text { visibility: hidden }` | **le canvas reste caché et c'est le `<h1>` texte qui s'affiche** — le repli correct |

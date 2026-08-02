@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0f2019">
+<title>Auberge des Caps — neuf chambres, quatre chalets, Charlevoix</title>
+<meta name="description" content="Auberge de neuf chambres et quatre chalets au bord d’un lac, en Charlevoix. Table le soir, un seul service. Site de démonstration.">
+<style>
+/* ════════════════════════════════════════════════════════════════
+   AUBERGE DES CAPS — le paysage porte la page
+
+   CE QUI A CHANGÉ LE 2026-08-01, ET POURQUOI
+   La version d’avant tenait huit photographies de 300 à 400 px sur
+   13 200 px de page : 0,6 grande image par millier de pixels. Les
+   trois références relevées le même jour en portent 3,9 (La
+   Caminera), 4,4 (Fogo Island Inn) et 6,2 (Eleven Experience). Un
+   site dont le sujet EST un paysage le montrait en vignette.
+   Dix-sept photographies maintenant, dont deux moitiés de fenêtre,
+   une panoramique de 92 vh et une piste de six cases debout.
+
+   Et trois sections sur cinq étaient le même gabarit : un titre à
+   gauche, un paragraphe d’explication à droite, puis deux colonnes
+   de listes séparées par des filets d’un pixel. Neuf sections,
+   neuf charpentes différentes. Plus une seule liste à filets.
+
+   DIRECTION ARTISTIQUE
+   Sapin #0f2019 dominant, os #e8e0cd, laiton #a98b4f, brume.
+   Angles vifs, filets d’un pixel, aucune ombre, aucun dégradé.
+   Affichage cormorant 600 · texte spectral · relevés jetbrains-mono.
+   Traitement photo froid et désaturé : la neige est BLEUE. Les trois
+   clichés d’intérieur reçoivent la même couche à demi-force — à
+   pleine force le bois devenait de la pierre.
+   Le dispositif de signature : un filet de laiton d’un pixel qui se
+   REMPLIT au défilement. Cinq fois, jamais ailleurs.
+
+   AUCUN SCRIPT. Le JavaScript est autorisé ici ; rien sur cette page
+   n’en a besoin. Les trois mouvements continus (parallaxe du héros,
+   dérive de la panoramique, dérive OPPOSÉE des deux moitiés de la
+   traversée) sont des timelines de défilement en CSS pur, et la
+   piste latérale est un `scroll-snap`. Charger 113 ko de GSAP pour
+   ça serait une dépense sans contrepartie, et une page sans script
+   ne peut pas avoir d’erreur console.
+   Aucune requête tierce.
+   ════════════════════════════════════════════════════════════════ */
+
+@font-face{font-family:"cormorant";src:url("../../fonts/demos/cormorant-2.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"cormorant";src:url("../../fonts/demos/cormorant-3.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"spectral";src:url("../../fonts/demos/spectral-0.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"spectral";src:url("../../fonts/demos/spectral-1.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"spectral";src:url("../../fonts/demos/spectral-2.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"spectral";src:url("../../fonts/demos/spectral-3.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+
+/* ── la matière ────────────────────────────────────────────────
+   Mesures sur fond sapin #0f2019 : os 12,9:1 · laiton 5,2:1 ·
+   brume 4,9:1. Sur fond os #e8e0cd : sapin 12,9:1 · laiton foncé
+   4,6:1 · vert 7,3:1. Le laiton clair ne porte JAMAIS de texte sur
+   l’os — il y tombe à 2,5:1 ; il n’y sert qu’au filet. */
+:root{
+  --sapin:#0f2019;
+  --sapin-c:#16291f;
+  --os:#e8e0cd;
+  --laiton:#a98b4f;
+  --laiton-f:#7a5f2e;
+  --brume:#7d8f85;
+  --vert:#354a3f;
+  --filet-s:rgba(169,139,79,.34);
+  --filet-c:rgba(122,95,46,.30);
+  --aff:"cormorant",Georgia,"Times New Roman",serif;
+  --txt:"spectral",Georgia,"Times New Roman",serif;
+  --mno:"jetbrains-mono",ui-monospace,Consolas,monospace;
+  --large:1280px;
+  --marge:clamp(20px,4.2vw,56px);
+  --vide:clamp(88px,10.5vw,152px);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background-color:var(--sapin);color-scheme:dark}
+body{
+  background-color:var(--sapin);color:var(--os);
+  font:400 15px/1.72 var(--txt);
+  font-kerning:normal;text-rendering:optimizeLegibility;
+  overflow-x:clip;
+  -webkit-tap-highlight-color:transparent;
+}
+img{display:block;max-width:100%;height:auto}
+ul,ol{list-style:none}
+p{text-wrap:pretty}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--laiton);color:var(--sapin)}
+:focus-visible{outline:2px solid var(--laiton);outline-offset:3px}
+.f-os :focus-visible{outline-color:var(--laiton-f)}
+/* le lien d’évitement : il n’apparaît qu’au clavier, et il apparaît
+   POSÉ, pas en glissant — un clavier n’attend pas 300 ms */
+/* jamais `left: -9999px` : ça allonge le document sur les moteurs qui
+   ne coupent pas, et un outil de débordement le signale à chaque
+   passe. `clip-path` masque sans rien déplacer. */
+.saut{position:absolute;left:var(--marge);top:10px;z-index:9;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.saut:focus{width:auto;height:auto;clip-path:none;background:var(--laiton);color:var(--sapin);padding:11px 18px;font-family:var(--mno);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+/* masqué à l’œil, lu par la synthèse vocale */
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* ══ LE MOUVEMENT ═══════════════════════════════════════════════
+   `forwards`, JAMAIS `both`. Avec `both`, un élément qui n’a pas
+   encore atteint sa plage garde son état de DÉPART — donc un masque
+   fermé. Une capture pleine page ne défile pas : tout ce qui est
+   sous la ligne de flottaison sortirait vide. Avec `forwards`,
+   l’avant-plage n’applique rien.
+
+   Le décalage des cartes se lit en PLAGE, pas en délai :
+   `animation-delay` n’a aucun effet sur une timeline de défilement. */
+@keyframes derive{from{transform:translateY(-52px)}to{transform:translateY(52px)}}
+@keyframes deriveH{from{transform:translateY(0)}to{transform:translateY(66px)}}
+/* la traversée : les deux moitiés partent en sens CONTRAIRE. C’est
+   l’écart entre elles qu’on voit, pas le déplacement de chacune. */
+@keyframes deriveG{from{transform:translateY(-62px)}to{transform:translateY(62px)}}
+@keyframes deriveD{from{transform:translateY(62px)}to{transform:translateY(-62px)}}
+@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes remplit{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes remplitX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes leve{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes ouvre{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+
+.rv{animation:leve forwards;animation-timeline:view();animation-range:entry 0% cover 22%}
+.dv{animation:devoile forwards;animation-timeline:view();animation-range:entry 0% cover 20%}
+
+/* le filet de laiton qui se remplit — le dispositif de signature.
+   Cinq fois sur la page, jamais ailleurs : sous la piste des
+   logements, à gauche du menu, à gauche de la grille des absences,
+   à gauche du relevé des distances, et à la couture de la
+   traversée (celui-là plein, c’est le même filet à l’arrêt). */
+.sig{position:relative;padding-left:clamp(22px,2.6vw,34px)}
+.sig::before,.sig::after{content:"";position:absolute;left:0;top:3px;bottom:3px;width:1px}
+.sig::before{background:var(--filet-s)}
+.sig::after{
+  background:var(--laiton);transform-origin:top;
+  animation:remplit linear forwards;
+  animation-timeline:view();animation-range:entry 30% cover 78%;
+}
+.f-os .sig::before{background:var(--filet-c)}
+.f-os .sig::after{background:var(--laiton-f)}
+
+.sigx{position:relative;padding-top:clamp(18px,2vw,26px)}
+.sigx::before,.sigx::after{content:"";position:absolute;left:0;right:0;top:0;height:1px}
+.sigx::before{background:var(--filet-c)}
+.sigx::after{
+  background:var(--laiton-f);transform-origin:left;
+  animation:remplitX linear forwards;
+  animation-timeline:view();animation-range:entry 24% cover 62%;
+}
+
+/* l’ouverture, au chargement : time-based, donc `both` sans danger */
+.ou{animation:ouvre .68s cubic-bezier(.19,.72,.2,1) both}
+.ou2{animation-delay:.11s}
+.ou3{animation-delay:.22s}
+.ou4{animation-delay:.33s}
+
+@supports not (animation-timeline: view()){
+  .rv,.dv{animation:none;opacity:1;transform:none;clip-path:none}
+  .sig::after,.sigx::after{animation:none;transform:none}
+  .ph--para img,.ph--heros img,.trav-g img,.trav-d img{animation:none;transform:none}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .piste{scroll-behavior:auto}
+}
+
+/* ── ossature ─────────────────────────────────────────────────── */
+.dedans{max-width:var(--large);margin:0 auto;padding:0 var(--marge)}
+.bloc{padding:var(--vide) 0}
+.bloc--h{padding-top:0}
+.bloc--b{padding-bottom:0}
+.f-sapin{background-color:var(--sapin);color:var(--os)}
+.f-os{background-color:var(--os);color:var(--sapin)}
+section[id]{scroll-margin-top:8px}
+
+/* ── LE TRAITEMENT DES PHOTOS ──────────────────────────────────
+   Virage froid et désaturé, et une couche de sapin-bleu en `color` :
+   la luminance vient de la photo, la teinte de la couche. C’est ce
+   qui rend la neige BLEUE et non blanche.
+   `.ph--dedans` : les trois clichés d’intérieur (la salle à manger,
+   le poêle, la table dressée) reçoivent la MÊME couche à demi-force.
+   À .44 la braise du poêle virait au gris ardoise et la salle à
+   manger perdait ses murs de billots ; la neige, elle, n’a pas
+   bougé d’un ton. Le virage n’est pas abandonné, il est dosé. */
+.ph{position:relative;overflow:clip;isolation:isolate;background-color:#0b1712}
+.ph img{width:100%;height:100%;object-fit:cover;filter:saturate(.6) contrast(1.08) brightness(.93)}
+.ph::after{content:"";position:absolute;inset:0;background-color:#1d3f56;mix-blend-mode:color;opacity:.44;pointer-events:none}
+.ph--dedans img{filter:saturate(.72) contrast(1.06) brightness(.9)}
+.ph--dedans::after{opacity:.2}
+.ph--para img,.ph--heros img{position:absolute;left:0;width:100%}
+/* `overflow: clip`, PAS `hidden` : `hidden` fait du cadre un
+   conteneur de défilement, et une `view()` posée sur l’image s’y
+   résout — elle reste alors bloquée à 50 % de sa plage et la
+   parallaxe ne bouge JAMAIS. Mesuré une fois sur cette page même :
+   translateY figé à 1,4e-14 px à onze positions. Piège 66. */
+.ph--para img{top:-56px;height:calc(100% + 112px);animation:derive linear forwards;animation-timeline:view();animation-range:cover 0% cover 100%}
+.ph--heros img{top:-72px;height:calc(100% + 144px);animation:deriveH linear forwards;animation-timeline:scroll(root);animation-range:0 112vh}
+
+/* ── typographie ──────────────────────────────────────────────── */
+h1,h2,h3,.gd,.mot{font-family:var(--aff);font-weight:600;letter-spacing:-.008em;text-wrap:balance}
+/* CORMORANT SORT DES CHIFFRES ELZÉVIRIENS PAR DÉFAUT, et à 36 px le
+   « 1 » est un I et « 21 » se lit « 2I ». Un relevé de chiffres n’est
+   pas un texte courant : il se lit d’un coup d’œil ou il ne se lit
+   pas. Tous les nombres d’affichage passent en chiffres alignés. */
+.gd,.faits b,.dist .n,.cal-a .tel span{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+h1{font-size:clamp(42px,7.7vw,112px);line-height:.92;letter-spacing:-.018em}
+h2{font-size:clamp(31px,4.6vw,64px);line-height:.98;max-width:18ch}
+h3{font-size:clamp(21px,2.2vw,29px);line-height:1.06}
+.gd{font-size:clamp(46px,5.4vw,78px);line-height:.9;color:var(--laiton)}
+.f-os .gd{color:var(--laiton-f)}
+/* la phrase lapidaire posée seule sur un fond — elle ne sert que
+   deux fois : au bord du lac, et à l’ouverture de la traversée. */
+.mot{font-size:clamp(34px,5.2vw,76px);line-height:.98;max-width:20ch}
+.sur{
+  font-family:var(--aff);font-weight:600;font-size:18px;line-height:1.3;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--laiton);
+}
+.f-os .sur{color:var(--laiton-f)}
+.txt{font-size:15px;line-height:1.74;max-width:54ch;color:var(--os)}
+.f-os .txt{color:var(--vert)}
+.txt+.txt{margin-top:1.1em}
+.lede{font-family:var(--txt);font-size:clamp(16px,1.42vw,19px);line-height:1.62;max-width:46ch;color:var(--os)}
+.f-os .lede{color:var(--vert)}
+.mno{font-family:var(--mno);font-weight:500;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;line-height:1.7;color:var(--brume)}
+.f-os .mno{color:var(--vert)}
+.it{font-style:italic}
+
+/* ── barre du haut ────────────────────────────────────────────── */
+.tete{border-bottom:1px solid var(--filet-s);background-color:var(--sapin)}
+.tete .dedans{display:flex;align-items:center;gap:16px 30px;flex-wrap:wrap;padding-block:17px}
+.marq{font-family:var(--aff);font-weight:600;font-size:19px;letter-spacing:.18em;text-transform:uppercase;line-height:1;color:var(--os)}
+.nav{display:flex;gap:clamp(14px,2vw,28px);margin-left:auto;flex-wrap:wrap}
+.nav a{
+  position:relative;font-family:var(--mno);font-weight:500;font-size:10.5px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--brume);padding-block:4px;
+  transition:color .18s ease;
+}
+.nav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background-color:var(--laiton);transition:width .22s cubic-bezier(.19,.72,.2,1)}
+.nav a:hover,.nav a:focus-visible{color:var(--os)}
+.nav a:hover::after,.nav a:focus-visible::after{width:100%}
+.nav a:active{color:var(--laiton)}
+.puce{display:inline-block;font-family:var(--mno);font-weight:500;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--laiton);border:1px solid var(--filet-s);padding:5px 9px 4px}
+
+/* ── boutons ──────────────────────────────────────────────────── */
+.bt{
+  display:inline-block;font-family:var(--mno);font-weight:500;font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;padding:15px 26px;white-space:nowrap;
+  border:1px solid var(--laiton);background-color:var(--laiton);color:var(--sapin);
+  transition:background-color .18s ease,color .18s ease,transform .18s ease,border-color .18s ease;
+}
+.bt:hover,.bt:focus-visible{background-color:transparent;color:var(--laiton)}
+.bt:active{transform:translateY(2px)}
+.bt--nu{background-color:transparent;color:var(--os);border-color:var(--filet-s)}
+.bt--nu:hover,.bt--nu:focus-visible{background-color:var(--os);color:var(--sapin);border-color:var(--os)}
+
+/* ══ A · HÉROS ═════════════════════════════════════════════════
+   Le bandeau est BAS et LARGE : la maison se tient au milieu du
+   cadre, et un bloc haut la couvrait entièrement. Le titre et le
+   bouton restent dans les 800 premiers pixels à 1280 de large. */
+.heros{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
+.heros .ph{flex:1 1 auto;min-height:min(60svh,540px)}
+.plaque-w{position:absolute;left:0;right:0;bottom:0;z-index:2;background-color:var(--sapin);border-top:1px solid var(--laiton)}
+.plaque{
+  display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,.68fr);
+  gap:clamp(24px,3.4vw,64px);align-items:end;
+  padding:clamp(26px,3vw,42px) 0;
+}
+.plaque .mno{margin-bottom:clamp(14px,1.6vw,20px)}
+.plaque .lede{margin-bottom:clamp(20px,2.2vw,28px)}
+.actes{display:flex;flex-wrap:wrap;gap:12px}
+
+/* ══ B · L’ARRIVÉE — la moitié gauche EST la photographie ══════
+   Première version : une image de 450 px debout, alignée en bas
+   dans une colonne de 1200. Elle avait la taille d’un timbre, elle
+   laissait un demi-écran de crème vide au-dessus, et c’était très
+   exactement le défaut qu’on venait de corriger ailleurs. La
+   photographie prend maintenant la moitié de la FENÊTRE, bord à
+   bord, sur toute la hauteur du bloc. */
+.arrivee{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.04fr);align-items:stretch}
+.arrivee .ph{height:100%;min-height:clamp(420px,84vh,820px)}
+.arr-t{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(56px,7vw,110px) max(var(--marge),7%) clamp(56px,7vw,110px) clamp(34px,4.6vw,80px);
+}
+.arr-t h2{font-size:clamp(29px,3.4vw,48px);max-width:none;margin-bottom:clamp(20px,2.2vw,30px)}
+.chiffres{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,44px);
+  padding:clamp(46px,5.4vw,80px) 0 0;
+  border-top:1px solid var(--filet-c);
+}
+.chiffres .mno{margin-top:12px;max-width:22ch}
+.bloc-c{padding:clamp(52px,6vw,92px) 0 var(--vide)}
+
+/* ══ C · LE LAC — une phrase, puis 92 vh de panoramique ════════ */
+.souffle{padding-bottom:clamp(44px,5.4vw,76px)}
+/* La hauteur d’une bande se choisit d’après la SOURCE, pas d’après
+   l’envie. `object-fit: cover` rogne le côté le plus long : à 880 px
+   de haut, la panoramique 16/9 perdait 18 % de sa largeur et la
+   rangée d’arbres sortait du cadre par la gauche. À 760, elle entre
+   presque entière et il ne se rogne plus que 7 %. */
+.bande .ph{height:min(78vh,760px)}
+.bande figcaption{display:flex;gap:12px 24px;flex-wrap:wrap;align-items:baseline;padding-top:16px}
+.bande figcaption b{font-family:var(--mno);font-weight:500;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--laiton);flex:none}
+.f-os .bande figcaption b{color:var(--laiton-f)}
+.bande figcaption span{font-family:var(--txt);font-style:italic;font-size:14.5px;line-height:1.55;max-width:60ch;color:var(--brume)}
+.f-os .bande figcaption span{color:var(--vert)}
+
+/* ══ D · LES LOGEMENTS — piste latérale à crans ════════════════
+   Treize logements sans tableau ni deux colonnes : six cases
+   DEBOUT qu’on pousse à l’horizontale. Le `padding-inline` calcule
+   la gouttière depuis 100 % du bloc, jamais depuis `100vw` : `vw`
+   compte la barre de défilement et fabrique un débordement. */
+.tete-d{max-width:60ch;margin-bottom:clamp(30px,3.6vw,50px)}
+.tete-d .sur{display:block;margin-bottom:clamp(14px,1.6vw,20px)}
+.tete-d h2{margin-bottom:clamp(18px,2vw,26px)}
+.piste{
+  display:flex;gap:clamp(14px,1.8vw,26px);
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  padding-inline:max(var(--marge), calc((100% - var(--large)) / 2 + var(--marge)));
+  /* `scroll-padding` AUTANT que `padding`, sinon la première case
+     ne se range pas où elle est posée. Un cran `start` aligne le
+     bord de la case sur le bord du PORT de défilement, qui ignore
+     le `padding` : au repos, le navigateur poussait la piste de
+     120 px et la première case venait coller le bord de la fenêtre,
+     hors de l’alignement de toute la page. */
+  scroll-padding-inline:max(var(--marge), calc((100% - var(--large)) / 2 + var(--marge)));
+  padding-bottom:18px;
+  scrollbar-color:var(--laiton-f) rgba(122,95,46,.16);scrollbar-width:thin;
+}
+.case{flex:0 0 clamp(250px,27vw,362px);scroll-snap-align:start}
+.case .ph{height:clamp(400px,54vh,620px);margin-bottom:18px}
+.case .ph img{transition:transform .5s cubic-bezier(.19,.72,.2,1)}
+.case:hover .ph img,.case:focus-within .ph img{transform:scale(1.045)}
+.case .num{display:block;font-family:var(--mno);font-weight:500;font-size:11px;letter-spacing:.2em;color:var(--laiton-f);margin-bottom:10px}
+.case h3{margin-bottom:9px}
+.case p{font-size:14px;line-height:1.62;color:var(--vert)}
+/* les faits qui restaient en deux colonnes de filets : une seule
+   ligne de chiffres, sans une seule bordure. */
+.faits{
+  display:flex;flex-wrap:wrap;gap:clamp(24px,3vw,46px);
+  margin-top:clamp(34px,4vw,58px);
+}
+.faits div{display:flex;align-items:baseline;gap:11px}
+.faits b{font-family:var(--aff);font-weight:600;font-size:clamp(26px,2.6vw,36px);line-height:1;color:var(--laiton-f)}
+.faits span{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--vert);max-width:15ch;line-height:1.5}
+
+/* ══ E · LA TRAVERSÉE — le moment fort ════════════════════════
+   Deux photographies pleine fenêtre, un filet de laiton entre les
+   deux, et elles dérivent en sens CONTRAIRE : c’est l’écart qui
+   se voit. Aucune épingle — une épingle réserve sa course dans le
+   flux et une capture pleine page la rend en bande vide. */
+.trav{display:grid;grid-template-columns:1fr 1fr;gap:1px;background-color:var(--laiton)}
+.trav .ph{height:min(90vh,860px);overflow:clip}
+.trav .ph img{position:absolute;left:0;top:-64px;width:100%;height:calc(100% + 128px)}
+.trav-g img{animation:deriveG linear forwards;animation-timeline:view();animation-range:cover 0% cover 100%}
+.trav-d img{animation:deriveD linear forwards;animation-timeline:view();animation-range:cover 0% cover 100%}
+.trav-l{display:grid;grid-template-columns:1fr 1fr;gap:1px}
+.trav-l p{padding:16px var(--marge) 0 0;font-family:var(--txt);font-style:italic;font-size:14.5px;line-height:1.55;color:var(--brume)}
+.trav-l p:last-child{padding-left:var(--marge);padding-right:0}
+
+/* ══ F · LA TABLE ═════════════════════════════════════════════ */
+.bande--t .ph{height:min(74vh,700px)}
+.service{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(30px,5vw,76px);align-items:start;margin-top:clamp(44px,5vw,76px)}
+.service .ph{height:clamp(400px,50vh,600px)}
+.carte-s li{padding:0 0 clamp(20px,2.2vw,28px)}
+.carte-s li:last-child{padding-bottom:0}
+.carte-s .q{display:block;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--laiton-f);margin-bottom:8px}
+.carte-s .d{font-family:var(--aff);font-weight:600;font-size:clamp(21px,2.2vw,30px);line-height:1.1}
+.service .txt{margin-top:clamp(26px,3vw,40px)}
+.quand{display:flex;flex-wrap:wrap;gap:10px 30px;margin-top:clamp(24px,2.8vw,36px)}
+.quand span{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--vert)}
+.quand b{color:var(--sapin);font-weight:500}
+
+/* ══ G · CE QU’IL N’Y A PAS ════════════════════════════════════
+   Première version : trois colonnes, cinq énoncés et une photo dans
+   la sixième case. La photo, la plus haute des six, imposait sa
+   hauteur à toute la rangée et laissait trois cents pixels de vide
+   sous les deux énoncés voisins. Deux colonnes maintenant : les cinq
+   énoncés empilés à gauche, et la photographie occupe la colonne de
+   droite sur TOUTE la hauteur. Le vide devient de l’image. */
+.absent{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:clamp(30px,4vw,70px);margin-top:clamp(38px,4.4vw,64px);align-items:stretch}
+.abs-l{display:grid;gap:clamp(26px,3vw,42px)}
+.absent h3{margin-bottom:10px}
+.absent p{font-size:14.5px;line-height:1.66;color:var(--brume);max-width:46ch}
+.absent figure{display:flex;flex-direction:column}
+.absent .ph{flex:1 1 auto;min-height:clamp(320px,42vw,620px)}
+.absent figcaption{padding-top:13px;font-family:var(--txt);font-style:italic;font-size:14px;line-height:1.5;color:var(--brume)}
+
+/* ══ H · DISPONIBILITÉ, S’Y RENDRE, JOINDRE ═══════════════════ */
+.bande--d .ph{height:min(70vh,660px)}
+.calendrier{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.8fr);gap:clamp(30px,5vw,70px);align-items:start;margin-top:clamp(30px,3.6vw,50px)}
+.cal-col{display:flex;flex-direction:column}
+.heures{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(20px,2.4vw,32px);margin-top:clamp(30px,3.4vw,46px)}
+.heures .q{display:block;font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--vert);margin-bottom:7px}
+.heures .n{font-family:var(--aff);font-weight:600;font-size:clamp(20px,2vw,27px);line-height:1.1;font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+.cal-r{position:absolute;width:1px;height:1px;opacity:0;margin:0;pointer-events:none}
+.cal-t{display:flex;gap:0;border-bottom:1px solid var(--filet-s);margin-bottom:clamp(24px,2.8vw,36px);flex-wrap:wrap}
+.cal-o{
+  font-family:var(--mno);font-weight:500;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--brume);padding:13px 24px 12px;cursor:pointer;border-bottom:1px solid transparent;
+  margin-bottom:-1px;transition:color .18s ease,border-color .18s ease;
+}
+.cal-o:hover{color:var(--os)}
+.cal-o:active{opacity:.66}
+#m-jan:checked ~ .cal-t label[for=m-jan],
+#m-fev:checked ~ .cal-t label[for=m-fev]{color:var(--laiton);border-bottom-color:var(--laiton)}
+#m-jan:focus-visible ~ .cal-t label[for=m-jan],
+#m-fev:focus-visible ~ .cal-t label[for=m-fev]{outline:2px solid var(--laiton);outline-offset:2px}
+.cal-p{display:none}
+#m-jan:checked ~ #p-jan,#m-fev:checked ~ #p-fev{display:block}
+.grille{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background-color:rgba(169,139,79,.5)}
+.grille > *{
+  background-color:var(--sapin-c);display:flex;align-items:center;justify-content:center;
+  aspect-ratio:1/.6;font-family:var(--mno);font-weight:500;font-size:13.5px;letter-spacing:.04em;
+}
+.grille .jt{font-size:10px;letter-spacing:.18em;color:var(--laiton);aspect-ratio:1/.34;background-color:var(--sapin)}
+.grille .vd{background-color:var(--sapin)}
+.grille a{color:var(--os);transition:background-color .16s ease,color .16s ease}
+.grille a:hover,.grille a:focus-visible{background-color:var(--laiton);color:var(--sapin)}
+.grille a:active{background-color:var(--laiton-f);color:var(--os)}
+.grille .pris{color:#93a59a;position:relative}
+.grille .pris::after{content:"";position:absolute;left:27%;right:27%;top:50%;height:1px;background-color:#93a59a}
+.legende{display:flex;flex-direction:column;gap:13px;align-items:flex-start}
+.legende span{display:flex;align-items:center;gap:12px;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--brume)}
+.legende i{width:10px;height:10px;background-color:var(--laiton);flex:none}
+.legende i.b{background-color:#93a59a}
+/* LE CADRE SOMBRE POSÉ SUR UNE SECTION CLAIRE.
+   Il ne s’écrit PAS `class="f-sapin"` à l’intérieur d’un `.f-os` :
+   `.f-os .txt` et `.f-sapin .txt` ont la même spécificité, et c’est
+   l’ordre du fichier qui trancherait — un vert forêt sur un fond
+   sapin, illisible, sans que rien ne le signale. Une classe à part,
+   qui déclare ses propres couleurs, ne peut pas se faire prendre. */
+.cadre-s{
+  background-color:var(--sapin);color:var(--os);
+  padding:clamp(22px,2.6vw,34px);border:1px solid var(--filet-s);
+}
+.cadre-s .txt,.cadre-s .lede{color:var(--os)}
+.cadre-s .mno{color:var(--brume)}
+.cadre-s :focus-visible{outline-color:var(--laiton)}
+.cal-a .txt{margin-top:clamp(22px,2.4vw,30px);font-size:14.5px}
+.cal-a .ph{height:clamp(300px,32vw,440px);margin-top:clamp(24px,2.8vw,36px)}
+.cal-a .tel{margin-top:clamp(22px,2.4vw,30px)}
+.cal-a .tel b{display:block;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--laiton);margin-bottom:7px}
+.cal-a .tel span{font-family:var(--aff);font-weight:600;font-size:clamp(24px,2.4vw,32px);letter-spacing:.02em}
+/* le relevé des distances : cinq colonnes, un seul filet en haut */
+.route{margin-top:clamp(56px,6.4vw,100px)}
+.route h3{margin-bottom:clamp(24px,2.8vw,36px)}
+.dist{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(18px,2.4vw,38px)}
+.dist .q{display:block;font-family:var(--mno);font-weight:500;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--vert);margin-bottom:9px}
+.dist .n{display:block;font-family:var(--aff);font-weight:600;font-size:clamp(20px,2vw,27px);line-height:1.08;margin-bottom:5px}
+.dist .v{font-family:var(--mno);font-weight:500;font-size:12px;letter-spacing:.05em;color:var(--laiton-f)}
+.joindre{display:flex;flex-wrap:wrap;gap:clamp(24px,3.4vw,60px);margin-top:clamp(44px,5vw,76px)}
+.joindre div{font-size:14.5px;color:var(--brume)}
+.joindre b{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--laiton);display:block;margin-bottom:6px}
+.joindre a{border-bottom:1px solid var(--filet-s);transition:color .18s ease,border-color .18s ease}
+.joindre a:hover,.joindre a:focus-visible{color:var(--laiton);border-color:var(--laiton)}
+
+/* ── pied ─────────────────────────────────────────────────────── */
+/* La page ne se termine pas sur une liste de liens : elle se termine
+   sur de la matière. Une bande de bouts de bûches, pleine largeur. */
+.fin .ph{height:clamp(280px,26vw,380px)}
+.fin figcaption{padding:14px var(--marge) 0;font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brume);max-width:70ch}
+.pied{padding:clamp(48px,5.6vw,80px) 0 clamp(44px,5vw,68px)}
+.pied-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:30px 48px;align-items:flex-start}
+.pied-n{display:flex;flex-wrap:wrap;gap:10px 26px}
+.pied-n a{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--brume);transition:color .18s ease}
+.pied-n a:hover,.pied-n a:focus-visible{color:var(--laiton)}
+.pied-b{margin-top:clamp(36px,4.2vw,58px);padding-top:24px;border-top:1px solid var(--filet-s);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 40px}
+.pied-b p{font-family:var(--mno);font-weight:500;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--brume);line-height:1.8;max-width:62ch}
+
+/* ── largeurs ─────────────────────────────────────────────────── */
+@media (max-width:1000px){
+  .service,.plaque,.calendrier{grid-template-columns:1fr;gap:clamp(26px,4vw,44px)}
+  .arrivee{grid-template-columns:1fr;gap:0}
+  .arrivee .ph{height:auto;min-height:clamp(340px,54vh,480px)}
+  .arr-t{padding:clamp(44px,6vw,72px) var(--marge)}
+  .absent{grid-template-columns:repeat(2,1fr)}
+  .dist{grid-template-columns:repeat(2,1fr);gap:26px}
+  .nav{width:100%;margin-left:0;gap:16px}
+  .heros .ph{min-height:44svh}
+  .trav .ph{height:min(66vh,560px)}
+}
+@media (max-width:720px){
+  .chiffres{grid-template-columns:1fr;gap:24px}
+  .chiffres > div{display:flex;align-items:baseline;gap:18px}
+  .chiffres .mno{margin-top:0}
+  .absent{grid-template-columns:1fr;gap:30px}
+  .trav{grid-template-columns:1fr}
+  .trav .ph{height:min(52vh,420px)}
+  .trav-l{grid-template-columns:1fr;gap:0}
+  .trav-l p:last-child{padding-left:0;padding-top:10px}
+  .grille > *{aspect-ratio:1/.9;font-size:12px}
+  .grille .jt{aspect-ratio:1/.5;font-size:9px;letter-spacing:.1em}
+  .cal-o{padding:12px 16px 11px;font-size:10px;letter-spacing:.13em}
+  /* la barre du haut mange le paysage sur un petit écran : la
+     mention de démonstration reste au pied et à la légende du
+     calendrier, elle ne coûte pas 45 px de photographie ici */
+  .tete .puce{display:none}
+  .tete .dedans{padding-block:13px;gap:12px}
+  .heros .ph{min-height:min(52svh,360px)}
+  .actes .bt{padding:14px 20px}
+  .bande .ph{height:min(64vh,480px)}
+  .bande--t .ph,.bande--d .ph{height:min(56vh,420px)}
+}
+@media (max-width:420px){
+  .dist{grid-template-columns:1fr}
+  .faits{gap:18px 26px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ A · HÉROS ═══════════════════════════════════════════════ -->
+<a class="saut" href="#logements">Aller au contenu</a>
+
+<div class="heros" id="haut">
+  <header class="tete">
+    <div class="dedans">
+      <a class="marq" href="#haut">Auberge des Caps</a>
+      <nav class="nav" aria-label="Sections du site">
+        <a href="#logements">Les logements</a>
+        <a href="#table">La table</a>
+        <a href="#reserves">Ce qu’il n’y a pas</a>
+        <a href="#dispo">Disponibilité</a>
+        <a href="#route">S’y rendre</a>
+      </nav>
+      <span class="puce">Site de démonstration</span>
+    </div>
+  </header>
+
+  <div class="ph ph--heros">
+    <img src="../../images/secteurs-sites/hotel-1.webp" width="1920" height="1080"
+         fetchpriority="high" decoding="async"
+         alt="Long bâtiment de bois à lucarnes, toit sombre et fumée à la cheminée, posé devant un lac gelé, dense forêt de conifères et flanc rocheux derrière.">
+  </div>
+
+  <div class="plaque-w">
+    <div class="dedans">
+      <div class="plaque">
+        <div>
+          <p class="mno ou">Charlevoix &nbsp;·&nbsp; au bord d’un lac &nbsp;·&nbsp; ouvert les douze mois</p>
+          <h1 class="ou ou2">Neuf chambres,<br>quatre chalets.</h1>
+        </div>
+        <div>
+          <p class="lede ou ou3">Une maison de bois au bout d’un chemin de gravier. Table le soir, un seul service.</p>
+          <div class="actes ou ou4">
+            <a class="bt" href="#logements">Voir les logements</a>
+            <a class="bt bt--nu" href="#dispo">Le calendrier</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ B · L’ARRIVÉE ═══════════════════════════════════════════ -->
+<section class="f-os">
+  <div class="arrivee">
+    <div class="ph"><img src="../../images/secteurs-sites/hotel-11.webp" width="1000" height="1400"
+         loading="lazy" decoding="async"
+         alt="Chemin enneigé qui monte entre deux rangées de jeunes conifères, un versant de montagne blanc au fond."></div>
+    <div class="arr-t">
+      <h2 class="rv">On monte deux kilomètres de gravier, et le chemin s’arrête ici.</h2>
+      <p class="txt rv">L’auberge tient neuf chambres sur deux étages et des combles. Quatre chalets sont deux cents mètres plus loin, dans la boulaie, au bout d’un sentier de bois.</p>
+      <p class="txt rv">Deux personnes tiennent la maison. Nous écrivons la distance, le nombre de marches et l’heure du souper&nbsp;: ce qui rebute quelqu’un lui évite quatre heures de route.</p>
+    </div>
+  </div>
+
+  <div class="bloc-c">
+    <div class="dedans">
+      <div class="chiffres">
+        <div class="rv"><p class="gd">9</p><p class="mno">Chambres au bâtiment principal</p></div>
+        <div class="rv"><p class="gd">4</p><p class="mno">Chalets, à deux cents mètres</p></div>
+        <div class="rv"><p class="gd">6 km</p><p class="mno">Jusqu’au village, épicerie et essence</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ C · LE LAC ══════════════════════════════════════════════ -->
+<section class="bloc bloc--b f-sapin">
+  <div class="dedans souffle">
+    <p class="mot rv">Le lac gèle à la mi-décembre et casse à la fin mars. On marche dessus.</p>
+  </div>
+  <figure class="bande">
+    <div class="ph ph--para"><img src="../../images/secteurs-sites/hotel-9.webp" width="1920" height="1080"
+         loading="lazy" decoding="async"
+         alt="Étendue de glace grise sous une brume épaisse, longue rangée d’arbres nus qui s’efface au loin sur la rive droite."></div>
+    <figcaption class="dedans"><b>Le lac, 7 h</b><span>La brume tient jusque vers dix heures. C’est le seul moment où on n’entend rien du tout.</span></figcaption>
+  </figure>
+</section>
+
+<!-- ══ D · LES LOGEMENTS ═══════════════════════════════════════ -->
+<section class="bloc f-os" id="logements">
+  <div class="dedans">
+    <div class="tete-d">
+      <span class="sur rv">Les treize logements</span>
+      <h2 class="rv">Neuf au bâtiment principal, quatre dans la boulaie.</h2>
+      <p class="lede rv">Aucun n’a de télévision, de mini-bar ni de bouilloire. Il y a un lit, une lampe, une fenêtre et un crochet derrière la porte.</p>
+    </div>
+  </div>
+
+  <!-- `tabindex` sur la piste : une zone qui défile à la souris doit
+       défiler au clavier. Sans lui, les six cases sont hors d’atteinte
+       pour qui n’a pas de souris — et il n’y a aucun lien dedans pour
+       rattraper le coup. -->
+  <ul class="piste" tabindex="0" role="list" aria-label="Les treize logements, piste horizontale">
+    <li class="case">
+      <div class="ph"><img src="../../images/secteurs-sites/hotel-5.webp" width="960" height="720"
+           loading="lazy" decoding="async"
+           alt="Chambre aux murs et au plafond de bois : deux lits à édredons blancs, applique de corde au-dessus des têtes de lit, grande fenêtre voilée."></div>
+      <span class="num">01 · 02</span>
+      <h3>Le rez-de-chaussée</h3>
+      <p>De plain-pied depuis la réception. La première donne sur la cour et la corde de bouleau, la seconde sur le stationnement.</p>
+    </li>
+    <li class="case">
+      <div class="ph"><img src="../../images/secteurs-sites/hotel-17.webp" width="1280" height="720"
+           loading="lazy" decoding="async"
+           alt="Mur de billots gris fendillés, petite fenêtre à carreaux au centre, rang de glaçons au débord du toit enneigé."></div>
+      <span class="num">03 · 08</span>
+      <h3>L’étage</h3>
+      <p>Vingt et une marches, sans ascenseur. Six chambres, dont deux ouvrent sur le lac. Deux petites partagent la salle de bain du palier.</p>
+    </li>
+    <li class="case">
+      <div class="ph"><img src="../../images/secteurs-sites/hotel-8.webp" width="960" height="720"
+           loading="lazy" decoding="async"
+           alt="Vue depuis l’intérieur d’un logement : fenêtre de pignon aux rideaux ouverts, sapins enneigés derrière la vitre, lampe suspendue."></div>
+      <span class="num">09</span>
+      <h3>Sous les combles</h3>
+      <p>Neuf marches de plus. Le plafond descend à un mètre quatre-vingt-dix contre le mur des lits&nbsp;; quelqu’un s’y cogne chaque été.</p>
+    </li>
+    <li class="case">
+      <div class="ph"><img src="../../images/secteurs-sites/hotel-6.webp" width="960" height="720"
+           loading="lazy" decoding="async"
+           alt="Mezzanine sous un pignon de planches : la fenêtre triangulaire ouvre sur une sapinière givrée, literie et tapis posés à même le plancher."></div>
+      <span class="num">10 · 11</span>
+      <h3>Les deux mezzanines</h3>
+      <p>Aucune chambre fermée&nbsp;: on dort en haut, sur un matelas au plancher, sous la fenêtre de pignon. L’échelle est raide.</p>
+    </li>
+    <li class="case">
+      <div class="ph"><img src="../../images/secteurs-sites/hotel-3.webp" width="1280" height="720"
+           loading="lazy" decoding="async"
+           alt="Pignon d’un chalet de bois : grande fenêtre triangulaire, neige épaisse sur le débord de toit, pins enneigés serrés derrière."></div>
+      <span class="num">12</span>
+      <h3>Le chalet du cap</h3>
+      <p>Deux chambres fermées, quatre personnes. Le poêle à bois est le seul chauffage d’appoint&nbsp;: si le feu meurt, la pièce descend en deux heures.</p>
+    </li>
+    <li class="case">
+      <div class="ph"><img src="../../images/secteurs-sites/hotel-16.webp" width="1000" height="1400"
+           loading="lazy" decoding="async"
+           alt="Sentier enneigé qui s’enfonce entre de hauts troncs nus, jeunes sapins chargés de neige des deux côtés."></div>
+      <span class="num">13</span>
+      <h3>Le plain-pied</h3>
+      <p>Une seule pièce, aucune marche à l’entrée, chauffage électrique. Le plus loin dans la boulaie&nbsp;: deux cent quarante mètres de sentier.</p>
+    </li>
+  </ul>
+
+  <div class="dedans">
+    <div class="faits sigx">
+      <div><b>7</b><span>Salles de bain privées</span></div>
+      <div><b>1</b><span>Partagée, sur le palier</span></div>
+      <div><b>21</b><span>Marches jusqu’à l’étage</span></div>
+      <div><b>0</b><span>Ascenseur</span></div>
+      <div><b>2</b><span>Nuits minimum en chalet</span></div>
+      <div><b>3</b><span>Chalets sur 4 ont un poêle</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ E · LA TRAVERSÉE ════════════════════════════════════════ -->
+<section class="bloc bloc--b f-sapin">
+  <div class="dedans souffle">
+    <p class="mot rv">Le bois est fourni. Le feu, c’est vous qui l’allumez.</p>
+  </div>
+  <div class="trav">
+    <div class="ph ph--dedans trav-g"><img src="../../images/secteurs-sites/hotel-13.webp" width="1000" height="1400"
+         loading="lazy" decoding="async"
+         alt="Poêle à bois de fonte noire devant un mur de planches, la braise rouge visible derrière la vitre de la porte."></div>
+    <div class="ph trav-d"><img src="../../images/secteurs-sites/hotel-15.webp" width="1280" height="720"
+         loading="lazy" decoding="async"
+         alt="Carreau d’une fenêtre couvert de cristaux de givre en éventail, chambranle de bois gris de part et d’autre."></div>
+  </div>
+  <div class="dedans">
+    <div class="trav-l">
+      <p>Trois des quatre chalets chauffent au bois. La corde est sous la remise, la hache est accrochée à côté.</p>
+      <p>Le même matin, sur le carreau du chalet 12. Les fenêtres sont doubles, elles givrent quand même.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ F · LA TABLE ════════════════════════════════════════════ -->
+<section class="bloc bloc--h f-os" id="table">
+  <figure class="bande bande--t">
+    <div class="ph ph--para ph--dedans"><img src="../../images/secteurs-sites/hotel-4.webp" width="1280" height="720"
+         loading="lazy" decoding="async"
+         alt="Salle à manger aux murs de billots : lustre de laiton, chandeliers sur les tables dressées, chaises pâles et tapis à motif."></div>
+    <figcaption class="dedans"><b>Vingt-quatre couverts</b><span>La salle à manger, aux murs de billots. Vingt-quatre, pas vingt-cinq : c’est le nombre de chaises.</span></figcaption>
+  </figure>
+
+  <div class="dedans" style="padding-top:clamp(56px,6.4vw,100px)">
+    <div class="tete-d">
+      <span class="sur rv">La table</span>
+      <h2 class="rv">Un seul service, à 18 h 30.</h2>
+      <p class="lede rv">Il n’y a pas de carte. Il y a ce qui a été acheté cette semaine, cuisiné en une fois. Sans réservation la veille, il n’y aura pas d’assiette.</p>
+    </div>
+
+    <div class="service">
+      <figure class="dv">
+        <div class="ph ph--dedans"><img src="../../images/secteurs-sites/hotel-14.webp" width="1000" height="1400"
+             loading="lazy" decoding="async"
+             alt="Détail d’une table dressée : chandelles allumées posées sur des branches de sapin, verres de service et assiettes de grès."></div>
+      </figure>
+      <div>
+        <ul class="carte-s sig rv">
+          <li><span class="q">Entrée</span><p class="d">Courge rôtie, graines de citrouille, crème sure</p></li>
+          <li><span class="q">Plat</span><p class="d">Cuisse de porc braisée, chou, pommes de terre</p></li>
+          <li><span class="q">Dessert</span><p class="d">Tarte au sucre, crème fouettée</p></li>
+        </ul>
+        <p class="txt rv">Ce menu change le lundi. Nous ne le publions pas d’avance parce que nous ne le connaissons pas d’avance.</p>
+        <p class="txt rv"><span class="it">Un plat végétarien remplace le plat principal si vous le dites en réservant.</span> Nous ne faisons pas de menu sans gluten et nous ne pouvons pas garantir l’absence de traces de noix. Nous ne servons pas d’alcool&nbsp;: apportez le vôtre, nous ouvrons la bouteille.</p>
+        <div class="quand rv">
+          <span>Hiver <b>du jeudi au dimanche</b></span>
+          <span>Été <b>tous les soirs sauf le lundi</b></span>
+          <span>Réservation <b>la veille, avant 15 h</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ G · CE QU’IL N’Y A PAS ══════════════════════════════════ -->
+<section class="bloc f-sapin" id="reserves">
+  <div class="dedans">
+    <div class="tete-d">
+      <h2 class="rv">Ce qui n’est pas là ne le sera pas.</h2>
+      <p class="lede rv">Cette liste est la première chose que nous écrivons et la dernière que nous corrigeons. Personne ne devrait faire quatre heures de route pour être déçu.</p>
+    </div>
+
+    <div class="absent">
+      <div class="abs-l sig">
+        <div class="rv"><h3>Aucune télévision</h3><p>Ni dans les neuf chambres, ni dans les quatre chalets, ni au salon. Une radio à la salle à manger, et une tablette de jeux de société.</p></div>
+        <div class="rv"><h3>Aucun ascenseur</h3><p>Vingt et une marches jusqu’à l’étage, neuf de plus jusqu’aux combles, avec vos bagages. Les chambres 01 et 02 sont les seules de plain-pied.</p></div>
+        <div class="rv"><h3>Aucune climatisation</h3><p>Le bâtiment n’a jamais été climatisé. En juillet, les chambres de l’étage montent. Nous fournissons un ventilateur sur demande.</p></div>
+        <div class="rv"><h3>Le stationnement est à soixante mètres</h3><p>On ne stationne pas devant le bâtiment. Soixante mètres à pied, l’hiver, sur un chemin qui n’est pas toujours sablé. Un chariot attend à la réception.</p></div>
+        <div class="rv"><h3>Le réseau cellulaire est faible</h3><p>Une barre au bâtiment principal, souvent aucune aux chalets. Le sans-fil couvre la salle à manger et le salon&nbsp;; il ne se rend pas dans la boulaie.</p></div>
+      </div>
+      <figure class="dv">
+        <div class="ph"><img src="../../images/secteurs-sites/hotel-7.webp" width="960" height="720"
+             loading="lazy" decoding="async"
+             alt="Remise de bois grisé à toit de bardeaux, sous de hautes épinettes sombres, clôture de perches devant."></div>
+        <figcaption>Il y a une remise, une corde de bois et un lac. Pas de spa, pas de piscine.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══ H · DISPONIBILITÉ, S’Y RENDRE ═══════════════════════════ -->
+<section class="bloc bloc--h f-os" id="dispo">
+  <figure class="bande bande--d">
+    <div class="ph ph--para"><img src="../../images/secteurs-sites/hotel-2.webp" width="1920" height="1080"
+         loading="lazy" decoding="async"
+         alt="Chalets de bois éclairés au milieu d’un boisé enneigé, à la brunante : troncs nus, lumière bleue sur la neige, passerelles de bois."></div>
+    <figcaption class="dedans"><b>Les chalets, 16 h 40</b><span>Le sentier est éclairé jusqu’à la porte. Il n’est pas déneigé la nuit.</span></figcaption>
+  </figure>
+
+  <div class="dedans" style="padding-top:clamp(56px,6.4vw,100px)">
+    <div class="tete-d">
+      <span class="sur rv">Disponibilité</span>
+      <h2 class="rv">Choisissez un mois, puis une date.</h2>
+      <p class="lede rv">Deux nuits minimum les samedis de janvier et d’octobre. Un dépôt d’une nuit est demandé à la réservation&nbsp;; le reste se règle sur place.</p>
+    </div>
+
+    <div class="calendrier">
+    <div class="cal-col">
+    <div class="cal cadre-s">
+      <input class="cal-r" type="radio" name="mois" id="m-jan" checked>
+      <input class="cal-r" type="radio" name="mois" id="m-fev">
+      <div class="cal-t">
+        <label class="cal-o" for="m-jan">Janvier</label>
+        <label class="cal-o" for="m-fev">Février</label>
+      </div>
+
+      <div class="cal-p" id="p-jan">
+        <div class="grille">
+          <span class="jt">L</span><span class="jt">M</span><span class="jt">M</span><span class="jt">J</span><span class="jt">V</span><span class="jt">S</span><span class="jt">D</span>
+          <span class="vd"></span><span class="vd"></span><span class="vd"></span>
+          <a href="#joindre" aria-label="1 janvier, libre">1</a>
+          <a href="#joindre" aria-label="2 janvier, libre">2</a>
+          <span class="pris" role="img" aria-label="3 janvier, complet">3</span>
+          <span class="pris" role="img" aria-label="4 janvier, complet">4</span>
+          <a href="#joindre" aria-label="5 janvier, libre">5</a>
+          <a href="#joindre" aria-label="6 janvier, libre">6</a>
+          <a href="#joindre" aria-label="7 janvier, libre">7</a>
+          <a href="#joindre" aria-label="8 janvier, libre">8</a>
+          <a href="#joindre" aria-label="9 janvier, libre">9</a>
+          <span class="pris" role="img" aria-label="10 janvier, complet">10</span>
+          <span class="pris" role="img" aria-label="11 janvier, complet">11</span>
+          <a href="#joindre" aria-label="12 janvier, libre">12</a>
+          <a href="#joindre" aria-label="13 janvier, libre">13</a>
+          <a href="#joindre" aria-label="14 janvier, libre">14</a>
+          <a href="#joindre" aria-label="15 janvier, libre">15</a>
+          <a href="#joindre" aria-label="16 janvier, libre">16</a>
+          <span class="pris" role="img" aria-label="17 janvier, complet">17</span>
+          <span class="pris" role="img" aria-label="18 janvier, complet">18</span>
+          <a href="#joindre" aria-label="19 janvier, libre">19</a>
+          <a href="#joindre" aria-label="20 janvier, libre">20</a>
+          <a href="#joindre" aria-label="21 janvier, libre">21</a>
+          <a href="#joindre" aria-label="22 janvier, libre">22</a>
+          <a href="#joindre" aria-label="23 janvier, libre">23</a>
+          <a href="#joindre" aria-label="24 janvier, libre">24</a>
+          <a href="#joindre" aria-label="25 janvier, libre">25</a>
+          <a href="#joindre" aria-label="26 janvier, libre">26</a>
+          <a href="#joindre" aria-label="27 janvier, libre">27</a>
+          <a href="#joindre" aria-label="28 janvier, libre">28</a>
+          <a href="#joindre" aria-label="29 janvier, libre">29</a>
+          <a href="#joindre" aria-label="30 janvier, libre">30</a>
+          <span class="pris" role="img" aria-label="31 janvier, complet">31</span>
+          <!-- LA CASE DE FIN DE MOIS N’EST PAS FACULTATIVE.
+               La grille tient 7 colonnes et le fond du conteneur est
+               le LAITON qui dessine les filets. Trois cases vides en
+               tête et trente et un jours font 34 cases sur 35 : la
+               35e n’existait pas, et c’est le fond qui se voyait — un
+               rectangle de laiton PLEIN dans le coin, qui avait tout
+               l’air d’une date sélectionnée. Une case vide par mois. -->
+          <span class="vd"></span>
+        </div>
+      </div>
+
+      <div class="cal-p" id="p-fev">
+        <div class="grille">
+          <span class="jt">L</span><span class="jt">M</span><span class="jt">M</span><span class="jt">J</span><span class="jt">V</span><span class="jt">S</span><span class="jt">D</span>
+          <span class="vd"></span><span class="vd"></span><span class="vd"></span><span class="vd"></span><span class="vd"></span><span class="vd"></span>
+          <a href="#joindre" aria-label="1 février, libre">1</a>
+          <a href="#joindre" aria-label="2 février, libre">2</a>
+          <a href="#joindre" aria-label="3 février, libre">3</a>
+          <a href="#joindre" aria-label="4 février, libre">4</a>
+          <a href="#joindre" aria-label="5 février, libre">5</a>
+          <a href="#joindre" aria-label="6 février, libre">6</a>
+          <span class="pris" role="img" aria-label="7 février, complet">7</span>
+          <span class="pris" role="img" aria-label="8 février, complet">8</span>
+          <a href="#joindre" aria-label="9 février, libre">9</a>
+          <a href="#joindre" aria-label="10 février, libre">10</a>
+          <a href="#joindre" aria-label="11 février, libre">11</a>
+          <a href="#joindre" aria-label="12 février, libre">12</a>
+          <a href="#joindre" aria-label="13 février, libre">13</a>
+          <span class="pris" role="img" aria-label="14 février, complet">14</span>
+          <span class="pris" role="img" aria-label="15 février, complet">15</span>
+          <a href="#joindre" aria-label="16 février, libre">16</a>
+          <a href="#joindre" aria-label="17 février, libre">17</a>
+          <a href="#joindre" aria-label="18 février, libre">18</a>
+          <a href="#joindre" aria-label="19 février, libre">19</a>
+          <a href="#joindre" aria-label="20 février, libre">20</a>
+          <a href="#joindre" aria-label="21 février, libre">21</a>
+          <a href="#joindre" aria-label="22 février, libre">22</a>
+          <a href="#joindre" aria-label="23 février, libre">23</a>
+          <a href="#joindre" aria-label="24 février, libre">24</a>
+          <a href="#joindre" aria-label="25 février, libre">25</a>
+          <a href="#joindre" aria-label="26 février, libre">26</a>
+          <a href="#joindre" aria-label="27 février, libre">27</a>
+          <a href="#joindre" aria-label="28 février, libre">28</a>
+          <span class="vd"></span>
+        </div>
+      </div>
+
+    </div>
+
+      <!-- LES HEURES, SOUS LE CALENDRIER ET NON PLUS AU PIED.
+           Elles n’étaient nulle part sauf en tout petit dans le bas ;
+           c’est pourtant la deuxième question de qui choisit une
+           date. Et la colonne du calendrier s’arrêtait quatre cents
+           pixels avant sa voisine : le vide se remplit de ce qui
+           manquait. -->
+      <div class="heures sigx">
+        <div class="rv"><span class="q">Arrivée</span><span class="n">15 h à 21 h</span></div>
+        <div class="rv"><span class="q">Départ</span><span class="n">avant 11 h</span></div>
+        <div class="rv"><span class="q">Déjeuner, compris</span><span class="n">7 h 30 à 9 h 30</span></div>
+        <div class="rv"><span class="q">La table</span><span class="n">18 h 30</span></div>
+      </div>
+    </div>
+
+      <aside class="cal-a cadre-s">
+        <div class="legende">
+          <span><i></i>Libre, écrivez-nous</span>
+          <span><i class="b"></i>Complet</span>
+        </div>
+        <p class="txt">Une date libre n’est pas une réservation. Nous répondons en moins de vingt-quatre heures, et rien n’est retenu tant que le dépôt n’est pas payé.</p>
+        <p class="tel"><b>Réception, 8 h à 21 h</b><span>000 000-0000</span></p>
+        <div class="ph"><img src="../../images/secteurs-sites/hotel-10.webp" width="1000" height="1400"
+             loading="lazy" decoding="async"
+             alt="Grands pins et sapins serrés au bord d’un lac gelé, leur reflet étiré sur la glace lisse."></div>
+        <p class="mno" style="margin-top:16px">Les disponibilités affichées sont fictives, site de démonstration</p>
+      </aside>
+    </div>
+
+
+    <div class="route" id="route">
+      <h3 class="rv">Les deux derniers kilomètres sont un chemin privé.</h3>
+      <div class="dist sigx">
+        <div class="rv"><span class="q">Le plus proche</span><span class="n">Le village</span><span class="v">6 km &nbsp;·&nbsp; 9 min</span></div>
+        <div class="rv"><span class="q">Par la 138</span><span class="n">Québec</span><span class="v">118 km &nbsp;·&nbsp; 1 h 40</span></div>
+        <div class="rv"><span class="q">Par la 40</span><span class="n">Montréal</span><span class="v">395 km &nbsp;·&nbsp; 4 h 30</span></div>
+        <div class="rv"><span class="q">La fin du trajet</span><span class="n">Le gravier</span><span class="v">2 km &nbsp;·&nbsp; en montée</span></div>
+        <div class="rv"><span class="q">À pied</span><span class="n">Le stationnement</span><span class="v">60 m</span></div>
+      </div>
+      <p class="txt rv" style="margin-top:clamp(28px,3.2vw,42px)">De novembre à avril, une traction avant munie de vrais pneus d’hiver monte sans difficulté. Nous avons déjà remorqué des voitures à pneus quatre saisons&nbsp;; nous le ferons encore, mais cela prend une heure et il faut réveiller quelqu’un. L’adresse exacte part avec la confirmation. Il n’y a ni autobus, ni navette, ni borne de recharge.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PIED ════════════════════════════════════════════════════ -->
+<figure class="fin f-sapin">
+  <div class="ph ph--para"><img src="../../images/secteurs-sites/hotel-12.webp" width="1000" height="1400"
+       loading="lazy" decoding="async"
+       alt="Corde de bois vue de face, bouts de bûches ronds serrés les uns contre les autres, capuchons de neige sur les rangs du haut."></div>
+  <figcaption>La corde, sous la remise. Elle est refaite en septembre.</figcaption>
+</figure>
+
+<footer class="pied f-sapin" id="joindre">
+  <div class="dedans">
+    <div class="pied-h">
+      <div>
+        <p class="marq" style="margin-bottom:16px">Auberge des Caps</p>
+        <div class="joindre" style="margin-top:0">
+          <div><b>Réception, 8 h à 21 h</b>000 000-0000</div>
+          <div><b>Par écrit</b><a href="#joindre">courriel@exemple.ca</a></div>
+          <div><b>Adresse</b>Sur demande, avec la confirmation.</div>
+        </div>
+      </div>
+      <nav class="pied-n" aria-label="Pied de page">
+        <a href="#logements">Les logements</a>
+        <a href="#table">La table</a>
+        <a href="#reserves">Ce qu’il n’y a pas</a>
+        <a href="#dispo">Disponibilité</a>
+        <a href="#route">S’y rendre</a>
+        <a href="#haut">Haut de la page</a>
+      </nav>
+    </div>
+    <div class="pied-b">
+      <p>Arrivée 15 h à 21 h &nbsp;·&nbsp; départ avant 11 h &nbsp;·&nbsp; déjeuner 7 h 30 à 9 h 30, compris &nbsp;·&nbsp; table 18 h 30 &nbsp;·&nbsp; ouvert les douze mois</p>
+      <p><span class="puce">Site de démonstration</span></p>
+    </div>
+    <p class="mno" style="margin-top:20px;max-width:74ch">Site de démonstration&nbsp;: entreprise fictive, coordonnées neutres, disponibilités inventées. Aucune réservation n’est possible depuis cette page.</p>
+  </div>
+</footer>
+
+</body>
+</html>

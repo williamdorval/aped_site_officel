@@ -20,6 +20,7 @@ ni **quelle ligne** (`SECTIONS.md`).
 - [7 · Documentation](#7--documentation)
 - [8 · Le reste](#8--le-reste)
 - [9 · Points à surveiller](#9--points-à-surveiller-relevés-en-dressant-cette-carte)
+- [10 · `demos-secteurs/` — les douze premiers écrans](#10--demos-secteurs--les-douze-premiers-écrans)
 
 > **AUCUN NUMÉRO DE LIGNE DANS CE FICHIER.** Il en portait 121 au
 > 2026-07-29 ; au 2026-07-30 ils étaient **tous faux**, les fichiers
@@ -235,11 +236,20 @@ Martian Mono), auto-hébergées, avec `unicode-range`. Rayon 0 partout,
 aucune ombre, un seul accent.
 Sur le **chemin critique**. Ne contient aucune mise en page.
 
-### `css/secteurs.css` — 1 720 lignes, 60 Ko
+### `css/secteurs.css` — 290 lignes, 9,8 Ko
 
-Les treize aperçus de secteur, construits dans `tools/proto-secteurs.*`
-puis versés ici. Surchargent `.mock` du bloc 16 d'`app.css` :
-`container-type`, grille, fond, encre, police.
+**Passée de 1 582 à 290 lignes le 2026-08-01** (D-681) : douze des
+treize aperçus étaient encore stylés en maquette dessinée alors que
+leur balisage avait disparu à la refonte des aperçus. 124 classes
+qu'aucun sélecteur du document n'atteignait, 12 `@keyframes` qui ne
+tournaient nulle part — et `ANIMATIONS.md` les documentait toujours.
+Recollables : `archives/2026-08-01-css-secteurs-maquettes.css`.
+
+Ce qui reste : le **cadre** (`.sec-chrome`), la **vitre** qui porte la
+capture du premier écran, le calque **vivant** (`.sec-live`), et le
+**treizième** aperçu — « Votre industrie ici » — le seul encore
+dessiné, parce qu'il ne montre aucun site mais la matière. Surchargent
+`.mock` du bloc 16 d'`app.css`.
 **Hors chemin critique**, injectée par le bloc en ligne : sans script il
 n'y a pas d'aperçu, donc rien à styler.
 Ne contient pas la légende des secteurs — elle reste dans le document et
@@ -547,7 +557,7 @@ impressions.
 
 | Fichier | Rôle |
 |---|---|
-| `proto-secteurs.html` · `proto-secteurs.css` | Le prototype des treize aperçus, hors du site. C'est ici qu'ils ont été construits avant d'être versés dans `css/secteurs.css`. |
+| `proto-secteurs.html` · `proto-secteurs.css` | **Périmé depuis D-681.** Le prototype des treize maquettes dessinées, dont douze ont été retirées le 2026-08-01. Ne décrit plus rien de ce qui est servi. |
 | `_captures-*` · `_planches` · `_refs` · `_nous` | Sorties de mesure. **Toutes ignorées par git.** |
 
 ---
@@ -603,7 +613,7 @@ Ils passaient au vert sur du vide : le piège 17.
 
 | Fichier / dossier | Rôle |
 |---|---|
-| **`archives/`** | **Ajouté le 2026-07-30.** Ce qui a été retiré du site, avec l'argument et les mesures. Trois dossiers, chacun avec son `README.md` : `2026-07-30-plaques-accueil/` (markup, CSS, JS, et le registre des huit affirmations), `2026-07-30-services-images/` (les 4 `.webp` **et `svc-images.mjs`, qui porte leur licence** — une provenance ne survit pas dans un binaire), `2026-07-30-projets-images/` (les 5 `real-*.webp` sans licence, l'ancienne section 03, et les trois blocs de JS morts). **Rien n'y est supprimé : tout y est recollable.** |
+| **`archives/`** | **Ajouté le 2026-07-30.** Ce qui a été retiré du site, avec l'argument et les mesures. **Rien n'y est supprimé : tout y est recollable.** Cinq entrées, chacune avec son `README.md` : `2026-07-30-plaques-accueil/` (markup, CSS, JS, et le registre des huit affirmations), `2026-07-30-services-images/` (les 4 `.webp` **et `svc-images.mjs`, qui porte leur licence** — une provenance ne survit pas dans un binaire), `2026-07-30-projets-images/` (les 5 `real-*.webp` sans licence, l'ancienne section 03, et les trois blocs de JS morts), **`2026-08-01-sites-longs/`** (les neuf pages longues de secteur retirées au chantier du premier écran, et la liste de ce qui reste en service), `rapports/` (les rapports de phases closes) et `outils-perimes/` (dont `refs-2026-07/`, les 14 sondes d'un seul usage). |
 | **`404.html`** (159 lignes) | Page introuvable, `noindex`. **Elle charge `css/app.css` en entier**, pas le couple critique/différé : trois `<link>` en tête (`tokens`, `base`, `app`). Même script en ligne de thème que `index.html`, mais **sans** la décision de séquence d'entrée. Contient l'index complet des 12 sections en liens `index.html#…` , avec une ligne « déraillée ». Son style vit dans `css/app.css` § 25 . |
 | **`package.json`** | `devDependencies` uniquement : `playwright`, `gsap`, `puppeteer-core`, `shadcn`, `@tabler/icons`. **Aucune dépendance de production, aucun script de build déclaré.** GSAP est copié dans `js/vendor/`, il n'est pas résolu depuis `node_modules` à l'exécution. Les icônes Tabler sont la source du sprite inline. |
 | **`components.json`** | Config shadcn. Cible un projet **React + Tailwind** (`css/styles.css`, alias `components/ui`) qui **n'existe pas ici**. Sert uniquement à donner au MCP `shadcn` la liste des registries : `@magic-ui`, `@aceternity`, `@kokonutui`, `@kibo-ui`. `shadcn add` n'écrit pas de code utilisable sur ce site vanilla — le MCP sert à **chercher et lire**, puis à porter à la main. |
@@ -611,8 +621,8 @@ Ils passaient au vert sur du vide : le piège 17.
 | `.gitignore` | Ignore `node_modules/`, **toutes** les sorties de mesure (`refonte-captures/`, `tools/_captures-*`, `tools/_planches`, `tools/_refs`, `tools/_nous`, `8099/`, `*.trace.json`), les fichiers système et les dossiers d'éditeur. |
 | `package-lock.json` | Verrou npm des devDependencies. |
 | `documents/` | Les deux PDF livrés (`aped-automatisation.pdf` 42 p., `aped-ia-croissance.pdf` 49 p.), leur **source HTML** dans `documents/src/` + `print.css`, et `rapport-pdf.json` — le relevé rendu par `tools/pdf.mjs` (pages, Ko, pages qui débordent, erreurs). |
-| `fonts/` | Six `.woff2` auto-hébergés : Archivo, Chivo, Martian Mono, chacun en `latin` et `latin-ext`. Déclarés dans `css/tokens.css`, préchargés dans `<head>`. Aucune requête tierce. |
-| `images/` | Favicon SVG, `apple-touch-icon`, `og.png`, sprite `icons.svg`, logos, 5 photos de réalisations, les couvertures de PDF, `images/secteurs/` (les 4 aperçus × hero + vignettes) et `images/tour/` (les panoramas 2K/4K + affiche). Les sous-dossiers `_retire/` et `_ancien/` sont des archives non référencées. |
+| `fonts/` | Six `.woff2` auto-hébergés pour **le site APED** : Archivo, Chivo, Martian Mono, chacun en `latin` et `latin-ext`. Déclarés dans `css/tokens.css`, préchargés dans `<head>`. Aucune requête tierce. **`fonts/demos/` est un monde à part** : 66 fichiers, 20 familles SIL OFL, réservés aux douze écrans de secteur — le site APED n'en charge aucun (§ 10). |
+| `images/` | Favicon SVG, `apple-touch-icon`, `og.png`, sprite `icons.svg`, logos, 5 photos de réalisations, les couvertures de PDF, `images/secteurs/` (les 4 aperçus × hero + vignettes), `images/realisations/` (les captures qui alimentent les aperçus du panneau) et `images/tour/` (les panoramas 2K/4K + affiche). **`images/secteurs-sites/` (8,3 Mo) appartient aux douze écrans de secteur**, licences dans son `_licences.json` (§ 10). Les sous-dossiers `_retire/` et `_ancien/` sont des archives non référencées. |
 | `logo/` | Deux PNG de logo (`LOGO_APED.png`, `LOGO_APED_NOM.png`). Non référencés par le site rendu — le monogramme est un tracé SVG inline dans `index.html`. *À vérifier si on veut les supprimer.* |
 
 ---
@@ -664,3 +674,61 @@ CRITIQUES de `css-critique.mjs`.
 `data-vers` (D-578) et la re-visée des ancres (D-583) — le défaut
 qu'elle corrige est antérieur au chantier et sa cause (`content-
 visibility`) reste ouverte dans `RESERVES.md`.
+
+---
+
+## 10 · `demos-secteurs/` — LES DOUZE PREMIERS ÉCRANS
+
+**Ajouté le 2026-08-01.** Ce dossier n'était mentionné **nulle part**
+dans cette carte alors qu'il pesait 596 Ko et qu'il alimentait la
+section 04. Corrigé ici.
+
+### Ce que c'est, en une phrase
+
+Douze métiers, **un seul écran chacun** — le premier écran, arrêté,
+photographié à 1440 × 900 px et réduit dans le cadre du panneau de la
+section Secteurs. **Ce ne sont pas des sites.** La refonte du
+2026-08-01 a retiré neuf pages longues qui répondaient à la mauvaise
+question ; elles sont dans `archives/2026-08-01-sites-longs/`.
+
+### La carte du dossier
+
+| Chemin | Rôle | Ce qu'il ne contient PAS |
+|---|---|---|
+| `demos-secteurs/<clé>/index.html` | **Un fichier par métier, autonome.** Tout le style dans un `<style>` en ligne, le script — s'il y en a — dans un `<script>` en ligne ou depuis `../../js/vendor/` | Aucune feuille partagée, aucun gabarit, **aucun morceau de l'identité d'APED** |
+| `demos-secteurs/STANDARD.md` | **La loi.** La règle du côte-à-côte, les quatre références, l'échelle typographique, le mouvement autorisé, les photos, ce qui ne s'écrit jamais, et la chaîne dans l'ordre | Les décisions par métier |
+| `demos-secteurs/plans/<clé>.md` | **Un plan par métier** : les trois références mondiales relevées, ce qu'on leur prend, ce qu'on écarte, puis la direction artistique et le contenu exact, prêt à coller | Du code |
+| `demos-secteurs/DIRECTIONS.md` | Les douze directions artistiques de la **première** fournée. Matière première des plans, pas verdict | Les relevés de références — la première fournée n'en avait aucun, et ça se voyait |
+
+### Les ressources partagées, et elles sont les seules
+
+| | Où | Qui la fabrique |
+|---|---|---|
+| **Polices** | `fonts/demos/*.woff2` + `_licences.json` + `_declarations.css` | `tools/polices-demos.mjs` — 20 familles, toutes SIL OFL 1.1 |
+| **Photographies** | `images/secteurs-sites/` + `_licences.json` | `tools/secteurs-sites-photos.mjs` — le registre `TIRAGES` porte la licence de chaque fichier |
+| **GSAP** | `js/vendor/gsap.min.js`, `ScrollTrigger.min.js` | Copiés depuis `node_modules`. **Auto-hébergés, jamais un CDN** |
+
+### Les outils de ce dossier
+
+| Outil | Ce qu'il fait |
+|---|---|
+| `tools/refs-galerie.mjs <url galerie> <n>` | Relève les `n` premiers sites d'une galerie (Awwwards, SiteInspire) |
+| `tools/refs-releve.mjs <url> <clé> [1440]` | **Le relevé d'une référence** : `0-heros.png` le premier écran, des captures en défilant à la molette, et `releve.json` — polices, taille et interlignage du `h1`, fonds dominants, bibliothèques d'animation, hauteur de page |
+| `tools/_inventaire.mjs <clé>` | Les photos disponibles pour un métier, avec leurs **dimensions réelles** — c'est ce qui alimente `width`/`height` et tient le CLS à 0 |
+| `tools/demos-capture.mjs [--ecran] <clé…>` | Photographie les sites. `--ecran` = **un seul écran**, à la fenêtre d'un vrai bureau |
+| `tools/demos-controle.mjs` | **Refuse toute adresse absolue hors du dépôt** — y compris `cdnjs`, `unpkg`, `jsdelivr` |
+| `tools/demos-contraste.mjs` | Le contraste des palettes, à trois largeurs |
+| `tools/demos-webp.mjs` | Convertit les captures en `.webp` pour `images/realisations/` |
+| `tools/secteurs-markup.mjs <clé>` | Réécrit le balisage de l'aperçu dans `index.html` |
+| `tools/planche-secteurs-12.mjs` | **La planche des douze**, côte à côte, même échelle — le seul outil qui rend le test du § 0 de `STANDARD.md` |
+
+### Ce que la section 04 d'`index.html` en fait
+
+Les aperçus vivent dans un `<template id="tplSecteurs">`, un
+`div.mock[data-mock="<clé>"]` chacun, injectés dans `#mockStage` par
+`js/main.js`. Le style est dans **`css/secteurs.css`**, injecté par
+JavaScript après la première peinture — donc rien de nécessaire à la
+lecture n'en dépend. Un `<iframe class="sec-live">` se pose
+**par-dessus** la planche quand le palier le permet (D-672) : la
+planche reste le poster, elle porte le texte de remplacement et tient
+la géométrie.

@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fonte Nord, salle d’entraînement en force, Québec</title>
+<meta name="description" content="Salle d’entraînement en force à Québec. Barre, haltères, plateformes. Six mouvements, pas soixante. Aucune machine guidée, aucun cours de groupe.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="preload" href="../../fonts/demos/anton-1.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   FONTE NORD — une AFFICHE DE COMPÉTITION. Tout est trop gros, et
+   c'est voulu.
+
+   ── LA RECHERCHE, ET CE QU'ELLE A CHANGÉ ───────────────────────
+   Trois salles primées ouvertes et relevées le 2026-08-01 :
+
+   · SKULPT FITNESS (skulptfitness.nl) — lime #cef952 sur #202020
+     et #f5f5f5, condensée 800 en capitales à 122 px, sections à
+     98 px. PRIS : la polarité acide-sur-noir pour les accents, le
+     BANDEAU DÉFILANT (une seule fois dans la page), et le décalage
+     latéral des lignes de titre. ÉCARTÉ : leur troisième couleur
+     dorée, leur interlignage à 1,0 (mou), leurs photos non traitées.
+
+   · GYMBOX (gymbox.com) — noir et jaune #ffcd33, condensée maison,
+     une rangée de vignettes dont le libellé est INCRUSTÉ dans
+     l'image, un filet de couleur d'un pixel sous le héros. PRIS :
+     le libellé posé sur l'image plutôt qu'à côté, et la ligne de
+     chiffres juste sous le héros. ÉCARTÉ : tout le registre promo,
+     rabais et compte à rebours — cette page n'a aucun prix.
+
+   · PURETEC (puretecfitness.com) — un titre condensé très lourd
+     posé SUR une photographie plein cadre, et une rangée de
+     vignettes qui mord sous le pli pour appeler le défilement.
+     PRIS : les deux. ÉCARTÉ : l'italique (anton n'en a pas, et une
+     oblique synthétique est un défaut), et le mannequin en gros
+     plan. C'est une marque d'appareils, pas une salle : je ne lui
+     prends que la COMPOSITION du premier écran.
+
+   ── LA DIRECTION ───────────────────────────────────────────────
+   DEUX COULEURS ET UN NOIR : acide #d6f227 EN FOND DE PAGE, noir
+   #0b0b0b, blanc #ffffff. Rien d'autre. Le noir sur acide vaut
+   15,55:1, et c'est lui qui porte toute la page. L'acide sur BLANC
+   ne vaut que 1,27:1 : sur les sections claires il ne sert jamais
+   de texte, il n'y apparaît que posé sur un aplat noir.
+
+   TROIS FAMILLES : anton en CAPITALES jusqu'à 172 px, interlignage
+   .84, chasse −.02em · archivo 400/600 pour le texte, 15 px ·
+   jetbrains-mono 500 pour l'horaire et les charges.
+
+   AUCUN GRAND TITRE (h1, h2) NE PORTE DE CAPITALE ACCENTUÉE. À .84
+   d'interlignage, l'accent d'une capitale entre dans la ligne du
+   dessus — la contrainte est payée dans le CHOIX DES MOTS, jamais
+   par un interlignage relâché. Les h3 sont accentués et paient .92.
+
+   DISPOSITIF DE SIGNATURE : une BARRE DE PROGRESSION pleine largeur
+   sous chaque titre, qui se remplit au défilement. Six fois.
+
+   PHOTOGRAPHIE : duotone noir / acide sur les dix images. L'image
+   est mise en gris puis contrastée, et une couche acide la
+   multiplie : le noir reste noir, le blanc devient acide. Le
+   réglage de brillance est propre à chaque photo, relevé à l'œil
+   sur la capture, jamais deviné.
+
+   Angles vifs, aucune ombre, aucun dégradé, aucun flou, aucun coin
+   arrondi. Zéro requête tierce.
+
+   AUCUN TIRET CADRATIN dans le texte VISIBLE de la page : c'est la
+   signature typographique la plus reconnaissable d'un texte écrit
+   par une machine. Les commentaires du code, eux, en gardent.
+   ══════════════════════════════════════════════════════════════════ */
+
+@font-face{font-family:"anton";src:url("../../fonts/demos/anton-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"anton";src:url("../../fonts/demos/anton-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"archivo";src:url("../../fonts/demos/archivo-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"archivo";src:url("../../fonts/demos/archivo-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"archivo";src:url("../../fonts/demos/archivo-2.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"archivo";src:url("../../fonts/demos/archivo-3.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+
+:root{
+  --acide:#d6f227;
+  --noir:#0b0b0b;
+  --blanc:#ffffff;
+  --aff:"anton","Oswald","Arial Narrow",Impact,sans-serif;
+  --txt:"archivo",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
+  --det:"jetbrains-mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  /* --trait : la couleur du trait et des aplats DANS la section
+     courante. Elle bascule avec le fond ; rien d'autre ne bascule. */
+  --trait:#0b0b0b;
+  --contre:#d6f227;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* `clip`, pas `hidden` : `hidden` ferait de <html> un conteneur de
+   défilement et casserait `position:sticky` autant que les pistes
+   nommées. Piège 66. */
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--acide);overflow-x:clip;
+  color-scheme:light;-webkit-tap-highlight-color:rgba(11,11,11,.28)}
+body{background:var(--acide);color:var(--noir);font:400 15px/1.6 var(--txt);font-kerning:normal;overflow-x:clip}
+img{display:block;max-width:100%}
+ul,ol{list-style:none}
+a,button{color:inherit;text-decoration:none;touch-action:manipulation}
+b,strong{font-weight:600}
+::selection{background:var(--noir);color:var(--acide)}
+:focus-visible{outline:3px solid var(--trait);outline-offset:3px}
+/* Le lien d'evitement : hors champ, il revient au premier tabulateur. */
+.saut{position:absolute;left:-9999px;top:0;z-index:9;background:var(--acide);color:var(--noir);
+  font:500 11px/1 var(--det);letter-spacing:.16em;text-transform:uppercase;padding:14px 18px 12px;
+  border:3px solid var(--noir)}
+.saut:focus{left:0}
+
+/* ── ossature : marges minces, les blocs touchent presque le bord ── */
+.cont{max-width:1680px;margin:0 auto;padding:0 clamp(14px,2.4vw,36px)}
+.sec{padding:clamp(70px,8.6vw,148px) 0}
+.acide{background:var(--acide);color:var(--noir);--trait:#0b0b0b;--contre:#d6f227}
+.noir{background:var(--noir);color:var(--acide);--trait:#d6f227;--contre:#0b0b0b}
+.blanc{background:var(--blanc);color:var(--noir);--trait:#0b0b0b;--contre:#ffffff}
+section[id]{scroll-margin-top:4px}
+
+/* ── typographie ───────────────────────────────────────────────── */
+h1,h2,.aff{font-family:var(--aff);font-weight:400;text-transform:uppercase;
+  letter-spacing:-.02em;line-height:.84}
+h1{font-size:clamp(46px,13.4vw,172px);line-height:.84}
+h2{font-size:clamp(38px,7.4vw,104px)}
+/* .92 ici, et pas moins : « DÉVELOPPÉ COUCHÉ » porte deux É qui
+   entrent dans la ligne du dessus dès qu'on descend sous .9. */
+h3{font:400 clamp(22px,2.6vw,38px)/.92 var(--aff);text-transform:uppercase;letter-spacing:-.02em;
+  text-wrap:balance}
+.mono{font:500 11px/1.55 var(--det);letter-spacing:.16em;text-transform:uppercase}
+.lede{font-size:clamp(16px,1.3vw,19px);line-height:1.5;max-width:50ch;font-weight:600}
+.txt{font-size:15px;line-height:1.62;max-width:56ch}
+
+/* La coupe des titres est ÉCRITE dans le texte (`<br>`), jamais
+   laissée au navigateur : un `max-width` en ch coupait « DE LA FONTE
+   ET DU / BOIS » — un mot seul sur la deuxième ligne d'une affiche.
+   Le décalage latéral de la deuxième ligne vient de Skulpt. */
+.tit .l2{display:inline-block;margin-left:clamp(0px,4vw,86px)}
+
+/* ══ LE MOUVEMENT ═════════════════════════════════════════════════
+   Le mot est découpé, la plaque roule, la jauge se remplit : rien de
+   tout ça n'est nécessaire pour LIRE. L'état écrit dans le CSS est
+   toujours la forme FINALE, et tout `fromTo` de GSAP porte
+   `immediateRender:false`. Une capture pleine page voit donc la page
+   entière, jamais dix blocs vides. C'est le piège 64, côté script.
+   ════════════════════════════════════════════════════════════════ */
+.m{display:inline-block;will-change:clip-path,transform}
+.lt{display:inline-block;will-change:clip-path,transform}
+
+/* LA SIGNATURE — la barre de progression pleine largeur.
+   PAS d'`overflow:hidden` sur le rail. Il n'en a pas besoin (un
+   `scaleX` de 0 à 1 depuis la gauche ne sort jamais de sa boîte) et
+   il coûte tout le dispositif : `overflow:hidden` fait du rail un
+   CONTENEUR DE DÉFILEMENT, et `view()` posé sur le remplissage se
+   met alors à mesurer le remplissage DANS le rail au lieu du rail
+   dans la page. Mesuré : progression 1.00 alors que le rail touchait
+   encore le bas de la fenêtre. Piège 65. */
+@keyframes remplir{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.jauge{height:clamp(13px,1.5vw,22px);border-top:3px solid var(--trait);border-bottom:3px solid var(--trait);
+  margin:clamp(22px,2.8vw,40px) 0 clamp(34px,4.6vw,72px)}
+.jauge i{display:block;height:100%;background:var(--trait);transform-origin:left center;
+  animation:remplir linear forwards;animation-timeline:view();animation-range:entry 0% cover 25%}
+.jauge--h i{animation:remplir .34s .18s cubic-bezier(.2,.9,.1,1) both;animation-timeline:auto}
+
+/* LE BANDEAU DÉFILANT — une seule fois dans la page, et c'est la
+   seule chose qui bouge en continu. Sa répétition EST son propos :
+   la méthode entière tient dans une phrase qu'on redit. */
+@keyframes glisser{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.ruban{background:var(--acide);color:var(--noir);--trait:#0b0b0b;
+  border-top:5px solid var(--noir);border-bottom:5px solid var(--noir);
+  overflow:hidden;padding:clamp(14px,1.6vw,24px) 0}
+.ruban-p{display:flex;width:max-content;animation:glisser 26s linear infinite;will-change:transform}
+.ruban span{font:400 clamp(30px,4.4vw,66px)/1 var(--aff);text-transform:uppercase;letter-spacing:-.02em;
+  padding-right:clamp(24px,3vw,48px);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .ruban-p{transform:none}
+}
+/* Le navigateur qui ne connaît pas `view()` voit la jauge PLEINE, pas
+   vide : la forme de repos est toujours la forme finale. */
+@supports not (animation-timeline: view()){
+  .jauge i{animation:none;transform:none}
+}
+
+/* ── LE SURVOL : le bloc s'inverse, en 110 ms, d'un coup ───────── */
+.inv{display:inline-block;background:var(--acide);color:var(--noir);
+  border:3px solid var(--trait);padding:15px 22px 13px;
+  font:500 11.5px/1 var(--det);letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;
+  transition:background .11s steps(2,end),color .11s steps(2,end),border-color .11s steps(2,end)}
+.noir .inv{border-color:var(--acide)}
+.inv:hover,.inv:focus-visible{background:var(--noir);color:var(--acide);border-color:var(--noir)}
+.noir .inv:hover,.noir .inv:focus-visible{background:var(--noir);color:var(--acide);border-color:var(--acide)}
+.inv:active{transform:translate(3px,3px)}
+.inv--gr{font-size:14px;padding:22px 32px 20px;letter-spacing:.2em}
+
+/* un lien de texte : le mot lui-même s'inverse */
+.lien{display:inline-block;padding:2px 5px;margin:0 -5px;background:transparent;color:inherit;
+  font-weight:600;box-shadow:inset 0 -3px 0 currentColor;
+  transition:background .11s steps(2,end),color .11s steps(2,end)}
+.lien:hover,.lien:focus-visible{background:var(--trait);color:var(--contre);box-shadow:none}
+.lien:active{transform:translate(2px,2px)}
+
+/* ── entête ────────────────────────────────────────────────────── */
+.tete{background:var(--noir);color:var(--acide);--trait:#d6f227;--contre:#0b0b0b;
+  border-bottom:5px solid var(--acide)}
+.tete .cont{display:flex;align-items:center;gap:12px clamp(14px,2.4vw,34px);
+  padding-top:12px;padding-bottom:12px;flex-wrap:wrap}
+.marque{font:400 clamp(24px,2.4vw,32px)/.8 var(--aff);text-transform:uppercase;letter-spacing:-.02em;
+  padding:6px 10px 4px;background:var(--acide);color:var(--noir);
+  transition:background .11s steps(2,end),color .11s steps(2,end),box-shadow .11s steps(2,end)}
+.marque:hover,.marque:focus-visible{background:var(--noir);color:var(--acide);box-shadow:inset 0 0 0 3px var(--acide)}
+.marque:active{transform:translate(3px,3px)}
+.nav{display:flex;gap:4px clamp(4px,1vw,14px);margin-left:auto;flex-wrap:wrap}
+.nav a{font:500 10.5px/1 var(--det);letter-spacing:.14em;text-transform:uppercase;
+  padding:9px 9px 7px;border:2px solid transparent;
+  transition:background .1s steps(2,end),color .1s steps(2,end),border-color .1s steps(2,end)}
+.nav a:hover,.nav a:focus-visible{background:var(--acide);color:var(--noir);border-color:var(--acide)}
+.nav a:active{transform:translate(2px,2px)}
+.demo{font:500 9.5px/1 var(--det);letter-spacing:.18em;text-transform:uppercase;
+  border:2px solid var(--acide);padding:8px 10px 6px;white-space:nowrap}
+
+/* ── L'AFFICHE (le héros) ──────────────────────────────────────────
+   La photographie MORD sous le pli : c'est ce qui appelle le
+   défilement, et c'est ce que fait Puretec. Le titre et le bouton,
+   eux, tiennent tous les deux au-dessus de 800 px sur une fenêtre de
+   1280 de large. Piège 63. */
+.affiche{background:var(--acide);color:var(--noir);--trait:#0b0b0b;--contre:#d6f227;
+  min-height:100vh;min-height:100svh;display:flex;flex-direction:column;
+  padding-top:clamp(18px,2.6vw,40px)}
+/* `width:100%`, et il n'est pas décoratif. Dans un conteneur flex en
+   colonne, la marge `auto` de `.cont` empêche l'étirement : l'élément
+   se réduit à son contenu et se CENTRE. Le titre du héros partait
+   donc à 322 px du bord sur une fenêtre de 1440, centré, alors que
+   tout le reste de la page est calé à gauche. Piège 32, version
+   flexbox : une marge `auto` se lit autrement selon le conteneur. */
+.affiche>.cont{width:100%}
+.aff-h{display:flex;justify-content:space-between;gap:8px 26px;flex-wrap:wrap;
+  padding-bottom:clamp(14px,1.8vw,22px);border-bottom:3px solid var(--noir)}
+.aff-h span{font:500 10.5px/1.5 var(--det);letter-spacing:.2em;text-transform:uppercase}
+.aff-t{margin-top:clamp(16px,2.2vw,32px)}
+.aff-b{display:flex;align-items:flex-end;justify-content:space-between;gap:20px clamp(26px,4vw,64px);
+  flex-wrap:wrap;padding-bottom:clamp(22px,2.8vw,40px)}
+.aff-b .lede{max-width:44ch}
+.aff-act{display:flex;align-items:center;gap:14px clamp(16px,2.4vw,30px);flex-wrap:wrap}
+.aff-tel{font:500 9.5px/1 var(--det);letter-spacing:.2em;text-transform:uppercase}
+.aff-tel b{display:block;margin-top:9px;font:400 clamp(22px,2.2vw,32px)/.8 var(--aff);letter-spacing:-.01em}
+.aff-ph{margin-top:auto;flex:1 1 auto;min-height:clamp(150px,20vh,290px)}
+
+/* ── le duotone noir / acide ───────────────────────────────────────
+   `--c` contraste, `--b` brillance, RELEVÉS PHOTO PAR PHOTO sur la
+   capture. Une valeur unique donne une plaque noire sur les images
+   sombres et une plaque acide sur les claires. */
+.duo{position:relative;display:block;isolation:isolate;background:#000;overflow:hidden;
+  --c:1.45;--b:1.15}
+.duo img{width:100%;height:100%;object-fit:cover}
+.duo::after{content:"";position:absolute;inset:0;background:var(--acide);
+  mix-blend-mode:multiply;pointer-events:none}
+.duo>img{filter:grayscale(1) contrast(var(--c)) brightness(var(--b))}
+.ph figcaption{margin-top:11px;font:500 10px/1.55 var(--det);letter-spacing:.14em;
+  text-transform:uppercase;max-width:52ch}
+
+/* ── LA BANDE DE CHIFFRES, juste sous le héros (Gymbox) ────────────
+   Les quatre nombres s'interpolent AU SCRIPT. La version d'avant les
+   faisait rouler avec une pile de dix chiffres hissée par
+   `timeline-scope` : ça demande Chrome 116 quand `animation-timeline`
+   en demande 115, et `@supports` ne sait pas tester `timeline-scope`.
+   Entre les deux versions, les quatre nombres restaient figés. Le
+   trou est fermé en RETIRANT la dépendance : le nombre final est
+   écrit dans le HTML, GSAP part de zéro et y revient. */
+.compte{background:var(--noir);color:var(--acide);--trait:#d6f227;--contre:#0b0b0b;
+  padding:clamp(40px,5vw,80px) 0 clamp(34px,4.2vw,62px)}
+.compte-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(18px,2.4vw,42px)}
+.compte-g>div{border-top:5px solid var(--acide);padding-top:clamp(12px,1.5vw,20px)}
+.nb{display:block;font-family:var(--aff);font-size:clamp(50px,8.2vw,124px);line-height:.9;
+  letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+/* `.lbl`, PAS `.compte-g span` : le nombre EST un span, et le
+   raccourci `font` d'un sélecteur plus spécifique lui écrasait sa
+   taille en silence — les quatre nombres sortaient à 10,5 px. */
+.compte-g .lbl{display:block;margin-top:clamp(7px,.9vw,13px);
+  font:500 10.5px/1.5 var(--det);letter-spacing:.18em;text-transform:uppercase}
+.compte-n{margin-top:clamp(24px,2.8vw,42px);font:500 10.5px/1.7 var(--det);letter-spacing:.14em;
+  text-transform:uppercase;max-width:72ch}
+
+/* ── bande photo pleine largeur ────────────────────────────────── */
+.bande{height:clamp(230px,42vw,540px)}
+
+/* ── LES SIX MOUVEMENTS : six cases, pas six lignes soulignées ────
+   Une liste de six lignes avec un filet sous chacune est le gabarit
+   le plus paresseux qui soit. Six cases pleines, exactement six, et
+   deux d'entre elles en aplat acide pour que la grille ne soit pas
+   six rectangles blancs. */
+.mvts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(3px,.4vw,5px);
+  background:var(--noir);border:3px solid var(--noir)}
+.mvt{background:var(--blanc);padding:clamp(18px,2.2vw,32px) clamp(16px,1.8vw,26px) clamp(20px,2.4vw,34px);
+  display:flex;flex-direction:column;
+  transition:background .11s steps(2,end),color .11s steps(2,end)}
+.mvt:nth-child(2),.mvt:nth-child(6){background:var(--acide)}
+.mvt:hover{background:var(--noir);color:var(--acide)}
+.mvt em{font-style:normal;display:block;font:400 clamp(38px,4.4vw,68px)/.8 var(--aff);
+  letter-spacing:-.03em;margin-bottom:clamp(10px,1.2vw,18px)}
+.mvt h3{margin-bottom:9px}
+.mvt p{font-size:14.5px;line-height:1.56}
+.mvt .charge{margin-top:auto;padding-top:clamp(14px,1.8vw,24px);
+  font:500 10.5px/1.6 var(--det);letter-spacing:.14em;text-transform:uppercase}
+
+/* la règle des 2,5 kg, à côté du geste. Une seule fois dans la page :
+   au-delà de deux, l'alternance image / texte devient un tic. */
+.regle25{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+  gap:clamp(18px,2.6vw,44px);align-items:stretch;margin-top:clamp(30px,3.6vw,54px)}
+.regle25 .duo{height:100%;min-height:clamp(220px,26vw,400px)}
+.regle25 div{background:var(--noir);color:var(--acide);
+  padding:clamp(24px,3vw,44px);display:flex;flex-direction:column;justify-content:center}
+.regle25 h3{color:var(--acide);margin-bottom:12px}
+.regle25 p{font-size:15px;line-height:1.62;max-width:56ch}
+
+/* ── L'HORAIRE : sept jours qui défilent latéralement ──────────────
+   La jauge de la piste est pilotée AU SCRIPT, sur l'événement
+   `scroll` de la piste elle-même (pas de la fenêtre). La version
+   d'avant la pilotait par `scroll-timeline` hissée en
+   `timeline-scope` : même trou d'une version de Chrome que les
+   compteurs. Sans script, la jauge est PLEINE, jamais vide. */
+.piste{display:flex;gap:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  scroll-padding-left:clamp(14px,2.4vw,36px);
+  padding-left:clamp(14px,2.4vw,36px);padding-right:clamp(14px,2.4vw,36px);
+  scrollbar-width:thin;overscroll-behavior-x:contain}
+.jour{flex:0 0 clamp(206px,22vw,300px);scroll-snap-align:start;
+  border-left:3px solid var(--acide);padding:clamp(16px,1.8vw,26px) clamp(14px,1.6vw,24px) clamp(20px,2.4vw,34px);
+  transition:background .11s steps(2,end),color .11s steps(2,end)}
+.jour:last-child{border-right:3px solid var(--acide)}
+.jour:hover{background:var(--acide);color:var(--noir)}
+.jour b{display:block;font:400 clamp(28px,3vw,46px)/.84 var(--aff);text-transform:uppercase;
+  letter-spacing:-.02em;padding-bottom:12px;border-bottom:3px solid currentColor}
+.jour dl{margin-top:16px;font-family:var(--det);font-weight:500}
+.jour dt{font-size:9.5px;line-height:1;letter-spacing:.22em;text-transform:uppercase}
+.jour dd{font-size:clamp(15px,1.3vw,19px);line-height:1.2;margin:7px 0 18px;letter-spacing:.02em;
+  font-variant-numeric:tabular-nums}
+.jour dd:last-of-type{margin-bottom:0}
+.piste-j{margin:clamp(18px,2.2vw,30px) clamp(14px,2.4vw,36px) 0;
+  height:clamp(10px,1.1vw,15px);border:3px solid var(--acide)}
+.piste-j i{display:block;height:100%;background:var(--acide);transform-origin:left center;
+  transform:scaleX(var(--p,1))}
+.piste-l{margin:12px clamp(14px,2.4vw,36px) 0;font:500 10px/1.6 var(--det);
+  letter-spacing:.18em;text-transform:uppercase}
+.hor-b{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,2.6vw,44px);
+  margin-top:clamp(34px,4vw,62px);padding-top:clamp(22px,2.6vw,36px);border-top:5px solid var(--acide)}
+.hor-b p{margin-top:12px}
+
+/* ── la salle et ses règles ──────────────────────────────────────
+   Les six règles ne sont pas des cases : elles sont des ITEMS, un
+   très gros chiffre puis le texte, tenus par un filet à gauche. La
+   grille des mouvements est pleine, celle-ci est ouverte : deux
+   familles, pas deux fois la même. */
+.duo-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(16px,2.2vw,34px)}
+.duo-2 .duo{height:clamp(230px,31vw,500px)}
+.regles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(26px,3.2vw,50px) clamp(26px,4vw,72px);margin-top:clamp(36px,4.4vw,68px)}
+.regles li{border-left:5px solid var(--noir);padding-left:clamp(16px,1.8vw,26px)}
+.regles em{font-style:normal;display:block;font:400 clamp(40px,4.8vw,76px)/.78 var(--aff);
+  letter-spacing:-.03em;margin-bottom:12px}
+.regles h3{font-size:clamp(19px,1.8vw,26px);margin-bottom:8px}
+.regles p{font-size:14.5px;line-height:1.55;max-width:44ch}
+.regles-b{margin-top:clamp(30px,3.6vw,54px);background:var(--noir);color:var(--acide);
+  padding:clamp(22px,2.6vw,38px) clamp(20px,2.6vw,40px);
+  font-size:15.5px;line-height:1.62;max-width:76ch}
+
+/* ── le matériel : le râtelier en large, puis quatre gros plans ── */
+.duo-5{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.4vw,38px)}
+.duo-5 .ph:first-child{grid-column:1/-1}
+.duo-5 .ph:first-child .duo{height:clamp(220px,32vw,560px)}
+.duo-5 .duo{height:clamp(240px,31vw,480px)}
+
+/* ── on entre, on sort ─────────────────────────────────────────── */
+.marche{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.2vw,34px)}
+.marche article{border:3px solid var(--acide);padding:clamp(20px,2.4vw,36px)}
+.marche h3{margin-bottom:12px}
+.marche p{font-size:14.5px;line-height:1.62}
+.marche p+p{margin-top:10px}
+.venir{margin-top:clamp(30px,3.8vw,58px);padding-top:clamp(24px,3vw,44px);
+  border-top:5px solid var(--acide);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px clamp(24px,3.4vw,56px);flex-wrap:wrap}
+.coord{display:flex;gap:20px clamp(24px,3.4vw,56px);flex-wrap:wrap}
+.coord div{min-width:0}
+.coord dt{font:500 9.5px/1 var(--det);letter-spacing:.2em;text-transform:uppercase}
+.coord dd{margin-top:9px;font:400 clamp(20px,2vw,30px)/.9 var(--aff);text-transform:uppercase;letter-spacing:-.01em}
+
+/* ── pied ──────────────────────────────────────────────────────── */
+.pied{background:var(--acide);color:var(--noir);--trait:#0b0b0b;--contre:#d6f227;
+  padding:clamp(40px,5vw,80px) 0 clamp(24px,3vw,40px);border-top:8px solid var(--noir)}
+.pied-n{font:400 clamp(50px,13vw,172px)/.8 var(--aff);text-transform:uppercase;letter-spacing:-.03em;
+  display:block;border-bottom:5px solid var(--noir);padding-bottom:clamp(14px,2vw,28px)}
+.pied-g{display:flex;justify-content:space-between;gap:20px clamp(20px,3vw,54px);flex-wrap:wrap;
+  padding-top:clamp(20px,2.4vw,34px)}
+.pied-m{display:flex;gap:6px clamp(8px,1.4vw,20px);flex-wrap:wrap}
+.pied-m a{font:500 10.5px/1 var(--det);letter-spacing:.16em;text-transform:uppercase;
+  padding:9px 10px 7px;border:2px solid var(--noir);
+  transition:background .1s steps(2,end),color .1s steps(2,end)}
+.pied-m a:hover,.pied-m a:focus-visible{background:var(--noir);color:var(--acide)}
+.pied-m a:active{transform:translate(2px,2px)}
+.pied-b{margin-top:clamp(24px,3vw,44px);padding-top:clamp(16px,2vw,26px);border-top:3px solid var(--noir);
+  display:flex;justify-content:space-between;gap:12px 34px;flex-wrap:wrap;
+  font:500 10px/1.7 var(--det);letter-spacing:.13em;text-transform:uppercase}
+.pied-b p{max-width:76ch}
+
+/* ── largeurs ──────────────────────────────────────────────────── */
+@media (max-width:1080px){
+  .compte-g{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mvts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hor-b,.regle25{grid-template-columns:1fr}
+  .regle25 .duo{min-height:clamp(200px,34vw,320px)}
+}
+@media (max-width:760px){
+  .duo-2,.duo-5,.marche,.regles{grid-template-columns:1fr}
+  .duo-5 .ph:first-child{grid-column:auto}
+  .affiche{min-height:0;padding-bottom:0}
+  .aff-ph{margin-top:clamp(24px,4vw,42px);min-height:clamp(190px,50vw,300px)}
+  .aff-b{padding-bottom:clamp(22px,4vw,36px)}
+  .nav{width:100%;margin-left:0;order:3}
+  .venir{align-items:flex-start}
+  .tit .l2{margin-left:0}
+}
+@media (max-width:520px){
+  .mvts{grid-template-columns:1fr}
+  .coord{flex-direction:column;gap:16px}
+}
+</style>
+</head>
+<body>
+
+<a class="saut" href="#haut">Aller au contenu</a>
+
+<header class="tete">
+  <div class="cont">
+    <a class="marque" href="#haut">Fonte Nord</a>
+    <nav class="nav" aria-label="Sections de la page">
+      <a href="#mouvements">Les mouvements</a>
+      <a href="#horaire">L’horaire</a>
+      <a href="#salle">La salle</a>
+      <a href="#fonte">Le matériel</a>
+      <a href="#entrer">Entrer et sortir</a>
+    </nav>
+    <span class="demo">Site de démonstration</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ══ L'AFFICHE ═══════════════════════════════════════════════ -->
+<section class="affiche" id="haut">
+  <div class="cont">
+    <p class="aff-h">
+      <span>Salle d’entraînement en force, Québec</span>
+      <span>Barre, haltères, plateformes</span>
+      <span>Ouvert sept jours</span>
+    </p>
+    <h1 class="aff-t"><span class="m">La</span> <span class="m">barre</span><br><span class="m">ne</span> <span class="m">ment</span> <span class="m">pas</span></h1>
+  </div>
+  <div class="jauge jauge--h" aria-hidden="true"><i></i></div>
+  <div class="cont aff-b">
+    <p class="lede">Six mouvements, pas soixante. Aucune machine guidée, aucun cours de groupe. On vous apprend à lever proprement, et ensuite vous n’avez plus besoin de nous.</p>
+    <div class="aff-act">
+      <a class="inv inv--gr" href="#entrer">Venir voir la salle</a>
+      <span class="aff-tel">Par téléphone<b><a class="lien" href="tel:0000000000">000 000-0000</a></b></span>
+    </div>
+  </div>
+  <figure class="duo aff-ph" style="--c:1.6;--b:1.16">
+    <img src="../../images/secteurs-sites/gym-1.webp" width="1920" height="1080" fetchpriority="high" decoding="async" alt="Grande salle industrielle dans la brume du matin : cages de force en acier, corde à grimper, râtelier de barres olympiques, caissons de saut en bois et hautes fenêtres à petits carreaux.">
+  </figure>
+</section>
+
+<!-- ══ LA BANDE DE CHIFFRES ════════════════════════════════════ -->
+<div class="compte">
+  <div class="cont">
+    <div class="compte-g">
+      <div><span class="nb" data-nb="26">26</span><span class="lbl">Barres olympiques</span></div>
+      <div><span class="nb" data-nb="8">8</span><span class="lbl">Postes de squat</span></div>
+      <div><span class="nb" data-nb="4">4</span><span class="lbl">Plateformes</span></div>
+      <div><span class="nb" data-nb="0">0</span><span class="lbl">Machine guidée</span></div>
+    </div>
+    <p class="compte-n">Compté, pas estimé. Si une barre est faussée et sort du service, le nombre change ici le jour même.</p>
+  </div>
+</div>
+
+<!-- ══ LE BANDEAU, une seule fois dans la page ═════════════════ -->
+<div class="ruban" aria-hidden="true">
+  <div class="ruban-p">
+    <span>2,5 kg de plus. Puis 2,5 kg de plus. Puis 2,5 kg de plus.</span>
+    <span>2,5 kg de plus. Puis 2,5 kg de plus. Puis 2,5 kg de plus.</span>
+  </div>
+</div>
+
+<!-- ══ LES SIX MOUVEMENTS ══════════════════════════════════════ -->
+<section class="sec blanc" id="mouvements">
+  <div class="cont">
+    <h2 class="tit"><span class="m">Six</span> <span class="m">mouvements,</span><br><span class="m l2">pas</span> <span class="m">soixante</span></h2>
+  </div>
+  <div class="jauge" aria-hidden="true"><i></i></div>
+  <div class="cont">
+    <p class="lede" style="margin-bottom:clamp(30px,3.6vw,54px)">Squat, développé couché, soulevé de terre, développé militaire, rowing, tractions. C’est la liste complète, et elle ne s’allonge pas.</p>
+
+    <ol class="mvts">
+      <li class="mvt rv">
+        <em>01</em>
+        <h3>Squat</h3>
+        <p>Où poser les pieds, où poser la barre sur le dos, jusqu’où descendre. On ne charge rien tant que ces trois-là ne sont pas réglés.</p>
+        <p class="charge">Barre à vide, 20 kg</p>
+      </li>
+      <li class="mvt rv">
+        <em>02</em>
+        <h3>Développé couché</h3>
+        <p>La position des omoplates, le trajet de la barre, et comment la reposer seul sans se faire mal.</p>
+        <p class="charge">Barre à vide, 20 kg</p>
+      </li>
+      <li class="mvt rv">
+        <em>03</em>
+        <h3>Soulevé de terre</h3>
+        <p>Le seul mouvement qui part du sol, et le seul qui se fait sur plateforme. Position de départ, dos, et surtout : quand arrêter la série.</p>
+        <p class="charge">Sur plateforme, disques caoutchoutés</p>
+      </li>
+      <li class="mvt rv">
+        <em>04</em>
+        <h3>Développé militaire</h3>
+        <p>Debout, barre au-dessus de la tête. Avec le rowing, c’est le mouvement que les débutants font le plus mal.</p>
+        <p class="charge">Barre à vide, 20 kg</p>
+      </li>
+      <li class="mvt rv">
+        <em>05</em>
+        <h3>Rowing</h3>
+        <p>Penché, dos tenu, barre tirée au nombril. Celui-là se reprend plus souvent que les cinq autres réunis.</p>
+        <p class="charge">Barre à vide, 20 kg</p>
+      </li>
+      <li class="mvt rv">
+        <em>06</em>
+        <h3>Tractions</h3>
+        <p>Avec élastique s’il le faut, sans honte. C’est le seul des six qui ne se charge pas avec une barre.</p>
+        <p class="charge">Poids de corps, élastique au besoin</p>
+      </li>
+    </ol>
+
+    <div class="regle25">
+      <figure class="duo rv" style="--c:1.46;--b:2.45">
+        <img src="../../images/secteurs-sites/gym-9.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Un avant-bras nu et une main posée à plat sur une barre rangée à hauteur de taille, râtelier de disques flou derrière, salle sombre.">
+      </figure>
+      <div class="rv">
+        <h3>La charge monte par 2,5 kg, pas par envie</h3>
+        <p>Vous ajoutez un disque de 1,25 kg de chaque côté à chaque séance, tant que la barre monte proprement. Le jour où elle ne monte plus proprement, vous arrêtez d’ajouter.</p>
+        <p style="margin-top:12px">Il n’y a rien d’autre à décider, et c’est précisément pour ça que vous n’aurez plus besoin de nous.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BANDE PLEINE LARGEUR ════════════════════════════════════ -->
+<figure class="duo bande" style="--c:1.78;--b:.66">
+  <img src="../../images/secteurs-sites/gym-2.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Une barre chargée de gros disques noirs posée seule au sol dans une salle brumeuse, une silhouette floue au fond devant de hautes fenêtres.">
+</figure>
+
+<!-- ══ L'HORAIRE ═══════════════════════════════════════════════ -->
+<section class="sec noir" id="horaire">
+  <div class="cont">
+    <h2 class="tit"><span class="m">111</span> <span class="m">heures</span><br><span class="m l2">par</span> <span class="m">semaine</span></h2>
+  </div>
+  <div class="jauge" aria-hidden="true"><i></i></div>
+  <div class="cont">
+    <p class="lede" style="margin-bottom:clamp(28px,3.4vw,48px)">Les heures creuses sont celles où les huit postes sont libres. Si vous pouvez venir à ce moment-là, venez à ce moment-là.</p>
+  </div>
+
+  <ul class="piste" id="piste" tabindex="0" aria-label="L’horaire de la semaine, sept jours">
+    <li class="jour"><b>Lundi</b><dl><dt>Ouvert</dt><dd>5 h à 22 h</dd><dt>Creux</dt><dd>9 h à 15 h</dd></dl></li>
+    <li class="jour"><b>Mardi</b><dl><dt>Ouvert</dt><dd>5 h à 22 h</dd><dt>Creux</dt><dd>9 h à 15 h</dd></dl></li>
+    <li class="jour"><b>Mercredi</b><dl><dt>Ouvert</dt><dd>5 h à 22 h</dd><dt>Creux</dt><dd>9 h à 15 h</dd></dl></li>
+    <li class="jour"><b>Jeudi</b><dl><dt>Ouvert</dt><dd>5 h à 22 h</dd><dt>Creux</dt><dd>9 h à 15 h</dd></dl></li>
+    <li class="jour"><b>Vendredi</b><dl><dt>Ouvert</dt><dd>5 h à 22 h</dd><dt>Creux</dt><dd>9 h à 15 h</dd></dl></li>
+    <li class="jour"><b>Samedi</b><dl><dt>Ouvert</dt><dd>7 h à 20 h</dd><dt>Creux</dt><dd>7 h à 9 h</dd></dl></li>
+    <li class="jour"><b>Dimanche</b><dl><dt>Ouvert</dt><dd>7 h à 20 h</dd><dt>Creux</dt><dd>7 h à 9 h</dd></dl></li>
+  </ul>
+  <div class="piste-j" aria-hidden="true"><i id="pistej"></i></div>
+  <p class="piste-l">Glissez la semaine vers la droite</p>
+
+  <div class="cont">
+    <div class="hor-b">
+      <div class="rv">
+        <h3>La pointe va de 16 h 30 à 19 h 30 en semaine</h3>
+        <p class="txt">À ce moment-là, les huit postes sont pris et l’attente pour un rack est de dix à vingt minutes. On ne prend pas de réservation : partager un rack avec quelqu’un est la solution, et c’est ce qu’on demande.</p>
+      </div>
+      <div class="rv">
+        <h3>Fermé le 25 décembre et le 1<sup>er</sup> janvier</h3>
+        <p class="txt">Ce sont les deux seules fermetures de l’année. Elles sont affichées à l’entrée un mois d’avance, et il n’y a pas d’horaire d’été réduit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LA SALLE ET SES RÈGLES ══════════════════════════════════ -->
+<section class="sec acide" id="salle">
+  <div class="cont">
+    <h2 class="tit"><span class="m">On</span> <span class="m">remet</span><br><span class="m l2">ce</span> <span class="m">qu’on</span> <span class="m">prend</span></h2>
+  </div>
+  <div class="jauge" aria-hidden="true"><i></i></div>
+  <div class="cont">
+    <p class="lede" style="margin-bottom:clamp(28px,3.4vw,48px)">Un seul étage, une seule pièce. On voit toute la salle depuis la porte, et c’est voulu. Les règles tiennent parce qu’un plancher partagé ne tient pas autrement.</p>
+
+    <div class="duo-2">
+      <figure class="ph">
+        <span class="duo rv" style="--c:1.4;--b:1.7"><img src="../../images/secteurs-sites/gym-3.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux barres courtes chargées de disques noirs posées sur un plancher de bois sombre, cordes de bataille déroulées au sol derrière, porte de garage au fond."></span>
+        <figcaption>Le plancher de bois, et les cordes déroulées au sol</figcaption>
+      </figure>
+      <figure class="ph">
+        <span class="duo rv" style="--c:1.56;--b:.92"><img src="../../images/secteurs-sites/gym-4.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Salle fonctionnelle vide : anneaux et sacs de frappe suspendus à une poutre, barre fixe, gros ballon au sol et grande fenêtre laiteuse."></span>
+        <figcaption>Anneaux, sacs et barre fixe, la salle à 9 h</figcaption>
+      </figure>
+    </div>
+
+    <ol class="regles">
+      <li class="rv">
+        <em>1</em>
+        <h3>Les disques retournent au râtelier</h3>
+        <p>Pas empilés à côté, pas laissés sur la barre. Sur le râtelier, du plus lourd au plus léger, comme ils y étaient.</p>
+      </li>
+      <li class="rv">
+        <em>2</em>
+        <h3>Le banc s’essuie après usage</h3>
+        <p>Les chiffons et le vaporisateur sont à trois endroits dans la salle. Ça prend huit secondes.</p>
+      </li>
+      <li class="rv">
+        <em>3</em>
+        <h3>Un rack ne se garde pas au téléphone</h3>
+        <p>Entre deux séries, la pause est à vous. Le rack, lui, est libre dès que vous vous assoyez ailleurs.</p>
+      </li>
+      <li class="rv">
+        <em>4</em>
+        <h3>On demande avant de partager</h3>
+        <p>« Je peux prendre une série entre les tiennes ? » La réponse est oui la plupart du temps, et non est une réponse aussi.</p>
+      </li>
+      <li class="rv">
+        <em>5</em>
+        <h3>Une barre chargée ne reste pas au sol</h3>
+        <p>Vous la déchargez avant de partir, même si vous revenez dans cinq minutes. Une barre chargée au sol bloque une plateforme entière.</p>
+      </li>
+      <li class="rv">
+        <em>6</em>
+        <h3>On peut crier, on ne peut pas lancer</h3>
+        <p>Le bruit d’effort ne dérange personne ici. Un haltère lancé au sol se voit tout de suite, et il abîme le plancher.</p>
+      </li>
+    </ol>
+
+    <p class="regles-b rv">Quand une règle n’est pas suivie, on vous le dit en face, une fois, sans hausser le ton. Si ça se répète, on vous le dit une deuxième fois et on note la date. À la troisième, l’accès est retiré. Il n’y a pas de quatrième fois, et il n’y a pas d’exception pour les anciens.</p>
+  </div>
+</section>
+
+<!-- ══ LE MATÉRIEL ═════════════════════════════════════════════ -->
+<section class="sec blanc" id="fonte">
+  <div class="cont">
+    <h2 class="tit"><span class="m">De</span> <span class="m">la</span> <span class="m">fonte</span><br><span class="m l2">et</span> <span class="m">du</span> <span class="m">bois</span></h2>
+  </div>
+  <div class="jauge" aria-hidden="true"><i></i></div>
+  <div class="cont">
+    <p class="lede" style="margin-bottom:clamp(30px,3.6vw,54px)">Vingt-deux barres de 20 kg, quatre de 15 kg, dix-neuf paires d’haltères de 5 à 50 kg par pas de 2,5 kg. Les disques caoutchoutés vont au sol, la fonte reste sur les racks.</p>
+
+    <div class="duo-5">
+      <figure class="ph">
+        <span class="duo rv" style="--c:1.46;--b:1.66"><img src="../../images/secteurs-sites/gym-10.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Un râtelier d’acier à deux niveaux contre un mur de blocs de béton, chargé de deux piles de disques caoutchoutés noirs rangés sur la tranche."></span>
+        <figcaption>Le râtelier, du plus lourd au plus léger, à hauteur de hanche</figcaption>
+      </figure>
+      <figure class="ph">
+        <span class="duo rv" style="--c:1.45;--b:1.62"><img src="../../images/secteurs-sites/gym-5.webp" width="960" height="720" loading="lazy" decoding="async" alt="Une dizaine de barres olympiques rangées debout contre la cage, manchons d’acier et bagues noires, une barre à liseré clair au milieu."></span>
+        <figcaption>Aucune barre n’est attribuée à personne</figcaption>
+      </figure>
+      <figure class="ph">
+        <span class="duo rv" style="--c:1.62;--b:.78"><img src="../../images/secteurs-sites/gym-6.webp" width="960" height="720" loading="lazy" decoding="async" alt="Gros plan d’un disque de fonte grenue dont la masse « 20KG » est moulée dans le métal, devant un mur de brique flou."></span>
+        <figcaption>La masse est moulée dans la fonte, pas imprimée dessus</figcaption>
+      </figure>
+      <figure class="ph">
+        <span class="duo rv" style="--c:1.42;--b:1"><img src="../../images/secteurs-sites/gym-7.webp" width="960" height="720" loading="lazy" decoding="async" alt="Haltère hexagonal noir posé sur un plancher de bois large, son ombre franche projetée par la lumière rasante."></span>
+        <figcaption>L’haltère hexagonal ne roule pas quand on le pose</figcaption>
+      </figure>
+      <figure class="ph">
+        <span class="duo rv" style="--c:1.45;--b:1.85"><img src="../../images/secteurs-sites/gym-8.webp" width="960" height="720" loading="lazy" decoding="async" alt="Disque olympique caoutchouté enfilé sur le manchon d’une barre, maintenu par un collier de serrage à ressort, sur un tapis de caoutchouc."></span>
+        <figcaption>Un collier par manchon, toujours, sans exception</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ENTRER ET SORTIR ════════════════════════════════════════ -->
+<section class="sec noir" id="entrer">
+  <div class="cont">
+    <h2 class="tit"><span class="m">On</span> <span class="m">entre,</span><br><span class="m l2">on</span> <span class="m">sort</span></h2>
+  </div>
+  <div class="jauge" aria-hidden="true"><i></i></div>
+  <div class="cont">
+    <p class="lede" style="margin-bottom:clamp(28px,3.4vw,48px)">La partie qu’on lit d’habitude en petits caractères est écrite ici en gros. Il n’y a pas d’autre document que celui-ci.</p>
+
+    <div class="marche">
+      <article class="rv">
+        <h3>Comment on entre</h3>
+        <p>Présentez-vous aux heures d’ouverture et demandez quelqu’un au comptoir. On vous fait faire le tour : les huit postes, les quatre plateformes, le râtelier de disques, les vestiaires et les trois bacs à magnésie.</p>
+        <p>Ça prend dix minutes, ça ne se prend pas sur rendez-vous, et personne ne vous demandera votre carte à la fin.</p>
+      </article>
+      <article class="rv">
+        <h3>Ce qui est inclus</h3>
+        <p>L’accès aux huit postes, aux quatre plateformes et à tout le matériel de la salle, aux heures d’ouverture. Casier, magnésie, craie, et le plan d’étage affiché à l’entrée.</p>
+        <p>Il n’y a pas de section réservée, pas de matériel verrouillé, pas de supplément pour une pièce d’équipement.</p>
+      </article>
+      <article class="rv">
+        <h3>Comment on sort</h3>
+        <p>Une phrase suffit, et elle peut être verbale : « je résilie ». Au comptoir, ou par courriel. Aucun formulaire, aucun préavis de trente jours, aucun centre d’annulation à appeler.</p>
+        <p>La résiliation prend effet à la fin du mois déjà réglé, et il n’y a rien après.</p>
+      </article>
+      <article class="rv">
+        <h3>Si vous devez arrêter un temps</h3>
+        <p>Blessure, déménagement temporaire, chantier à l’extérieur : vous demandez la suspension, on arrête tout. Trois mois par année, sans frais et sans justificatif.</p>
+        <p>Au retour vous reprenez aux mêmes conditions qu’avant. Il n’y a pas de frais de réactivation.</p>
+      </article>
+    </div>
+
+    <div class="venir">
+      <dl class="coord">
+        <div>
+          <dt>Téléphone</dt>
+          <dd><a class="lien" href="tel:0000000000">000 000-0000</a></dd>
+        </div>
+        <div>
+          <dt>Courriel</dt>
+          <dd><a class="lien" href="mailto:courriel@exemple.ca" translate="no">courriel@exemple.ca</a></dd>
+        </div>
+        <div>
+          <dt>Où</dt>
+          <dd>Adresse sur demande</dd>
+        </div>
+      </dl>
+      <a class="inv inv--gr" href="tel:0000000000">Venir voir la salle</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="cont">
+    <span class="pied-n">Fonte Nord</span>
+    <div class="pied-g">
+      <nav class="pied-m" aria-label="Pied de page">
+        <a href="#haut">Haut de page</a>
+        <a href="#mouvements">Les mouvements</a>
+        <a href="#horaire">L’horaire</a>
+        <a href="#salle">La salle</a>
+        <a href="#fonte">Le matériel</a>
+        <a href="#entrer">Entrer et sortir</a>
+      </nav>
+      <p class="mono"><span translate="no">fonte-nord.ca</span><br>Adresse sur demande, Québec</p>
+    </div>
+    <div class="pied-b">
+      <p>Fonte Nord est une entreprise fictive. Les nombres, l’horaire et les coordonnées sont des exemples cohérents entre eux, pas l’offre d’un commerce existant. Aucune marque et aucun produit réel n’est nommé sur cette page.</p>
+      <p>Site de démonstration, sans témoin et sans requête tierce.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="../../js/vendor/gsap.min.js"></script>
+<script src="../../js/vendor/ScrollTrigger.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   LE MOUVEMENT — cinq gestes, et chacun a une raison. Aucun ne
+   dépasse 140 ms : c'est une salle de force, pas un spa.
+
+   RÈGLE ABSOLUE : l'état de repos écrit dans le CSS est la forme
+   FINALE, et tout `fromTo` porte `immediateRender:false`. Rien n'est
+   jamais posé à opacité nulle avant sa plage : une capture pleine
+   page voit la page entière. Piège 64, côté script.
+
+   DEUXIÈME RÈGLE : rien ici n'est nécessaire pour LIRE. Le nombre
+   final est dans le HTML, les mots du titre sont dans le HTML, la
+   jauge de la piste est pleine au repos. Script coupé, la page est
+   entière ; c'est ce que vérifie `demos-controle.mjs`.
+   ══════════════════════════════════════════════════════════════════ */
+(function(){
+  "use strict";
+  var doux = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var piste = document.getElementById("piste");
+  var pj = document.getElementById("pistej");
+
+  /* ── 1 · LA JAUGE DE LA PISTE suit le glissement de la semaine.
+     RAISON : retour d'action. Sept cartes dans une fenêtre qui en
+     montre quatre, il faut dire où on en est.
+
+     C'est ici que se ferme la MOITIÉ du trou `timeline-scope`. La
+     version d'avant déclarait `scroll-timeline: --jours x` sur la
+     piste et la hissait jusqu'au remplissage par `timeline-scope` :
+     Chrome 116 minimum, alors que `animation-timeline` marche depuis
+     115. Entre les deux, la jauge restait pleine sans jamais bouger,
+     et `@supports` ne sait pas tester `timeline-scope`.
+     L'écouteur est posé sur la PISTE, jamais sur la fenêtre. */
+  if (piste && pj) {
+    var suivre = function(){
+      var course = piste.scrollWidth - piste.clientWidth;
+      var p = course > 0 ? (piste.clientWidth + piste.scrollLeft) / piste.scrollWidth : 1;
+      pj.style.setProperty("--p", String(Math.min(1, Math.max(0.06, p))));
+    };
+    piste.addEventListener("scroll", suivre, { passive: true });
+    window.addEventListener("resize", suivre, { passive: true });
+    suivre();
+  }
+
+  if (doux || !window.gsap || !window.ScrollTrigger) return;
+  var gsap = window.gsap;
+  gsap.registerPlugin(window.ScrollTrigger);
+
+  /* ── 2 · LE TITRE DU HÉROS ARRIVE LETTRE PAR LETTRE.
+     RAISON : récit. Le nom de la salle est frappé, pas affiché. La
+     découpe se fait AU SCRIPT : le HTML garde ses mots entiers, donc
+     `innerText` est identique avec et sans script. */
+  var h1 = document.querySelector(".aff-t");
+  if (h1) {
+    var lettres = [];
+    h1.querySelectorAll(".m").forEach(function(mot){
+      var t = mot.textContent, frag = document.createDocumentFragment();
+      for (var i = 0; i < t.length; i++) {
+        var s = document.createElement("span");
+        s.className = "lt";
+        s.textContent = t[i];
+        frag.appendChild(s);
+        lettres.push(s);
+      }
+      mot.textContent = "";
+      mot.appendChild(frag);
+    });
+    gsap.fromTo(lettres,
+      { clipPath: "inset(0 0 108% 0)", yPercent: 46 },
+      { clipPath: "inset(-6% -4% -6% -4%)", yPercent: 0, duration: .11,
+        ease: "power3.out", stagger: .026, immediateRender: false, delay: .06 });
+  }
+
+  /* ── 3 · LES TITRES DE SECTION ARRIVENT MOT PAR MOT, dans le sens
+     de lecture. RAISON : hiérarchie. Le titre est ce qu'on lit en
+     premier, il doit se poser en premier. */
+  document.querySelectorAll(".tit").forEach(function(tit){
+    var mots = tit.querySelectorAll(".m");
+    if (!mots.length) return;
+    gsap.fromTo(mots,
+      { clipPath: "inset(0 0 108% 0)", yPercent: 42 },
+      { clipPath: "inset(-6% -4% -6% -4%)", yPercent: 0, duration: .12,
+        ease: "power3.out", stagger: .03, immediateRender: false,
+        scrollTrigger: { trigger: tit, start: "top 88%", once: true } });
+  });
+
+  /* ── 4 · LES PHOTOS SE DÉVOILENT EN VOLET, DU HAUT VERS LE BAS.
+     RAISON : changement d'état. Le sens n'est pas décoratif : une
+     image se découvre comme une page se lit, de haut en bas. */
+  document.querySelectorAll(".duo.rv, .rv > .duo").forEach(function(el){
+    gsap.fromTo(el,
+      { clipPath: "inset(0 0 100% 0)" },
+      { clipPath: "inset(0 0 0% 0)", duration: .14, ease: "power2.out",
+        immediateRender: false,
+        scrollTrigger: { trigger: el, start: "top 90%", once: true } });
+  });
+
+  /* ── 5 · LES BLOCS MONTENT DE 22 PX, PAR PAQUET.
+     RAISON : hiérarchie. Ils arrivent dans l'ordre où on les lit. */
+  var paquets = [
+    document.querySelectorAll(".mvts .mvt"),
+    document.querySelectorAll(".regles li"),
+    document.querySelectorAll(".marche article"),
+    document.querySelectorAll(".hor-b > div")
+  ];
+  paquets.forEach(function(lot){
+    if (!lot.length) return;
+    gsap.fromTo(lot, { y: 22, opacity: 0 },
+      { y: 0, opacity: 1, duration: .13, ease: "power2.out", stagger: .04,
+        immediateRender: false,
+        scrollTrigger: { trigger: lot[0].parentNode, start: "top 86%", once: true } });
+  });
+  document.querySelectorAll(".regle25 > div, .regles-b").forEach(function(el){
+    gsap.fromTo(el, { y: 22, opacity: 0 },
+      { y: 0, opacity: 1, duration: .13, ease: "power2.out", immediateRender: false,
+        scrollTrigger: { trigger: el, start: "top 90%", once: true } });
+  });
+
+  /* ── 6 · LES QUATRE NOMBRES SE COMPTENT.
+     RAISON : récit. La bande dit « compté, pas estimé » : le nombre
+     doit se voir compter, pas apparaître.
+
+     C'est ici que se ferme l'AUTRE moitié du trou `timeline-scope`.
+     La version d'avant empilait dix chiffres par colonne et les
+     translatait sur une piste `view()` nommée, hissée jusqu'aux
+     piles par `timeline-scope` — Chrome 116. Entre 115 et 116, les
+     quatre nombres restaient figés sur leur dernier chiffre. La pile
+     a disparu : le nombre est écrit en clair dans le HTML, et GSAP
+     interpole une variable de zéro jusqu'à lui. 420 ms, parce qu'un
+     nombre qu'on compte en 120 ms ne se lit pas. */
+  var bande = document.querySelector(".compte-g");
+  if (bande) {
+    var nbs = bande.querySelectorAll(".nb");
+    window.ScrollTrigger.create({
+      trigger: bande, start: "top 88%", once: true,
+      onEnter: function(){
+        nbs.forEach(function(el, i){
+          var vise = Number(el.getAttribute("data-nb")) || 0;
+          if (!vise) return;
+          var etat = { v: 0 };
+          el.textContent = "0";
+          gsap.to(etat, { v: vise, duration: .42, delay: i * .05, ease: "power2.out",
+            onUpdate: function(){ el.textContent = String(Math.round(etat.v)); },
+            onComplete: function(){ el.textContent = String(vise); } });
+        });
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

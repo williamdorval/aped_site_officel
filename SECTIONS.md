@@ -224,7 +224,7 @@ un bloc `<noscript><style>` de quatre règles dans le `<head>` supplée
 | **Seuil** | `03 → 04` · nom **« Secteurs »** |
 | **Verbe / sens** | `data-verbe="aligner"` `data-sens="droite"` `data-cible=".sector-group"` — pas de trame |
 | **Fond encre** | non |
-| **Blocs CSS** | `16. SECTEURS` · `V4 · LES PASTILLES DE SECTEUR` · **`css/secteurs.css` entier** (13 blocs numérotés, un par aperçu) |
+| **Blocs CSS** | `16. SECTEURS` · `V4 · LES PASTILLES DE SECTEUR` · **`css/secteurs.css` entier** — 290 lignes depuis D-681 : le cadre, la vitre, le calque vivant, et le **treizième** aperçu, seul encore dessiné |
 | **JS** | `js/main.js` blocs `Apercu des secteurs` et `AU TACTILE IL N'Y A PAS DE SURVOL` · `js/langue.js` bloc `5. LES SECTEURS` (`blocsDe()`, `filetDe()`, `recomposer()`) |
 
 **Composants** : seuil → `div.head` (h2 « Le style change selon le

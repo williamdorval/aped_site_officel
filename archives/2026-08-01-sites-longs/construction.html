@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0a2540">
+<title>Construction Lattier — entrepreneur général, Basses-Laurentides</title>
+<meta name="description" content="Agrandissements et rénovations majeures dans un rayon de 45 km autour de Sainte-Thérèse. Huit lots, une séquence de chantier, une coupe de mur. Site de démonstration.">
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   CONSTRUCTION LATTIER — « CHANTIER BOREAL »
+
+   LECTURE : ce site est une PLANCHE DE RELEVÉ. Un tirage bleu, un
+   quadrillage de 24 px, des cotes, un cartouche, une coupe. Ce que
+   l’entrepreneur vend est la précision AVANT la coupe ; la page dit
+   la même chose avec ses formes.
+
+   TROIS RÉFÉRENCES, MESURÉES AU `_ref.mjs` :
+   · eladiodieste.com — photographie plein cadre, titre d’affichage
+     coupé en deux et posé DESSUS, puis une colonne vertébrale
+     verticale à laquelle les repères sont accrochés.  PRIS : le
+     héros plein cadre, le titre décalé, le rail vertical de la
+     séquence.  ÉCARTÉ : le noir absolu, les 14 000 px de biographie.
+   · havenconstructions.com.au — l’accent employé À L’ÉCHELLE DE
+     L’AFFICHE, et les métadonnées épinglées aux COINS du bloc de
+     titre.  PRIS : la cote épinglée au pied du héros, le cartouche
+     en bande.  ÉCARTÉ : la serif de labeur, le carrousel d’un mot.
+   · mosbyfiles.com — 144 px capitale, interlignage 0,80, sur presque
+     noir ; sous le titre, un DIAGRAMME qui est le contenu lui-même.
+     PRIS : l’échelle du titre, la coupe de mur traitée en planche.
+     ÉCARTÉ : les six couleurs, le corps de texte à 8 px.
+
+   MATIÈRE : bleu de plan #0a2540 · cyan #3fc8e8 (SEUL accent, et il
+   est froid) · blanc de trait #dfe9ef · gris de cote #7f95a5.
+   Angles vifs partout, rayon 0, aucune ombre, aucun flou, aucun
+   orange, aucun or.
+
+   SIGNATURE : LA COTE. Un nombre en mono, un trait, deux embouts
+   perpendiculaires. Cinq fois dans la page, et elle se TRACE de la
+   gauche vers la droite au défilement.
+
+   LE SURLIGNAGE DES ARÊTES : chaque photographie reçoit un calque
+   `<canvas>` calculé au chargement — flou 3×3, Sobel 3×3, seuil —
+   peint en cyan et composé en `screen`. La photo devient un relevé
+   au trait. Le script est décoratif : sans lui, il ne manque que le
+   surlignage. Aucune requête tierce, aucun CDN, aucune bibliothèque.
+
+   Affichage space-grotesk 700 · texte plex-sans · cotes, semaines,
+   épaisseurs et numéros de lot en jetbrains-mono.
+   ══════════════════════════════════════════════════════════════════ */
+
+@font-face{font-family:"space-grotesk";src:url("../../fonts/demos/space-grotesk-2.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"space-grotesk";src:url("../../fonts/demos/space-grotesk-3.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"plex-sans";src:url("../../fonts/demos/plex-sans-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"plex-sans";src:url("../../fonts/demos/plex-sans-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"plex-sans";src:url("../../fonts/demos/plex-sans-2.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"plex-sans";src:url("../../fonts/demos/plex-sans-3.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+
+/* ── LA MATIÈRE ──────────────────────────────────────────────────
+   Rapports mesurés. Sur bleu de plan #0a2540 : trait #dfe9ef 12,6:1 ·
+   cyan #3fc8e8 7,9:1 · gris de cote #7f95a5 5,0:1. Sur le bloc clair
+   #dfe9ef : plan #0a2540 12,6:1 · cyan foncé #0f5f77 5,9:1 · gris de
+   cote foncé #4a5f6e 5,5:1. Le cyan PLEIN ne porte jamais de texte
+   sur fond clair (1,6:1) : il n’y sert qu’au trait. Sur un aplat de
+   cyan, le texte est toujours bleu de plan (7,9:1). */
+:root{
+  --plan:#0a2540;
+  --plan-f:#061625;
+  --cyan:#3fc8e8;
+  --cyan-f:#0f5f77;
+  --cyan-ff:#0b4a5e;
+  --trait:#dfe9ef;
+  --cote:#7f95a5;
+  --cote-f:#4a5f6e;
+  --fil:rgba(223,233,239,.20);
+  --fil-f:rgba(10,37,64,.22);
+  --aff:"space-grotesk",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --txt:"plex-sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mno:"jetbrains-mono",ui-monospace,Consolas,monospace;
+  --large:1280px;
+  --marge:clamp(18px,4vw,56px);
+  --vide:clamp(88px,9.4vw,152px);
+  --haut:88px;   /* bandeau de démonstration + barre de navigation */
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background-color:var(--plan);color-scheme:dark}
+/* `clip`, jamais `hidden` : `hidden` fait du corps un conteneur de
+   défilement et cache un vrai débordement d’enfant à la sonde
+   `scrollWidth`. Piège 66. */
+body{
+  color:var(--trait);
+  font:400 15px/1.72 var(--txt);
+  font-kerning:normal;text-rendering:optimizeLegibility;
+  overflow-x:clip;
+}
+img{display:block;max-width:100%;height:auto}
+ul,ol{list-style:none}
+a{color:inherit;text-decoration:none}
+a,summary,button{touch-action:manipulation;-webkit-tap-highlight-color:rgba(63,200,232,.25)}
+/* Les colonnes de nombres s’alignent même si la mono locale manque. */
+.coord,.rel-m,.cl-e,.cote-n,.chif-n{font-variant-numeric:tabular-nums}
+::selection{background:var(--cyan);color:var(--plan)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.f-clair :focus-visible{outline-color:var(--cyan-f)}
+
+/* ══ LE QUADRILLAGE ═══════════════════════════════════════════════
+   Un pas de 24 px dans les deux sens, plus un trait marqué tous les
+   120 px. Il est posé en PSEUDO-ÉLÉMENT sur chaque section, jamais
+   sur la section elle-même : une sonde de contraste qui rencontre un
+   `background-image` sur un ancêtre arrête son calcul et rend « hors
+   calcul » sur tout le texte de la page. Ici la section porte une
+   COULEUR opaque et le quadrillage vit au-dessus, en `z-index: 0`.
+   Il DÉRIVE au défilement, 96 px sur toute la page. */
+.tram{position:relative;isolation:isolate}
+.tram::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(to right,rgba(223,233,239,.185) 0 1px,transparent 1px 120px),
+    repeating-linear-gradient(to bottom,rgba(223,233,239,.185) 0 1px,transparent 1px 120px),
+    repeating-linear-gradient(to right,rgba(223,233,239,.08) 0 1px,transparent 1px 24px),
+    repeating-linear-gradient(to bottom,rgba(223,233,239,.08) 0 1px,transparent 1px 24px);
+  animation:derive linear forwards;
+  animation-timeline:scroll(root);
+}
+.tram > *{position:relative;z-index:1}
+.f-clair.tram::before{
+  background-image:
+    repeating-linear-gradient(to right,rgba(10,37,64,.13) 0 1px,transparent 1px 120px),
+    repeating-linear-gradient(to bottom,rgba(10,37,64,.13) 0 1px,transparent 1px 120px),
+    repeating-linear-gradient(to right,rgba(10,37,64,.062) 0 1px,transparent 1px 24px),
+    repeating-linear-gradient(to bottom,rgba(10,37,64,.062) 0 1px,transparent 1px 24px);
+}
+@keyframes derive{
+  from{background-position:0 0,0 0,0 0,0 0}
+  to{background-position:0 0,0 -96px,0 0,0 -96px}
+}
+
+/* ══ LE MOUVEMENT ═════════════════════════════════════════════════
+   `forwards`, JAMAIS `both`. Avec `both`, un élément qui n’a pas
+   encore atteint sa plage garde son état de DÉPART — ici une opacité
+   nulle, c’est-à-dire une page vide sous le pli en capture pleine
+   page. Avec `forwards`, hors plage c’est le style de base qui tient,
+   et le style de base est la forme FINALE. Piège 64.
+   Le tracé est LINÉAIRE : c’est un plan qui se dessine, pas un
+   ressort qui rebondit. */
+@keyframes trace-x{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes volet{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes monte{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes pas{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes parait{from{opacity:0}to{opacity:1}}
+@keyframes tire-x{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes tire-y{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes jauge{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.rv{animation:monte forwards;animation-timeline:view();animation-range:entry 0% cover 25%;animation-timing-function:linear}
+.rt{animation:trace-x forwards;animation-timeline:view();animation-range:entry 0% cover 22%;animation-timing-function:linear}
+.ri{animation:volet forwards;animation-timeline:view();animation-range:entry 0% cover 24%;animation-timing-function:linear}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+@supports not (animation-timeline: view()){
+  .rv,.rt,.ri,.et,.cote-l,.cote-n,.jauge,.ar,.rail-l{animation:none;opacity:1;transform:none;clip-path:none}
+}
+
+/* ══ LA COTE — le dispositif de signature ════════════════════════
+   Un nombre en mono au-dessus, un trait avec deux embouts
+   perpendiculaires en dessous. Le trait se tire de la gauche vers la
+   droite, l’embout de droite voyage avec lui, puis le nombre paraît.
+   Les deux plages se ferment avant `cover 25 %` : une capture fixe ne
+   peut pas attraper une cote à moitié tracée. */
+.cote{display:block;color:var(--cyan)}
+.cote-n{
+  display:block;text-align:center;
+  font:500 12px/1 var(--mno);letter-spacing:.16em;text-transform:uppercase;
+  padding-bottom:8px;
+}
+.cote-l{
+  display:block;height:11px;
+  border:1px solid currentColor;border-top:0;border-bottom:0;
+  position:relative;transform-origin:left center;
+  animation:tire-x forwards;animation-timeline:view();animation-range:cover 0% cover 13%;animation-timing-function:linear;
+}
+.cote-l::before{content:"";position:absolute;left:0;right:0;top:5px;height:1px;background:currentColor}
+.cote-t{
+  display:block;margin-top:10px;
+  font:500 10.5px/1.55 var(--mno);letter-spacing:.14em;text-transform:uppercase;color:var(--cote);
+}
+.f-clair .cote{color:var(--cyan-f)}
+.f-clair .cote-t{color:var(--cote-f)}
+
+.cote-v{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--cyan-f)}
+.cote-v .cote-n{padding:0}
+.cote-v .cote-l{
+  width:11px;height:auto;flex:1;min-height:70px;
+  border:1px solid currentColor;border-left:0;border-right:0;
+  transform-origin:center top;
+  animation-name:tire-y;
+}
+.cote-v .cote-l::before{left:5px;right:auto;top:0;bottom:0;width:1px;height:auto}
+
+/* ══ CHARPENTE DE PAGE ════════════════════════════════════════════ */
+.enve{width:100%;max-width:var(--large);margin:0 auto;padding-left:max(var(--marge),env(safe-area-inset-left));padding-right:max(var(--marge),env(safe-area-inset-right))}
+.sec{padding-top:var(--vide);padding-bottom:var(--vide);scroll-margin-top:66px;background-color:var(--plan)}
+.sec-clair{background-color:var(--trait);color:var(--plan)}
+
+.kick{
+  font:500 10.5px/1.5 var(--mno);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--cyan);display:block;margin-bottom:22px;
+}
+.f-clair .kick{color:var(--cyan-f)}
+h2{
+  font:700 clamp(31px,4.6vw,64px)/.94 var(--aff);
+  letter-spacing:-.026em;max-width:17ch;text-wrap:balance;
+}
+h3{text-wrap:balance}
+.chapeau{max-width:54ch;margin-top:24px;color:var(--cote)}
+.f-clair .chapeau{color:var(--cote-f)}
+.note{
+  margin-top:34px;max-width:62ch;
+  font:500 12px/1.72 var(--mno);letter-spacing:.02em;color:var(--cote);
+}
+.f-clair .note{color:var(--cote-f)}
+
+/* ══ LES PHOTOS — DES RELEVÉS ════════════════════════════════════
+   Trois couches, dans cet ordre exact :
+     1. la photographie, saturation coupée aux 42 %, contraste relevé ;
+     2. un aplat de bleu de plan en `mix-blend-mode: color` — la
+        LUMINANCE vient de la photo, la TEINTE vient du plan ;
+     3. le CANEVAS DES ARÊTES en `mix-blend-mode: screen`, calculé au
+        chargement par un Sobel 3×3 et peint en cyan. C’est lui qui
+        transforme une photo de chantier en relevé au trait.
+   Le canevas se dévoile du haut vers le bas — sens de lecture d’une
+   image — et son état de REPOS est « entièrement dévoilé » : une
+   capture pleine page ne peut pas l’attraper à moitié. */
+.ph{position:relative;isolation:isolate;overflow:hidden;background:var(--plan-f);--op:50% 50%}
+.ph img{width:100%;height:100%;filter:saturate(.34) contrast(1.22) brightness(.56)}
+/* LE CADRAGE EST LE MÊME POUR LES DEUX, ET C’EST OBLIGATOIRE. Un
+   `<canvas>` est un élément remplacé : sans `object-fit`, il est
+   ÉTIRÉ au format de sa boîte pendant que la photo, elle, est
+   RECADRÉE. Les deux formats diffèrent partout sauf au héros, et le
+   trait cyan tombait à côté de l’arête qu’il devait souligner. Le
+   cadrage vit donc sur le CADRE, en `--op`, et les deux le lisent. */
+.ph img,.ph .ar{object-fit:cover;object-position:var(--op)}
+.ph::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:#0a2540;mix-blend-mode:color;opacity:.76}
+/* Le voile du héros vit DANS le cadre, sous le canevas. Posé
+   par-dessus, il éteignait le surlignage : un aplat sombre à 60 %
+   ramène un trait `screen` à rien du tout. L’ordre décide de tout. */
+.ph-v{position:absolute;inset:0;z-index:3;pointer-events:none;background:rgba(6,22,37,.36)}
+.ar{
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+  width:100%;height:100%;opacity:.92;
+  mix-blend-mode:screen;
+  animation:volet forwards;animation-timeline:view();animation-range:entry 14% cover 26%;animation-timing-function:linear;
+}
+.ph::before{
+  content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
+  background:
+    repeating-linear-gradient(to right,rgba(63,200,232,.055) 0 1px,transparent 1px 24px),
+    repeating-linear-gradient(to bottom,rgba(63,200,232,.055) 0 1px,transparent 1px 24px);
+}
+.leg{margin-top:16px;font:500 11px/1.7 var(--mno);letter-spacing:.05em;color:var(--cote);max-width:56ch}
+.f-clair .leg{color:var(--cote-f)}
+
+/* ══ BOUTONS ET LIENS ════════════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:12px;white-space:nowrap;
+  padding:16px 26px;border:1px solid var(--cyan);
+  font:500 11.5px/1 var(--mno);letter-spacing:.16em;text-transform:uppercase;
+  transition:background-color 160ms linear,color 160ms linear,border-color 160ms linear,transform 120ms linear;
+}
+.btn::after{content:"";width:16px;height:1px;background:currentColor;transition:width 160ms linear}
+.btn-p{background:var(--cyan);color:var(--plan)}
+.btn-p:hover,.btn-p:focus-visible{background:var(--trait);border-color:var(--trait)}
+.btn-s{color:var(--cyan);background:rgba(6,22,37,.62)}
+.btn-s:hover,.btn-s:focus-visible{background:var(--cyan);color:var(--plan)}
+.btn:active{transform:translateY(1px)}
+.btn:hover::after,.btn:focus-visible::after{width:30px}
+.f-clair .btn-p{background:var(--plan);color:var(--trait);border-color:var(--plan)}
+.f-clair .btn-p:hover,.f-clair .btn-p:focus-visible{background:var(--cyan-f);border-color:var(--cyan-f)}
+.f-clair .btn-s{color:var(--cyan-f);border-color:var(--cyan-f);background:transparent}
+.f-clair .btn-s:hover,.f-clair .btn-s:focus-visible{background:var(--cyan-f);color:var(--trait)}
+
+/* ══ BANDEAU DE DÉMONSTRATION ET NAVIGATION ══════════════════════ */
+.saut{
+  position:absolute;left:-9999px;top:0;z-index:99;
+  background:var(--cyan);color:var(--plan);padding:12px 20px;
+  font:500 11.5px/1 var(--mno);letter-spacing:.16em;text-transform:uppercase;
+}
+.saut:focus{left:0}
+.tampon{
+  background:var(--cyan);color:var(--plan);
+  font:500 10px/1.5 var(--mno);letter-spacing:.18em;text-transform:uppercase;
+  text-align:center;padding:8px var(--marge);
+}
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:var(--plan);border-bottom:1px solid var(--fil);
+}
+.nav-i{display:flex;align-items:center;gap:22px;height:57px}
+.marque{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0}
+.estampe{
+  flex:none;width:30px;height:30px;border:1px solid var(--cyan);color:var(--cyan);
+  display:flex;align-items:center;justify-content:center;
+  font:500 11px/1 var(--mno);letter-spacing:.06em;
+  transition:background-color 160ms linear,color 160ms linear;
+}
+.marque:hover .estampe,.marque:focus-visible .estampe{background:var(--cyan);color:var(--plan)}
+.marque-n{font:700 16px/1 var(--aff);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-l{display:flex;gap:26px}
+.nav-l a{position:relative;padding:6px 0;font:600 13px/1 var(--txt);transition:color 160ms linear}
+.nav-l a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--cyan);transform:scaleX(0);transform-origin:left center;transition:transform 180ms linear}
+.nav-l a:hover,.nav-l a:focus-visible{color:var(--cyan)}
+.nav-l a:hover::after,.nav-l a:focus-visible::after{transform:scaleX(1)}
+.nav-t{font:500 11.5px/1 var(--mno);letter-spacing:.12em;color:var(--cyan);padding:6px 0;transition:color 160ms linear;white-space:nowrap}
+.nav-t:hover,.nav-t:focus-visible{color:var(--trait)}
+.jauge{
+  position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--cyan);
+  transform:scaleX(1);transform-origin:left center;
+  animation:jauge linear forwards;animation-timeline:scroll(root);
+}
+@media (max-width:63.99em){.nav-l{display:none}}
+/* Sous 384 px, le numéro pousse la raison sociale dans les points de
+   suspension. Il reste au héros, à la section « nous joindre » et au
+   pied de page. */
+@media (max-width:24em){.nav-t{display:none}}
+
+/* ══ HÉROS — LA PHOTOGRAPHIE PLEIN CADRE ═════════════════════════
+   Une fenêtre pleine, moins le bandeau et la barre. La hauteur est
+   BORNÉE par la fenêtre : sur un écran de 1280 × 800, le titre et le
+   bouton principal tiennent tous les deux au-dessus de 800 px — c’est
+   la seule mesure qui décide d’un héros, et elle a déjà été ratée ici
+   (bouton à 867 px). Piège 63. */
+.hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:calc(100vh - var(--haut));
+  min-height:calc(100svh - var(--haut));
+  display:grid;grid-template-rows:1fr auto;
+  background:var(--plan-f);
+}
+.hero-ph{position:absolute;inset:0;z-index:0;--op:32% 56%}
+.hero-t{align-self:center;padding-top:clamp(30px,4vw,56px);padding-bottom:clamp(24px,3vw,40px);position:relative;z-index:2}
+h1{
+  font:700 clamp(37px,7.6vw,114px)/.89 var(--aff);
+  letter-spacing:-.036em;text-wrap:balance;
+}
+/* Les deux lignes ne partent pas du même bord — le titre coupé en
+   deux d’eladiodieste.com, ramené à un décalage qui se lit comme une
+   composition et pas comme un retour à la ligne raté. */
+h1 .h1-b{display:block;margin-left:12%}
+@media (max-width:47.99em){h1 .h1-b{margin-left:0}}
+.hero-p{max-width:44ch;margin-top:clamp(20px,2.4vw,30px);color:#b7c6d1;font-size:16px}
+.hero-b{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(24px,2.8vw,36px)}
+.hero-c{
+  position:relative;z-index:2;
+  border-top:1px solid rgba(63,200,232,.42);
+  background:rgba(6,22,37,.72);
+}
+.hero-cx{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px 32px;padding-top:18px;padding-bottom:18px}
+.hero-cl{font:500 10.5px/1.7 var(--mno);letter-spacing:.16em;text-transform:uppercase;color:var(--cote)}
+.hero-cd{width:min(240px,100%)}
+.hero-cd .cote-t{text-align:center}
+
+/* ══ CARTOUCHE — le bloc-titre de la feuille ═════════════════════ */
+.cart{display:grid;grid-template-columns:1fr;border:1px solid var(--fil-f);border-bottom:0}
+.cart-c{padding:20px 22px;border-bottom:1px solid var(--fil-f)}
+.cart-l{font:500 10px/1.4 var(--mno);letter-spacing:.16em;text-transform:uppercase;color:var(--cote-f)}
+.cart-v{margin-top:10px;font:700 clamp(17px,1.7vw,22px)/1.2 var(--aff);letter-spacing:-.015em}
+.cart-t{font:500 10.5px/1.5 var(--mno);letter-spacing:.18em;text-transform:uppercase;color:var(--cyan-f);margin-bottom:20px}
+@media (min-width:40em){.cart{grid-template-columns:1fr 1fr}.cart-c{border-right:1px solid var(--fil-f)}.cart-c:nth-child(2n){border-right:0}}
+@media (min-width:64em){.cart{grid-template-columns:repeat(3,1fr)}.cart-c{border-right:1px solid var(--fil-f)}.cart-c:nth-child(2n){border-right:1px solid var(--fil-f)}.cart-c:nth-child(3n){border-right:0}}
+
+/* ══ LES LOTS — le bloc de nomenclature ══════════════════════════ */
+.plaque{margin-top:clamp(40px,4.8vw,66px)}
+.plaque .ph{height:clamp(280px,38vw,520px)}
+.lots{display:grid;grid-template-columns:1fr;margin-top:clamp(38px,4.4vw,58px);border-top:1px solid var(--fil)}
+.lot{padding:24px 0 24px;border-bottom:1px solid var(--fil);display:grid;grid-template-columns:auto 1fr;gap:7px 20px;align-items:baseline}
+.lot-n{font:500 10.5px/1.6 var(--mno);letter-spacing:.16em;color:var(--cyan)}
+.lot-t{font:700 clamp(19px,1.9vw,26px)/1.15 var(--aff);letter-spacing:-.018em}
+.lot-d{grid-column:2;color:var(--cote);max-width:44ch}
+.lot-s{grid-column:2;font:500 10.5px/1.6 var(--mno);letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-top:5px}
+@media (min-width:52em){
+  .lots{grid-template-columns:1fr 1fr;column-gap:clamp(28px,4vw,72px)}
+  .lot:nth-child(odd){border-right:1px solid var(--fil);padding-right:clamp(20px,2.6vw,40px)}
+  .lot:nth-child(even){padding-left:clamp(20px,2.6vw,40px)}
+}
+
+/* ══ AVANT / APRÈS — le dispositif interactif, sans script ═══════
+   Deux photographies superposées. La seconde est découpée par un
+   `clip-path` que déplacent deux ZONES DE SURVOL, lues par `:has()`.
+   Les zones sont de vrais liens, visibles et étiquetés : le clavier
+   les atteint et le `:focus-visible` fait exactement ce que fait le
+   curseur. Aucun `input`, aucun script — le dispositif marche même
+   si le JavaScript est coupé.
+   LE CADRE EST EN 2:1, ET CE N’EST PAS UN CHOIX DE COMPOSITION : sur
+   la photographie de démolition, un casque jaune occupe le tiers bas
+   de l’image. La DA l’interdit. Un `object-position` en haut d’un
+   cadre 2:1 ne montre que les deux tiers hauts du fichier, casque
+   exclu. La photo n’a pas été retouchée, elle a été CADRÉE. */
+.ap{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:2/1;max-width:980px;margin:clamp(38px,4.6vw,62px) auto 0;background:var(--plan-f);border:1px solid var(--fil-f)}
+.ap-i,.ap .ar{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
+.ap-i{filter:saturate(.34) contrast(1.22) brightness(.56)}
+.ap-a,.ap .ar-a{object-position:50% 0%}
+.ap-b,.ap .ar-b{object-position:50% 58%;clip-path:inset(0 0 0 50%);transition:clip-path 260ms linear}
+.ap::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:#0a2540;mix-blend-mode:color;opacity:.76}
+.ap .ar{z-index:3;animation:none}
+.ap-q{position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(to right,rgba(63,200,232,.055) 0 1px,transparent 1px 24px),repeating-linear-gradient(to bottom,rgba(63,200,232,.055) 0 1px,transparent 1px 24px)}
+/* Le trait de partage porte les deux embouts de la cote. */
+.ap-t{position:absolute;z-index:5;top:0;bottom:0;left:50%;width:11px;margin-left:-5px;border-left:1px solid var(--cyan);border-right:1px solid var(--cyan);transition:left 260ms linear}
+.ap-t::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:1px;background:var(--cyan)}
+.ap-z{position:absolute;z-index:6;top:0;bottom:0;display:flex;align-items:flex-start;padding:20px}
+.ap-g{left:0;right:50%}
+.ap-d{left:50%;right:0;justify-content:flex-end}
+.ap-e{
+  border:1px solid var(--cyan);background:rgba(6,22,37,.88);color:var(--cyan);
+  padding:10px 15px;font:500 10.5px/1 var(--mno);letter-spacing:.16em;text-transform:uppercase;
+  transition:background-color 160ms linear,color 160ms linear;
+}
+.ap-z:hover .ap-e,.ap-z:focus-visible .ap-e{background:var(--cyan);color:var(--plan)}
+.ap:has(.ap-g:hover) .ap-b,.ap:has(.ap-g:focus-visible) .ap-b,
+.ap:has(.ap-g:hover) .ar-b,.ap:has(.ap-g:focus-visible) .ar-b{clip-path:inset(0 0 0 91%)}
+.ap:has(.ap-d:hover) .ap-b,.ap:has(.ap-d:focus-visible) .ap-b,
+.ap:has(.ap-d:hover) .ar-b,.ap:has(.ap-d:focus-visible) .ar-b{clip-path:inset(0 0 0 9%)}
+.ap:has(.ap-g:hover) .ap-t,.ap:has(.ap-g:focus-visible) .ap-t{left:91%}
+.ap:has(.ap-d:hover) .ap-t,.ap:has(.ap-d:focus-visible) .ap-t{left:9%}
+.ap-mode{margin-top:20px;text-align:center;font:500 10.5px/1.6 var(--mno);letter-spacing:.14em;text-transform:uppercase;color:var(--cyan-f)}
+.ap-note{margin:22px auto 0;max-width:62ch;text-align:center;color:var(--cote-f)}
+.ap-note b{font-weight:600;color:var(--plan)}
+
+/* ══ LA SÉQUENCE — LE RAIL ═══════════════════════════════════════
+   La colonne vertébrale d’eladiodieste.com, traduite en cote : un
+   trait vertical qui se TIRE du haut vers le bas au défilement, et
+   sept semaines accrochées dessus.
+   CHAQUE ÉTAPE PORTE SA PROPRE PISTE `view()`. La version précédente
+   partageait une piste unique déclarée sur la liste et fermait toutes
+   les plages à `cover 22 %` : les trois premières se voyaient, les
+   quatre suivantes avaient fini leur course avant d’être à l’écran.
+   Une piste par étape mesure la boîte que le visiteur REGARDE, et le
+   décalage vient de la géométrie, pas d’un délai. Piège 65. */
+.rail{--rx:34px;position:relative;margin-top:clamp(40px,4.8vw,66px);padding-left:var(--rx);overflow-x:clip}
+.rail-l{
+  position:absolute;left:calc(var(--rx) - 30px);top:6px;bottom:6px;width:1px;
+  background:var(--cyan);transform-origin:center top;
+  animation:tire-y linear forwards;animation-timeline:view();animation-range:entry 46% cover 58%;
+}
+.et{
+  position:relative;padding:clamp(22px,2.4vw,32px) 0;border-top:1px solid var(--fil);
+  animation:pas forwards;animation-timeline:view();animation-range:entry 14% cover 30%;animation-timing-function:linear;
+}
+.et:first-child{border-top:0}
+/* Le nœud posé SUR le trait : un carré de 7 px, angles vifs. Il est
+   accroché à l’ÉTAPE, pas au libellé, pour rester sur le trait
+   quand le libellé passe au-dessus du titre sous 52 em. */
+.et::before{content:"";position:absolute;left:-33px;top:calc(clamp(22px,2.4vw,32px) + 7px);width:7px;height:7px;background:var(--cyan)}
+.et-s{display:block;margin-bottom:9px;font:500 12px/1.5 var(--mno);letter-spacing:.1em;color:var(--cyan)}
+@media (min-width:52em){
+  .rail{--rx:clamp(92px,7.4vw,116px)}
+  /* Le libellé s’arrête 16 px avant le trait : sur la première
+     version il passait DESSOUS et le trait barrait la lettre. */
+  .et-s{position:absolute;left:calc(var(--rx) * -1);top:clamp(22px,2.4vw,32px);width:calc(var(--rx) - 46px);text-align:right;margin:0}
+}
+.et-t{font:700 clamp(20px,2.1vw,28px)/1.14 var(--aff);letter-spacing:-.02em}
+.et-d{margin-top:9px;color:var(--cote);max-width:56ch}
+.et-j{display:inline-block;margin-top:14px;font:500 10px/1 var(--mno);letter-spacing:.16em;text-transform:uppercase;color:var(--plan);background:var(--cyan);padding:7px 10px}
+.et-p{margin-top:clamp(20px,2.4vw,30px)}
+.et-p .ph{height:clamp(210px,26vw,340px)}
+
+/* ══ LA BANDE — hors d’air ═══════════════════════════════════════ */
+.bande{position:relative;height:clamp(320px,42vw,560px);background:var(--plan-f)}
+.bande .ph{position:absolute;inset:0}
+.bande-t{position:absolute;z-index:6;left:0;right:0;bottom:0;background:rgba(6,22,37,.86);border-top:1px solid rgba(63,200,232,.5)}
+.bande-x{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 32px;padding-top:clamp(18px,2.2vw,30px);padding-bottom:clamp(18px,2.2vw,30px)}
+.bande-n{font:700 clamp(32px,5.2vw,72px)/1 var(--aff);letter-spacing:-.035em;color:var(--trait)}
+.bande-s{font:500 11px/1.6 var(--mno);letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+
+/* ══ LA COUPE DE MUR ═════════════════════════════════════════════ */
+.planche{display:grid;grid-template-columns:1fr;gap:clamp(34px,4vw,58px);margin-top:clamp(38px,4.6vw,60px);align-items:start}
+@media (min-width:64em){.planche{grid-template-columns:minmax(0,1fr) 230px}}
+.coupe{display:grid;grid-template-columns:70px 1fr;gap:16px}
+.coupe .cote-v{padding:26px 0 34px}
+.coupe-b{border:1px solid var(--fil-f)}
+.cl{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;min-height:var(--h,32px);padding:7px 16px;border-bottom:1px solid var(--fil-f)}
+.cl:last-child{border-bottom:0}
+/* Sur les deux bandes de membrane, la trame monte la luminance du
+   fond : le cyan foncé y tomberait à 3,8:1. Les libellés de la coupe
+   portent donc un cyan encore plus sombre, 5,1:1 au pire endroit et
+   8,0:1 sur le papier nu. */
+.cl-n{flex:none;font:500 10px/1 var(--mno);letter-spacing:.1em;color:var(--cyan-ff)}
+.cl-t{flex:1;min-width:0;font:600 13px/1.4 var(--txt)}
+.cl-e{flex:none;font:500 11px/1 var(--mno);letter-spacing:.1em;color:var(--cyan-ff)}
+.h1{background:repeating-linear-gradient(45deg,rgba(10,37,64,.16) 0 1px,transparent 1px 7px)}
+.h2{background:repeating-linear-gradient(-45deg,rgba(10,37,64,.16) 0 1px,transparent 1px 9px)}
+.h3{background:repeating-linear-gradient(to right,rgba(15,95,119,.34) 0 4px,transparent 4px 9px)}
+.h4{background:repeating-linear-gradient(45deg,rgba(10,37,64,.22) 0 2px,transparent 2px 6px)}
+.h5{background:repeating-linear-gradient(to bottom,rgba(10,37,64,.11) 0 1px,transparent 1px 6px)}
+.h6{background:repeating-linear-gradient(to right,rgba(15,95,119,.34) 0 8px,transparent 8px 13px)}
+.h7{background:rgba(10,37,64,.05)}
+.coupe-f{display:block;font:500 10px/1.6 var(--mno);letter-spacing:.16em;text-transform:uppercase;color:var(--cote-f);padding:9px 0}
+.chif{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:26px}
+@media (min-width:64em){.chif{grid-template-columns:1fr;gap:32px;border-left:1px solid var(--fil-f);padding-left:26px}}
+.chif-n{font:700 clamp(30px,3.4vw,46px)/1 var(--aff);letter-spacing:-.032em;color:var(--cyan-f)}
+.chif-l{margin-top:9px;font:500 10.5px/1.5 var(--mno);letter-spacing:.14em;text-transform:uppercase;color:var(--cote-f)}
+
+/* ══ HORS CHANTIER — deux plaques décalées ═══════════════════════ */
+.paire{display:grid;grid-template-columns:1fr;gap:clamp(24px,3vw,40px);margin-top:clamp(38px,4.6vw,60px);align-items:start}
+@media (min-width:56em){.paire{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}.paire > :last-child{margin-top:clamp(40px,6vw,96px)}}
+.paire .ph{height:clamp(240px,32vw,440px)}
+.paire > :last-child .ph{height:clamp(210px,26vw,340px)}
+.paire p{margin-top:16px;color:var(--cote);max-width:46ch}
+
+/* ══ RELEVÉS LIVRÉS ══════════════════════════════════════════════ */
+.rel{display:grid;grid-template-columns:1fr;gap:clamp(28px,3.4vw,44px);margin-top:clamp(38px,4.6vw,60px)}
+@media (min-width:52em){.rel{grid-template-columns:repeat(3,1fr)}}
+.rel .ph{height:clamp(260px,29vw,420px)}
+.rel-t{margin-top:20px;font:700 clamp(19px,1.9vw,24px)/1.16 var(--aff);letter-spacing:-.02em}
+.rel-m{margin-top:16px;border-top:1px solid var(--fil-f);padding-top:11px;display:grid;gap:6px}
+.rel-m div{display:flex;justify-content:space-between;gap:14px;font:500 10.5px/1.5 var(--mno);letter-spacing:.1em;text-transform:uppercase}
+.rel-m span:first-child{color:var(--cote-f)}
+.rel-m span:last-child{color:var(--plan)}
+
+/* ══ QUESTIONS ═══════════════════════════════════════════════════ */
+.qs{margin-top:clamp(38px,4.6vw,60px);border-top:1px solid var(--fil);max-width:74ch}
+.q{border-bottom:1px solid var(--fil)}
+.q summary{
+  list-style:none;cursor:pointer;padding:24px 0;
+  display:flex;align-items:baseline;gap:18px;
+  font:700 clamp(17px,1.8vw,22px)/1.3 var(--aff);letter-spacing:-.018em;
+  transition:color 160ms linear;
+}
+.q summary::-webkit-details-marker{display:none}
+.q summary:hover,.q summary:focus-visible{color:var(--cyan)}
+.q-p{flex:none;width:18px;height:11px;border:1px solid var(--cyan);border-top:0;border-bottom:0;position:relative;align-self:center;transition:transform 200ms linear}
+.q-p::before{content:"";position:absolute;left:0;right:0;top:5px;height:1px;background:var(--cyan)}
+.q[open] .q-p{transform:scaleX(1.7)}
+.q-r{padding:0 0 26px;color:var(--cote);max-width:62ch}
+
+/* ══ JOINDRE ═════════════════════════════════════════════════════ */
+.joi{display:grid;grid-template-columns:1fr;gap:clamp(34px,4vw,60px);margin-top:clamp(38px,4.6vw,60px)}
+@media (min-width:64em){.joi{grid-template-columns:minmax(0,1fr) minmax(0,.85fr)}}
+.suite{display:grid;border-top:1px solid var(--fil-f)}
+.suite li{display:grid;grid-template-columns:auto 1fr;gap:5px 20px;padding:19px 0;border-bottom:1px solid var(--fil-f);align-items:baseline}
+.suite-n{font:500 10.5px/1.6 var(--mno);letter-spacing:.16em;color:var(--cyan-f)}
+.suite-t{font:600 15px/1.4 var(--txt)}
+.suite-d{grid-column:2;color:var(--cote-f);max-width:48ch;font-size:14.5px}
+.coord{border:1px solid var(--fil-f)}
+.coord div{display:flex;justify-content:space-between;gap:16px;padding:16px 20px;border-bottom:1px solid var(--fil-f);font:500 12px/1.5 var(--mno);letter-spacing:.06em}
+.coord div:last-child{border-bottom:0}
+.coord dt{color:var(--cote-f);text-transform:uppercase;letter-spacing:.14em;font-size:10.5px}
+.coord dd{text-align:right}
+.coord dd a{color:var(--cyan-f);transition:color 160ms linear;border-bottom:1px solid transparent}
+.coord dd a:hover,.coord dd a:focus-visible{color:var(--plan);border-bottom-color:var(--plan)}
+.joi-b{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+
+/* ══ PIED ════════════════════════════════════════════════════════ */
+.pied{background-color:var(--plan-f);border-top:1px solid var(--fil);padding-top:clamp(58px,6vw,90px);padding-bottom:42px}
+.pied-h{display:grid;grid-template-columns:1fr;gap:34px}
+@media (min-width:52em){.pied-h{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr)}}
+.pied-t{font:500 10.5px/1.5 var(--mno);letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);margin-bottom:16px}
+.pied-l li{margin-bottom:9px;color:var(--cote)}
+.pied-l a{color:var(--cote);transition:color 160ms linear}
+.pied-l a:hover,.pied-l a:focus-visible{color:var(--cyan)}
+.pied-p{color:var(--cote);max-width:42ch;margin-top:16px;font-size:14.5px}
+.pied-f{margin-top:clamp(46px,5vw,70px);padding-top:26px;border-top:1px solid var(--fil);font:500 11px/1.8 var(--mno);letter-spacing:.05em;color:var(--cote);max-width:96ch}
+.pied-f b{display:block;color:var(--cyan);font-weight:500;margin-bottom:6px;letter-spacing:.18em;text-transform:uppercase;font-size:10.5px}
+</style>
+</head>
+<body>
+
+<a class="saut" href="#haut">Aller au contenu</a>
+<p class="tampon">Site de démonstration · Construction Lattier est une entreprise fictive</p>
+
+<header class="nav">
+  <div class="enve nav-i">
+    <a class="marque" href="#haut">
+      <span class="estampe" aria-hidden="true">CL</span>
+      <span class="marque-n">Construction Lattier</span>
+    </a>
+    <nav class="nav-l" aria-label="Sections">
+      <a href="#lots">Les huit lots</a>
+      <a href="#releve">Ouvert et refermé</a>
+      <a href="#sequence">La séquence</a>
+      <a href="#coupe">La coupe</a>
+      <a href="#joindre">Nous joindre</a>
+    </nav>
+    <a class="nav-t" href="tel:0000000000">000 000-0000</a>
+  </div>
+  <span class="jauge" aria-hidden="true"></span>
+</header>
+
+<main id="haut">
+
+<!-- ══ HÉROS ═══════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-ph ph" data-arete>
+    <img src="../../images/secteurs-sites/construction-1.webp" width="1920" height="1080" fetchpriority="high" alt="Agrandissement à ossature de bois greffé sur une maison de bois existante ; fermes de toit posées et support de toit en place.">
+    <span class="ph-v" aria-hidden="true"></span>
+    <canvas class="ar" aria-hidden="true"></canvas>
+  </div>
+  <div class="enve hero-t">
+    <h1>Tout est coté avant<span class="h1-b">d’être construit.</span></h1>
+    <p class="hero-p">Agrandissements et rénovations majeures dans les Basses-Laurentides. On relève, on dessine, on cote. Ensuite seulement, on coupe.</p>
+    <div class="hero-b">
+      <a class="btn btn-p" href="#joindre">Demander une visite</a>
+      <a class="btn btn-s" href="#sequence">Voir la séquence</a>
+    </div>
+  </div>
+  <div class="hero-c">
+    <div class="enve hero-cx">
+      <p class="hero-cl">Entrepreneur général<br>Licence RBQ 0000-0000-00</p>
+      <div class="hero-cd">
+        <span class="cote">
+          <span class="cote-n">45 km</span>
+          <i class="cote-l"></i>
+        </span>
+        <span class="cote-t">Rayon autour de Sainte-Thérèse</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CARTOUCHE ═══════════════════════════════════════════════ -->
+<section class="sec sec-clair f-clair tram" aria-label="Cartouche de la feuille">
+  <div class="enve">
+    <p class="cart-t rt">Cartouche</p>
+    <div class="cart rv">
+      <div class="cart-c">
+        <p class="cart-l">Entrepreneur</p>
+        <p class="cart-v">Construction Lattier inc.</p>
+      </div>
+      <div class="cart-c">
+        <p class="cart-l">Licence</p>
+        <p class="cart-v">RBQ 0000-0000-00</p>
+      </div>
+      <div class="cart-c">
+        <p class="cart-l">Catégories</p>
+        <p class="cart-v">1.1.1 et 1.2, résidentiel</p>
+      </div>
+      <div class="cart-c">
+        <p class="cart-l">Territoire</p>
+        <p class="cart-v">45 km de Sainte-Thérèse</p>
+      </div>
+      <div class="cart-c">
+        <p class="cart-l">Ouvert depuis</p>
+        <p class="cart-v">2009</p>
+      </div>
+      <div class="cart-c">
+        <p class="cart-l">Chantiers de front</p>
+        <p class="cart-v">Trois, jamais plus</p>
+      </div>
+    </div>
+    <p class="note rv">Une soumission de Construction Lattier ressemble à cette feuille : des postes, des quantités, des cotes. Rien qui se devine, rien qui s’ajoute plus tard sans être écrit.</p>
+  </div>
+</section>
+
+<!-- ══ LES HUIT LOTS ═══════════════════════════════════════════ -->
+<section class="sec tram" id="lots">
+  <div class="enve">
+    <p class="kick rt">Nomenclature</p>
+    <h2 class="rt">Huit lots, et rien d’autre.</h2>
+    <p class="chapeau rv">Ni commercial, ni multilogement neuf, ni piscine creusée. Ce qui suit se fait toutes les semaines depuis 2009, et c’est pour ça que les échéanciers tiennent.</p>
+
+    <figure class="plaque rv">
+      <div class="ph ri" data-arete>
+        <img src="../../images/secteurs-sites/construction-2.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Montants et contreventement en diagonale d’une ossature de bois, vus de l’intérieur avant la pose des panneaux.">
+        <canvas class="ar" aria-hidden="true"></canvas>
+      </div>
+      <figcaption class="leg">Montants et contreventement en diagonale d’un agrandissement, avant la pose des panneaux.</figcaption>
+    </figure>
+
+    <div style="max-width:246px;margin-top:clamp(32px,3.6vw,46px)">
+      <span class="cote">
+        <span class="cote-n">400 mm</span>
+        <i class="cote-l"></i>
+      </span>
+      <span class="cote-t">Entraxe des montants, d’un axe à l’autre</span>
+    </div>
+
+    <ol class="lots">
+      <li class="lot rv">
+        <span class="lot-n">LOT 01</span>
+        <h3 class="lot-t">Agrandissement</h3>
+        <p class="lot-d">Rallonge arrière, étage ajouté, garage attenant. Le raccord avec l’existant est la partie exigeante.</p>
+        <p class="lot-s">10 à 18 sem. · permis toujours</p>
+      </li>
+      <li class="lot rv">
+        <span class="lot-n">LOT 02</span>
+        <h3 class="lot-t">Cuisine</h3>
+        <p class="lot-d">Ouverture sur la salle à manger, plomberie et circuits déplacés avant la finition.</p>
+        <p class="lot-s">4 à 7 sem. · selon la structure</p>
+      </li>
+      <li class="lot rv">
+        <span class="lot-n">LOT 03</span>
+        <h3 class="lot-t">Salle de bain</h3>
+        <p class="lot-d">Démolie jusqu’aux montants : c’est le seul moyen de voir l’état du sous-plancher avant de refermer.</p>
+        <p class="lot-s">3 à 5 sem. · permis rarement</p>
+      </li>
+      <li class="lot rv">
+        <span class="lot-n">LOT 04</span>
+        <h3 class="lot-t">Sous-sol</h3>
+        <p class="lot-d">On règle l’humidité avant de finir, jamais l’inverse. Fenêtre de sortie conforme pour une chambre.</p>
+        <p class="lot-s">7 à 11 sem. · permis souvent</p>
+      </li>
+      <li class="lot rv">
+        <span class="lot-n">LOT 05</span>
+        <h3 class="lot-t">Toiture</h3>
+        <p class="lot-d">Bardeaux, membrane sur toit plat, débords. On ouvre une section avant de chiffrer le reste.</p>
+        <p class="lot-s">2 à 4 sem. · selon la ville</p>
+      </li>
+      <li class="lot rv">
+        <span class="lot-n">LOT 06</span>
+        <h3 class="lot-t">Fondation et drainage</h3>
+        <p class="lot-d">Excavation, réparation des fissures, membrane sur la hauteur enfouie, drain neuf, remblai compacté.</p>
+        <p class="lot-s">3 à 6 sem. · permis souvent</p>
+      </li>
+      <li class="lot rv">
+        <span class="lot-n">LOT 07</span>
+        <h3 class="lot-t">Charpente</h3>
+        <p class="lot-d">Mur porteur retiré, poutre d’acier ou LVL, étaiement temporaire. Tout passe par un ingénieur.</p>
+        <p class="lot-s">2 à 5 sem. · permis toujours</p>
+      </li>
+      <li class="lot rv">
+        <span class="lot-n">LOT 08</span>
+        <h3 class="lot-t">Ouvertures</h3>
+        <p class="lot-d">Portes, fenêtres, revêtement. Une fenêtre mal solinée coule dans le mur dix ans avant de paraître.</p>
+        <p class="lot-s">1 à 4 sem. · selon la ville</p>
+      </li>
+    </ol>
+    <p class="note rv">Durées relevées sur nos propres chantiers, du premier jour de démolition à la remise des clés. Le temps de plans et de permis est compté à part, dans la séquence.</p>
+  </div>
+</section>
+
+<!-- ══ AVANT / APRÈS ═══════════════════════════════════════════ -->
+<section class="sec sec-clair f-clair tram" id="releve">
+  <div class="enve">
+    <h2 class="rt">Ce qu’on ouvre, ce qu’on referme.</h2>
+    <p class="chapeau rv">Un mur ouvert dit tout : l’état des montants, l’isolant, le filage, ce qu’un ancien plombier a entaillé. Refermé, il ne se juge plus qu’au fini.</p>
+
+    <div class="ap rv" data-arete>
+      <img class="ap-i ap-a" src="../../images/secteurs-sites/construction-5.webp" width="960" height="720" loading="lazy" decoding="async" alt="Démolition intérieure : panneau de gypse arraché, montants de bois, isolant en laine et boîtes électriques à découvert.">
+      <img class="ap-i ap-b" src="../../images/secteurs-sites/construction-10.webp" width="960" height="720" loading="lazy" decoding="async" alt="Cuisine livrée : îlot central, armoires de bois foncé et de laque blanche, poutres apparentes au plafond.">
+      <canvas class="ar ar-a" aria-hidden="true"></canvas>
+      <canvas class="ar ar-b" aria-hidden="true"></canvas>
+      <span class="ap-q" aria-hidden="true"></span>
+      <span class="ap-t" aria-hidden="true"></span>
+      <a class="ap-z ap-g" href="#ap-note"><span class="ap-e">À nu</span></a>
+      <a class="ap-z ap-d" href="#ap-note"><span class="ap-e">Livré</span></a>
+    </div>
+    <p class="ap-mode">Curseur sur une moitié, ou tabulation jusqu’aux deux repères</p>
+    <p class="ap-note" id="ap-note"><b>Ce sont deux chantiers différents, pas la même pièce.</b> À gauche, une démolition intérieure : gypse retiré, montants, isolant et boîtes à découvert. À droite, une cuisine livrée ailleurs. La comparaison montre deux états de travaux, jamais une transformation.</p>
+  </div>
+</section>
+
+<!-- ══ LA SÉQUENCE ═════════════════════════════════════════════ -->
+<section class="sec tram" id="sequence">
+  <div class="enve">
+    <p class="kick rt">Séquence</p>
+    <h2 class="rt">Vingt et une semaines, dans cet ordre.</h2>
+    <p class="chapeau rv">Six semaines avant l’ouverture du chantier, quatorze sur place, une pour les déficiences. Ce sont les six premières qui décident si les quatorze autres tiennent.</p>
+
+    <div style="max-width:266px;margin-top:clamp(32px,3.6vw,46px)">
+      <span class="cote">
+        <span class="cote-n">21 sem.</span>
+        <i class="cote-l"></i>
+      </span>
+      <span class="cote-t">Du relevé sur place à la remise des clés</span>
+    </div>
+
+    <div class="rail">
+      <span class="rail-l" aria-hidden="true"></span>
+      <ol>
+        <li class="et">
+          <span class="et-s">S-6</span>
+          <h3 class="et-t">Visite et relevé</h3>
+          <p class="et-d">On mesure, on ouvre l’entretoit, on regarde le solage et le panneau électrique. La soumission s’écrit après la visite, jamais au téléphone.</p>
+        </li>
+        <li class="et">
+          <span class="et-s">S-5</span>
+          <h3 class="et-t">Plans et calculs</h3>
+          <p class="et-d">Tout ce qui touche la structure est dessiné, calculé et scellé par un ingénieur avant qu’un mur soit touché.</p>
+        </li>
+        <li class="et">
+          <span class="et-s">S-4</span>
+          <h3 class="et-t">Permis</h3>
+          <p class="et-d">On monte le dossier et on suit la Ville jusqu’à la délivrance. Comptez de deux à six semaines selon la municipalité.</p>
+          <span class="et-j">Jalon</span>
+        </li>
+        <li class="et">
+          <span class="et-s">S0</span>
+          <h3 class="et-t">Ouverture</h3>
+          <p class="et-d">Protection des lieux, conteneur, démolition, excavation, semelles et dalle. Les commandes à long délai sont déjà parties.</p>
+          <figure class="et-p">
+            <div class="ph ri" data-arete>
+              <img src="../../images/secteurs-sites/construction-4.webp" width="960" height="720" loading="lazy" decoding="async" alt="Chantier intérieur : cloisons montées et deux ouvertures de porte percées, plancher de béton nu, boîte électrique en attente.">
+              <canvas class="ar" aria-hidden="true"></canvas>
+            </div>
+            <figcaption class="leg">Cloisons montées, deux ouvertures percées, boîte électrique en attente.</figcaption>
+          </figure>
+        </li>
+        <li class="et">
+          <span class="et-s">S2</span>
+          <h3 class="et-t">Charpente</h3>
+          <p class="et-d">Ossature, fermes de toit, support, portes et fenêtres. C’est l’étape où le volume apparaît d’un coup.</p>
+        </li>
+        <li class="et">
+          <span class="et-s">S4</span>
+          <h3 class="et-t">Hors d’air</h3>
+          <p class="et-d">Le bâtiment est fermé. À partir d’ici, la météo n’a plus de prise sur ce qui se passe dedans.</p>
+          <span class="et-j">Jalon</span>
+        </li>
+        <li class="et">
+          <span class="et-s">S9</span>
+          <h3 class="et-t">Finition</h3>
+          <p class="et-d">Isolation inspectée, gypse, joints en trois passes, planchers, armoires, déficiences corrigées, remise des clés.</p>
+          <span class="et-j">Jalon</span>
+          <figure class="et-p">
+            <div class="ph ri" data-arete>
+              <img src="../../images/secteurs-sites/construction-12.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Pièce en finition : enduits posés sur les murs, bande de céramique amorcée, échelle, planchers recouverts d’une protection.">
+              <canvas class="ar" aria-hidden="true"></canvas>
+            </div>
+            <figcaption class="leg">Enduits posés, bande de céramique amorcée, planchers protégés, fils sortis en attente d’appareils.</figcaption>
+          </figure>
+        </li>
+      </ol>
+    </div>
+    <p class="note rv">Les versements sont liés aux jalons atteints et vérifiables, jamais à des dates du calendrier. Si le chantier prend une semaine de retard, le versement attend le jalon.</p>
+  </div>
+</section>
+
+<!-- ══ BANDE — HORS D’AIR ══════════════════════════════════════ -->
+<section class="bande" aria-label="Le bâtiment fermé, semaine 4">
+  <div class="ph" data-arete style="--op:50% 36%">
+    <img src="../../images/secteurs-sites/construction-11.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Maison en construction enveloppée de panneaux, sous-couche de toiture posée, ouvertures encore béantes, terrain remué.">
+    <canvas class="ar" aria-hidden="true"></canvas>
+  </div>
+  <div class="bande-t">
+    <div class="enve bande-x">
+      <p class="bande-n">Hors d’air</p>
+      <p class="bande-s">Semaine 4 : le bâtiment est fermé, la météo n’entre plus</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LA COUPE DE MUR ═════════════════════════════════════════ -->
+<section class="sec sec-clair f-clair tram" id="coupe">
+  <div class="enve">
+    <p class="kick rt">Coupe type</p>
+    <h2 class="rt">Ce qu’il y a dans un mur qu’on referme.</h2>
+    <p class="chapeau rv">De l’extérieur vers l’intérieur. Vous ne le reverrez plus une fois le gypse posé, et c’est exactement pour ça qu’on vous le montre avant.</p>
+
+    <div class="planche rv">
+    <div class="coupe">
+      <div class="cote-v">
+        <span class="cote-n">205 mm</span>
+        <i class="cote-l"></i>
+      </div>
+      <div>
+        <p class="coupe-f" style="padding-top:0">Extérieur</p>
+        <ol class="coupe-b">
+          <li class="cl h1" style="--h:34px"><span class="cl-n">01</span><span class="cl-t">Déclin de fibrociment, joints ventilés</span><span class="cl-e">8 mm</span></li>
+          <li class="cl h2" style="--h:38px"><span class="cl-n">02</span><span class="cl-t">Fourrures de bois traité, lame d’air drainante</span><span class="cl-e">19 mm</span></li>
+          <li class="cl h3" style="--h:30px"><span class="cl-n">03</span><span class="cl-t">Membrane pare-intempérie, chevauchements scellés</span><span class="cl-e">0,2 mm</span></li>
+          <li class="cl h4" style="--h:44px"><span class="cl-n">04</span><span class="cl-t">Panneau de fibre de bois, R-3,6 continu</span><span class="cl-e">25 mm</span></li>
+          <li class="cl h5" style="--h:108px"><span class="cl-n">05</span><span class="cl-t">Ossature 2×6 et laine, montants à 400 mm d’axe en axe, R-22</span><span class="cl-e">140 mm</span></li>
+          <li class="cl h6" style="--h:30px"><span class="cl-n">06</span><span class="cl-t">Pare-vapeur, polyéthylène 6 mil, joints et prises scellés</span><span class="cl-e">0,15 mm</span></li>
+          <li class="cl h7" style="--h:36px"><span class="cl-n">07</span><span class="cl-t">Panneau de gypse, joints tirés en trois passes</span><span class="cl-e">12,7 mm</span></li>
+        </ol>
+        <p class="coupe-f">Intérieur</p>
+      </div>
+    </div>
+
+      <div class="chif">
+        <div>
+          <p class="chif-n">205 mm</p>
+          <p class="chif-l">Épaisseur totale du mur</p>
+        </div>
+        <div>
+          <p class="chif-n">R-22</p>
+          <p class="chif-l">Isolation entre les montants</p>
+        </div>
+        <div>
+          <p class="chif-n">R-3,6</p>
+          <p class="chif-l">Ajouté en continu, par-dessus</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="note rv">Coupe schématique, pas à l’échelle. Les sept épaisseurs font 205 mm additionnées. C’est le panneau continu (04) qui décide en janvier : sans lui, chaque montant devient une bande froide dans le mur. Le montage exact est écrit au devis descriptif que vous signez.</p>
+  </div>
+</section>
+
+<!-- ══ HORS CHANTIER ═══════════════════════════════════════════ -->
+<section class="sec tram">
+  <div class="enve">
+    <h2 class="rt">Ce qui se prépare au sec ne se fait pas chez vous.</h2>
+    <p class="chapeau rv">Deux habitudes qui ne paraissent nulle part sur une soumission, et qui se voient deux ans plus tard.</p>
+
+    <div style="max-width:266px;margin-top:clamp(32px,3.6vw,46px)">
+      <span class="cote">
+        <span class="cote-n">2 sem.</span>
+        <i class="cote-l"></i>
+      </span>
+      <span class="cote-t">Acclimatation du bois avant la pose</span>
+    </div>
+
+    <div class="paire">
+      <figure class="rv">
+        <div class="ph ri" data-arete>
+          <img src="../../images/secteurs-sites/construction-3.webp" width="960" height="720" loading="lazy" decoding="async" alt="Pile de planches de bois d’œuvre fraîchement débitées, empilées en réserve au-dessus d’un support d’acier.">
+          <canvas class="ar" aria-hidden="true"></canvas>
+        </div>
+        <figcaption class="leg">Bois d’œuvre trié et mis en réserve, empilé à l’écart du sol.</figcaption>
+        <p>La charpente est commandée d’un coup et livrée la veille du montage. Le bois reste sur dormants et bâché jusqu’à la pose. Les pièces croches ou fendues repartent avec le camion.</p>
+      </figure>
+      <figure class="rv">
+        <div class="ph ri" data-arete>
+          <img src="../../images/secteurs-sites/construction-6.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux mains poussent un rabot à main sur le chant d’une pièce de bois posée sur un tréteau ; aucun visage.">
+          <canvas class="ar" aria-hidden="true"></canvas>
+        </div>
+        <figcaption class="leg">Ajustement d’une pièce de finition au rabot à main, sur le tréteau de l’atelier.</figcaption>
+        <p>Caissons, tablettes et moulures sont montés à plat et au sec pendant que le chantier avance. Ce qui arrive chez vous est déjà coupé, sablé et numéroté.</p>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RELEVÉS LIVRÉS ══════════════════════════════════════════ -->
+<section class="sec sec-clair f-clair tram">
+  <div class="enve">
+    <h2 class="rt">Trois chantiers, trois relevés.</h2>
+    <p class="chapeau rv">Une étape de montage et deux pièces livrées. C’est aux étapes que le travail se juge ; au fini, tout le monde se ressemble.</p>
+
+    <div style="max-width:266px;margin-top:clamp(32px,3.6vw,46px)">
+      <span class="cote">
+        <span class="cote-n">15 sem.</span>
+        <i class="cote-l"></i>
+      </span>
+      <span class="cote-t">Les trois chantiers, bout à bout</span>
+    </div>
+
+    <div class="rel">
+      <figure class="rv">
+        <div class="ph ri" data-arete>
+          <img src="../../images/secteurs-sites/construction-7.webp" width="960" height="720" loading="lazy" decoding="async" alt="Charpente de toit vue de dessous : fermes, entraits et pannes de bois clair posés sur un mur de blocs, échafaud encore en place.">
+          <canvas class="ar" aria-hidden="true"></canvas>
+        </div>
+        <h3 class="rel-t">Charpente de toit reprise</h3>
+        <p class="leg">Fermes, entraits et pannes vus de dessous ; échafaud encore en place.</p>
+        <div class="rel-m">
+          <div><span>Secteur</span><span>Blainville</span></div>
+          <div><span>Durée</span><span>3 sem.</span></div>
+          <div><span>Livré</span><span>Sept. 2025</span></div>
+        </div>
+      </figure>
+      <figure class="rv">
+        <div class="ph ri" data-arete>
+          <img src="../../images/secteurs-sites/construction-8.webp" width="960" height="720" loading="lazy" decoding="async" alt="Combles aménagés en chambre : plafond de bois en pente, deux puits de lumière, mur de brique conservé et fenêtre ronde.">
+          <canvas class="ar" aria-hidden="true"></canvas>
+        </div>
+        <h3 class="rel-t">Combles aménagés</h3>
+        <p class="leg">Plafond de bois en pente, deux puits de lumière, mur de brique conservé.</p>
+        <div class="rel-m">
+          <div><span>Secteur</span><span>Ste-Anne-des-Plaines</span></div>
+          <div><span>Durée</span><span>8 sem.</span></div>
+          <div><span>Livré</span><span>Mars 2024</span></div>
+        </div>
+      </figure>
+      <figure class="rv">
+        <div class="ph ri" data-arete style="--op:34% 44%">
+          <img src="../../images/secteurs-sites/construction-9.webp" width="960" height="720" loading="lazy" decoding="async" alt="Douche fermée par une paroi de verre, céramique grand format posée jusqu’au plafond, pomme de douche murale.">
+          <canvas class="ar" aria-hidden="true"></canvas>
+        </div>
+        <h3 class="rel-t">Salle de bain refaite</h3>
+        <p class="leg">Paroi de verre, céramique grand format posée pleine hauteur.</p>
+        <div class="rel-m">
+          <div><span>Secteur</span><span>Lorraine</span></div>
+          <div><span>Durée</span><span>4 sem.</span></div>
+          <div><span>Livré</span><span>Nov. 2024</span></div>
+        </div>
+      </figure>
+    </div>
+    <p class="note rv">Durées comptées du premier jour de démolition à la remise des clés, déficiences corrigées.</p>
+  </div>
+</section>
+
+<!-- ══ QUESTIONS ═══════════════════════════════════════════════ -->
+<section class="sec tram">
+  <div class="enve">
+    <h2 class="rt">Cinq réponses, avant l’appel.</h2>
+
+    <div class="qs">
+      <details class="q rv">
+        <summary><span class="q-p" aria-hidden="true"></span>Dans combien de temps pouvez-vous commencer ?</summary>
+        <p class="q-r">Le carnet se remplit de 8 à 14 semaines d’avance, davantage pour un chantier d’été signé au printemps. Une salle de bain se glisse plus facilement qu’un agrandissement, qui demande une plage complète. Le jour de la signature, vous repartez avec une date d’ouverture écrite au contrat.</p>
+      </details>
+      <details class="q rv">
+        <summary><span class="q-p" aria-hidden="true"></span>Qui s’occupe du permis ?</summary>
+        <p class="q-r">Nous montons le dossier complet : plans, implantation, formulaires, réponses à l’inspecteur. Le permis est délivré au propriétaire, c’est la règle dans nos villes, alors vous signez la demande et les frais de la Ville vous sont facturés au coût, sur pièce. On ne casse pas un mur avant de l’avoir en main.</p>
+      </details>
+      <details class="q rv">
+        <summary><span class="q-p" aria-hidden="true"></span>Est-ce que je peux rester dans la maison ?</summary>
+        <p class="q-r">Dans la grande majorité des cas, oui. La zone de travail est isolée par une cloison anti-poussière scellée et un accès vous est gardé. Les exceptions : les quelques jours de sablage de joints, et la période sans eau chaude ou sans cuisine, annoncée d’avance au calendrier.</p>
+      </details>
+      <details class="q rv">
+        <summary><span class="q-p" aria-hidden="true"></span>Qu’arrive-t-il si vous trouvez un imprévu ?</summary>
+        <p class="q-r">On arrête, on photographie, on documente et on appelle la journée même. Vous recevez un avenant écrit avec la description des travaux et l’effet sur l’échéancier ; rien ne repart avant qu’il soit signé des deux côtés. Les plus fréquents chez nous : solives entaillées par un ancien plombier, filage sans boîte de jonction, sous-plancher gonflé sous une baignoire.</p>
+      </details>
+      <details class="q rv">
+        <summary><span class="q-p" aria-hidden="true"></span>Que couvre exactement la garantie ?</summary>
+        <p class="q-r">Cinq ans sur notre main-d’œuvre, structure comprise, à compter de la date d’acceptation écrite de la livraison. Les matériaux restent couverts par la garantie de leur fabricant, dont les documents vous sont remis en dossier. Un appel de garantie est retourné dans les deux jours ouvrables.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ JOINDRE ═════════════════════════════════════════════════ -->
+<section class="sec sec-clair f-clair tram" id="joindre">
+  <div class="enve">
+    <h2 class="rt">Une visite, un relevé, une soumission écrite.</h2>
+    <p class="chapeau rv">On ne chiffre pas un projet par téléphone. On se déplace, on mesure, on regarde le solage et l’entretoit, puis on écrit. Une soumission sans visite est une estimation qui va changer.</p>
+
+    <div style="max-width:266px;margin-top:clamp(32px,3.6vw,46px)">
+      <span class="cote">
+        <span class="cote-n">1 jour</span>
+        <i class="cote-l"></i>
+      </span>
+      <span class="cote-t">Délai de rappel, en jours ouvrables</span>
+    </div>
+
+    <div class="joi">
+      <ol class="suite rv">
+        <li>
+          <span class="suite-n">01</span>
+          <h3 class="suite-t">On rappelle</h3>
+          <p class="suite-d">Pour comprendre le projet et vérifier qu’il entre dans nos huit lots. Si ce n’est pas pour nous, on le dit tout de suite.</p>
+        </li>
+        <li>
+          <span class="suite-n">02</span>
+          <h3 class="suite-t">Visite et relevé</h3>
+          <p class="suite-d">On mesure, on ouvre l’entretoit, on regarde le solage, le panneau et l’état de la structure. De 30 à 45 minutes.</p>
+        </li>
+        <li>
+          <span class="suite-n">03</span>
+          <h3 class="suite-t">Soumission détaillée</h3>
+          <p class="suite-d">Un devis descriptif poste par poste, la liste des exclusions et un échéancier daté. Relu avec vous, ligne par ligne.</p>
+        </li>
+      </ol>
+
+      <div>
+        <dl class="coord rv">
+          <div><dt>Téléphone</dt><dd><a href="tel:0000000000">000 000-0000</a></dd></div>
+          <div><dt>Courriel</dt><dd><a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></dd></div>
+          <div><dt>Bureau</dt><dd>Adresse sur demande</dd></div>
+          <div><dt>Heures</dt><dd>Lun. au ven., 7 h à 17 h</dd></div>
+          <div><dt>Territoire</dt><dd>45 km de Sainte-Thérèse</dd></div>
+        </dl>
+        <div class="joi-b">
+          <a class="btn btn-p" href="tel:0000000000">Appeler</a>
+          <a class="btn btn-s" href="mailto:courriel@exemple.ca">Écrire</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied tram">
+  <div class="enve">
+    <div class="pied-h">
+      <div>
+        <div class="marque" style="margin:0 0 16px">
+          <span class="estampe" aria-hidden="true">CL</span>
+          <span class="marque-n">Construction Lattier</span>
+        </div>
+        <p class="pied-p">Entrepreneur général en agrandissements et rénovations majeures, Basses-Laurentides, depuis 2009.</p>
+      </div>
+      <div>
+        <p class="pied-t">La feuille</p>
+        <ul class="pied-l">
+          <li><a href="#lots">Les huit lots</a></li>
+          <li><a href="#releve">Ouvert et refermé</a></li>
+          <li><a href="#sequence">La séquence de chantier</a></li>
+          <li><a href="#coupe">La coupe de mur</a></li>
+          <li><a href="#joindre">Nous joindre</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="pied-t">Cartouche</p>
+        <ul class="pied-l">
+          <li>RBQ 0000-0000-00</li>
+          <li>Catégories 1.1.1 et 1.2</li>
+          <li><a href="tel:0000000000">000 000-0000</a></li>
+          <li><a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></li>
+          <li>Adresse sur demande</li>
+        </ul>
+      </div>
+    </div>
+    <p class="pied-f">
+      <b>Site de démonstration</b>
+      Construction Lattier est une entreprise fictive : le nom, le numéro de licence, les coordonnées, les chantiers et les dates ont été inventés pour illustrer une mise en page. Aucun prix, aucun avis et aucun témoignage ne figure sur cette page.
+    </p>
+  </div>
+</footer>
+
+<script>
+/* ══ LE SURLIGNAGE DES ARÊTES ═════════════════════════════════════
+   Ce que le CSS ne sait pas faire : lire les pixels d’une photo et en
+   sortir un contour. Onze photographies, onze `<canvas>`.
+
+   LA CHAÎNE, ET CHAQUE MAILLON A ÉTÉ AJOUTÉ APRÈS AVOIR REGARDÉ.
+   1. luminance Rec.709 ;
+   2. DEUX PASSES DE FLOU 3×3 — sans elles, le veinage du bois, la
+      laine minérale et surtout le FEUILLAGE derrière la maison du
+      héros rendent autant d’arêtes que la charpente. Première
+      capture : 14,7 % des pixels allumés, une bouillie ;
+   3. SOBEL 3×3, magnitude ramenée sur 0-255 ;
+   4. AFFINAGE — on ne garde un pixel que s’il est le MAXIMUM de sa
+      voisinage dans la direction du gradient. C’est le maillon qui
+      décide de tout : sans lui le Sobel rend une bande de trois
+      pixels, la bande est agrandie à l’affichage, et ça ne ressemble
+      plus à un trait de dessin mais à un néon. Avec lui, une arête
+      fait UN pixel ;
+   5. seuil bas et seuil haut : sous SEUIL rien ne s’écrit, au-dessus
+      de PLEIN l’arête est pleine. Entre les deux, l’opacité monte
+      LINÉAIREMENT — un dégradé de trait, pas un aplat baveux ;
+   6. la couleur écrite est le cyan de la DA, jamais autre chose, et
+      le calque est composé en `screen` : il ne peut qu’ÉCLAIRCIR.
+
+   CE QUI EST DÉCORATIF RESTE DÉCORATIF. Le canevas est
+   `aria-hidden`, il ne porte aucun texte, aucun lien, aucune donnée.
+   JavaScript coupé, il ne manque que le surlignage : la page se lit
+   et s’utilise entière.
+
+   TROIS PROTECTIONS.
+   · `getImageData` lève une `SecurityError` sur un canevas teinté —
+     c’est ce qui arrive si la page est ouverte en `file://`. On sort
+     sans bruit plutôt que d’écrire une erreur en console.
+   · Une image par image d’animation : onze Sobel d’un coup bloquent
+     le fil principal. La file avance d’un cran par `rAF`.
+   · Les images sous le pli sont en `loading="lazy"` et ne se
+     chargeront jamais si personne ne défile. Une fois la page
+     chargée — donc après le LCP, qui ne paie rien — on les passe en
+     `eager` : la capture pleine page voit alors TOUS les surlignages,
+     pas seulement celui du héros. */
+(function () {
+  "use strict";
+  var DENSITE = 0.030;  /* part des pixels allumés — la « quantité de
+                           trait » d’une planche, et elle est la même
+                           sur les onze photographies */
+  /* LA LARGEUR DE CALCUL SE MESURE EN MILLISECONDES, PAS EN PIXELS.
+     À 1 280 px, le héros — deux passes de flou, un Sobel et une
+     suppression des non-maximums sur 1 280 × 720 — tenait le fil
+     principal **599 ms d’un seul bloc**. Relevé au `PerformanceObserver`,
+     pas deviné : trois tâches longues au chargement, 132, 78 et 599 ms.
+     Une tâche de 599 ms est une demi-seconde pendant laquelle la page
+     ne répond à rien.
+
+     À 860 px le calcul tombe à 45 % du coût, et le trait ne perd rien :
+     il est agrandi par le canevas, donc légèrement adouci — ce qui le
+     rapproche d’un trait de crayon au lieu d’un néon d’un pixel.
+     Sur une machine faible — quatre cœurs ou moins, quatre gigaoctets
+     ou moins — on descend encore. La planche reste surlignée partout :
+     c’est la finesse qui cède, jamais la présence. */
+  var FAIBLE = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+  var LARGE = FAIBLE ? 560 : 900;
+  var T1 = 0.41421356, T2 = 2.41421356;  /* tangentes de 22,5° et 67,5° */
+
+  /* Un cadre porte AUTANT de canevas que d’images, appariés dans
+     l’ordre du document : l’avant / après en a deux, superposés, et
+     le second est découpé par le même `clip-path` que sa photo. */
+  function arete(cadre, k) {
+    var img = cadre.querySelectorAll("img")[k];
+    var vue = cadre.querySelectorAll("canvas.ar")[k];
+    if (!img || !vue) return false;
+    var nw = img.naturalWidth, nh = img.naturalHeight;
+    if (!nw || !nh) return false;
+
+    var W = Math.min(nw, LARGE);
+    var H = Math.max(3, Math.round(W * nh / nw));
+    var brut = document.createElement("canvas");
+    brut.width = W; brut.height = H;
+    var cx = brut.getContext("2d", { willReadFrequently: true });
+    if (!cx) return false;
+    cx.drawImage(img, 0, 0, W, H);
+
+    var src;
+    try { src = cx.getImageData(0, 0, W, H); } catch (e) { vue.dataset.fait = "1"; return true; }
+    var d = src.data, n = W * H, i, p, x, y;
+
+    var lum = new Float32Array(n);
+    for (i = 0; i < n; i++) { p = i << 2; lum[i] = 0.2126 * d[p] + 0.7152 * d[p + 1] + 0.0722 * d[p + 2]; }
+
+    /* Deux passes de flou 3×3 : la seconde est ce qui éteint le
+       feuillage sans toucher aux arêtes du bâtiment. */
+    var flou = lum, tmp = new Float32Array(n), passe;
+    for (passe = 0; passe < 2; passe++) {
+      for (y = 1; y < H - 1; y++) {
+        for (x = 1; x < W - 1; x++) {
+          i = y * W + x;
+          tmp[i] = (flou[i - W - 1] + flou[i - W] + flou[i - W + 1] +
+                    flou[i - 1]     + flou[i]     + flou[i + 1] +
+                    flou[i + W - 1] + flou[i + W] + flou[i + W + 1]) / 9;
+        }
+      }
+      var ech = flou; flou = tmp; tmp = ech;
+    }
+
+    /* Sobel : on garde la magnitude ET la direction, la seconde sert
+       à l’affinage. */
+    var mag = new Float32Array(n), dir = new Uint8Array(n), gx, gy, m, a, ax, ay;
+    for (y = 1; y < H - 1; y++) {
+      for (x = 1; x < W - 1; x++) {
+        i = y * W + x;
+        gx = (flou[i - W + 1] + 2 * flou[i + 1] + flou[i + W + 1]) -
+             (flou[i - W - 1] + 2 * flou[i - 1] + flou[i + W - 1]);
+        gy = (flou[i + W - 1] + 2 * flou[i + W] + flou[i + W + 1]) -
+             (flou[i - W - 1] + 2 * flou[i - W] + flou[i - W + 1]);
+        mag[i] = Math.sqrt(gx * gx + gy * gy) / 4;
+        ax = gx < 0 ? -gx : gx; ay = gy < 0 ? -gy : gy;
+        /* Quatre directions, sans `atan2` : le rapport des deux
+           composantes suffit et coûte cent fois moins cher. */
+        if (ay <= T1 * ax)       dir[i] = 0;   /* arête verticale   */
+        else if (ay >= T2 * ax)  dir[i] = 2;   /* arête horizontale */
+        else if ((gx > 0) === (gy > 0)) dir[i] = 3;
+        else                     dir[i] = 1;
+      }
+    }
+
+    /* AFFINAGE : le pixel doit dominer ses deux voisins dans la
+       direction du gradient, sinon il fait partie de l’ÉPAISSEUR de
+       l’arête et pas de l’arête elle-même. Ce qui survit est rangé
+       dans un histogramme de 256 cases. */
+    var fin = new Float32Array(n), hist = new Uint32Array(256), av, ap, b;
+    for (y = 2; y < H - 2; y++) {
+      for (x = 2; x < W - 2; x++) {
+        i = y * W + x;
+        m = mag[i];
+        if (m <= 4) continue;
+        switch (dir[i]) {
+          case 0:  av = mag[i - 1];     ap = mag[i + 1];     break;
+          case 2:  av = mag[i - W];     ap = mag[i + W];     break;
+          case 1:  av = mag[i - W + 1]; ap = mag[i + W - 1]; break;
+          default: av = mag[i - W - 1]; ap = mag[i + W + 1];
+        }
+        if (m < av || m < ap) continue;
+        fin[i] = m;
+        b = m | 0; if (b > 255) b = 255;
+        hist[b]++;
+      }
+    }
+
+    /* LE SEUIL SE CALCULE, IL NE SE DEVINE PAS. Un seuil fixe réglé
+       sur le héros — une maison claire sur un ciel blanc — vidait les
+       photographies d’intérieur, où le même trait vaut trois fois
+       moins. On descend l’histogramme jusqu’à ce que la part de
+       pixels allumés atteigne DENSITE : chaque planche reçoit alors
+       la même QUANTITÉ DE TRAIT, quelle que soit sa lumière.
+
+       UNE PLANCHE PEUT NE PAS AVOIR ASSEZ D’ARÊTES POUR REMPLIR LA
+       CIBLE — un mur de gypse blanc, un plan rapproché flou. La
+       descente n’atteint alors jamais DENSITE : le seuil de départ
+       est donc le PLUS BAS, pas le plus haut. Réglé au plus haut,
+       deux photographies sur douze sortaient entièrement NOIRES et
+       rien dans la console ne le disait. */
+    var cible = n * DENSITE, cumul = 0, SEUIL = 5;
+    for (b = 255; b >= 5; b--) { cumul += hist[b]; if (cumul >= cible) { SEUIL = b; break; } }
+    if (SEUIL > 96) SEUIL = 96;
+    var PLEIN = SEUIL * 1.4, ecart = PLEIN - SEUIL;
+
+    var out = cx.createImageData(W, H), o = out.data;
+    for (i = 0; i < n; i++) {
+      m = fin[i];
+      if (m <= SEUIL) continue;
+      a = (m - SEUIL) / ecart;
+      if (a > 1) a = 1;
+      p = i << 2;
+      o[p] = 63; o[p + 1] = 200; o[p + 2] = 232; o[p + 3] = (a * 255) | 0;
+    }
+
+    vue.width = W; vue.height = H;
+    vue.getContext("2d").putImageData(out, 0, 0);
+    vue.dataset.fait = "1";
+    return true;
+  }
+
+  if (!("createImageData" in CanvasRenderingContext2D.prototype)) return;
+  var files = [], imgs = [];
+  [].forEach.call(document.querySelectorAll("[data-arete]"), function (cadre) {
+    [].forEach.call(cadre.querySelectorAll("canvas.ar"), function (vue, k) {
+      files.push({ cadre: cadre, vue: vue, k: k });
+      var img = cadre.querySelectorAll("img")[k];
+      if (img) imgs.push(img);
+    });
+  });
+  if (!files.length) return;
+
+  /* Un Sobel par image d’animation. Onze d’un coup bloquent le fil
+     principal une demi-seconde ; en file, ça ne se voit pas. Le héros
+     est premier dans le document, donc premier servi. */
+  /* UN SEUL `tour` EN FILE À LA FOIS, ET C'EST TOUT LE PROBLÈME.
+     `tour` était reprogrammé depuis quatre endroits — le départ, le
+     `load` de chaque image, la fin de la page. Quand douze images
+     arrivent du cache dans la même image d'animation, douze `tour`
+     s'exécutent à la suite AVANT que le navigateur ne reprenne la
+     main : la file d'un Sobel par trame devenait douze Sobel d'un
+     bloc. Relevé au `PerformanceObserver` : une tâche de 599 ms, une
+     demi-seconde pendant laquelle la page ne répond à rien.
+     Le drapeau garantit ce que le commentaire promettait déjà. */
+  var enFile = false;
+  function programmer() {
+    if (enFile) return;
+    enFile = true;
+    requestAnimationFrame(tour);
+  }
+  function tour() {
+    enFile = false;
+    var reste = false, fait = false;
+    for (var i = 0; i < files.length; i++) {
+      if (files[i].vue.dataset.fait) continue;
+      if (!fait && arete(files[i].cadre, files[i].k)) { fait = true; continue; }
+      reste = true;
+    }
+    if (reste) programmer();
+  }
+  programmer();
+
+  for (var j = 0; j < imgs.length; j++) {
+    if (!imgs[j].complete) imgs[j].addEventListener("load", programmer, { once: true });
+  }
+
+  /* Les images sous le pli sont en `loading="lazy"` et ne se
+     chargeraient jamais si personne ne défile : la capture pleine
+     page ne verrait qu’un surlignage sur onze. Une fois la page
+     chargée — donc après le LCP, qui ne paie rien — on les passe en
+     `eager`. */
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      for (var i = 0; i < imgs.length; i++) {
+        if (imgs[i].loading === "lazy" && !imgs[i].complete) imgs[i].loading = "eager";
+      }
+      programmer();
+    }, 250);
+  });
+})();
+</script>
+
+</body>
+</html>
