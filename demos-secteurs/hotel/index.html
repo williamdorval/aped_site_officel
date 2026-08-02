@@ -10,25 +10,27 @@
 <meta name="color-scheme" content="dark">
 
 <!-- L'INSTANT DE LA CAPTURE.
-     Le geste unique de l'écran — « LA LAISSE », la plaque de laiton
-     qui court de gauche à droite sous le nom, comme une laisse de
-     haute mer le long d'une grève — dure 1800 ms après 400 ms
-     d'attente. À t = 1500 ms le remplissage vaut
-     (1500 − 400) / 1800 = 61,1 %. Relevé DANS LA CAPTURE, par
-     balayage d'une ligne au milieu de la plaque : 309 px de laiton
-     pleine masse, de x = 112 à x = 420, sur 16 px de haut.
+     Le geste unique — « LA LAISSE » — est la lèvre de laiton de
+     22 px encastrée dans le bord haut du socle. Elle court de gauche
+     à droite sur toute la largeur de l'écran, comme la laisse de
+     haute mer le long d'une grève. 1800 ms linéaires après 400 ms
+     d'attente ; à t = 1500 ms elle vaut (1500 − 400) / 1800 = 61,1 %,
+     soit 880 px de laiton sur 1440.
 
-     POURQUOI PAS UN FILET D'1 PX. L'aperçu du panneau réduit la
-     capture de 1440 à 421 px, soit 0,29. Un filet d'1 px y vaut
-     0,29 px : le moteur l'étale en un gris que personne ne voit
-     (piège 57). La plaque, elle, pèse 16 px de haut — 4,6 px après
-     réduction — et son bord de fuite parcourt 506 px, soit 147 px
-     dans le panneau. Le mouvement se prouve dans la page ; il se
-     VEND dans le panneau.
+     LES CINQ INSTANTS, à relever DANS l'image par balayage d'une
+     ligne au milieu de la lèvre : 400 / 675 / 950 / 1225 / 1500 ms →
+     bord de fuite à x = 0 / 220 / 440 / 660 / 880. Écart constant de
+     220 px entre deux consécutives. À 0,29 c'est 64 px d'écart :
+     personne ne peut confondre deux images voisines.
 
-     LES CINQ INSTANTS, relevés dans l'image : à 400 / 675 / 950 /
-     1225 / 1500 ms le bord de fuite est à x = 112 / 188 / 265 / 343 /
-     420 — 77 px d'écart entre deux consécutives, sans exception. -->
+     POURQUOI LA LÈVRE ET PLUS LE FILET SOUS LE NOM. La version
+     précédente animait une plaque de 506 × 16 sous un nom de 21 px.
+     Le nom fait maintenant 128 px et occupe presque toute la largeur ;
+     une plaque à sa mesure aurait doublé le laiton de l'écran et
+     l'aurait posée à 30 px du bord du socle — deux longues
+     horizontales voisines qui se lisent comme des rayures. En la
+     descendant DANS le socle elle devient ce qu'elle prétendait
+     être : une pièce de métal encastrée, pas un soulignement. -->
 <meta name="aped-instant" content="1500">
 
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/cormorant-3.woff2" crossorigin>
@@ -39,12 +41,29 @@
 /* ════════════════════════════════════════════════════════════════
    AUBERGE DE L'ANSE-À-GIVRE — un seul écran, 1440 × 900
 
-   La référence : une plaque de laiton gravée, vissée sur la
-   rambarde d'un belvédère. On lit le paysage d'abord ; la plaque
-   ensuite, en s'approchant. Rien ici ne cherche à être vu de loin
-   sauf la photographie — le plus gros caractère de l'écran mesure
-   21 px, et de y = 62 (sous la barre du haut) à y = 610 (le
-   surtitre) rien n'est posé : 61 % de la hauteur.
+   LA RÉFÉRENCE : le tablier d'instruments d'un belvédère. Une
+   photographie de nuit occupe tout le cadre ; dans son bord bas est
+   ENCASTRÉE une plaque de métal, à fleur, bordée d'un jonc de laiton,
+   qui donne la température de l'heure. On lit le lieu, puis le froid.
+
+   DEUX MASSES ET RIEN D'AUTRE : le nom à 128 px en bas à gauche, et
+   le chiffre à 104 px à l'extrémité droite du socle. La diagonale
+   entre les deux est la composition. Tout le reste — la barre du
+   haut, la promesse, les heures — est de la TEXTURE : des blocs
+   réguliers de gris qui ne se lisent pas à trois mètres, et n'ont pas
+   à se lire.
+
+   CE QUI A CHANGÉ LE 2026-08-01, ET POURQUOI.
+   La version précédente plafonnait son plus gros caractère à 21 px.
+   Le parti se défendait à l'écrit ; il ne survivait pas à la mesure.
+   Réduite à 421 px — la largeur du panneau des réalisations — la
+   capture rendait **L moyen 15,7 et σ 13,0** : la deuxième plus
+   sombre des douze, et la PLUS PLATE du groupe sombre (paysagement
+   27,6 · garage 27,9 · restaurant 17,5). Son 95e centile plafonnait à
+   **L 45,7** quand celui du garage atteint 94,7. Autrement dit : il
+   n'y avait rien de clair nulle part, donc aucune hiérarchie, donc
+   rien à voir de loin. Le défaut n'était pas « la photo est sombre »
+   — c'était « aucun objet de l'écran n'est lumineux ».
    ════════════════════════════════════════════════════════════════ */
 
 /* ── LES TROIS FACES, ET RIEN D'AUTRE ─────────────────────────────
@@ -59,21 +78,17 @@
 @font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 
 :root{
-  --sapin:#0b1712;      /* le seul aplat de l'écran */
+  --sapin:#0b1712;      /* le seul aplat de l'écran — le socle */
   --os:#e8e0cd;         /* tout le texte, sans exception */
-  --laiton:#a98b4f;     /* le filet, la bordure, l'aplat du bouton,
-                           et la plaque du geste */
-  --mx:72px;            /* marge gauche et droite */
+  --laiton:#a98b4f;     /* la lèvre du socle, les joncs, le cadre du
+                           bouton, le libellé du relevé */
+  --mx:72px;            /* marge droite, et marge de la barre du haut */
+  --tx:112px;           /* l'axe du texte : le nom, et le contenu du
+                           socle. 40 px de plus que la marge — c'est
+                           lui qui tient la colonne de gauche */
   --mt:48px;            /* marge haute */
-  --mb:52px;            /* marge basse — volontairement inégale */
-  --chasse:.44em;       /* la chasse de la marque. Déclarée ici parce
-                           que la PLAQUE s'en sert pour retirer la
-                           chasse morte de la dernière lettre, et que
-                           les deux doivent changer ensemble. */
-  --retrait:40px;       /* le texte est renfoncé de 40 px de plus que le
-                           filet, pour que le filet lise comme un objet
-                           posé dans la marge et non comme un
-                           soulignement */
+  --socle:168px;        /* hauteur du socle encastré */
+  --levre:26px;         /* épaisseur de la lèvre de laiton = le geste */
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -96,130 +111,259 @@ img{display:block}
    de réduction, la largeur affichée devient 1600 px et 80 px sont
    rognés de chaque côté. AUCUN agrandissement.
 
-   POURQUOI CE FICHIER, ET PAS `hotel-1`. `hotel-1` est un massif
-   européen : toiture à très forte pente à quinze lucarnes, pierrier
-   alpin dans le coin haut-droit, pins de montagne en amorce. L'écran
-   se dit sur la HAUTE-CÔTE-NORD. Une photo ne contredit jamais le
-   texte de la page ; quand les deux se contredisent, c'est la photo
-   qui change (STANDARD § 4.5). `hotel-2` ne porte aucun signe
-   étranger : feuillus nus chargés de neige, sol enneigé, pavillons de
-   bois à toit sombre, brunante bleue.
+   POURQUOI CE FICHIER. Ouvert en pleine résolution : boulaie de
+   feuillus nus chargés de neige, sol enneigé profond, trois pavillons
+   de bois à pignon montés sur pilotis, une passerelle, des lanternes,
+   la brunante bleue. Rien d'étranger — c'est Charlevoix ou la
+   Côte-Nord sans discussion. Cherché au même grossissement : aucune
+   marque, aucune enseigne, aucune plaque, aucun numéro civique ;
+   quatre ou cinq promeneurs à contre-jour sur la passerelle, aucun
+   visage résolu (STANDARD § 4.2 vise les visages reconnaissables,
+   pas les gens). Les trois autres 1920 × 1080 du lot ne tiennent
+   pas : `hotel-1` est un massif européen (pierrier alpin, pins mugo
+   en amorce) et l'écran se dit sur la Haute-Côte-Nord ; `hotel-9` est
+   de la brume claire sans sujet. Les portraits 1000 × 1400 demandent
+   1,44 d'agrandissement.
 
-   Le traitement est mesuré, pas choisi. Composite relevé en canvas
-   avec le recouvrement exact, au réglage EN PLACE
-   (`brightness(.82)`) : la neige du sol passe de #69b8eb (Y 0,433,
-   saturation 55 %) à #607888 (Y 0,177, 29 %) — bleu > vert > rouge,
-   donc LA NEIGE RESTE BLEUE ; la neige des branches tombe à #324047 ;
-   les troncs à #333f45, froids eux aussi.
-
-   CE QU'IL RESTE DE CHAUD, ET IL EST COMPTÉ : 650 pixels sur
-   1 296 000 — 0,502 ‰ — satisfont « rouge > vert et rouge > bleu ».
-   Ce sont les carreaux allumés des pavillons ; le plus saturé rend
-   #4a362a, soit 43 %. `saturate(.26)` les ramènerait à 101 px, et les
-   deux planches sont indiscernables à l'œil : on garde .34 parce que
-   ces pixels-là sont la seule chose de l'écran qui dise qu'il y a
-   quelqu'un — et c'est exactement ce que la passe du côte-à-côte
-   demandait en remontant la luminosité. À `brightness(.60)` il n'y en
-   avait que 61 (0,047 ‰) : LE COMPTE SUIT LA LUMINOSITÉ et se
-   reprend chaque fois qu'elle bouge — page rendue, `.haut`, `.bas` et
-   `.filet` RETIRÉS du document, puis balayage des pixels.
-
-   Le compte a d'abord rendu 2 798 pixels chauds, et c'était FAUX :
-   ils étaient tous posés sur les lignes de texte. Chromium sous
-   Windows rend le texte en anticrénelage de SOUS-PIXELS et
-   `-webkit-font-smoothing:antialiased` n'y change rien — une frange
-   rouge de sous-pixel satisfait le test sans qu'aucune couleur
-   chaude soit dans la page. On ne compte que les couches d'image,
-   tout le reste retiré du document. */
-/* ── L'ORDRE DE PEINTURE, ÉCRIT PLUTÔT QUE SUBI ───────────────────
-   Un descendant STATIQUE se peint sous un descendant POSITIONNÉ,
-   même quand il vient après lui dans le document. En dessous de
-   1080 px la ligne du haut et le bas repassent en flux : sans ces
-   plans numérotés, la nappe et le dégradé les recouvraient et
-   l'écran étroit ne montrait plus que la nav — le reste du texte
-   était peint DESSOUS, à 97 % d'opacité de noir par-dessus.
-   Les deux blocs de texte gardent donc `position:relative` partout,
-   et chaque couche porte son numéro. */
+   LA LUMINOSITÉ MONTE À 1,06, ET C'EST UNE CORRECTION, PAS UN GOÛT.
+   Elle valait .82. Mesuré sur la capture livrée : L moyen 15,7 pour
+   un écran dont les tranches du haut plafonnaient à 11 — plus sombre
+   que le restaurant (27) et la construction (20) au même endroit. La
+   source est une photographie d'heure bleue sous-exposée d'origine ;
+   au-dessus de 1 le filtre ne « surexpose » pas, il rend ce que le
+   capteur avait. Le virage froid et la désaturation restent : c'est
+   la voie, et ils sont ce qui empêche le bois éclairé de virer au
+   chaud. Toute reprise de cette valeur SE REJOUE sur le voile du
+   haut, qui est réglé sur elle. */
 .photo{
   position:absolute;top:0;right:0;bottom:0;left:0;z-index:0;
   width:100%;height:100%;
   object-fit:cover;object-position:50% 50%;
-  /* `brightness(.60)` PERDAIT LE SUJET, et le côté-à-côte l'a dit.
-     Posé à côté de Nimmo Bay et d'Eleven Experience — les deux
-     références retenues — cet écran était le seul dont on ne
-     distinguait pas ce qu'il montre : une forêt noire où les chalets
-     n'apparaissaient qu'en s'approchant. Les trois références gardent
-     leur sujet lisible ; c'est ce qui les fait entrer.
-     Le virage froid et la désaturation restent — c'est la voie. La
-     luminosité remonte assez pour que les fenêtres allumées et les
-     toitures se lisent à la vignette de 421 px, et le dégradé du bas
-     continue de porter le contraste du texte. */
-  filter:saturate(.34) contrast(1.12) brightness(.82);
+  filter:saturate(.36) contrast(1.10) brightness(1.06);
 }
 
-/* ── 2 · LA NAPPE FROIDE — plate, sans mode de fusion ───────────── */
-.nappe{position:absolute;top:0;right:0;bottom:0;left:0;z-index:1;background:rgba(18,44,58,.26)}
+/* ── 2 · LA NAPPE FROIDE — plate, sans mode de fusion ─────────────
+   .26 → .22 : la nappe est un virage, pas un assombrissement, et
+   l'assombrissement est maintenant le travail du socle. */
+.nappe{position:absolute;top:0;right:0;bottom:0;left:0;z-index:1;background:rgba(18,44,58,.22)}
 
-/* ── 3 · LE DÉGRADÉ DU BAS — de y = 400 à y = 900 ───────────────── */
-.degrade{
-  position:absolute;left:0;right:0;bottom:0;z-index:2;height:500px;
-  background:linear-gradient(180deg,
-    rgba(9,18,15,0)   0,
-    rgba(9,18,15,.34) 20%,
-    rgba(9,18,15,.66) 42%,
-    rgba(9,18,15,.86) 62%,
-    rgba(9,18,15,.94) 84%,
-    rgba(9,18,15,.97) 100%);
-}
-
-/* ── 3 bis · LE VOILE DU HAUT — 210 px, ET IL EST NOUVEAU ─────────
-   La version précédente n'en avait pas, et elle avait raison : son
-   tiers supérieur était un mur d'épinettes plein, traité à
-   Y = 0,011, sur lequel la nav mesurait déjà 13,22:1.
-
-   La nouvelle matière est l'inverse — un lacis de branches chargées
-   de neige, clair et haché. Sans voile, à la luminosité en place, le
-   PIRE PIXEL sous le numéro de téléphone rend 2,29:1, sous la mention
-   de démonstration 1,62:1, sous la nav 1,87:1 — et les moyennes
-   disent 11,88 · 5,35 · 7,30. Une moyenne n'excuse pas une hampe de
-   « 5 » posée sur une branche blanche.
-
-   IL EST RÉGLÉ SUR LA LUMINOSITÉ, PAS UNE FOIS POUR TOUTES. À
-   `brightness(.60)` il valait .62 sur 190 px. La passe du
-   côte-à-côte a remonté la luminosité à .82 pour que le sujet se
-   lise à la vignette de 421 px — décision juste, et le prix se paie
-   ici : à .62 le pire pixel de la mention retombait à 3,13:1. À
-   .82 / .48 / 0 sur 210 px, on retrouve la cote exacte d'avant —
-   7,78 · 4,35 · 6,41 — SANS rendre la luminosité gagnée : la bande
-   0→400 garde L 46,2 et σ 29,4, contre 38,7 et 22,5 quand la
-   photographie était à .60. Toute reprise de `brightness` se
-   rejoue ici. La mention, elle, passe de 62 % à
-   72 % d'os pour finir de payer sa part.
-
-   La photographie reste intacte de y = 210 à y = 400. */
+/* ── 3 · LE VOILE DU HAUT — 170 px ────────────────────────────────
+   Il protège la seule chose posée là-haut : la barre. La matière en
+   dessous est un lacis de branches chargées de neige, clair et haché,
+   donc un pire pixel très clair sous une hampe de 1 px. IL EST RÉGLÉ
+   SUR LA LUMINOSITÉ DE LA PHOTO, pas une fois pour toutes : à .82 il
+   valait .90/.58/0 sur 210 px ; la photo passant à 1,06, il se
+   raccourcit à 170 px et se durcit en tête pour tenir la même cote
+   sans reprendre la lumière gagnée plus bas. */
 .voile-haut{
-  position:absolute;top:0;left:0;right:0;z-index:2;height:210px;
+  position:absolute;top:0;left:0;right:0;z-index:2;height:170px;
   background:linear-gradient(180deg,
-    rgba(9,18,15,.90) 0,
-    rgba(9,18,15,.58) 45%,
+    rgba(9,18,15,.92) 0,
+    rgba(9,18,15,.56) 46%,
     rgba(9,18,15,0)   100%);
 }
 
-/* ── 4·5·6·7 · LA LIGNE DU HAUT ─────────────────────────────────── */
+/* ── 4 · LE DÉGRADÉ — de y = 400 au bord haut du socle ────────────
+   Il ne descend plus jusqu'à 900 : le socle occupe les 168 derniers
+   pixels et il est presque opaque. Le dégradé n'a donc qu'un seul
+   travail — porter le nom à 128 px, de y 613 à y 697.
+
+   IL NE SERT PAS À LA LISIBILITÉ, ET C'EST MESURÉ. Sous le nom, le
+   pire pixel rend **10,87:1** ; sous « AUBERGE DE », 10,23 ; sous le
+   lieu, 7,03. Le seuil des grands caractères est 3:1. Il y a donc de
+   la marge partout, et le dégradé ne se règle PAS sur le contraste —
+   il se règle sur le BRUIT : la bande y 500 → 600 est un lacis de
+   troncs et de neige où deux lignes de 11 et 15 px se perdent non
+   pas faute de contraste mais faute de calme. Il commence donc 30 px
+   plus haut et monte plus vite dans cette bande.
+
+   *(J'ai failli refaire toute la composition sur un défaut de
+   contraste qui n'existait pas — le nom paraît délavé à l'œil parce
+   qu'il est ENTOURÉ de neige claire, pas parce qu'il l'est. Piège
+   74 : mesurer avant de croire l'impression.)* */
+.degrade{
+  position:absolute;left:0;right:0;bottom:var(--socle);z-index:2;height:332px;
+  background:linear-gradient(180deg,
+    rgba(9,18,15,0)   0,
+    rgba(9,18,15,.22) 22%,
+    rgba(9,18,15,.48) 42%,
+    rgba(9,18,15,.70) 62%,
+    rgba(9,18,15,.84) 82%,
+    rgba(9,18,15,.90) 100%);
+}
+
+/* ── 5 · LE SOCLE ENCASTRÉ — l'exclusivité de composition ─────────
+   Une plaque de métal à FLEUR du cadre : elle touche le bord gauche,
+   le bord droit et le bord bas. Elle ne flotte pas, elle ne porte
+   aucune ombre, elle n'a aucun coin arrondi.
+
+   AUCUN RAYON NULLE PART, ET C'EST UNE DÉCISION. La version
+   précédente posait 24 px sur le cartouche et 20 px sur le bouton :
+   deux objets qui FLOTTAIENT, et un objet qui flotte a le droit
+   d'avoir des coins. Un objet encastré n'en a pas — une pièce
+   ajustée dans un bâti est d'équerre, sinon elle ne rentre pas. Le
+   rayon reste permis dans les douze écrans ; ici il serait un tableau
+   de bord de plastique.
+
+   .965 et pas 1 : à travers, on devine encore le grain de la neige,
+   ce qui dit que la plaque est POSÉE SUR la photographie et non
+   qu'elle la remplace. C'était .955 ; les 1 % rendus paient la ligne
+   des heures, qui frôlait le seuil. */
+.socle{
+  position:absolute;left:0;right:0;bottom:0;z-index:3;height:var(--socle);
+  background:rgba(9,17,14,.965);
+}
+
+/* ── LE GESTE, ET IL EST SEUL — « LA LAISSE » ─────────────────────
+   La lèvre de laiton encastrée dans le bord haut du socle, qui court
+   de gauche à droite sur les 1440 px. La direction suit le sens de
+   lecture, comme un titre.
+
+   LA COURSE EST DESSINÉE EN CREUX derrière, au pixel près : sur une
+   image ARRÊTÉE, une lèvre à 61 % sans sa course se lit comme une
+   pièce courte qu'on a voulu courte ; avec la course, elle se lit
+   comme une pièce qu'on est en train de poser. Au repos le laiton la
+   recouvre exactement.
+
+   LINÉAIRE, ET C'EST DÉLIBÉRÉ : une sortie en ease-out ferait bouger
+   la fraction capturée de 20 points pour 40 ms d'écart ; un
+   remplissage linéaire ne la bouge que de 2,2 points. Deux passes
+   rendent la même image.
+
+   26 px, ET PAS 1. À 0,29 un filet d'1 px vaut 0,29 px et le moteur
+   l'étale en un gris que personne ne voit (piège 57). 26 px en valent
+   7,5, et le bord de fuite parcourt 1440 px, soit 418 px réduits.
+
+   LA COURSE EST UNE SAIGNÉE, PAS UNE PISTE — ET C'EST LA CORRECTION
+   DE LA DEUXIÈME PASSE. Au premier tirage la course était CLAIRE
+   (`rgba(232,224,205,.10)`), plus claire que le socle : une barre
+   pleine qui avance dans une piste plus claire, en haut d'un
+   panneau, se lit comme une BARRE DE CHARGEMENT, et c'était le seul
+   objet raté de l'écran. Une saignée plus SOMBRE que la plaque
+   renverse la lecture : ce n'est plus un niveau qui monte, c'est une
+   pièce de métal qu'on glisse dans une rainure creusée pour elle.
+   Le jonc porte en plus une arête sombre d'1 px sur sa lèvre basse,
+   qui lui donne son épaisseur. */
+.socle::before,.socle::after{
+  content:"";position:absolute;left:0;top:0;width:100%;height:var(--levre);
+}
+.socle::before{background:rgba(0,0,0,.45)}
+.socle::after{
+  background:var(--laiton);
+  border-bottom:1px solid rgba(0,0,0,.34);
+  transform:scaleX(1);                /* ÉTAT DE REPOS = ÉTAT FINAL */
+  transform-origin:0 50%;
+}
+/* L'ÉTAT DE DÉPART NE VIT QUE SOUS `no-preference`. Écrit dans la
+   règle de base, `scaleX(0)` serait la forme de repos : un moteur qui
+   ne sait pas animer, ou un visiteur en mouvement réduit, verrait une
+   lèvre VIDE. Écrit ici, il n'existe que lorsqu'on a le droit de
+   bouger — et pendant les 400 ms de retard la lèvre est déjà à zéro,
+   donc aucun clignotement au chargement. `forwards` et jamais `both`. */
+@media (prefers-reduced-motion:no-preference){
+  .socle::after{transform:scaleX(0);animation:laisse 1800ms linear 400ms forwards}
+}
+@keyframes laisse{ from{transform:scaleX(0)} to{transform:scaleX(1)} }
+
+/* ── LE CONTENU DU SOCLE ──────────────────────────────────────────
+   Une seule rangée, alignée par le BAS sur y = 874. De gauche à
+   droite : la clé, la promesse, le relevé, le chiffre. Trois joncs de
+   laiton d'1 px les séparent — c'est un tablier d'instruments, la
+   densité y est le sujet. L'axe gauche est celui du nom (112) ;
+   l'axe droit est celui de la nav (1368). */
+.socle-in{
+  position:absolute;left:var(--tx);right:var(--mx);top:var(--levre);bottom:0;z-index:1;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding-bottom:26px;
+}
+.jonc{flex:none;width:1px;height:88px;background:rgba(169,139,79,.58)}
+
+/* La clé. Cadre de laiton, aucun aplat : le seul aplat de laiton de
+   l'écran est la lèvre, et deux masses de laiton s'annuleraient.
+   Elle se remplit au survol — c'est la micro-interaction principale. */
+.cta{
+  flex:none;display:flex;align-items:center;justify-content:center;
+  width:236px;height:52px;
+  border:1px solid var(--laiton);color:var(--os);
+  font:600 13px/1 "cormorant",Georgia,serif;
+  letter-spacing:.28em;text-transform:uppercase;
+  transition:background-color 200ms ease,color 200ms ease;
+}
+.cta:hover,.cta:focus-visible{background:var(--laiton);color:var(--sapin)}
+.cta:active{background:#8e7440;color:var(--sapin)}
+
+/* La promesse. Elle reste à 16 px — c'est de la texture, et elle est
+   composée comme telle : deux lignes de même longueur, un gris
+   homogène, aucune saillie. La seule minuscule de l'écran. */
+.promesse{
+  flex:none;max-width:352px;
+  font:italic 400 16px/1.48 "spectral",Georgia,serif;
+  color:rgba(232,224,205,.74);
+}
+.promesse span{display:block}
+
+/* Le relevé du matin. Trois lignes, trois voix, empilées serré. */
+.releve{flex:none}
+.r-titre{
+  font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--laiton);
+}
+.r-etat{
+  margin-top:9px;
+  font:600 18px/21px "cormorant",Georgia,serif;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--os);
+}
+/* 66 % D'OS, ET PAS 58 : mesuré au pire pixel, 58 % rendait **4,25:1**
+   — sous 4,5. Ce n'est pas la photographie qui le cause, c'est
+   l'alpha : le socle laisse passer 3,5 % de la neige et une hampe de
+   mono à 10 px n'a aucun pixel de couverture pleine. Vérifié à la
+   main avant de croire l'instrument (piège 74) : os à 58 % sur un
+   composite (11,19,16) rend 5,44 en théorie, 5,06 en moyenne relevée,
+   4,25 au pire — l'écart est l'anticrénelage, il est réel, il compte.
+   À 66 % la même arithmétique rend 6,73 et la ligne reste subordonnée. */
+.r-heures{
+  margin-top:9px;
+  font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(232,224,205,.66);
+}
+
+/* LE CHIFFRE. 104 px, et c'est la seconde masse de l'écran. À 0,29 il
+   pèse 30 px de corps et sa hauteur de capitale fait 20 px : il se
+   lit dans la vignette du panneau, ce qui était tout le problème.
+   CORMORANT SORT DES CHIFFRES ELZÉVIRIENS PAR DÉFAUT — le « 2 » et le
+   « 1 » tombaient sous la hauteur de capitale et se lisaient comme
+   une coquille. `lining-nums` les remet d'aplomb.
+   Le décalage de 12 px rattrape le vide sous la ligne de base : un
+   « −21 °C » n'a aucun jambage, sa boîte descend donc 12 px plus bas
+   que son encre et l'alignement par le bas mentirait de 12 px. */
+.temp{
+  flex:none;margin-bottom:-12px;
+  font:600 104px/.80 "cormorant",Georgia,serif;
+  letter-spacing:.01em;color:var(--os);
+  font-variant-numeric:lining-nums;
+}
+
+/* ── 6 · LA BARRE DU HAUT — de la texture, et rien de plus ────────
+   Quatre items réguliers à droite, deux micro-libellés à gauche. À
+   0,29 tout cela fait 3 à 4 px : c'est un gris, et c'est voulu. */
 .haut{
-  position:absolute;top:var(--mt);left:var(--mx);right:var(--mx);z-index:4;
+  position:absolute;top:var(--mt);left:var(--tx);right:var(--mx);z-index:5;
   display:flex;justify-content:space-between;align-items:flex-start;gap:32px;
 }
 .coord{display:flex;align-items:flex-start;gap:14px}
 .tel{font:500 11px/14px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.16em;color:var(--os)}
 .sep{flex:none;width:1px;height:10px;margin-top:3px;background:rgba(169,139,79,.55)}
-/* 72 % D'OS, ET PLUS 62 % : la matière a changé sous cette ligne.
-   Sur le mur d'épinettes plein de la version précédente, 62 % rendait
-   5,84:1 — lisible sans crier, c'était la cote. Sur le lacis de
-   branches enneigées, 62 % tombe à 3,58:1 au pire pixel MÊME sous le
-   voile du haut. 72 % rend 7,05:1 en moyenne — 4,35:1 au pire
-   pixel — et reste discret. */
-.demo{font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,224,205,.72)}
+/* LE LIEU EST MONTÉ ICI, ET C'EST UN GAIN DE COMPOSITION.
+   Il était posé au-dessus du nom, à y = 532, c'est-à-dire dans la
+   bande la plus encombrée de la photographie — un lacis de troncs et
+   de neige où une mono de 11 px ne se perd pas faute de contraste
+   (7,03:1 mesuré) mais faute de calme. Au-dessus du nom il ne restait
+   qu'une salissure ; ici il rejoint sa vraie famille, celle des
+   coordonnées, et le nom n'a plus qu'UNE ligne au-dessus de lui. */
+.ou,
+.demo{font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,224,205,.74)}
+.ou{color:rgba(232,224,205,.86)}
 
 .nav{display:flex;gap:36px}
 .nav a{
@@ -230,8 +374,8 @@ img{display:block}
 }
 /* L'ENCRE S'ALIGNE SUR 1368, PAS LA CHASSE MORTE. La chasse de
    0,26 em laisse 3,64 px de vide derrière la dernière lettre ; sans
-   cette marge négative la nav paraît décalée vers la gauche par
-   rapport au cartouche, qui, lui, s'aligne au pixel. */
+   cette marge négative la nav paraît décalée par rapport au socle,
+   qui, lui, s'aligne au pixel. */
 .nav a:last-child{margin-right:-.26em}
 .nav a::after{
   content:"";position:absolute;left:0;right:.26em;bottom:-6px;height:1px;
@@ -240,219 +384,129 @@ img{display:block}
 }
 .nav a:hover::after,.nav a:focus-visible::after{transform:scaleX(1)}
 
-/* ── 8 · LE FILET DE LAITON — UN OBJET POSÉ DANS LA MARGE ─────────
-   Il NE BOUGE PLUS. Il portait le geste de la version précédente ;
-   un trait d'1 px ne survit pas à la réduction du panneau (0,29 →
-   0,29 px), et un écran dont le geste ne survit pas est un écran
-   fixe (piège 57). Le geste est descendu sur la plaque, plus bas.
-   Le filet redevient ce qu'il est : un objet posé dans la marge.
-   Ancré par le BAS (y = 848, la ligne que partagent le bouton et le
-   cartouche), 412 px de haut, donc y = 436.
+/* ── 7 · LE NOM — LA PREMIÈRE MASSE ───────────────────────────────
+   Ancré par le bas à 206 px, donc la boîte du nom finit à y = 694 et
+   son encre à y = 697 : 35 px d'air au-dessus de la lèvre du socle.
 
-   LAITON PLEIN, ET PAS .55 comme le séparateur du haut ou la bordure
-   du cartouche : mesuré sur la page rendue, .55 sur ce fond tombe à
-   2,54:1 et le trait s'efface. Plein, il rend 5,52:1 — le seuil des
-   non-textes est 3:1. La bordure du cartouche, elle, a le droit de
-   rester à .55 : elle est posée sur un aplat, pas sur la photo. */
-.filet{
-  position:absolute;left:var(--mx);bottom:var(--mb);z-index:3;
-  width:1px;height:412px;
-  background:var(--laiton);
-}
+   128 px, ET LA MESURE LE DEMANDE. Les trois références relevées à
+   1440 : Tengile MalaMala 120 px (interlignage 108, soit 0,90,
+   chasse −0,02 em, capitales, crème sur photographie sombre) ; Arctic
+   Bath 80 px ; Svart ≈ 90 px de corps relevés à l'image. Un titre de
+   21 px n'était pas dans le métier — il n'était même pas dans le même
+   ordre de grandeur.
 
-/* ── 9 À 14 · LE BAS : LA PLAQUE, PUIS LE CARTOUCHE ───────────────
-   Ancré par le bas à 52 px. Les deux blocs partagent la ligne
-   y = 848 ; c'est elle qui tient la composition. */
-.bas{
-  position:absolute;left:var(--mx);right:var(--mx);bottom:var(--mb);z-index:4;
-  display:flex;justify-content:space-between;align-items:flex-end;gap:40px;
-}
+   LA CHASSE TOMBE DE 0,44 em À 0,02 em, et ce n'est pas un
+   reniement : l'interlettrage reste la signature de l'écran, il vit
+   maintenant sur les QUATRE lignes qui l'entourent — le lieu (0,22),
+   « AUBERGE DE » (0,34), la nav (0,26), l'état du relevé (0,22). À
+   128 px, 0,44 em vaudrait 56 px entre deux lettres : ce ne serait
+   plus une petite capitale espacée, ce serait une ligne éclatée.
+   Tengile, à 120 px, est à −0,02 em. On garde 0,02 positif — assez
+   pour que la pierre respire, assez peu pour que le mot reste un mot.
 
-.plaque{display:flex;flex-direction:column;align-items:flex-start;margin-left:var(--retrait)}
-.surtitre{
-  font:500 11px/14px "jetbrains-mono",ui-monospace,monospace;
-  letter-spacing:.22em;text-transform:uppercase;
-  color:rgba(232,224,205,.76);   /* en os, pas en laiton : le laiton
-                                    tombe à 3,88:1 à cette hauteur */
+   INTERLIGNAGE 0,84 : le standard demande 0,88 à 0,96 pour un héros
+   de deux lignes. Ici le nom tient sur UNE ligne ; l'interlignage ne
+   sert qu'à serrer la boîte contre le sous-titre. */
+/* Ancré par le bas à 182 px : la boîte du nom finit à y = 718 et son
+   ENCRE à y = 706 — 26 px au-dessus de la lèvre du socle. La boîte
+   n'est pas l'encre : une capitale sans jambage laisse 12 px de vide
+   sous sa boîte, et au premier tirage ce vide portait l'écart réel à
+   **50 px** (encre relevée dans l'image : y 578 → 682, lèvre à 732).
+   Le nom paraissait décollé de la plaque au lieu d'y reposer. On cote
+   sur l'encre, jamais sur la boîte. */
+.titre{position:absolute;left:var(--tx);right:var(--mx);bottom:182px;z-index:4}
+/* « AUBERGE DE » — 15 px, ET C'EST LÀ QUE VIT LA SIGNATURE.
+   Il faisait 28 px au premier tirage, et 28 px est exactement
+   l'INTERMÉDIAIRE que le standard interdit (§ 1.1 : « aucun
+   intermédiaire entre le héros et le texte courant, le saut EST le
+   dispositif »). Entre une mono de 11 et un nom de 128, un 28 px ne
+   sert personne : trop gros pour être de la texture, trop petit pour
+   être une voix.
+   À 15 px il rejoint la famille des petites capitales — et il reprend
+   la chasse de 0,44 em qui était la signature de la version
+   précédente et que le nom, à 128 px, ne pouvait pas garder (0,44 em
+   y vaudrait 56 px entre deux lettres). L'interlettrage n'est donc
+   pas perdu : il a changé de ligne. */
+.sous{
+  display:block;
+  font:600 15px/16px "cormorant",Georgia,serif;
+  letter-spacing:.44em;text-transform:uppercase;
+  color:rgba(232,224,205,.88);
 }
-.marque{
-  margin-top:21px;
-  font:600 21px/21px "cormorant",Georgia,serif;
-  letter-spacing:var(--chasse);text-transform:uppercase;color:var(--os);
-  overflow-wrap:break-word;
-}
-
-/* ── LE GESTE, ET IL EST SEUL — « LA LAISSE » ─────────────────────
-   Une plaque de laiton pleine masse qui court de gauche à droite
-   sous le nom, comme la laisse de haute mer le long d'une grève.
-
-   POURQUOI UNE PLAQUE ET PAS UN FILET. Le panneau des réalisations
-   réduit la capture de 1440 à 421 px, soit 0,29. La règle qui en
-   sort : à 1440, un geste photographié pèse au moins 12 px dans sa
-   plus petite dimension et se déplace d'au moins 40 px (piège 57).
-   Ici : 16 px de haut — 4,6 px réduits — et un bord de fuite qui
-   parcourt toute la largeur du nom, 516 px, soit 150 px réduits.
-
-   POURQUOI ELLE EST LARGE COMME L'ENCRE DU NOM, AU PIXEL, SANS
-   NOMBRE MAGIQUE. `.marque` est un bloc dans une colonne
-   `align-items:flex-start` : sa boîte fait exactement l'encre PLUS
-   la chasse morte de la dernière lettre. `100% − var(--chasse)`
-   retire cette chasse morte. La plaque se recote donc toute seule si
-   la fonte, le corps ou la chasse changent — et la chasse change
-   sous 1080 px, où la variable est réécrite.
-
-   LINÉAIRE, ET C'EST DÉLIBÉRÉ : une sortie en ease-out ferait bouger
-   la fraction capturée de 20 points pour 40 ms d'écart, un
-   remplissage linéaire ne la bouge que de 2,2 points.
-
-   LA COURSE EST DESSINÉE EN CREUX, et ce n'est pas décoratif : sur
-   l'image ARRÊTÉE, une plaque à 61 % sans course visible se lit
-   comme un filet court qu'on a voulu court. Avec la course derrière,
-   elle se lit comme un objet qui n'a pas fini. C'est le seul moyen
-   qu'une capture fixe dise « mouvement ». Au repos la plaque
-   recouvre sa course au pixel : les deux ont la même boîte.
-
-   Les deux pseudo-éléments sont ABSOLUS et la place est réservée par
-   `padding-bottom` — un positionné se peint au-dessus d'un statique,
-   et il fallait que le laiton passe par-dessus la course, pas
-   dessous. Ordre du document : `::before` la course, `::after` le
-   laiton. */
-.marque{position:relative;padding-bottom:30px}   /* 14 de vide + 16 de plaque */
-.marque::before,.marque::after{
-  content:"";position:absolute;left:0;bottom:0;
-  width:calc(100% - var(--chasse));height:16px;
-}
-.marque::before{background:rgba(232,224,205,.12)}
-.marque::after{
-  background:var(--laiton);
-  transform:scaleX(1);                /* ÉTAT DE REPOS = ÉTAT FINAL */
-  transform-origin:0 50%;
-}
-/* L'ÉTAT DE DÉPART NE VIT QUE SOUS `no-preference`.
-   Écrit dans la règle de base, `scaleX(0)` serait la forme de repos :
-   un moteur qui ne sait pas animer, ou un visiteur en mouvement
-   réduit, verrait une plaque VIDE. Écrit ici, il n'existe que
-   lorsqu'on a le droit de bouger — et pendant les 400 ms de retard
-   la plaque est déjà à zéro, donc aucun clignotement au chargement.
-   `forwards` et jamais `both` : après 2200 ms la dernière image tient
-   toute seule, et rien ne dépend du remplissage d'avant-plage. */
-@media (prefers-reduced-motion:no-preference){
-  .marque::after{transform:scaleX(0);animation:laisse 1800ms linear 400ms forwards}
-}
-@keyframes laisse{ from{transform:scaleX(0)} to{transform:scaleX(1)} }
-
-.promesse{
-  margin-top:18px;
-  font:italic 400 16px/1.55 "spectral",Georgia,serif;
-  color:rgba(232,224,205,.76);
-}
-.promesse span{display:block}
-/* 3,2 px : le pas entre les deux lignes vaut 28 px au tableau du
-   plan, l'interlignage de 1,55 n'en donne que 24,8. Le plan cote au
-   pixel ; on complète l'écart, on ne change pas l'interlignage. */
-.promesse span+span{margin-top:3.2px}
-
-.bouton{
-  margin-top:29.2px;
-  display:flex;align-items:center;justify-content:center;
-  width:236px;height:52px;
-  border-radius:20px;      /* 52 de haut pour un rayon de 20 : il reste
-                              12 px de segment droit de chaque côté —
-                              ce n'est pas un stade */
-  background:var(--laiton);color:var(--sapin);
-  font:600 13px/1 "cormorant",Georgia,serif;
-  letter-spacing:.28em;text-transform:uppercase;
-  transition:background-color 200ms ease;
-}
-/* Pas de correction de chasse morte ici, contrairement à la nav : le
-   plan cote 35 px de marge intérieure de chaque côté pour une encre de
-   166 px, et 35 + 166 + 35 = 236. Une marge négative de 0,28 em
-   recentrerait les glyphes mais rendrait 36,8 / 33,2 — hors cote. */
-.bouton:hover,.bouton:focus-visible{background:#c1a163}
-.bouton:active{background:#8e7440}
-
-.cartouche{
-  flex:none;width:288px;height:116px;border-radius:24px;
-  background:rgba(11,23,18,.88);   /* aplat franc, aucun flou : c'est
-                                      ce qui lui donne ses 13,95:1 */
-  border:1px solid rgba(169,139,79,.55);
-  padding:21px 25px 22px;          /* 22 / 26 / 23, bord compris */
-}
-.c-titre{
-  font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;
-  letter-spacing:.22em;text-transform:uppercase;
-  color:var(--laiton);   /* seul endroit où le laiton porte du texte :
-                            il est sur un aplat, donc 5,67:1 */
-}
-.c-fait{
-  margin-top:12px;
-  font:600 17px/21px "cormorant",Georgia,serif;
-  letter-spacing:.20em;text-transform:uppercase;color:var(--os);
-  /* CORMORANT SORT DES CHIFFRES ELZÉVIRIENS PAR DÉFAUT. Le « 2 » et
-     le « 1 » de « −21 » tombaient alors sous la hauteur de capitale et
-     se lisaient comme une coquille au milieu d'une ligne toute en
-     capitales. La face porte bien le jeu bas-de-casse-haut : mesuré,
-     le mot passe de 149,6 à 159,8 px à 100 px de corps. */
-  font-variant-numeric:lining-nums;
-}
-.c-heures{
-  margin-top:12px;
-  font:500 10px/13px "jetbrains-mono",ui-monospace,monospace;
-  letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(232,224,205,.58);
+/* 24 px de blanc au-dessus, ET C'EST L'ACCENT QUI LE DEMANDE. L'encre
+   du nom déborde de 10 px AU-DESSUS de sa boîte : l'accent grave du
+   « À » et l'apostrophe montent plus haut que la hauteur de capitale.
+   À 11 px de marge, « AUBERGE DE » et le sommet du « À » se
+   touchaient à 3 px près. Relevé dans l'image, pas dans le CSS. */
+.nom{
+  display:block;margin-top:24px;
+  font:600 148px/.84 "cormorant",Georgia,serif;
+  letter-spacing:.02em;text-transform:uppercase;color:var(--os);
+  white-space:nowrap;
 }
 
 /* ── L'ANNEAU DE FOCUS ────────────────────────────────────────────
-   Aucun arrêt au clavier sans anneau. Sur le bouton il passe en os :
-   un anneau de laiton sur un aplat de laiton ne se voit pas. */
+   Aucun arrêt au clavier sans anneau. Sur la clé il passe en os : un
+   anneau de laiton sur un cadre de laiton ne se voit pas. */
 a:focus-visible{outline:1px solid var(--laiton);outline-offset:6px}
-.bouton:focus-visible{outline:1px solid var(--os);outline-offset:4px}
+.cta:focus-visible{outline:1px solid var(--os);outline-offset:4px}
 
-/* ── EN DESSOUS DE 1080 px ────────────────────────────────────────
-   La composition de 1440 est celle qu'on photographie ; en dessous,
-   l'écran se remet en colonne. Le filet reste — c'est la signature —
-   et rien ne se perd. Le texte garde ses 36 px de renfoncement par
-   rapport au filet (60 px de marge contre 24). */
-@media (max-width:1079px){
+/* ── EN DESSOUS DE 1240 px ────────────────────────────────────────
+   La composition de 1440 est celle qu'on photographie. En dessous, le
+   nom ne tient plus sur une ligne : il se réduit par paliers, puis se
+   casse. Le socle reste encastré — c'est la signature — et son
+   contenu se réordonne en deux rangs. RIEN NE SE PERD. */
+@media (max-width:1239px){
+  .nom{font-size:96px}
+  .titre{bottom:196px}
+}
+@media (max-width:1023px){
+  :root{--socle:auto;--tx:60px}
   .ecran{
     height:auto;min-height:100vh;
     display:flex;flex-direction:column;justify-content:space-between;
-    gap:48px;padding:32px 24px 36px 60px;
+    gap:40px;padding:0;
   }
-  .degrade{height:70%}
-  /* `relative`, jamais `static` : voir l'ordre de peinture plus haut. */
-  .haut,.bas{
+  .degrade{bottom:0;height:62%}
+  .voile-haut{height:140px}
+  /* `relative`, jamais `static` : un descendant STATIQUE se peint
+     SOUS un descendant POSITIONNÉ même quand il vient après lui dans
+     le document. Sans ces plans, la nappe et le dégradé recouvraient
+     le texte et l'écran étroit ne montrait plus que la nav. */
+  .haut{
     position:relative;top:auto;right:auto;bottom:auto;left:auto;
+    padding:32px var(--mx) 0 var(--tx);
     flex-direction:column;align-items:flex-start;gap:20px;
   }
   .nav{flex-wrap:wrap;gap:14px 28px}
   .nav a:last-child{margin-right:0}
-  .bas{flex-direction:column-reverse;gap:28px}
-  .plaque{margin-left:0}
-  .cartouche{width:100%;max-width:288px;height:auto}
-  .filet{left:24px;top:38%;bottom:36px;height:auto}
-  /* La chasse change, DONC la plaque se recote : elle lit la même
-     variable, et sa largeur suit sans qu'on y touche. */
-  .marque{--chasse:.30em}
-  /* Le voile du haut n'a plus de ligne à protéger une fois la barre
-     repassée en flux — mais la nav vient s'y poser tout de même : il
-     reste, et il monte à 70 % de la hauteur de la barre. */
-  .voile-haut{height:165px}
-  /* Aucune largeur maximale sur la promesse : ses deux lignes font
-     350 px, soit 52 signes — déjà dans la fourchette. Une borne en
-     `ch` les cassait en quatre à 768 px pour rien. */
+  .titre{position:relative;bottom:auto;left:auto;right:auto;padding:0 var(--mx) 0 var(--tx)}
+  .nom{font-size:72px;white-space:normal}
+  .sous{font-size:22px}
+  .socle{position:relative;height:auto;padding-bottom:36px}
+  .socle-in{
+    position:relative;left:auto;right:auto;top:auto;bottom:auto;
+    flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;
+    gap:28px 36px;padding:36px var(--mx) 0 var(--tx);
+  }
+  .jonc{display:none}
+  .temp{margin-bottom:0;font-size:88px}
 }
-@media (max-width:520px){
+@media (max-width:600px){
+  :root{--tx:24px;--mx:24px}
   .coord{flex-direction:column;gap:10px}
   .sep{display:none}
-  .marque{--chasse:.22em}
-  .bouton{width:100%;max-width:236px}
+  .nom{font-size:46px}
+  .sous{font-size:17px;letter-spacing:.26em}
+  .temp{font-size:64px}
+  .cta{width:100%;max-width:236px}
+  .promesse{max-width:none}
 }
 
 /* ── MOUVEMENT RÉDUIT : TOUT S'ARRÊTE, RIEN NE SE PERD ────────────
-   La plaque est pleine dès le premier rendu. Elle ne porte aucune
-   information — c'est le seul objet de l'écran qu'on ait le droit
-   d'animer, et donc le seul qu'on ait le droit d'éteindre. */
+   La lèvre est pleine dès le premier rendu. Elle ne porte aucune
+   information — c'est le seul objet animé de l'écran, et donc le seul
+   qu'on ait le droit d'éteindre. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
@@ -471,11 +525,11 @@ a:focus-visible{outline:1px solid var(--laiton);outline-offset:6px}
   <div class="voile-haut" aria-hidden="true"></div>
   <div class="degrade" aria-hidden="true"></div>
 
-  <span class="filet" aria-hidden="true"></span>
-
   <header class="haut">
     <p class="coord">
       <a class="tel" href="tel:0000000000">000 000-0000</a>
+      <span class="sep" aria-hidden="true"></span>
+      <span class="ou">Haute-Côte-Nord, Québec</span>
       <span class="sep" aria-hidden="true"></span>
       <span class="demo">Site de démonstration</span>
     </p>
@@ -487,22 +541,27 @@ a:focus-visible{outline:1px solid var(--laiton);outline-offset:6px}
     </nav>
   </header>
 
-  <div class="bas">
-    <div class="plaque">
-      <p class="surtitre">Haute-Côte-Nord, Québec</p>
-      <h1 class="marque">Auberge de l’Anse-à-Givre</h1>
+  <div class="titre">
+    <h1><span class="sous">Auberge de</span><span class="nom">l’Anse-à-Givre</span></h1>
+  </div>
+
+  <div class="socle">
+    <div class="socle-in">
+      <a class="cta" href="#"><span>Les dates libres</span></a>
+      <span class="jonc" aria-hidden="true"></span>
       <p class="promesse">
         <span>Vingt-deux chambres devant l’anse qui prend en glace.</span>
         <span>Une seule tablée le soir, à dix-huit heures trente.</span>
       </p>
-      <a class="bouton" href="#"><span>Les dates libres</span></a>
+      <span class="jonc" aria-hidden="true"></span>
+      <div class="releve">
+        <p class="r-titre">Ce matin à l’anse</p>
+        <p class="r-etat">Anse prise</p>
+        <p class="r-heures">Lever 7 h 12 — Coucher 16 h 04</p>
+      </div>
+      <span class="jonc" aria-hidden="true"></span>
+      <p class="temp" aria-label="moins vingt-et-un degrés Celsius">−21 °C</p>
     </div>
-
-    <aside class="cartouche" aria-label="Conditions du matin">
-      <p class="c-titre">Ce matin à l’anse</p>
-      <p class="c-fait">−21 °C · Anse prise</p>
-      <p class="c-heures">Lever 7 h 12 — Coucher 16 h 04</p>
-    </aside>
   </div>
 
 </main>
