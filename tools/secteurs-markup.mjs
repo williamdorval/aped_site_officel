@@ -1,31 +1,32 @@
 /* ============================================================
-   LES APERCUS DE SECTEUR — DE VRAIS SITES, PAS DES MAQUETTES
-   `node tools/secteurs-markup.mjs [cle...] [--verifier]`
+   LES APERÇUS DE SECTEUR — UN PREMIER ÉCRAN, ARRÊTÉ
+   `node tools/secteurs-markup.mjs [clé…] [--verifier]`
 
-   POURQUOI.
-   Au survol d'un secteur, le panneau montrait une carte dessinee a la
-   main : un fragment, une fonction isolee, jolie et abstraite. Un
-   patron de garage ne peut pas juger sur ca. Chaque secteur montre
-   maintenant un VRAI SITE COMPLET, photographie, dans lequel on
-   descend — la meme chaine que les « apres » de la section 03.
+   POURQUOI CE FICHIER A CHANGÉ DE MÉTIER.  D-681
+   Il empilait des TUILES : chaque secteur montrait son site entier,
+   photographié par morceaux de 1 100 px et cousu dans un conteneur
+   défilant. C'était la réponse à la bonne question — « un patron de
+   garage ne juge pas sur une carte dessinée » — mais à la mauvaise
+   échelle : personne ne descend dans un panneau de 421 px, et
+   l'effort partait dans des sections qu'on ne verrait jamais.
 
-   CE QU'IL FAIT
-   Remplace le contenu d'un `.mock[data-mock=<cle>]` du
-   `<template id="tplSecteurs">` par une barre d'adresse et un ecran
-   defilant qui empile les tuiles du site.
+   Un secteur = **un** `<img>`, le premier écran, photographié à
+   1440 × 900 par `tools/ecrans-secteurs.mjs`. Rien à défiler, rien à
+   coudre, rien à piloter.
 
-   PAS DE PILOTE, ET C'EST VOULU.  D-655
-   La section 03 verrouille DEUX pages en pourcentage : il lui faut du
-   JavaScript. Ici il n'y a qu'une page. Un conteneur en
-   `overflow-y: auto` la fait defiler nativement — donc sur le
-   compositeur, donc sans la moindre image de retard (D-654), et sans
-   une ligne de script.
+   LA BARRE D'ADRESSE EST SORTIE DES MAQUETTES, et ce n'est pas
+   cosmétique : tant qu'elle vivait DANS chaque `.mock`, la scène ne
+   pouvait pas porter le rapport 1440/900 — il aurait fallu retrancher
+   la hauteur de la barre, qui change avec la largeur de la fenêtre, et
+   l'image se serait fait rogner de 2 à 3 % du bas. Or c'est en bas que
+   les écrans posent leur bandeau, leur cartouche et leur plaque. Une
+   seule barre, au-dessus de la scène, et la scène est exacte.
 
-   LA REGLE DE SURETE.  Piege 31 : un decoupage borne par une balise
-   fermante commune coupe tout le document. Chaque `.mock` est trouve
+   LA RÈGLE DE SÛRETÉ. Piège 31 : une découpe bornée par une balise
+   fermante commune coupe tout le document. Chaque `.mock` est trouvé
    par appariement de PROFONDEUR, et le nombre de `.mock` comme celui
-   des `<section>` est compte avant et apres. S'il bouge, rien n'est
-   ecrit.
+   des `<section>` est compté avant et après. S'il bouge, rien n'est
+   écrit.
    ============================================================ */
 import fs from "node:fs";
 import path from "node:path";
@@ -34,25 +35,27 @@ import { fileURLToPath } from "node:url";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 const PAGE = path.join(RACINE, "index.html");
-const MARQUES = path.join(ICI, "_demos", "_marques.json");
 const VERIFIER = process.argv.includes("--verifier");
 
-/* Quel site montre quel secteur, et sous quel domaine.
-   Trois secteurs reutilisent un « apres » de la section 03 : le site
-   existe, il est deja photographie, il n'y a rien a refaire. */
+/* Le domaine et l'étiquette de chaque aperçu.
+
+   « un site que nous avons codé », et rien de plus : neuf des douze
+   sont des démonstrations, trois sont des projets. Une formule qui
+   reste vraie pour les douze vaut mieux qu'une formule flatteuse
+   qu'il faudrait défendre au téléphone. Règle A. */
 const SECTEURS = {
-  restaurant: { source: "restau", domaine: "bistro-nordet.ca", etiquette: "Restauration" },
-  garage: { source: "garage", domaine: "atelier-meridien.ca", etiquette: "Garage et mecanique" },
-  paysagement: { source: "deneigement", domaine: "mv-deneigement.ca", etiquette: "Paysagement et deneigement" },
-  construction: { source: "secteur-construction", domaine: "construction-lattier.ca", etiquette: "Construction et renovation" },
-  immobilier: { source: "secteur-immobilier", domaine: "ancrage-immobilier.ca", etiquette: "Immobilier" },
-  boutique: { source: "secteur-boutique", domaine: "gresdunord.ca", etiquette: "Boutique en ligne" },
-  coiffure: { source: "secteur-coiffure", domaine: "salon-brume.ca", etiquette: "Coiffure et esthetique" },
-  gym: { source: "secteur-gym", domaine: "fonte-nord.ca", etiquette: "Gym et entrainement" },
-  hotel: { source: "secteur-hotel", domaine: "auberge-des-caps.ca", etiquette: "Hebergement et tourisme" },
-  clinique: { source: "secteur-clinique", domaine: "clinique-riverain.ca", etiquette: "Clinique et sante" },
-  juridique: { source: "secteur-juridique", domaine: "cabinet-vallieres.ca", etiquette: "Services juridiques" },
-  photo: { source: "secteur-photo", domaine: "atelier-lumen.ca", etiquette: "Photographe et creatif" }
+  restaurant: { domaine: "bistro-nordet.ca", etiquette: "Restauration", metier: "un restaurant" },
+  boutique: { domaine: "gres-saulnier.ca", etiquette: "Boutique en ligne", metier: "une boutique en ligne" },
+  coiffure: { domaine: "salon-brume.ca", etiquette: "Coiffure et esthétique", metier: "un salon de coiffure" },
+  gym: { domaine: "fonte-nord.ca", etiquette: "Gym et entraînement", metier: "une salle d'entraînement" },
+  hotel: { domaine: "anse-a-givre.ca", etiquette: "Hébergement et tourisme", metier: "une auberge" },
+  garage: { domaine: "atelier-meridien.ca", etiquette: "Garage et mécanique", metier: "un garage" },
+  construction: { domaine: "construction-lattier.ca", etiquette: "Construction et rénovation", metier: "un entrepreneur général" },
+  paysagement: { domaine: "mv-deneigement.ca", etiquette: "Paysagement et déneigement", metier: "un déneigeur" },
+  clinique: { domaine: "clinique-riverain.ca", etiquette: "Clinique et santé", metier: "une clinique" },
+  immobilier: { domaine: "arpent-immobilier.ca", etiquette: "Immobilier", metier: "un courtier immobilier" },
+  juridique: { domaine: "cabinet-vallieres.ca", etiquette: "Services juridiques", metier: "un cabinet d'avocats" },
+  photo: { domaine: "atelier-lumen.ca", etiquette: "Photographe et créatif", metier: "un photographe" },
 };
 
 function finDuDiv(html, debut) {
@@ -63,11 +66,8 @@ function finDuDiv(html, debut) {
     if (m[0].toLowerCase() === "<div") prof++;
     else { prof--; if (prof === 0) return html.indexOf(">", m.index) + 1; }
   }
-  throw new Error("div jamais referme depuis " + debut);
+  throw new Error("div jamais refermé depuis " + debut);
 }
-
-if (!fs.existsSync(MARQUES)) throw new Error("pas de `_marques.json` — lancer `node tools/demos-webp.mjs`");
-const marques = JSON.parse(fs.readFileSync(MARQUES, "utf8"));
 
 const demandes = process.argv.slice(2).filter((a) => SECTEURS[a]);
 const aFaire = demandes.length ? demandes : Object.keys(SECTEURS);
@@ -76,44 +76,42 @@ let html = fs.readFileSync(PAGE, "utf8");
 const sectionsAvant = (html.match(/<section\b/gi) || []).length;
 const mocksAvant = (html.match(/class="mock[^"]*" data-mock=/g) || []).length;
 const rapport = [];
+const manquantes = [];
 
 for (const cle of aFaire) {
   const s = SECTEURS[cle];
-  const mk = marques[s.source];
-  if (!mk) { console.log(`· ${cle} : ${s.source} absent du manifeste — on passe`); continue; }
+  const rel = `images/realisations/ecran-${cle}.webp`;
+  if (!fs.existsSync(path.join(RACINE, rel))) { manquantes.push(cle); continue; }
 
-  const re = new RegExp(`<div class="mock[^"]*" data-mock="${cle}">`);
+  const re = new RegExp(`<div class="mock[^"]*" data-mock="${cle}"`);
   const m = re.exec(html);
   if (!m) throw new Error(`${cle} : mock introuvable`);
   const debut = m.index;
   const fin = finDuDiv(html, debut);
+  const garderOn = /is-on/.test(html.slice(debut, debut + 120));
 
-  const garderOn = /is-on/.test(m[0]);
-  const tuiles = mk.apres.tuiles.map((t, k) =>
-    `        <img src="${t.fichier}" width="${t.w}" height="${t.h}" alt=""\n` +
-    `             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />` +
-    (k < mk.apres.tuiles.length - 1 ? "\n" : "")
-  ).join("");
-
+  /* `width` et `height` aux dimensions RÉELLES du fichier : c'est ce
+     qui tient le CLS à zéro. */
   const neuf =
-    `<div class="mock mock--site${garderOn ? " is-on" : ""}" data-mock="${cle}">\n` +
-    `    <div class="sec-chrome"><i></i><i></i><span>${s.domaine}</span><em>${s.etiquette}</em></div>\n` +
-    `    <div class="sec-vitre" tabindex="0" role="img"\n` +
-    `         aria-label="Site complet que nous avons codé pour un ${s.etiquette.toLowerCase()} — on descend dedans pour le parcourir.">\n` +
-    `${tuiles}\n` +
-    `    </div>\n` +
+    `<div class="mock mock--ecran${garderOn ? " is-on" : ""}" data-mock="${cle}"\n` +
+    `       data-hote="${s.domaine}" data-metier="${s.etiquette}">\n` +
+    `    <img src="${rel}" width="1440" height="900"\n` +
+    `         alt="Premier écran d'un site que nous avons codé pour ${s.metier}."\n` +
+    `         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />\n` +
     `  </div>`;
 
   html = html.slice(0, debut) + neuf + html.slice(fin);
-  rapport.push({ secteur: cle, source: s.source, tuiles: mk.apres.tuiles.length, hauteur: mk.apres.h + " px", domaine: s.domaine });
+  const ko = Math.round(fs.statSync(path.join(RACINE, rel)).size / 1024);
+  rapport.push({ secteur: cle, domaine: s.domaine, ko });
 }
 
 const sectionsApres = (html.match(/<section\b/gi) || []).length;
 const mocksApres = (html.match(/class="mock[^"]*" data-mock=/g) || []).length;
-if (sectionsAvant !== sectionsApres) throw new Error(`<section> : ${sectionsAvant} → ${sectionsApres}. RIEN N'EST ECRIT.`);
-if (mocksAvant !== mocksApres) throw new Error(`.mock : ${mocksAvant} → ${mocksApres}. RIEN N'EST ECRIT.`);
+if (sectionsAvant !== sectionsApres) throw new Error(`<section> : ${sectionsAvant} → ${sectionsApres}. RIEN N'EST ÉCRIT.`);
+if (mocksAvant !== mocksApres) throw new Error(`.mock : ${mocksAvant} → ${mocksApres}. RIEN N'EST ÉCRIT.`);
 
-if (VERIFIER) console.log("verification seule — rien n'est ecrit");
+if (VERIFIER) console.log("vérification seule — rien n'est écrit");
 else fs.writeFileSync(PAGE, html);
-console.table(rapport);
-console.log(`${sectionsApres} sections · ${mocksApres} apercus, dont ${(html.match(/mock--site/g) || []).length} en site complet`);
+if (rapport.length) console.table(rapport);
+if (manquantes.length) console.log(`⚠ pas encore de capture : ${manquantes.join(" ")} — lancer \`node tools/ecrans-secteurs.mjs ${manquantes.join(" ")}\``);
+console.log(`${sectionsApres} sections · ${mocksApres} aperçus, dont ${(html.match(/mock--ecran/g) || []).length} en premier écran`);

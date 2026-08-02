@@ -284,9 +284,39 @@ try {
       });
     }
 
-    /* L'INSTANT. Un mouvement ne compte que s'il se voit sur l'image
-       arrêtée : on déclenche au moment où il est à mi-course. */
-    await page.waitForTimeout(def.instant);
+    /* ── L'INSTANT, ET IL NE SE JOUE PAS AU CHRONOMÈTRE ─────────
+       Un mouvement ne compte que s'il se voit sur l'image arrêtée
+       (D-685) : on photographie au moment où il est à mi-course.
+
+       Attendre N millisecondes puis déclencher, c'est une course :
+       la sonde peut être plus rapide que la page (piège 14) ou plus
+       lente qu'une révélation qui s'est déjà terminée (piège 9), et
+       deux passes rendent deux images différentes. On PAUSE donc
+       toutes les animations et on pose leur temps local à la main —
+       le même nombre rend toujours la même image.
+
+       `pause()` et non `animation-play-state` : `animation` est un
+       raccourci qui remet `running`, et il faudrait un `!important`
+       pour le tenir (piège 16). L'API Web Animations n'a pas ce
+       défaut.
+
+       L'ÉCRAN DÉCLARE SON PROPRE INSTANT, dans son `<head>` :
+           <meta name="aped-instant" content="940">
+       Un registre séparé dériverait du fichier qu'il décrit. Sans la
+       balise, on prend le défaut du registre et on le DIT. */
+    const instant = await page.evaluate(() => {
+      const m = document.querySelector('meta[name="aped-instant"]');
+      const v = m ? Number(m.content) : NaN;
+      return Number.isFinite(v) && v >= 0 ? v : null;
+    });
+    const t = instant ?? def.instant;
+    await page.waitForTimeout(Math.min(t, 1400));
+    const gelees = await page.evaluate((ms) => {
+      const a = document.getAnimations();
+      for (const an of a) { try { an.pause(); an.currentTime = ms; } catch {} }
+      return a.length;
+    }, t);
+    await page.waitForTimeout(160);   // laisser une image se peindre
 
     const fPng = path.join(SORTIE_PNG, `${cle}.png`);
     await page.screenshot({ path: fPng });               // pas `fullPage` : c'est UN écran
@@ -300,7 +330,7 @@ try {
       console.log(`  la capture reste dans ${path.relative(RACINE, fPng)} pour être REGARDÉE ; rien n'est écrit en WebP`);
     } else {
       ko = Math.round((await versWebp(utilitaire, fPng, fWebp)) / 1024);
-      console.log(`✓ ${cle.padEnd(13)} ${LARG}×${HAUT}  ${String(ko).padStart(3)} ko  images ${img.chargees}/${img.dans}  bandes ${JSON.stringify(plat.bandes)}${erreurs.length ? `  ⚠ ${erreurs.length} erreur(s) console` : ""}${remplaces ? `  ${remplaces} nœud(s) masqué(s)` : ""}`);
+      console.log(`✓ ${cle.padEnd(13)} ${LARG}×${HAUT}  ${String(ko).padStart(3)} ko  images ${img.chargees}/${img.dans}  ${gelees} anim. gelées à ${t} ms${instant === null ? " (défaut — pas de <meta name=\"aped-instant\">)" : ""}  bandes ${JSON.stringify(plat.bandes)}${erreurs.length ? `  ⚠ ${erreurs.length} erreur(s) console` : ""}${remplaces ? `  ${remplaces} nœud(s) masqué(s)` : ""}`);
     }
     if (erreurs.length) {
       echecs++;

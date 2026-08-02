@@ -1,7 +1,36 @@
-# Le standard des sites de secteur
+# Le standard des écrans de secteur
 
 Ce fichier n'est pas un gabarit. **Un gabarit est exactement ce qu'il
 interdit.**
+
+---
+
+## 0 bis · UN ÉCRAN, PAS UN SITE — la commande du 2026-08-01
+
+> **Un métier = UN premier écran, arrêté, 1440 × 900.**
+> Pas de page longue. Pas de défilement dans l'aperçu. Rien sous les
+> 900 px. Cent pour cent de l'effort d'un site entier va là.
+
+Neuf sites complets avaient été construits — jusqu'à 17 000 px de haut,
+dix sections chacun. C'était la réponse à la mauvaise question :
+l'aperçu du panneau montre **un écran**, et pendant que l'effort se
+dispersait sur des sections que personne ne verrait, le premier écran —
+le seul qui compte — restait à 5 sur 10. Les neuf pages sont dans
+`archives/2026-08-01-sites-longs/`. D-681.
+
+**Ce que ça change, poste par poste :**
+
+| | |
+|---|---|
+| **La géométrie** | à 1440 × 900, le document tient **exactement** dans la fenêtre. Aucune barre de défilement verticale. `scrollHeight <= 900` |
+| **Le mouvement** | un geste, un seul, et **il doit se voir sur l'image arrêtée** — sinon il n'existe pas. § 2 |
+| **L'instant** | l'écran déclare le sien : `<meta name="aped-instant" content="NNN">`. L'outil de capture met toutes les animations en pause et pose leur temps local à cette valeur. Deux passes rendent **la même image** |
+| **La prise de vue** | `node tools/ecrans-secteurs.mjs <clé>` — 1440 × 900, densité 2, refus d'une capture plate mesurée par tranches |
+| **L'échelle du panneau** | la capture est réduite à **0,29** dans un cadre de 421 px. Le texte courant tombe sous 5 px, et **c'est voulu** : c'est à ça que ressemble un moniteur posé à trois mètres. D-683 |
+
+**Ce qui ne change pas :** tout le reste de ce fichier. La règle du
+côte-à-côte (§ 0), la barre relevée à l'image (§ 1), les polices
+(§ 3), les photos (§ 4), ce qui ne s'écrit jamais (§ 5).
 
 ---
 
@@ -75,10 +104,14 @@ geste n'a rien à faire là.
 
 Un seul par site, trois à cinq fois. C'est lui qu'on reconnaît.
 
-### 1.4 Le rythme vertical
+### 1.4 Le rythme n'est plus vertical, il est DANS l'écran
 
-Padding de section : **110 à 170 px**. Le héros fait une fenêtre pleine.
-**Jamais deux sections de même fond à la suite.**
+La règle des paddings de section ne s'applique plus : il n'y a qu'une
+section, et elle fait 900 px. Ce qui la remplace, et qui est plus dur :
+**une seule idée par écran.** Un premier écran qui essaie de dire trois
+choses n'en dit aucune. Les marges extérieures sont grandes — 60 à
+140 px — et il reste du vide, beaucoup, parce que le vide est ce qui
+fait lire le reste.
 
 ### 1.5 Le texte courant est petit, étroit, et il y en a peu
 
@@ -274,38 +307,46 @@ calculé est plus court que l'image et se pose **en haut**.
 ## 7 · LA CHAÎNE, DANS L'ORDRE
 
 1. **ALLER CHERCHER LES MEILLEURS SITES DU MONDE DE CE MÉTIER, ET LES
-   MESURER.** Pas « s'inspirer vaguement » : ouvrir, défiler, relever.
+   MESURER.** Pas « s'inspirer vaguement » : ouvrir, relever, REGARDER.
    C'est l'étape qui manquait à la première fournée, et ça se voyait —
    douze directions artistiques inventées, bonnes, mais nourries de
    rien.
 
    ```
    node tools/refs-galerie.mjs "https://www.awwwards.com/websites/<catégorie>/" 20
-   node tools/refs-galerie.mjs "https://www.siteinspire.com/websites?categories=<n>" 20
    node tools/refs-releve.mjs "https://<le site>" <métier>-<nom> 1440
    ```
 
-   `refs-releve.mjs` dépose le premier écran, **sept captures prises en
-   défilant à la molette** — donc pendant que les révélations se
-   jouent — et un `releve.json` : familles de polices, taille et
-   interlignage du `h1`, paddings de section, fonds dominants,
-   bibliothèques d'animation détectées, nombre d'images de plus de
-   380 px.
+   `refs-releve.mjs` dépose `0-heros.png` — **le premier écran, le seul
+   qui nous intéresse maintenant** — et un `releve.json` : familles de
+   polices, taille et interlignage du `h1`, fonds dominants,
+   bibliothèques d'animation détectées.
 
    **Trois références retenues par métier**, et on écrit pour chacune :
-   ce qu'on lui prend, et ce qu'on écarte.
+   ce qu'on lui prend, et ce qu'on écarte. Le relevé ne suffit pas :
+   **ouvrir le PNG et le regarder** — un `h1` mesuré à 9 px est un
+   titre de référencement masqué, pas le titre visible, et le chiffre
+   seul aurait fait écrire n'importe quoi.
 
-2. **Écrire la direction artistique** : palette (hex), typographie,
-   formes, mouvement, traitement photo, référence culturelle. Une
-   ligne par poste ;
-3. `node tools/_inventaire.mjs <secteur>` — dimensions et emplois ;
-4. `node tools/secteurs-sites-photos.mjs <secteur>` s'il en manque ;
+2. **Écrire la direction artistique** dans `demos-secteurs/plans/<clé>.md` :
+   palette (hex), typographie (familles, px, interlignage), **composition
+   du premier écran au pixel**, formes, traitement photo, le geste et
+   **son instant**, et ce qu'on ne fait pas. Une ligne par poste.
+   La DA se juge **à côté des onze autres**, jamais seule.
+
+3. `node tools/_inventaire.mjs <clé>` — les photos et leurs dimensions
+   réelles ;
+4. `node tools/secteurs-sites-photos.mjs <clé>` s'il en manque ;
 5. **ouvrir chaque photo, une par une, en taille réelle** ;
-6. écrire le site ;
-7. **l'ouvrir à l'écran et le REGARDER** — pas une sonde ;
-8. **test du côte-à-côte**, les deux passes du § 0 ;
-9. `node tools/demos-capture.mjs --ecran --port <port> secteur-<clé>` ;
-10. `node tools/demos-webp.mjs` ;
-11. `node tools/secteurs-markup.mjs <clé>` ;
-12. `node tools/css-critique.mjs` puis `node tools/cascade-check.mjs <port>` ;
-13. commit.
+6. écrire `demos-secteurs/<clé>/index.html` — **un fichier, un écran** ;
+7. `node tools/ecrans-secteurs.mjs <clé> --png`, puis **ouvrir le PNG
+   et le REGARDER**. Pas la sonde : l'image. Comparer poste par poste
+   au plan. Corriger. Recommencer — **trois tours au moins** ;
+8. `node tools/demos-controle.mjs --port <port> <clé>` doit rendre
+   **ok** ;
+9. **test du côte-à-côte**, les deux passes du § 0, sur la planche :
+   `node tools/planche-secteurs-12.mjs` ;
+10. `node tools/secteurs-markup.mjs <clé>` — verse la capture dans
+    l'aperçu du panneau ;
+11. `node tools/css-critique.mjs` puis `node tools/cascade-check.mjs <port>` ;
+12. commit.
