@@ -530,6 +530,8 @@ pas finie.
 | **`12 Photographe` se repère au côte-à-côte** | il est le seul sombre de ses trois références, et son image est la moins saisissante des quatre. C'est ce qu'un photographe vend. Le fonds disponible est la limite |
 | **`10 Immobilier` a perdu sa règle « aucun vert »** | le quart bas de la nouvelle photographie est une bande de plantation : **2,58 % de vert et 6,92 % de chaud** mesurés après filtre, contre 0 % pour l'image d'avant. C'est le prix de la seule tranche de 720 × 900 qui montre une maison entière |
 | **`04 Gym` : l'accent du À change de couleur, pas sa lettre** | il monte à 1,10 em, donc il vit dans la bande de l'aplat qui l'inverse. Au repos — ce que voit un visiteur après 1,1 s — il est noir, collé à son À. Aucun corps ni aucun retrait ne l'évite |
+| **`04 Gym` : son acide est la couleur de catégorie du fitness 2026, et ça n'a pas été corrigé** | la recherche du 2026-08-01 le dit sans ambiguïté : HYROX a fait du chartreuse la couleur du métier, PHIVE a monté un jaune saturé en Awwwards SOTD, La Huella porte la même paire. Notre `#d6f227` est un chartreuse — donc du côté HYROX. Ce qui nous distingue n'est **plus la couleur** mais l'absence totale de photographie et la chasse ultra-condensée, deux cases que la recherche a trouvées inoccupées. Un jaune décalé — soufre, citron froid — romprait la parenté, **mais ça n'a pas été tenté** : la teinte porte trois rapports de contraste mesurés et la cellule exclusive de la matrice, et on ne la déplace pas sur une comparaison de codes hexadécimaux qu'on n'a jamais posés côte à côte |
+| **`04 Gym` : trois réserves de ce fichier décrivent un site qui n'existe plus** | les entrées « `timeline-scope` / les compteurs et la jauge du rail », « `gym-3` porte des chiffres et un PRO moulés sur les disques », « les photographies restent des images de banque » et « `25 LB` moulé sur `gym-3` » portent toutes sur la **page longue** archivée le 2026-08-01. L'écran actuel n'a ni rail, ni compteur, ni jauge, ni une seule photographie. Elles n'ont pas été retirées ici parce que d'autres métiers étaient en chantier dans le même fichier au même moment |
 | **`07 Construction` : le seul mouvement n'existe qu'à partir de 1440 px** | en dessous, les cotes sont cachées parce que leur chiffre cesserait d'être vrai. Un portable de 1366 px ne voit rien bouger. Et à l'instant photographié, les trois chiffres sont éteints : l'argument « mes cotes mesurent vraiment quelque chose » n'est lisible que dans l'état fini |
 | **`jetbrains-mono` sert dans six écrans sur neuf** | c'est une face de détail et non d'affichage, mais six sur neuf est une convergence réelle et non mesurée |
 | **Le relevé « marco » de la coiffure est introuvable** | sa planche de côté-à-côte n'a que trois cases au lieu de quatre. L'outil le dit au lieu de rendre trois cases pour quatre |
@@ -540,3 +542,54 @@ pas finie.
 
 > Et la réserve qui les gouverne toutes tient toujours : **aucune
 > mesure de ce projet n'a été prise sur un appareil réel.**
+
+## La passe finale — 2026-08-01, quatrième passe
+
+1. **Trois écrans sur douze ne sont pas réécrivables, et ce sont les
+   trois qui se ressemblent le plus.** Restauration, garage et
+   déneigement vivent dans des dépôts voisins et appartiennent à des
+   clients. Même orange de bouton, même photo sombre, même titre blanc
+   massif — parce qu'ils sortent de la même main. Sur eux, seul
+   l'instant de la prise de vue se choisit. Le couple **06 garage ↔
+   08 déneigement** est la seule collision réelle de la planche.
+2. **La lèvre de laiton de l'hôtel se lit comme une barre de
+   chargement** — un rectangle horizontal doré de 0 à 880 px sur 1440,
+   puis sombre. C'est le geste visible à l'arrêt que le chantier
+   exige, mais un rectangle rempli à 60 % est universellement une
+   jauge. Jugé acceptable **à 460 px sur la planche**, où il se lit
+   comme un filet sous le titre. Jamais tranché à 1440.
+3. **Le sous-titre et le titre de la clinique disent la même chose
+   deux fois** — « Physiothérapie, ostéopathie et nutrition, sous le
+   même toit » puis « Trois métiers, un seul agenda ». Deux fois la
+   même phrase à deux échelles est un élément par défaut au sens du
+   critère 5. Non corrigé.
+4. **Le côte-à-côte contre les références reste perdu pour la
+   clinique**, et sans doute pour la boutique. Les trois références de
+   la clinique sont des photos plein cadre ; le plein cadre appartient
+   à cinq autres écrans de la matrice. Le gagner exigerait de casser
+   la matrice, c'est-à-dire d'échanger un test contre l'autre.
+5. **`tools/_refs/` est ignoré par git.** Les relevés neufs de cette
+   passe — `coldpicnic`, `brzozowski`, `rendezvous`, `phive`,
+   `pakau`, `medwest`, `function`, `heva`, `spaeth`, `klok` — n'existent
+   que sur cette machine. La table `CHOIX` de `planche-refs.mjs` les
+   désigne : sur un autre poste, les planches de références sortiront
+   incomplètes en le disant.
+6. **`tools/_refs/photo-keller/0-heros.png` ne rend plus que des
+   icônes d'image cassée.** Relevé périmé, à refaire : la troisième
+   case du côte-à-côte du photographe ne prouve rien.
+7. **Deux outils de mesure de la passe photo sont jetables** —
+   l'étalonnage par teinte moyenne en Lab et le relevé du geste ont
+   été écrits dans le bac à sable de la session. Leurs chiffres ne
+   sont pas rejouables tant qu'ils ne sont pas versés dans `tools/`.
+8. **La correction de `demos-contraste.mjs` change 128 verdicts.**
+   L'outil mesurait 128 blocs des neuf écrans contre un fond qui n'est
+   pas peint là (piège 76). Le correctif ne peut que retirer de faux
+   échecs — mais aucun de ces 128 n'a été remesuré un par un.
+9. **`prefers-reduced-motion` n'a été vérifié qu'au DOM sur la plupart
+   des écrans**, pas en capture.
+10. **Restauration et déneigement émettent des erreurs de console
+    d'hydratation React** qui viennent de leurs dépôts, pas du nôtre.
+11. **AUCUNE de ces mesures n'a été prise sur un appareil réel.**
+    Chromium sous Playwright, machine de bureau Windows. La réduction
+    à 421 px est simulée. Le repli sous 720 px de plusieurs écrans n'a
+    jamais été regardé à l'image.
