@@ -5,390 +5,437 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<title>Atelier Lumen — photographie d'architecture, d'intérieur et d'objet</title>
-<meta name="description" content="Atelier Lumen, photographe à Québec. Architecture, intérieur et objet. Une image montrée à la fois, en noir et blanc, sans retouche. Site de démonstration.">
+<!-- 4030 ms sur les 9000 de la course : la bande de lumière est
+     alors à cheval sur la couture verticale du mur. Voir le § « le
+     geste » de la feuille de style. -->
+<meta name="aped-instant" content="4030">
+<title>Atelier Lumen — photographie d'architecture</title>
+<meta name="description" content="Atelier Lumen, photographe d'architecture à Québec. Sept épreuves bord à bord, aucune marge, aucun titre. Site de démonstration.">
 
-<!-- DEUX CORRECTIONS D'ÉCHELLE, AUCUNE DE REGISTRE.
-
-     L'écran se regarde deux fois : en vraie taille dans la page, et
-     réduit à 421 px de large dans un panneau, soit un facteur 0,29.
-     Les deux défauts ci-dessous n'existaient QU'À LA SECONDE ÉCHELLE.
-
-     1 · LE GESTE NE SURVIVAIT PAS AU PANNEAU — PIÈGE 57. Le filet
-     d'un pixel du plan devient 0,29 px à 0,29 : le moteur l'étale en
-     un gris que personne ne voit, et un écran dont le geste ne se
-     voit pas est un écran fixe. La lisière du bain est donc une
-     BANDE de 16 px de blanc cassé, large de 366 px (le tirage plus
-     48 px de chaque côté), qui PRÉCÈDE l'arête au lieu de la
-     souligner : elle reste entièrement sur le noir, contraste
-     maximal, et le tirage se découvre dans son sillage. 366 × 16 px
-     à 1440 → 106 × 4,6 px à 0,29 ; course 378 px → 110 px à 0,29.
-     Le seuil est 12 px de plus petite dimension et 40 px de course.
-
-     2 · LE HAUT SE LISAIT COMME UNE PAGE PAS CHARGÉE. Le tirage
-     était posé à y 330–708 : lui et le bloc de titre tenaient tous
-     les deux dans le tiers bas, et les 45 % du haut n'étaient tenus
-     que par la ligne de tête, à 64 px du bord. Un vide n'est choisi
-     que s'il est tendu entre deux choses éloignées. Le tirage monte
-     donc de 111 px — y 219–597 — et traverse la ligne médiane : la
-     tension se joue maintenant EN DIAGONALE, du tirage en haut à
-     droite au titre en bas à gauche, et le vide passe SOUS le
-     tirage, où il se lit comme sa marge et non comme un défaut.
-     Rien n'est ajouté : le rapport de vide ne bouge pas.
-
-     Le cartel suit le tirage. L'alignement caché qui traverse le
-     vide n'est plus « cartel ligne 1 = sous-titre ligne 1 » (740)
-     mais « cartel ligne 3 = titre ligne 1 » (661,4).
-
-     L'INSTANT NE BOUGE PAS : 597 ms = 260 ms de retard + 337 ms de
-     course ; avec cubic-bezier(.22,1,.36,1), 337/1400 = 24,08 % de
-     temps rend 75,00 % de progression. La recette se mesure au
-     pixel, jamais au chronomètre : l'arête du bain est à
-     y = 313,5 ± 6, la bande juste au-dessus (297,5 → 313,5), les
-     94 px hauts du tirage encore sous le noir. Le sujet — la dalle
-     en porte-à-faux — reste coupé net : on comprend qu'il en reste.
-
-     L'outil met toutes les animations en pause et pose leur temps
-     local à cette valeur — jamais `animation-play-state` dans la
-     page, `animation` est un raccourci qui remet `running`. -->
-<meta name="aped-instant" content="597">
-
-<!-- Les deux faces serif peignent le LCP : elles sont préchargées.
-     Les trois autres arrivent avec la feuille de style. -->
-<link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/instrument-serif-3.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/instrument-serif-1.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/inter-3.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/inter-1.woff2" crossorigin>
 
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   ATELIER LUMEN — un seul écran, 1440 × 900, arrêté.
+/* ══════════════════════════════════════════════════════════════
+   ATELIER LUMEN — LA PLANCHE
 
-   La thèse : le noir n'est pas un fond, c'est le mur ; la
-   photographie est un tirage accroché dessus, et elle est en train
-   de monter du bain quand on entre.
+   Sept épreuves, BORD À BORD, zéro gouttière, zéro marge de page.
+   L'image n'illustre pas l'écran : elle EST l'écran.
 
-   CINQ FICHIERS DE POLICE, PAS UN DE PLUS. Trois familles :
-   instrument-serif (romain + italique), inter (400 + 600),
-   jetbrains-mono (500). Seuls les sous-ensembles latins sont
-   déclarés — tous les signes de la page y sont, Œ · É · Ê · À · º
-   et le cadratin compris.
-   ═══════════════════════════════════════════════════════════════ */
+   LA TYPOGRAPHIE EST SUBORDONNÉE, ET C'EST LE PARTI. Onze pixels
+   au plus, en surimpression, sur des pastilles d'encre opaques.
+   Aucun titre. L'échelle ne se gagne pas entre un grand caractère
+   et un petit — elle se gagne entre une épreuve de 620 × 900 et
+   une de 350 × 230. Rapport d'aires : 6,93 : 1.
 
-@font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-1.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"instrument-serif";src:url("../../fonts/demos/instrument-serif-3.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"inter";src:url("../../fonts/demos/inter-3.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+   LA SEULE COULEUR D'INTERFACE EST LE NOIR D'ENCRE. Toute la
+   couleur de l'écran vient des sept fichiers et de leur
+   étalonnage — c'est la seule façon de tenir « palette : selon la
+   photo » sans marcher sur le sarcelle exclusif de la clinique ni
+   sur la terre cuite exclusive de l'immobilier.
 
-/* ── TROIS VALEURS, ZÉRO ACCENT ─────────────────────────────────
-   17,5 : 1 pour le blanc cassé, 6,1 : 1 pour le gris. Les deux
-   passent AA en corps 10 px. Il n'y a pas de quatrième couleur, et
-   c'est à ça qu'on reconnaît cet écran parmi les douze. */
+   ── CE QUI A CHANGÉ LE 2026-08-01, SECONDE PASSE ──────────────
+   1. LA CASE FILÉE EST SORTIE. Un flou directionnel au milieu du
+      mur se lisait comme une mise au point ratée — et dans le
+      portfolio d'un photographe c'est la seule chose qui tue la
+      crédibilité. À 0,29 il ne restait de toute façon qu'une
+      salissure de 128 × 87 px (piège 71).
+   2. LES TROIS OBJETS SONT SORTIS. Le sous-titre déclare
+      « photographie d'architecture » ; deux roses, une céramique
+      et des branches de saule le contredisaient. Règle A.
+   3. LE COMPTE EST VRAI. Sept épreuves, sept numéros, de 01 à 07.
+   4. UN SEUL ÉTALONNAGE. Les sept sont tirées sur le même film,
+      vers le sable de béton. La variation qui reste est une
+      variation de VALEUR, pas de teinte : c'est ainsi qu'on tire
+      une planche, et c'est ce qui fait qu'elle se lit comme un
+      corpus et non comme un dossier d'images trouvées.
+   ══════════════════════════════════════════════════════════════ */
+
+@font-face{font-family:"inter";src:url("../../fonts/demos/inter-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:"inter";src:url("../../fonts/demos/inter-3.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+
 :root{
-  --noir:#000000;
-  --blanc:#EDEAE4;
-  --gris:#8A8A8A;
-  --serif:"instrument-serif", Georgia, "Times New Roman", serif;
-  --sans:"inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono:"jetbrains-mono", ui-monospace, "Courier New", monospace;
+  --encre:#101314;        /* le noir des pastilles — opaque, jamais un voile */
+  --papier:#F4F1EA;       /* 16,8 : 1 sur l'encre */
+  --papier-bas:#B9B3A8;   /* seconde voix — 9,4 : 1 sur l'encre */
 }
 
-*{ box-sizing:border-box }
-html{ background:var(--noir) }
-body{
-  margin:0;
-  background:var(--noir);
-  color:var(--gris);
-  font-family:var(--sans);
-  -webkit-text-size-adjust:100%;
-}
-figure{ margin:0 }
-h1{ margin:0; font-weight:400 }
-p{ margin:0 }
-img{ max-width:100% }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#101314}
+body{font-family:"inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 
-/* Anneau de mise au point : un filet, jamais un rayon. */
-a:focus-visible{ outline:1px solid var(--blanc); outline-offset:5px }
-
-/* ═══ MISE EN PAGE DE BASE — TÉLÉPHONE ════════════════════════════
-   Sous 1440 la composition se réorganise en colonne. Elle n'a pas à
-   reproduire l'écran de bureau : elle a à rester lisible, à ne
-   déborder nulle part, et à garder les trois mêmes valeurs. */
-.scene{
-  width:100%;
-  min-height:100vh;
-  padding:26px 22px 30px;
+/* ── LA PLANCHE ───────────────────────────────────────────────
+   Trois colonnes. Les deux premières en POURCENTAGE, la dernière
+   prend le reste : une largeur en pour cent arrondie laisse une
+   couture d'un pixel au bord droit, `flex:1` n'en laisse aucune.
+   À 1440 elles valent exactement 620 · 470 · 350. */
+.planche{
+  position:relative;
   display:flex;
-  flex-direction:column;
-  --course:302px;              /* hauteur du tirage : la course du bain */
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+  background:var(--encre);
 }
+.col{display:flex;flex-direction:column;min-width:0}
+.col-a{width:43.0556%}   /* 620 */
+.col-b{width:32.6389%}   /* 470 */
+/* `flex:1 1 0` ET PAS `flex:1 1 auto` : avec une base `auto`, la
+   colonne part de la largeur NATURELLE de ses images — 1280 px —
+   et le partage de l'espace se fait à partir de là. Mesuré : la
+   colonne prenait 417 px au lieu de 350, et la colonne A tombait
+   à 582 au lieu de 620. Une base nulle rend exactement le reste. */
+.col-c{flex:1 1 0}       /* 350 — le reste, au pixel */
+.col > :last-child{flex:1 1 0}      /* même raison, en hauteur */
 
-.tete{ display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:10px 20px; margin-bottom:40px }
-.marque{ font-family:var(--sans); font-weight:600; font-size:12px; line-height:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--blanc) }
-.nav{ display:flex; gap:18px }
-.lien{
-  font-family:var(--sans); font-weight:400; font-size:12px; line-height:12px;
-  letter-spacing:.1em; text-transform:uppercase;
-  color:var(--gris); text-decoration:none;
-  transition:color 180ms linear;
-}
-.lien.courant{ color:var(--blanc) }
-.lien:hover, .lien:focus-visible{ color:var(--blanc) }
-
-.dit{ display:block }
-.titre{
-  font-family:var(--serif); font-size:38px; line-height:40.3px;
-  color:var(--blanc); margin-bottom:16px;
-}
-.t1, .t2{ display:block; white-space:nowrap }
-.t2{ font-style:italic }               /* la seule autre voix de l'écran */
-.soustitre{
-  max-width:306px;
-  font-family:var(--sans); font-weight:400; font-size:13px; line-height:19.5px;
-  color:var(--gris);
-  margin-bottom:30px;
-}
-
-.bouton{
-  position:relative; display:inline-block;
-  font-family:var(--sans); font-weight:400; font-size:12px; line-height:12px;
-  letter-spacing:.1em; text-transform:uppercase;
-  color:var(--gris); text-decoration:none;
-  transition:color 180ms linear;
-}
-.bouton:hover, .bouton:focus-visible{ color:var(--blanc) }
-/* Le filet du libellé : exactement sa largeur. `right` retranche
-   l'interlettrage que le dernier caractère traîne derrière lui
-   (0,1 em × 12 px = 1,2 px), sinon le trait dépasse le mot. */
-.bouton::after{
-  content:""; position:absolute; left:0; right:1.2px;
-  top:20px; height:1px; background:var(--blanc);   /* 9,99 px sous le haut de boîte + 10 */
-}
-
-.tirage{ position:relative; margin:30px 0 0 }
-.epreuve{
-  display:block; width:216px; height:302px;
-  clip-path:inset(0 0 0 0);        /* état de REPOS = état FINAL */
-}
-/* LA LISIÈRE DU BAIN — une BANDE, pas un filet. Piège 57 : à 0,29 un
-   trait d'un pixel n'existe plus. 16 px de haut, et son BAS porte
-   l'arête : elle reste tout entière sur le noir, le tirage se
-   découvre derrière elle. */
-.lisiere{
-  position:absolute; left:-16px; top:-16px;
-  width:248px; height:16px;
-  background:var(--blanc);
-  opacity:0;                        /* repos : la lisière n'existe plus */
-}
-.cartel{ display:block; margin-top:16px }
-.c1, .c2, .c3{
+.case{
+  position:relative;
   display:block;
-  font-family:var(--mono); font-weight:500; font-size:10px; line-height:16px;
-  letter-spacing:.08em; text-transform:uppercase;
+  overflow:hidden;
+  min-height:0;
+  background:var(--encre);
+  outline-offset:-6px;
 }
-.c1{ color:var(--blanc) }
-.c2, .c3{ color:var(--gris) }
-
-.pied{ margin-top:auto; padding-top:40px }
-.coord, .mention{
-  font-family:var(--mono); font-weight:500; font-size:10px; line-height:16px;
-  letter-spacing:.08em; text-transform:uppercase; color:var(--gris);
-}
-
-/* ═══ LE GESTE : LE BAIN ══════════════════════════════════════════
-   Un seul mouvement sur tout l'écran. Le tirage monte hors du noir,
-   du bas vers le haut — le sens dans lequel on relève une épreuve du
-   révélateur. Une BANDE de 16 px, large du tirage plus 48 px de
-   chaque côté, précède l'arête et s'éteint sur les 8 derniers pour
-   cent de la course visuelle (soit 40,48 % du temps avec cette
-   courbe). Seize pixels et non un, parce qu'un pixel ne survit pas à
-   la réduction de 0,29 du panneau — piège 57.
-   Aucune bibliothèque : trois @keyframes, rien d'autre. */
-@keyframes bain{
-  from{ clip-path:inset(100% 0 0 0) }
-  to  { clip-path:inset(0 0 0 0) }
-}
-@keyframes lisiere-monte{
-  from{ transform:translateY(var(--course)) }
-  to  { transform:translateY(0) }
-}
-@keyframes lisiere-eteint{
-  0%, 40.48%{ opacity:1 }
-  100%      { opacity:0 }
-}
-.epreuve{ animation:bain 1400ms cubic-bezier(.22,1,.36,1) 260ms both }
-.lisiere{
-  animation:lisiere-monte 1400ms cubic-bezier(.22,1,.36,1) 260ms both,
-            lisiere-eteint 1400ms linear 260ms both;
+.case img{
+  display:block;width:100%;height:100%;
+  object-fit:cover;
+  transition:filter 220ms ease;
 }
 
-/* ═══ MISE EN PAGE INTERMÉDIAIRE — 768 px et plus ═════════════════ */
-@media (min-width:768px){
-  .scene{
-    padding:44px 56px 46px;
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    grid-template-rows:auto 1fr auto;
-    grid-template-areas:
-      "tete tete"
-      "dit  tirage"
-      "pied pied";
-    column-gap:56px;
-    align-items:end;
-    --course:378px;
-  }
-  .tete{ grid-area:tete; margin-bottom:0; align-self:start }
-  .nav{ gap:24px }
-  .dit{ grid-area:dit; align-self:end; padding-bottom:6px }
-  .titre{ font-size:44px; line-height:46.6px }
-  .tirage{ grid-area:tirage; align-self:end; margin:0 }
-  .epreuve{ width:270px; height:378px }
-  .lisiere{ left:-48px; width:366px }
-  .cartel{ text-align:right }
-  .pied{ grid-area:pied; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:8px 24px; margin-top:0; padding-top:44px }
-  .mention{ text-align:right }
+/* ── QUATRE REGISTRES D'ÉCHELLE ───────────────────────────────
+   Deux tailles ne font pas un rythme : elles font une exception
+   et un fond. Les sept cases descendent par paliers —
+     · 558 000 px²                    l'épreuve pleine hauteur, 01
+     · 164 500 · 155 100              02 · 03
+     · 126 000 · 108 500 · 103 400    06 · 07 · 04
+     ·  80 500                        05
+   Rapport du plus grand au plus petit : 6,93 : 1. C'est l'échelle
+   brutale du standard, transposée de la typographie à l'image —
+   le seul endroit où elle peut vivre sur un écran qui s'interdit
+   les gros caractères. C'EST LE MOMENT FORT DE CET ÉCRAN.
+
+   POURQUOI SEPT ET PAS HUIT. Le fonds contient huit épreuves
+   d'architecture. La huitième — `photo-12`, un refend clair et une
+   fente vitrée — a été essayée à 350 × 160, à 350 × 200, puis
+   agrandie deux fois dans sa case : à chaque taille compatible
+   avec ce mur elle rend un rectangle crème avec une encoche. Un
+   mur qui dit « voici mon travail » et qui pose une case vide dit
+   surtout qu'il n'en avait pas assez. Sept épreuves qui tiennent
+   valent mieux que huit dont une meuble.
+
+   Les joints des deux colonnes de droite ne s'alignent JAMAIS :
+   B coupe à 350 et 680, C à 230 et 590. Une grille dont les
+   lignes se répondent se lit comme un tableau ; un mur d'atelier
+   n'a pas de lignes qui se répondent. */
+.a1{height:100%}              /* 620 × 900 */
+.b1{height:38.8889%}          /* 470 × 350 */
+.b2{height:36.6667%}          /* 470 × 330 */
+.b3{height:24.4444%}          /* 470 × 220 */
+.c1{height:25.5556%}          /* 350 × 230 */
+.c2{height:40%}               /* 350 × 360 */
+.c3{height:34.4444%}          /* 350 × 310 */
+
+/* ── L'ÉTALONNAGE — LE VRAI TRAVAIL D'UNE PLANCHE ─────────────
+   Sept fichiers pris à sept lumières ne font pas une planche.
+   Avant : l'écart de teinte entre la plus chaude et la plus
+   froide valait 176,6° — c'est-à-dire l'opposé du cercle. Un
+   monument doré posé contre trois voisines sarcelle : deux
+   étalonnages côte à côte, pas un.
+
+   LE SENS CHOISI EST LE SABLE DE BÉTON. Trois raisons.
+   1. `photo-16`, qui tient 43 % de l'écran, est NATIVEMENT chaude.
+      La tirer au gris froid, c'était dénaturer la seule image que
+      le visiteur regarde vraiment.
+   2. Le gris froid neutre nous poussait vers le noir et blanc pur
+      de la coiffure (03) — l'exclusivité d'un autre.
+   3. Le sarcelle appartient à la clinique (09). Trois de nos
+      fichiers en portaient.
+   Ce n'est PAS la terre cuite saturée de l'immobilier (10) : le
+   sable est clair et peu chromatique, la terre cuite est sombre
+   et saturée, et surtout, chez nous ce n'est pas une couleur
+   d'interface — aucun aplat, aucun texte, aucun filet ne la
+   porte. Elle n'existe que dans les sept fichiers.
+
+   `sepia()` d'abord — il rabat toutes les teintes sur une seule ;
+   `saturate()` ensuite, qui RETIRE ce qui reste ; `hue-rotate()`
+   pour poser l'angle. Les valeurs ne sont pas devinées : elles
+   sont relevées case par case après coup, § « l'étalonnage » du
+   plan. Ce qui varie d'une case à l'autre est la VALEUR, jamais
+   la teinte.
+
+   PREMIER JET DE CETTE PASSE, ET IL ÉTAIT FAUX. J'ai unifié la
+   teinte en montant la saturation : `sepia(.8….94) saturate(1.45…
+   1.75)`. L'écart de teinte est bien tombé de 176,6° à 22,6° — le
+   chiffre disait « réussi » — mais la chroma moyenne était passée
+   de 14,1 à 23,1 et la planche entière virait au beurre. Un ciel
+   sarcelle rabattu à 80 % de sépia ne devient pas du sable : il
+   devient de l'olive, et une tour de verre devient du laiton. Ça
+   ne se lit pas comme un tirage, ça se lit comme un filtre.
+   `saturate()` DESCEND sous 1 : c'est le sépia lui-même qui porte
+   la teinte, et il faut lui retirer sa couleur, pas lui en
+   ajouter. Deuxième jeu de valeurs, chroma visée 10 à 18.
+
+   CHAQUE ÉTALONNAGE EST UNE VARIABLE, ET C'EST UN CORRECTIF.
+   `filter` est une propriété unique : la règle de survol
+   `filter: saturate(1.55)` REMPLAÇAIT tout l'étalonnage au lieu de
+   s'y ajouter, et une case survolée retombait sur la couleur de
+   son fichier — le ciel de `photo-10` redevenait bleu, en plein
+   milieu d'une planche sable. La couleur d'origine ne doit jamais
+   réapparaître, à aucun état. La variable se recompose.
+
+   TROISIÈME JEU, ET IL VIENT D'UN A/B REGARDÉ, PAS D'UN CHIFFRE.
+   Le deuxième jeu tenait ses mesures — écart de teinte 6,2°, pixels
+   froids 0,1 % — et l'écran s'était quand même appauvri : sept
+   photographies au MÊME angle et à la MÊME chroma ne se lisent plus
+   comme un tirage cohérent, elles se lisent comme un filtre posé
+   par-dessus. Un écart de teinte de 6,2° sur sept fichiers n'est pas
+   de la cohérence, c'est de l'uniformité, et l'uniformité d'une
+   planche de photographe se retourne contre elle : c'est le
+   photographe qu'on soupçonne de n'avoir qu'un preset.
+   Trois planches capturées à `saturate` × 1 · × 0,72 · × 0,55, mises
+   côte à côte et REGARDÉES. × 0,55 gagne : le béton redevient du
+   béton, la teinte reste convergente parce que c'est `sepia()` qui la
+   porte — `saturate()` ne fait qu'en retirer la chroma. Le facteur
+   est replié dans chaque valeur plutôt qu'empilé en second filtre :
+   `filter` est une propriété unique et le survol la recompose déjà
+   (voir juste au-dessus). Chroma visée : 6 à 9. */
+.g-16{--etal:sepia(.30) saturate(.56)  hue-rotate(-4deg) contrast(1.15) brightness(1.06)}
+.g-13{--etal:sepia(1)   saturate(.36)  hue-rotate(-2deg) contrast(1.20) brightness(1.03)}
+.g-8 {--etal:sepia(.88) saturate(.45)  hue-rotate(-6deg) contrast(1.10) brightness(1.06)}
+.g-9 {--etal:sepia(.74) saturate(.46)  hue-rotate(-4deg) contrast(1.12) brightness(1.04)}
+.g-10{--etal:sepia(1)   saturate(.29)  hue-rotate(-2deg) contrast(1.26) brightness(.99)}
+.g-17{--etal:sepia(.88) saturate(.44)  hue-rotate(-6deg) contrast(1.12) brightness(1.04)}
+.g-11{--etal:sepia(1)   saturate(.33)  hue-rotate(-2deg) contrast(1.22) brightness(1.02)}
+.case img{filter:var(--etal)}
+
+/* ── UN RECADRAGE DE CASE ─────────────────────────────────────
+   `object-fit: cover` ne sait que rogner jusqu'au rapport de la
+   case ; il ne sait pas s'approcher. La couronne d'acier de 05
+   est trop loin pour la place qu'on lui donne : on l'agrandit
+   dans sa case, qui rogne. Rien n'est masqué — aucune de ces
+   images ne porte de marque, de plaque ni de visage : c'est un
+   CADRAGE, pas un cache (§ 4.1 du standard, piège 60). La source
+   garde 750 px de large pour une case de 350 : le piqué tient
+   même à la densité 2 de la prise de vue. */
+.pres-05 img{transform:scale(1.34);transform-origin:58% 46%}
+
+/* ── LES PASTILLES — TOUTE LA TYPOGRAPHIE DE L'ÉCRAN ──────────
+   Opaques, jamais translucides : un rapport de contraste ne se
+   défend que sur une couleur connue, et le fond ici est une
+   photographie (piège 73). 11 px au plus, rien au-dessus. */
+.past{
+  position:absolute;
+  background:var(--encre);
+  color:var(--papier);
+  font-size:10px;line-height:1;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+  padding:6px 9px;z-index:3;
+}
+.num{left:0;bottom:0;font-size:9px;font-weight:500;letter-spacing:.10em;padding:5px 7px}
+.marque{top:0;left:0;font-size:11px;letter-spacing:.20em}
+.sous{top:23px;left:0;font-size:10px;font-weight:400;letter-spacing:.10em;color:var(--papier-bas)}
+.compte{top:0;right:0;font-size:10px;letter-spacing:.16em}
+.pied{
+  bottom:0;right:0;
+  display:flex;flex-direction:column;gap:5px;align-items:flex-end;
+  font-size:10px;font-weight:400;letter-spacing:.08em;
+}
+.pied b{font-weight:400}
+.pied span{font-size:9px;color:var(--papier-bas);letter-spacing:.12em}
+
+/* ── LE DISPOSITIF SANS SCRIPT ────────────────────────────────
+   `:hover`, `:focus-visible` et `:target` ouvrent le cartel d'une
+   case, à droite de son numéro, et montent son étalonnage. Au
+   repos il n'y a rien à lire : c'est le sujet même de l'écran.
+   Chaque case est un `<a>` vers son propre `id` — un vrai arrêt
+   clavier, un vrai anneau de focus, une sélection qui persiste
+   dans l'URL. Zéro ligne de JavaScript. */
+.cartel{
+  position:absolute;left:0;bottom:0;
+  transform:translateX(100%);
+  background:var(--encre);color:var(--papier);
+  font-size:9px;font-weight:400;letter-spacing:.10em;line-height:1;
+  text-transform:uppercase;white-space:nowrap;
+  padding:5px 8px;
+  opacity:0;transition:opacity 180ms ease;
+  z-index:3;
+}
+.case:hover .cartel,.case:focus-visible .cartel,.case:target .cartel{opacity:1}
+/* L'étalonnage D'ABORD, le coup de projecteur ENSUITE : la case
+   désignée monte d'un cran sur SON tirage, elle ne revient pas au
+   fichier brut. */
+.case:hover img,.case:focus-visible img,.case:target img{filter:var(--etal) saturate(1.32) brightness(1.08) contrast(1.04)}
+.case:focus-visible{outline:3px solid var(--papier)}
+
+/* ── LE GESTE, UN SEUL : LA LUMIÈRE RASANTE ───────────────────
+   Une bande de 190 px monte d'un cran l'exposition de ce qui
+   passe dessous, et traverse la planche de gauche à droite en
+   9 s. Elle ne floute rien, ne cache rien, ne coupe aucun mot.
+
+   POURQUOI ELLE, ET PAS UNE ÉPREUVE QUI DÉFILE. Sur un mur de
+   photographies à joints nuls, tout mouvement d'IMAGE se lit
+   comme un défaut d'image : un filé se lit « mise au point
+   ratée », un tirage à mi-course se lit « fichier tronqué », une
+   case à moitié révélée se lit « image qui n'a pas chargé ». Le
+   seul mouvement qui ne peut pas être pris pour un défaut est
+   celui qui TRAVERSE plusieurs épreuves d'un coup : une bande qui
+   franchit la couture verticale du mur et deux joints
+   horizontaux n'appartient à aucune des sept, donc ne peut pas
+   être le défaut d'aucune.
+
+   `backdrop-filter` et pas un voile blanc : un voile abaisse le
+   contraste de ce qu'il couvre — sur une photographie ça se voit
+   comme un lavage. Un filtre de fond RÉEXPOSE : le détail reste
+   entier, la valeur monte. C'est exactement ce que fait un rayon
+   rasant sur un mur d'épreuves.
+
+   Elle est photographiée à 4030 ms sur 9000 : la bande est alors
+   à x 540 → 730, à cheval sur la couture du monument et sur la
+   colonne B. 190 px à 1440 font 55 px dans le panneau réduit :
+   quatre fois le plancher du piège 71. */
+.rasant{
+  position:absolute;top:0;left:0;
+  width:13.1944%;                 /* 190 à 1440 */
+  height:100%;
+  z-index:2;pointer-events:none;
+  backdrop-filter:brightness(1.22) saturate(1.06);
+  /* Deux arêtes parfaitement franches font un rectangle collé sur
+     le mur, pas un rayon ; un fondu trop large fait disparaître la
+     bande. Mesuré aux deux bouts : à 12 % de fondu et 1,15 la pire
+     tuile de 60 × 60 ne bougeait que de 31 niveaux et la bande ne
+     se voyait plus à l'image ; à 0 % de fondu et 1,17 elle se
+     lisait comme un rectangle posé dessus. 6 % — soit 11 px de
+     chaque côté — et 1,22. Il reste 168 px de plein, 49 px dans le
+     panneau réduit : quatre fois le plancher du piège 71. */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+  animation:rase 9000ms linear infinite;
+}
+@keyframes rase{from{transform:translateX(-100%)}to{transform:translateX(1440px)}}
+
+/* Sans `backdrop-filter`, la bande n'existe pas — et c'est le bon
+   repli : rien de faux ne s'affiche, la planche est simplement
+   immobile. Jamais un rectangle blanc à la place. */
+@supports not (backdrop-filter: brightness(1.1)){
+  .rasant{display:none}
 }
 
-/* ═══ L'ÉCRAN COTÉ — 1440 × 900 ═══════════════════════════════════
-   Grille de référence : 12 colonnes, marges 96 px, gouttières 24 px,
-   colonne = 82 px. La colonne 8 commence à x = 838 : c'est la seule
-   ligne de force verticale de l'écran, et deux choses s'y accrochent
-   — la nav et le bord gauche du tirage.
-
-   Les `top` sont donnés en position de BOÎTE ; la cote du plan est une
-   LIGNE DE BASE. L'écart entre les deux a été RELEVÉ dans le navigateur,
-   police par police, avec un marqueur inline-block de taille nulle dont
-   le bord bas tombe sur la baseline : inter 12/12 → 9,99 px ·
-   instrument-serif 44/46,6 → 37,99 px · inter 13/19,5 → 14,00 px ·
-   jetbrains-mono 10/16 → 10,99 px. Chaque `top` ci-dessous est la cote
-   du plan MOINS cet écart.
-
-   Bilan du vide : ≈ 11,9 % de surface encrée, le noir occupe 88,1 %.
-   Le déplacement du tirage n'ajoute rien et n'enlève rien ; la lisière
-   n'existe que pendant le geste et pèse 366 × 16 = 5 856 px², soit
-   0,45 % — à l'instant photographié le tirage n'est peint qu'aux trois
-   quarts, et le vide est donc de 89,6 %. Plancher exigé : 80 %. */
-@media (min-width:1440px){
-  .scene{
-    position:relative; display:block;
-    width:1440px; height:900px; min-height:0;
-    margin:0 auto; padding:0;
-    --course:378px;
-  }
-  .tete, .dit, .tirage, .pied{
-    position:static; display:block; margin:0; padding:0;
-  }
-
-  /* Ligne de tête — ligne de base y = 64 */
-  .marque{ position:absolute; left:96px; top:54px }
-  .nav{ position:absolute; left:838px; top:54px; display:flex; gap:24px; white-space:nowrap }
-
-  /* Le tirage — 270 × 378, bord gauche 838, bord haut 219, bord bas
-     597. 42,0 % de la hauteur de l'écran, centre (973, 408) décalé de
-     253 px à DROITE et 42 px vers le HAUT du centre géométrique
-     (720, 450). Aucun recadrage.
-
-     LE TIRAGE A MONTÉ DE 111 px, ET C'EST LA SECONDE CORRECTION.
-     À y 330–708 il tenait dans le tiers bas avec le bloc de titre :
-     deux masses côte à côte, aucune tension, et 45 % de noir au-dessus
-     que rien ne tenait. À y 219–597 il TRAVERSE la ligne médiane ; la
-     tension se joue en diagonale contre le titre en bas à gauche, et
-     le vide passe sous le tirage, où il se lit comme sa marge.
-
-     La lisière est 16 px PLUS HAUT que le tirage : son bas porte
-     l'arête du bain, elle ne recouvre donc jamais l'image et reste
-     tout entière sur le noir. */
-  .epreuve{ position:absolute; left:838px; top:219px; width:270px; height:378px }
-  .lisiere{ position:absolute; left:790px; top:203px; width:366px }
-
-  /* Titre — 44/46,6, lignes de base 661,4 et 708. Il ne bouge pas :
-     le tirage est monté, pas lui — c'est de leur ÉCART que vient la
-     tension. Sa première ligne de base porte désormais l'alignement
-     caché, avec la troisième ligne du cartel.
-     COTE CORRIGÉE DE 0,4 px : le plan demande à la fois un interlignage
-     de 46,6 px et deux lignes de base distantes de 47. Les deux ne
-     tiennent pas ensemble. On garde l'interlignage écrit (46,6) et on
-     cale la DERNIÈRE ligne de base sur 708. La première tombe donc à
-     661,4 au lieu de 661. */
-  .titre{ position:absolute; left:96px; top:623.4px; font-size:44px; line-height:46.6px; margin:0 }
-
-  /* Sous-titre — ligne de base 740, largeur max 306 */
-  .soustitre{ position:absolute; left:96px; top:726px; width:306px; max-width:306px; margin:0 }
-
-  /* Cartel — aligné à droite sur x = 1108, le bord droit du tirage.
-     Il suit le tirage : boîte à 618,4, lignes de base 629,4 · 645,4 ·
-     661,4, et le même écart de 21,4 px sous le bord bas de l'image
-     qu'avant le déplacement.
-
-     L'ALIGNEMENT CACHÉ QUI TRAVERSE LE VIDE A CHANGÉ DE COUPLE. Il
-     n'est plus « cartel ligne 1 = sous-titre ligne 1 » à y = 740 — le
-     cartel n'est plus là — mais « cartel ligne 3 = titre ligne 1 » à
-     y = 661,4 : le bloc de droite finit exactement là où le bloc de
-     gauche commence, à 1 012 px de distance.
-
-     Le `margin-right` négatif retranche l'interlettrage traîné par le
-     dernier caractère (0,08 em × 10 px). */
-  .cartel{ position:absolute; right:332px; margin-right:-.8px; top:618.4px; text-align:right; margin-top:0 }
-
-  /* Bouton — ligne de base 838, filet 10 px dessous */
-  .bouton{ position:absolute; left:96px; top:828px }
-
-  /* Bas de page — alignés à droite sur x = 1344, lignes de base 838 et 858 */
-  .coord{ position:absolute; right:96px; margin-right:-.8px; top:827px; white-space:nowrap; text-align:right }
-  .mention{ position:absolute; right:96px; margin-right:-.8px; top:847px; white-space:nowrap; text-align:right }
+/* ── LE GARDE-FOU ─────────────────────────────────────────────
+   Rien ne joue tout seul sur cette page : il n'y a donc aucun
+   état de départ à rattraper. Ne restent que les transitions au
+   survol et au focus, qu'on coupe — la case montre alors son
+   cartel et son étalonnage haut d'un coup, sans fondu. Aucune
+   information ne se perd. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  /* La bande ne porte AUCUNE information : elle ne fait que
+     réexposer. Arrêtée, elle deviendrait une colonne plus claire
+     posée au hasard sur le mur — une information FAUSSE. On la
+     retire. `animation:none` seul ne suffit pas : il fige la
+     bande là où elle est. */
+  .rasant{display:none}
 }
 
-/* ═══ LES DEUX FILETS DE SÉCURITÉ ═════════════════════════════════
-   Un moteur qui ne sait pas animer `clip-path` voit la forme FINALE,
-   jamais un cadre vide. Et le mouvement réduit coupe tout sans jamais
-   retirer une information : l'état de repos EST l'état final. */
-@supports not (clip-path:inset(38% 0 0 0)){
-  .epreuve{ animation:none; clip-path:none }
-  .lisiere{ animation:none; opacity:0 }
-}
-@media (prefers-reduced-motion:reduce){
-  *, *::before, *::after{ animation:none !important; transition:none !important }
-  .epreuve{ clip-path:inset(0 0 0 0) }
-  .lisiere{ opacity:0 }
+/* Sous 720 px l'écran n'est plus la vitrine : deux colonnes,
+   et rien ne déborde. */
+@media (max-width:720px){
+  .planche{flex-wrap:wrap}
+  .col-a{width:100%;height:44%}
+  .col-b,.col-c{width:50%;height:56%;flex:0 0 50%}
+  .sous{font-size:9px}
 }
 </style>
 </head>
 <body>
-<main class="scene">
 
-  <header class="tete">
-    <p class="marque">Atelier Lumen</p>
-    <nav class="nav" aria-label="Sections">
-      <a class="lien courant" href="#" aria-current="page">Œuvres</a>
-      <a class="lien" href="#">Séries</a>
-      <a class="lien" href="#">L'Atelier</a>
-    </nav>
-  </header>
+<main class="planche">
 
-  <div class="dit">
-    <h1 class="titre"><span class="t1">Une image</span><span class="t2">à la fois.</span></h1>
-    <p class="soustitre">Photographie d'architecture, d'intérieur et d'objet. Québec.</p>
-    <a class="bouton" href="#">Demander une séance</a>
+  <!-- ── COLONNE A · 620 px — L'ÉPREUVE PLEINE HAUTEUR.
+       Une seule photographie du sol au plafond, 620 × 900, 43 % de
+       la planche. Elle touche trois bords. C'est la seule des sept
+       qui n'a de voisine ni au-dessus ni en dessous, et c'est ce
+       rapport-là — 43 % contre 4,3 % — qui fait l'échelle de cet
+       écran, à la place d'un titre. Le fichier est natif portrait
+       1000 × 1400 : recadrage de 4 %, presque rien. Le cadre du
+       photographe n'est pas retaillé. ───────────────────────── -->
+  <div class="col col-a">
+    <a class="case a1 g-16" id="f01" href="#f01">
+      <img src="../../images/secteurs-sites/photo-16.webp" width="1000" height="1400"
+           style="object-position:50% 50%" fetchpriority="high" decoding="async"
+           alt="L'arête en chevron d'un volume de béton, vue en contre-plongée sur un ciel couvert.">
+      <span class="past num">01</span><span class="cartel">Arête en chevron, contre-plongée</span>
+    </a>
   </div>
 
-  <figure class="tirage">
-    <img class="epreuve"
-         src="../../images/secteurs-sites/photo-17.webp"
-         width="1000" height="1400"
-         fetchpriority="high" decoding="async"
-         alt="Une dalle de béton en porte-à-faux sort d'une façade percée de bandeaux de fenêtres. Noir et blanc.">
-    <span class="lisiere" aria-hidden="true"></span>
-    <figcaption class="cartel">
-      <span class="c1">Nº 01 — Dalle en porte-à-faux</span>
-      <span class="c2">Béton, bandeaux de fenêtres</span>
-      <span class="c3">Noir et blanc, sans retouche</span>
-    </figcaption>
-  </figure>
+  <!-- ── COLONNE B · 470 px — LES TROIS GRANDES DU MUR.
+       Une façade au ciel, une sous-face en diagonale, un bandeau
+       de texture. Elles descendent : 350, 330, 220. ──────────── -->
+  <div class="col col-b">
+    <a class="case b1 g-13" id="f02" href="#f02">
+      <img src="../../images/secteurs-sites/photo-13.webp" width="1280" height="720"
+           style="object-position:54% 52%" decoding="async"
+           alt="Un angle de béton clair coupé par une fente vitrée verticale, sous un ciel dégagé.">
+      <span class="past num">02</span><span class="cartel">Angle de béton, fente vitrée</span>
+    </a>
 
-  <footer class="pied">
-    <p class="coord">000 000-0000 — courriel@exemple.ca — Adresse sur demande</p>
-    <p class="mention">Site de démonstration</p>
-  </footer>
+    <a class="case b2 g-8" id="f03" href="#f03">
+      <img src="../../images/secteurs-sites/photo-8.webp" width="1920" height="1080"
+           style="object-position:36% 56%" decoding="async"
+           alt="Sous-face de dalle et rampe d'escalier en diagonale sur un mur de béton, à côté d'un rideau de lamelles.">
+      <span class="past num">03</span><span class="cartel">Rampe en diagonale, lamelles</span>
+    </a>
+
+    <a class="case b3 g-9" id="f04" href="#f04">
+      <img src="../../images/secteurs-sites/photo-9.webp" width="1280" height="720"
+           style="object-position:50% 46%" decoding="async"
+           alt="Façade de béton percée de fenêtres étroites posées en quinconce.">
+      <span class="past num">04</span><span class="cartel">Façade, fenêtres en quinconce</span>
+    </a>
+  </div>
+
+  <!-- ── COLONNE C · 350 px — LES TROIS PLUS PETITES.
+       Une couronne d'acier sur le ciel, un porte-à-faux, une tour
+       de verre. 230, 360, 310 : aucun de ces joints ne tombe en
+       face d'un joint de la colonne B. La plus dense des trois
+       tient le coin bas-droit, celui que le pied de page occupe :
+       un coin de mur ne se termine pas sur un aplat. ───────── -->
+  <div class="col col-c">
+    <a class="case c1 g-10 pres-05" id="f05" href="#f05">
+      <img src="../../images/secteurs-sites/photo-10.webp" width="1280" height="720"
+           style="object-position:76% 46%" decoding="async"
+           alt="Un volume clair coiffé d'une couronne d'acier, détaché sur le ciel.">
+      <span class="past num">05</span><span class="cartel">Couronne d'acier sur le ciel</span>
+    </a>
+    <a class="case c2 g-17" id="f06" href="#f06">
+      <img src="../../images/secteurs-sites/photo-17.webp" width="1000" height="1400"
+           style="object-position:50% 26%" decoding="async"
+           alt="Une dalle de béton en porte-à-faux sort d'une façade percée de bandeaux de fenêtres.">
+      <span class="past num">06</span><span class="cartel">Dalle en porte-à-faux</span>
+    </a>
+    <a class="case c3 g-11" id="f07" href="#f07">
+      <img src="../../images/secteurs-sites/photo-11.webp" width="1280" height="720"
+           style="object-position:50% 40%" decoding="async"
+           alt="Le V de reflets à la base d'une tour de verre.">
+      <span class="past num">07</span><span class="cartel">Tour de verre, V de reflets</span>
+    </a>
+  </div>
+
+  <!-- LE GESTE. Elle est posée en DERNIER et sans contenu : elle
+       ne doit jamais passer par-dessus une pastille d'encre — le
+       texte du mur ne se réexpose pas. -->
+  <div class="rasant" aria-hidden="true"></div>
+
+  <!-- ── LA TYPOGRAPHIE, TOUTE ENTIÈRE. Quatorze mots, sept
+       numéros, et rien au-dessus de 11 px. ─────────────────── -->
+  <span class="past marque">Atelier Lumen</span>
+  <span class="past sous">Photographie d'architecture, Québec</span>
+  <span class="past compte">Sélection — 7 épreuves</span>
+  <div class="past pied">
+    <b>000 000-0000 · courriel@exemple.ca</b>
+    <span>Site de démonstration</span>
+  </div>
 
 </main>
+
 </body>
 </html>

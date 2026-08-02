@@ -1,129 +1,131 @@
-# PHOTOGRAPHE — ATELIER LUMEN
+# PHOTOGRAPHE — ATELIER LUMEN · LA PLANCHE
 
 Un seul écran, **1440 × 900**, arrêté. Rien en dessous, aucun
-défilement. Le nom reprend celui déjà porté par `DIRECTIONS.md § 11` —
-atelier **fictif**, coordonnées neutres.
+défilement. Atelier **fictif**, coordonnées neutres.
 
-**La thèse en une ligne :** le noir n'est pas un fond, c'est le mur ;
-la photographie est un tirage accroché dessus, et **elle est en train
-de monter du bain** quand on entre.
+> **SECONDE PASSE DU 2026-08-01.** Le renversement de la première
+> passe est GARDÉ intégralement — bord à bord, marge de page 0,
+> aucun titre, un monument contre un mur, la typographie sous
+> 11 px. C'est lui qui a fait passer l'écran de 6 à 8, et il n'est
+> pas remis en cause.
+>
+> **Trois choses en sont sorties, et une y est entrée.**
+>
+> | | |
+> |---|---|
+> | **sort** | la **case filée** — un flou directionnel au milieu d'un portfolio de photographe |
+> | **sort** | les **trois objets** — deux roses, une céramique, des branches de saule, sur un écran qui déclare « photographie d'architecture » |
+> | **sort** | **`photo-12`**, la huitième épreuve d'architecture : elle ne tient aucune case |
+> | **entre** | **un seul étalonnage** pour toutes les épreuves, et une **lumière rasante** à la place du filé |
+>
+> Le compte passe de **11 à 7**, et il est maintenant vérifiable
+> sur l'écran : sept numéros, de `01` à `07`.
+
+---
+
+## La thèse, en une ligne
+
+**L'image n'illustre pas l'écran : elle EST l'écran.** Sept
+épreuves bord à bord, zéro gouttière, zéro marge, pas un titre.
+Toute la typographie tient dans **1,96 %** de la surface, à 11 px
+au plus. Ce qu'un visiteur regarde pendant trois secondes, c'est
+du travail — pas une phrase sur du travail.
+
+---
+
+## LE MOMENT FORT — l'échelle, et rien d'autre
+
+> **Un monument de 620 × 900 contre un mur de six vignettes.
+> Rapport d'aires : 6,93 : 1.**
+
+Il se nomme en une phrase, il se voit en moins d'une seconde, il
+ne repose sur aucun défaut, et **c'est le seul endroit d'un écran
+qui s'interdit les gros caractères où l'échelle brutale du
+standard peut encore vivre** : elle est transposée de la
+typographie à l'image.
+
+**La case filée n'était pas le moment fort, elle était un pari
+perdu.** Deux raisons, chacune suffisante.
+
+1. **Dans le portfolio d'un photographe, une image floue est la
+   seule chose qui tue la crédibilité.** Le mur dit « voici mes
+   épreuves » ; une épreuve molle au milieu dit « je n'ai pas su
+   faire la mise au point ». Le joint net et la direction du flou
+   demandaient deux secondes d'analyse ; le brief en donne trois,
+   et il les veut en « wow », pas en excuse.
+2. **Piège 71.** À 0,29, une case de 440 × 300 devient 128 × 87 px.
+   Le filé n'y était plus une direction, c'était une salissure.
+
+Les cinq preuves du filé — `preuves/chantier7-ecrans/filante-*.png`
+— ont été **supprimées** : elles prouvaient un geste qui n'existe
+plus, et un fichier de sortie abandonné se fait relire par l'outil
+suivant (piège 55).
 
 ---
 
 ## Les trois références
 
-Six relevés lancés, cinq réussis (`holtermand.dk` refusé —
-`ERR_CERT_COMMON_NAME_INVALID`). Trois retenus. Les deux écartés sont
-dits à la fin.
+`tools/planche-refs.mjs` — `photo: ["spaeth", "klok", "keller"]`.
+Inchangées, et elles restent bien choisies. Relevés dans
+`tools/_refs/photo-spaeth`, `-klok`, `-keller`.
 
-### 1 · MEECH213 — `https://www.meech213.com`
+### 1 · DAVID SPAETH — `https://davidspaeth.com`
 
-Relevé : `tools/_refs/photo-meech/`. Awwwards Site of the Day,
-29 juin 2026.
+**Les chiffres.** Corps 12 px · deux familles · h1 **absent** (le
+mot-symbole est un tracé). Mesuré sur `0-heros.png` à 1440 × 900 :
+deux photographies de 700 × 782, marge de page 16 px, imagerie
+≈ 85 %, plus gros texte ≈ 26 px, **12 mots**, aucune bibliothèque
+d'animation.
 
-**Les chiffres du relevé.** Fond `rgb(245, 244, 241)` · **hauteur de
-page 900 px** — l'accueil ne défile pas · 27 images dans le document,
-**0 image de plus de 380 px** · h1 mesuré = le mot « Menu »,
-`Ceraph Roman` **32 px / 32 px**, `rgb(0,0,0)` · corps `articulat-cf`
-**16 px** · Lenis seul, ni GSAP, ni ScrollTrigger, ni CSS piloté au
-défilement.
+**Ce qu'on lui prend.** Le système d'étiquetage : un libellé
+minuscule posé au bord de chaque image, avec un compte entre
+parenthèses. Une typographie qui n'orne pas, qui **indexe**. Et le
+refus du titre : rien au-dessus de 26 px chez un photographe
+professionnel.
 
-**Mesuré sur `0-heros.png`.** L'unique visuel du premier écran fait
-**137 × 152 px**, posé en **x 1035–1172 · y 278–430** : **17 % de la
-hauteur** de l'écran, dans le quart haut-droit, jamais au centre. Le
-mot-symbole est en haut à gauche, **incliné**, ~11 px. Le menu est en
-bas au centre : cinq mots en serif d'affichage ~30 px dont **un seul**
-est noir, les quatre autres à ~8 % d'opacité, et un **trait de 1 px**
-part d'un point pour relier le mot actif.
+**Ce qu'on écarte.** Les 16 px de marge — nous sommes à 0. Le
+diptyque : deux images de même taille n'ont aucune hiérarchie, et
+c'est justement l'échelle qui nous manquait.
 
-**Ce qu'elle prouve.** Le vide peut être le sujet. Une vignette de
-137 px perdue dans 1 296 000 px² de crème tient un écran entier sans
-jamais avoir l'air vide — parce que chaque élément restant est posé au
-pixel, et qu'aucun ne se répète.
+### 2 · CHRISTIE HEMM KLOK — `https://christiehemmklok.com`
 
-**Ce qu'on lui prend.** Le rapport d'échelle : une image *minuscule*,
-décalée, hors centre. Le trait de 1 px, qui donne une direction au
-vide au lieu de le décorer. Et l'accueil qui ne défile pas.
+**Les chiffres.** Hauteur de page 900 px, l'accueil ne défile pas.
+Une photographie **plein cadre 1440 × 900**, marge 0, imagerie
+100 %, fond `rgb(0,0,0)` jamais visible. Lettrage jaune ≈ 150 px,
+**3 mots**. Lenis seul.
 
-**Ce qu'on écarte.** Le crème (nous : `#000000`). Les cinq niveaux de
-gris typographiques — nous n'en avons que **deux**. Le mot-symbole
-incliné : aucun angle qui ne soit droit. Le menu en gros serif au
-centre bas — notre titre reste petit et **notre centre reste vide**.
+**Ce qu'elle prouve.** Qu'un premier écran de photographe peut
+être cent pour cent d'image, sans une seule marge, et que c'est
+plus fort, pas plus pauvre.
 
-### 2 · JACK DAVISON — `https://www.jackdavison.co.uk/`
+**Ce qu'on écarte.** Le lettrage de 150 px — notre cellule
+interdit le gros caractère — et son jaune acide, qui appartient au
+04.
 
-Relevé : `tools/_refs/photo-davison/`.
+### 3 · KELLERSTÖCKL — `https://www.kellerstoecklarchitektur.at`
 
-**Les chiffres du relevé.** Fond `rgb(255, 255, 255)` · h1
-`Untitled Sans Medium` **16 px / 29,76 px**, chasse 0,3 px, couleur
-`rgb(255,255,255)` — donc le nom du photographe est **écrit et
-invisible** · corps `Untitled Sans` **14 px** · **hauteur de page
-900 px** · **2 images** en tout, **1 seule** de plus de 380 px ·
-**aucune bibliothèque** : ni GSAP, ni Lenis, ni Locomotive, ni
-scroll-driven CSS.
+**Les chiffres.** Une seule famille, corps 15 px, h1 déclaré 30 px
+mais **titre affiché à 15 px** (piège 57 : le relevé seul aurait
+fait écrire n'importe quoi). 221 images · hauteur de page 900 px ·
+aucune bibliothèque. Grille pleine page de ≈ 10 × 8 vignettes de
+34 × 30 px, marge 0, vignettes coupées par les quatre bords.
 
-**Mesuré sur `0-heros.png`.** La photographie occupe
-**x 446–994 · y 99–795** = **548 × 696 px**, soit **77 % de la
-hauteur** et 38 % de la largeur. Marges gauche et droite : **446 px
-chacune** — strictement centrée. Un compteur « Recent — 1/32 » est
-posé **au milieu de l'image**, en gris presque illisible. La nav tient
-en deux mots au bas au centre : « Index — Thumbs », 14 px.
+**Ce qu'on lui prend.** La grille qui touche les quatre bords.
 
-**Ce qu'elle prouve.** Un portfolio de ce rang peut n'être **qu'un
-seul écran arrêté** — pas de défilement, pas de grille, pas de
-section, pas une ligne de JavaScript d'animation. Le compteur suffit à
-dire qu'il y a une suite.
+**Ce qu'on écarte.** L'uniformité — 80 vignettes identiques font
+un tapis, pas une hiérarchie. Et **son usage du flou comme
+hiérarchie, qui était repris dans le plan précédent et qui est
+maintenant écarté** : ce qui tient sur une planche de 80 imagettes
+de 34 px ne tient pas sur une case de 440 × 300 qu'on regarde.
 
-**Ce qu'on lui prend.** L'écran unique (hauteur 900, rien en dessous).
-Le refus de toute bibliothèque. Deux libellés de nav, pas huit. Et
-l'idée qu'on peut ne rien expliquer.
-
-**Ce qu'on écarte.** Le centrage parfait — le nôtre est décalé de
-253 px à droite et 42 px vers le haut. L'échelle : 77 % de hauteur chez
-lui, **42 % chez nous**. Le blanc. Et surtout **le texte posé sur
-l'image**, qui nous est interdit.
-
-### 3 · MARTON PERLAKI — `https://www.martonperlaki.com/`
-
-Relevé : `tools/_refs/photo-perlaki/`.
-
-**Les chiffres du relevé.** **Une seule famille** pour tout le site
-(`unica`), et **une seule taille : 14 px / 16 px**. Le h1 mesuré n'est
-pas un nom : c'est la **légende de l'œuvre affichée** — « Parklife
-issue 3 », `rgb(0,0,0)`, 400. Fond transparent sur blanc · hauteur de
-page **900 px** · 210 images chargées, **une seule montrée**.
-
-**Mesuré sur `0-heros.png`.** Bandeau unique à **y = 20**, trois
-groupes sur une seule ligne au même corps : nom à gauche (x 16),
-**légende au centre** (x 641), nav à droite (finit à x 1425). L'œuvre
-est posée sur une planche grise de **x 224–1216 · y 90–762** ; la
-photographie elle-même fait **x 533–916 · y 163–681 = 383 × 518 px**.
-
-**Ce qu'elle prouve.** Une seule taille de caractère peut tenir toute
-une page si la hiérarchie se fait par la **position** et par le
-**gris**, jamais par le corps. Et la légende a droit à la place du
-titre.
-
-**Ce qu'on lui prend.** La ligne de tête unique où le nom et la nav
-cohabitent au même corps. La hiérarchie par le gris (`#8A8A8A`)
-plutôt que par la taille. La légende traitée comme un contenu de
-premier rang — chez nous, le **cartel**.
-
-**Ce qu'on écarte.** La planche grise sous l'œuvre : c'est une
-deuxième valeur de fond, et nous n'en avons qu'une. Le centrage. Et la
-couleur qui monte de l'œuvre (un orange vif pleine page) — nos images
-sont en noir et blanc, sans exception.
-
-### Les deux relevés écartés, et pourquoi
-
-- **`thomasprior.com`** (`tools/_refs/photo-prior/`) — une image
-  centrée de **537 × 673 px** sur blanc, mot-symbole 19 px en haut à
-  gauche. C'est Davison une deuxième fois : rien de plus à en tirer.
-- **`satoshiwatanabe.org`** (`tools/_refs/photo-watanabe/`) — l'écran
-  d'accueil est un **index de texte pur**, 40 lignes, aucune image,
-  `Suisse Intl` 15 px. Extrême admirable, mais chaque ligne est un
-  **nom de client réel** : le dispositif nous est interdit à la
-  racine.
+> **Réserve sur ce relevé.** `tools/_refs/photo-keller/0-heros.png`
+> rend aujourd'hui une grille d'**icônes d'image cassée** : les 221
+> images de la page n'ont pas chargé au moment de la prise. La
+> case « keller » de `refs-photo.png` ne montre donc plus le site,
+> elle montre son squelette. Les chiffres ci-dessus viennent du
+> relevé d'origine et restent valides ; l'image, non. Le relevé est
+> à refaire — ce n'est pas fait ici pour ne pas changer une
+> référence en fin de chantier.
 
 ---
 
@@ -131,88 +133,379 @@ sont en noir et blanc, sans exception.
 
 | Poste | Décision |
 |---|---|
-| **Référence culturelle** | Une salle d'exposition la lumière éteinte, et **la chambre noire** juste à côté. Le noir n'est pas un fond : c'est le mur, et c'est le bain. On entre pendant que le tirage monte |
-| **Palette (hex nommés)** | **noir** `#000000` — le mur, seule valeur de fond, aucune autre · **blanc cassé** `#EDEAE4` — le titre, le mot-symbole, la première ligne du cartel, le filet du geste · **gris** `#8A8A8A` — le sous-titre, la nav au repos, les deux dernières lignes du cartel, les coordonnées. **Trois valeurs. Zéro accent, pas même une.** Contrastes sur noir : `#EDEAE4` ≈ **17,9 : 1**, `#8A8A8A` ≈ **6,1 : 1** — les deux passent AA en corps 10 px |
-| **Typographie (familles + px + interlignage)** | **`instrument-serif` 400** — titre **44 px / 46,6 px** (interlignage **1,06**), ligne 1 romain, **ligne 2 italique**. C'est le seul gros caractère de l'écran, et il n'est pas gros. · **`inter` 400** — sous-titre **13 px / 19,5 px** ; nav et bouton **12 px**, capitales, interlettrage **0,1 em**. **`inter` 600** — mot-symbole seul, **12 px**, capitales, 0,1 em. · **`jetbrains-mono` 500** — cartel, coordonnées, mention de démonstration : **10 px / 16 px**, capitales, 0,08 em. · **Trois familles, cinq fichiers**, tous locaux : `instrument-serif-3` (romain), `instrument-serif-1` (italique), `inter-1`, `inter-3`, `jetbrains-mono-1`. Les deux faces serif sont **préchargées** — elles peignent le LCP |
-| **Composition du premier écran (au pixel)** | **Grille de référence : 12 colonnes, marges extérieures 96 px, gouttières 24 px, colonne = 82 px.** La colonne 8 commence à **x = 838** ; c'est la seule ligne de force verticale de l'écran, et trois choses s'y accrochent. — **L'image : `images/secteurs-sites/photo-17.webp`**, source **1000 × 1400**, affichée **270 × 378 px** (échelle 0,27, **aucun recadrage** : le cadre du photographe n'est pas retaillé par le mur). Position : **bord gauche x = 838, bord haut y = 219** → bord droit 1108, bord bas 597. **Marges de l'image : gauche 838 · droite 332 · haut 219 · bas 303.** Hauteur = **42,0 % de l'écran** (plafond : 45 %). Centre de l'image (973, 408) contre centre géométrique (720, 450) : **décalée de 253 px à droite et 42 px vers le haut.** **LE TIRAGE A MONTÉ DE 111 px LE 2026-08-01, ET VOICI POURQUOI.** À y 330–708 le tirage et le bloc de titre tenaient tous les deux dans le tiers bas : deux masses côte à côte, aucune tension, et 45 % de noir au-dessus que rien ne tenait sinon la ligne de tête à 64 px du bord. À l'échelle du panneau — 421 × 263, vu deux secondes — l'œil concluait à une page **pas chargée**, pas à une composition. Un vide n'est choisi que s'il est **tendu entre deux choses éloignées** : à y 219–597 le tirage **traverse la ligne médiane**, la tension se joue en diagonale contre le titre en bas à gauche, et le vide passe **sous** le tirage, où il se lit comme sa marge. Rien n'a été ajouté ; le rapport de vide ne bouge pas. — **Le titre** : `instrument-serif` 44/46,6, deux lignes, bord gauche **x = 96**, lignes de base **y = 661,4 et 708**. Bloc ≈ 210 × 92 px, en bas à gauche. Il **n'a pas bougé** : c'est de l'écart entre lui et le tirage que vient la tension. — **Sous-titre** : x = 96, largeur max **306 px**, première ligne de base **y = 740**. — **Cartel** : trois lignes mono, **alignées à droite sur x = 1108** (le bord droit de l'image), lignes de base **y = 629,4 · 645,4 · 661,4** — il suit le tirage, à 21,4 px sous son bord bas. **L'alignement caché qui traverse le vide a changé de couple** : ce n'est plus « cartel ligne 1 = sous-titre ligne 1 » (y = 740, le cartel n'y est plus) mais **« cartel ligne 3 = titre ligne 1 », y = 661,4** — le bloc de droite finit exactement là où le bloc de gauche commence, à 1 012 px de distance. — **Ligne de tête**, ligne de base **y = 64** : mot-symbole à x = 96, nav à **x = 838**. **Le coin haut-droit reste vide, volontairement.** — **Bas de page** : bouton à x = 96, ligne de base **y = 838** ; coordonnées alignées à droite sur x = 1344, y = 838 ; mention de démonstration alignée à droite sur x = 1344, **y = 858**. — **Bilan du vide, RELEVÉ dans la page et non calculé à la main : surface encrée (boîtes englobantes comprises) = 152 588 px² sur 1 296 000 = 11,8 % au repos. Le noir occupe 88,2 %** (plancher exigé : 80 %). À l'instant photographié le tirage n'est peint qu'aux trois quarts et la lisière pèse 5 856 px² : encre 132 923 px², **vide 89,7 %** |
-| **Formes** | **Angles vifs absolus.** `border-radius: 0` partout. Aucune ombre, aucun dégradé, aucun flou, aucun `backdrop-filter`, aucun cadre décoratif. **La seule masse claire de l'écran, hors le tirage et le texte, est la lisière du bain : une bande de 366 × 16 px** — et elle bouge, et elle n'existe pas au repos. Elle ne borde jamais le tirage sur plus d'un côté : un tirage accroché n'a ni cadre ni passe-partout, il est punaisé au mur. Le seul trait fixe est le filet de 1 px sous le libellé du bouton |
-| **Traitement photo** | **Aucun.** Ni filtre, ni duotone, ni virage, ni recadrage, ni `object-position`. Le fichier est déjà en noir et blanc neutre — c'est la raison pour laquelle c'est lui. **`photo-16.webp` a été regardé en pleine résolution et refusé : il porte un net virage sépia**, et sur un écran qui s'interdit toute couleur d'accent, ce brun serait la seule couleur de la page. Ce qui a été vérifié sur `photo-17.webp` en taille réelle : aucune marque, aucune enseigne, aucun visage, aucune plaque, aucun numéro civique. **Pourquoi c'est elle qui doit porter tout le noir autour** : (a) ses deux tiers bas sont du béton clair — le tirage ne se dissout pas dans le mur, il y découpe un trou de lumière ; (b) ses fenêtres sont presque noires — le tirage **touche** le mur par ses points sombres, il n'est pas posé dessus, il en sort ; (c) le format **portrait** est le seul qui ne ressemble pas à un héros de site web : à 270 × 378 dans 1440 × 900, il se lit comme une épreuve, pas comme une bannière ; (d) le sujet — une dalle en porte-à-faux — est une **masse suspendue dans du vide**, ce que la page fait aussi |
-| **Le geste et l'instant de capture** | **UN SEUL GESTE : LE BAIN.** Le tirage monte hors du noir, du **bas vers le haut**. Mécanique : `clip-path: inset(P% 0 0 0)` sur l'`<img>`, P de **100 → 0** ; un `<span>` de **16 px de haut**, `#EDEAE4` plein, large de **366 px** (l'image **plus 48 px de chaque côté**, donc x 790 → 1156) **précède** l'arête en `translateY` — son BAS porte l'arête, il reste donc entièrement sur le noir, contraste maximal, et le tirage se découvre dans son sillage — et **tombe à `opacity: 0` sur les 8 derniers pour cent** de la course. **Durée 1400 ms**, `cubic-bezier(.22, 1, .36, 1)`, départ **+260 ms** après le chargement. **SEIZE PIXELS ET NON UN, ET C'EST UNE RÈGLE, PAS UN GOÛT — PIÈGE 57.** Le plan disait « un filet de 1 px ». L'aperçu du panneau réduit 1440 à 421 px, soit **0,29** : un pixel y devient 0,29 px, un gris que personne ne voit, et un écran dont le geste ne se voit pas est un écran fixe. Le seuil est **12 px dans la plus petite dimension et 40 px de course, à 1440**. La bande pèse **366 × 16 px → 106 × 4,6 px à 0,29**, et sa course de **378 px → 110 px à 0,29**. Le registre l'autorise sans rien trahir : c'est la surface du bain, pas un cadre. Le sens n'est pas décoratif : c'est celui dans lequel on relève une épreuve du bain — et **aucun des onze autres écrans ne monte**. Aucun autre mouvement. Micro-interactions : nav et bouton passent de `#8A8A8A` à `#EDEAE4` en 180 ms, rien d'autre. Repos : image entière, lisière **invisible** (`opacity: 0`). `prefers-reduced-motion` et `@supports not` → **état FINAL** immédiat, aucune information perdue. — **L'INSTANT DE CAPTURE : 597 ms**, déclaré dans `<meta name="aped-instant">`. 597 = 260 ms de retard + 337 ms de course ; avec `cubic-bezier(.22,1,.36,1)`, 337/1400 = **24,08 % de temps rend 75,00 % de progression**. C'est le cran de la séquence de preuve qui met de la matière dans la bande 225–337 du garde-fou de platitude ; à 62 % (le premier chiffre du plan) trois bandes consécutives restaient mortes et l'outil refusait la tuile. On ne se fie jamais à l'horloge : l'outil met **toutes** les animations en pause et pose leur temps local — `pause()`, pas `animation-play-state`, qui est un raccourci remettant `running` (piège 16). **Le critère de recette se mesure au pixel : l'arête du bain à `y = 313,5 ± 6`** (relevé : 313,5), la bande juste au-dessus, **297,5 → 313,5**, les 94 px hauts du tirage encore sous le noir et les 284 px bas peints. À cet instant la dalle en porte-à-faux — le sujet — est **encore coupée net** : on comprend qu'il en reste. Pour une preuve en séquence : cinq crans à 0/25/50/75/100 % de course, l'arête à **y = 597 · 502,5 · 408 · 313,5 · 219**, soit **94,5 px d'image de plus à chaque image** — aucune planche plate possible |
-| **Ce qu'on ne fait pas** | Aucune image plein cadre. Aucune grille, aucune mosaïque, aucune vignette, aucune planche-contact. Aucun titre géant — 44 px est un plafond, pas un point de départ. **Aucun texte posé sur l'image** (c'est ce qu'on refuse à Davison). Aucune couleur, aucune teinte, aucun accent — et donc **jamais le minium `#e2401f`, jamais le ciment, jamais la typographie d'APED**. Aucun rayon, aucune ombre, aucun dégradé, aucun flou, aucun cadre, aucun passe-partout, aucune bordure autour du tirage. Aucun défilement, aucune section sous la ligne de flottaison, aucune flèche « défiler ». Aucun curseur personnalisé, aucune lightbox, aucun compteur d'œuvres (il promettrait dix images qui n'existent pas sur cet écran). Aucun nom de client, aucune publication, aucun prix, aucun avis, aucune note. Aucune donnée de prise de vue inventée : le cartel ne dit que ce que l'image montre. Aucune requête tierce |
+| **Référence culturelle** | **La planche de tirage punaisée au mur d'un atelier.** Pas une galerie : le mur où les épreuves se touchent parce qu'il n'y a pas de place, et où l'une est grande parce qu'elle vaut plus que les autres |
+| **Palette** | **Aucune couleur d'interface, et c'est le parti.** Une seule valeur non photographique existe : l'encre `#101314` des pastilles, avec `#F4F1EA` et `#B9B3A8` pour le texte. Toute la couleur vient des sept fichiers et de leur étalonnage, § suivant |
+| **Typographie** | **`inter` seule, deux faces (400 et 600), rien au-dessus de 11 px.** Mot-symbole 11 px / 600 / 0,20 em ; compte et sous-titre 10 px ; numéros de cadre 9 px / 500 ; coordonnées 10 px ; mention 9 px. **Aucun titre, aucune police d'affichage chargée.** Le monospace était le choix naturel d'une planche-contact : il est **interdit**, c'est l'exclusivité du 07. Un `inter` de chasse normale n'est ni la condensée du 04 ni l'étendue du 10. **L'échelle typographique de cet écran est nulle par construction** — elle est remplacée par l'échelle des images |
+| **Composition au pixel** | **Trois colonnes, zéro gouttière, zéro marge, `1440 = 620 + 470 + 350`.** Relevé DANS la page : `01 0,0,620,900` · `02 620,0,470,350` · `03 620,350,470,330` · `04 620,680,470,220` · `05 1090,0,350,230` · `06 1090,230,350,360` · `07 1090,590,350,310`. **Les joints de B et de C ne s'alignent jamais** — B coupe à 350 et 680, C à 230 et 590 : une grille dont les lignes se répondent se lit comme un tableau |
+| **Les registres d'échelle** | **558 000** px² (01) · **164 500 · 155 100** (02 · 03) · **126 000 · 108 500 · 103 400** (06 · 07 · 04) · **80 500** (05). Rapport du plus grand au plus petit : **6,93 : 1**. Le plan précédent affichait 8,2 : 1 sur onze cases ; le rapport baisse parce que les cases sont plus GRANDES — la plus petite passe de 68 397 à 80 500 px², soit 101 × 67 px dans le panneau réduit au lieu de 93 × 62 |
+| **L'épreuve pleine hauteur** | `photo-16.webp`, **620 × 900**, colonne A, **43 % de la planche**. Elle touche trois bords et n'a de voisine ni au-dessus ni en dessous : la seule des sept dans ce cas. Fichier natif portrait 1000 × 1400 ; à 620 × 900 le recadrage vaut **4 %** — le cadre du photographe n'est pas retaillé. Sujet : une arête en chevron de béton en contre-plongée, la seule perspective forte de la banque |
+| **Formes** | Aucune. Zéro rayon, zéro ombre, zéro dégradé de fond, **et plus aucun flou nulle part**. Les pastilles sont des rectangles pleins posés à fleur des coins de case : elles marquent les joints de la grille au lieu de flotter dedans |
+| **Traitement photo** | § « L'étalonnage », ci-dessous — c'est le poste le plus travaillé de cette passe |
+| **Le geste** | § « La lumière rasante », ci-dessous |
+| **Ce qu'on ne fait pas** | Aucun titre, aucun caractère au-dessus de 11 px, aucune police d'affichage. Aucune marge, aucune gouttière, aucun fond visible. Aucun monospace (07). Aucun sarcelle d'interface (09), aucune terre cuite d'interface (10), aucun orange, aucun minium, jamais la typographie d'APED. Aucun écran sombre. **Aucune photographie qui ne soit pas de l'architecture** — `photo-14` (céramique), `photo-15` (roses) et `photo-18` (saule) sont sorties ; `photo-1` à `photo-7` (matériel de studio) restent écartées : une planche montre le travail, jamais l'équipement, et quatre portent du lettrage sur des boîtiers. Aucun nom de client, aucune publication, aucun prix, aucun avis, aucune adresse web. Aucune donnée de prise de vue inventée |
 
-**Technique, pour que rien ne se perde à la construction.**
-`<img src="../../images/secteurs-sites/photo-17.webp" width="1000"
-height="1400">` — dimensions réelles du fichier dans les attributs,
-`270 × 378` en CSS, `fetchpriority="high"` : **CLS = 0**. Le fichier
-fait 3,7 × la taille affichée, donc net sur un écran double densité.
-Les cinq `.woff2` viennent de `../../fonts/demos/`, les deux faces
-serif en `<link rel="preload">`. `<meta name="robots"
-content="noindex,nofollow">`. Zéro requête tierce, zéro erreur
-console, zéro bibliothèque — le geste tient en **trois `@keyframes`
-CSS**, pas GSAP.
+---
 
-**Ce qui a été relevé, et par quoi.** `node tools/demos-controle.mjs
---port 8099 photo` → **ok**, rien à signaler. `node
-tools/ecrans-secteurs.mjs photo --png` → les huit bandes du garde-fou
-de platitude, **identiques sur deux passes** :
-`[9.1, 0, 47.7, 61.8, 69.2, 37.8, 15.6, 7.9]` — médiane **26,7**
-(seuil 6), **une seule** bande morte, la 112–225, et jamais deux de
-suite ; le garde-fou refuse à trois. Avant le déplacement du tirage
-c'était `[9.1, 0, 0, 24.3, 62.1, 70, 37, 7.9]` : deux mortes de suite,
-une seule bande de marge. Lu dans la page à l'instant gelé :
-`scrollHeight` **900**, débordement horizontal **0** de 320 à 1920,
-arête à **313,5**, lisière **297,5 → 313,5 · 366 × 16 px · opacité 1**,
-tirage **219 → 597**, cartel **618,4 → 666,4**.
+## L'ÉTALONNAGE — le poste refait, avec les chiffres avant et après
+
+**Le défaut.** L'écran portait **deux étalonnages posés côte à
+côte** : un monument franchement doré et trois voisines franchement
+sarcelle. Ce n'est pas un désaccord de goût, ça se mesure.
+
+### L'instrument
+
+`photo-teintes.mjs` (jetable, dans le bac à sable de la session)
+photographie la page à 1440 × 900, découpe les rectangles de case
+**relevés dans le DOM**, convertit chaque pixel en Lab et moyenne
+les **vecteurs (a\*, b\*)** — pas les angles : la teinte HSL d'un
+gris clair saute d'un bout à l'autre du cercle pour trois niveaux
+d'écart. Sont exclus `L* < 12` (les pastilles d'encre opaques) et
+`L* > 96` (les ciels brûlés). La bande de lumière est masquée
+pendant la mesure : on mesure l'étalonnage, pas le geste.
+
+**Une moyenne vectorielle peut s'annuler** — `photo-13` rendait une
+chroma de 0,62, « neutre », alors que l'œil voyait un ciel sarcelle
+saturé se battre contre un béton chaud. L'outil compte donc aussi
+la **part de pixels franchement froids** (`b* < −4`) et
+franchement chauds (`b* > +4`). C'est ce compte-là qui dit « deux
+familles », pas la moyenne.
+
+### AVANT
+
+| case | fichier | L\* | chroma | teinte | % froid |
+|---|---|---|---|---|---|
+| f01 | photo-16 | 58,1 | 21,31 | **77,1°** | 0,1 |
+| f02 | photo-13 | 70,6 | 0,62 | 262,4° | **20,5** |
+| f03 | photo-8 | 51,2 | 9,20 | 68,8° | 0,1 |
+| f07 | photo-9 | 53,2 | 11,30 | 117,2° | 0 |
+| f08 | photo-10 | 72,6 | 21,69 | **260,5°** | **99,5** |
+| f09 | photo-12 | 72,1 | 12,12 | 152,2° | **16,8** |
+| f10 | photo-17 | 66,2 | 13,71 | 71,8° | 0 |
+| f11 | photo-15 | 38,4 | 22,85 | 57,3° | 1,2 |
+
+> **Écart de teinte maximal : 176,6°** — `photo-16` (77,1°) contre
+> `photo-10` (260,5°). C'est l'opposé du cercle.
+> **Planche entière : 14,0 % de pixels froids.**
+> **Trois cases au-dessus de 15 % de froid.**
+
+### LE SENS CHOISI — le sable de béton
+
+Trois raisons, dans cet ordre.
+
+1. **`photo-16` tient 43 % de l'écran et elle est nativement
+   chaude.** La tirer au gris froid, c'était dénaturer la seule
+   image que le visiteur regarde vraiment.
+2. **Le gris froid neutre nous poussait vers le noir et blanc pur
+   de la coiffure (03)**, qui est son exclusivité. Deux de nos sept
+   fichiers sont déjà des noir et blanc : le pas était court.
+3. **Le sarcelle appartient à la clinique (09)**, et trois de nos
+   fichiers en portaient.
+
+**Ce n'est PAS la terre cuite de l'immobilier (10).** La terre
+cuite y est sombre, saturée, et c'est une couleur **d'interface** —
+aplats, texte, filets. Chez nous le sable est clair, peu
+chromatique (chroma moyenne 14,4), et **aucun élément
+non-photographique ne le porte** : il n'existe que dans les sept
+fichiers.
+
+### La méthode, et le premier jet qui était faux
+
+`sepia()` d'abord, qui rabat toutes les teintes sur une seule ;
+`saturate()` ensuite ; `hue-rotate()` pour poser l'angle.
+
+**Premier jet : `sepia(.80…94) saturate(1.45…1.75)`.** L'écart de
+teinte tombait à 22,6° — le chiffre disait « réussi » — mais la
+chroma moyenne montait de 14,1 à **23,1** et la planche virait au
+beurre : le ciel sarcelle de `photo-13` devenait olive, la tour de
+verre devenait du laiton. Ça ne se lit pas comme un tirage, ça se
+lit comme un filtre. **`saturate()` descend sous 1** : c'est le
+sépia lui-même qui porte la teinte, il faut lui en retirer, pas lui
+en ajouter.
+
+### APRÈS
+
+```
+.g-16  sepia(.30) saturate(1.02) hue-rotate(-4deg) contrast(1.15) brightness(1.06)
+.g-13  sepia(1)   saturate(.66)  hue-rotate(-2deg) contrast(1.20) brightness(1.03)
+.g-8   sepia(.88) saturate(.82)  hue-rotate(-6deg) contrast(1.10) brightness(1.06)
+.g-9   sepia(.74) saturate(.84)  hue-rotate(-4deg) contrast(1.12) brightness(1.04)
+.g-10  sepia(1)   saturate(.52)  hue-rotate(-2deg) contrast(1.26) brightness(.99)
+.g-17  sepia(.88) saturate(.80)  hue-rotate(-6deg) contrast(1.12) brightness(1.04)
+.g-11  sepia(1)   saturate(.60)  hue-rotate(-2deg) contrast(1.22) brightness(1.02)
+```
+
+| case | fichier | L\* | chroma | teinte | % froid |
+|---|---|---|---|---|---|
+| 01 | photo-16 | 58,1 | 14,45 | 80,7° | 0,1 |
+| 02 | photo-13 | 76,6 | 17,65 | 84,6° | 0 |
+| 03 | photo-8 | 51,2 | 13,24 | **78,8°** | 0 |
+| 04 | photo-9 | 70,1 | 16,99 | 83,9° | 0 |
+| 05 | photo-10 | 70,3 | 13,19 | **85,0°** | 0,9 |
+| 06 | photo-17 | 56,5 | 13,83 | 81,4° | 0 |
+| 07 | photo-11 | 45,6 | 11,16 | 83,4° | 1,0 |
+
+> **Écart de teinte maximal : 6,2°** — `photo-8` (78,8°) contre
+> `photo-10` (85,0°).
+> **Planche entière : 0,1 % de pixels froids.**
+> **Aucune case au-dessus de 15 % de froid.**
+
+| | avant | après |
+|---|---|---|
+| écart de teinte max | **176,6°** | **6,2°** |
+| pixels froids, planche entière | **14,0 %** | **0,1 %** |
+| cases à plus de 15 % de froid | **3** | **0** |
+| chroma, min → max | 0,62 → 22,85 | 11,16 → 17,65 |
+
+**Ce qui varie encore d'une case à l'autre est la VALEUR, jamais la
+teinte** : `L*` va de 45,6 à 76,6, soit un écart de 31 points. C'est
+ainsi qu'on tire une planche — une seule teinte, sept densités — et
+c'est ce qui la fait lire comme un corpus plutôt que comme un
+dossier d'images trouvées.
+
+---
+
+## LA LUMIÈRE RASANTE — le geste, un seul
+
+Une bande de **190 px** monte l'exposition de ce qui passe dessous
+et traverse la planche de gauche à droite en **9 000 ms**, en
+boucle, à vitesse constante.
+
+```css
+.rasant{ width:13.1944%; height:100%; z-index:2; pointer-events:none;
+  backdrop-filter:brightness(1.22) saturate(1.06);
+  mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+  animation:rase 9000ms linear infinite; }
+@keyframes rase{ from{transform:translateX(-100%)} to{transform:translateX(1440px)} }
+```
+
+**Pourquoi une lumière et pas une épreuve qui bouge.** Sur un mur
+de photographies à joints nuls, **tout mouvement d'image se lit
+comme un défaut d'image** : un filé se lit « mise au point ratée »,
+un tirage à mi-course se lit « fichier tronqué », une case à moitié
+révélée se lit « image qui n'a pas chargé ». Le seul mouvement
+qu'on ne peut pas prendre pour un défaut est celui qui **traverse
+plusieurs épreuves d'un coup** : une bande qui franchit la couture
+verticale du mur et deux joints horizontaux n'appartient à aucune
+des sept, donc ne peut être le défaut d'aucune.
+
+**Pourquoi `backdrop-filter` et pas un voile blanc.** Un voile
+abaisse le contraste de ce qu'il couvre — sur une photographie ça
+se voit comme un lavage. Un filtre de fond **réexpose** : le détail
+reste entier, la valeur monte. C'est ce que fait un rayon rasant
+sur un mur d'épreuves.
+
+**Pourquoi 6 % de fondu et 1,22, et pas autre chose.** Les deux
+bouts ont été essayés et mesurés. À 0 % de fondu et `brightness
+(1.17)`, la bande se lisait comme un rectangle collé sur le mur. À
+12 % de fondu et 1,15, la pire tuile de 60 × 60 ne bougeait que de
+**31,5** niveaux entre deux crans et la bande ne se voyait plus à
+l'image. **6 % — 11 px de chaque côté — et 1,22.** Il reste 168 px
+de plein, **49 px dans le panneau réduit** : quatre fois le
+plancher du piège 71.
+
+**Pourquoi la bande ne touche jamais le texte.** Elle est en
+`z-index: 2`, les pastilles en `z-index: 3` : elles sont peintes
+APRÈS, donc elles ne font pas partie du fond que le filtre
+échantillonne. Le texte du mur ne se réexpose pas.
+
+**L'instant : 4030 ms** sur 9000, déclaré dans
+`<meta name="aped-instant">`. La bande est alors à `x 540 → 730`,
+**à cheval sur la couture verticale du monument et sur la colonne
+B** : elle traverse quatre épreuves et un joint d'encre. Critère de
+recette : sur l'image arrêtée, la bande claire doit être visible
+**des deux côtés de la couture**, sinon elle se lit comme un défaut
+de la seule case qu'elle occupe.
+
+### La preuve du mouvement — cinq crans, l'écart entre deux
+
+`photo-geste.mjs` fige l'animation à 900 · 2700 · 4500 · 6300 ·
+8100 ms, photographie, et compare deux à deux. Dix images ne font
+pas un mouvement : c'est l'écart de pixels entre deux consécutives
+qui le prouve (piège 54).
+
+| cran → cran | écart moyen de luminance | pixels > 4 niveaux | **pire tuile 60 × 60** |
+|---|---|---|---|
+| 900 → 2700 | 4,89 | 20,8 % | **39,80** |
+| 2700 → 4500 | 5,73 | 22,4 % | **38,60** |
+| 4500 → 6300 | 5,31 | 20,9 % | **38,78** |
+| 6300 → 8100 | 3,39 | 17,1 % | **38,78** |
+
+La pire tuile est le chiffre qui compte : elle dit que le geste se
+voit **quelque part**, et non qu'il se dilue partout. Environ 39
+niveaux de luminance entre deux crans, sur une tuile de 60 px, est
+un mouvement qu'on ne peut pas rater.
+
+**`prefers-reduced-motion: reduce` : la bande est retirée
+(`display:none`), pas arrêtée.** Elle ne porte aucune information ;
+figée quelque part, elle deviendrait une colonne plus claire posée
+au hasard sur le mur — c'est-à-dire une information **fausse**.
+`animation: none` seul ne suffit pas : il la fige. Mesuré :
+`display:none`, **0 animation en cours**, aucune information perdue.
+
+**Repli.** `@supports not (backdrop-filter: …)` retire la bande.
+Sans le filtre, rien de faux ne s'affiche : la planche est
+simplement immobile. Jamais un rectangle blanc à la place.
 
 ---
 
 ## Le contenu exact
 
-**Nom fictif :** Atelier Lumen — Québec.
+**Nom fictif :** Atelier Lumen — Québec. **Seize mots visibles au
+repos**, sept numéros de cadre.
 
-| Emplacement | Texte, prêt à coller |
+| Emplacement | Texte |
 |---|---|
-| `<title>` | `Atelier Lumen — photographie d'architecture, d'intérieur et d'objet` |
-| `<meta name="description">` | `Atelier Lumen, photographe à Québec. Architecture, intérieur et objet. Une image montrée à la fois, en noir et blanc, sans retouche. Site de démonstration.` |
-| Mot-symbole (haut gauche) | `ATELIER LUMEN` |
-| Nav (à x = 838), trois libellés | `ŒUVRES` · `SÉRIES` · `L'ATELIER` — `ŒUVRES` est l'état courant, en `#EDEAE4` ; les deux autres en `#8A8A8A` |
-| Titre `<h1>`, ligne 1 (romain) | `Une image` |
-| Titre `<h1>`, ligne 2 (**italique**) | `à la fois.` |
-| Sous-titre | `Photographie d'architecture, d'intérieur et d'objet. Québec.` |
-| Cartel, ligne 1 (`#EDEAE4`) | `Nº 01 — DALLE EN PORTE-À-FAUX` |
-| Cartel, ligne 2 (`#8A8A8A`) | `BÉTON, BANDEAUX DE FENÊTRES` |
-| Cartel, ligne 3 (`#8A8A8A`) | `NOIR ET BLANC, SANS RETOUCHE` |
-| Bouton (bas gauche) | `DEMANDER UNE SÉANCE` — filet de 1 px `#EDEAE4` à 10 px sous la ligne de base, exactement la largeur du libellé |
-| Coordonnées (bas droite) | `000 000-0000 — COURRIEL@EXEMPLE.CA — ADRESSE SUR DEMANDE` |
-| Mention obligatoire (bas droite, sous les coordonnées) | `SITE DE DÉMONSTRATION` |
-| `alt` de l'image | `Une dalle de béton en porte-à-faux sort d'une façade percée de bandeaux de fenêtres. Noir et blanc.` |
+| `<title>` | `Atelier Lumen — photographie d'architecture` |
+| Pastille (0, 0), 11 px | `ATELIER LUMEN` |
+| Pastille (0, 23), 10 px | `PHOTOGRAPHIE D'ARCHITECTURE, QUÉBEC` |
+| Pastille (1440, 0) à droite, 10 px | `SÉLECTION — 7 ÉPREUVES` |
+| Numéros de cadre, 9 px, à fleur du coin bas-gauche | `01` … `07` |
+| Pastille (1440, 900) à droite, 10 px | `000 000-0000 · COURRIEL@EXEMPLE.CA` |
+| Sous elle, 9 px | `SITE DE DÉMONSTRATION` |
+| Cartels (survol, `:focus-visible`, `:target`) | un par case — `ARÊTE EN CHEVRON, CONTRE-PLONGÉE`, `DALLE EN PORTE-À-FAUX`… |
 
-**Pourquoi ce titre passe les quatre questions.** *Vrai* : l'écran
-montre une image, une seule. *Vérifiable* : le visiteur n'a qu'à
-regarder — la phrase et la page disent la même chose, et c'est le seul
-titre de la fournée qui se prouve tout seul. *Contrôlé* : c'est notre
-accrochage, pas un classement chez quelqu'un d'autre. *Compris en
-trois secondes* par un patron de garage : « ce gars-là montre une
-photo à la fois ». Aucun mot de métier, aucun chiffre à défendre.
+**Les deux énoncés qui devaient être corrigés, et pourquoi ils
+passent maintenant les quatre questions.**
+
+**« PHOTOGRAPHIE D'ARCHITECTURE, QUÉBEC ».** *Vrai* : les sept
+épreuves sont de l'architecture. Avant, trois ne l'étaient pas —
+deux roses en lumière rasante, une céramique de studio, des
+branches de saule sur du marbre. **L'écran contredisait son propre
+énoncé**, et les roses étaient en plus la seule tache magenta de
+tout l'écran, posée sous la pastille de contact. Règle A.
+
+**« SÉLECTION — 7 ÉPREUVES ».** *Vrai* : sept photographies dans le
+document, sept numéros de cadre. *Vérifiable* : le visiteur compte
+les numéros, ils vont jusqu'à `07`, **et les sept sont visibles en
+même temps** — c'est la différence avec le « 11 épreuves » de la
+passe précédente, dont quatre vivaient dans la filante et deux
+seulement se voyaient à l'instant photographié. Un visiteur pressé
+en comptait neuf. *Contrôlé* : c'est notre accrochage. *Compris en
+trois secondes* : « ce gars-là montre sept photos ».
+
+**Pourquoi sept et pas huit, alors que le fonds en contient huit.**
+`photo-12` — un refend clair et une fente vitrée — a été essayée à
+350 × 160, à 350 × 200, puis agrandie 1,22× puis 2× dans sa case.
+À **chaque** taille compatible avec ce mur elle rend un rectangle
+crème avec une encoche : deux aplats et un trait. Un mur qui dit
+« voici mon travail » et qui pose une case vide dit surtout qu'il
+n'en avait pas assez. **Sept épreuves qui tiennent valent mieux que
+huit dont une meuble** — et le compte affiché suit, ce qui est tout
+ce que la règle A demande.
+
+---
+
+## Le dispositif sans script
+
+`:hover`, `:focus-visible` et `:target` sur chaque case : le cartel
+s'ouvre à droite du numéro, l'image monte d'un cran. Chaque case
+est un `<a>` pointant sur son propre `id` — un vrai arrêt clavier,
+un vrai anneau de focus, une sélection qui persiste dans l'URL.
+**Zéro ligne de JavaScript sur la page.**
+
+> **Un défaut trouvé par la sonde, pas par l'œil, et il annulait
+> tout le travail d'étalonnage.** `filter` est une propriété
+> unique : la règle de survol `filter: saturate(1.55) …`
+> **remplaçait** l'étalonnage de la case au lieu de s'y ajouter.
+> Une case survolée retombait donc sur la couleur de son fichier —
+> le ciel de `photo-10` redevenait bleu, en plein milieu d'une
+> planche sable. L'étalonnage est maintenant une **variable
+> personnalisée** par case (`--etal`), et le survol la recompose :
+> `filter: var(--etal) saturate(1.32) brightness(1.08)
+> contrast(1.04)`. **La couleur d'origine ne réapparaît à aucun
+> état.** Relevé au repos et au survol sur `#f05` :
+> `sepia(1) saturate(0.52) hue-rotate(-2deg) contrast(1.26)
+> brightness(0.99)` puis la même chaîne **suivie** du cran.
+
+---
+
+## Ce qui a été relevé, et par quoi
+
+| Mesure | Relevé |
+|---|---|
+| `node tools/demos-controle.mjs --port 8099 photo` | **ok** · 20 ko · 7 images · une famille (`inter`) · rien à signaler |
+| `node tools/pire-pixel.mjs photo .marque .sous .compte ".pied b" ".pied span" .num` | **12 blocs, 0 échec**, pire pixel **6,68 : 1** (`.sous` et `.pied span`, la seconde voix), les autres à 12,1 : 1. Les pastilles sont **opaques** : la mesure porte sur une couleur connue, pas sur une photographie (piège 73) |
+| `node tools/ecrans-secteurs.mjs photo` | 1440 × 900 · **193 ko** · images **7/7** · 1 animation gelée à 4030 ms · bandes `[65,1 · 66,5 · 84,7 · 73,7 · 71,2 · 63,9 · 72,9 · 67,2]` — **médiane ≈ 69,9** pour un seuil de 6, aucune bande morte · **0 erreur console** |
+| Débordement horizontal, 320 → 1920 px (9 largeurs) | **0 partout**, `scrollHeight` **900 partout** |
+| Requêtes hors du dépôt | **0** |
+| Part de la surface | typographie **25 393 px² = 1,96 %** → **imagerie 98,04 %** |
+| Plus gros caractère | **11 px** · **16 mots** visibles au repos |
+| Premier arrêt au clavier | `A#f01`, anneau `3px solid rgb(244,241,234)` — mesuré en **tabulant**, pas par `focus()` (piège 51). **0 arrêt sans anneau** |
+| `prefers-reduced-motion: reduce` | bande `display:none`, **0 animation en cours** |
+| Preuve du mouvement (règle B) | 5 crans, § « la lumière rasante » — pire tuile 60 × 60 : **38,6 à 39,8 niveaux** entre deux consécutifs |
+| Seuils du piège 71, à 0,29 | la bande fait **190 → 55 px** (168 px de plein → **49 px**) et parcourt **1 630 → 473 px**. Plancher : 12 px et 40 px. La plus petite case fait **350 × 230 → 101 × 67 px** |
 
 ---
 
 ## Ce qui me distingue des onze autres
 
-**Composition.** Je suis le seul dont l'image ne remplit rien : une
-seule photographie, **270 × 378 px**, soit **42 % de la hauteur** et
-**7,9 % de la surface**, posée hors centre — les onze autres ouvrent
-sur du plein cadre, des bandeaux, des grilles ou des aplats, et
-aucun ne laisse **88 % de son premier écran** absolument vide.
+**Composition.** Je suis le seul dont l'imagerie occupe **98,04 %**
+de l'écran et le seul dont la marge de page vaut **0** : les onze
+autres ont tous un fond, une marge, ou les deux. Je suis aussi le
+seul **mur** — une mosaïque à joints nuls, quand les onze autres
+sont une photographie plein cadre plus un bloc de texte, ou un
+aplat plus un bloc de texte. Sur la planche des douze, je suis la
+seule case où l'œil ne trouve **aucune phrase** à lire.
 
-**Couleur.** Je suis le seul des douze à n'avoir **aucun accent** —
-`#000000`, `#EDEAE4`, `#8A8A8A`, trois valeurs et pas une teinte ;
-là où les onze autres se reconnaissent à leur braise, leur acide,
-leur or ou leur cyan, on me reconnaît à ce que je n'ai pas.
+**Typographie.** Je suis le seul **sans titre**. Mon plus gros
+caractère fait **11 px** quand la barre commune est de 90 à 160 px.
+Chez les autres le texte domine l'image ; chez moi le texte
+**indexe** l'image.
 
-**Typographie.** Mon affichage est `instrument-serif` à **44 px** —
-le plus petit titre de héros de la fournée, quand la barre commune est
-de 90 à 160 px ; l'écart d'échelle ne se joue pas entre un titre géant
-et un corps minuscule, il se joue entre **44 px et 10 px**, et la
-seconde ligne du titre bascule en italique parce que c'est le seul
-changement de voix que je m'autorise.
+**Couleur.** Je suis le seul dont la palette ne comporte **aucune
+couleur d'interface** : un sable de béton à chroma 14,4 qui
+n'existe que dans sept fichiers photographiques. Ce n'est ni la
+terre cuite saturée du 10 (sombre, saturée, portée par des aplats),
+ni le noir et blanc pur du 03 (chroma nulle), ni le sarcelle du 09.
+
+**Le geste.** Je suis le seul dont le mouvement ne déplace aucun
+objet : il déplace de la **lumière**. Aucun autre écran ne peut me
+le prendre — les onze autres animent du texte, des blocs ou des
+chiffres.
+
+---
+
+## Réserves
+
+1. **« Saturée et lumineuse » n'est tenu qu'à moitié.** La matrice
+   demande au 12 une palette « selon la photo, mais saturée et
+   lumineuse ». Après l'unification, la planche est **lumineuse**
+   (`L*` moyen 61,2) mais elle n'est plus **saturée** : chroma
+   moyenne 14,4, contre 14,1 avant — mais cette moyenne-là ment,
+   `photo-13` y comptait pour 0,62 parce que son ciel sarcelle et
+   son béton chaud s'annulaient — et 23,1 au premier jet. C'est le
+   prix payé pour tenir « un seul étalonnage », et c'est un
+   arbitrage que j'assume — mais c'est un arbitrage, pas une
+   réussite sur les deux tableaux.
+2. **La bande de lumière est un pari, moins gros que le filé mais
+   un pari quand même.** Elle est mesurée (39 niveaux entre deux
+   crans, 49 px de plein dans le panneau) et elle traverse quatre
+   épreuves, ce qui l'empêche d'être prise pour le défaut d'une
+   seule. Mais **aucun œil humain ne l'a vue**, et un directeur
+   artistique pressé peut encore la lire comme un artefact de
+   rendu. Si elle tombe, l'écran n'a plus de geste — et
+   `demos-controle.mjs` refuse un écran sans `@keyframes`.
+3. **Sept épreuves d'architecture, c'est tout le fonds moins une.**
+   Le corpus est très homogène de sujet : sept bétons et verres, en
+   contre-plongée ou en façade. Un client qui cherche du portrait,
+   de l'événementiel ou du produit ne se verra pas dedans. C'est
+   assumé et **dit par le sous-titre** — mais ce n'est pas défendu,
+   c'est déclaré.
+4. **Le relevé de la référence `keller` est périmé** : son
+   `0-heros.png` ne montre plus que des icônes d'image cassée. La
+   troisième case de `refs-photo.png` ne prouve donc plus rien.
+5. **`photo-16` reste étalonnée loin de son fichier**, mais moins
+   qu'avant : `saturate(1.62)` est passé à `1.02`, et la chroma de
+   la case de 21,31 à 14,45. Sur un écran non étalonné elle ne
+   devrait plus virer au doré.
+6. **Rien n'a été vu sur un appareil réel.** Le rendu sous 720 px
+   (trois colonnes qui se replient en un haut pleine largeur et deux
+   demi-colonnes) n'a été vérifié qu'en émulation, et n'a jamais été
+   regardé à l'image.
+7. **Les deux outils de mesure de cette passe sont jetables.**
+   `photo-teintes.mjs` (écart de teinte case par case) et
+   `photo-geste.mjs` (cinq crans, écart de pixels) vivent dans le
+   bac à sable de la session, pas dans `tools/`. Les chiffres
+   ci-dessus ne sont donc **pas rejouables** en l'état : il faudrait
+   verser les deux outils dans le dépôt pour qu'une session
+   suivante puisse vérifier une régression d'étalonnage.
