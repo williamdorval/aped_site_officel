@@ -1660,8 +1660,16 @@ html.js .svc-fiche[data-ouvert],
 .ba-scene { user-select: none; -webkit-user-select: none; }
 .ba-shot { -webkit-user-drag: none; }
 /* == LA BARRE D'ADRESSE — c'est elle qui dit « c'est un ecran ». ==
-   Meme grammaire que les maquettes de Secteurs : trois carres, un
-   domaine en mono, un filet dessous. Rayon 0, aucune ombre. */
+   Meme grammaire que les maquettes de Secteurs : trois carres et un
+   filet dessous. Rayon 0, aucune ombre.
+
+   PLUS DE DOMAINE.  D-693
+   Elle en portait un — « atelier-meridien.ca », « restaurant-cendre.ca »,
+   « studio-norden.ca », « mv-deneigement.ca ». Les trois projets sont
+   REELS ; ces adresses-la ne le sont pas, et une adresse dit « va
+   voir ». Meme correction que le cartouche des Secteurs : une regle
+   de veracite se corrige PARTOUT, et « ailleurs » comptait quatre
+   barres de plus que celles qu'on m'avait montrees. */
 .ba-chrome {
   display: flex;
   align-items: center;
@@ -1675,18 +1683,11 @@ html.js .svc-fiche[data-ouvert],
   letter-spacing: 0.04em;
   color: var(--ink-muted);
 }
-.ba-chrome i {
-  flex: 0 0 auto;
-  width: 0.6em;
-  height: 0.6em;
-  background: var(--rule-strong);
-}
-.ba-chrome span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+/* LES TROIS CARRES SONT PARTIS AVEC L'ADRESSE.  D-693
+   Ils etaient le motif de FENETRE autour du domaine. Sans domaine
+   ils ne cadrent plus rien : trois carres accroches a « Avant » avec
+   un vide de 900 px derriere eux. Ce qui reste est ce que la barre
+   dit vraiment — un etat a gauche, l'autre a droite. */
 .ba-chrome em { margin-left: auto; font-style: normal; white-space: nowrap; }
 /* Le cadre porte la requete de conteneur : la barre se met a
    l'echelle de l'ecran, comme la page dedans. */
