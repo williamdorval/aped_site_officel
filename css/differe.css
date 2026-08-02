@@ -3380,7 +3380,13 @@ html:not(.js) .ba-trait { display: none; }
   top: calc(var(--nav-h) + var(--s-6));
   border: var(--rule-w) solid var(--rule-strong);
   background: var(--surface-2);
-  aspect-ratio: 4 / 3;
+  /* PLUS DE `aspect-ratio: 4/3`.  D-684
+     Il etait la parce que les tuiles DEFILAIENT : la hauteur du cadre
+     etait arbitraire, il fallait bien en choisir une. Avec une image
+     unique, une hauteur imposee ne peut que rogner ou cadrer en boite
+     aux lettres — et le rapport du cadre variait deja de 1,58 a 1,86
+     selon la largeur, donc le rognage n'aurait meme pas ete le meme
+     partout. La hauteur se deduit du contenu : barre, ecran, legende. */
   overflow: hidden;
   /* La legende est un ETAGE de la plaque, plus un bandeau pose  D-221 */
   display: flex;
@@ -3397,7 +3403,10 @@ html:not(.js) .ba-trait { display: none; }
   letter-spacing: 0.06em;
 }
 /* LES TREIZE MAQUETTES  D-222 */
-.mock-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+/* La scene porte EXACTEMENT le rapport de la prise de vue : 1440x900.
+   Aucun rognage, aucune bande noire, la meme echelle aux treize.  D-684 */
+.mock-stage { position: relative; flex: none; aspect-ratio: 1440 / 900; overflow: hidden; }
+.sector-preview > .sec-chrome { flex: none; }
 .mock {
   position: absolute;
   inset: 0;
@@ -4636,7 +4645,11 @@ html.js .derail-row,
      etait lisible. 5 colonnes le portent a ~430 px, ce pour quoi les
      treize sont dessinees. */
 .sectors-list { grid-column: 1 / span 6; }
-.sector-preview { position: sticky; margin-top: 0; grid-column: 8 / span 5; }
+/* `align-self: start` est necessaire depuis que le cadre n'a plus
+     d'`aspect-ratio` (D-684) : sans lui, l'element de grille s'etire a
+     la hauteur du RANG — 766 px releves contre 354 px de contenu —
+     et laisse 412 px de vide sous la legende. */
+.sector-preview { position: sticky; margin-top: 0; grid-column: 8 / span 5; align-self: start; }
 .sector-group { grid-template-columns: 10rem 1fr; }
 }
 @media (prefers-reduced-transparency: reduce) {

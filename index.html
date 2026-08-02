@@ -1809,72 +1809,40 @@
 
         <!-- LES TREIZE APERÇUS.  D-050 -->
         <figure class="sector-preview" id="sectorPreview">
+          <!-- UNE SEULE BARRE D'ADRESSE POUR LES TREIZE.  D-687
+               Elle vivait dans chaque maquette. Tant qu'elle y etait,
+               la scene ne pouvait pas porter le rapport 1440/900 : il
+               aurait fallu lui retrancher une hauteur qui change avec
+               la largeur de la fenetre, et l'ecran se serait fait
+               rogner du bas — la ou les douze posent leur bandeau,
+               leur cartouche et leur plaque. -->
+          <div class="sec-chrome" id="sectorChrome" aria-hidden="true"><i></i><i></i><span>bistro-nordet.ca</span><em>Restauration</em></div>
           <div class="mock-stage" id="mockStage" aria-hidden="true"></div>
           <!-- LES TREIZE MAQUETTES VIVENT DANS UN `<template>`.  D-051 -->
           <template id="tplSecteurs">
 
   <!-- 01 · RESTAURATION — la carte imprimee et l'heure de table -->
-  <div class="mock mock--site is-on" data-mock="restaurant">
-    <div class="sec-chrome"><i></i><i></i><span>bistro-nordet.ca</span><em>Restauration</em></div>
-    <div class="sec-vitre" tabindex="0" role="img"
-         aria-label="Site complet que nous avons codé pour un restauration — on descend dedans pour le parcourir.">
-        <img src="images/realisations/apres-restau-t0.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-restau-t1.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-restau-t2.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-restau-t3.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-restau-t4.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-restau-t5.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-restau-t6.webp" width="820" height="627" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-    </div>
+  <div class="mock mock--ecran is-on" data-mock="restaurant"
+       data-hote="bistro-nordet.ca" data-metier="Restauration">
+    <img src="images/realisations/ecran-restaurant.webp" width="1440" height="900"
+         alt="Premier écran d'un site que nous avons codé pour un restaurant."
+         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
   </div>
 
   <!-- 02 · BOUTIQUE — la grille de produits et le tiroir de panier -->
-  <div class="mock mock--site" data-mock="boutique">
-    <div class="sec-chrome"><i></i><i></i><span>gresdunord.ca</span><em>Boutique en ligne</em></div>
-    <div class="sec-vitre" tabindex="0" role="img"
-         aria-label="Site complet que nous avons codé pour un boutique en ligne — on descend dedans pour le parcourir.">
-        <img src="images/realisations/apres-secteur-boutique-t0.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-boutique-t1.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-boutique-t2.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-boutique-t3.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-boutique-t4.webp" width="820" height="918" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-    </div>
+  <div class="mock mock--ecran" data-mock="boutique"
+       data-hote="gres-saulnier.ca" data-metier="Boutique en ligne">
+    <img src="images/realisations/ecran-boutique.webp" width="1440" height="900"
+         alt="Premier écran d'un site que nous avons codé pour une boutique en ligne."
+         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
   </div>
 
   <!-- 03 · COIFFURE — la journee en creneaux -->
-  <div class="mock mock--site" data-mock="coiffure">
-    <div class="sec-chrome"><i></i><i></i><span>salon-brume.ca</span><em>Coiffure et esthetique</em></div>
-    <div class="sec-vitre" tabindex="0" role="img"
-         aria-label="Site complet que nous avons codé pour un coiffure et esthetique — on descend dedans pour le parcourir.">
-        <img src="images/realisations/apres-secteur-coiffure-t0.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-coiffure-t1.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-coiffure-t2.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-coiffure-t3.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-coiffure-t4.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-coiffure-t5.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-coiffure-t6.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-coiffure-t7.webp" width="820" height="676" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-    </div>
+  <div class="mock mock--ecran" data-mock="coiffure"
+       data-hote="salon-brume.ca" data-metier="Coiffure et esthétique">
+    <img src="images/realisations/ecran-coiffure.webp" width="1440" height="900"
+         alt="Premier écran d'un site que nous avons codé pour un salon de coiffure."
+         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
   </div>
 
   <!-- 04 · GYM — l'horaire de la semaine et les places qui restent -->
@@ -1900,49 +1868,19 @@
   </div>
 
   <!-- 05 · HEBERGEMENT — le calendrier et le total de sejour -->
-  <div class="mock mock--site" data-mock="hotel">
-    <div class="sec-chrome"><i></i><i></i><span>auberge-des-caps.ca</span><em>Hebergement et tourisme</em></div>
-    <div class="sec-vitre" tabindex="0" role="img"
-         aria-label="Site complet que nous avons codé pour un hebergement et tourisme — on descend dedans pour le parcourir.">
-        <img src="images/realisations/apres-secteur-hotel-t0.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-hotel-t1.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-hotel-t2.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-hotel-t3.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-hotel-t4.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-hotel-t5.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-hotel-t6.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-hotel-t7.webp" width="820" height="77" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-    </div>
+  <div class="mock mock--ecran" data-mock="hotel"
+       data-hote="anse-a-givre.ca" data-metier="Hébergement et tourisme">
+    <img src="images/realisations/ecran-hotel.webp" width="1440" height="900"
+         alt="Premier écran d'un site que nous avons codé pour une auberge."
+         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
   </div>
 
   <!-- 06 · GARAGE — le bon de travail chiffre -->
-  <div class="mock mock--site" data-mock="garage">
-    <div class="sec-chrome"><i></i><i></i><span>atelier-meridien.ca</span><em>Garage et mecanique</em></div>
-    <div class="sec-vitre" tabindex="0" role="img"
-         aria-label="Site complet que nous avons codé pour un garage et mecanique — on descend dedans pour le parcourir.">
-        <img src="images/realisations/apres-garage-t0.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-garage-t1.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-garage-t2.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-garage-t3.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-garage-t4.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-garage-t5.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-garage-t6.webp" width="820" height="316" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-    </div>
+  <div class="mock mock--ecran" data-mock="garage"
+       data-hote="atelier-meridien.ca" data-metier="Garage et mécanique">
+    <img src="images/realisations/ecran-garage.webp" width="1440" height="900"
+         alt="Premier écran d'un site que nous avons codé pour un garage."
+         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
   </div>
 
   <!-- 07 · CONSTRUCTION — l'echeancier de chantier -->
@@ -2034,49 +1972,19 @@
   </div>
 
   <!-- 11 · JURIDIQUE — la convention et son echeancier -->
-  <div class="mock mock--site" data-mock="juridique">
-    <div class="sec-chrome"><i></i><i></i><span>cabinet-vallieres.ca</span><em>Services juridiques</em></div>
-    <div class="sec-vitre" tabindex="0" role="img"
-         aria-label="Site complet que nous avons codé pour un services juridiques — on descend dedans pour le parcourir.">
-        <img src="images/realisations/apres-secteur-juridique-t0.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-juridique-t1.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-juridique-t2.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-juridique-t3.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-juridique-t4.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-juridique-t5.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-juridique-t6.webp" width="820" height="434" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-    </div>
+  <div class="mock mock--ecran" data-mock="juridique"
+       data-hote="cabinet-vallieres.ca" data-metier="Services juridiques">
+    <img src="images/realisations/ecran-juridique.webp" width="1440" height="900"
+         alt="Premier écran d'un site que nous avons codé pour un cabinet d'avocats."
+         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
   </div>
 
   <!-- 12 · PHOTOGRAPHE — l'index et la planche -->
-  <div class="mock mock--site" data-mock="photo">
-    <div class="sec-chrome"><i></i><i></i><span>atelier-lumen.ca</span><em>Photographe et creatif</em></div>
-    <div class="sec-vitre" tabindex="0" role="img"
-         aria-label="Site complet que nous avons codé pour un photographe et creatif — on descend dedans pour le parcourir.">
-        <img src="images/realisations/apres-secteur-photo-t0.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-photo-t1.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-photo-t2.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-photo-t3.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-photo-t4.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-photo-t5.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-photo-t6.webp" width="820" height="1100" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-        <img src="images/realisations/apres-secteur-photo-t7.webp" width="820" height="677" alt=""
-             loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
-    </div>
+  <div class="mock mock--ecran" data-mock="photo"
+       data-hote="atelier-lumen.ca" data-metier="Photographe et créatif">
+    <img src="images/realisations/ecran-photo.webp" width="1440" height="900"
+         alt="Premier écran d'un site que nous avons codé pour un photographe."
+         loading="lazy" decoding="async" fetchpriority="low" draggable="false" />
   </div>
 
   <!-- 13 · VOTRE INDUSTRIE ICI — la matiere -->

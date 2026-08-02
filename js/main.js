@@ -2479,10 +2479,25 @@
     var mocks = $$(".mock", preview);
     var pills = $$(".sector-pills button");
 
+    /* UNE SEULE BARRE D'ADRESSE POUR LES TREIZE.  D-687
+       Elle vivait dans chaque maquette ; elle est maintenant au-dessus
+       de la scene, et c'est ce qui permet a la scene de porter le
+       rapport exact de la prise de vue. Son contenu suit le secteur. */
+    var barre = $("#sectorChrome");
+    var barreHote = barre ? barre.querySelector("span") : null;
+    var barreMetier = barre ? barre.querySelector("em") : null;
+
     var secteurCourant = null;
     var showSector = function (key) {
       if (!key) return;
-      mocks.forEach(function (m) { m.classList.toggle("is-on", m.dataset.mock === key); });
+      mocks.forEach(function (m) {
+        var on = m.dataset.mock === key;
+        m.classList.toggle("is-on", on);
+        if (on && barreHote) {
+          barreHote.textContent = m.dataset.hote || "";
+          if (barreMetier) barreMetier.textContent = m.dataset.metier || "";
+        }
+      });
       pills.forEach(function (p) {
         var on = p.dataset.sector === key;
         p.classList.toggle("is-on", on);
@@ -2600,8 +2615,8 @@
         palierPlein() && "IntersectionObserver" in window;
     }
 
-    var live = null, cadre = null, chrome = null;
-    var minuteurSrc = 0, boucle = 0, dernierGeste = 0, pause = 0;
+    var live = null, cadre = null;
+    var minuteurSrc = 0;
     var survole = false, dansLaVue = false, cleVivante = "";
 
     function batir() {
@@ -2609,9 +2624,6 @@
       live = doc.createElement("div");
       live.className = "sec-live";
       live.setAttribute("inert", "");
-      chrome = doc.createElement("div");
-      chrome.className = "sec-chrome";
-      chrome.innerHTML = "<i></i><i></i><span></span><em></em>";
       cadre = doc.createElement("iframe");
       cadre.className = "sec-live-cadre";
       cadre.setAttribute("loading", "lazy");
@@ -2620,56 +2632,38 @@
          cloue a zero. Le cadre ne bougerait plus d'un pixel, et rien
          ne le dirait. */
       cadre.setAttribute("title", "Apercu vivant du site de demonstration");
-      live.appendChild(chrome);
       live.appendChild(cadre);
       cadre.addEventListener("load", prendreLaMain);
       scene.appendChild(live);
+      echelle();
     }
 
-    function copierChrome() {
-      var m = scene.querySelector(".mock.is-on .sec-chrome");
-      if (!m || !chrome) return;
-      var s = m.querySelector("span"), e = m.querySelector("em");
-      chrome.querySelector("span").textContent = s ? s.textContent : "";
-      chrome.querySelector("em").textContent = e ? e.textContent : "";
+    /* LE CADRE FAIT 1440 x 900 EN PROPRE ET SE REDUIT.  D-688
+       Il faisait la largeur de la scene — 348 a 621 px selon la
+       fenetre — et rendait donc la mise en page TELEPHONE d'un ecran
+       dessine pour 1440. Le vivant et la planche montraient deux
+       compositions differentes du meme site, et c'est la planche qui
+       avait raison. On rend a la vraie largeur et on met a l'echelle :
+       meme geometrie que la capture, au pixel. */
+    function echelle() {
+      if (!live) return;
+      var l = scene.clientWidth;
+      if (l > 0) live.style.setProperty("--sec-ech", (l / 1440).toFixed(5));
     }
+    window.addEventListener("resize", echelle, { passive: true });
 
     function prendreLaMain() {
-      copierChrome();
+      echelle();
       live.classList.add("is-pret");
       scene.classList.add("is-vivant");
-      dernierGeste = 0;
-      pause = 0;
-      if (!boucle) boucle = window.requestAnimationFrame(conduire);
     }
 
-    /* ON POUSSE LE DEFILEMENT D'UN PEU MOINS DE DEUX PIXELS PAR IMAGE.
-       C'est lent — 120 px la seconde — et c'est le point : une
-       traversee de 12 000 px prend cent secondes, mais le visiteur ne
-       regarde que quelques secondes, et pendant ces secondes-la
-       QUELQUE CHOSE BOUGE. Un defilement rapide ferait defiler, pas
-       animer : les revelations passeraient toutes en meme temps.
-       On avance par PAS, jamais par saut : un `scrollTo` qui saute
-       tue une scene epinglee. Piege 5 */
-    function conduire() {
-      boucle = 0;
-      if (!live || live.hidden) return;
-      var d = null;
-      try { d = cadre.contentDocument; } catch (e) { d = null; }
-      var el = d && d.scrollingElement;
-      if (el) {
-        var max = el.scrollHeight - el.clientHeight;
-        if (pause) {
-          pause--;
-          if (!pause) el.scrollTop = 0;
-        } else if (max > 8) {
-          var y = el.scrollTop + 1.9;
-          if (y >= max) { el.scrollTop = max; pause = 70; }
-          else el.scrollTop = y;
-        }
-      }
-      boucle = window.requestAnimationFrame(conduire);
-    }
+    /* IL N'Y A PLUS RIEN A FAIRE DEFILER.  D-681
+       Le cadre poussait le defilement de deux pixels par image : c'est
+       ce qui faisait bouger un site de douze mille pixels. Un premier
+       ecran n'en a que neuf cents, il n'y a aucune course, et le seul
+       mouvement est celui que l'ecran joue lui-meme au chargement —
+       ce qui est exactement ce que la section doit prouver. */
 
     function eteindre() {
       if (!live) return;
@@ -2677,7 +2671,6 @@
       live.hidden = true;
       scene.classList.remove("is-vivant");
       window.clearTimeout(minuteurSrc);
-      if (boucle) { window.cancelAnimationFrame(boucle); boucle = 0; }
       /* La page chargee est LIBEREE : un `<iframe>` laisse en place
          garde ses images, ses polices et son ScrollTrigger en
          memoire, et il y en a douze. */

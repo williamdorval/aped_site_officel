@@ -196,52 +196,27 @@
   .mock .sec-lim i { animation: none !important; transform: translate(0, 0); opacity: 1; }
 }
 
-/* == UN SECTEUR MONTRE UN VRAI SITE, PAS UNE MAQUETTE. ==  D-655
-   Ce panneau montrait une carte dessinee a la main : un fragment, une
-   fonction isolee, jolie et abstraite. Un patron de garage ne peut
-   pas juger sur ca — il veut voir un site.
-   C'est maintenant le site entier, photographie a 1 280 px de large,
-   empile en tuiles, et le visiteur y DESCEND.
+/* == UN SECTEUR MONTRE UN PREMIER ECRAN, ARRETE. ==  D-681
+   Ce panneau a montre trois choses de suite. Une carte dessinee a la
+   main : un fragment, joli et abstrait — un patron de garage ne peut
+   pas juger sur ca. Puis le site entier, photographie a 760 px de
+   large et empile en tuiles, dans lequel on DESCENDAIT : personne ne
+   descend dans un cadre de 421 px, et 760 px de large est la largeur
+   d'une TABLETTE — reduite dans le cadre, elle rend un gros plan.
 
-   AUCUN PILOTE, ET C'EST LA DIFFERENCE AVEC LA SECTION 03.
-   La-bas il faut verrouiller DEUX pages de hauteurs differentes en
-   pourcentage : ca demande du JavaScript. Ici il n'y a qu'une page.
-   Un conteneur en `overflow-y: auto` la fait defiler NATIVEMENT —
-   donc sur le compositeur, donc sans la moindre image de retard
-   (D-654), et sans une ligne de script. Le plus simple est aussi le
-   plus fluide. */
-.mock--site {
-  display: flex;
-  flex-direction: column;
-  background: var(--surface-0);
-}
-.mock--site .sec-chrome { flex: 0 0 auto; }
-.sec-vitre {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  /* Le geste ne remonte pas a la page tant qu'on est dedans, et il
-     la lui rend au bout — meme arbitrage qu'en section 03 (D-636). */
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--rule-strong) transparent;
-  background: var(--surface-0);
-}
-@media (any-pointer: coarse) {
-  .sec-vitre { overscroll-behavior: auto; }
-}
-/* LE CONTENEUR EST ATTEIGNABLE AU CLAVIER. Un conteneur defilant sans
-   `tabindex` n'est pas atteignable dans tous les moteurs, et son
-   contenu deviendrait alors inaccessible autrement qu'a la souris. */
-.sec-vitre:focus-visible {
-  outline: var(--focus-w) solid var(--accent-text);
-  outline-offset: calc(var(--focus-w) * -1);
-}
-.sec-vitre img {
+   Maintenant : UNE image, le premier ecran, photographie a 1440 x 900
+   — la fenetre d'un vrai bureau — et reduite a 0,29. Le texte courant
+   tombe sous 5 px, et c'est voulu : c'est a ca que ressemble un
+   moniteur pose a trois metres.  D-683
+
+   La scene porte le rapport exact de la prise de vue (app.css § 16),
+   donc l'image la remplit sans rognage et sans bande. */
+.mock--ecran { display: block; background: var(--surface-0); }
+.mock--ecran img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   /* Une image est glissable par defaut, et le glisser natif vole le
      geste — la lecon de D-619, appliquee avant de la repayer. */
   -webkit-user-drag: none;
@@ -251,39 +226,38 @@
    L'APERÇU VIVANT — parce qu'un aperçu FIGÉ ne prouve pas qu'on sait
    animer.  D-672
 
-   L'aperçu était une suite de captures qu'on parcourt à la molette.
-   Le mouvement écrit dans les douze sites — parallaxe, volet, masque
-   qui monte, compteurs qui roulent — n'y jouait pas : ce qui bougeait,
-   c'était le défilement. Or c'est exactement ce que la section doit
-   prouver.
-
    Le `<iframe>` est SUR la planche, jamais à sa place : la planche
    reste le poster, elle porte le texte de remplacement, elle tient la
    géométrie, et elle est ce que voient le clavier, les lecteurs
    d'écran et tout palier au-dessus de zéro. Le vivant est un LUXE
    posé par-dessus.
+
+   IL RENDAIT LE SITE DANS UN CADRE DE 421 px DE LARGE — donc la mise
+   en page TÉLÉPHONE d'un écran dessiné pour 1440.  D-688
+   Le vivant et la planche montraient deux compositions différentes du
+   même site, et c'est la planche qui avait raison. Le cadre fait
+   maintenant 1440 × 900 en propre et se REDUIT par `transform` :
+   même géométrie que la capture, au pixel. `--sec-ech` est posé par
+   `main.js`, qui seul connaît la largeur de la scène.
    ═══════════════════════════════════════════════════════════════════ */
 .sec-live {
   position: absolute;
   inset: 0;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
+  overflow: hidden;
   background: var(--surface-0);
   opacity: 0;
   transition: opacity var(--t-2) var(--e-snap);
 }
 .sec-live.is-pret { opacity: 1; }
 .sec-live-cadre {
-  flex: 1 1 auto;
-  min-height: 0;
-  width: 100%;
+  width: 1440px;
+  height: 900px;
   border: 0;
   display: block;
   background: var(--surface-0);
+  transform: scale(var(--sec-ech, 0.29));
+  transform-origin: 0 0;
 }
-/* Pendant que le vivant joue, la planche s'efface ET rend la molette
-   à la page : deux surfaces défilantes superposées se désynchronisent
-   à la première roulette, et ça se voit tout de suite. */
+/* Pendant que le vivant joue, la planche s'efface. */
 .mock-stage.is-vivant .mock.is-on { opacity: 0; }
-.mock-stage.is-vivant .sec-vitre { pointer-events: none; }
