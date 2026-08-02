@@ -4,6 +4,15 @@ Un seul écran, **1440 × 900**, arrêté. Une photographie de paysage plein
 cadre, et le plus gros caractère de l'écran mesure **21 px**. C'est tout
 le parti : le visiteur regarde un lieu, pas une page.
 
+> **Deux corrections du 2026-08-01, et elles se lisent partout dans ce
+> plan.** (1) La photographie était `hotel-1`, un massif européen sous
+> un texte qui dit « Haute-Côte-Nord » ; elle est remplacée par
+> `hotel-2`, et la composition est **recotée sur la nouvelle matière**
+> — voile du haut, mention à 72 %, bloc de gauche remonté de 28 px.
+> (2) Le geste était un filet d'**1 px** ; réduit à l'échelle du
+> panneau (0,29) il ne pesait plus rien. Il devient une **plaque de
+> laiton de 16 px** qui court sous le nom. Piège 57.
+
 ---
 
 ## Les trois références
@@ -400,8 +409,9 @@ construction en réclame une, c'est cette chaîne-là et aucune autre.
 ## Ce qui me distingue des onze autres
 
 **Composition.** Je suis le seul écran où la photographie occupe 100 %
-de la surface et où **le plus gros caractère mesure 21 px** — 68 % de
-l'écran ne porte strictement rien (y 0 → 610 sauf la barre du haut).
+de la surface et où **le plus gros caractère mesure 21 px** — de
+y = 62 (sous la barre du haut) à y = 610 (le surtitre), **61 % de la
+hauteur ne porte rien**.
 Le Gym est un mur de lettres de 180 px sans image ; la Coiffure est en
 colonnes de magazine ; l'Immobilier présente une propriété comme un lot
 de catalogue. Chez moi le texte n'est pas le sujet, il est la plaque
@@ -424,3 +434,32 @@ vaut ici **1,3** (21 px contre 16 px) ; le standard des sites de secteur
 demande 90 à 160 px d'affichage contre 14 à 16 px de texte, soit un
 saut de **6 à 11**. C'est le même métier, la même grammaire, et le
 rapport inverse.
+
+---
+
+## Ce qui reste ouvert
+
+1. **L'anse n'est jamais montrée.** Le nom, le surtitre, la promesse et
+   le cartouche parlent tous d'une anse qui prend en glace ; la
+   photographie montre le bois. Aucun des dix-sept tirages du lot ne
+   réunit *une étendue gelée* et *une matière québécoise crédible* :
+   `hotel-9` a l'étendue et pas la matière, `hotel-2` a la matière et
+   pas l'étendue. Rien à l'écran ne contredit le texte — c'est une
+   absence, pas une fausseté — mais l'écran serait plus fort avec une
+   dix-huitième photo : une anse gelée bordée d'épinettes, avec un
+   bâtiment de bois à toit de bardeau. **Tant qu'elle n'existe pas,
+   cette ligne reste.**
+2. **Des gens sont dans l'image.** Quatre ou cinq promeneurs à
+   contre-jour, aucun visage résolu au grossissement ×3 sur le fichier
+   source. C'est conforme à `STANDARD.md § 4.2`, qui vise les visages
+   reconnaissables. Aucun des onze autres écrans du lot ne montre de
+   personne : celui-ci est le seul, et c'est un écart assumé, pas un
+   oubli.
+3. **Le pire pixel sous la mention de démonstration rend 4,20:1** —
+   sous 4,5. C'est un pixel unique de branche enneigée sous une hampe
+   de 1 px ; la moyenne du bloc rend 7,05:1. Monter la mention plus
+   haut que 72 % la ferait crier. Épaissir le voile du haut coûterait
+   à la photographie ce qu'il rapporterait à un pixel.
+4. **Rien de tout cela n'a été vu sur un appareil réel.** Chromium sous
+   Playwright, machine de bureau Windows. La réduction à 421 px est
+   simulée par deux `drawImage` en demi-pas, pas par le panneau lui-même.

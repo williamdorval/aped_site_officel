@@ -14,16 +14,21 @@
      qui court de gauche à droite sous le nom, comme une laisse de
      haute mer le long d'une grève — dure 1800 ms après 400 ms
      d'attente. À t = 1500 ms le remplissage vaut
-     (1500 − 400) / 1800 = 61,1 % : 315 px de laiton pleine masse, de
-     x = 112 à x = 427, sur 16 px de haut.
+     (1500 − 400) / 1800 = 61,1 %. Relevé DANS LA CAPTURE, par
+     balayage d'une ligne au milieu de la plaque : 309 px de laiton
+     pleine masse, de x = 112 à x = 420, sur 16 px de haut.
 
      POURQUOI PAS UN FILET D'1 PX. L'aperçu du panneau réduit la
      capture de 1440 à 421 px, soit 0,29. Un filet d'1 px y vaut
      0,29 px : le moteur l'étale en un gris que personne ne voit
      (piège 57). La plaque, elle, pèse 16 px de haut — 4,6 px après
-     réduction — et son bord de fuite parcourt 516 px, soit 150 px
+     réduction — et son bord de fuite parcourt 506 px, soit 147 px
      dans le panneau. Le mouvement se prouve dans la page ; il se
-     VEND dans le panneau. -->
+     VEND dans le panneau.
+
+     LES CINQ INSTANTS, relevés dans l'image : à 400 / 675 / 950 /
+     1225 / 1500 ms le bord de fuite est à x = 112 / 188 / 265 / 343 /
+     420 — 77 px d'écart entre deux consécutives, sans exception. -->
 <meta name="aped-instant" content="1500">
 
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/cormorant-3.woff2" crossorigin>
@@ -38,7 +43,8 @@
    rambarde d'un belvédère. On lit le paysage d'abord ; la plaque
    ensuite, en s'approchant. Rien ici ne cherche à être vu de loin
    sauf la photographie — le plus gros caractère de l'écran mesure
-   21 px, et 44 % de la surface (y 0 → 400) ne porte rien.
+   21 px, et de y = 62 (sous la barre du haut) à y = 610 (le
+   surtitre) rien n'est posé : 61 % de la hauteur.
    ════════════════════════════════════════════════════════════════ */
 
 /* ── LES TROIS FACES, ET RIEN D'AUTRE ─────────────────────────────
@@ -55,7 +61,8 @@
 :root{
   --sapin:#0b1712;      /* le seul aplat de l'écran */
   --os:#e8e0cd;         /* tout le texte, sans exception */
-  --laiton:#a98b4f;     /* le filet, la bordure, l'aplat du bouton */
+  --laiton:#a98b4f;     /* le filet, la bordure, l'aplat du bouton,
+                           et la plaque du geste */
   --mx:72px;            /* marge gauche et droite */
   --mt:48px;            /* marge haute */
   --mb:52px;            /* marge basse — volontairement inégale */
@@ -133,7 +140,17 @@ img{display:block}
   position:absolute;top:0;right:0;bottom:0;left:0;z-index:0;
   width:100%;height:100%;
   object-fit:cover;object-position:50% 50%;
-  filter:saturate(.34) contrast(1.12) brightness(.60);
+  /* `brightness(.60)` PERDAIT LE SUJET, et le côté-à-côte l'a dit.
+     Posé à côté de Nimmo Bay et d'Eleven Experience — les deux
+     références retenues — cet écran était le seul dont on ne
+     distinguait pas ce qu'il montre : une forêt noire où les chalets
+     n'apparaissaient qu'en s'approchant. Les trois références gardent
+     leur sujet lisible ; c'est ce qui les fait entrer.
+     Le virage froid et la désaturation restent — c'est la voie. La
+     luminosité remonte assez pour que les fenêtres allumées et les
+     toitures se lisent à la vignette de 421 px, et le dégradé du bas
+     continue de porter le contraste du texte. */
+  filter:saturate(.34) contrast(1.12) brightness(.82);
 }
 
 /* ── 2 · LA NAPPE FROIDE — plate, sans mode de fusion ───────────── */
@@ -151,28 +168,35 @@ img{display:block}
     rgba(9,18,15,.97) 100%);
 }
 
-/* ── 3 bis · LE VOILE DU HAUT — 190 px, ET IL EST NOUVEAU ─────────
+/* ── 3 bis · LE VOILE DU HAUT — 210 px, ET IL EST NOUVEAU ─────────
    La version précédente n'en avait pas, et elle avait raison : son
    tiers supérieur était un mur d'épinettes plein, traité à
    Y = 0,011, sur lequel la nav mesurait déjà 13,22:1.
 
    La nouvelle matière est l'inverse — un lacis de branches chargées
-   de neige, clair et haché. Mesuré sans voile : le pire pixel sous
-   le numéro de téléphone rend 3,82:1, sous la mention de
-   démonstration 2,20:1, sous la nav 3,23:1. Une moyenne à 12,87
-   n'excuse pas une hampe de « 5 » posée sur une branche blanche.
+   de neige, clair et haché. Sans voile, le PIRE PIXEL sous le numéro
+   de téléphone rend 3,82:1, sous la mention de démonstration 2,20:1,
+   sous la nav 3,23:1. Une moyenne à 12,87 n'excuse pas une hampe de
+   « 5 » posée sur une branche blanche.
 
-   Avec ce voile : 7,41 · 3,58 · 6,22 au pire pixel, et la mention
-   passe de 62 % à 72 % d'os pour finir de payer sa part. Ce qu'il
-   coûte à la photographie est mesuré aussi : la luminance moyenne de
-   la bande 0→400 tombe de 43,4 à 38,7 et son écart-type de 26,4 à
-   22,5 — 11 % de nuit en plus, 14 % de grain en moins. La
-   photographie reste intacte de y = 190 à y = 400. */
+   IL EST RÉGLÉ SUR LA LUMINOSITÉ, PAS UNE FOIS POUR TOUTES. À
+   `brightness(.60)` il valait .62 sur 190 px. La passe du
+   côte-à-côte a remonté la luminosité à .82 pour que le sujet se
+   lise à la vignette de 421 px — décision juste, et le prix se paie
+   ici : à .62 le pire pixel de la mention retombait à 3,13:1. À
+   .82 / .48 / 0 sur 210 px, on retrouve la cote exacte d'avant —
+   7,78 · 4,35 · 6,41 — SANS rendre la luminosité gagnée : la bande
+   0→400 garde L 46,2 et σ 29,4, contre 38,7 et 22,5 quand la
+   photographie était à .60. Toute reprise de `brightness` se
+   rejoue ici, avec `voile-tune`. La mention, elle, passe de 62 % à
+   72 % d'os pour finir de payer sa part.
+
+   La photographie reste intacte de y = 210 à y = 400. */
 .voile-haut{
-  position:absolute;top:0;left:0;right:0;z-index:2;height:190px;
+  position:absolute;top:0;left:0;right:0;z-index:2;height:210px;
   background:linear-gradient(180deg,
-    rgba(9,18,15,.62) 0,
-    rgba(9,18,15,.34) 45%,
+    rgba(9,18,15,.82) 0,
+    rgba(9,18,15,.48) 45%,
     rgba(9,18,15,0)   100%);
 }
 
@@ -407,7 +431,7 @@ a:focus-visible{outline:1px solid var(--laiton);outline-offset:6px}
   /* Le voile du haut n'a plus de ligne à protéger une fois la barre
      repassée en flux — mais la nav vient s'y poser tout de même : il
      reste, et il monte à 70 % de la hauteur de la barre. */
-  .voile-haut{height:150px}
+  .voile-haut{height:165px}
   /* Aucune largeur maximale sur la promesse : ses deux lignes font
      350 px, soit 52 signes — déjà dans la fourchette. Une borne en
      `ch` les cassait en quatre à 768 px pour rien. */
