@@ -1281,13 +1281,17 @@
   // systeme et contredisait la page.
   var metaThemeColor = $("#metaThemeColor");
 
+  /* LA BASCULE EST UN CRAN.  D-635
+     Elle posait `theme-shifting` pendant 560 ms, ce qui armait une
+     transition de couleur sur 3 549 elements. Mesure : pire image
+     549,9 ms. Le changement se fait sous le couvert de la trame
+     (voir `basculerTheme`), donc il n'y a rien a fondre — et sans
+     trame, un etat roule d'un cran, c'est le verbe V4. */
   function applyTheme(next) {
-    root.classList.add("theme-shifting");
     root.setAttribute("data-theme", next);
     labelTheme(next);
     if (metaThemeColor) metaThemeColor.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
     try { localStorage.setItem("aped-theme", next); } catch (e) {}
-    window.setTimeout(function () { root.classList.remove("theme-shifting"); }, 560);
     /* Tout ce qui peint hors CSS doit etre prevenu. Le canvas du hero  D-408 */
     doc.dispatchEvent(new CustomEvent("aped:theme", { detail: { theme: next } }));
   }
@@ -1303,11 +1307,9 @@
       try { encoreLibre = localStorage.getItem("aped-theme"); } catch (err) {}
       if (encoreLibre) return;
       var next = e.matches ? "dark" : "light";
-      root.classList.add("theme-shifting");
       root.setAttribute("data-theme", next);
       labelTheme(next);
       if (metaThemeColor) metaThemeColor.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
-      window.setTimeout(function () { root.classList.remove("theme-shifting"); }, 560);
       doc.dispatchEvent(new CustomEvent("aped:theme", { detail: { theme: next } }));
     };
     if (mq.addEventListener) mq.addEventListener("change", onChange);
