@@ -124,8 +124,11 @@
    sous les 480 que le plan demande.
 
    Tout le reste du plan est tenu tel quel : fond acide plein cadre,
-   mur à y = 0, bandeau noir de 188 px collé au bord bas, aucune nav
-   en haut, un seul blanc, un seul geste, aucun chiffre.
+   mur à y = 0, socle noir collé au bord bas, aucune nav en haut, un
+   seul blanc, un seul geste, aucun chiffre. *(Le socle est passé de
+   188 à 255 px à la seconde passe, et son arête de 712 à 645, pour
+   que L5 le TRAVERSE au lieu d'y être soudée — voir « le socle » plus
+   bas.)*
 
    ── LE GESTE : « LE CRAN » ──────────────────────────────────────
    Un aplat pleine largeur se pose derrière UNE ligne à la fois et
@@ -186,14 +189,78 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* Le socle : la masse noire du bandeau court d'un bord à l'autre de
-   la FENÊTRE, pas seulement de la maquette. Sur un écran plus large
-   ou plus haut que 1440 × 900, l'affiche se centre sur son fond
-   acide et le noir reste franc jusqu'aux bords. À 1440 × 900 il
-   tombe exactement sur le bandeau : 50vh + 262rem = 712. */
-.socle{position:fixed;left:0;right:0;top:calc(50vh + 262rem);bottom:0;background:var(--noir);z-index:0}
+/* Le socle : la masse noire court d'un bord à l'autre de la FENÊTRE,
+   pas seulement de la maquette. Sur un écran plus large ou plus haut
+   que 1440 × 900, l'affiche se centre sur son fond acide et le noir
+   reste franc jusqu'aux bords. À 1440 × 900 il tombe exactement sur
+   l'arête du socle : 50vh + 195rem = 645. */
+.socle{position:fixed;left:0;right:0;top:calc(50vh + 195rem);bottom:0;background:var(--noir);z-index:0}
 
+/* La scène crée un contexte d'empilement (`z-index` sur un élément
+   positionné) : le mélange de la plaque du socle s'y arrête et ne
+   descend jamais jusqu'au corps. Elle n'a pas besoin de fond pour
+   autant — la plaque ne couvre que 645 → 712, et le MUR y peint
+   déjà son acide. *(Une version intermédiaire posait la plaque
+   jusqu'à 900 ; il fallait alors un `background` ici, sans quoi la
+   plaque rendait son propre acide sur du vide. La plaque a été
+   raccourcie, la rustine est partie avec — piège 46.)* */
 .scene{position:relative;z-index:1;flex:none;width:1440rem;height:900rem;overflow:hidden}
+
+/* ── LE SOCLE, ET POURQUOI LA DERNIÈRE LIGNE LE TRAVERSE ────────
+   Le socle montait à 712, c'est-à-dire au pied de L5 à un pixel
+   près. Du noir posé au pied d'une ligne NOIRE ne fait pas une
+   arête : il fait une soudure. Les pieds de « À VOIX HAUTE. »
+   disparaissaient dans la masse, et à l'échelle du panneau (0,29)
+   la ligne se lisait comme un mot mangé par le bas — un débordement
+   SUBI, pas un parti. C'est le même défaut que le masque à
+   mi-course sur du texte (piège 70) : une lettre tronquée se lit
+   comme une faute, jamais comme un mouvement.
+
+   L'arête remonte donc à 645 et la ligne la TRAVERSE. Sous 645 la
+   lettre ne s'arrête pas : elle change de couleur et continue, par
+   la MÊME plaque `difference` qui sert déjà au cran. Un débordement
+   qui se poursuit dans l'autre couleur est lu comme voulu ; un
+   débordement qui s'arrête est lu comme une panne.
+
+   POURQUOI 645 ET PAS UNE AUTRE HAUTEUR. Le fût de L5 va de 580 à
+   711 : 645 est sa MOITIÉ (65 px au-dessus, 66 en dessous). Cinq
+   hauteurs ont été montées et regardées à 1440 puis à 0,29 — 638,
+   645, 656, 662, 668. Les traverses des H, A et E de la ligne ont
+   été relevées au pixel : elles occupent 598-603, 628-652 et
+   670-693. À 656 et à 668 le cut tombe à deux ou trois pixels d'une
+   traverse : les deux horizontales se confondent et le mot devient
+   mou. À 645 la seule plage d'encre large est la TAILLE DU X
+   (x 603-665) — un croisement de deux diagonales, qui n'a aucune
+   horizontale à détruire. Les traverses des trois autres lettres
+   tombent dessous, dans l'acide, avec de l'air.
+   *(Une sonde qui comptait « les rangées sans plage d'encre large »
+   déclarait 645 mauvais et 656 bon : elle prenait la taille du X
+   pour une traverse et ne mesurait pas la DISTANCE à la traverse
+   voisine, qui est la seule chose qui compte. L'œil avait raison
+   contre l'instrument — piège 74.)*
+
+   La part inversée fait 66 px à 1440, donc 19 px dans le panneau :
+   très au-dessus des 12 px sous lesquels un geste n'existe plus
+   (piège 71).
+
+   ── LA PLAQUE NE DESCEND QUE JUSQU'À 712, ET C'EST UNE CORRECTION ─
+   Elle couvrait d'abord 645 → 900, et le socle n'avait alors plus
+   AUCUN fond déclaré : son noir venait entièrement du mélange.
+   `tools/demos-contraste.mjs` a rendu **7 échecs à 1440**, dont
+   « 1:1 · 64 px · FONTE NORD ». Le verdict était faux — les pixels
+   peints sont bien de l'acide sur du `#0b0b0b`, 16,8:1 — mais
+   l'outil ne pouvait pas le savoir : il remonte l'arbre jusqu'à la
+   première surface OPAQUE, et une plaque `difference` n'en est pas
+   une. Même famille que le piège 45 : un fond peint n'est pas un
+   fond déclaré.
+   On ne corrige pas l'outil pour un écran ; on lui rend sa prise.
+   La plaque s'arrête donc à **712**, exactement là où finit l'encre
+   de L5, et le socle reprend son `background` noir sous elle. Les
+   pixels sont identiques au bit près — |acide − inv| vaut
+   rgb(11,11,11), qui EST `--noir`, donc les deux noirs se joignent
+   sans couture — et le contrôle de contraste retrouve un fond
+   opaque à mesurer. */
+.plinthe{position:absolute;left:0;top:645rem;width:1440rem;height:67rem;background:var(--inv);mix-blend-mode:difference}
 
 /* ================= LE MUR =================
    Cinq lignes, fer à gauche à x = 0, cap-top de L1 à y = 0.
@@ -254,15 +321,34 @@ body{
   20%  {clip-path:inset(19.500% 0 61.000% 0)}   /* L2  y 139 → 278 */
   40%  {clip-path:inset(39.000% 0 41.500% 0)}   /* L3  y 278 → 417 */
   60%  {clip-path:inset(58.500% 0 18.511% 0)}   /* L4  y 417 → 580  ← l'instant */
-  80%  {clip-path:inset(81.489% 0 0% 0)}        /* L5  y 580 → 712 */
+  /* Le 5e cran s'arrête sur l'arête du socle, à 645, et non plus à
+     712 : au-delà il repasserait sur la plaque du socle et une
+     seconde `difference` rendrait l'acide au lieu du noir. Il vient
+     donc SE SOUDER au socle — à la dernière image, l'aplat et le
+     socle ne font plus qu'une seule masse. */
+  80%  {clip-path:inset(81.489% 0 9.410% 0)}    /* L5  y 580 → 645 */
   100% {clip-path:inset(100% 0 0 0)}            /* il n'est plus là */
 }
 
-/* ================= LE BANDEAU =================
-   x 0 → 1440, y 712 → 900. Il porte TOUT le mobilier : il n'y a
-   aucune nav en haut de l'écran, le bord haut appartient au titre. */
+/* ================= LE SOCLE, CÔTÉ CONTENU =================
+   x 0 → 1440, y 712 → 900. Le socle VISIBLE commence 67 px plus
+   haut, à 645 : cette bande-là est celle que la plaque inverse, et
+   rien ne s'y pose — elle appartient à la traversée de L5. Sous
+   712, c'est ce bloc-ci, avec un vrai fond noir. Les deux noirs
+   sont le même `#0b0b0b` : on ne voit qu'une seule masse.
+   Il porte TOUT le mobilier : il n'y a aucune nav en haut de
+   l'écran, le bord haut appartient au titre.
+
+   Le rang 1 commence à 730, soit 19 px sous le pied de L5.
+
+   PAS DE FILET DE SÉPARATION. Il y en avait un, acide, de 1 px, sur
+   toute la largeur, à 796. C'était la marque la plus « pied de
+   page » de l'écran — deux rangs séparés par une réglure, comme
+   partout. Le logotype fait 64 px et les coordonnées 12 : le saut
+   de taille sépare déjà les deux rangs, et une réglure par-dessus
+   n'ajoutait qu'un aveu. Le filet reste dans le vocabulaire —
+   il y sert quatre fois, comme trace du geste dans le mur. */
 .bandeau{position:absolute;left:0;top:712rem;width:1440rem;height:188rem;background:var(--noir)}
-.filet-b{position:absolute;left:0;top:84rem;width:1440rem;height:1rem;background:var(--acide)}
 
 /* Rang 1 — logotype à gauche, nav à droite. */
 .logo{
@@ -284,17 +370,54 @@ body{
 .nav a:hover::after,.nav a:focus-visible::after{transform:scaleX(1)}
 .nav a:focus-visible{outline:2rem solid var(--acide);outline-offset:6rem}
 
-/* Rang 2 — identité, coordonnées, mention à gauche ; le bouton à droite. */
-.ident,.tel,.demo{position:absolute;left:28rem;margin:0;line-height:1;color:var(--acide);white-space:nowrap}
-.ident{top:109.158rem;font-family:"archivo",system-ui,sans-serif;font-weight:600;font-size:13rem;letter-spacing:0.16em}
-.tel{top:135.680rem;font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;font-size:12rem}
-.demo{top:163.400rem;font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;font-size:10rem;letter-spacing:0.14em}
+/* Rang 2 — identité et coordonnées à gauche ; le bouton dans l'angle.
+
+   DEUX LIGNES, PAS TROIS. Il y en avait trois : identité 13 px
+   archivo, coordonnées 12 px mono, mention 10 px mono. Trois rangs,
+   trois corps, deux familles, en escalier décroissant — la
+   silhouette exacte d'un pied de page légal. À 0,29 ces trois
+   lignes tombent à 3,8 · 3,5 · 2,9 px : c'est de la TEXTURE, et une
+   texture se compose en blocs réguliers, jamais en trois rangs qui
+   miment de l'information qu'on ne peut plus lire. La mention et
+   les coordonnées tiennent maintenant sur une SEULE ligne, d'un
+   seul corps : le bloc devient une réglure de gris homogène, ce
+   qu'il aurait toujours dû être. `ADRESSE SUR DEMANDE` disparaît —
+   la ville est déjà nommée à la ligne du dessus, et rien ne se perd.
+   La mention de démonstration, elle, reste au même corps que le
+   numéro : elle n'est ni cachée ni rapetissée. */
+.ident,.tel{position:absolute;left:28rem;margin:0;line-height:1;color:var(--acide);white-space:nowrap}
+.ident{top:125.158rem;font-family:"archivo",system-ui,sans-serif;font-weight:600;font-size:13rem;letter-spacing:0.16em}  /* base 846 */
+.tel{top:151.680rem;font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;font-size:12rem;letter-spacing:0.06em}  /* base 872, soit 28 du bord bas — la marge de gauche */
 
 /* LE BOUTON — seul objet blanc de l'écran, et seul appel à l'action.
    Aucun rayon, aucun filet, aucune ombre, aucune flèche : un
-   rectangle et un mot. */
+   rectangle et un mot.
+
+   SES QUATRE CÔTÉS ONT MAINTENANT UNE RAISON, ET C'EST LA
+   CORRECTION. Il était posé à x 1080 → 1412, y 812 → 878 : le seul
+   objet de l'écran dont aucune arête ne se déduisait d'autre chose,
+   quatre nombres qui n'étaient que le reste d'une soustraction.
+   C'est exactement ce que « zéro élément par défaut » désigne — non
+   pas le bouton, qui est mérité, mais son ASSIETTE.
+   · bord droit **1412** — la marge de 28, celle de la nav et du
+     logotype ;
+   · bord haut **785** — le pied du logotype ;
+   · bord bas **872** — la ligne de base des coordonnées.
+   Il fait donc exactement la hauteur du bloc d'information qu'il
+   conclut : **332 × 87**. Il ne flotte plus au milieu d'un noir, il
+   est tenu par ses voisins.
+
+   ET IL NE TOUCHE PAS LE CADRE, ce qui a été essayé et REFUSÉ. Une
+   première correction l'encastrait dans l'angle bas-droit, pour la
+   même raison que L1 touche le bord haut. À 1440 c'était juste ; à
+   0,29, dans le panneau, l'écran est posé sur une carte CLAIRE et
+   le blanc du bouton s'y fondait — le coin de l'écran paraissait
+   ARRACHÉ. Le seul blanc de la page ne peut pas toucher un bord :
+   il lui faut du noir sur ses quatre côtés pour rester un objet.
+   *(Encore un verdict qui ne se voit qu'à l'échelle de l'aperçu, et
+   jamais à pleine taille.)* */
 .cta{
-  position:absolute;left:1080rem;top:100rem;width:332rem;height:66rem;
+  position:absolute;left:1080rem;top:73rem;width:332rem;height:87rem;   /* y 785 → 872 */
   display:flex;align-items:center;justify-content:center;
   background:var(--blanc);color:var(--noir);text-decoration:none;
   font-family:"anton",Impact,"Arial Narrow",sans-serif;font-weight:400;
@@ -306,13 +429,23 @@ body{
 .cta:focus-visible{outline:3rem solid var(--noir);outline-offset:-9rem}
 
 /* ── SOUS 1200 px : L'AFFICHE SE RECOMPOSE ──────────────────────
-   Réduite au bloc, la mention de 10 px tomberait à 2 px. Le mur
-   garde ses proportions exactes — donc le geste et ses cotes en
-   pourcentage restent justes — et le bandeau passe en colonne. */
+   Réduite au bloc, la ligne de coordonnées tomberait sous 3 px. Le
+   mur garde ses proportions exactes — donc le geste et ses cotes en
+   pourcentage restent justes — et le socle passe en colonne.
+
+   LA TRAVERSÉE NE SUIT PAS. En colonne, le socle n'est plus posé à
+   une hauteur choisie : il suit le flux et sa hauteur dépend du
+   repli des libellés. Une plaque d'inversion posée là couperait la
+   dernière ligne à un endroit qui n'a été ni mesuré ni regardé, et
+   pourrait tomber en plein sur une traverse. On la retire, et le
+   socle reprend un fond noir plein : la ligne est alors entière,
+   nette, au-dessus d'une masse noire. Aucune information ne se
+   perd — la traversée est une composition, pas un contenu. */
 @media (max-width:1199px){
   html{font-size:16px}
   body{display:block}
-  .socle{display:none}
+  .socle,.plinthe{display:none}
+  .bandeau{background:var(--noir)}
   .scene{width:auto;height:auto;min-height:100vh;display:flex;flex-direction:column;overflow:visible}
   /* L4 = 1,18982 × F et sa chasse d'encre vaut 7,94922 em :
      F = 100vw / (7,94922 × 1,18982) = 10,573vw fait tomber L4
@@ -324,17 +457,15 @@ body{
   .bandeau{position:static;width:auto;height:auto;margin-top:auto;
            display:grid;grid-template-columns:100%;
            padding:clamp(14px,4vw,26px) clamp(16px,4vw,28px) clamp(18px,5vw,28px)}
-  .logo,.nav,.ident,.tel,.demo,.cta,.filet-b{position:static}
+  .logo,.nav,.ident,.tel,.cta{position:static}
   .logo{display:block;font-size:clamp(34px,9.4vw,58px);margin:0 0 .34em}
   .nav{display:flex;flex-wrap:wrap;gap:12px 20px;margin:0}
   .nav a{font-size:12px}
   .nav a:last-child{margin-right:0}
   .nav a::after{height:2px}
-  .filet-b{display:block;width:100%;height:1px;margin:clamp(14px,4vw,22px) 0}
-  .ident,.tel,.demo{white-space:normal}
-  .ident{font-size:12px;letter-spacing:0.12em}
-  .tel{font-size:12px;line-height:1.5;margin:.7em 0}
-  .demo{font-size:10px}
+  .ident,.tel{white-space:normal}
+  .ident{font-size:12px;letter-spacing:0.12em;margin-top:clamp(14px,4vw,22px)}
+  .tel{font-size:12px;line-height:1.5;margin:.7em 0 0}
   .cta{width:100%;max-width:332px;height:58px;font-size:26px;margin-top:clamp(16px,4vw,22px)}
   .cta:focus-visible{outline-width:3px;outline-offset:-9px}
   .nav a:focus-visible{outline-width:2px;outline-offset:6px}
@@ -344,12 +475,12 @@ body{
    faisait 325 px et la page dépassait de 18 px à 1199 × 900. */
 @media (min-width:860px) and (max-width:1199px){
   .bandeau{grid-template-columns:1fr auto;
-           grid-template-areas:"logo nav" "filet filet" "coords cta";
-           column-gap:32px;align-items:center}
+           grid-template-areas:"logo nav" "coords cta";
+           column-gap:32px;row-gap:clamp(14px,4vw,22px);align-items:center}
   .logo{grid-area:logo;margin:0}
   .nav{grid-area:nav;justify-self:end;flex-wrap:nowrap}
-  .filet-b{grid-area:filet}
   .coords{grid-area:coords}
+  .coords .ident{margin-top:0}
   .cta{grid-area:cta;justify-self:end;width:332px;margin:0}
 }
 
@@ -357,13 +488,24 @@ body{
    Un moteur qui ignore `clip-path` ou `mix-blend-mode` ne doit
    jamais voir une page vide : il voit l'état FINAL, qui est aussi
    l'état de repos. Idem sous mouvement réduit — les filets ne
-   portent aucune information, ils sont une trace. */
+   portent aucune information, ils sont une trace.
+
+   LE SOCLE, LUI, N'EST PAS UNE ANIMATION. Sans `mix-blend-mode`,
+   le retirer laisserait des libellés acides sur un fond acide : le
+   pied de l'écran deviendrait illisible. On le repeint donc en noir
+   plein — la ligne cesse simplement de traverser, et rien d'autre
+   ne change. Un garde-fou qui casse la page qu'il protège est pire
+   que pas de garde-fou. */
 @supports not (clip-path:inset(0px 0px 0px 0px)){.aplat{display:none}}
-@supports not (mix-blend-mode:difference){.aplat{display:none}}
+@supports not (mix-blend-mode:difference){
+  .aplat{display:none}
+  .plinthe{mix-blend-mode:normal;background:var(--noir)}
+}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
   .aplat{display:none}
   .t{opacity:1}
+  /* `.plinthe` reste : la traversée est l'état de REPOS, pas un geste. */
 }
 </style>
 </head>
@@ -386,6 +528,12 @@ body{
     <span class="aplat" aria-hidden="true"></span>
   </h1>
 
+  <!-- LE SOCLE. Peint APRÈS le mur, et avant son contenu : il inverse
+       ce qui est déjà là — l'acide devient noir, et les pieds de
+       « À VOIX HAUTE. » deviennent acides — puis le logotype, la nav,
+       les coordonnées et le bouton se posent par-dessus, intacts. -->
+  <div class="plinthe" aria-hidden="true"></div>
+
   <footer class="bandeau">
     <span class="logo">FONTE NORD</span>
 
@@ -396,12 +544,9 @@ body{
       <a href="#">PREMIÈRE VISITE</a>
     </nav>
 
-    <span class="filet-b" aria-hidden="true"></span>
-
     <div class="coords">
       <p class="ident">ATELIER DE FORCE · VILLERAY, MONTRÉAL</p>
-      <p class="tel">000 000-0000 · courriel@exemple.ca · ADRESSE SUR DEMANDE</p>
-      <p class="demo">SITE DE DÉMONSTRATION</p>
+      <p class="tel">000 000-0000 · COURRIEL@EXEMPLE.CA · SITE DE DÉMONSTRATION</p>
     </div>
 
     <a class="cta" href="#">RÉSERVER UN ESSAI</a>
