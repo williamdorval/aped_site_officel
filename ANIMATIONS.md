@@ -4,6 +4,59 @@
 d'en ajouter un — la colonne « Verbe » dit lequel des quatre il est, et
 un mouvement sans verbe ne se fait pas.
 
+
+<!-- INDEX:DEBUT -->
+
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **Table** | 43 | 571 |
+| **0 · LES JETONS DE TEMPS ET DE COURBE** | 31 | 405 |
+| **1 · LE CATALOGUE** | 6 | 51 |
+| &nbsp;&nbsp;↳ 1.1 · Séquence d'entrée — CSS pur, app.css § 11b | 26 | 968 |
+| &nbsp;&nbsp;↳ 1.2 · Composition du hero — CSS pur, app.css § 12b | 16 | 508 |
+| &nbsp;&nbsp;↳ 1.3 · Boutons et micro-états — app.css § phase 8 | 21 | 943 |
+| &nbsp;&nbsp;↳ 1.4 · Soudures, filets, validation | 11 | 512 |
+| &nbsp;&nbsp;↳ 1.5 · Cadeau (<dialog> natif) — CSS pur, app.css § 11c | 13 | 489 |
+| &nbsp;&nbsp;↳ 1.6 · Menu, modales, formulaires | 18 | 629 |
+| &nbsp;&nbsp;↳ 1.7 · Section 02 · la piste collante — RÉÉCRITE le 2026-07-30 | 31 | 742 |
+| &nbsp;&nbsp;↳ 1.8 · Projets, secteurs, contact, pied | 28 | 1 600 |
+| &nbsp;&nbsp;↳ 1.9 · 404.html — la ligne déraillée | 9 | 264 |
+| &nbsp;&nbsp;↳ 1.10 · css/secteurs.css — il n'en reste qu'UNE | 25 | 341 |
+| &nbsp;&nbsp;↳ 1.11 · css/tour360.css | 11 | 174 |
+| &nbsp;&nbsp;↳ 1.12 · js/motion.js — la chorégraphie au défilement (vague 2) | 39 | 2 132 |
+| &nbsp;&nbsp;↳ 1.13 · js/langue.js — les quatre verbes (vague 2) | 31 | 1 861 |
+| &nbsp;&nbsp;↳ 1.14 · js/main.js — l'orientation (vague 1, jamais sacrifiée) | 23 | 1 295 |
+| &nbsp;&nbsp;↳ 1.15 · js/hero.js + js/limaille.js — la plaque de limaille (vague 1) | 12 | 538 |
+| &nbsp;&nbsp;↳ 1.16 · js/trame.js — le moteur de passage (vague 1) | 7 | 217 |
+| &nbsp;&nbsp;↳ 1.17 · js/pointe.js (vague 2) | 7 | 178 |
+| &nbsp;&nbsp;↳ 1.18 · js/tour360.js (vague 2) | 18 | 447 |
+| **2 · LES VERROUS** | 6 | 49 |
+| &nbsp;&nbsp;↳ 2.1 · Stockage | 10 | 466 |
+| &nbsp;&nbsp;↳ 2.2 · Type de navigation | 12 | 125 |
+| &nbsp;&nbsp;↳ 2.3 · Les classes de <html> | 13 | 555 |
+| &nbsp;&nbsp;↳ 2.4 · data-palier sur <html> | 17 | 436 |
+| &nbsp;&nbsp;↳ 2.5 · Les attributs posés paresseusement par JavaScript — le point le plus important | 46 | 2 296 |
+| &nbsp;&nbsp;↳ 2.6 · Les deux vagues de scripts | 14 | 216 |
+| &nbsp;&nbsp;↳ 2.7 · Les feuilles injectées après le premier rendu | 21 | 273 |
+| &nbsp;&nbsp;↳ 2.8 · Les requêtes de média | 18 | 447 |
+| **3 · ACCUEIL · #top** | 4 | 20 |
+| &nbsp;&nbsp;↳ 3.1 · Les onze pas de compo-hero | 38 | 642 |
+| &nbsp;&nbsp;↳ 3.2 · La limaille du hero | 15 | 382 |
+| &nbsp;&nbsp;↳ 3.3 · Le socle du hero — ce qui reste des huit plaques | 25 | 406 |
+| &nbsp;&nbsp;↳ 3.4 · Les deux CTA — --cran: 520ms | 26 | 433 |
+| **4 · CE QUI N'EST PAS ANIMÉ** | 35 | 1 642 |
+| **5 · ANOMALIES RELEVÉES PENDANT LE DÉPOUILLEMENT** | 52 | 722 |
+| **AJOUTÉ LE 2026-07-31 — LES SAS (js/sas.js · app.css § 1ter)** | 31 | 821 |
+| **AJOUTÉES LE 2026-07-31 — MISE EN PRODUCTION** | 22 | 623 |
+| &nbsp;&nbsp;↳ Retirées | 7 | 130 |
+
+<!-- INDEX:FIN -->
+
 ## Table
 
 - [0 · Les jetons de temps et de courbe](#0--les-jetons-de-temps-et-de-courbe)

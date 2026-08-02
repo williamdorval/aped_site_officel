@@ -1,0 +1,2358 @@
+{
+ "ref": "HEAD",
+ "total": 1797741,
+ "autoT": 6473,
+ "lignes": [
+  {
+   "f": "documents/src/aped-automatisation.html",
+   "octets": 272382,
+   "car": 266690,
+   "lignes": 3897,
+   "jetons": 86029,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "documents/src/aped-ia-croissance.html",
+   "octets": 274590,
+   "car": 266430,
+   "lignes": 3883,
+   "jetons": 85945,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "css/app.css",
+   "octets": 235260,
+   "car": 234648,
+   "lignes": 6676,
+   "jetons": 75693,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "index.html",
+   "octets": 225833,
+   "car": 223608,
+   "lignes": 3613,
+   "jetons": 72132,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "css/differe.css",
+   "octets": 177560,
+   "car": 177089,
+   "lignes": 4829,
+   "jetons": 57125,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "package-lock.json",
+   "octets": 159384,
+   "car": 159384,
+   "lignes": 4588,
+   "jetons": 51414,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/css-app.md",
+   "octets": 145404,
+   "car": 143504,
+   "lignes": 2974,
+   "jetons": 39862,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "js/main.js",
+   "octets": 120318,
+   "car": 120003,
+   "lignes": 2980,
+   "jetons": 38711,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "ANIMATIONS.md",
+   "octets": 94910,
+   "car": 92238,
+   "lignes": 844,
+   "jetons": 25622,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/immobilier.html",
+   "octets": 79663,
+   "car": 75698,
+   "lignes": 1333,
+   "jetons": 24419,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/construction.html",
+   "octets": 79419,
+   "car": 75313,
+   "lignes": 1354,
+   "jetons": 24295,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/index.md",
+   "octets": 87702,
+   "car": 86366,
+   "lignes": 1710,
+   "jetons": 23991,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "js/vendor/gsap.min.js",
+   "octets": 72214,
+   "car": 72214,
+   "lignes": 12,
+   "jetons": 23295,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/clinique.html",
+   "octets": 74252,
+   "car": 70636,
+   "lignes": 1255,
+   "jetons": 22786,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-main.md",
+   "octets": 78748,
+   "car": 77856,
+   "lignes": 1584,
+   "jetons": 21627,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/juridique.html",
+   "octets": 70196,
+   "car": 67001,
+   "lignes": 1170,
+   "jetons": 21613,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/secteurs-sites-photos.mjs",
+   "octets": 67277,
+   "car": 66766,
+   "lignes": 1006,
+   "jetons": 21537,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "DECISIONS.md",
+   "octets": 74100,
+   "car": 71736,
+   "lignes": 900,
+   "jetons": 19927,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "PIEGES.md",
+   "octets": 71175,
+   "car": 68966,
+   "lignes": 1470,
+   "jetons": 19157,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "css/critique.css",
+   "octets": 58507,
+   "car": 58381,
+   "lignes": 1581,
+   "jetons": 18833,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/hotel.html",
+   "octets": 61416,
+   "car": 58213,
+   "lignes": 954,
+   "jetons": 18778,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "js/vendor/pannellum.js",
+   "octets": 56407,
+   "car": 56407,
+   "lignes": 111,
+   "jetons": 18196,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-proto-secteurs/proto-secteurs.css",
+   "octets": 55537,
+   "car": 55462,
+   "lignes": 1637,
+   "jetons": 17891,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/gym.html",
+   "octets": 55642,
+   "car": 52347,
+   "lignes": 918,
+   "jetons": 16886,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/coiffure.html",
+   "octets": 54256,
+   "car": 50934,
+   "lignes": 871,
+   "jetons": 16430,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/PHASE-8.md",
+   "octets": 58337,
+   "car": 56523,
+   "lignes": 979,
+   "jetons": 15701,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/accueil-check.mjs",
+   "octets": 48377,
+   "car": 48233,
+   "lignes": 978,
+   "jetons": 15559,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "ARCHITECTURE.md",
+   "octets": 57537,
+   "car": 55866,
+   "lignes": 789,
+   "jetons": 15518,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "js/vendor/ScrollTrigger.min.js",
+   "octets": 43380,
+   "car": 43380,
+   "lignes": 12,
+   "jetons": 13994,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/REFONTE-CHECKLIST.md",
+   "octets": 51259,
+   "car": 49533,
+   "lignes": 765,
+   "jetons": 13759,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/photo.html",
+   "octets": 44857,
+   "car": 42268,
+   "lignes": 819,
+   "jetons": 13635,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-langue.md",
+   "octets": 47813,
+   "car": 47198,
+   "lignes": 985,
+   "jetons": 13111,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/demos-capture.mjs",
+   "octets": 40650,
+   "car": 40535,
+   "lignes": 814,
+   "jetons": 13076,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "images/secteurs-sites/_licences.json",
+   "octets": 39583,
+   "car": 39343,
+   "lignes": 793,
+   "jetons": 12691,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "RESERVES.md",
+   "octets": 46209,
+   "car": 44608,
+   "lignes": 704,
+   "jetons": 12391,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/outils-perimes/plaques-vie.mjs",
+   "octets": 36726,
+   "car": 36524,
+   "lignes": 773,
+   "jetons": 11782,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-css-secteurs-maquettes.css",
+   "octets": 35889,
+   "car": 35843,
+   "lignes": 1185,
+   "jetons": 11562,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/ba-check.mjs",
+   "octets": 34564,
+   "car": 34368,
+   "lignes": 672,
+   "jetons": 11086,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/boutique.html",
+   "octets": 36260,
+   "car": 34310,
+   "lignes": 598,
+   "jetons": 11068,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/construction/index.html",
+   "octets": 34789,
+   "car": 32474,
+   "lignes": 605,
+   "jetons": 10475,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "documents/src/print.css",
+   "octets": 32115,
+   "car": 32115,
+   "lignes": 941,
+   "jetons": 10360,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/AUDIT-VERACITE.md",
+   "octets": 38712,
+   "car": 37046,
+   "lignes": 343,
+   "jetons": 10291,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/rapports/RECHERCHE-ACCUEIL.md",
+   "octets": 37487,
+   "car": 36255,
+   "lignes": 630,
+   "jetons": 10071,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/coiffure/index.html",
+   "octets": 33014,
+   "car": 30691,
+   "lignes": 721,
+   "jetons": 9900,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/services-check.mjs",
+   "octets": 30570,
+   "car": 30488,
+   "lignes": 653,
+   "jetons": 9835,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/gym/index.html",
+   "octets": 31429,
+   "car": 30264,
+   "lignes": 559,
+   "jetons": 9763,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/plans/gym.md",
+   "octets": 34545,
+   "car": 33407,
+   "lignes": 362,
+   "jetons": 9280,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/plans/construction.md",
+   "octets": 34491,
+   "car": 33383,
+   "lignes": 364,
+   "jetons": 9273,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/secteurs-photos.mjs",
+   "octets": 28489,
+   "car": 28401,
+   "lignes": 545,
+   "jetons": 9162,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/hotel/index.html",
+   "octets": 29496,
+   "car": 27799,
+   "lignes": 571,
+   "jetons": 8967,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-proto-secteurs/proto-secteurs.html",
+   "octets": 26947,
+   "car": 26703,
+   "lignes": 523,
+   "jetons": 8614,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "fonts/demos/_licences.json",
+   "octets": 26704,
+   "car": 26626,
+   "lignes": 591,
+   "jetons": 8589,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/visite-sequence.mjs",
+   "octets": 26480,
+   "car": 26428,
+   "lignes": 501,
+   "jetons": 8525,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "js/langue.js",
+   "octets": 26467,
+   "car": 26401,
+   "lignes": 723,
+   "jetons": 8516,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/CHANTIER-SERVICES-REALISATIONS.md",
+   "octets": 30286,
+   "car": 29343,
+   "lignes": 416,
+   "jetons": 8151,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-mesure.mjs",
+   "octets": 25156,
+   "car": 25116,
+   "lignes": 453,
+   "jetons": 8102,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "fonts/demos/_declarations.css",
+   "octets": 24422,
+   "car": 24422,
+   "lignes": 71,
+   "jetons": 7878,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "SECTIONS.md",
+   "octets": 28154,
+   "car": 27365,
+   "lignes": 535,
+   "jetons": 7601,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/formulaires-e2e.mjs",
+   "octets": 23638,
+   "car": 23522,
+   "lignes": 486,
+   "jetons": 7588,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/plans/photo.md",
+   "octets": 27775,
+   "car": 26945,
+   "lignes": 512,
+   "jetons": 7485,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/juridique/index.html",
+   "octets": 24202,
+   "car": 23179,
+   "lignes": 459,
+   "jetons": 7477,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/plans/hotel.md",
+   "octets": 26827,
+   "car": 26004,
+   "lignes": 434,
+   "jetons": 7223,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/rapports/PHASE-7.md",
+   "octets": 26747,
+   "car": 25961,
+   "lignes": 497,
+   "jetons": 7211,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/rapports/PHASE-6.md",
+   "octets": 26690,
+   "car": 25867,
+   "lignes": 438,
+   "jetons": 7185,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/photo/index.html",
+   "octets": 23581,
+   "car": 22212,
+   "lignes": 442,
+   "jetons": 7165,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/immobilier/index.html",
+   "octets": 23537,
+   "car": 22057,
+   "lignes": 514,
+   "jetons": 7115,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/DECISIONS-NUIT.md",
+   "octets": 26610,
+   "car": 25521,
+   "lignes": 609,
+   "jetons": 7089,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/plans/boutique.md",
+   "octets": 26309,
+   "car": 25377,
+   "lignes": 263,
+   "jetons": 7049,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/palier-check.mjs",
+   "octets": 21945,
+   "car": 21830,
+   "lignes": 405,
+   "jetons": 7042,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "MESURES.md",
+   "octets": 25455,
+   "car": 24600,
+   "lignes": 432,
+   "jetons": 6833,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/boutique/index.html",
+   "octets": 21858,
+   "car": 21041,
+   "lignes": 414,
+   "jetons": 6787,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/ecrans-secteurs.mjs",
+   "octets": 21687,
+   "car": 20618,
+   "lignes": 446,
+   "jetons": 6651,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "CLAUDE.md",
+   "octets": 24123,
+   "car": 23301,
+   "lignes": 296,
+   "jetons": 6473,
+   "auto": true,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/plans/coiffure.md",
+   "octets": 24089,
+   "car": 23295,
+   "lignes": 342,
+   "jetons": 6471,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/avant-photos.mjs",
+   "octets": 19930,
+   "car": 19852,
+   "lignes": 376,
+   "jetons": 6404,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/diag-accueil.mjs",
+   "octets": 19400,
+   "car": 19379,
+   "lignes": 461,
+   "jetons": 6251,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/clinique/index.html",
+   "octets": 20206,
+   "car": 19345,
+   "lignes": 427,
+   "jetons": 6240,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/CHANTIER-SERVICES.md",
+   "octets": 23209,
+   "car": 22437,
+   "lignes": 321,
+   "jetons": 6233,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/svc-defile.mjs",
+   "octets": 18631,
+   "car": 18579,
+   "lignes": 410,
+   "jetons": 5993,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/plans/immobilier.md",
+   "octets": 21762,
+   "car": 21042,
+   "lignes": 299,
+   "jetons": 5845,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/tour-images.mjs",
+   "octets": 17704,
+   "car": 17680,
+   "lignes": 389,
+   "jetons": 5703,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/cadeau-check.mjs",
+   "octets": 17569,
+   "car": 17507,
+   "lignes": 345,
+   "jetons": 5647,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-bug.mjs",
+   "octets": 17415,
+   "car": 17386,
+   "lignes": 359,
+   "jetons": 5608,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/PHASE-10.md",
+   "octets": 20854,
+   "car": 20134,
+   "lignes": 456,
+   "jetons": 5593,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "decisions/css-secteurs.md",
+   "octets": 20470,
+   "car": 20131,
+   "lignes": 414,
+   "jetons": 5592,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "js/sas.js",
+   "octets": 17280,
+   "car": 17237,
+   "lignes": 398,
+   "jetons": 5560,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/PHASE-9.md",
+   "octets": 19866,
+   "car": 19281,
+   "lignes": 404,
+   "jetons": 5356,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "js/limaille.js",
+   "octets": 16597,
+   "car": 16593,
+   "lignes": 470,
+   "jetons": 5353,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/realisations-check.mjs",
+   "octets": 16472,
+   "car": 16441,
+   "lignes": 313,
+   "jetons": 5304,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-boutons.mjs",
+   "octets": 16477,
+   "car": 16285,
+   "lignes": 271,
+   "jetons": 5253,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/realisations-preuves.mjs",
+   "octets": 16162,
+   "car": 16136,
+   "lignes": 329,
+   "jetons": 5205,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/demos-webp.mjs",
+   "octets": 15969,
+   "car": 15926,
+   "lignes": 314,
+   "jetons": 5137,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-motion.md",
+   "octets": 18745,
+   "car": 18477,
+   "lignes": 388,
+   "jetons": 5133,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/production-check.mjs",
+   "octets": 15815,
+   "car": 15752,
+   "lignes": 341,
+   "jetons": 5081,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-fs-mesure.mjs",
+   "octets": 15600,
+   "car": 15464,
+   "lignes": 302,
+   "jetons": 4988,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "js/tour360.js",
+   "octets": 15430,
+   "car": 15384,
+   "lignes": 447,
+   "jetons": 4963,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-accueil.mjs",
+   "octets": 15159,
+   "car": 15146,
+   "lignes": 327,
+   "jetons": 4886,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/plans/clinique.md",
+   "octets": 18136,
+   "car": 17545,
+   "lignes": 267,
+   "jetons": 4874,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "demos-secteurs/plans/juridique.md",
+   "octets": 17409,
+   "car": 16880,
+   "lignes": 303,
+   "jetons": 4689,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-07-30-plaques-accueil/app.css-2354-2631.css",
+   "octets": 14551,
+   "car": 14461,
+   "lignes": 279,
+   "jetons": 4665,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/STANDARD.md",
+   "octets": 17191,
+   "car": 16720,
+   "lignes": 353,
+   "jetons": 4644,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/langue-check.mjs",
+   "octets": 14160,
+   "car": 14128,
+   "lignes": 294,
+   "jetons": 4557,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-toggle3.mjs",
+   "octets": 14182,
+   "car": 14065,
+   "lignes": 215,
+   "jetons": 4537,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/commentaires.mjs",
+   "octets": 13476,
+   "car": 13444,
+   "lignes": 326,
+   "jetons": 4337,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-fs-reveal.mjs",
+   "octets": 13554,
+   "car": 13438,
+   "lignes": 255,
+   "jetons": 4335,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "demos-secteurs/DIRECTIONS.md",
+   "octets": 15818,
+   "car": 15375,
+   "lignes": 193,
+   "jetons": 4271,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/verif.mjs",
+   "octets": 12927,
+   "car": 12901,
+   "lignes": 281,
+   "jetons": 4162,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/diag-accueil2.mjs",
+   "octets": 12809,
+   "car": 12802,
+   "lignes": 290,
+   "jetons": 4130,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "js/motion.js",
+   "octets": 12823,
+   "car": 12788,
+   "lignes": 349,
+   "jetons": 4125,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/proto-secteurs-check.mjs",
+   "octets": 12452,
+   "car": 12418,
+   "lignes": 284,
+   "jetons": 4006,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "css/tour360.css",
+   "octets": 12410,
+   "car": 12394,
+   "lignes": 454,
+   "jetons": 3998,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/trame-check.mjs",
+   "octets": 12157,
+   "car": 12136,
+   "lignes": 236,
+   "jetons": 3915,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-plaques-accueil/index.html-487-706.html",
+   "octets": 12273,
+   "car": 12132,
+   "lignes": 221,
+   "jetons": 3914,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-toggle2.mjs",
+   "octets": 12134,
+   "car": 12030,
+   "lignes": 202,
+   "jetons": 3881,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "js/hero.js",
+   "octets": 11709,
+   "car": 11698,
+   "lignes": 326,
+   "jetons": 3774,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-services-images/svc-images.mjs",
+   "octets": 11659,
+   "car": 11588,
+   "lignes": 226,
+   "jetons": 3738,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "REFONTE-IMMERSIVE.md",
+   "octets": 13782,
+   "car": 13180,
+   "lignes": 248,
+   "jetons": 3661,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/plaques.mjs",
+   "octets": 11019,
+   "car": 10990,
+   "lignes": 266,
+   "jetons": 3545,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/forge-check.mjs",
+   "octets": 10958,
+   "car": 10945,
+   "lignes": 235,
+   "jetons": 3531,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/passages-cine.mjs",
+   "octets": 10961,
+   "car": 10940,
+   "lignes": 225,
+   "jetons": 3529,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/contraste-survol.mjs",
+   "octets": 10970,
+   "car": 10933,
+   "lignes": 234,
+   "jetons": 3527,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/cascade-check.mjs",
+   "octets": 10882,
+   "car": 10842,
+   "lignes": 234,
+   "jetons": 3497,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/AUDIT-150.md",
+   "octets": 13020,
+   "car": 12458,
+   "lignes": 220,
+   "jetons": 3461,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/demos-markup.mjs",
+   "octets": 10765,
+   "car": 10709,
+   "lignes": 218,
+   "jetons": 3455,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/entree-check.mjs",
+   "octets": 10723,
+   "car": 10699,
+   "lignes": 218,
+   "jetons": 3451,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/rapports/SPEC-VISITE-360.md",
+   "octets": 12544,
+   "car": 12284,
+   "lignes": 265,
+   "jetons": 3412,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/css-critique.mjs",
+   "octets": 10407,
+   "car": 10381,
+   "lignes": 229,
+   "jetons": 3349,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/demos-contraste.mjs",
+   "octets": 10140,
+   "car": 9984,
+   "lignes": 208,
+   "jetons": 3221,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-projets-images/index.html-section-03.html",
+   "octets": 9918,
+   "car": 9808,
+   "lignes": 171,
+   "jetons": 3164,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "css/vendor/pannellum.css",
+   "octets": 9677,
+   "car": 9677,
+   "lignes": 2,
+   "jetons": 3122,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/services-check.mjs",
+   "octets": 9616,
+   "car": 9599,
+   "lignes": 209,
+   "jetons": 3096,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/prix-check.mjs",
+   "octets": 9524,
+   "car": 9452,
+   "lignes": 195,
+   "jetons": 3049,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/sas-sequence.mjs",
+   "octets": 9396,
+   "car": 9378,
+   "lignes": 227,
+   "jetons": 3025,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/planche-refs.mjs",
+   "octets": 9586,
+   "car": 9369,
+   "lignes": 167,
+   "jetons": 3022,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/theme-check.mjs",
+   "octets": 9162,
+   "car": 9158,
+   "lignes": 225,
+   "jetons": 2954,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-plaques-accueil/langue.js-1517-1710.js",
+   "octets": 9197,
+   "car": 9143,
+   "lignes": 195,
+   "jetons": 2949,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "css/secteurs.css",
+   "octets": 9334,
+   "car": 9012,
+   "lignes": 250,
+   "jetons": 2907,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/chantier2-services/rapport.json",
+   "octets": 8849,
+   "car": 8849,
+   "lignes": 454,
+   "jetons": 2855,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/plages.mjs",
+   "octets": 8751,
+   "car": 8710,
+   "lignes": 213,
+   "jetons": 2810,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-hero.md",
+   "octets": 10091,
+   "car": 9972,
+   "lignes": 208,
+   "jetons": 2770,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/pire-pixel.mjs",
+   "octets": 8719,
+   "car": 8578,
+   "lignes": 159,
+   "jetons": 2767,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/audit.mjs",
+   "octets": 8592,
+   "car": 8573,
+   "lignes": 190,
+   "jetons": 2765,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-sequences.mjs",
+   "octets": 8477,
+   "car": 8430,
+   "lignes": 178,
+   "jetons": 2719,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/polices-demos.mjs",
+   "octets": 8441,
+   "car": 8385,
+   "lignes": 158,
+   "jetons": 2705,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/contraste-arret.mjs",
+   "octets": 8318,
+   "car": 8286,
+   "lignes": 158,
+   "jetons": 2673,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "js/trame.js",
+   "octets": 8169,
+   "car": 8157,
+   "lignes": 208,
+   "jetons": 2631,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "css/tokens.css",
+   "octets": 8118,
+   "car": 8106,
+   "lignes": 245,
+   "jetons": 2615,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-course.mjs",
+   "octets": 8084,
+   "car": 8041,
+   "lignes": 178,
+   "jetons": 2594,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "404.html",
+   "octets": 7984,
+   "car": 7957,
+   "lignes": 159,
+   "jetons": 2567,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/cadeau-e2e.mjs",
+   "octets": 7960,
+   "car": 7952,
+   "lignes": 177,
+   "jetons": 2565,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/apercu-panos.mjs",
+   "octets": 7792,
+   "car": 7770,
+   "lignes": 161,
+   "jetons": 2506,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-reveal.mjs",
+   "octets": 7705,
+   "car": 7699,
+   "lignes": 128,
+   "jetons": 2484,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "DESIGN-STACK.md",
+   "octets": 9087,
+   "car": 8846,
+   "lignes": 164,
+   "jetons": 2457,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/phase8-captures.mjs",
+   "octets": 7443,
+   "car": 7439,
+   "lignes": 192,
+   "jetons": 2400,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-toggle4.mjs",
+   "octets": 7530,
+   "car": 7437,
+   "lignes": 109,
+   "jetons": 2399,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/sas-check.mjs",
+   "octets": 7381,
+   "car": 7364,
+   "lignes": 172,
+   "jetons": 2375,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-cause.mjs",
+   "octets": 7238,
+   "car": 7234,
+   "lignes": 169,
+   "jetons": 2334,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-03-agence/bloc-20-a-propos.css",
+   "octets": 7205,
+   "car": 7188,
+   "lignes": 156,
+   "jetons": 2319,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-moteur.mjs",
+   "octets": 7192,
+   "car": 7187,
+   "lignes": 128,
+   "jetons": 2318,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/demos-controle.mjs",
+   "octets": 7154,
+   "car": 7062,
+   "lignes": 144,
+   "jetons": 2278,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/panneaux-check.mjs",
+   "octets": 7001,
+   "car": 6994,
+   "lignes": 149,
+   "jetons": 2256,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-toggle.mjs",
+   "octets": 6936,
+   "car": 6934,
+   "lignes": 125,
+   "jetons": 2237,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-reveal3.mjs",
+   "octets": 6927,
+   "car": 6916,
+   "lignes": 116,
+   "jetons": 2231,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-limaille.md",
+   "octets": 8022,
+   "car": 7948,
+   "lignes": 170,
+   "jetons": 2208,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "preuves/LISEZ-MOI.md",
+   "octets": 8109,
+   "car": 7868,
+   "lignes": 186,
+   "jetons": 2186,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "css/base.css",
+   "octets": 6671,
+   "car": 6660,
+   "lignes": 255,
+   "jetons": 2148,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/cine.mjs",
+   "octets": 6588,
+   "car": 6574,
+   "lignes": 134,
+   "jetons": 2121,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/deborde.mjs",
+   "octets": 6453,
+   "car": 6451,
+   "lignes": 118,
+   "jetons": 2081,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/tour-verif.mjs",
+   "octets": 6338,
+   "car": 6329,
+   "lignes": 131,
+   "jetons": 2042,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/theme-sequence.mjs",
+   "octets": 6307,
+   "car": 6297,
+   "lignes": 156,
+   "jetons": 2031,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/secteurs-markup.mjs",
+   "octets": 6369,
+   "car": 6255,
+   "lignes": 125,
+   "jetons": 2018,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/refs-releve.mjs",
+   "octets": 6279,
+   "car": 6223,
+   "lignes": 129,
+   "jetons": 2007,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/photo-noyau.mjs",
+   "octets": 6144,
+   "car": 6136,
+   "lignes": 124,
+   "jetons": 1979,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/captures-comparer.mjs",
+   "octets": 6150,
+   "car": 6130,
+   "lignes": 134,
+   "jetons": 1977,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-03-agence/section-09-agence.html",
+   "octets": 6168,
+   "car": 6111,
+   "lignes": 122,
+   "jetons": 1971,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-360-cadre.mjs",
+   "octets": 6028,
+   "car": 6010,
+   "lignes": 132,
+   "jetons": 1939,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/estimateur-check.mjs",
+   "octets": 5946,
+   "car": 5932,
+   "lignes": 121,
+   "jetons": 1914,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/tache-traversee.mjs",
+   "octets": 5930,
+   "car": 5917,
+   "lignes": 133,
+   "jetons": 1909,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/planche-secteurs-12.mjs",
+   "octets": 6004,
+   "car": 5910,
+   "lignes": 108,
+   "jetons": 1906,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/code-nu.mjs",
+   "octets": 5902,
+   "car": 5894,
+   "lignes": 142,
+   "jetons": 1901,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/demos-sites.mjs",
+   "octets": 5860,
+   "car": 5833,
+   "lignes": 143,
+   "jetons": 1882,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-fiches.mjs",
+   "octets": 5806,
+   "car": 5791,
+   "lignes": 128,
+   "jetons": 1868,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/chantier5-realisations/rapport.json",
+   "octets": 5789,
+   "car": 5781,
+   "lignes": 306,
+   "jetons": 1865,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/etats-check.mjs",
+   "octets": 5763,
+   "car": 5761,
+   "lignes": 121,
+   "jetons": 1858,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-tour360.md",
+   "octets": 6739,
+   "car": 6675,
+   "lignes": 142,
+   "jetons": 1854,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/ab-accueil.mjs",
+   "octets": 5730,
+   "car": 5707,
+   "lignes": 101,
+   "jetons": 1841,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/ba-doigt.mjs",
+   "octets": 5697,
+   "car": 5676,
+   "lignes": 102,
+   "jetons": 1831,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/frontieres-check.mjs",
+   "octets": 5620,
+   "car": 5614,
+   "lignes": 132,
+   "jetons": 1811,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/captures-fixe.mjs",
+   "octets": 5502,
+   "car": 5490,
+   "lignes": 121,
+   "jetons": 1771,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/panneau-echelle.mjs",
+   "octets": 5503,
+   "car": 5446,
+   "lignes": 96,
+   "jetons": 1757,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/panneau-vivant-check.mjs",
+   "octets": 5503,
+   "car": 5448,
+   "lignes": 124,
+   "jetons": 1757,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-reveal2.mjs",
+   "octets": 5443,
+   "car": 5441,
+   "lignes": 97,
+   "jetons": 1755,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/chantier3-panneaux/rapport.json",
+   "octets": 5405,
+   "car": 5405,
+   "lignes": 241,
+   "jetons": 1744,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-trame.md",
+   "octets": 6262,
+   "car": 6182,
+   "lignes": 135,
+   "jetons": 1717,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-07-30-projets-images/main-cadres-de-projet.js",
+   "octets": 5324,
+   "car": 5310,
+   "lignes": 140,
+   "jetons": 1713,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-plaques-accueil/app.css-points-de-rupture.css",
+   "octets": 5258,
+   "car": 5227,
+   "lignes": 94,
+   "jetons": 1686,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/pdf.mjs",
+   "octets": 5211,
+   "car": 5206,
+   "lignes": 128,
+   "jetons": 1679,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/tour-angles.mjs",
+   "octets": 5191,
+   "car": 5185,
+   "lignes": 98,
+   "jetons": 1673,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/refs-2026-07/refs-structure.mjs",
+   "octets": 5096,
+   "car": 5084,
+   "lignes": 108,
+   "jetons": 1640,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/contraste-min.mjs",
+   "octets": 5088,
+   "car": 5078,
+   "lignes": 111,
+   "jetons": 1638,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/socle-captures.mjs",
+   "octets": 5056,
+   "car": 5048,
+   "lignes": 129,
+   "jetons": 1628,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/projets-check.mjs",
+   "octets": 4943,
+   "car": 4940,
+   "lignes": 127,
+   "jetons": 1594,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/tache-longue.mjs",
+   "octets": 4927,
+   "car": 4919,
+   "lignes": 115,
+   "jetons": 1587,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-plaques-accueil/README.md",
+   "octets": 5736,
+   "car": 5566,
+   "lignes": 97,
+   "jetons": 1546,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/ba-deborde.mjs",
+   "octets": 4763,
+   "car": 4751,
+   "lignes": 91,
+   "jetons": 1533,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/traversee-check.mjs",
+   "octets": 4720,
+   "car": 4714,
+   "lignes": 117,
+   "jetons": 1521,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/_png.mjs",
+   "octets": 4445,
+   "car": 4434,
+   "lignes": 123,
+   "jetons": 1430,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/ab-phase8.mjs",
+   "octets": 4432,
+   "car": 4430,
+   "lignes": 107,
+   "jetons": 1429,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/chantier4-realisations/rapport.json",
+   "octets": 4406,
+   "car": 4406,
+   "lignes": 230,
+   "jetons": 1421,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/chantier1-forge/rapport.json",
+   "octets": 4302,
+   "car": 4302,
+   "lignes": 231,
+   "jetons": 1388,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-recharge.mjs",
+   "octets": 4231,
+   "car": 4229,
+   "lignes": 89,
+   "jetons": 1364,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-panneaux.mjs",
+   "octets": 4200,
+   "car": 4188,
+   "lignes": 88,
+   "jetons": 1351,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/css-tour360.md",
+   "octets": 4881,
+   "car": 4835,
+   "lignes": 107,
+   "jetons": 1343,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "js/pointe.js",
+   "octets": 4072,
+   "car": 4070,
+   "lignes": 130,
+   "jetons": 1313,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/ab-structure.mjs",
+   "octets": 4001,
+   "car": 3991,
+   "lignes": 79,
+   "jetons": 1287,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "images/icons.svg",
+   "octets": 3965,
+   "car": 3965,
+   "lignes": 2,
+   "jetons": 1279,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/og.mjs",
+   "octets": 3802,
+   "car": 3791,
+   "lignes": 79,
+   "jetons": 1223,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/estimateur-ui.mjs",
+   "octets": 3755,
+   "car": 3747,
+   "lignes": 85,
+   "jetons": 1209,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/outils-perimes/plaques-debord.mjs",
+   "octets": 3646,
+   "car": 3639,
+   "lignes": 81,
+   "jetons": 1174,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/cascade-captures.mjs",
+   "octets": 3480,
+   "car": 3472,
+   "lignes": 88,
+   "jetons": 1120,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/cadeau-scene.mjs",
+   "octets": 3378,
+   "car": 3374,
+   "lignes": 80,
+   "jetons": 1088,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/secteurs-vue.mjs",
+   "octets": 3285,
+   "car": 3282,
+   "lignes": 68,
+   "jetons": 1059,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-projets-images/README.md",
+   "octets": 3800,
+   "car": 3702,
+   "lignes": 75,
+   "jetons": 1028,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-07-30-services-images/main-svcTour.js",
+   "octets": 3115,
+   "car": 3103,
+   "lignes": 61,
+   "jetons": 1001,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-projets-images/motion-bloc7.js",
+   "octets": 2922,
+   "car": 2910,
+   "lignes": 58,
+   "jetons": 939,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/2026-08-02-visite-360/RAPPORT.md",
+   "octets": 3372,
+   "car": 3329,
+   "lignes": 66,
+   "jetons": 925,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-07-30-services-images/README.md",
+   "octets": 3358,
+   "car": 3287,
+   "lignes": 52,
+   "jetons": 913,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/serve.mjs",
+   "octets": 2765,
+   "car": 2741,
+   "lignes": 75,
+   "jetons": 884,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/couvertures.mjs",
+   "octets": 2702,
+   "car": 2698,
+   "lignes": 69,
+   "jetons": 870,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/css-tokens.md",
+   "octets": 3138,
+   "car": 3104,
+   "lignes": 70,
+   "jetons": 862,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/secteur-morph-check.mjs",
+   "octets": 2673,
+   "car": 2671,
+   "lignes": 56,
+   "jetons": 862,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-03-agence/bloc-26-responsive.css",
+   "octets": 2588,
+   "car": 2578,
+   "lignes": 55,
+   "jetons": 832,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/hero-check.mjs",
+   "octets": 2430,
+   "car": 2427,
+   "lignes": 63,
+   "jetons": 783,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/secteurs-check.mjs",
+   "octets": 2385,
+   "car": 2384,
+   "lignes": 53,
+   "jetons": 769,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-03-agence/blocs-12bis-12ter.js",
+   "octets": 2386,
+   "car": 2378,
+   "lignes": 48,
+   "jetons": 767,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/chantier7-ecrans/LISEZ-MOI.md",
+   "octets": 2730,
+   "car": 2633,
+   "lignes": 59,
+   "jetons": 731,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "decisions/css-base.md",
+   "octets": 2647,
+   "car": 2619,
+   "lignes": 65,
+   "jetons": 728,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/cls-source.mjs",
+   "octets": 2191,
+   "car": 2191,
+   "lignes": 48,
+   "jetons": 707,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-sas.md",
+   "octets": 2623,
+   "car": 2530,
+   "lignes": 58,
+   "jetons": 703,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "tools/refs-galerie.mjs",
+   "octets": 1955,
+   "car": 1946,
+   "lignes": 42,
+   "jetons": 628,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/js-pointe.md",
+   "octets": 2246,
+   "car": 2216,
+   "lignes": 50,
+   "jetons": 616,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "archives/2026-08-01-sites-longs/README.md",
+   "octets": 2224,
+   "car": 2155,
+   "lignes": 44,
+   "jetons": 599,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "preuves/chantier6-secteurs/rapport.json",
+   "octets": 1853,
+   "car": 1853,
+   "lignes": 106,
+   "jetons": 598,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/svc-cadre.mjs",
+   "octets": 1845,
+   "car": 1845,
+   "lignes": 39,
+   "jetons": 595,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/titres.mjs",
+   "octets": 1759,
+   "car": 1756,
+   "lignes": 34,
+   "jetons": 566,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/perf-probe.mjs",
+   "octets": 1596,
+   "car": 1596,
+   "lignes": 31,
+   "jetons": 515,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/debord.mjs",
+   "octets": 1560,
+   "car": 1557,
+   "lignes": 35,
+   "jetons": 502,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "images/logo-lockup.svg",
+   "octets": 1481,
+   "car": 1479,
+   "lignes": 2,
+   "jetons": 477,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/demos-rapports.mjs",
+   "octets": 1365,
+   "car": 1355,
+   "lignes": 34,
+   "jetons": 437,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/debord404.mjs",
+   "octets": 1281,
+   "car": 1279,
+   "lignes": 26,
+   "jetons": 413,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "preuves/production/rapport.json",
+   "octets": 1171,
+   "car": 1171,
+   "lignes": 56,
+   "jetons": 378,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "tools/vue.mjs",
+   "octets": 1131,
+   "car": 1130,
+   "lignes": 25,
+   "jetons": 365,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-07-30-projets-images/langue-bloc6.js",
+   "octets": 922,
+   "car": 918,
+   "lignes": 27,
+   "jetons": 296,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "archives/2026-08-01-proto-secteurs/LISEZ-MOI.md",
+   "octets": 811,
+   "car": 801,
+   "lignes": 17,
+   "jetons": 223,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "images/logo-mark.svg",
+   "octets": 673,
+   "car": 673,
+   "lignes": 2,
+   "jetons": 217,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "components.json",
+   "octets": 658,
+   "car": 658,
+   "lignes": 27,
+   "jetons": 212,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "decisions/404.md",
+   "octets": 676,
+   "car": 666,
+   "lignes": 20,
+   "jetons": 185,
+   "auto": false,
+   "genre": "prose"
+  },
+  {
+   "f": "images/favicon.svg",
+   "octets": 360,
+   "car": 360,
+   "lignes": 8,
+   "jetons": 116,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "documents/rapport-pdf.json",
+   "octets": 229,
+   "car": 229,
+   "lignes": 16,
+   "jetons": 74,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": "package.json",
+   "octets": 172,
+   "car": 172,
+   "lignes": 10,
+   "jetons": 55,
+   "auto": false,
+   "genre": "code"
+  },
+  {
+   "f": ".mcp.json",
+   "octets": 135,
+   "car": 135,
+   "lignes": 12,
+   "jetons": 44,
+   "auto": false,
+   "genre": "code"
+  }
+ ],
+ "binaires": 625,
+ "octetsBinaires": 85919561
+}

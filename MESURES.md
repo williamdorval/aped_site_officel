@@ -13,6 +13,47 @@ outil en regard n'a pas sa place dans ce fichier.
 - [4 · Chiffres de référence](#chiffres)
 - [5 · Seuils de perception](#perception)
 
+
+<!-- INDEX:DEBUT -->
+
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **1 · LES DEUX RÈGLES DE MESURE, APPRISES À LA DURE** | 35 | 485 |
+| **2 · LA RÈGLE DU SCRUB** | 18 | 216 |
+| **3 · LES OUTILS** | 5 | 35 |
+| &nbsp;&nbsp;↳ Non-régression de structure | 12 | 573 |
+| &nbsp;&nbsp;↳ L'accueil et les sections | 12 | 426 |
+| &nbsp;&nbsp;↳ Identité, contraste, débordement | 11 | 223 |
+| &nbsp;&nbsp;↳ Le mouvement | 10 | 161 |
+| &nbsp;&nbsp;↳ Le reste | 21 | 381 |
+| **4 · CHIFFRES DE RÉFÉRENCE** | 2 | 8 |
+| &nbsp;&nbsp;↳ Accueil #top, 1440 × 900, thème clair — 2026-07-29 | 18 | 262 |
+| &nbsp;&nbsp;↳ Section 02 · Services, seconde refonte du 2026-07-30 | 14 | 199 |
+| &nbsp;&nbsp;↳ Section 03 · Avant / après — node tools/ba-check.mjs | 12 | 165 |
+| &nbsp;&nbsp;↳ Toute la page, après les trois chantiers du 2026-07-30 | 10 | 118 |
+| &nbsp;&nbsp;↳ Section 02, PREMIÈRE refonte du 2026-07-30 | 13 | 208 |
+| &nbsp;&nbsp;↳ Chantier de structure du 2026-07-30 | 37 | 489 |
+| **5 · SEUILS DE PERCEPTION** | 15 | 187 |
+| &nbsp;&nbsp;↳ Les outils du chantier Services et Réalisations (2026-07-31) | 10 | 180 |
+| &nbsp;&nbsp;↳ Le chantier des sas (2026-07-31) | 14 | 241 |
+| &nbsp;&nbsp;↳ Chiffres de référence — refonte immersive, 2026-07-31, 1440×900 clair | 30 | 396 |
+| **RELEVÉS DU 2026-07-31 · MISE EN PRODUCTION** | 7 | 82 |
+| &nbsp;&nbsp;↳ Les quatre outils de preuve, un par chantier | 10 | 268 |
+| &nbsp;&nbsp;↳ La saccade, et comment elle se mesure | 15 | 162 |
+| &nbsp;&nbsp;↳ Le socle de performance, après les quatre chantiers | 22 | 267 |
+| &nbsp;&nbsp;↳ Ce qui a été trouvé par la mesure, et n'aurait pas été trouvé autrement | 8 | 116 |
+| **LES DOUZE PREMIERS ÉCRANS — 2026-08-01** | 2 | 12 |
+| &nbsp;&nbsp;↳ Les outils de cette chaîne | 11 | 394 |
+| &nbsp;&nbsp;↳ La géométrie du panneau, relevée | 27 | 269 |
+| &nbsp;&nbsp;↳ Les trois faux verdicts de ce chantier | 13 | 152 |
+
+<!-- INDEX:FIN -->
+
 ---
 
 <a id="regles"></a>

@@ -364,40 +364,16 @@ for (const [id, nom, remplir] of [
   await page.close();
 }
 
-/* ============================================================
-   6 · CALCUL PAR COURRIEL — le formulaire du calculateur.
-   ============================================================ */
-{
-  const page = await page1(nav);
-  const nom = "CALCUL PAR COURRIEL";
-  try {
-    await page.evaluate(async () => {
-      const y = document.querySelector("#calculateur").getBoundingClientRect().top + window.scrollY;
-      for (let k = 0; k < y; k += 500) { window.scrollTo(0, k); await new Promise((r) => setTimeout(r, 50)); }
-      window.scrollTo(0, y);
-    });
-    await page.waitForTimeout(900);
-    await page.fill("#roiEmail", T.courriel);
-    await page.evaluate(() => document.querySelector("#roiMailForm button[type=submit]").click());
-    await page.waitForTimeout(4200);
-    const repli = await lireRepli(page, "#roiMailForm");
-    verdict(nom, repli, [T.courriel], repli.etat);
-    /* Et l'accuse ne doit plus citer les deux postes retires du
-       calcul : `undefined` dans un courriel envoye au visiteur. */
-    const charge = await page.evaluate(() => JSON.stringify(window.__derniereChargeRoi || null));
-    console.log("    corps du repli contient « undefined » :", /undefined/.test(repli.corps || "") ? "*** OUI ***" : "non");
-    rapport.roiCharge = charge;
-    console.log("    réponse du service :", JSON.stringify(page._reponses.slice(-1)));
-  } catch (e) {
-    console.log(`\n--- ${nom}\n    *** ERREUR D'OUTIL : ${String(e).slice(0, 200)}`);
-    rapport.formulaires.push({ nom, ok: false, erreur: String(e).slice(0, 300) });
-  }
-  console.log("    erreurs console :", page._erreurs.length ? page._erreurs : 0);
-  await page.close();
-}
+/* LE FORMULAIRE « RECEVOIR LE CALCUL PAR COURRIEL » N'EXISTE PLUS.
+   Retire du panneau du calculateur le 2026-08-03 (D-636) : le
+   visiteur a deja son chiffre a l'ecran et on lui demandait son
+   adresse pour le lui renvoyer. Le bloc de test qui le visait
+   part avec lui — un test qui vise du vide ne rend pas un echec,
+   il rend un bruit permanent qui finit par masquer une vraie
+   panne. `rapport.roiCharge` disparait du rapport. */
 
 /* ============================================================
-   7 · LE CADEAU — les deux guides SANS donner de courriel.
+   6 · LE CADEAU — les deux guides SANS donner de courriel.
    C'est la correction A3 : le popup exigeait une adresse pour ce que
    le pied de page donne directement. On verifie donc l'inverse de ce
    que l'ancien test verifiait — et c'est exactement pour ca qu'il

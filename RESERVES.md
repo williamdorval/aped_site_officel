@@ -14,6 +14,54 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 - [4 · Contenu et licences](#contenu)
 - [5 · Ce qui n'a jamais été touché du doigt](#doigt)
 
+
+<!-- INDEX:DEBUT -->
+
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **Services et Réalisations, 2026-07-31** | 32 | 506 |
+| **1 · LE PLUS GROS TROU DE PREUVE** | 44 | 599 |
+| **2 · DÉFAUTS OUVERTS** | 47 | 634 |
+| **3 · OUTILS PÉRIMÉS OU FAUX** | 25 | 338 |
+| **4 · CONTENU ET LICENCES** | 41 | 556 |
+| **5 · CE QUI N'A JAMAIS ÉTÉ TOUCHÉ DU DOIGT** | 14 | 189 |
+| **Refonte immersive, 2026-07-31** | 24 | 352 |
+| **OUVERTES APRÈS LA MISE EN PRODUCTION — 2026-07-31** | 2 | 15 |
+| &nbsp;&nbsp;↳ Les captures des quatre « après » viennent de serveurs de DÉVELOPPEMENT | 8 | 112 |
+| &nbsp;&nbsp;↳ Deux défauts trouvés DANS les projets sources, non corrigés | 27 | 426 |
+| &nbsp;&nbsp;↳ FERMÉE le 2026-07-31 — les chiffres des sites de démonstration | 13 | 199 |
+| &nbsp;&nbsp;↳ Le tracteur du site de déneigement porte une marque réelle | 6 | 66 |
+| &nbsp;&nbsp;↳ FERMÉE le 2026-07-31 — les blocs photo gris des « avant » | 28 | 393 |
+| &nbsp;&nbsp;↳ OUVERTES PAR LE CHANTIER DU CADRE NAVIGABLE — 2026-07-31 | 55 | 839 |
+| &nbsp;&nbsp;↳ FormSubmit n'est toujours pas activé | 8 | 96 |
+| &nbsp;&nbsp;↳ La réserve qui domine tout le reste n'a pas bougé | 6 | 36 |
+| **Les douze secteurs, 2026-08-01 — ce qui reste ouvert** | 2 | 16 |
+| &nbsp;&nbsp;↳ Deux des douze se ressemblent encore, et ce sont les deux projets RÉELS | 11 | 165 |
+| &nbsp;&nbsp;↳ Le mouvement ne se voit pas dans l'aperçu du panneau | 12 | 172 |
+| &nbsp;&nbsp;↳ Ce que les neuf sessions ont laissé ouvert, une ligne chacune | 24 | 1 086 |
+| &nbsp;&nbsp;↳ La réserve qui domine, et elle n'a pas bougé | 8 | 64 |
+| **Les douze secteurs, seconde passe — 2026-08-01** | 2 | 14 |
+| &nbsp;&nbsp;↳ Ce qui reste ouvert sur l'aperçu vivant | 19 | 299 |
+| &nbsp;&nbsp;↳ Ce que chaque session a laissé ouvert | 17 | 828 |
+| &nbsp;&nbsp;↳ La réserve qui domine, et elle n'a pas bougé d'un mot | 8 | 96 |
+| **Le chantier du premier écran — 2026-08-01, troisième passe** | 2 | 17 |
+| &nbsp;&nbsp;↳ Ce que je n'ai PAS refait, et pourquoi | 17 | 239 |
+| &nbsp;&nbsp;↳ Ce qui reste ouvert | 24 | 1 458 |
+| **La passe finale — 2026-08-01, quatrième passe** | 53 | 867 |
+| **Visite 360 et Agence — 2026-08-02** | 64 | 984 |
+| **Le noir de la Visite — 2026-08-03** | 2 | 10 |
+| &nbsp;&nbsp;↳ Les 110 planches « avant » de ce chantier ne prouvent PAS la réparation | 15 | 208 |
+| &nbsp;&nbsp;↳ Trois états sur quatre ont été raisonnés, un seul a été photographié | 9 | 121 |
+| &nbsp;&nbsp;↳ La course de 150vh est un arbitrage, et il n'a pas été mesuré sur un visiteur | 8 | 101 |
+| &nbsp;&nbsp;↳ Et la réserve qui gouverne tout le reste n'a pas bougé | 8 | 97 |
+
+<!-- INDEX:FIN -->
+
 ---
 
 <a id="mobile"></a>

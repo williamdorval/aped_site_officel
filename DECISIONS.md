@@ -14,6 +14,60 @@ Deux niveaux :
    les deux bouts. On n'ouvre jamais ces fichiers en entier : on y
    arrive par l'identifiant.
 
+
+<!-- INDEX:DEBUT -->
+
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **Index de decisions/** | 24 | 284 |
+| **Contenu et offre** | 10 | 301 |
+| **Forme et mouvement** | 54 | 780 |
+| **Le retrait des huit plaques de l'accueil** | 51 | 662 |
+| **Ce qui a été décidé, et pourquoi** | 69 | 1 010 |
+| **Pourquoi les gros fichiers ne sont PAS découpés** | 49 | 689 |
+| **2026-07-31 · Services et Réalisations** | 2 | 11 |
+| &nbsp;&nbsp;↳ Cinq services, et la tête entre dans la scène | 20 | 307 |
+| &nbsp;&nbsp;↳ Le panneau de détail sort du rail | 10 | 137 |
+| &nbsp;&nbsp;↳ Le service 05 se dessine, il ne se capture pas | 10 | 147 |
+| &nbsp;&nbsp;↳ Quatre comparaisons, quatre échecs DIFFÉRENTS | 14 | 198 |
+| &nbsp;&nbsp;↳ Le repos du curseur est 50 %, et c'est une décision | 8 | 103 |
+| &nbsp;&nbsp;↳ Ce qu'on MONTRE peut être mauvais ; ce qu'on FAIT, non | 8 | 94 |
+| &nbsp;&nbsp;↳ « Projets » promettait des mandats livrés | 39 | 694 |
+| **2026-07-31 · MISE EN PRODUCTION — D-586 à D-625** | 6 | 72 |
+| &nbsp;&nbsp;↳ La forge du sas — D-586 à D-592 | 12 | 444 |
+| &nbsp;&nbsp;↳ Services — D-595 à D-600 | 11 | 286 |
+| &nbsp;&nbsp;↳ Les cinq panneaux — D-601 à D-609 | 14 | 363 |
+| &nbsp;&nbsp;↳ Réalisations — D-593, D-594, D-610 à D-621 | 11 | 280 |
+| &nbsp;&nbsp;↳ La passe de production — D-622 à D-625 | 9 | 188 |
+| &nbsp;&nbsp;↳ Le cadre navigable — D-628 à D-639 | 25 | 1 044 |
+| &nbsp;&nbsp;↳ Les cadres navigables — D-643 à D-647 | 14 | 532 |
+| &nbsp;&nbsp;↳ Les tuiles — D-648 et D-649 | 10 | 214 |
+| &nbsp;&nbsp;↳ Le retrait de la loupe — D-650 | 6 | 126 |
+| &nbsp;&nbsp;↳ Le mouvement latéral continu — D-651 et D-652 | 7 | 230 |
+| &nbsp;&nbsp;↳ Le retard d'une image — D-654 | 6 | 143 |
+| &nbsp;&nbsp;↳ Les photos des sites de secteur — D-655 à D-659 | 14 | 639 |
+| &nbsp;&nbsp;↳ Les douze secteurs au standard — D-660 à D-662 | 32 | 822 |
+| **Les douze secteurs, chacun son identité — 2026-08-01** | 22 | 1 380 |
+| **De 7/10 à 10/10 — 2026-08-01, seconde passe** | 17 | 1 383 |
+| **UN ÉCRAN, PAS UN SITE — 2026-08-01, troisième passe** | 16 | 863 |
+| **Le geste, et ce qu'il devient quand on le réduit — 2026-08-01** | 12 | 863 |
+| **La passe finale — 2026-08-01, quatrième passe** | 21 | 923 |
+| **Ce qu'on a mesuré avant de décider** | 19 | 255 |
+| **Ce qui a été décidé** | 43 | 580 |
+| **Les verbes, un par mouvement** | 13 | 139 |
+| **Ce que ça a coûté en instruments** | 26 | 301 |
+| **Le défaut, et pourquoi rien ne l'a vu** | 25 | 407 |
+| **Ce qui a été décidé** | 66 | 1 041 |
+| **La section 09 · Agence est retirée** | 40 | 582 |
+| **Ce que ça a coûté en instruments** | 19 | 226 |
+
+<!-- INDEX:FIN -->
+
 ## Index de `decisions/`
 
 | Fichier source | Journal | Entrées |

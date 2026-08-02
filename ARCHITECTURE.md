@@ -9,6 +9,67 @@ modifier le bon comportement dans le mauvais fichier.
 pas dans quel fichier. Il dit **où**, pas **pourquoi** (`DECISIONS.md`)
 ni **quelle ligne** (`SECTIONS.md`).
 
+
+<!-- INDEX:DEBUT -->
+
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **Table** | 24 | 303 |
+| **1 · OÙ VAIS-JE ?** | 20 | 939 |
+| **2 · LES DEUX VAGUES DE SCRIPTS** | 36 | 622 |
+| **3 · index.html** | 12 | 150 |
+| &nbsp;&nbsp;↳ L'ordre du document, par sélecteur | 18 | 512 |
+| &nbsp;&nbsp;↳ Les onze seuils, tels qu'ils sont écrits dans le document | 33 | 434 |
+| &nbsp;&nbsp;↳ Ce que index.html ne contient PAS | 15 | 179 |
+| **4 · Les feuilles de style** | 2 | 8 |
+| &nbsp;&nbsp;↳ css/app.css — LA SOURCE UNIQUE | 57 | 635 |
+| &nbsp;&nbsp;↳ css/critique.css — 1 674 lignes, 70 Ko — FABRIQUÉ | 1 | 16 |
+| &nbsp;&nbsp;↳ css/differe.css — 3 643 lignes, 158 Ko — FABRIQUÉ | 13 | 180 |
+| &nbsp;&nbsp;↳ css/base.css — 287 lignes | 6 | 66 |
+| &nbsp;&nbsp;↳ css/tokens.css — 261 lignes | 8 | 95 |
+| &nbsp;&nbsp;↳ css/secteurs.css — 290 lignes, 9,8 Ko | 19 | 269 |
+| &nbsp;&nbsp;↳ css/tour360.css — 453 lignes, 12,4 Ko | 22 | 323 |
+| &nbsp;&nbsp;↳ css/vendor/pannellum.css | 8 | 58 |
+| **5 · Le JavaScript** | 2 | 6 |
+| &nbsp;&nbsp;↳ js/limaille.js — 569 lignes, 22 Ko — vague 1 | 19 | 274 |
+| &nbsp;&nbsp;↳ js/trame.js — 280 lignes, 12 Ko — vague 1 | 20 | 295 |
+| &nbsp;&nbsp;↳ js/main.js — 2 652 lignes, 114 Ko — vague 1 — *s'exécute toujours* | 36 | 617 |
+| &nbsp;&nbsp;↳ js/hero.js — 455 lignes, 19 Ko — vague 1, après limaille.js | 15 | 158 |
+| &nbsp;&nbsp;↳ js/motion.js — 348 lignes, 13 Ko — vague 2, après GSAP | 33 | 455 |
+| &nbsp;&nbsp;↳ js/langue.js — 1 546 lignes, 71 Ko — vague 2, après motion.js | 29 | 476 |
+| &nbsp;&nbsp;↳ js/pointe.js — 157 lignes, 5,6 Ko — vague 2 | 8 | 111 |
+| &nbsp;&nbsp;↳ js/tour360.js — 543 lignes, 21 Ko — vague 2 | 18 | 272 |
+| &nbsp;&nbsp;↳ js/vendor/ | 12 | 108 |
+| **6 · tools/ — la mesure** | 6 | 50 |
+| &nbsp;&nbsp;↳ Serveur et utilitaires | 10 | 472 |
+| &nbsp;&nbsp;↳ Preuves de comportement | 27 | 1 583 |
+| &nbsp;&nbsp;↳ Contraste, thème, débordement | 13 | 411 |
+| &nbsp;&nbsp;↳ Performance | 14 | 378 |
+| &nbsp;&nbsp;↳ Fabrication (ne tournent jamais chez le visiteur) | 13 | 414 |
+| &nbsp;&nbsp;↳ Captures et études de référence | 13 | 406 |
+| &nbsp;&nbsp;↳ Fichiers non-.mjs de tools/ | 9 | 105 |
+| **7 · Documentation** | 2 | 6 |
+| &nbsp;&nbsp;↳ Vivants — à la racine | 14 | 276 |
+| &nbsp;&nbsp;↳ decisions/ — le pourquoi du code | 6 | 67 |
+| &nbsp;&nbsp;↳ archives/rapports/ — l'historique | 17 | 478 |
+| &nbsp;&nbsp;↳ archives/outils-perimes/ | 8 | 62 |
+| **8 · Le reste** | 18 | 1 106 |
+| **9 · Points à surveiller, relevés en dressant cette carte** | 24 | 310 |
+| **AJOUTÉ LE 2026-07-31 — js/sas.js ET LES TROIS SAS** | 42 | 582 |
+| **10 · demos-secteurs/ — LES DOUZE PREMIERS ÉCRANS** | 6 | 60 |
+| &nbsp;&nbsp;↳ Ce que c'est, en une phrase | 8 | 101 |
+| &nbsp;&nbsp;↳ La carte du dossier | 9 | 289 |
+| &nbsp;&nbsp;↳ Les ressources partagées, et elles sont les seules | 8 | 148 |
+| &nbsp;&nbsp;↳ Les outils de ce dossier | 14 | 357 |
+| &nbsp;&nbsp;↳ Ce que la section 04 d'index.html en fait | 11 | 146 |
+
+<!-- INDEX:FIN -->
+
 ## Table
 
 - [1 · Où vais-je ?](#1--où-vais-je-)

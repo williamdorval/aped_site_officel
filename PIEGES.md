@@ -8,42 +8,123 @@ un « échec » sur du code sain, ou un « tout va bien » sur un défaut.
 La liste courte vit dans `CLAUDE.md`. Celle-ci donne la cause et le
 correctif.
 
+
+<!-- INDEX:DEBUT -->
+
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **Table** | 11 | 100 |
+| **MESURE ET CAPTURE** | 3 | 10 |
+| &nbsp;&nbsp;↳ 1 · Une capture d'écran est plus lente qu'une transition | 5 | 54 |
+| &nbsp;&nbsp;↳ 2 · Un cadrage de capture se RELÈVE, il ne se devine pas | 6 | 71 |
+| &nbsp;&nbsp;↳ 3 · Deux images de tailles différentes rendent 100 % d'écart | 4 | 42 |
+| &nbsp;&nbsp;↳ 4 · content-visibility: auto fait mentir getBoundingClientRect() | 6 | 81 |
+| &nbsp;&nbsp;↳ 5 · Un scrollTo qui saute casse un pin de ScrollTrigger | 4 | 31 |
+| &nbsp;&nbsp;↳ 6 · color-mix() calcule en color(srgb 0.67 …), pas en rgb() | 5 | 59 |
+| &nbsp;&nbsp;↳ 7 · Une fenêtre d'odomètre rogne exprès | 5 | 37 |
+| &nbsp;&nbsp;↳ 8 · Une analyse de pixels confond l'anticrénelage | 4 | 33 |
+| &nbsp;&nbsp;↳ 9 · Un détecteur qui n'attend pas assez confond « animation en vol » et « texte échoué » | 5 | 68 |
+| &nbsp;&nbsp;↳ 10 · Un détecteur de piège de tabulation doit identifier les éléments par leur identité | 4 | 38 |
+| &nbsp;&nbsp;↳ 11 · Une page d'impression peut écraser son corps sans grandir | 4 | 36 |
+| &nbsp;&nbsp;↳ 12 · Un ScrollTrigger en once se TUE après avoir joué | 4 | 41 |
+| &nbsp;&nbsp;↳ 13 · Une sonde posée au document_start n'a pas encore document.documentElement | 5 | 63 |
+| &nbsp;&nbsp;↳ 14 · Une sonde peut être plus RAPIDE que la page | 5 | 53 |
+| &nbsp;&nbsp;↳ 15 · Un détecteur de débordement doit distinguer ce qui rogne exprès | 4 | 22 |
+| **CSS ET JS** | 3 | 8 |
+| &nbsp;&nbsp;↳ 16 · animation est un RACCOURCI : il remet animation-play-state à running | 7 | 95 |
+| &nbsp;&nbsp;↳ 17 · Un test peut VERROUILLER le défaut | 9 | 118 |
+| &nbsp;&nbsp;↳ 18 · Le popup cadeau bloque les outils | 7 | 81 |
+| &nbsp;&nbsp;↳ 19 · Un A/B se fait en worktree, pas en stash | 23 | 274 |
+| **LES CINQ FAUX VERDICTS DE LA NUIT DU 2026-07-30** | 3 | 19 |
+| &nbsp;&nbsp;↳ 20 · getComputedStyle(el).transform ne contient pas les propriétés individuelles | 7 | 103 |
+| &nbsp;&nbsp;↳ 21 · Une amplitude ABSOLUE mélange trois mouvements | 8 | 104 |
+| &nbsp;&nbsp;↳ 22 · Le rectangle englobant d'un élément TOURNÉ est plus grand que l'élément | 9 | 133 |
+| &nbsp;&nbsp;↳ 23 · Un nombre FIXE de tabulations ne mesure pas un piège de focus | 9 | 136 |
+| &nbsp;&nbsp;↳ 24 · Une fenêtre d'observation trop courte cache le mouvement le plus lent | 8 | 91 |
+| **LES QUATRE DE LA SECONDE PASSE DU 2026-07-30** | 3 | 18 |
+| &nbsp;&nbsp;↳ 25 · UNE SONDE QUI INTERROGE LE DOM NE PEUT PAS VOIR UN DÉFAUT DE PEINTURE | 18 | 259 |
+| &nbsp;&nbsp;↳ 26 · UNE GRILLE TRANSFORME CHAQUE NŒUD DE TEXTE EN ÉLÉMENT DE GRILLE ANONYME | 8 | 123 |
+| &nbsp;&nbsp;↳ 27 · DEUX MÉCANISMES QUI VEULENT LE MÊME PSEUDO-ÉLÉMENT : LE PLUS SPÉCIFIQUE TUE L'AUTRE, EN SILENCE | 7 | 111 |
+| &nbsp;&nbsp;↳ 28 · UN BRIDAGE TROP FORT REND LE DÉCLENCHEUR DU PALIER 2 INATTEIGNABLE, ET L'OUTIL APPELLE ÇA UN ÉCHEC | 19 | 253 |
+| **AJOUTÉ LE 2026-07-30, CHANTIER DE STRUCTURE** | 3 | 18 |
+| &nbsp;&nbsp;↳ 29 · UNE PLANCHE DE CAPTURES D'UNE PAGE QUI BOUGE N'EST PAS UNE PREUVE DE NON-RÉGRESSION | 49 | 659 |
+| &nbsp;&nbsp;↳ 30 · UN SEUIL QUI VAUT NaN REND « AUCUNE DIFFÉRENCE » SUR N'IMPORTE QUOI | 29 | 294 |
+| &nbsp;&nbsp;↳ 31 · UN lastIndexOf SUR UNE BALISE FERMANTE COMMUNE COUPE TOUT LE DOCUMENT | 47 | 513 |
+| &nbsp;&nbsp;↳ 32 · UNE MARGE auto PEUT SE LIRE AUTREMENT ET SE POSER AU MÊME PIXEL | 32 | 425 |
+| **AJOUTÉS LE 2026-07-31, CHANTIER DES SAS** | 2 | 12 |
+| &nbsp;&nbsp;↳ 33 · GSAP additionne yPercent à un transform CSS de repos | 16 | 233 |
+| &nbsp;&nbsp;↳ 34 · La hauteur réelle d'une section content-visibility se mesure À L'ÉCRAN | 17 | 206 |
+| **AJOUTÉS LE 2026-07-31, CHANTIER DE MISE EN PRODUCTION** | 2 | 16 |
+| &nbsp;&nbsp;↳ 35 · Une scène collante n'est épinglée qu'à partir de 100vh de course | 16 | 232 |
+| &nbsp;&nbsp;↳ 36 · Un test qui synthétise l'événement ne teste pas le geste | 14 | 195 |
+| &nbsp;&nbsp;↳ 37 · Une image est glissable par défaut, et ça annule le geste | 12 | 146 |
+| &nbsp;&nbsp;↳ 38 · Une sonde de port en IPv4 ment sur un serveur qui écoute en IPv6 | 13 | 156 |
+| &nbsp;&nbsp;↳ 39 · decode() ne rejette jamais sur une image jamais demandée | 11 | 135 |
+| &nbsp;&nbsp;↳ 40 · Un sélecteur de masquage trop large peut effacer la page entière | 14 | 205 |
+| &nbsp;&nbsp;↳ 41 · Un calendrier qui ouvre sur le mois courant peut n'avoir aucune date | 14 | 195 |
+| &nbsp;&nbsp;↳ 42 · Une dégradation par palier ne s'hérite pas toute seule | 11 | 147 |
+| &nbsp;&nbsp;↳ 43 · Un cadre qui défile peut n'avoir rien à faire défiler | 18 | 228 |
+| &nbsp;&nbsp;↳ 44 · fullPage ne photographie pas une scène épinglée | 20 | 284 |
+| &nbsp;&nbsp;↳ 45 · Un fond en dégradé n'est pas un fond absent | 18 | 225 |
+| &nbsp;&nbsp;↳ 46 · Un contournement survit toujours au correctif | 17 | 230 |
+| &nbsp;&nbsp;↳ 47 · Rendre un conteneur défilant peut tuer un glissement qui marchait | 21 | 297 |
+| &nbsp;&nbsp;↳ 48 · L'injection tactile ne se remet pas entre deux gestes | 20 | 266 |
+| &nbsp;&nbsp;↳ 49 · Un élément fixe au sommet et un élément épinglé plus bas ne sont pas la même chose | 17 | 237 |
+| &nbsp;&nbsp;↳ 50 · Deux pages de hauteurs différentes ne peuvent pas partager une course en pixels | 12 | 171 |
+| &nbsp;&nbsp;↳ 51 · :focus-visible ne s'arme pas sur un focus() de script | 9 | 110 |
+| &nbsp;&nbsp;↳ 52 · Une image déclarée n'est pas une image chargée | 25 | 301 |
+| &nbsp;&nbsp;↳ 53 · Une hauteur lue sur la première tuile d'une pile | 16 | 207 |
+| &nbsp;&nbsp;↳ 54 · Dix images ne font pas un mouvement | 19 | 266 |
+| &nbsp;&nbsp;↳ 55 · Un fichier de sortie abandonné ne disparaît pas tout seul | 11 | 140 |
+| &nbsp;&nbsp;↳ 56 · requestAnimationFrame sur un écouteur de défilement met le contenu en retard d'une image | 27 | 324 |
+| &nbsp;&nbsp;↳ 57 · Une planche-contact ne répond pas à « une marque est-elle lisible ? » | 24 | 304 |
+| &nbsp;&nbsp;↳ 58 · Une fenêtre de recadrage porte sur la LARGEUR — sur une source en portrait, elle photographie le ciel | 16 | 217 |
+| &nbsp;&nbsp;↳ 59 · position: sticky n'est pas position: fixed, et une sonde qui ne lit que fixed la laisse passer | 22 | 312 |
+| &nbsp;&nbsp;↳ 60 · Un object-position, un voile ou une bande étroite ne recadrent PAS le fichier | 20 | 248 |
+| &nbsp;&nbsp;↳ 61 · Chaque métier porte sa marque autrement, et la chercher au même endroit ne suffit pas | 23 | 306 |
+| &nbsp;&nbsp;↳ 62 · Un outil qui écrit un registre l'écrase sur une passe partielle | 15 | 189 |
+| &nbsp;&nbsp;↳ 63 · Le pli n'est pas une mesure de page, et une capture pleine page ne le montre pas | 23 | 299 |
+| &nbsp;&nbsp;↳ 64 · animation-fill-mode: both rend la moitié du site VIDE en capture pleine page | 26 | 360 |
+| &nbsp;&nbsp;↳ 65 · view() mesure la boîte de l'élément QU'ELLE ANIME, pas celle qu'on regarde | 22 | 289 |
+| &nbsp;&nbsp;↳ 66 · overflow-x: clip cache un vrai défaut à une sonde scrollWidth | 14 | 185 |
+| **AJOUTÉS LE 2026-08-01, CHANTIER DU PREMIER ÉCRAN** | 2 | 14 |
+| &nbsp;&nbsp;↳ 67 · Une seule bande plate n'est pas une capture plate | 28 | 378 |
+| &nbsp;&nbsp;↳ 68 · Geler les animations gèle aussi le préchargeur | 25 | 329 |
+| &nbsp;&nbsp;↳ 69 · Un dépôt voisin peut être en chantier pendant qu'on le photographie | 14 | 182 |
+| &nbsp;&nbsp;↳ 70 · Un masque figé à mi-course sur du TEXTE ne se lit pas comme un mouvement | 27 | 372 |
+| &nbsp;&nbsp;↳ 71 · Un geste d'un pixel n'existe plus à l'échelle où on le regarde | 20 | 274 |
+| &nbsp;&nbsp;↳ 72 · Un masque posé avant l'hydratation est effacé par l'hydratation | 25 | 338 |
+| &nbsp;&nbsp;↳ 72 bis · Un vérificateur qui attrape son propre remplacement ne vérifie rien | 12 | 159 |
+| &nbsp;&nbsp;↳ 73 · Un outil de contraste écrit à la hâte ment QUATRE fois de suite | 27 | 516 |
+| &nbsp;&nbsp;↳ 74 · (73 bis) ET LE SIGNALEMENT DE DÉPART ÉTAIT FAUX AUSSI | 26 | 340 |
+| &nbsp;&nbsp;↳ 75 · Une clôture de commentaire CSS cassée avale la règle suivante — et l'outil de contrôle rend « ok » | 16 | 226 |
+| &nbsp;&nbsp;↳ 76 · Un outil de contraste qui ne remonte que les ANCÊTRES ne voit pas une masse posée en FRÈRE | 20 | 272 |
+| &nbsp;&nbsp;↳ 77 · order réordonne aussi l'ORDRE DE PEINTURE — et rien ne peut le voir sauf l'image | 30 | 344 |
+| &nbsp;&nbsp;↳ 78 · Une capture d'élément ne compose pas une toile WebGL | 15 | 157 |
+| &nbsp;&nbsp;↳ 79 · Le clip d'une capture de page ne se lit pas dans le repère de boundingBox() | 12 | 139 |
+| &nbsp;&nbsp;↳ 80 · Un scrollTo vers une section n'y arrive pas quand des sas grandissent la page | 22 | 289 |
+| &nbsp;&nbsp;↳ 81 · Sous mouvement plein, une section derrière un sas se photographie en noir | 41 | 542 |
+| &nbsp;&nbsp;↳ 82 · Un sélecteur d'enfant sans chevron mange le parent qu'il ne cible pas | 16 | 189 |
+| &nbsp;&nbsp;↳ 83 · Un voile en pointer-events: none est INVISIBLE à elementFromPoint | 24 | 319 |
+| &nbsp;&nbsp;↳ 84 · Une planche en mouvement réduit ne peut PAS voir un défaut de sas | 23 | 303 |
+| &nbsp;&nbsp;↳ 85 · String.prototype.replace lit $$ comme un $ littéral | 18 | 232 |
+| &nbsp;&nbsp;↳ 86 · . ne matche pas \r en JavaScript, et un fichier CRLF fait échouer /^…$/ en silence | 41 | 631 |
+
+<!-- INDEX:FIN -->
+
 ## Table
 
-| # | En une ligne |
-|---|---|
-| [1](#1) | Une capture est plus lente qu'une transition |
-| [2](#2) | Un cadrage de capture se relève, il ne se devine pas |
-| [3](#3) | Deux images de tailles différentes rendent 100 % d'écart |
-| [4](#4) | `content-visibility: auto` fait mentir `getBoundingClientRect()` |
-| [5](#5) | Un `scrollTo` qui saute casse un pin de ScrollTrigger |
-| [6](#6) | `color-mix()` calcule en `color(srgb …)`, pas en `rgb()` |
-| [7](#7) | Une fenêtre d'odomètre rogne exprès |
-| [8](#8) | Une analyse de pixels confond l'anticrénelage avec du texte illisible |
-| [9](#9) | Un détecteur qui n'attend pas assez confond « en vol » et « échoué » |
-| [10](#10) | Un piège de tabulation s'identifie par l'identité, pas par le texte |
-| [11](#11) | Une page d'impression peut écraser son corps sans grandir |
-| [12](#12) | Un `ScrollTrigger` en `once` se tue après avoir joué |
-| [13](#13) | Une sonde au `document_start` n'a pas encore `documentElement` |
-| [14](#14) | Une sonde peut être plus rapide que la page |
-| [15](#15) | Un détecteur de débordement doit distinguer ce qui rogne exprès |
-| [16](#16) | `animation` est un raccourci : il remet `animation-play-state: running` |
-| [17](#17) | Un test peut verrouiller le défaut |
-| [18](#18) | Le popup cadeau bloque les outils |
-| [19](#19) | Un A/B se fait en worktree, pas en `stash` |
-| [20](#20) | `transform` ne contient pas `translate` / `rotate` / `scale` |
-| [21](#21) | Une amplitude absolue mélange trois mouvements |
-| [22](#22) | L'englobant d'un élément tourné est plus grand que l'élément |
-| [23](#23) | Un nombre fixe de tabulations ne mesure pas un piège de focus |
-| [24](#24) | Une fenêtre d'observation trop courte cache le mouvement le plus lent |
-| [25](#25) | **Une sonde du DOM ne peut pas voir un défaut de peinture** |
-| [26](#26) | Une grille transforme chaque nœud de texte en élément anonyme |
-| [27](#27) | Deux mécanismes sur le même pseudo-élément : le plus spécifique tue l'autre |
-| [28](#28) | Un bridage trop fort rend le palier 2 inatteignable |
-| [29](#29) | **Une planche de captures d'une page qui bouge n'est pas une preuve** |
-| [30](#30) | Un seuil qui vaut `NaN` rend « aucune différence » sur n'importe quoi |
-| [31](#31) | Un `lastIndexOf` sur une balise fermante commune coupe tout le document |
-| [32](#32) | Une marge `auto` peut se LIRE autrement et se POSER au même pixel |
+> Elle etait ecrite a la main, et elle s'etait arretee a 32 sur 86 :
+> les cinquante-quatre pieges suivants n'y figuraient pas. Un index
+> partiel est pire qu'aucun — il fait croire qu'on a cherche.
+> L'index genere en tete du fichier les porte tous, et il ne peut
+> plus deriver : `node tools/index-doc.mjs verifier`.
+> Retiree le 2026-08-03.
 
 ---
 
@@ -1467,3 +1548,44 @@ plutôt que le résultat.
 > écrit, pas la chaîne qu'on croyait écrire : c'est le même
 > raisonnement que le piège 72, où un masque non vérifié avait été
 > défait en silence.
+
+### 86 · `.` ne matche pas `\r` en JavaScript, et un fichier CRLF fait échouer `/^…$/` en silence
+
+**Le faux verdict.** `tools/index-doc.mjs`, première passe : « 40 parties
+trouvées » dans `ANIMATIONS.md`, « **0 partie** » dans `ARCHITECTURE.md`,
+`PIEGES.md`, `MESURES.md`, `DECISIONS.md` et `RESERVES.md`. Aucune erreur,
+aucun avertissement. L’outil a écrit **six tables d’index vides**, puis a
+rendu « a jour » sur les sept fichiers.
+
+**La cause.** Le dépôt mélange les fins de ligne — git convertit à
+l’écriture, donc `ANIMATIONS.md` est en LF et `ARCHITECTURE.md` en CRLF.
+Le détecteur de titres faisait `split("\n")` puis `/^(#{2,3}) (.+)$/`.
+Sur une ligne CRLF, `split` laisse le `\r` en queue ; or **`.` en
+JavaScript ne matche pas `\r`** — c’est un terminateur de ligne au même
+titre que `\n`, `\u2028` et `\u2029`. Donc `(.+)` s’arrête avant lui, `$`
+ne tombe pas sur la fin de chaîne, et le test rend `false`. Relevé
+caractère par caractère : codes `35 35 32 84 …` puis `13` ; `/^#{2,3} /`
+rend `true` et `/^(#{2,3}) (.+)$/` rend `false` sur la **même ligne**.
+
+**Ce qui l’a masqué.** `grep -c "^## "` trouvait bien les 12 titres :
+l’outil POSIX et le moteur JS ne sont pas d’accord, et c’est le désaccord
+qui trompe. On vérifie avec `grep`, on conclut que le fichier va bien, et
+on cherche le défaut ailleurs.
+
+**Il se reproduit un cran plus bas.** Le correctif naïf coupe le `\r`
+**final** (`.replace(/\r$/, "")`). Mais un `\r` inséré au MILIEU d’une
+ligne — ce qui arrive dès qu’un script écrit du texte contenant un
+échappement mal protégé — casse la même regex sans être coupé. Ce piège
+s’est écrit lui-même de cette façon : son propre titre a été rendu
+invisible à l’index par un CR au milieu.
+
+**Le correctif.** Couper tout `\r` de la ligne avant de comparer, relever
+la fin de ligne dominante du fichier et la remettre à l’écriture — insérer
+des lignes en LF dans un fichier CRLF laisse un mélange que le prochain
+outil relira de travers.
+
+**Et le vrai correctif est ailleurs : zéro résultat doit ARRÊTER l’outil.**
+Un compteur de parties à 0 sur un document qui a forcément des titres
+n’est pas un résultat, c’est une panne. Sans ce garde-fou, l’instrument
+s’est tu sur exactement le défaut qu’il devait voir. Même famille que les
+pièges 30, 40 et 62.

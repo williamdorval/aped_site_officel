@@ -17,6 +17,33 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 - [Ce qui est commun aux onze](#commun)
 - [Anomalies relevées](#anomalies)
 
+
+<!-- INDEX:DEBUT -->
+
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **Les plages** | 26 | 432 |
+| **Comment lire cet index** | 58 | 787 |
+| **01 · Accueil** | 27 | 289 |
+| **02 · Services** | 54 | 771 |
+| **03 · Réalisations** | 41 | 629 |
+| **04 · Secteurs** | 20 | 317 |
+| **05 · Visite 360** | 50 | 771 |
+| **06 · Calculateur** | 21 | 304 |
+| **07 · Comparatif** | 17 | 180 |
+| **08 · Processus** | 27 | 352 |
+| **09 · Référence** | 20 | 252 |
+| **10 · Questions** | 24 | 310 |
+| **11 · Contact** | 20 | 251 |
+| **Pied de page** | 108 | 1 682 |
+
+<!-- INDEX:FIN -->
+
 ---
 
 <a id="plages"></a>
