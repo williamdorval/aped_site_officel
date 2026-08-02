@@ -269,6 +269,7 @@ Cause et correctif : `PIEGES.md`.
 74. **Quand un outil de pixels contredit une arithmétique triviale, c'est l'outil qui a tort** — prune sur argile rend 8,29:1 en trois lignes de calcul. J'ai « corrigé » deux fois un écran qui n'avait rien, et écrasé une décision de composition. Mesurer la valeur DÉCLARÉE avant de croire un instrument neuf. *(Vrai quand même : assombrir le fond sous une encre semi-transparente ne change pas le rapport — les deux termes descendent ensemble.)*
 75. **Une clôture de commentaire CSS cassée avale la règle suivante, et l'outil de contrôle rend « ok »** — 56 % de la surface d'un écran avait disparu, `demos-controle` disait « 0 mal ». Compter les `/*` et les `*/`.
 76. **Un outil de contraste qui ne remonte que les ANCÊTRES ne voit pas une masse posée en FRÈRE** — quatre échecs à « 1:1 » sur du texte à 9,4:1. Sous une masse en frère comme sous une photo, l'arbitre est `tools/pire-pixel.mjs`.
+77. **`order` réordonne aussi l'ORDRE DE PEINTURE** — une photo à `order: 8` a effacé un bandeau à `order: 1`. DOM juste, rectangle juste, couleur juste, texte rendu présent, 0 erreur, `demos-controle` « ok ». Vu en rouvrant l'image, par rien d'autre.
 
 ## RÉSERVES — à ne jamais oublier
 

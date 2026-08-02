@@ -1266,3 +1266,31 @@ l'outil trouve *un* fond, réel, opaque — mais pas celui qui est
 > correctif (piège 46). Sous une masse en frère comme sous une
 > photographie, l'arbitre reste `tools/pire-pixel.mjs`, qui mesure ce
 > qui est **peint**.
+
+### 77 · `order` réordonne aussi l'ORDRE DE PEINTURE — et rien ne peut le voir sauf l'image
+
+Dans un conteneur `flex` ou `grid`, `order` ne change pas seulement la
+place : il change **l'ordre de peinture**. Une photographie posée à
+`order: 8` s'est peinte **par-dessus** un bandeau à `order: 1`, et le
+nom du salon avait purement disparu de la capture.
+
+Ce qui rend le cas méchant, c'est que **tout allait bien partout
+ailleurs** :
+
+- la boîte du bandeau est présente dans le DOM ;
+- son rectangle est à la bonne position et à la bonne taille ;
+- sa couleur calculée est la bonne ;
+- son texte est dans le texte rendu ;
+- zéro erreur de console ;
+- `demos-controle.mjs` rend **« ok »**.
+
+**Aucune sonde du DOM ne pouvait le voir**, parce qu'il n'y a rien à
+voir dans le DOM : le défaut est dans le compositeur. C'est le piège
+25 exactement — une sonde du DOM ne voit pas un défaut de peinture —
+mais par une cause qu'on n'attend pas, puisque `order` se lit comme
+une propriété de mise en page.
+
+> Toute pile qui emploie `order` ou un `z-index` implicite se vérifie
+> **en capture**, et la capture se **regarde**. Voisin du 75 : deux
+> fois de suite ici, l'outil de contrôle a rendu « ok » sur un écran
+> dont il manquait un morceau.
