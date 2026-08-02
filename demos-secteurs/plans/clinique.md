@@ -3,142 +3,119 @@
 *Clinique multidisciplinaire fictive : physiothérapie, ostéopathie,
 nutrition. Un seul écran, 1440 × 900, arrêté. Rien en dessous.*
 
-Le nom vient de `demos-secteurs/DIRECTIONS.md § 08` et ne change pas :
-les douze directions s'écrivent ensemble, un nom qui bouge tout seul
-désynchronise la carte.
+Le nom vient de `demos-secteurs/DIRECTIONS.md § 08` et ne change pas.
+
+> **CE FICHIER REMPLACE LA VERSION DU 2026-08-01, ET IL LA CONTREDIT.**
+> L'ancien plan décrivait une carte de tableau de bord posée sur une
+> plaque translucide : anneau « 2/3 », rail de trois étapes, sept
+> capsules de jour, six capsules d'heure, vignette photo de **3,6 %**
+> de l'écran, titre à **68 px**, texte à **13 px** partout. Dix blocs,
+> aucun dominant. Le verdict à l'image a été « ça ressemble à la page
+> d'accueil d'un SaaS générique, 5 sur 10, le plus faible des douze ».
+> Il était juste : le rayon 24 px, l'ombre douce et la carte flottante
+> sont exactement le **piège de convergence n° 3** de `MATRICE-DOUZE`.
+> Le contenu — trois métiers, une prise de rendez-vous — était bon ;
+> sa mise en page était un composant de bibliothèque.
+> L'ancien plan est conservé dans l'historique git de ce fichier.
 
 ---
 
-## Les trois références
+## Les trois références — changées le 2026-08-02
 
-Trois relevés réussis, mesurés à 1440 px de large avec
-`node tools/refs-releve.mjs`. Les captures et les JSON sont dans
-`tools/_refs/clinique-<clé>/`.
+Les anciennes (`sword`, `headway`, `jane`) sont trois **interfaces
+claires à carte arrondie**. Les regarder produisait forcément une
+interface claire à carte arrondie : c'est ce qui est arrivé. Elles
+restent relevées dans `tools/_refs/` et servent maintenant de **liste
+de ce qu'on ne refait pas**.
 
-Six autres ont été tentées et écartées, et il faut le dire ici parce
-que c'est une information : **`carbonhealth.com` rend un mur
-Cloudflare** (« Sorry, you have been blocked »), **`doctolib.fr` rend
-son héros sous un voile de témoins** — la capture est grise, il n'y a
-rien à mesurer dessus. Les trois autres sont écartées pour la DA, pas
-pour un échec technique : voir la fin de cette section.
+Les trois nouvelles ont en commun ce que la cellule 09 réclame : **un
+corps humain cadré serré, une typographie d'affichage qui LUI PASSE
+DESSUS, un seul accent saturé.** La table `CHOIX` de
+`tools/planche-refs.mjs` est à jour.
 
-### 1 · Sword Health — `https://swordhealth.com`
+### 1 · Medwest.plus — `medwest.plus`
 
-`tools/_refs/clinique-sword/`
+`tools/_refs/clinique-medwest/`
 
-**Ce qu'elle prouve.** Qu'un écran **très clair, froid et rond** peut
-être le plus sérieux de la page d'un acteur de la santé musculo-
-squelettique. Le fond n'est pas blanc : c'est un dégradé irisé
-extrêmement pâle, sans point de fuite, qui donne de la profondeur sans
-un seul aplat de couleur. La barre de navigation est **décollée du bord
-haut** et flotte en capsule blanche encastrée de 64 px de chaque côté :
-à elle seule, elle annonce « ceci est une application, pas une
-brochure ».
+**Ce qu'elle prouve.** Qu'**un seul accent saturé posé en TYPOGRAPHIE
+sur une photographie suffit à faire une identité**. La page entière est
+en noir et blanc ; la seule couleur est le mot-symbole en sarcelle
+`rgb(0,160,154)`, écrit par-dessus le dos d'une personne en traitement.
 
-**Ce qu'on lui prend.** Trois choses, au chiffre près :
+**Ce qu'on lui prend.** Deux choses. Le **principe de la couleur
+unique portée par le texte sur l'image**, et le **cadrage sur un corps
+plutôt que sur un lieu** — c'est ce qui manquait totalement à l'ancienne
+version, dont la seule photo était un corridor vide en vignette.
 
-- la **barre flottante** encastrée, et la logique de superposition
-  qu'elle installe dès le premier pixel ;
-- le **rayon 100 px sur tous les boutons** et le rayon **32 px** sur
-  les cadres d'image ;
-- son ombre, qui est la plus juste que j'aie mesurée sur les douze
-  relevés : `rgba(0,0,0,.05) 0 12px 40px 0` — **12 px de décalage pour
-  40 px de flou et 5 % d'opacité**. C'est une ombre qui pose, pas une
-  ombre qui décolle.
+**Ce qu'on écarte.** La photographie **plein cadre** (elle appartient
+à 01, 05, 06, 08 et 12 dans la matrice), le noir et blanc pur (il
+appartient à 03), la grotesque **condensée** en capitales (elle
+appartient à 04), et le motif d'astérisque, qui est un tic.
 
-**Ce qu'on écarte.** Le titre **centré** à 80 px : il fait de la page
-une affiche, et ma voie est une interface. Et l'appareil qui monte du
-bas de l'écran — je n'ai pas de bas d'écran.
+**Les chiffres, relevés.** Mot-symbole visible ≈ **130 px** (le `h1`
+que l'outil attrape, 38 px, n'est pas visible — piège du titre masqué,
+comme Headway) · libellés **13–14 px** · **une** couleur saturée,
+`rgb(0,160,154)`, plus du gris · photo **100 %** de l'écran · **4**
+blocs dans la première fenêtre · aucune bibliothèque d'animation.
 
-**Les chiffres du relevé.** h1 80 px / interligne 86 px (**1,075**),
-graisse 600, chasse −0,2 px, `rgb(31,34,44)`, boîte x 340 → 1100
-(760 de large, centrée) · corps 16 px · **une seule famille pour toute
-la page** (Figtree) · fonds dominants blanc, `rgb(247,244,242)`, bleu
-d'action `rgb(74,137,232)` · boutons rayon **100 px**, hauteur 42 à 56 ·
-cadres d'image rayon **32 px** · page 12 541 px · **aucune bibliothèque
-d'animation** — ni GSAP, ni ScrollTrigger, ni Lenis, ni Locomotive, ni
-Three, ni même l'animation pilotée par le défilement en CSS.
+### 2 · Function Health — `functionhealth.com`
 
-### 2 · Headway — `https://www.headway.co`
+`tools/_refs/clinique-function/`
 
-`tools/_refs/clinique-headway/`
+**Ce qu'elle prouve.** Qu'**un visage cadré très serré tient tout un
+premier écran de santé**, et qu'un titre peut lui passer devant sans
+que ni l'un ni l'autre n'y perde. Le profil occupe le tiers central,
+le regard sort du cadre, et « …alth. » traverse au niveau du cou.
 
-**Ce qu'elle prouve.** Que **ma composition existe et qu'elle tient** :
-colonne de texte courte à gauche, la commande à portée de main dans la
-même colonne, et **une photographie petite, enfermée dans un cadre, à
-droite**. La photo fait 456 × 368 sur un écran de 1440 × 900 — **13 %
-de la surface**. Elle ne domine rien, et pourtant l'écran n'est pas
-froid.
+**Ce qu'on lui prend.** Le **cadrage** : un profil, pas un plein
+visage ; la tête coupée par le bord ; le regard qui porte hors champ.
+Et le principe du titre qui **passe devant le corps, jamais devant les
+yeux**.
 
-**Ce qu'on lui prend.** Le **rapport de surface**, et la place de la
-commande : le premier geste possible est *dans* la colonne de gauche,
-sous le sous-titre, pas dans un bandeau à part. C'est ce qui fait qu'on
-comprend le site en trois secondes.
+**Ce qu'on écarte.** Le virage chaud et sombre (05, 06 et 08 sont déjà
+là), la sérif d'affichage en graisse 300, la photo plein cadre, et les
+trois chiffres de service en bas — dont un **prix**, interdit ici.
 
-**Ce qu'on écarte.** Tout le reste : le vert, la sérif de titre, et
-surtout **les rayons de 4 à 8 px** — Headway est une page à angles
-presque vifs, et je suis le seul des douze à être rond. J'écarte aussi
-son formulaire à deux champs plats, qui est un formulaire, pas une
-interface.
+**Les chiffres, relevés.** h1 **80 px** / interligne 72 (**0,90**),
+graisse 300, Financier Display · corps **16 px** · fonds crème
+`rgb(254,249,239)`, terre `rgb(176,90,54)`, encre `rgb(42,43,47)` —
+**3** couleurs · photo **100 %** · **6** blocs dans la première
+fenêtre · aucune bibliothèque d'animation.
 
-**Les chiffres du relevé.** **Attention, un piège**, et il vaut la
-peine d'être écrit : le `<h1>` que l'outil attrape fait **16 px** et
-n'est pas visible — c'est un titre d'accessibilité masqué. Le titre
-qu'on voit, mesuré sur `0-heros.png`, fait **≈ 44 px / 52 px**
-(interligne **1,18**), en sérif « Honey » · corps 16 px / 24 px,
-`PostGrotesk` · fond de héros menthe très pâle `rgb(242,253,249)`,
-accent vert `rgb(11,102,61)` · colonne gauche à x 136, ≈ 600 de large ·
-deux champs de 52 px de haut + un bouton 133 × 56 · photo x 848 → 1304,
-456 × 368, rayon ≈ 8 px · page 5 626 px · **aucune bibliothèque
-d'animation**.
+### 3 · Heva Health — `hevahealth.com`
 
-### 3 · Jane App — `https://jane.app`
+`tools/_refs/clinique-heva/`
 
-`tools/_refs/clinique-jane/`
+**Ce qu'elle prouve.** L'**échelle**. 104 px d'affichage sur un
+interligne de 1,02, deux familles pour toute la page, et un corps de
+texte à 16 px : le saut est le dispositif. C'est le chiffre qui
+condamne l'ancien titre à 68 px.
 
-**Ce qu'elle prouve.** Que **l'objet du héros peut être le produit
-lui-même** : à droite, une capture de l'agenda de la clinique, ~550 ×
-382, dans un cadre clair posé sur un socle d'ordinateur portable ; à
-gauche, quatre lignes et deux boutons. C'est le logiciel de gestion que
-les physios et les ostéos du Québec ont réellement sous les yeux — la
-grammaire visuelle que mon visiteur *reconnaîtra*.
+**Ce qu'on lui prend.** Le **registre typographique** — un affichage
+qui pèse six fois le texte courant — et la barre de navigation réduite
+à une ligne d'objets, sans fond ni filet.
 
-**Ce qu'on lui prend.** Le principe, et rien que le principe :
-**montrer l'agenda, pas le promettre**. Et la sarcelle très pâle
-`rgb(205,245,247)` comme fond de zone active — un pastel froid qui ne
-salit pas le blanc.
+**Ce qu'on écarte.** Tout le reste, et il y en a. La sérif italique
+(quatre métiers en ont déjà), la photographie plein cadre en pleine
+jungle, **les cinq étoiles et « 4,9/5 sur 12 000+ consultations »** —
+une note et un chiffre de satisfaction, tous deux interdits — et la
+palette olive, qui est celle de 05.
 
-**Ce qu'on écarte.** L'exécution, qui a dix ans : la capture d'écran
-photographiée dans un socle d'ordinateur (au lieu d'une interface
-redessinée et vivante), les boutons à **rayon 0**, la sarcelle saturée
-en pleine masse, l'interligne de **1,267** sur un titre d'affichage —
-mou. Et le bandeau de témoins qui mange le quart bas de l'écran.
+**Les chiffres, relevés.** h1 **104 px** / interligne 106,08
+(**1,02**), chasse −2,08, graisse 300, PP Editorial New · corps
+**16 px** Inter · crème `rgb(253,253,241)`, olive `rgb(57,68,43)`, or
+des étoiles — **3** couleurs · **2** familles · photo **100 %** ·
+**6** blocs dans la première fenêtre · aucune bibliothèque d'animation.
 
-**Les chiffres du relevé.** h1 60 px / interligne 76 px (**1,267**),
-graisse 500, `rgb(0,177,184)`, boîte x 135, y 233, 545 de large ·
-corps **15 px** · fonds blanc, sarcelle `rgb(0,193,202)`, sarcelle pâle
-`rgb(205,245,247)` · boutons rayon **0 px** · page 6 307 px ·
-**animation pilotée par le défilement en CSS pur détectée**
-(`scrollDrivenCSS: true`) et aucune bibliothèque.
+### Ce que les trois disent ensemble, et qu'on applique
 
-### Les trois qu'on a mesurées et qu'on refuse
-
-Elles ne sont pas des références, elles sont la **liste des pièges du
-métier**, et chacune fait exactement une des choses que ma voie
-interdit.
-
-| Site | Relevé | Ce qu'elle fait, et que je ne ferai pas |
-|---|---|---|
-| `hingehealth.com` | `clinique-hinge` | **Vidéo plein cadre**, sombre, un visage en très gros plan. C'est le contraire d'« aucune photographie plein cadre » |
-| `nabla.com` | `clinique-nabla` | **La blouse blanche et le stéthoscope**, plein cadre, en virage vert. Le cliché nommément interdit par la DA |
-| `101physio.ca` | `clinique-101physio` | Nommée aux Awwwards, et pourtant : dégradé bleu saturé, **bouton rouge**, deux sourires d'archive avec un haltère. C'est le gabarit de clinique que le client croit vouloir |
-
-`superpower.com` (`clinique-superpower`) est écartée pour la même
-raison que les trois — fond noir, orange en pleine masse, portrait
-plein cadre — mais je lui prends **une** idée : la page entière est un
-rectangle arrondi **encastré** dans une marge blanche. C'est la même
-famille de geste que la barre flottante de Sword, et ça confirme que le
-dispositif tient.
+| | Les trois | Ancienne version | Maintenant |
+|---|---|---|---|
+| affichage | 80 · 104 · ≈130 px | **68 px** | **144 px** |
+| texte courant | 13 · 16 · 16 px | 13 px partout | **12 px** (texture) + **36 px** (l'énoncé) |
+| photo | 100 % | **3,6 %** | **41,7 %** |
+| couleurs | 1 · 3 · 3 | onze teintes de deux familles | **4 valeurs, 2 teintes** |
+| blocs | 4 · 6 · 6 | **10** | **4** + la colonne |
 
 ---
 
@@ -146,245 +123,144 @@ dispositif tient.
 
 | Poste | Décision |
 |---|---|
-| **Référence culturelle** | **Le tableau de bord d'un logiciel de prise de rendez-vous, sorti de son navigateur et posé sur une vitre.** Rond, calme, aéré, jamais froid — au sens humain ; très froid au sens de la lumière. On ne montre pas une clinique : on montre **la minute où le rendez-vous se prend**, et on la montre en train de se faire |
-| **Palette (hex nommés)** | **Fonds** — `glacier #EEF4F8` (page), `givre #F7FAFC` (le plus clair), `blanc #FFFFFF` (les capsules). **Bleus** — `bleu profond #1B4F7A` (accent d'action : bouton, étape courante, créneau retenu, anneau), `bleu d'appui #0F3B5F` (seulement sur menthe), `bleu pâle #DCE9F2` (fond des états en attente), `filet #C2D8E8`, `filet fin #E1EBF2`, `mat #F2F6F9` (créneau déjà pris). **Menthe** — `menthe #7FBFA8` (étape franchie, disponibilité), `menthe pâle #E4F2EC` (halo bas-gauche). **Textes** — `encre douce #20303A`, `ardoise #48657A`. Aucun bleu marine : `#1B4F7A` est à 205° de teinte, il tire sur le cyan. Aucun orange nulle part |
-| **Typographie (familles + tailles + interlignage)** | Deux familles, quatre fichiers, **rien d'autre** — `outfit` 500 / 800 et `manrope` 400, servies depuis `fonts/demos/` (`outfit-{0..3}.woff2`, `manrope-{0..1}.woff2`). **Ces graisses-là sont les seules disponibles** (`tools/polices-demos.mjs` : `Outfit:wght@500;800`, `Manrope:wght@400;800`) et le plan est dessiné pour n'avoir besoin de rien d'autre. **Titre** `outfit` 800, **68 px / interligne 64 px (0,941)**, chasse −2,0 px, `#20303A`. **Titre de carte** `outfit` 800 26 px / 30 px. **Chiffre de l'anneau** `outfit` 800 32 px. **Libellés d'interface, liens, boutons, heures** `outfit` 500, 12 à 16 px. **Texte courant** `manrope` 400, 17 px / 27 px, mesure **476 px** (≈ 58 signes — la fourchette 46–62 du standard). **Petit texte** `manrope` 400, 11,5 à 14 px |
-| **Composition du premier écran** | **Au pixel, dans le tableau qui suit.** En un mot : une barre flottante en capsule, une colonne courte à gauche, une **plaque** translucide à droite, et **par-dessus la plaque, décalée de 64 px vers la gauche et de 40 px vers le bas, la carte de rendez-vous** — c'est ce décalage, et lui seul, qui fait qu'on voit deux plans |
-| **Formes** | **Rayon 999 px** : barre de navigation, pastille de démonstration, pastilles de discipline, tous les boutons, les trois pastilles d'étape, les sept capsules de jour, les six capsules d'heure, les deux flèches de semaine. **Rayon 24 px** : la carte, la vignette photo. **Rayon 32 px** : la plaque. **Rayon 20 px** : rien — on n'invente pas une quatrième valeur. **Aucun angle vif nulle part**, y compris `stroke-linecap: round` sur l'anneau. **Ombres douces, en deux temps** : un contact serré + une portée large et très faible. La carte : `0 2px 8px rgba(27,79,122,.06), 0 40px 80px -24px rgba(27,79,122,.22)`. Les boutons pleins : `0 10px 22px -8px rgba(27,79,122,.45)`. La barre : `0 6px 24px rgba(27,79,122,.07)`. **Flou de verre** : `backdrop-filter: blur(24px) saturate(1.3)` sur la carte, `blur(20px) saturate(1.25)` sur la barre. **Dégradés doux** : deux voiles radiaux sur le fond, décrits plus bas |
-| **Traitement photo** | **Une seule photographie, `images/secteurs-sites/clinique-2.webp`** (1920 × 1080, corridor vitré et rangée de sièges, `pexels.com/photo/19921278/`). Recadrée **à la source** sur `x 20 → 920, y 380 → 980` (900 × 600, rapport 1,5) : on garde la baie vitrée et les dossiers de sièges, **on coupe la silhouette floue et le panneau vert** du fond de corridor. Affichée **264 × 176** — **3,6 % de la surface de l'écran**. Traitement : `filter: saturate(.6) brightness(1.07)` + un voile `#BFD8E8` à 12 % en `mix-blend-mode: color`, qui tire le beige des sièges vers le gris froid sans le vider. Hautes lumières relevées, jamais de gros plan clinique. Cadre : rayon 24, filet 1 px `rgba(255,255,255,.9)`, ombre `0 16px 36px -12px rgba(27,79,122,.28)`. `alt` : « Rangée de sièges le long d'une baie vitrée, lumière du jour. » |
-| **Le geste et l'instant de capture** | **Un seul : l'anneau « 2 sur 3 » se dessine.** Cercle SVG r = 52, `stroke-width` 8, `stroke-linecap: round`, `transform: rotate(-90deg)` pour partir à midi, sens horaire. Piste `#DCE9F2`, arc `#1B4F7A`. `stroke-dasharray: 326.7` (2πr) ; `stroke-dashoffset` va de **326,7 (0 %) à 108,9 (66,7 %)** en **1100 ms**, `cubic-bezier(.22,.61,.36,1)`, délai 260 ms, `animation-fill-mode: forwards`. **L'état de repos est 66,7 %** — deux étapes sur trois, ce qui est l'information. **On capture à 600 ms** après le premier rendu, soit 340 ms de course : l'arc est alors à **≈ 31 %** et s'arrête vers quatre heures. Sur l'image arrêtée, un anneau de 112 px de diamètre à 8 px d'épaisseur, franchement inachevé contre sa piste pâle — **ça se lit à trois mètres, et ça se lit sans deuxième image**. Preuve exigée par le standard : cinq captures à 260 · 430 · 600 · 780 · 1360 ms rendent 0 % · 17 % · 31 % · 48 % · 66,7 %. Sous `prefers-reduced-motion: reduce`, l'anneau est à 66,7 % dès la première image et rien ne bouge : **aucune information ne se perd**, elle est écrite trois fois — l'arc, le « 2/3 » au centre, et le rail des trois étapes |
-| **Ce qu'on ne fait pas** | Pas de croix, pas de blouse blanche, pas de stéthoscope, pas de main sur une épaule. Pas de bleu marine, pas d'orange, pas de rouge, pas de vert d'hôpital. **Pas un seul angle vif.** Pas de photographie plein cadre, pas de vidéo. Pas de mur typographique — le titre est à 68 px et fait trois lignes courtes, la carte est plus grande que lui. Pas de prix, pas d'avis, pas de note, pas de témoignage, pas de nom de professionnel, pas d'accréditation, pas de « depuis 1998 ». Pas de chiffre de patients. Pas de date numérotée dans le calendrier — **et c'est une décision, pas un oubli** : voir plus bas. Aucune requête tierce |
+| **Référence culturelle** | **Une affiche de santé publique, pas une application.** Un champ d'os presque vide, une colonne de couleur pleine hauteur, un visage dedans, et un titre qui traverse de l'un à l'autre. On ne montre plus « la minute où le rendez-vous se prend » sous forme d'écran de logiciel — on montre **la personne**, et l'heure se choisit en une ligne au bas de la page |
+| **Palette — 4 valeurs, 2 teintes** | **`os #F2F1EC`** le champ (deux tiers de l'écran ; chaud, jamais blanc — le blanc pur appartient à 03) · **`os-clair #FAF9F5`** le titre là où il passe sur la colonne · **`encre #10201E`** (14,9:1 sur l'os) · **`encre-doux #3B4A47`** le chapeau (8,3:1) · **`sarcelle #046A5E`** l'accent, teinte 172° — vert-bleu franc, **pas un bleu SaaS** (5,75:1 sur l'os ; 6,5:1 en blanc dessus) · **`sarcelle-fonce #063A34`** la masse de la colonne (l'os y rend 11,2:1). Aucun orange, aucun minium, aucun ciment, aucun bleu marine |
+| **Typographie** | Deux familles, trois faces, six fichiers. **`outfit` 800 et 500**, **`manrope` 400** — et ce sont les seules graisses que `tools/polices-demos.mjs` télécharge. **Pourquoi Outfit** : de la liste disponible c'est la seule dont les bols (`o`, `e`, `c`, `a`) sont tracés au compas. À 144 px c'est cette rondeur qui donne les « formes douces » que la cellule 09 exige, et **aucun des onze autres n'a de sans-serif rond** — 04 et 06 sont condensés, 07 est technique, 08 est une grotesque courante, les autres sont des sérifs. **Titre** outfit 800 **144 px / 130 (0,903)**, chasse −0,05em. **Chapeau** manrope 400 **36 / 46**. **Heures** outfit 500 **34 px**. **Tout le reste — barre, sur-titre, jours, légende, signature — 12 à 16 px**, et c'est de la TEXTURE : à 0,29 ça tombe sous 5 px, c'est voulu, et c'est composé comme un gris homogène |
+| **Composition** | **Au pixel, dans le tableau qui suit.** En un mot : un champ d'os à gauche, une colonne de 600 px à droite qui saigne des trois côtés, et **un titre de 144 px qui traverse la couture et change de couleur en la traversant** |
+| **Formes — le parti, et il n'a que deux valeurs** | **Rayon 220 px** : le coin haut-gauche de la colonne, et lui seul. **Rayon 999** : la capsule d'appel et le curseur d'heure — ce qui s'actionne. **Rien entre les deux, rien d'autre nulle part.** Un 8 px par défaut est exactement ce qui a coulé la version précédente ; 24 px l'aurait à peine sauvée. **Aucune ombre portée, aucun flou, aucune carte.** Les seuls dégradés sont les deux voiles de la colonne, qui sont un traitement photographique |
+| **Traitement photo** | **Une seule photographie, `images/secteurs-sites/clinique-8.webp`** (1080 × 1800, 81 ko, `pexels.com/photo/7552687/`). Découpée **à la source** en 3:5 — la colonne fait 600 × 900 et un `object-position` ne recadre pas le fichier (piège 60). Trois couches : `grayscale(1) contrast(1.22) brightness(.83)` ; un aplat `#046A5E` en `mix-blend-mode: color` à **58 %** — il prend la teinte de l'accent et garde la luminance de la photographie, donc un monochrome sarcelle et non un voile ; puis **un voile en L**, plein sur les 172 px de gauche et plein sur le bas |
+| **Le geste et l'instant** | **Un seul : le curseur d'heure ARRIVE.** Une capsule 176 × 18, rayon 999, `#046A5E`, qui parcourt un pas de **200 px** en **900 ms**, `cubic-bezier(.4,0,.2,1)`, délai 300 ms, `forwards`. `<meta name="aped-instant" content="620">` : à 620 ms le progrès temporel vaut 0,356, la courbe rend 0,514, le curseur est **arrêté à 97 px de sa cible**, au milieu de l'intervalle entre « 8 h 15 » et « 10 h 30 », pendant que « 10 h 30 » est **déjà en sarcelle et en graisse 800**. On voit vers quoi il va |
+| **Ce qu'on ne fait pas** | Pas de croix, pas de blouse blanche, pas de stéthoscope, pas de main sur une épaule. **Pas de carte, pas d'anneau de progression, pas de rail d'étapes, pas de calendrier** — c'est de là qu'on vient. Pas de photographie plein cadre. Pas de prix, pas d'avis, pas de note, pas de témoignage, pas de nom de professionnel, pas d'ordre professionnel, pas d'année de fondation, pas de nombre de patients. Aucune adresse web. Aucune requête tierce, aucun script |
 
-### La composition, au pixel — 1440 × 900
+### La composition, au pixel — 1440 × 900, **relevée à la capture**
 
-**Le fond.** `#EEF4F8` uni, plus deux voiles radiaux, et rien d'autre :
+Toutes les valeurs ci-dessous sont **lues dans la page rendue**, pas
+calculées : `document.documentElement.scrollHeight` vaut **900**, il
+n'y a **aucune barre de défilement verticale**.
 
-- `radial-gradient(980px 760px at 1090px 250px, #DCE9F2 0%, transparent 70%)` — la lueur froide derrière la carte ;
-- `radial-gradient(620px 520px at 300px 840px, #E4F2EC 0%, transparent 72%)` — la menthe sous le bas-gauche, qui empêche l'écran de virer au bleu clinique.
+| Élément | x | y | l × h | ce qu'il porte |
+|---|---|---|---|---|
+| **La colonne** | 840 → 1440 | 0 → 900 | **600 × 900 = 41,7 %** | rayon haut-gauche **220**, `overflow:hidden`, `isolation:isolate`, fond `#063A34` |
+| ↳ la photographie | — | — | 1080 × 1800, `cover`, ancrée en haut | le visage tient de **y 30 à y 501** — **471 px de haut** *(calculé du découpage : `object-fit: cover` réduit le fichier de 0,5556)* |
+| ↳ le voile en L | — | — | — | horizontal : plein 0 → 172, `.86` à 208, `.30` à 268, nul à 340 · vertical : nul jusqu'à 56 %, `.34` à 68 %, `.86` à 79 %, plein à 86 % |
+| ↳ la signature | droite 40 | bas 34 | — | « **000 000-0000** » puis « SITE DE DÉMONSTRATION », outfit 500 12 px, os à 78 et 94 % *(pire pixel mesuré **8,26**)* |
+| **La barre** | 96 → 840 | 44 → 96 | 744 × 52 | une LIGNE, aucun fond, aucun filet, aucune capsule flottante |
+| ↳ mot-symbole | 96 | — | — | « Clinique du Riverain », outfit 800 20 px, chasse −0,02em |
+| ↳ trois liens | ≈ 318 → 573 | — | — | outfit 500 15 px `#3B4A47`, écart 24, soulignement au survol et au focus |
+| ↳ capsule d'appel | **636 → 840** | 44 → 96 | 204 × 52 | rayon 999, `#046A5E`, blanc 16 px. `margin-left:auto` — sans elle, la capsule recouvrait le dernier lien |
+| **Sur-titre** | 96 | 168 → 183 | — | « CLINIQUE MULTIDISCIPLINAIRE · DÉMONSTRATION », outfit 500 12 px, chasse 0,22em, `#046A5E` |
+| **Chapeau** | 96 | 203 → 295 | 656 de texte | manrope 400 **36 / 46**, `#3B4A47`, deux lignes forcées |
+| **— le vide —** | 96 → 840 | 295 → 443 | 148 px | il se compose contre le visage, qui occupe la même bande à droite |
+| **LE TITRE** | 96 | **443 → 703** | — | outfit 800 **144 / 130**. Ligne 1 finit à **x 908** — elle déborde de **68 px** sur la colonne ; ligne 2 finit à **x 1024** — elle déborde de **184 px** |
+| **Les créneaux** | 96 | 737 → 855 | 600 de large | légende 12 px ; trois libellés de 12 px et trois heures de **34 px**, pas de **200** (x 96 · 296 · 496) ; le curseur, 176 × 18, y 837 → 855 |
 
-| Élément | x | y | l × h | rayon | ce qu'il porte |
-|---|---|---|---|---|---|
-| **Barre flottante** | 96 → 1344 | 28 | 1248 × 68 | 999 | `rgba(255,255,255,.68)` + `blur(20px) saturate(1.25)`, filet intérieur 1 px `rgba(255,255,255,.85)`, ombre `0 6px 24px rgba(27,79,122,.07)` |
-| ↳ pastille du sigle | 128 | 46 | 32 × 32 | 999 | fond `#1B4F7A`, « R » `outfit` 800 16 px blanc |
-| ↳ mot-symbole | 172 | — | 153 de large | — | « Clinique du Riverain », `outfit` 800 17 px, chasse −0,2, `#20303A` *(mesuré : 153,2 px)* |
-| ↳ quatre liens | 517 → 923 | — | h 34 | 999 | `outfit` 500 15 px `#48657A` ; le courant (« Services ») dans une capsule `#DCE9F2`, retrait 14 px, texte `#1B4F7A` |
-| ↳ téléphone | 1001 → 1093 | — | — | — | « 000 000-0000 », `manrope` 400 14 px `#48657A` |
-| ↳ bouton de barre | 1121 → 1312 | 40 | 191 × 44 | 999 | fond `#1B4F7A`, « Prendre rendez-vous » `outfit` 500 15 px blanc *(texte mesuré 138,8 px + 2 × 26)* |
-| **Pastille de démonstration** | 96 | 136 → 166 | 345 × 30 | 999 | fond transparent, filet 1 px `#C2D8E8`, `manrope` 400 12,5 px `#48657A` |
-| **Titre (3 lignes)** | 96 | 202 → 394 | mesure 520 | — | `outfit` 800 **68 / 64**, chasse −2,0, `#20303A`. Lignes **mesurées à la spécification finale** : 402,9 · 432,4 · 475,1 px — **45 px de marge sur la colonne de 520** |
-| **Sous-titre (2 lignes)** | 96 | 428 → 482 | mesure 476 | — | `manrope` 400 **17 / 27**, `#48657A` *(ligne 1 mesurée 459 px, ligne 2 : 304 px → la coupe tombe toute seule après « toit. »)* |
-| **Trois pastilles de discipline** | 96 → 487 | 522 → 562 | 141 / 126 / 104, h 40, écart 10 | 999 | fond blanc, filet 1 px `#C2D8E8`, `outfit` 500 14 px `#20303A`, point de 8 px devant : `#1B4F7A`, `#7FBFA8`, `#9CC2DA` |
-| **Bouton primaire** | 96 → 304 | 594 → 650 | 208 × 56 | 999 | fond `#1B4F7A`, `outfit` 500 16 px blanc, ombre `0 10px 22px -8px rgba(27,79,122,.45)` |
-| **Vignette photo** | 96 → 360 | 690 → 866 | 264 × 176 | 24 | la photo décrite plus haut. Marge basse 34 px |
-| **La plaque** | 800 → 1392 | 92 → 828 | 592 × 736 | 32 | `rgba(220,233,242,.55)`, filet 1 px `rgba(255,255,255,.72)`, **aucune ombre**. Elle dépasse la carte de 40 px en haut, 48 px à droite, 52 px en bas — ce liseré est toute la preuve de superposition |
-| **LA CARTE** | 736 → 1344 | 132 → 776 | 608 × 644 | **24** | `rgba(255,255,255,.82)` + `blur(24px) saturate(1.3)`, filet intérieur 1 px `rgba(255,255,255,.9)`, filet extérieur 1 px `rgba(27,79,122,.07)`, ombre `0 2px 8px rgba(27,79,122,.06), 0 40px 80px -24px rgba(27,79,122,.22)`. Retrait 32 → **zone utile x 768 → 1312, 544 de large** |
+### La couture — le seul dispositif de l'écran
 
-**Le contenu de la carte, de haut en bas.**
+Le titre change de couleur à **x 840**, l'encre sur l'os et l'os sur la
+colonne. **Deux calques du même texte**, découpés par `clip-path` de
+part et d'autre de la couture, et **pas** un dégradé sur
+`background-clip: text` : un calque garde une vraie propriété `color`,
+qu'un outil de contraste peut lire — `pire-pixel.mjs` rend **9,74 au
+pire pixel** sur les 351 981 px d'encre du calque de droite.
 
-| Bloc | y | détail |
-|---|---|---|
-| **L'anneau** | centre (824, 220) | ø extérieur **112** (donc 164 → 276, exactement sous le retrait haut de la carte), piste `#DCE9F2` 8 px, arc `#1B4F7A` 8 px. Au centre : « **2** » `outfit` 800 32 px `#1B4F7A` suivi de « /3 » `outfit` 500 16 px `#48657A` |
-| **Le bloc de titre** | x 960 | sur-titre « PRISE DE RENDEZ-VOUS » `outfit` 500 12 px, chasse 0,1em, `#48657A`, y 181 · titre « Choisissez votre heure » `outfit` 800 26 / 30 `#20303A`, y 203 *(mesuré 270,5 px)* · sous-ligne « Physiothérapie · 45 minutes · en clinique » `manrope` 400 14 px `#48657A`, y 241 *(mesuré 256,3 px)*. Le bloc va de 181 à 261 : son milieu tombe à 221, soit **le centre de l'anneau à un pixel près** |
-| **Le rail des trois étapes** | pastilles centrées y 313 | trois pastilles ø 34, rayon 999, centres à **x 816 · 1036 · 1256** (pas de 220) ; ligne de liaison 2 px à y 313. **① franchie** : fond `#7FBFA8`, coche 14 px `#0F3B5F` *(contraste 5,48)* ; liaison ①→② pleine `#7FBFA8`. **② courante** : fond `#1B4F7A`, « 2 » `outfit` 800 14 px blanc, halo 1 px `#DCE9F2` à 6 px ; liaison ②→③ `#DCE9F2`. **③ en attente** : fond `#DCE9F2`, « 3 » `outfit` 800 14 px `#1B4F7A` *(contraste 6,94)*. Libellés y 344, `outfit` 500 12,5 px, centrés : « Le service » `#48657A` · « Le moment » `#20303A` · « Vos coordonnées » `#48657A` *(mesurés 54,9 / 62,6 / 94,1 — le troisième, centré sur 1256, va de 1209 à 1303 et garde 9 px de marge sur la zone utile qui finit à 1312 ; c'est pour ça que les centres ne sont pas à 816 · 1040 · 1264)* |
-| **La ligne de semaine** | 386 → 414 | « CETTE SEMAINE » `outfit` 500 12 px, chasse 0,1em, `#48657A`, calée à gauche sur x 768 ; deux pastilles ‹ › ø 28, rayon 999, filet 1 px `#C2D8E8`, texte `#1B4F7A`, calées à droite : x 1248 → 1276 et 1284 → 1312 |
-| **La bande des sept jours** | 414 → 488 | sept capsules **68 × 74**, rayon **999**, écart 11 *(7 × 68 + 6 × 11 = 542 sur 544)*. Chacune : jour abrégé `outfit` 500 12 px, et sous lui un point de 6 px. **Disponible** : fond blanc, filet 1 px `#C2D8E8`, texte `#20303A`, point `#7FBFA8`. **Retenue (« mer. »)** : fond `#1B4F7A`, texte blanc, point blanc, ombre `0 8px 18px -6px rgba(27,79,122,.5)`. **Fermée (« dim. »)** : fond transparent, filet 1 px `#E1EBF2`, texte `#48657A`, et une barre de 12 px `#C2D8E8` au lieu du point |
-| **La grille des six heures** | 516 → 568 et 582 → 634 | six capsules **172 × 52**, rayon **999**, écart 14 *(3 × 172 + 2 × 14 = 544)*, `outfit` 500 16 px. **Libre** : fond blanc, filet 1 px `#C2D8E8`, texte `#20303A`. **Retenue (« 10 h 30 »)** : fond `#1B4F7A`, texte blanc, ombre `0 8px 18px -6px rgba(27,79,122,.45)`. **Déjà prise (« 11 h 15 »)** : fond `#F2F6F9`, **texte `#48657A` à pleine valeur** *(6,14 sur blanc)*, barré 1 px `#8FA9BA`, aucun filet |
-| **Le filet de pied** | 662 | 1 px `#E1EBF2`, de x 768 à 1312 |
-| **Le récapitulatif** | 684 / 708 | « Mercredi, 10 h 30 » `outfit` 800 17 px `#20303A` *(mesuré 134,7)* ; dessous « Physiothérapie · 45 min » `manrope` 400 13,5 px `#48657A` |
-| **Le bouton de la carte** | x 1160 → 1312, y 684 | 152 × 52, rayon 999, fond `#1B4F7A`, « Continuer » `outfit` 500 16 px blanc, ombre `0 10px 22px -8px rgba(27,79,122,.45)` |
-| **La mention légale** | 742, centrée | « Démonstration — aucune réservation n'est enregistrée. » `manrope` 400 11,5 px **`#48657A`** *(mesurée 290,4 px ; contraste 6,14 — surtout pas un gris pâle, c'est la phrase la plus importante de la carte)* |
+**Aucune lettre n'est tronquée** — seule la couleur change. C'est ce
+qui sépare ce dispositif du piège 70 : un masque figé à mi-course sur
+du texte se lit comme un mot coupé ; ici les glyphes sont entiers, et
+la coupure tombe d'elle-même entre le « n » et le « d » de
+« agenda », et après le « r » de « métiers ».
 
-### Les quatre points sur lesquels on peut me prendre en défaut
+### Les cinq points sur lesquels on peut me prendre en défaut
 
-Écrits ici pour qu'on n'ait pas à les redécouvrir.
-
-1. **Le calendrier n'affiche aucune date numérotée, et c'est voulu.**
-   La consigne est qu'un calendrier qui montre des dates doit ouvrir
-   sur un mois qui en offre. Un écran arrêté ne peut pas tenir cette
-   promesse : le « 4 août » d'aujourd'hui est le 4 août périmé de
-   demain, et le piège 41 dit exactement ça. Donc : **des noms de jours
-   et « CETTE SEMAINE », rien de numéroté.** Si un jour on rend les
-   numéros, ils se calculent à partir de la semaine courante, jamais en
-   dur, et la vue s'ouvre sur la première semaine qui offre un créneau.
-   Les deux flèches ‹ › sont inertes sur un écran unique, comme les
-   quatre liens de la barre : elles portent un `aria-disabled="true"`
-   et gardent leur anneau de focus.
-2. **La carte ne réserve rien, et elle le dit deux fois** — dans la
-   pastille sous la barre, et en pied de carte. Une seule mention se
-   perd ; deux, à deux niveaux de lecture différents, tiennent.
-3. **Le texte de toutes les commandes passe AA** (les onze paires
-   mesurées sont dans le tableau). **La frontière visuelle des capsules
-   ne passe pas 3:1** — `#C2D8E8` sur blanc rend 1,35. C'est inhérent à
-   « très clair et froid » : un filet à 3:1 serait un gris moyen et
-   tuerait la douceur. L'identification d'une capsule tient à son
-   **libellé** et à sa position dans une grille régulière, pas à son
-   filet. C'est un choix, il est assumé, et il est écrit.
-4. **Aucune de ces mesures ne vient d'un appareil réel.** Les largeurs
-   de texte ont été relevées dans Chromium sous Playwright, avec les
-   `.woff2` du dépôt effectivement chargés
-   (`document.fonts.check` = vrai). Les positions, elles, sont
-   **calculées, pas encore observées** : elles se vérifient à la
-   capture, pas dans ce fichier.
+1. **Le visage est une personne réelle.** La licence Pexels couvre
+   l'usage commercial et la modification sans attribution, et
+   l'entrée est dans `images/secteurs-sites/_licences.json`. Le
+   fichier a été **ouvert en pleine résolution** avant usage : aucun
+   logo, aucune plaque nominative, aucun badge, aucun vêtement de
+   soin, aucun texte. Le profil et le monochrome réduisent
+   l'identification. **Ce qui reste ouvert** : une photo de banque
+   posée sur un site de clinique laisse entendre que la personne y est
+   soignée ou y travaille. C'est un écran de démonstration, il le dit
+   deux fois — mais c'est le seul des douze où la question se pose.
+2. **La colonne fait 41,7 %, pas 33 %.** La consigne dit « au moins un
+   tiers ». Le dépassement est délibéré : sous 600 px de large, la
+   ligne 1 du titre ne débordait plus que de 68 px… à 540 px elle ne
+   débordait **pas du tout**, et le chevauchement — l'exclusivité de
+   la cellule 09 — n'existait plus.
+3. **Sur la planche des références, on reconnaît la nôtre.** Elle est
+   la seule à ne pas être une photographie plein cadre. Ce n'est pas
+   un défaut qu'on peut corriger : la photo plein cadre appartient à
+   01, 05, 06, 08 et 12 dans `MATRICE-DOUZE`, et la planche des DOUZE
+   est le test qui prime. Voir le rapport.
+4. **Le voile en L est un artifice, et il se voit si on le cherche.**
+   Un portrait en haute lumière ne peut pas produire une colonne de
+   masse : toute mise en bichromie place le mur — l'objet le plus
+   clair — du côté clair. La masse vient donc d'un aplat posé
+   par-dessus, pas de la photographie. Le premier essai posait ce
+   voile à l'horizontale : il coupait la poitrine d'un trait net en
+   travers de toute la colonne, et repoussait le titre sous y 512, ce
+   qui faisait déborder le bas de l'écran.
+5. **Aucune de ces mesures ne vient d'un appareil réel.** Chromium
+   sous Playwright, machine de bureau Windows. Les positions, elles,
+   sont **relevées à la capture**, pas calculées.
 
 ---
 
 ## Le contenu exact
 
 **Nom fictif :** Clinique du Riverain
-**Sigle :** R
-**Coordonnées :** `000 000-0000` · `courriel@exemple.ca` · Adresse sur demande
-
-### La barre
+**Coordonnées :** `000 000-0000` — aucune adresse, aucune adresse web
 
 | Emplacement | Texte, mot pour mot |
 |---|---|
 | Mot-symbole | `Clinique du Riverain` |
-| Lien 1 *(courant)* | `Services` |
-| Lien 2 | `Approche` |
-| Lien 3 | `Vos questions` |
-| Lien 4 | `Nous joindre` |
-| Téléphone | `000 000-0000` |
-| Bouton | `Prendre rendez-vous` |
+| Liens *(inertes, `href="#"`)* | `Services` · `Approche` · `Nous joindre` |
+| Capsule d'appel | `Prendre rendez-vous` |
+| Sur-titre | `Clinique multidisciplinaire · démonstration` |
+| Chapeau *(2 lignes forcées)* | `Physiothérapie, ostéopathie et nutrition,` / `sous le même toit.` |
+| **Titre** *(2 lignes forcées)* | `Trois métiers,` / `un seul agenda.` |
+| Légende des créneaux | `Mercredi — places libres` |
+| Les trois créneaux | `matin` / `8 h 15` — `avant-midi` / `10 h 30` *(retenu)* — `après-midi` / `13 h 45` |
+| Signature de la colonne | `000 000-0000` / `Site de démonstration` |
+| Texte de remplacement de la photo | `Une personne de profil devant un mur clair, éclairée par la lumière d'une fenêtre.` |
 
-*Les quatre liens sont inertes sur un écran unique — `href="#"`,
-`aria-current="page"` sur « Services ». Ils sont là parce qu'une
-interface sans navigation n'est pas une interface, pas pour aller
-quelque part.*
+Les heures portent une espace insécable de part et d'autre du `h`.
+La mention de démonstration paraît **deux fois**, à deux niveaux de
+lecture : dans le sur-titre et dans la colonne.
 
-### La colonne de gauche
+### Le dispositif interactif, sans une ligne de script
 
-**Pastille de démonstration**
-
-```
-Démonstration — aucune réservation n'est enregistrée
-```
-
-**Titre** *(trois lignes forcées, `<br>` explicites)*
-
-```
-Trois métiers,
-une seule prise
-de rendez-vous.
-```
-
-**Sous-titre** *(deux lignes, la coupe tombe d'elle-même)*
-
-```
-Physiothérapie, ostéopathie et nutrition sous le même toit.
-Vous choisissez le service, puis l'heure.
-```
-
-**Les trois pastilles**
-
-```
-Physiothérapie
-Ostéopathie
-Nutrition
-```
-
-**Bouton primaire**
-
-```
-Voir les disponibilités
-```
-
-**Vignette photo — texte de remplacement**
-
-```
-Rangée de sièges le long d'une baie vitrée, lumière du jour.
-```
-
-### La carte de rendez-vous — tout le texte
-
-**En-tête**
-
-```
-PRISE DE RENDEZ-VOUS
-Choisissez votre heure
-Physiothérapie · 45 minutes · en clinique
-```
-
-**Au centre de l'anneau**
-
-```
-2/3
-```
-
-**Le rail des trois étapes**
-
-```
-✓            2            3
-Le service   Le moment    Vos coordonnées
-```
-
-**La ligne de semaine**
-
-```
-CETTE SEMAINE          ‹  ›
-```
-
-**Les sept capsules de jour** *(« mer. » retenue, « dim. » fermée)*
-
-```
-lun.   mar.   mer.   jeu.   ven.   sam.   dim.
-```
-
-**Les six capsules d'heure** *(« 10 h 30 » retenue, « 11 h 15 » barrée)*
-
-```
-8 h 15     9 h 00     10 h 30
-11 h 15    13 h 45    15 h 30
-```
-
-*Les heures s'écrivent à la québécoise, avec une espace insécable de
-part et d'autre du `h` : `10&nbsp;h&nbsp;30`.*
-
-**Le pied de carte**
-
-```
-Mercredi, 10 h 30
-Physiothérapie · 45 min
-
-[ Continuer ]
-
-Démonstration — aucune réservation n'est enregistrée.
-```
-
-### Ce qui ne s'écrit nulle part sur cet écran
-
-Aucun prix. Aucune note, aucun avis, aucun témoignage. Aucun nom de
-physiothérapeute, d'ostéopathe ou de nutritionniste. Aucun ordre
-professionnel, aucun numéro de permis, aucune assurance nommée. Aucune
-adresse. Aucun nombre de patients, aucune année de fondation.
-
-`<meta name="robots" content="noindex,nofollow">` dans l'en-tête, et la
-mention « démonstration » visible deux fois dans l'écran.
+Trois boutons radio invisibles, `:has()` + `~`, transition de 300 ms.
+Cliquer une heure déplace le curseur ; la flèche du clavier aussi.
+**Vérifié par un vrai clic, pas par un événement synthétisé**
+(piège 36) : repos x 296 → « 13 h 45 » x 496 → « 8 h 15 » x 96 →
+« 10 h 30 » x 296. Zéro erreur console.
+`@supports not (selector(:has(*)))` pose le curseur à sa place finale.
 
 ---
 
 ## Ce qui me distingue des onze autres
 
-**Composition.** Je suis le seul dont le premier écran est **une
-interface en train d'être utilisée** : une carte translucide au premier
-plan, décalée de 64 px sur une plaque, avec une étape sur trois
-allumée. Les onze autres montrent une photographie, un titre, ou un
-objet — moi je montre **un geste à moitié fait**, et la photographie y
-occupe 3,6 % de la surface.
+**Le visage.** Je suis le seul des douze à en porter un, et il fait
+471 px de haut. Onze écrans montrent un lieu, un objet, un dessin ou
+rien. Le mien montre quelqu'un.
 
-**Couleur.** Je suis le seul **très clair et froid** : `#EEF4F8` en
-fond, `#1B4F7A` pour agir, `#7FBFA8` pour ce qui est franchi. La
-coiffure est l'autre clair froid, mais elle est en blanc pur, noir et
-rouge, en colonnes de magazine — trois couleurs dures contre mes onze
-teintes pâles de deux familles. Personne d'autre ne pose de menthe.
+**La couleur.** Seul écran **clair à accent saturé**. 03 est le seul
+autre clair et froid — mais en noir et blanc PUR, en colonnes de
+journal ; 02 est crème et olive ; 10 est terre cuite ; 11 est bordeaux.
+Personne d'autre ne pose de sarcelle, et personne d'autre ne pose une
+masse de couleur pleine hauteur sur un champ pâle.
 
-**Typographie.** `outfit` 800 à 68 px sur un interligne de 0,941 : des
-bols parfaitement ronds, en trois lignes courtes qui n'occupent qu'un
-tiers de la largeur. Et c'est le seul écran des douze où **le titre
-n'est pas le plus gros objet de l'image** — la carte l'est, et c'est
-tout le propos.
+**La typographie.** Seul sans-serif **rond** des douze, et la plus
+grande taille d'affichage de la planche après 04 — mais 04 est une
+condensée en capitales acides, c'est-à-dire l'exact opposé.
+
+**Le dispositif.** Seul écran où **un même mot est écrit en deux
+couleurs** parce qu'il traverse une frontière. C'est ce qu'on voit en
+trois secondes, et c'est ce qui reste lisible à 0,29.
 
 ---
 
-*Écrit le 2026-08-01. Relevés dans `tools/_refs/clinique-sword`,
-`clinique-headway`, `clinique-jane`. Aucune ligne de code n'a été
-écrite ; ce fichier est le seul livrable.*
+*Réécrit le 2026-08-02. Relevés retenus : `tools/_refs/clinique-medwest`,
+`clinique-function`, `clinique-heva`. Capture :
+`images/realisations/ecran-clinique.webp` — deux passes rendent le
+MÊME fichier (md5 `1d56a900…`).*

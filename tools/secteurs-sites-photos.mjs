@@ -371,7 +371,26 @@ const TIRAGES = {
       page: "https://www.pexels.com/photo/7789610/", fen: { x: 0.09, y: 0.18, w: 0.82 } },
     { n: 7, emploi: "corridor — lumiere douce, portes fermees",
       src: "url:" + PX + "/6234630/pexels-photo-6234630.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/6234630/", fen: { x: 0.14, y: 0.42, w: 0.72 } }
+      page: "https://www.pexels.com/photo/6234630/", fen: { x: 0.14, y: 0.42, w: 0.72 } },
+    /* LE SEUL VISAGE DES DOUZE ECRANS, ET C'EST UNE DECISION.
+       La consigne « aucun visage » vaut pour les onze autres metiers ;
+       la clinique a l'exclusivite du portrait (MATRICE-DOUZE, 09).
+       Source ouverte en pleine resolution avant usage : aucun logo,
+       aucune plaque nominative, aucun badge, aucun vetement de soin —
+       une veste de lin unie et un mur nu. De PROFIL, regard vers la
+       gauche : moins identifiable qu'un plein visage, et le regard
+       rentre dans la page au lieu d'en sortir.
+       Format 3:5 DEBOUT, decoupe A LA SOURCE : la colonne de droite de
+       l'ecran fait 600 x 900, et un `object-position` ne recadre pas
+       le fichier (piege 60).
+       LA FENETRE EST DECALEE A GAUCHE, ET C'EST DEUX CHOSES A LA FOIS.
+       Elle laisse du champ DEVANT le regard — elle regarde a gauche —
+       et elle pousse le visage vers la droite de la colonne, ce qui
+       degage la bande de 195 px que le titre traverse. Sans ce
+       decalage le titre passerait sur la joue. */
+    { n: 8, emploi: "portrait — personne de profil devant un mur clair, lumiere de fenetre", portraitHaut: true,
+      src: "url:" + PX + "/7552687/pexels-photo-7552687.jpeg" + GRAND, licence: LIC_PX,
+      page: "https://www.pexels.com/photo/7552687/", fen: { x: 0.0552, y: 0.1600, w: 0.7552 } }
   ],
 
   /* SERVICES JURIDIQUES — CABINET VALLIERES.
@@ -784,7 +803,33 @@ const TIRAGES = {
        retenue ne montre ni l'un ni l'autre. */
     { n: 16, emploi: "bande pleine largeur — rangee de maisons de quartier", xl: true,
       src: "url:" + PX + "/3958954/pexels-photo-3958954.jpeg" + GRAND, licence: LIC_PX,
-      page: "https://www.pexels.com/photo/3958954/", fen: { x: 0, y: 0.08, w: 1 } }
+      page: "https://www.pexels.com/photo/3958954/", fen: { x: 0, y: 0.08, w: 1 } },
+    /* LA BOITE AUX LETTRES DU 2026-08-01, ET POURQUOI AUCUNE DES SEIZE
+       NE POUVAIT LA TENIR.
+       L'ecran de secteur est passe en BANDES horizontales pleine
+       largeur, et sa photographie est une boite aux lettres de
+       1440 x 340, soit 4,235 : 1. Les seize sources existantes sont
+       des vues MLS — facades de trois quarts depuis le trottoir,
+       salons meubles, chambres. Decoupees a 4,235 : 1 elles rendent
+       une tranche de bardage, un dossier de canape ou une plinthe :
+       il n'y a pas de sujet a cette proportion-la. Le defaut est
+       geometrique, pas photographique, et c'est la meme lecon qu'au
+       cadrage 720 x 900 de la passe precedente : une source se juge
+       SUR LA TRANCHE qu'elle rendra.
+       `20753324` est une facade residentielle frontale, symetrique,
+       en ocre-terre-cuite sature — la couleur de la palette est DANS
+       la photographie, elle n'est pas posee par-dessus. A y = 0,50 la
+       tranche cadre le registre des trois fenetres cintrees : trois
+       arcs, leurs corniches, l'enduit lave. Ouverte en pleine
+       resolution (2501 x 3880) : aucune enseigne, aucune marque,
+       aucun numero civique, aucune plaque, aucun visage. Les trois
+       ouvertures sont fermees par des persiennes ou des rideaux.
+       Sortie en 2400 x 567 et non 2880 : l'original PEXELS mesure
+       2501 px de large, et agrandir une source est exactement ce que
+       D-660 interdit. 2400 est le plus grand multiple utile en deca. */
+    { n: 17, emploi: "boite aux lettres 4,235:1 — registre de trois fenetres cintrees, enduit ocre", pano: true,
+      src: "url:" + PX + "/20753324/pexels-photo-20753324.jpeg?auto=compress&cs=tinysrgb&w=2560", licence: LIC_PX,
+      page: "https://www.pexels.com/photo/20753324/", fen: { x: 0, y: 0.50, w: 1 } }
   ]
 };
 
@@ -804,6 +849,18 @@ const NORMAL = { w: 960, h: 720 };
    2:3 en 4:3 jette la moitie du geste. 1000 x 1400, soit 5:7, la
    proportion d'une pleine page de revue. */
 const PORTRAIT = { w: 1000, h: 1400 };
+/* `portraitHaut` — 3:5, plus etroit que la pleine page de revue.
+   Il sert aux COLONNES pleine hauteur : un ecran de 1440 x 900 dont
+   une colonne de 540 va du haut au bas de la fenetre demande 3:5, et
+   recadrer un 5:7 en CSS laisserait le hors-champ DANS le fichier. */
+const PORTRAIT_HAUT = { w: 1080, h: 1800 };
+/* `pano` — 4,235 : 1, la BOITE AUX LETTRES de l'immobilier. C'est
+   exactement 1440 / 340 : la bande occupe toute la largeur de l'ecran
+   de secteur et 340 px de sa hauteur. Recadrer un 16/9 en CSS pour
+   obtenir cette proportion laisserait les deux tiers du fichier hors
+   champ — et un `object-position` ne recadre PAS le fichier (piege
+   60). 2400 px et non 2880 : voir le commentaire de `immobilier-17`. */
+const PANO = { w: 2400, h: 567 };
 
 const j = (u) => new Promise((ok, no) => {
   https.get(u, { headers: { "user-agent": "aped-secteurs-sites" } }, (r) => {
@@ -890,7 +947,7 @@ for (const secteur of aFaire) {
     const dest = path.join(SORTIE, `${secteur}-${t.n}.webp`);
     REGISTRE.push({ fichier: path.relative(RACINE, dest).replace(/\\/g, "/"), emploi: t.emploi, source: t.src, page: t.page, licence: t.licence });
     if (fs.existsSync(dest) && !FORCER) { console.log("·", path.basename(dest).padEnd(22), "deja present — on n'y touche pas"); continue; }
-    const dim = t.xl ? XL : t.large ? LARGE : t.portrait ? PORTRAIT : NORMAL;
+    const dim = t.pano ? PANO : t.xl ? XL : t.large ? LARGE : t.portraitHaut ? PORTRAIT_HAUT : t.portrait ? PORTRAIT : NORMAL;
     const f = await resoudre(t.src);
     let res;
     if (t.src.startsWith("ph:")) {

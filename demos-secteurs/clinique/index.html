@@ -4,29 +4,57 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<meta name="description" content="Écran de démonstration : la prise de rendez-vous d'une clinique multidisciplinaire fictive.">
-<meta name="theme-color" content="#EEF4F8">
+<meta name="description" content="Écran de démonstration : une clinique multidisciplinaire fictive, trois métiers sous un même toit.">
+<meta name="theme-color" content="#F2F1EC">
 <link rel="icon" href="data:,">
 
 <!-- L'INSTANT DE CAPTURE, déclaré par l'écran lui-même.
      `tools/ecrans-secteurs.mjs` met TOUTES les animations en pause et
      pose leur temps local à cette valeur : deux passes rendent la même
-     image. 600 ms = 260 ms de délai + 340 ms de course sur l'anneau. -->
-<meta name="aped-instant" content="600">
+     image.
 
-<title>Clinique du Riverain — prise de rendez-vous (démonstration)</title>
+     620 ms = 300 ms de délai + 320 ms de course sur une arrivée de
+     900 ms en `cubic-bezier(.4,0,.2,1)`. Le progrès temporel vaut
+     0,356 ; la courbe rend 0,514. Le curseur d'heure est donc arrêté
+     à 97 px de sa cible sur un pas de 200 — au milieu de l'intervalle,
+     exactement entre « 8 h 15 » et « 10 h 30 ». Un geste de 176 × 18
+     déplacé de 97 px : au-dessus des deux planchers du piège 71
+     (12 px de plus petite dimension, 40 px de déplacement). -->
+<meta name="aped-instant" content="620">
+
+<title>Clinique du Riverain — trois métiers, un seul agenda (démonstration)</title>
 
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/outfit-3.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/outfit-1.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/manrope-1.woff2" crossorigin>
+<link rel="preload" as="image" href="../../images/secteurs-sites/clinique-8.webp" fetchpriority="high">
 
 <style>
 /* ══════════════════════════════════════════════════════════════
    CLINIQUE DU RIVERAIN — un seul écran, 1440 × 900, arrêté.
    Plan : demos-secteurs/plans/clinique.md — il fait autorité.
 
+   LA CELLULE DE CE MÉTIER, ET ELLE EST VERROUILLÉE (MATRICE-DOUZE 09)
+     · os haute lumière + UN sarcelle saturé — seul écran clair à
+       accent saturé des douze ;
+     · sans-serif humaniste à très grande taille, formes douces ;
+     · un portrait humain qui déborde sur un tiers de l'écran, et le
+       titre le CHEVAUCHE — seul écran des douze à porter un visage ;
+     · rayon assumé : 220 px sur la colonne, 999 sur ce qui s'actionne.
+       Rien entre les deux. Un 8 px par défaut est ce qui a coulé la
+       version précédente.
+
+   CE QUI A ÉTÉ RETIRÉ, ET POURQUOI
+   La version du 2026-08-01 était une carte de tableau de bord SaaS
+   posée au centre-droite : anneau « 2/3 », rail de trois étapes, sept
+   capsules de jour, six capsules d'heure, vignette photo de 3,6 % de
+   l'écran, titre à 68 px, texte à 13 px partout. Dix blocs, aucun
+   dominant, aucun moment fort nommable. Le contenu — trois métiers,
+   une prise de rendez-vous — était bon ; sa mise en page était un
+   composant de bibliothèque. Il reste ici quatre blocs et un visage.
+
    Deux familles, trois faces, six fichiers. Aucune requête tierce :
-   polices et photographie viennent du dépôt.
+   polices et photographie viennent du dépôt. Aucun script.
    ══════════════════════════════════════════════════════════════ */
 
 @font-face{font-family:"outfit";src:url("../../fonts/demos/outfit-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
@@ -36,12 +64,21 @@
 @font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"manrope";src:url("../../fonts/demos/manrope-1.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 
+/* ── LA PALETTE : DEUX TEINTES, QUATRE VALEURS ──────────────────
+   L'os n'est pas blanc — un blanc pur appartient à la coiffure
+   (03, noir et blanc pur). L'os est chaud, très haut en lumière, et
+   c'est lui qui fait chanter la seule couleur saturée de l'écran.
+   Aucun bleu : #046A5E est à 172° de teinte, franchement vert-bleu.
+   Aucun orange, aucun minium, aucun ciment. */
 :root{
-  --glacier:#EEF4F8;  --givre:#F7FAFC;      --blanc:#FFFFFF;
-  --bleu:#1B4F7A;     --bleu-appui:#0F3B5F; --bleu-pale:#DCE9F2;
-  --filet:#C2D8E8;    --filet-fin:#E1EBF2;  --mat:#F2F6F9;
-  --menthe:#7FBFA8;   --menthe-pale:#E4F2EC;
-  --encre:#20303A;    --ardoise:#48657A;
+  --os:#F2F1EC;              /* le champ, deux tiers de l'écran         */
+  --os-clair:#FAF9F5;        /* le titre là où il passe sur la colonne  */
+  --encre:#10201E;           /* 14,9:1 sur l'os                          */
+  --encre-doux:#3B4A47;      /* 8,3:1 sur l'os — le chapeau              */
+  --sarcelle:#046A5E;        /* l'accent : 5,7:1 sur l'os                */
+  --sarcelle-fonce:#063A34;  /* la masse de la colonne : 11,2:1 en os    */
+  --pas:200px;               /* le pas des créneaux, et du curseur       */
+  --couture:744px;           /* x 840 de l'écran, moins le retrait 96    */
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -49,551 +86,341 @@ html,body{margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 
 body{
-  background:var(--glacier);
+  background:var(--os);
   color:var(--encre);
   font-family:"manrope",system-ui,sans-serif;
   font-weight:400;
   overflow-wrap:break-word;
-  display:flex;flex-direction:column;min-height:100vh;
 }
 
-/* Marge auto en flex : elle absorbe l'espace libre POSITIF et retombe
-   à 0 quand il est négatif — jamais de débordement inatteignable en
-   haut sur une fenêtre plus courte que 900 px. */
 .ecran{
   position:relative;
-  width:100%;
-  height:900px;
-  margin-block:auto;
-  /* À 1440 la marge vaut exactement 96 px, la cote du plan ; au-delà,
-     la composition reste une bande de 1248 px centrée plutôt que de
-     s'étirer en deux blocs séparés par 600 px de vide. */
-  --marge:max(96px, calc((100% - 1248px) / 2));
+  min-height:100vh;
+  overflow:hidden;
+  padding:44px 96px 40px;
+}
+
+/* ══ LA COLONNE — le tiers de droite, et le seul visage des douze ══
+   600 × 900 = 41,7 % de l'écran. Elle saigne en haut, en bas et à
+   droite : ce qui la borne est le bord de la fenêtre, pas une marge.
+   Le rayon 220 en haut à gauche est un PARTI, pas un adoucissement :
+   à 0,29 il pèse encore 64 px, et comme il tombe dans la bande la
+   plus SOMBRE de la colonne, il se découpe sur l'os — un rayon posé
+   sur une zone pâle n'aurait rien découpé du tout.
+
+   LE TRAITEMENT, EN TROIS COUCHES
+   1. la photographie, désaturée, contrastée d'un cheveu ;
+   2. un aplat sarcelle en `mix-blend-mode: color` — il prend la
+      teinte et la saturation de l'accent, garde la luminance de la
+      photographie. On obtient un monochrome sarcelle, pas un voile ;
+   3. un voile en L : plein sur les 195 px de GAUCHE, plein sur le
+      bas. C'est lui qui donne à la colonne sa masse — sans quoi un
+      portrait en haute lumière rend une colonne pâle, et l'écran
+      retombe dans la bouillie grise qui l'a fait tomber à 5.
+
+   POURQUOI EN L, ET PAS UNE SIMPLE BANDE BASSE. Le premier jet posait
+   un voile horizontal sous le menton : il coupait la poitrine d'un
+   trait net en travers de toute la colonne, et il obligeait le titre
+   à descendre sous y 512, ce qui faisait déborder le bas de l'écran.
+   Le L, lui, réserve au titre une bande sombre sur TOUTE la hauteur :
+   le titre peut se poser où la composition le demande, et le visage
+   reste entier et lumineux à droite de cette bande. */
+.colonne{
+  position:absolute; inset:0 0 0 auto;
+  width:600px;
+  border-top-left-radius:220px;
+  overflow:hidden;
+  isolation:isolate;
+  background:var(--sarcelle-fonce);
+  z-index:0;
+}
+.colonne img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover; object-position:50% 0;
+  filter:grayscale(1) contrast(1.22) brightness(.83);
+}
+.colonne .teinte{
+  position:absolute; inset:0;
+  background:var(--sarcelle);
+  mix-blend-mode:color;
+  opacity:.58;
+}
+.colonne .voile{
+  position:absolute; inset:0;
   background:
-    radial-gradient(980px 760px at calc(100% - 350px) 250px, #DCE9F2 0%, rgba(220,233,242,0) 70%),
-    radial-gradient(620px 520px at 300px 840px, #E4F2EC 0%, rgba(228,242,236,0) 72%),
-    var(--glacier);
+    linear-gradient(90deg,
+      var(--sarcelle-fonce) 0,
+      var(--sarcelle-fonce) 172px,
+      rgba(6,58,52,.86) 208px,
+      rgba(6,58,52,.30) 268px,
+      rgba(6,58,52,0) 340px),
+    linear-gradient(180deg,
+      rgba(6,58,52,0) 0,
+      rgba(6,58,52,0) 56%,
+      rgba(6,58,52,.34) 68%,
+      rgba(6,58,52,.86) 79%,
+      var(--sarcelle-fonce) 86%);
 }
+.colonne .signature{
+  position:absolute; right:40px; bottom:34px; margin:0;
+  text-align:right; line-height:22px;
+  font-family:"outfit",system-ui,sans-serif; font-weight:500;
+  font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(250,249,245,.78);
+}
+.colonne .signature b{ font-weight:500; display:block; color:rgba(250,249,245,.94) }
 
-/* ── réinitialisations ─────────────────────────────────────── */
-button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;text-align:inherit}
-a{color:inherit;text-decoration:none}
-ol,ul{margin:0;padding:0;list-style:none}
-p,h1,h2,figure{margin:0}
-hr{border:0;margin:0}
-img{display:block}
-:focus-visible{outline:2px solid var(--bleu);outline-offset:3px}
-
-/* ══ LA BARRE FLOTTANTE — 96 → 1344, y 28, 1248 × 68 ═════════ */
+/* ══ LA BARRE ══════════════════════════════════════════════════
+   Une ligne, pas une boîte : aucun fond, aucun filet, aucune capsule
+   flottante. La capsule flottante appartenait à la version SaaS. */
 .barre{
-  position:absolute;z-index:5;
-  left:var(--marge);right:var(--marge);top:28px;height:68px;
-  border-radius:999px;
-  background:rgba(255,255,255,.68);
-  -webkit-backdrop-filter:blur(20px) saturate(1.25);
-  backdrop-filter:blur(20px) saturate(1.25);
-  box-shadow:0 6px 24px rgba(27,79,122,.07), inset 0 0 0 1px rgba(255,255,255,.85);
-  display:flex;align-items:center;padding:0 32px;
+  position:relative; z-index:3;
+  display:flex; align-items:center;
+  height:52px; max-width:744px;
 }
-.marque{display:flex;align-items:center;gap:12px}
 .sigle{
-  width:32px;height:32px;border-radius:999px;background:var(--bleu);
-  display:flex;align-items:center;justify-content:center;
-  font-family:"outfit",system-ui,sans-serif;font-weight:800;font-size:16px;line-height:1;color:#fff;
+  margin:0; font-family:"outfit",system-ui,sans-serif; font-weight:800;
+  font-size:20px; letter-spacing:-.02em; color:var(--encre); white-space:nowrap;
 }
-.mot{font-family:"outfit",system-ui,sans-serif;font-weight:800;font-size:17px;letter-spacing:-.2px;color:var(--encre)}
-
-/* Centrée sur le milieu de la barre : 517 → 923 à 1440 px. */
-.nav{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:28px}
-.nav a{
-  display:flex;align-items:center;height:34px;border-radius:999px;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:15px;color:var(--ardoise);
-  transition:color 160ms ease, background-color 160ms ease;
+.liens{ display:flex; gap:24px; margin-left:44px; }
+.liens a{
+  font-family:"outfit",system-ui,sans-serif; font-weight:500; font-size:15px;
+  color:var(--encre-doux); text-decoration:none;
+  padding-bottom:3px; border-bottom:1.5px solid transparent;
+  transition:color .18s ease, border-color .18s ease;
 }
-.nav a[aria-current]{padding:0 14px;background:var(--bleu-pale);color:var(--bleu)}
-.nav a:hover{color:var(--bleu)}
-
-.droite{margin-left:auto;display:flex;align-items:center;gap:28px}
-.tel{font-size:14px;color:var(--ardoise)}
-.btn-barre{
-  display:flex;align-items:center;height:44px;padding:0 26px;border-radius:999px;
-  background:var(--bleu);color:#fff;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:15px;
-  cursor:pointer;transition:background-color 180ms ease, transform 180ms ease;
+.liens a:hover,.liens a:focus-visible{ color:var(--sarcelle); border-bottom-color:var(--sarcelle) }
+/* L'anneau de focus est ÉCRIT, pas laissé au navigateur : l'anneau
+   par défaut fait 1 px d'un gris qui disparaît sur l'os. */
+.liens a:focus-visible{ outline:2px solid var(--sarcelle); outline-offset:5px }
+.tel{
+  margin:0 28px 0 auto; font-size:15px; color:var(--encre-doux); white-space:nowrap;
 }
-.btn-barre:hover{background:#16405F;transform:translateY(-1px)}
-.btn-barre:active{transform:translateY(0)}
-
-/* ══ LA SCÈNE ════════════════════════════════════════════════ */
-.scene{position:absolute;inset:0;z-index:1}
-
-/* ── LA COLONNE DE GAUCHE — x 96, de y 136 à 866 ───────────── */
-.colonne{position:absolute;z-index:2;left:var(--marge);top:136px;width:520px}
-
-.demo-pastille{
-  display:inline-flex;align-items:center;height:30px;padding:0 15px;
-  border:1px solid var(--filet);border-radius:999px;background:transparent;
-  font-size:12.5px;line-height:1;color:var(--ardoise);
+.cta{
+  display:inline-flex; align-items:center; justify-content:center;
+  height:52px; margin-left:auto; padding:0 28px; border-radius:999px;
+  background:var(--sarcelle); color:#FFFFFF;
+  font-family:"outfit",system-ui,sans-serif; font-weight:500; font-size:16px;
+  text-decoration:none; white-space:nowrap;
+  transition:background-color .18s ease, transform .18s ease;
 }
+.cta:hover,.cta:focus-visible{ background:var(--sarcelle-fonce); transform:translateY(-2px) }
+.cta:focus-visible{ outline:2px solid var(--sarcelle-fonce); outline-offset:4px }
 
-.titre{
-  margin-top:36px;
-  font-family:"outfit",system-ui,sans-serif;font-weight:800;
-  font-size:68px;line-height:64px;letter-spacing:-2px;color:var(--encre);
-}
-
-.sous-titre{margin-top:34px;max-width:476px;font-size:17px;line-height:27px;color:var(--ardoise)}
-
-.disciplines{margin-top:40px;display:flex;gap:10px}
-.disciplines li{
-  display:flex;align-items:center;gap:8px;height:40px;padding:0 15px;
-  border:1px solid var(--filet);border-radius:999px;background:#fff;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:14px;color:var(--encre);
-}
-.pt{width:8px;height:8px;border-radius:999px;flex:0 0 auto}
-.disciplines li:nth-child(1) .pt{background:var(--bleu)}
-.disciplines li:nth-child(2) .pt{background:var(--menthe)}
-.disciplines li:nth-child(3) .pt{background:#9CC2DA}
-
-.btn-primaire{
-  margin-top:32px;
-  display:flex;align-items:center;justify-content:center;
-  width:208px;height:56px;border-radius:999px;
-  background:var(--bleu);color:#fff;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:16px;
-  box-shadow:0 10px 22px -8px rgba(27,79,122,.45);
-  cursor:pointer;transition:background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
-}
-.btn-primaire:hover{background:#16405F;transform:translateY(-2px);box-shadow:0 16px 28px -10px rgba(27,79,122,.5)}
-.btn-primaire:active{transform:translateY(0)}
-
-/* La photographie : 264 × 176, soit 3,6 % de la surface de l'écran.
-   Le fichier fait 1920 × 1080 ; le recadrage du plan (x 20 → 920,
-   y 380 → 980) se fait ICI, à l'échelle 264/900 = 0,29333 — on garde
-   la baie vitrée et les dossiers de sièges, on coupe la silhouette
-   floue et le panneau vert du fond de corridor. Les attributs
-   width/height portent les dimensions RÉELLES du fichier, comme
-   l'exige le contrôle ; le CSS, lui, cadre. */
-.vignette{
-  position:relative;isolation:isolate;overflow:hidden;
-  margin-top:40px;width:264px;height:176px;border-radius:24px;
-  box-shadow:0 16px 36px -12px rgba(27,79,122,.28);
-}
-.vignette img{
-  position:absolute;left:-5.87px;top:-111.47px;
-  width:563.2px;height:316.8px;max-width:none;
-  filter:saturate(.6) brightness(1.07);
-}
-.vignette::before{
-  content:"";position:absolute;inset:0;z-index:1;
-  background:#BFD8E8;opacity:.12;mix-blend-mode:color;
-}
-@supports not (mix-blend-mode: color){ .vignette::before{mix-blend-mode:normal;opacity:.10} }
-.vignette::after{
-  content:"";position:absolute;inset:0;z-index:2;border-radius:24px;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.9);
-}
-
-/* ── LA PLAQUE — 800 → 1392, y 92 → 828. Aucune ombre : le liseré
-      qu'elle laisse dépasser EST la preuve de superposition. ──── */
-.plaque{
-  position:absolute;z-index:1;
-  right:calc(var(--marge) - 48px);top:92px;width:592px;height:736px;
-  border-radius:32px;background:rgba(220,233,242,.55);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.72);
-}
-
-/* ── LA CARTE — 736 → 1344, y 132 → 776 ────────────────────── */
-.carte{
-  position:absolute;z-index:2;
-  right:var(--marge);top:132px;width:608px;height:644px;
-  border-radius:24px;
-  background:rgba(255,255,255,.82);
-  -webkit-backdrop-filter:blur(24px) saturate(1.3);
-  backdrop-filter:blur(24px) saturate(1.3);
-  box-shadow:
-    0 2px 8px rgba(27,79,122,.06),
-    0 40px 80px -24px rgba(27,79,122,.22),
-    0 0 0 1px rgba(27,79,122,.07),
-    inset 0 0 0 1px rgba(255,255,255,.9);
-}
-/* Un moteur sans flou de verre voit deux surfaces opaques — jamais
-   une carte transparente posée sur du texte illisible. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
-  .barre{background:rgba(255,255,255,.93)}
-  .carte{background:rgba(255,255,255,.96)}
-}
-
-/* En-tête de carte : anneau à (32,32), bloc de titre à x 224. Le
-   milieu du bloc tombe sur le centre de l'anneau, à un pixel près. */
-.tete{position:absolute;left:32px;top:32px;display:flex;align-items:flex-start}
-.anneau{position:relative;width:112px;height:112px;flex:0 0 auto}
-.anneau svg{display:block;transform:rotate(-90deg)}
-.piste{fill:none;stroke:var(--bleu-pale);stroke-width:8}
-.arc{
-  fill:none;stroke:var(--bleu);stroke-width:8;stroke-linecap:round;
-  stroke-dasharray:326.726;
-  /* L'ÉTAT DE REPOS EST L'INFORMATION : 66,7 %, deux étapes sur
-     trois. L'animation ne fait que retarder cette valeur-là. */
-  stroke-dashoffset:108.9;
-  animation:tracer 1100ms cubic-bezier(.22,.61,.36,1) 260ms both;
-}
-@keyframes tracer{ from{stroke-dashoffset:326.726} to{stroke-dashoffset:108.9} }
-
-/* NOTE D'EXÉCUTION — une cote du plan corrigée au plus près.
-   Le plan annonce « à 600 ms l'arc est à ≈ 31 %, il s'arrête vers
-   quatre heures ». Ce chiffre est l'avancement LINÉAIRE (340/1100),
-   pas celui de la courbe qu'il prescrit lui-même : avec
-   cubic-bezier(.22,.61,.36,1), 340 ms de course rendent 68,6 % du
-   parcours, donc ≈ 46 % du cercle, et l'arc s'arrête vers cinq
-   heures et demie. On garde les PARAMÈTRES du plan (1100 ms, 260 ms
-   de délai, cette courbe, 326,7 → 108,9) et son instant de capture
-   (600 ms) : ce sont les cotes premières, le pourcentage n'en était
-   qu'une conséquence, et elle était mal calculée. L'exigence qui
-   compte tient : sur l'image arrêtée l'anneau est franchement
-   inachevé contre sa piste pâle, il lui reste 75° de course. */
-
-.anneau-txt{
-  position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
-  text-align:center;line-height:1;white-space:nowrap;
-  font-family:"outfit",system-ui,sans-serif;
-}
-.anneau-txt .n{font-weight:800;font-size:32px;color:var(--bleu)}
-.anneau-txt .d{font-weight:500;font-size:16px;color:var(--ardoise)}
-
-.entete{margin-left:80px;margin-top:17px}
+/* ══ LE CHAPEAU ════════════════════════════════════════════════
+   Le seul énoncé qui doit se LIRE à 0,29 : 36 px. Tout le reste du
+   texte courant est à 12 px et c'est de la TEXTURE, composée comme
+   telle — un gris homogène, jamais une information qu'on croit lire.
+   Le vide de 200 px au-dessus n'est pas un oubli : il se compose
+   contre le visage, qui occupe exactement la même bande. */
 .surtitre{
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;
-  font-size:12px;line-height:14px;letter-spacing:.1em;color:var(--ardoise);
+  position:relative; z-index:3;
+  margin:72px 0 0; max-width:640px;
+  font-family:"outfit",system-ui,sans-serif; font-weight:500;
+  font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--sarcelle);
 }
-.titre-carte{
-  margin-top:8px;
-  font-family:"outfit",system-ui,sans-serif;font-weight:800;
-  font-size:26px;line-height:30px;color:var(--encre);
+.chapeau{
+  position:relative; z-index:3;
+  margin:20px 0 0; max-width:700px;
+  font-size:36px; line-height:46px; letter-spacing:-.012em;
+  color:var(--encre-doux);
 }
-.sousligne{margin-top:8px;font-size:14px;line-height:20px;color:var(--ardoise)}
 
-/* ── LE RAIL DES TROIS ÉTAPES — pastilles centrées à y 313 ──── */
-.rail{position:absolute;left:32px;right:32px;top:164px;height:62px}
-.rail::before,.rail::after{content:"";position:absolute;top:16px;height:2px}
-/* Les centres du plan — 816 · 1036 · 1256 — sont en coordonnées de
-   PAGE ; le rail, lui, part déjà à x 768. On retranche donc les 32 px
-   de retrait de la carte : 48 · 268 · 488. Sans ça « Vos coordonnées »
-   déborde la zone utile de 23 px. */
-.rail::before{left:65px;width:186px;background:var(--menthe)}
-.rail::after{left:285px;width:186px;background:var(--bleu-pale)}
-.etape{
-  position:absolute;top:0;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:14px;width:max-content;
-}
-.etape:nth-child(1){left:48px}
-.etape:nth-child(2){left:268px}
-.etape:nth-child(3){left:488px}
-.past{
-  position:relative;width:34px;height:34px;border-radius:999px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:"outfit",system-ui,sans-serif;font-weight:800;font-size:14px;line-height:1;
-}
-.faite .past{background:var(--menthe)}
-.courante .past{background:var(--bleu);color:#fff}
-/* « halo 1 px à 6 px » : l'anneau se pose à 6 px du bord, il ne
-   grossit pas la pastille. */
-.courante .past::after{
-  content:"";position:absolute;inset:-7px;border:1px solid var(--bleu-pale);border-radius:999px;
-}
-.attente .past{background:var(--bleu-pale);color:var(--bleu)}
-.lib{
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;
-  font-size:12.5px;line-height:14px;color:var(--ardoise);white-space:nowrap;
-}
-.courante .lib{color:var(--encre)}
+/* ══ LE TITRE — 124 px, ET IL TRAVERSE LE PORTRAIT ═════════════
+   124 px sur un interligne de 112 : 0,90. Outfit 800 a des bols
+   ronds au compas ; à cette taille c'est ce qui fait la douceur, et
+   c'est ce qu'aucun des onze autres ne porte.
 
-/* ── LA LIGNE DE SEMAINE — y 386 → 414 ─────────────────────── */
-.semaine{position:absolute;left:32px;right:32px;top:254px;height:28px;display:flex;align-items:center}
-.semaine h2{
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;
-  font-size:12px;line-height:1;letter-spacing:.1em;color:var(--ardoise);
+   LA COUTURE. Le titre change de couleur à x 900 — l'encre sur l'os,
+   l'os sur la colonne. Deux calques du MÊME texte, découpés par
+   `clip-path` de part et d'autre de la couture. Deux calques, et pas
+   un dégradé sur `background-clip:text` : un calque garde une vraie
+   propriété `color`, qu'un outil de contraste peut lire.
+   Aucune lettre n'est tronquée — seule la couleur change (piège 70). */
+.titre{
+  position:relative; z-index:3;
+  margin:148px 0 0;
+  font-family:"outfit",system-ui,sans-serif; font-weight:800;
+  font-size:144px; line-height:130px; letter-spacing:-.05em;
 }
-.fleches{margin-left:auto;display:flex;gap:8px}
-.fleche{
-  width:28px;height:28px;border-radius:999px;border:1px solid var(--filet);
-  display:flex;align-items:center;justify-content:center;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:15px;line-height:1;color:var(--bleu);
-  cursor:default;transition:background-color 160ms ease, border-color 160ms ease;
+.titre span{ display:block }
+.titre .droite{
+  position:absolute; inset:0;
+  color:var(--os-clair);
+  clip-path:inset(0 0 0 var(--couture));
 }
-.fleche:hover{background:var(--givre);border-color:#A9C6DA}
+.titre .gauche{
+  color:var(--encre);
+  clip-path:inset(0 calc(100% - var(--couture)) 0 0);
+}
 
-/* ── LA BANDE DES SEPT JOURS — y 414 → 488 ─────────────────── */
-.jours{
-  position:absolute;left:32px;right:32px;top:282px;
-  display:grid;grid-template-columns:repeat(7,68px);justify-content:space-between;
+/* ══ LES CRÉNEAUX — le geste, et le dispositif sans script ═════
+   Trois heures d'un même jour, en 34 px : la seconde chose qui se
+   lit à 0,29. Le jour et le libellé sont à 12 px, donc de la texture.
+
+   LE GESTE : le curseur ARRIVE sur l'heure retenue. Il part du
+   premier créneau et parcourt un pas de 200 px en 900 ms. Sur
+   l'image arrêtée (620 ms) il est à mi-chemin, dans l'intervalle,
+   pendant que « 10 h 30 » est déjà en sarcelle : on voit vers quoi
+   il va. Un seul verbe, un seul mouvement.
+
+   Son état de REPOS est l'état FINAL — sous le créneau retenu. Rien
+   ne se perd quand l'animation ne joue pas : l'heure retenue est
+   écrite trois fois, par sa couleur, par sa graisse et par le
+   curseur. `forwards`, jamais `both` (STANDARD § 2.1). */
+.creneaux{
+  position:relative; z-index:3;
+  margin:34px 0 0; padding:0; border:0;
+  width:calc(2 * var(--pas) + 176px);
+}
+.creneaux legend{
+  padding:0; margin:0 0 14px;
+  font-family:"outfit",system-ui,sans-serif; font-weight:500;
+  font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--encre-doux);
+}
+.grille{ display:grid; grid-template-columns:repeat(3, var(--pas)); }
+.grille label{
+  position:relative;
+  display:flex; flex-direction:column; gap:2px;
+  width:176px; cursor:pointer;
+}
+.grille input{
+  position:absolute; width:1px; height:1px; opacity:0;
+  margin:0; pointer-events:none;
 }
 .jour{
-  height:74px;min-width:0;border-radius:999px;border:1px solid var(--filet);background:#fff;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:12px;line-height:1;color:var(--encre);
-  cursor:pointer;transition:transform 170ms ease, border-color 170ms ease, background-color 170ms ease;
-}
-.jour .pt{width:6px;height:6px;background:var(--menthe)}
-.jour:hover{transform:translateY(-2px);border-color:#A9C6DA;background:var(--givre)}
-.jour.retenue{
-  background:var(--bleu);border-color:var(--bleu);color:#fff;
-  box-shadow:0 8px 18px -6px rgba(27,79,122,.5);
-}
-.jour.retenue .pt{background:#fff}
-.jour.retenue:hover{background:#16405F;border-color:#16405F}
-.jour.fermee{background:transparent;border-color:var(--filet-fin);color:var(--ardoise);cursor:default}
-.jour.fermee:hover{transform:none;background:transparent;border-color:var(--filet-fin)}
-.trait{width:12px;height:2px;background:var(--filet);border-radius:999px}
-
-/* ── LA GRILLE DES SIX HEURES — y 516 → 634 ────────────────── */
-.heures{
-  position:absolute;left:32px;right:32px;top:384px;
-  display:grid;grid-template-columns:repeat(3,172px);gap:14px;justify-content:space-between;
+  font-family:"outfit",system-ui,sans-serif; font-weight:500;
+  font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--encre-doux);
 }
 .heure{
-  height:52px;min-width:0;border-radius:999px;border:1px solid var(--filet);background:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:16px;line-height:1;color:var(--encre);
-  cursor:pointer;transition:transform 170ms ease, border-color 170ms ease, background-color 170ms ease;
+  font-family:"outfit",system-ui,sans-serif; font-weight:500;
+  font-size:34px; line-height:38px; letter-spacing:-.01em;
+  color:var(--encre); white-space:nowrap;
+  transition:color .2s ease;
 }
-.heure:hover{transform:translateY(-2px);border-color:#A9C6DA;background:var(--givre)}
-.heure.retenue{
-  background:var(--bleu);border-color:var(--bleu);color:#fff;
-  box-shadow:0 8px 18px -6px rgba(27,79,122,.45);
-}
-.heure.retenue:hover{background:#16405F;border-color:#16405F}
-.heure.prise{
-  background:var(--mat);border-color:transparent;color:var(--ardoise);cursor:default;
-  text-decoration:line-through;text-decoration-color:#8FA9BA;text-decoration-thickness:1px;
-}
-.heure.prise:hover{transform:none;background:var(--mat);border-color:transparent}
+.grille label:hover .heure{ color:var(--sarcelle) }
+.grille input:checked ~ .heure{ color:var(--sarcelle); font-weight:800 }
+.grille input:focus-visible ~ .heure{ outline:2px solid var(--sarcelle); outline-offset:4px }
 
-/* ── LE PIED DE CARTE ──────────────────────────────────────── */
-.filet{position:absolute;left:32px;right:32px;top:530px;height:1px;background:var(--filet-fin)}
-.pied-rangee{position:absolute;left:32px;right:32px;top:552px;display:flex;align-items:flex-start;gap:16px}
-.recap{
-  font-family:"outfit",system-ui,sans-serif;font-weight:800;
-  font-size:17px;line-height:24px;color:var(--encre);
+.rail{
+  position:relative; height:18px; margin-top:16px;
+  animation:arrivee .9s cubic-bezier(.4,0,.2,1) .3s forwards;
 }
-.recap-detail{font-size:13.5px;line-height:18px;color:var(--ardoise)}
-.btn-carte{
-  margin-left:auto;flex:0 0 auto;
-  display:flex;align-items:center;justify-content:center;
-  width:152px;height:52px;border-radius:999px;background:var(--bleu);color:#fff;
-  font-family:"outfit",system-ui,sans-serif;font-weight:500;font-size:16px;
-  box-shadow:0 10px 22px -8px rgba(27,79,122,.45);
-  cursor:pointer;transition:background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+.curseur{
+  position:absolute; top:0; left:0;
+  width:176px; height:18px; border-radius:999px;
+  background:var(--sarcelle);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
 }
-.btn-carte:hover{background:#16405F;transform:translateY(-2px);box-shadow:0 16px 28px -10px rgba(27,79,122,.5)}
-.btn-carte:active{transform:translateY(0)}
+.creneaux:has(#c1:checked) .curseur{ transform:translateX(0) }
+.creneaux:has(#c2:checked) .curseur{ transform:translateX(var(--pas)) }
+.creneaux:has(#c3:checked) .curseur{ transform:translateX(calc(2 * var(--pas))) }
+@keyframes arrivee{ from{ transform:translateX(calc(-1 * var(--pas))) } }
 
-/* La phrase la plus importante de la carte : jamais un gris pâle. */
-.mention{
-  position:absolute;left:32px;right:32px;top:610px;
-  text-align:center;font-size:11.5px;line-height:16px;color:var(--ardoise);
+/* ── LES GARDE-FOUS DU STANDARD § 2.3 ──────────────────────────
+   L'état de repos EST l'état final : sans animation le curseur est
+   déjà sous l'heure retenue, et aucune information ne se perd. */
+@supports not (selector(:has(*))){
+  .curseur{ transform:translateX(var(--pas)) }
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation:none !important; transition:none !important }
 }
 
-/* ══ SOUS 1360 px, LA COMPOSITION SE RÉORGANISE ═══════════════
-   Celle de 1440 est celle qu'on photographie : elle n'est pas
-   touchée. Ici tout repasse en flux, la plaque disparaît — elle ne
-   prouve une superposition que s'il reste la place de la voir — et
-   le titre se met à l'échelle de la fenêtre. */
-@media (max-width:1359px){
-  body{display:block}
-  .ecran{
-    height:auto;margin-block:0;padding-bottom:56px;--marge:20px;
-    background:
-      radial-gradient(760px 620px at calc(100% - 120px) 180px, #DCE9F2 0%, rgba(220,233,242,0) 70%),
-      radial-gradient(560px 480px at 120px 92%, #E4F2EC 0%, rgba(228,242,236,0) 72%),
-      var(--glacier);
-  }
-
-  .barre{position:static;margin:20px var(--marge) 0;height:auto;padding:12px 18px;
-         border-radius:30px;flex-wrap:wrap;row-gap:12px;column-gap:16px}
-  /* Pas d'`order` : la barre repliée garde l'ordre de lecture du
-     document — le nom, puis la navigation, puis la commande. */
-  .nav{position:static;transform:none;width:100%;flex-wrap:wrap;gap:6px 22px}
-  .droite{flex-wrap:wrap;gap:12px 20px}
-
-  .scene{position:static}
-
-  .colonne{position:static;width:auto;max-width:660px;margin:34px auto 0;padding:0 var(--marge)}
-  .titre{font-size:min(11.5vw,50px);line-height:1.03;letter-spacing:-1.2px}
-  .sous-titre{max-width:none}
-  .demo-pastille{height:auto;min-height:30px;padding:6px 15px;line-height:1.4}
-  .disciplines{flex-wrap:wrap}
-
-  .plaque{display:none}
-
-  .carte{position:static;width:auto;max-width:608px;height:auto;
-         margin:34px auto 0;padding:26px 22px;
-         display:flex;flex-direction:column;align-items:stretch}
-  .carte>*{position:static;left:auto;right:auto;top:auto;width:auto}
-  .tete{align-items:center;gap:20px}
-  .entete{margin:0}
-  .rail{position:relative;height:auto;margin-top:26px;display:flex;justify-content:space-between}
-  .rail::before{left:calc(16.66% + 20px);width:calc(33.33% - 40px)}
-  .rail::after{left:calc(50% + 20px);width:calc(33.33% - 40px)}
-  .etape{position:static;transform:none;flex:1 1 0;min-width:0;width:auto}
-  .lib{white-space:normal;text-align:center}
-  .semaine{margin-top:22px}
-  .jours{margin-top:10px;grid-template-columns:repeat(7,1fr);gap:6px}
-  .heures{margin-top:20px;grid-template-columns:repeat(3,1fr)}
-  .filet{margin-top:22px}
-  .pied-rangee{margin-top:18px;flex-wrap:wrap;row-gap:14px}
-  .btn-carte{margin-left:auto}
-  .mention{margin-top:16px}
+/* ── SOUS 1200 px : LA COUTURE N'A PLUS DE SENS ────────────────
+   La colonne se retire, le titre redevient d'une seule couleur, et
+   les tailles descendent. Rien ne disparaît : l'écran est composé
+   pour 1440 × 900, il reste lisible partout ailleurs. */
+@media (max-width:1200px){
+  .ecran{ padding:32px 40px 40px }
+  .colonne{ display:none }
+  .titre{ font-size:clamp(46px, 9vw, 108px); line-height:.92; margin-top:48px }
+  .titre .droite{ display:none }
+  .titre .gauche{ clip-path:none }
+  .surtitre{ margin-top:56px }
+  .chapeau{ font-size:clamp(20px, 2.6vw, 34px); line-height:1.3 }
+  .liens{ display:none }
+  .creneaux{ width:100%; max-width:600px; margin-top:40px }
+  .grille{ grid-template-columns:repeat(3, minmax(0,1fr)) }
+  .grille label{ width:100% }
+  .heure{ font-size:clamp(20px, 3.4vw, 34px) }
+  .curseur{ width:32% }
+  .creneaux:has(#c1:checked) .curseur{ transform:translateX(0) }
+  .creneaux:has(#c2:checked) .curseur{ transform:translateX(105%) }
+  .creneaux:has(#c3:checked) .curseur{ transform:translateX(210%) }
+  @keyframes arrivee{ from{ transform:translateX(-105%) } }
 }
-
-@media (max-width:520px){
-  .heures{grid-template-columns:repeat(2,1fr)}
-  .heure{font-size:15px}
-  .jours{gap:4px}
-  .jour{height:64px;font-size:11px;gap:8px}
-  .lib{font-size:11px}
-  .btn-carte{width:100%;margin-left:0}
-  .btn-primaire{width:100%;max-width:280px}
-  .mot{font-size:16px}
-}
-
-/* ══ LE MOUVEMENT COUPÉ — et l'état de repos est l'état FINAL.
-   L'anneau est à 66,7 % dès la première image. L'information est
-   écrite trois fois : l'arc, le « 2/3 » au centre, le rail des trois
-   étapes. Rien ne se perd. ═════════════════════════════════════ */
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation:none !important;transition:none !important}
+@media (max-width:640px){
+  .barre{ flex-wrap:wrap; height:auto; row-gap:16px }
+  .tel{ margin-left:0 }
+  .titre{ letter-spacing:-.03em }
 }
 </style>
 </head>
 
 <body>
-<div class="ecran">
+<main class="ecran">
+
+  <!-- LE PORTRAIT. Aucune plaque, aucun badge, aucun vêtement de
+       soin, aucun nom : une personne de profil devant un mur nu.
+       Elle regarde vers la GAUCHE, c'est-à-dire vers le titre — un
+       regard qui rentre dans la page au lieu d'en sortir.
+       Fichier découpé à la source en 3:5 (1080 × 1800) : un
+       `object-position` ne recadre pas le fichier (piège 60). -->
+  <div class="colonne">
+    <img src="../../images/secteurs-sites/clinique-8.webp" width="1080" height="1800"
+         alt="Une personne de profil devant un mur clair, éclairée par la lumière d'une fenêtre."
+         fetchpriority="high" decoding="async">
+    <span class="teinte" aria-hidden="true"></span>
+    <span class="voile" aria-hidden="true"></span>
+    <p class="signature"><b>000 000-0000</b>Site de démonstration</p>
+  </div>
 
   <header class="barre">
-    <div class="marque">
-      <span class="sigle" aria-hidden="true">R</span>
-      <span class="mot">Clinique du Riverain</span>
-    </div>
-
-    <nav class="nav" aria-label="Navigation principale">
-      <a href="#" aria-current="page">Services</a>
+    <p class="sigle">Clinique du Riverain</p>
+    <nav class="liens" aria-label="Sections">
+      <a href="#">Services</a>
       <a href="#">Approche</a>
-      <a href="#">Vos questions</a>
       <a href="#">Nous joindre</a>
     </nav>
-
-    <div class="droite">
-      <span class="tel">000&nbsp;000-0000</span>
-      <button type="button" class="btn-barre">Prendre rendez-vous</button>
-    </div>
+    <a class="cta" href="#">Prendre rendez-vous</a>
   </header>
 
-  <main class="scene">
+  <p class="surtitre">Clinique multidisciplinaire · démonstration</p>
 
-    <div class="colonne">
-      <p class="demo-pastille">Démonstration — aucune réservation n’est enregistrée</p>
+  <p class="chapeau">Physiothérapie, ostéopathie et nutrition,<br>sous le même toit.</p>
 
-      <h1 class="titre">Trois métiers,<br>une seule prise<br>de rendez-vous.</h1>
+  <h1 class="titre">
+    <span class="gauche">Trois métiers,<br>un seul agenda.</span>
+    <span class="droite" aria-hidden="true">Trois métiers,<br>un seul agenda.</span>
+  </h1>
 
-      <p class="sous-titre">Physiothérapie, ostéopathie et nutrition sous le même toit. Vous choisissez le service, puis l’heure.</p>
-
-      <ul class="disciplines">
-        <li><span class="pt" aria-hidden="true"></span>Physiothérapie</li>
-        <li><span class="pt" aria-hidden="true"></span>Ostéopathie</li>
-        <li><span class="pt" aria-hidden="true"></span>Nutrition</li>
-      </ul>
-
-      <a class="btn-primaire" href="#rendez-vous">Voir les disponibilités</a>
-
-      <figure class="vignette">
-        <img src="../../images/secteurs-sites/clinique-2.webp"
-             width="1920" height="1080"
-             alt="Rangée de sièges le long d’une baie vitrée, lumière du jour."
-             fetchpriority="high" decoding="async">
-      </figure>
+  <fieldset class="creneaux">
+    <legend>Mercredi — places libres</legend>
+    <div class="grille">
+      <label>
+        <input type="radio" name="creneau" id="c1">
+        <span class="jour">matin</span>
+        <span class="heure">8&nbsp;h&nbsp;15</span>
+      </label>
+      <label>
+        <input type="radio" name="creneau" id="c2" checked>
+        <span class="jour">avant-midi</span>
+        <span class="heure">10&nbsp;h&nbsp;30</span>
+      </label>
+      <label>
+        <input type="radio" name="creneau" id="c3">
+        <span class="jour">après-midi</span>
+        <span class="heure">13&nbsp;h&nbsp;45</span>
+      </label>
     </div>
+    <div class="rail"><span class="curseur"></span></div>
+  </fieldset>
 
-    <div class="plaque" aria-hidden="true"></div>
-
-    <section class="carte" id="rendez-vous" aria-labelledby="carte-titre">
-
-      <div class="tete">
-        <div class="anneau">
-          <svg viewBox="0 0 112 112" width="112" height="112" aria-hidden="true" focusable="false">
-            <circle class="piste" cx="56" cy="56" r="52"></circle>
-            <circle class="arc" cx="56" cy="56" r="52"></circle>
-          </svg>
-          <p class="anneau-txt"><span class="n">2</span><span class="d">/3</span></p>
-        </div>
-
-        <div class="entete">
-          <p class="surtitre">PRISE DE RENDEZ-VOUS</p>
-          <h2 class="titre-carte" id="carte-titre">Choisissez votre heure</h2>
-          <p class="sousligne">Physiothérapie · 45 minutes · en clinique</p>
-        </div>
-      </div>
-
-      <ol class="rail">
-        <li class="etape faite">
-          <span class="past" aria-hidden="true">
-            <svg viewBox="0 0 14 14" width="14" height="14" focusable="false">
-              <path d="M2.4 7.4 5.6 10.6 11.6 3.8" fill="none" stroke="#0F3B5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </span>
-          <span class="lib">Le service</span>
-        </li>
-        <li class="etape courante" aria-current="step">
-          <span class="past" aria-hidden="true">2</span>
-          <span class="lib">Le moment</span>
-        </li>
-        <li class="etape attente">
-          <span class="past" aria-hidden="true">3</span>
-          <span class="lib">Vos coordonnées</span>
-        </li>
-      </ol>
-
-      <div class="semaine">
-        <h2>CETTE SEMAINE</h2>
-        <div class="fleches">
-          <button type="button" class="fleche" aria-label="Semaine précédente" aria-disabled="true">‹</button>
-          <button type="button" class="fleche" aria-label="Semaine suivante" aria-disabled="true">›</button>
-        </div>
-      </div>
-
-      <div class="jours" role="group" aria-label="Jours de la semaine">
-        <button type="button" class="jour">lun.<span class="pt" aria-hidden="true"></span></button>
-        <button type="button" class="jour">mar.<span class="pt" aria-hidden="true"></span></button>
-        <button type="button" class="jour retenue" aria-pressed="true">mer.<span class="pt" aria-hidden="true"></span></button>
-        <button type="button" class="jour">jeu.<span class="pt" aria-hidden="true"></span></button>
-        <button type="button" class="jour">ven.<span class="pt" aria-hidden="true"></span></button>
-        <button type="button" class="jour">sam.<span class="pt" aria-hidden="true"></span></button>
-        <button type="button" class="jour fermee" aria-disabled="true">dim.<span class="trait" aria-hidden="true"></span></button>
-      </div>
-
-      <div class="heures" role="group" aria-label="Heures offertes le mercredi">
-        <button type="button" class="heure">8&nbsp;h&nbsp;15</button>
-        <button type="button" class="heure">9&nbsp;h&nbsp;00</button>
-        <button type="button" class="heure retenue" aria-pressed="true">10&nbsp;h&nbsp;30</button>
-        <button type="button" class="heure prise" aria-disabled="true">11&nbsp;h&nbsp;15</button>
-        <button type="button" class="heure">13&nbsp;h&nbsp;45</button>
-        <button type="button" class="heure">15&nbsp;h&nbsp;30</button>
-      </div>
-
-      <hr class="filet">
-
-      <div class="pied-rangee">
-        <div>
-          <p class="recap">Mercredi, 10&nbsp;h&nbsp;30</p>
-          <p class="recap-detail">Physiothérapie · 45&nbsp;min</p>
-        </div>
-        <button type="button" class="btn-carte">Continuer</button>
-      </div>
-
-      <p class="mention">Démonstration — aucune réservation n’est enregistrée.</p>
-
-    </section>
-  </main>
-</div>
+</main>
 </body>
 </html>
