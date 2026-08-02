@@ -245,6 +245,20 @@ Cause et correctif : `PIEGES.md`.
 50. **Deux pages de hauteurs différentes ne peuvent pas partager une course en pixels** — verrouiller en pourcentage, ou piloter.
 51. `:focus-visible` ne s'arme pas sur un `focus()` de script — pour mesurer l'anneau, tabuler.
 52. Une image déclarée n'est pas une image chargée — `complete && naturalWidth > 0`, pas la présence de l'attribut.
+53. Une hauteur lue sur la première tuile d'une pile n'est pas la hauteur de la pile.
+54. **Dix images ne font pas un mouvement** — c'est l'écart de pixels entre deux consécutives qui le prouve, pas leur nombre.
+55. Un fichier de sortie abandonné ne disparaît pas tout seul : une passe qui n'écrit plus laisse l'ancien, et l'outil suivant le lit.
+56. `requestAnimationFrame` sur un écouteur de défilement met le contenu en retard d'une image.
+57. Une planche-contact ne répond pas à « une marque est-elle lisible ? » — ouvrir le fichier en pleine résolution.
+58. **Une fenêtre de recadrage porte sur la LARGEUR** : sur une source en portrait, elle photographie le ciel.
+59. `position: sticky` n'est pas `position: fixed`, et une sonde qui ne lit que `fixed` la laisse passer.
+60. Un `object-position`, un voile ou une bande étroite ne recadrent PAS le fichier — ce qu'il porte y est toujours.
+61. Chaque métier porte sa marque autrement : la chercher au même endroit ne suffit pas.
+62. **Un outil qui écrit un registre l'écrase sur une passe partielle** — fusionner, ou refuser d'écrire.
+63. Le pli n'est pas une mesure de page, et une capture pleine page ne le montre pas.
+64. **`animation-fill-mode: both` rend la moitié du site VIDE en capture pleine page** — `forwards`, jamais `both`.
+65. `view()` mesure la boîte de l'élément QU'ELLE ANIME, pas celle qu'on regarde.
+66. `overflow-x: clip` cache un vrai défaut à une sonde `scrollWidth`.
 67. **Une seule bande plate n'est pas une capture plate** — tout écran bien composé a une bande calme (un capot, un ciel, un bandeau). Juger sur la MÉDIANE, ou sur trois bandes plates de suite. Un seuil posé sur le minimum mesure le cas particulier.
 68. **Geler les animations gèle aussi le préchargeur** — un compteur arrêté à « 89 % » n'est pas un premier écran. Vérifier que l'état qu'on fige est celui de la chose, pas de ce qui la précède.
 69. **Un dépôt voisin peut être en chantier pendant qu'on le photographie** — lire son `git status` et l'horodatage de ses fichiers avant de conclure d'une erreur de build.
