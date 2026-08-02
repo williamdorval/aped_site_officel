@@ -106,19 +106,22 @@ img{display:block}
    bois à toit sombre, brunante bleue.
 
    Le traitement est mesuré, pas choisi. Composite relevé en canvas
-   avec le recouvrement exact : la neige du sol passe de #69b8eb
-   (Y 0,433, saturation 55 %) à #475b67 (Y 0,098, 31 %) — bleu > vert
-   > rouge, donc LA NEIGE RESTE BLEUE ; la neige des branches tombe à
-   #263238 ; les troncs à #263136, froids eux aussi.
+   avec le recouvrement exact, au réglage EN PLACE
+   (`brightness(.82)`) : la neige du sol passe de #69b8eb (Y 0,433,
+   saturation 55 %) à #607888 (Y 0,177, 29 %) — bleu > vert > rouge,
+   donc LA NEIGE RESTE BLEUE ; la neige des branches tombe à #324047 ;
+   les troncs à #333f45, froids eux aussi.
 
-   CE QU'IL RESTE DE CHAUD, ET IL EST COMPTÉ : 61 pixels sur
-   1 296 000 — 0,047 ‰ — satisfont « rouge > vert et rouge > bleu ».
+   CE QU'IL RESTE DE CHAUD, ET IL EST COMPTÉ : 650 pixels sur
+   1 296 000 — 0,502 ‰ — satisfont « rouge > vert et rouge > bleu ».
    Ce sont les carreaux allumés des pavillons ; le plus saturé rend
-   #392c24, soit 37 %. `saturate(.26)` les ramène à ZÉRO, et les deux
-   planches sont indiscernables à l'œil : on garde .34 parce que ces
-   soixante-et-un pixels sont la seule chose de l'écran qui dise
-   qu'il y a quelqu'un, et parce que .26 rabat aussi la saturation de
-   la neige de 31 à 27 %.
+   #4a362a, soit 43 %. `saturate(.26)` les ramènerait à 101 px, et les
+   deux planches sont indiscernables à l'œil : on garde .34 parce que
+   ces pixels-là sont la seule chose de l'écran qui dise qu'il y a
+   quelqu'un — et c'est exactement ce que la passe du côte-à-côte
+   demandait en remontant la luminosité. À `brightness(.60)` il n'y en
+   avait que 61 (0,047 ‰) ; le compte suit la luminosité, il se
+   reprend avec `hotel-chaud2`.
 
    Le compte a d'abord rendu 2 798 pixels chauds, et c'était FAUX :
    ils étaient tous posés sur les lignes de texte. Chromium sous
