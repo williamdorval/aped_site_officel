@@ -1093,3 +1093,50 @@ photographié entre deux enregistrements. **Avant de conclure d'une
 capture prise sur un projet qu'on ne pilote pas, regarder son
 `git status` et l'horodatage de ses fichiers.** Un arbre sale est un
 avertissement, pas un décor.
+
+### 56 · Un masque figé à mi-course sur du TEXTE ne se lit pas comme un mouvement
+
+**Le verdict.** Sur la planche des douze, deux écrans rendaient un
+titre coupé net : « deux doigt | une » pour le salon de coiffure,
+« ne s'ouvre avant d'être e| » pour le cabinet. Les deux étaient
+**conformes à leur plan** : un masque de révélation photographié à
+mi-course, exactement à l'instant demandé.
+
+**Ce que voit un visiteur.** Pas un mot en train d'apparaître : un mot
+**tronqué**. Une page cassée, un `overflow` mal réglé, une police qui
+n'a pas chargé. Le mouvement n'est lisible que si l'œil a vu l'état
+d'avant ou celui d'après — sur une image arrêtée, il n'a ni l'un ni
+l'autre, et il conclut au défaut.
+
+C'est le même raisonnement que l'interdit du scrub d'opacité sur du
+texte (`CLAUDE.md`) : **une animation n'a pas d'état de repos, elle a
+l'état où on la photographie.** Ce qui vaut pour l'opacité vaut pour
+le `clip-path`.
+
+**La règle.** Un geste photographié à mi-course doit être une chose
+dont l'état intermédiaire est **naturellement lisible** :
+une bande qui se remplit, un filet en train d'être tiré, une cote dont
+la flèche n'a pas fini, un chiffre entre deux crans, un volet de
+couleur pleine. **Jamais une lettre coupée en deux.** Si le geste
+porte sur du texte, on le photographie **fini**, et on met le
+mouvement ailleurs.
+
+### 57 · Un geste d'un pixel n'existe plus à l'échelle où on le regarde
+
+L'aperçu du panneau réduit la capture de 1440 à **421 px, soit 0,29**.
+Un filet de 1 px y devient **0,29 px** : le moteur l'étale en un gris
+que personne ne voit. Deux écrans avaient pour seul mouvement un trait
+de 1 px qui se remplit — mesuré, prouvé, cinq états à 63 px d'écart —
+et **invisible là où l'écran est regardé le plus souvent**.
+
+Le mouvement se prouve dans la page ; il se **vend** dans le panneau.
+Les deux échelles ne demandent pas la même chose.
+
+> **La règle : à 1440, un geste photographié doit peser au moins
+> 12 px dans sa plus petite dimension** — une bande, une plaque, un
+> volet, un bloc de couleur. En dessous, il ne survit pas à la
+> réduction, et un écran dont le geste ne survit pas est un écran fixe.
+
+Corollaire : un geste qui repose sur un **déplacement** de moins de
+40 px à 1440 se lit comme du bruit une fois réduit. Ce qui bouge doit
+bouger d'une distance qu'on voit à 0,29.
