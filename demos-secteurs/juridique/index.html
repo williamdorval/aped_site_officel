@@ -11,674 +11,448 @@
      met TOUTES les animations en pause et pose leur temps local à cette
      valeur. Deux passes rendent la même image.
 
-     1900 MS, ET PAS 940. À 940 ms la manchette était saisie à mi-course
-     et rendait « d'être e| » : un mot coupé en deux ne se lit pas comme
-     une révélation, il se lit comme du texte tronqué — piège 56, écrit
-     à partir de cet écran. On photographie donc APRÈS l'impression
-     (finie à 1220 ms) : les trois lignes encrées, les trois arêtes
-     sorties du cadre. Le mécanisme reste dans la page, il joue pour qui
-     arrive ; il n'est simplement plus ce qu'on photographie.
+     CE QU'ON PHOTOGRAPHIE : la plaque de la cellule d'action, tirée de
+     haut en bas, à 66 % de sa course. Un aplat bordeaux de 328 × 176 px,
+     arête franche et horizontale à y = 791, dans une cellule bornée par
+     des filets — le libellé et le numéro déjà couverts, en parchemin sur
+     bordeaux, et 91 px de parchemin nu encore à couvrir dessous.
+     L'arête tombe dans le couloir vide sous le numéro : AUCUN glyphe
+     n'est à cheval. Aucune abscisse ne permettrait cela à une arête
+     verticale — d'où le sens haut → bas.
 
-     À 1900 ms, ce qu'on voit bouger est LA PLAQUE DE COULEUR du bandeau
-     de date, tirée de gauche à droite : 65,0 % de sa course, une barre
-     pleine bordeaux de 936 × 36 px, arête franche à x = 936. Une barre
-     n'a pas de mot à couper, et 36 px de haut font encore 10,4 px une
-     fois l'écran réduit à 421 px — piège 57. -->
-<meta name="aped-instant" content="1900">
+     LA PHRASE, ELLE, EST PHOTOGRAPHIÉE FINIE. Un masque figé à
+     mi-course sur du texte se lit comme un mot tronqué, pas comme une
+     révélation — piège 70, écrit à partir de cet écran même (l'ancienne
+     version rendait « d'être e| »). Un geste qui porte sur du texte se
+     photographie fini ; le mouvement se met sur un APLAT, qui n'a aucun
+     mot à couper.
 
-<!-- `libre-baskerville-1` porte la manchette, donc le LCP. Le sous-
-     ensemble -1 couvre U+0000–00FF (è, ê, é) et U+2000–206F (l'apostrophe
-     courbe) : tout le texte d'affichage de la page y est. -->
-<link rel="preload" href="../../fonts/demos/libre-baskerville-1.woff2" as="font" type="font/woff2" crossorigin>
+     900 ms de retard + 66 % de 1000 ms = 1560. -->
+<meta name="aped-instant" content="1560">
+
+<!-- `playfair-3` porte la phrase à 142 px, donc le LCP. Le sous-ensemble
+     -3 couvre U+0000–00FF (é, è, ê) et U+2000–206F (l'apostrophe
+     courbe) : tout le texte d'affichage romain de la page y est.
+     L'italique (un seul mot) n'est pas préchargé — il se pose au swap
+     sans décaler quoi que ce soit, la boîte de ligne étant fixe. -->
+<link rel="preload" href="../../fonts/demos/playfair-3.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
 /* ============================================================
    CABINET VALLIÈRES — cabinet FICTIF. Un seul écran, 1440 × 900.
-   Une une de quotidien imprimée sur papier rosé. Cinq colonnes de
-   248 px, gouttière 24, marge 52. Rien n'est centré, nulle part.
 
-   TROIS FAMILLES, HUIT FICHIERS — et pas un de plus.
+   LE PARTI, EN UNE PHRASE : une phrase de trois lignes à 142 px
+   commence EN CREUX dans une masse bordeaux qui occupe la moitié
+   haute de l'écran, franchit le bord de la masse, et finit IMPRIMÉE
+   en bordeaux sur le parchemin — le dernier mot en italique.
+   Le contraste n'est pas entre deux couleurs : il est entre une
+   échelle monumentale et un gris de texte.
+
+   TROIS FAMILLES, SIX FICHIERS.
+     · playfair          — l'affichage. La SEULE des familles libres
+                           qui ait à la fois un romain 700 et une
+                           VRAIE italique, et qui ne serve à aucun
+                           des onze autres métiers. `libre-baskerville`
+                           n'a aucun fichier italique : l'italique
+                           étant la matière exclusive de ce métier,
+                           il ne pouvait pas porter l'affichage.
+     · source-serif      — la glose et la trame. Romain ET italique.
+     · libre-baskerville — les libellés capitales interlettrées, et
+                           rien d'autre. Il reste exclusif à ce métier.
+   Aucun monospace : sept des neuf écrans en portent un, et un mono
+   n'est pas la voix d'un cabinet d'avocats.
+
+   QUATRE VALEURS, PAS SIX. Contrastes sur le parchemin #f4e7d3 :
+   encre 14,1:1 · bordeaux 9,4:1 · sourd 6,8:1 · parchemin sur
+   bordeaux 9,4:1. Aucun échec.
+
+   AUCUNE IMAGE. Chez ce métier la matière est le texte ; la seule
+   photographie de l'ancienne version portait une légende qui disait
+   « ce n'est pas l'entrée du cabinet » — un ornement qui s'excuse
+   n'est pas nécessaire, il se retire.
    ============================================================ */
-@font-face{font-family:"libre-baskerville";src:url("../../fonts/demos/libre-baskerville-0.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
-@font-face{font-family:"libre-baskerville";src:url("../../fonts/demos/libre-baskerville-1.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"playfair";src:url("../../fonts/demos/playfair-0.woff2") format("woff2");font-style:italic;font-weight:600;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"playfair";src:url("../../fonts/demos/playfair-1.woff2") format("woff2");font-style:italic;font-weight:600;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"playfair";src:url("../../fonts/demos/playfair-2.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"playfair";src:url("../../fonts/demos/playfair-3.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:"source-serif";src:url("../../fonts/demos/source-serif-0.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"source-serif";src:url("../../fonts/demos/source-serif-1.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:"source-serif";src:url("../../fonts/demos/source-serif-2.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"source-serif";src:url("../../fonts/demos/source-serif-3.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
-@font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:"libre-baskerville";src:url("../../fonts/demos/libre-baskerville-0.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:"libre-baskerville";src:url("../../fonts/demos/libre-baskerville-1.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 
-/* ── SIX VALEURS, PAS SEPT ────────────────────────────────────
-   Contrastes sur le papier : encre 15,7:1 · bordeaux 10,3:1 ·
-   gris 5,9:1 · papier sur bordeaux 10,3:1. Aucun échec, y compris
-   sur le mono de 10 px. */
 :root{
-  --papier:#fff1e5;
-  --encre:#1a1a1a;
-  --bordeaux:#6d1a2c;
-  --gris:#6b5a52;
-  --reglure:#e3cfc0;
-  --reglure-forte:#d9c3b4;
-  --marge:52px;
-  --gouttiere:24px;
+  --parchemin:#f4e7d3;
+  --vin:#6d1a2c;
+  --encre:#23191a;
+  --sourd:#5c4a44;
+
+  /* La grille : marge 64, largeur utile 1312, quatre colonnes de 328.
+     Les trois filets verticaux de la trame tombent à 392, 720, 1048. */
+  /* 64 px à 1440, et jamais moins de 20 px : une marge fixe de 64
+     laissait 192 px utiles à 320, et la phrase — même réduite à
+     31,5 px — débordait de 54 px. Mesuré, pas supposé. */
+  --marge:clamp(20px, 4.44vw, 64px);
+  --utile:1312px;
+
+  /* L'échelle. `min()` et non `clamp()` : à 1440 la valeur nominale
+     s'applique au pixel, et en dessous elle descend sans jamais
+     déborder — de 320 à 1920, aucun débordement horizontal. */
+  --phrase:min(142px, 9.86vw);
+  --ligne:min(130px, 9.03vw);
 }
 
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{background:var(--papier)}
+*{box-sizing:border-box}
+
+html,body{margin:0;padding:0;background:var(--parchemin)}
 body{
-  background:var(--papier);
+  position:relative;
+  min-height:100vh;
   color:var(--encre);
   font-family:"source-serif",Georgia,serif;
-  font-weight:400;
-  overflow-wrap:break-word;   /* filet de sécurité : un mot ne déborde jamais */
   -webkit-font-smoothing:antialiased;
-}
-a{color:inherit;text-decoration:none}
-li{list-style:none}
-:focus-visible{outline:2px solid var(--encre);outline-offset:3px}
-
-/* Les cinq colonnes. `1fr` et pas 248px : à 1440 la division tombe
-   juste — (1440 − 104 − 96) / 5 = 248 — et au-delà la feuille
-   s'élargit comme un papier plus grand, jamais un bloc centré. */
-.bande{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  column-gap:var(--gouttiere);
-  padding-inline:var(--marge);
+  text-rendering:optimizeLegibility;
 }
 
-.mono{
-  font-family:"jetbrains-mono",ui-monospace,monospace;
-  font-weight:500;
-  text-transform:uppercase;
+/* ── LA MASSE ────────────────────────────────────────────────
+   52 % de l'écran en sang-de-bœuf plein, bord à bord. Ce n'est
+   pas un bandeau, ce n'est pas un liseré : c'est la moitié de la
+   page. Elle est peinte par un fond absolu et non par un
+   conteneur, parce que la PHRASE doit la traverser — ses deux
+   premières lignes sont dedans, la troisième dehors.
+
+   425 PX, ET CE N'EST PAS UN DEMI-ÉCRAN. Le bord ne se choisit pas :
+   il est le MILIEU DU BLANC QUE LA PHRASE LAISSE. Le bas d'encre de
+   la ligne 2 est à 371, le haut d'encre de la ligne 3 à 479 ; le
+   milieu est 425. À 452 le bord tombait à exactement la moitié des
+   900 px — la division la moins intéressante qui soit, et une valeur
+   qui n'avait pour raison qu'elle-même. */
+.masse{
+  position:absolute;
+  top:0; left:0; right:0;
+  height:425px;
+  background:var(--vin);
+  z-index:0;
 }
 
-/* ── y 0 → 36 · LE BANDEAU DE DATE ───────────────────────────
-   Avec le bouton, le seul aplat de couleur de la page. Bord à bord
-   de la fenêtre, contenu ferré sur la grille.
+.page{position:relative;z-index:1}
+.dedans{width:min(var(--utile), 100% - var(--marge)*2);margin-inline:auto}
 
-   IL EST FAIT DE DEUX COUCHES, ET C'EST LE GESTE DE LA PAGE.
-   Dessous, LA FORME : le texte composé en bordeaux sur le papier,
-   peint à la première image. Dessus, LA PLAQUE : la même composition
-   en papier sur un aplat bordeaux plein, tirée de gauche à droite.
-   Deux couches et non une, pour une seule raison : le bandeau ne
-   doit à AUCUN instant avoir un mot en moins. Une plaque tirée sur
-   une couche unique cacherait « SITE DE DÉMONSTRATION » pendant
-   toute la première seconde — ce serait le piège 56 déplacé, pas
-   corrigé. Ici la ligne se lit d'un bout à l'autre à toute image :
-   bordeaux sur papier devant l'arête, papier sur bordeaux derrière.
-   Les deux sens tiennent le contraste (10,3:1 dans les deux cas). */
-.bandeau{position:relative}
-.dateline{
-  min-height:36px;
-  color:var(--bordeaux);
-  font-size:11px;
-  line-height:36px;
-  letter-spacing:.16em;
-  align-items:center;
+/* ── LA LIGNE DE TÊTE ────────────────────────────────────────
+   Le nom du cabinet n'est PAS un logo : c'est une ligne de
+   classement, capitales interlettrées, comme l'en-tête d'un acte.
+   Toute la charge de composition va à la phrase. */
+.tete{
+  display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  margin:0 auto;padding-top:40px;
+  font-family:"libre-baskerville",Georgia,serif;font-weight:700;
+  font-size:12px;line-height:16px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--parchemin);
+  background:var(--vin);
 }
-.dateline > :nth-child(1){grid-column:1/3}
-.dateline > :nth-child(2){grid-column:3/5}
-.dateline > :nth-child(3){grid-column:5/6;text-align:right}
-/* La forme donne sa hauteur au bandeau : la plaque se cale dessus, et
-   rien ne bouge jamais (CLS 0). Elle est retirée de l'arbre
-   d'accessibilité et de la sélection — un même texte ne se lit pas
-   deux fois. */
-.dateline.forme{user-select:none}
+.filet-tete{height:1px;background:var(--parchemin);margin-top:14px}
 
-/* ── LE GESTE — LA PLAQUE DE COULEUR SE TIRE ──────────────────
-   Sens de lecture, gauche → droite, sans exception. `linear` :
-   une plaque avance à vitesse constante.
+/* ── LA PHRASE ───────────────────────────────────────────────
+   142 px pour un texte courant de 15 px : un rapport de 9,5 sans
+   aucun palier intermédiaire. Interlignage 0,915.
 
-   POURQUOI C'EST CELUI-LÀ QU'ON PHOTOGRAPHIE. Une barre de couleur
-   pleine à mi-course est lisible à n'importe quelle échelle : à
-   65 % elle pèse 936 × 36 px, soit 271 × 10,4 px une fois l'écran
-   réduit à 421 px, et son arête s'est déplacée de 936 px. Les deux
-   seuils du piège 57 (12 px de masse, 40 px de course) sont passés
-   d'un ordre de grandeur. L'ancienne arête de 2 px en faisait
-   0,58 : elle était mesurée, prouvée, et invisible là où l'écran
-   est regardé le plus souvent.
+   Les deux premières lignes sont en creux dans la masse ; la
+   troisième, séparée par 96 px de blanc, tombe sur le parchemin
+   et s'imprime en bordeaux. Le dernier mot est en ITALIQUE — la
+   matière exclusive de ce métier, employée là où elle pèse
+   41 px de haut plutôt qu'à 5 px dans une glose. */
+.zone{display:grid;position:relative;margin-top:46px}
+.phrase{
+  grid-area:1/1;
+  margin:0;
+  font-family:"playfair",Georgia,serif;font-weight:700;
+  font-size:var(--phrase);line-height:var(--ligne);
+  letter-spacing:-.015em;
+  color:var(--parchemin);
+}
+/* LE FOND EST DÉCLARÉ SUR CE QUI PORTE LE TEXTE, ET PAS SEULEMENT
+   SUR LA MASSE. La masse est un frère, pas un ancêtre — tout outil
+   qui remonte la chaîne des parents pour trouver la première
+   surface opaque tombe sur le parchemin du `body` et rend 1:1 sur
+   du texte parfaitement lisible (`demos-contraste.mjs` l'a rendu,
+   quatre fois). L'aplat repeint ici est exactement de la couleur
+   de la masse, aux mêmes coordonnées : rien ne change à l'image,
+   et le contraste devient calculable — 9,4:1. */
+.phrase .l{display:block;background:var(--vin)}
+/* 84 px de blanc entre la deuxième et la troisième ligne : c'est
+   ce qui fait franchir le bord de la masse SANS qu'aucun glyphe ne
+   soit coupé. Mesuré à 1440 — le bas d'encre de la ligne 2 est à
+   371, le bord de la masse à 452 (81 px de dégagement), le haut
+   d'encre de la ligne 3 à 479 (27 px sous le bord). */
+.phrase .l:nth-child(3){color:var(--vin);background:var(--parchemin);margin-top:84px}
+.phrase em{font-style:italic;font-weight:600}
 
-   POURQUOI EN DERNIER. Le noir passe avant la couleur d'appoint :
-   la manchette s'imprime de 0 à 1220 ms, la plaque suit à 1250. La
-   page ne fait jamais deux gestes à la fois.
+/* La glose se pose dans le vide que laisse la troisième ligne :
+   même cellule de grille, calée en bas à droite. C'est la
+   deuxième voix, en italique de labeur, et elle porte la preuve
+   de ce que la phrase promet. À 17 px elle est de la TEXTURE une
+   fois l'écran réduit — donc elle est composée comme telle :
+   cinq lignes régulières, mesure de 42 signes, aucun mot seul. */
+.glose{
+  grid-area:1/1;align-self:end;justify-self:end;
+  width:332px;margin:0 0 6px;
+  font-style:italic;font-size:17px;line-height:24px;color:var(--sourd);
+  text-wrap:pretty;
+}
 
-   `both` et non `forwards` : la plaque a un retard de 1250 ms, et
-   sans le volet `backwards` elle se poserait pleine pendant ce
-   retard puis SAUTERAIT à zéro. L'état de repos, lui, reste la
-   forme finale — sans animation du tout, `clip-path: inset(0)`
-   couvre tout le bandeau.
+/* ── LA TRAME ────────────────────────────────────────────────
+   La grille dense de filets que la phrase écrase : un filet fort
+   de 2 px, trois filets verticaux, trois filets de tête et neuf
+   filets de ligne — seize en tout, et vingt-quatre lignes de
+   texte réglées au même pas. C'est un tableau d'annexe, pas une
+   rangée de cartes : aucun rayon, aucune ombre, aucun fond. */
+.trame{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:2px solid var(--encre);
+  border-bottom:1px solid var(--encre);
+  margin-top:16px;
+}
+.col{border-left:1px solid var(--encre);padding:12px 20px 0}
+.col:first-child{border-left:0;padding-left:0}
 
-   `clip-path` et non `transform` : le texte de la plaque doit rester
-   au pixel sur celui de la forme. Un décalage d'un demi-pixel entre
-   les deux couches se verrait comme un tremblement. */
-@keyframes plaque{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-.dateline.plaque{
-  position:absolute;inset:0;
-  background:var(--bordeaux);
-  color:var(--papier);
+.etiq{
+  display:block;margin:0 0 6px;
+  font-family:"libre-baskerville",Georgia,serif;font-weight:700;
+  font-size:11px;line-height:14px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--vin);
+}
+.rangs{margin:0;padding:0;list-style:none;border-top:1px solid var(--encre)}
+.rangs li{border-bottom:1px solid var(--encre);padding:6px 0 6px}
+.rangs li:last-child{border-bottom:0}
+.rangs b{display:block;font-weight:400;font-size:16px;line-height:20px;color:var(--encre)}
+.rangs i{display:block;font-style:normal;font-size:13px;line-height:17px;color:var(--sourd)}
+
+/* ── LA CELLULE D'ACTION, ET LE GESTE ────────────────────────
+   Le second aplat de bordeaux, en bas à droite : les deux masses
+   forment un Z, et l'œil finit sur l'action.
+
+   DEUX COUCHES, ET LE TEXTE EST LE MÊME DANS LES DEUX.
+     · dessous — LA FORME : le texte composé en bordeaux sur le
+       parchemin, peint à la première image ;
+     · dessus  — LA PLAQUE : le même texte en parchemin sur
+       l'aplat bordeaux, tirée par un `clip-path`.
+   Une plaque tirée sur une couche unique cacherait le numéro
+   pendant toute la première seconde : ce serait le mot absent au
+   lieu du mot coupé. Ici la cellule se lit d'un bout à l'autre à
+   TOUTE image — 9,4:1 dans un sens comme dans l'autre.
+
+   `clip-path` et non `transform` : le texte de la plaque doit
+   rester au pixel sur celui de la forme, sinon l'arête tremble
+   à l'endroit exact où l'œil regarde.
+
+   `display:grid` ET NON `position:absolute` — UN BOUTON CENTRE SON
+   CONTENU. La première version posait la forme en flux et la plaque
+   en `inset:0` : le bouton, étiré à 267 px par la grille, centrait
+   la forme et laissait la plaque en haut. Les deux couches
+   rendaient « PRENDRE RENDEZ-VO » d'un côté et « US » de l'autre,
+   à 60 px d'écart. Deux couches dans la MÊME cellule de grille ne
+   peuvent pas se décoller.
+
+   L'ARÊTE EST HORIZONTALE, ET C'EST LA SEULE QUI NE COUPE RIEN.
+   Une arête verticale traverse forcément le libellé ou le numéro :
+   il n'existe aucune abscisse où les deux ont du blanc en même
+   temps. Une arête horizontale, elle, se pose dans le couloir vide
+   SOUS le numéro — 172 px de parchemin nu. À 66 % de course elle
+   est à y = 791, et aucun glyphe n'est à cheval.
+
+   `appearance:none` N'EST PAS COSMÉTIQUE. Sans lui, Chromium garde
+   le widget natif : fond gris de système à la place du parchemin,
+   et surtout CONTENU CENTRÉ — les deux couches se posaient au
+   milieu de la cellule au lieu de la remplir, et la plaque flottait
+   à 130 px du haut. C'est le même bogue que le décalage des
+   couches, vu deux fois. */
+.agir{
+  appearance:none;-webkit-appearance:none;
+  display:grid;align-items:stretch;justify-items:stretch;
+  width:100%;
+  border:0;border-left:1px solid var(--encre);
+  background:var(--parchemin);
+  padding:0;margin:0;
+  font:inherit;color:inherit;text-align:left;
+  cursor:pointer;
+}
+/* LE LIBELLÉ EN HAUT, LE NUMÉRO EN BAS, ET L'ARÊTE ENTRE LES DEUX.
+   Les deux items groupés en haut, l'arête n'avait RIEN sous elle :
+   un rectangle bordeaux qui ne remplit pas sa case se lit comme une
+   erreur d'alignement, pas comme une plaque en cours. Écartés aux
+   deux bouts, ils encadrent l'arête — le libellé déjà couvert
+   (parchemin sur bordeaux), le numéro pas encore (bordeaux sur
+   parchemin). DEUX RÉGIMES DE COULEUR SUR LE MÊME OBJET : c'est
+   ça, la preuve du mouvement, et ce n'est plus ambigu.
+   Le couloir vide entre les deux fait 159 px ; l'arête tombe à
+   762, soit 131 px sous le libellé et 28 px au-dessus des chiffres. */
+.couche{
+  grid-area:1/1;
+  display:grid;grid-template-rows:auto 1fr auto;
+  padding:12px 20px 20px;
+}
+.plaque{
+  background:var(--vin);
   clip-path:inset(0 0 0 0);
-  animation:plaque 1000ms linear 1250ms both;
+  animation:tirer 1000ms linear 900ms forwards;
 }
+@keyframes tirer{ from{clip-path:inset(0 0 100% 0)} to{clip-path:inset(0 0 0 0)} }
 
-/* ── y 44 → 158 · LE BLOC-TITRE ET L'OREILLE ─────────────────── */
-.entete{margin-top:8px;min-height:114px}
-.titre{grid-column:1/4}
-.sur-nom{font-size:10px;line-height:12px;letter-spacing:.14em;color:var(--gris)}
-.nameplate{
-  font-family:"libre-baskerville",Georgia,serif;
-  font-weight:700;
-  font-size:76px;
-  line-height:76px;
-  letter-spacing:0;
-  margin-top:4px;
+.agir .etiq{color:var(--vin)}
+.plaque .etiq{color:var(--parchemin)}
+/* `nowrap` : à 38 px le numéro mesurait 287 px pour 287 px de
+   colonne et se repliait sur deux lignes — dans la forme seulement,
+   ce qui décalait les deux couches. 34 px, et jamais de repli. */
+.num{
+  display:block;grid-row:3;align-self:end;white-space:nowrap;
+  font-family:"playfair",Georgia,serif;font-weight:700;
+  font-size:min(34px, 7.2vw);line-height:42px;letter-spacing:.01em;
+  color:var(--vin);
 }
-.sous-nom{font-size:10px;line-height:12px;letter-spacing:.20em;color:var(--gris);margin-top:10px}
+.plaque .num{color:var(--parchemin)}
 
-/* L'oreille n'est pas une boîte : deux filets, et rien d'autre. */
-.oreille{
-  grid-column:5/6;
-  position:relative;
-  border-bottom:1px solid var(--encre);
-}
-.oreille::before{
-  content:"";position:absolute;left:calc(var(--gouttiere) / -2);top:0;bottom:0;
-  width:1px;background:var(--encre);
-}
-.oreille .appel{font-size:10px;line-height:14px;letter-spacing:.18em;color:var(--bordeaux);margin-top:6px}
-.oreille .tel{
-  font-family:"libre-baskerville",Georgia,serif;font-weight:700;
-  font-size:26px;line-height:32px;margin-top:10px;display:block;width:fit-content;
-}
-.oreille .glose{font-size:13px;line-height:18px;color:var(--gris);margin-top:6px}
+/* Micro-interaction : le CRAN, pas le fondu. La plaque se retire
+   par où elle est venue, en quatre crans de 140 ms, et l'anneau de
+   focus est un filet franc décalé — jamais une ombre. */
+.agir:hover .plaque,
+.agir:focus-visible .plaque{clip-path:inset(0 0 100% 0);transition:clip-path 140ms steps(4,end)}
+.agir:focus-visible{outline:2px solid var(--encre);outline-offset:-6px}
 
-/* ── y 170 → 177 · LE FILET DOUBLE ───────────────────────────
-   3 px encre, 3 px de papier, 1 px encre. La séparation canonique
-   sous un bloc-titre de broadsheet : elle n'apparaît qu'ici. */
-.filet-double{
-  margin:12px var(--marge) 0;
-  height:7px;
-  border-top:3px solid var(--encre);
-  border-bottom:1px solid var(--encre);
-}
-
-/* ── y 177 → 216 · LE BANDEAU DE RUBRIQUES ───────────────────
-   La nav est la légende de la grille : un libellé par colonne, au
-   bord gauche de sa colonne, et quatre filets aux centres de
-   gouttière. C'est un tableau, et un tableau est une réglure. */
-.rubriques{
-  height:39px;
-  border-bottom:1px solid var(--encre);
-  align-items:stretch;
-}
-.rubriques a{
-  position:relative;
-  font-family:"jetbrains-mono",ui-monospace,monospace;
-  font-weight:500;text-transform:uppercase;
-  font-size:11px;line-height:16px;letter-spacing:.14em;
-  padding-top:12px;
-  transition:color 120ms linear;
-}
-.rubriques a + a::before{
-  content:"";position:absolute;left:calc(var(--gouttiere) / -2);top:0;bottom:0;
-  width:1px;background:var(--encre);
-}
-.rubriques a::after{
-  content:"";position:absolute;left:0;right:0;top:30px;height:2px;
-  background:var(--bordeaux);
-  transform:scaleX(0);transform-origin:left center;
-  transition:transform 140ms linear;
-}
-.rubriques a:hover,.rubriques a:focus-visible{color:var(--bordeaux)}
-.rubriques a:hover::after,.rubriques a:focus-visible::after{transform:scaleX(1)}
-
-/* ── y 248 → 836 · LE CORPS DE LA UNE ────────────────────────
-   Deux filets verticaux 1 px réglure forte aux centres de gouttière
-   856 et 1128. Rien d'autre ne sépare : pas de carte, pas de
-   panneau, pas de second fond. */
-.corps{margin-top:32px;min-height:588px;align-items:stretch}
-.une{grid-column:1/4;display:flex;flex-direction:column;--c:calc((100% - 48px) / 3)}
-.domaines{grid-column:4/5}
-.liste{grid-column:5/6}
-.domaines,.liste{position:relative;display:flex;flex-direction:column}
-.domaines::before,.liste::before{
-  content:"";position:absolute;left:calc(var(--gouttiere) / -2);top:0;bottom:0;
-  width:1px;background:var(--reglure-forte);
-}
-
-.surtitre{font-size:11px;line-height:16px;letter-spacing:.16em;color:var(--bordeaux)}
-.reglure-2{height:2px;background:var(--encre);margin-top:10px}
-.reglure-1{height:1px;background:var(--reglure-forte)}
-.reglure-fine{height:1px;background:var(--reglure)}
-
-/* ── LA MANCHETTE — y 302 → 551 ──────────────────────────────
-   Trois lignes forcées. Flex colonne et non flux normal : deux
-   marges négatives adjacentes se COLLAPSENT au plus négatif des
-   deux (−14 et non −28), et la deuxième ligne tomberait 14 px trop
-   bas. Un conteneur flex ne collapse aucune marge. */
-.manchette{
-  margin-top:26px;
-  display:flex;flex-direction:column;align-items:flex-start;
-  font-family:"libre-baskerville",Georgia,serif;
-  font-weight:700;
-  font-size:88px;
-  line-height:83px;          /* 0,94 */
-  letter-spacing:-.02em;
-  color:var(--encre);
-}
-/* `fit-content` : translateX(100%) vaut exactement la chasse du
-   texte, pas la largeur de la colonne. Le padding de 14 px empêche
-   l'`overflow:hidden` de rogner hampes et jambages — la boîte de
-   ligne fait 83 px pour une police de 88, il déborde de 9,75 px
-   de chaque côté. */
-.manchette .l{
-  display:block;position:relative;width:fit-content;max-width:100%;
-  overflow:hidden;padding-block:14px;margin-block:-14px;
-}
-
-/* ── LE GESTE, ET IL N'Y EN A QU'UN : LA MANCHETTE S'IMPRIME ──
-   Le masque n'est PAS un clip-path sur le texte : c'est un
-   rectangle de papier posé PAR-DESSUS la ligne, dont le bord
-   gauche EST l'arête d'encre. Trois raisons — le texte est peint à
-   la première image (donc le LCP tient), l'arête et le bord
-   d'encre sont le même objet (ils ne peuvent pas se décoller), et
-   si l'animation ne joue pas le masque disparaît et la manchette
-   est simplement imprimée. Aucune information n'est jamais perdue.
-   `linear`, parce qu'un rouleau d'encrage avance à vitesse
-   constante. On ne touche jamais à `animation-play-state` : c'est
-   un raccourci, il se fait remettre à `running`. */
-/* `100% + 4px` et non `100%` : la chasse du texte tombe sur un pixel
-   FRACTIONNAIRE (712,6 px pour la deuxième ligne). À exactement 100 %,
-   l'arête et le bord du `overflow:hidden` se disputent le même demi-
-   pixel et le rasteriseur laisse un cheveu gris debout à la fin de la
-   ligne — vu sur la première capture, à droite de « avant ». Les 4 px
-   de dépassement sortent l'arête du cadre pour de bon ; à 54,8 % ils
-   déplacent l'arête de 2 px, ce qui ne se voit pas. */
-@keyframes encrer{from{transform:translateX(0)}to{transform:translateX(calc(100% + 4px))}}
-.manchette .encre{
-  position:absolute;inset:0;
-  background:var(--papier);
-  border-left:2px solid var(--bordeaux);
-  animation:encrer 620ms linear forwards;
-}
-.manchette .l:nth-child(2) .encre{animation-delay:300ms}
-.manchette .l:nth-child(3) .encre{animation-delay:600ms}
-
-/* ── LE CHAPEAU — y 597 → 687, italique, borné à C1–C2 ────────
-   Le décrochement entre la manchette qui court sur 792 et le
-   chapeau qui s'arrête à 572 est le second dispositif de la page. */
-.filet-manchette{margin-top:26px}
-.chapeau{
-  margin-top:19px;
-  width:calc(var(--c) * 2 + var(--gouttiere));
-  font-style:italic;font-size:19px;line-height:30px;color:var(--encre);
-}
-
-/* ── y 715 → 759 · LE BOUTON ET LE LIEN SECONDAIRE ───────────── */
-.rang-action{margin-top:28px;height:44px;position:relative}
-.bouton{
-  position:absolute;left:0;top:0;
-  width:var(--c);height:44px;
-  display:flex;align-items:center;justify-content:flex-start;
-  padding-inline:16px;
-  background:var(--bordeaux);color:var(--papier);
-  font-family:"jetbrains-mono",ui-monospace,monospace;
-  font-weight:500;text-transform:uppercase;
-  font-size:12px;letter-spacing:.14em;
-  transition:background-color 120ms linear,color 120ms linear;
-}
-.bouton:hover,.bouton:focus-visible{background:var(--encre);color:var(--papier)}
-.lien{
-  position:absolute;top:0;
-  left:calc(var(--c) + var(--gouttiere));
-  font-style:italic;font-size:16px;line-height:44px;
-  transition:color 160ms linear;
-}
-.lien::after{
-  content:"";position:absolute;left:0;right:0;bottom:12px;height:1px;
-  background:var(--encre);
-}
-.lien::before{
-  content:"";position:absolute;left:0;right:0;bottom:12px;height:1px;
-  background:var(--bordeaux);
-  transform:scaleX(0);transform-origin:left center;
-  transition:transform 160ms linear;
-  z-index:1;
-}
-.lien:hover,.lien:focus-visible{color:var(--bordeaux)}
-.lien:hover::before,.lien:focus-visible::before{transform:scaleX(1)}
-
-/* ── y 799 → 815 · LA LIGNE DE REFUS ─────────────────────────
-   La phrase la plus honnête de la page, et elle est en bas de la
-   une, à sa place. */
-.filet-refus{margin-top:28px}
-.refus{margin-top:11px;font-size:10px;line-height:16px;letter-spacing:.12em;color:var(--gris)}
-
-/* ── C4 · LES DOMAINES ───────────────────────────────────────── */
-.dom-liste{margin-top:18px}
-.dom-e{
-  display:block;height:81px;border-bottom:1px solid var(--reglure);
-  position:relative;
-}
-.dom-e h3{
-  font-family:"libre-baskerville",Georgia,serif;font-weight:700;
-  font-size:17px;line-height:22px;color:var(--encre);
-  transition:color 140ms linear;
-}
-.dom-e p{font-size:13px;line-height:18px;color:var(--gris);margin-top:4px}
-.dom-e::after{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
-  background:var(--bordeaux);
-  transform:scaleX(0);transform-origin:left center;
-  transition:transform 140ms linear;
-}
-.dom-e:hover h3,.dom-e:focus-visible h3{color:var(--bordeaux)}
-.dom-e:hover::after,.dom-e:focus-visible::after{transform:scaleX(1)}
-
-.titre-2{margin-top:32px}
-.para{margin-top:14px;font-size:15px;line-height:22px;color:var(--encre)}
-
-/* ── C5 · CE QUI NE SE FACTURE PAS ───────────────────────────── */
-.gratuits{margin-top:14px}
-.gratuits li{
-  height:59px;border-bottom:1px solid var(--reglure);
-  font-size:15px;line-height:21px;color:var(--encre);
-}
-.filet-photo{margin-top:24px}
-
-/* ── LA SEULE PHOTOGRAPHIE DE L'ÉCRAN — 248 × 186 ─────────────
-   Duotone bordeaux / papier, tramé à 45°. Arrêts durs uniquement :
-   c'est un grain de similigravure, pas un fondu. Il n'y a aucun
-   dégradé sur cette page. Le fichier fait 960 × 720 — le rapport
-   4:3 est exact, donc `cover` ne recadre rien et le CLS est 0.
-
-   DEUX ÉCARTS ASSUMÉS AU PLAN, ET LA PREMIÈRE CAPTURE LES A TOUS
-   LES DEUX RENDUS VISIBLES.
-
-   1 · L'ORDRE DES COUCHES EST INVERSÉ. Le plan pose « une couche
-   #6d1a2c en mix-blend-mode: multiply » par-dessus l'image. Deux
-   raisons de ne pas l'écrire ainsi. D'abord elle ne peint rien :
-   une balise IMAGE qui porte un `filter` crée un contexte d'empilement
-   et se peint dans la MÊME couche que les pseudo-éléments
-   positionnés — donc APRÈS `::before`, qui est avant lui dans
-   l'arbre. La première capture a rendu une photo en noir et blanc
-   pur, sans une trace de bordeaux. Ensuite, même peinte, elle
-   donnerait un duotone bordeaux / NOIR : `multiply` ne fait que
-   foncer, le blanc deviendrait bordeaux et le noir resterait noir
-   — l'inverse des deux couleurs que le plan nomme. La structure
-   juste met le bordeaux en PLANCHER, l'image grise en `screen`
-   (noir → bordeaux, blanc → blanc), puis le papier en `multiply`
-   (blanc → papier). Les deux bouts tombent exactement sur
-   #6d1a2c et #fff1e5, ce que le plan demande. Les `z-index`
-   explicites verrouillent l'ordre de peinture.
-
-   2 · LA TRAME PASSE SOUS LA COUCHE PAPIER, pas par-dessus. Posée
-   au-dessus, elle éclaircit les hautes lumières AU-DELÀ du papier :
-   la deuxième capture a rendu des hachures blanches sur la pierre,
-   qui est censée être exactement de la couleur de la page. Une
-   similigravure n'a pas de grain dans les blancs — il n'y a pas
-   d'encre là. Sous la couche `multiply`, le papier RABAT tout à
-   #fff1e5 : les hautes lumières se fondent dans la page et le grain
-   ne vit que là où il y a de l'encre. La géométrie de la trame
-   reste cotée telle quelle : 45°, 1 px plein, 3 px de pas, 0,45.
-
-   3 · `contrast` 1,35 → 1,45 et `brightness` 1,05 → 0,86. Sous
-   l'ordre corrigé l'image est SCREENÉE sur le bordeaux au lieu
-   d'être multipliée : la lumière pousse maintenant vers le papier
-   et non vers l'encre, et la porte n'avait plus la densité que le
-   plan lui demande (« ornement de une »). Six densités ont été
-   rendues côte à côte avant de choisir celle-ci. */
-.photo{
-  margin-top:11px;position:relative;width:100%;aspect-ratio:4/3;
-  overflow:hidden;isolation:isolate;
-  background:var(--bordeaux);
-}
-.photo img{
-  display:block;width:100%;height:100%;object-fit:cover;
-  position:relative;z-index:0;
-  filter:grayscale(1) contrast(1.45) brightness(.86);
-  mix-blend-mode:screen;
-}
-.photo::after{
-  content:"";position:absolute;inset:0;z-index:1;
-  background:repeating-linear-gradient(45deg,#fff1e5 0 1px,transparent 1px 3px);
-  mix-blend-mode:screen;opacity:.45;pointer-events:none;
-}
-.photo::before{
-  content:"";position:absolute;inset:0;z-index:2;background:var(--papier);
-  mix-blend-mode:multiply;pointer-events:none;
-}
-/* ÉCART ASSUMÉ AU PLAN. Le plan cote la légende sur DEUX lignes
-   (y 756 → 788). Impossible : 124 signes de mono 10 px à 0,12em de
-   chasse font 7,2 px par signe, soit 34 signes par ligne dans une
-   colonne de 248 — quatre lignes, pas deux. On garde le texte
-   entier (une légende dit ce que l'image montre vraiment, et le
-   refus « ce n'est pas l'entrée du cabinet » est la moitié de son
-   travail) et le bas de colonne descend à y 820. Le corps de la
-   une va jusqu'à 836 : ça tient. */
-.legende{margin-top:8px;font-size:10px;line-height:16px;letter-spacing:.12em;color:var(--gris)}
-
-/* ── y 836 → 884 · LE PIED DE UNE ────────────────────────────── */
+/* ── LA SIGNATURE ────────────────────────────────────────────
+   LE NOM DU CABINET NE VIT QU'ICI, ET C'EST UNE DÉCISION.
+   Posé en tête, il n'était qu'un logo de gabarit — à 76 px comme à
+   12 px, c'est le même défaut : une marque qui occupe la place de
+   la phrase. Au pied, à 30 px, sur le filet qui ferme le tableau et
+   face aux coordonnées, il redevient ce qu'il est dans le métier :
+   LA SIGNATURE AU BAS DE L'ACTE. On signe en bas, à gauche, et la
+   contrepartie est en face. */
 .pied{
-  border-top:1px solid var(--encre);
-  height:48px;padding-top:20px;
-  font-size:10px;line-height:16px;letter-spacing:.12em;color:var(--gris);
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:24px;flex-wrap:wrap;
+  margin:0 auto;padding-top:14px;
 }
-.pied > :nth-child(1){grid-column:1/3}
-.pied > :nth-child(2){grid-column:3/5}
-.pied > :nth-child(3){grid-column:5/6;text-align:right}
-
-/* y 884 → 900 · papier nu. La page est coupée par le bas, comme
-   une feuille pliée. */
-.pli{height:16px}
-
-/* ============================================================
-   EN DESSOUS DE 1280 — la une se replie. La composition de 1440
-   n'est pas touchée : c'est elle qu'on photographie.
-   ============================================================ */
-@media (max-width:1279px){
-  .bande{grid-template-columns:repeat(2,1fr)}
-  .dateline{line-height:26px;padding-block:5px}
-  .dateline > :nth-child(1){grid-column:1/2}
-  .dateline > :nth-child(2){grid-column:2/3;text-align:right}
-  .dateline > :nth-child(3){grid-column:1/3;text-align:left}
-  .entete{min-height:0}
-  .titre,.oreille,.une,.domaines,.liste{grid-column:1/3}
-  .nameplate{font-size:60px;line-height:62px}
-  .oreille{margin-top:24px;padding-top:22px;border-top:1px solid var(--encre)}
-  .oreille::before{display:none}
-  .rubriques{height:auto;padding-block:12px;row-gap:8px}
-  .rubriques a{padding-top:0}
-  .rubriques a + a::before{display:none}
-  .rubriques a::after{top:auto;bottom:-4px}
-  .corps{min-height:0;row-gap:36px}
-  .domaines::before,.liste::before{display:none}
-  .domaines,.liste{padding-top:28px;border-top:1px solid var(--reglure-forte)}
-  .manchette{font-size:64px;line-height:62px}
-  .dom-e,.gratuits li{height:auto;padding-bottom:16px}
-  .dom-e + .dom-e,.gratuits li + li{margin-top:16px}
-  .photo{max-width:420px}
-  .pied{height:auto;padding-bottom:20px;row-gap:6px}
-  .pied > :nth-child(1){grid-column:1/2}
-  .pied > :nth-child(2){grid-column:2/3;text-align:right}
-  .pied > :nth-child(3){grid-column:1/3;text-align:left}
+.nom{
+  font-family:"playfair",Georgia,serif;font-weight:700;
+  font-size:30px;line-height:34px;letter-spacing:-.005em;
+  color:var(--vin);
 }
-@media (max-width:719px){
-  :root{--marge:20px}
-  .bande{grid-template-columns:1fr}
-  .dateline > *,.titre,.oreille,.une,.domaines,.liste,.pied > *{grid-column:1/2 !important;text-align:left !important}
-  .nameplate{font-size:34px;line-height:38px}
-  .manchette{font-size:34px;line-height:34px}
-  .manchette .l{padding-block:6px;margin-block:-6px}
-  .chapeau{width:100%;font-size:17px;line-height:27px}
-  .rang-action{height:auto;display:flex;flex-direction:column;align-items:flex-start;gap:18px}
-  .bouton{position:static;width:100%;max-width:320px}
-  .lien{position:static;line-height:24px}
-  .lien::after,.lien::before{bottom:2px}
-  .corps{row-gap:28px}
+.coord{
+  font-family:"libre-baskerville",Georgia,serif;font-weight:700;
+  font-size:10px;line-height:14px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--sourd);
 }
 
-/* ============================================================
-   LES DEUX GARDE-FOUS
-   ============================================================ */
-/* L'état de repos EST l'état final : la manchette est imprimée.
-   Aucune information ne se perd, jamais. */
+/* ── LES REPLIS ──────────────────────────────────────────────
+   L'écran est composé pour 1440 × 900. Plus étroit, la masse se
+   retire ENTIÈREMENT et la phrase s'imprime en bordeaux sur le
+   parchemin : une masse de hauteur fixe couperait des lignes qui
+   se sont repliées. Rien ne déborde, de 320 à 1920 px, et aucune
+   information ne se perd. */
+@media (max-width:1180px){
+  .masse{display:none}
+  .tete{color:var(--vin);background:none}
+  .filet-tete{background:var(--vin)}
+  .phrase{color:var(--vin)}
+  .phrase .l{background:none}
+  .glose{grid-area:auto;justify-self:start;align-self:start;width:min(560px,100%);margin-top:28px}
+  .zone{display:block;margin-top:40px}
+  .phrase .l:nth-child(3){margin-top:0}
+  .trame{grid-template-columns:repeat(2,1fr)}
+  .col:nth-child(3){border-left:0;padding-left:0}
+}
+/* 820 px, ET PAS 900. À 900 px la trame tenait encore sur deux
+   colonnes ; à 320 px chaque colonne valait 140 px alors que le
+   numéro, en `nowrap`, en réclamait 194 — la piste de grille
+   s'élargissait à 188 px et la page débordait de 10 px. Le seuil
+   est celui où deux colonnes cessent de contenir le numéro. */
+@media (max-width:820px){
+  .trame{grid-template-columns:1fr}
+  .col,.agir{border-left:0;border-top:1px solid var(--encre);padding-left:0}
+  .col:first-child{border-top:0}
+  .couche{padding-left:0;padding-bottom:20px}
+}
+
+/* Le repos EST la forme finale : sans animation, la plaque couvre
+   toute la cellule et la page est celle du plan. Aucune
+   information n'est perdue, jamais. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
-  .manchette .encre{display:none}
-}
-/* Un moteur qui ne connaît pas le mélange voit une similigravure
-   sépia — jamais un rectangle vide. */
-@supports not (mix-blend-mode:multiply){
-  .photo{background:var(--papier)}
-  .photo::before,.photo::after{display:none}
-  .photo img{mix-blend-mode:normal;filter:grayscale(1) contrast(1.25) sepia(.35) saturate(1.4)}
-}
-@supports not (aspect-ratio:4/3){
-  .photo{height:186px}
 }
 </style>
 </head>
 <body>
 
-<!-- y 0 → 36 · LE BANDEAU DE DATE ─────────────────────────────
-     Une date en dur serait fausse dès le lendemain, et une fausseté
-     dans le bandeau de date d'un journal est une fausseté sur toute
-     la page. Le repli écrit dans le HTML est « ÉDITION COURANTE » :
-     sans script, il ne manque rien.
+<div class="masse" aria-hidden="true"></div>
 
-     DEUX COUCHES, MÊME TEXTE. La forme est composée en bordeaux sur
-     le papier ; la plaque de couleur passe par-dessus, de gauche à
-     droite. À aucun instant le bandeau n'a un mot en moins. -->
-<div class="bandeau">
-  <div class="dateline forme bande mono" aria-hidden="true">
-    <span class="jour">Édition courante</span>
-    <span>Édition du cabinet · Cahier A</span>
+<div class="page">
+
+  <p class="tete dedans">
+    <span>Avocats · Québec · Sept personnes, un seul bureau</span>
     <span>Site de démonstration</span>
+  </p>
+  <div class="filet-tete" aria-hidden="true"></div>
+
+  <div class="zone dedans">
+    <h1 class="phrase">
+      <span class="l">Aucun dossier</span>
+      <span class="l">ne s’ouvre avant</span>
+      <span class="l">d’être <em>estimé.</em></span>
+    </h1>
+    <p class="glose">La rencontre où l’on regarde le dossier ne se facture pas. Vous repartez avec ce qu’il va coûter et ce qui peut faire changer ce chiffre. Ni criminel, ni immigration, ni brevets : on le dit au premier appel.</p>
   </div>
-  <div class="dateline plaque bande mono">
-    <span class="jour">Édition courante</span>
-    <span>Édition du cabinet · Cahier A</span>
-    <span>Site de démonstration</span>
+
+  <div class="trame dedans">
+
+    <section class="col">
+      <h2 class="etiq">Le mécanisme</h2>
+      <ul class="rangs">
+        <li><b>On regarde les pièces</b><i>Quarante minutes, au bureau ou au téléphone.</i></li>
+        <li><b>On dit ce qui est possible</b><i>Et ce qui ne l’est pas. C’est souvent plus court.</i></li>
+        <li><b>L’estimation est écrite</b><i>Le coût, le délai, ce qui déclenche une révision.</i></li>
+        <li><b>Rien ne s’ouvre sans accord</b><i>Vous gardez la page, même sans donner suite.</i></li>
+      </ul>
+    </section>
+
+    <section class="col">
+      <h2 class="etiq">Ce qui ne se facture pas</h2>
+      <ul class="rangs">
+        <li><b>La première rencontre</b><i>Quelle qu’en soit l’issue.</i></li>
+        <li><b>Le courriel de trois lignes</b><i>Une question, une réponse.</i></li>
+        <li><b>L’appel de moins de dix minutes</b><i>Le point sur un dossier ouvert.</i></li>
+        <li><b>La copie de votre dossier</b><i>Sur demande, en tout temps.</i></li>
+      </ul>
+    </section>
+
+    <section class="col">
+      <h2 class="etiq">Les quatre domaines</h2>
+      <ul class="rangs">
+        <li><b>Droit du travail</b><i>Congédiement, contrat, fin d’emploi négociée.</i></li>
+        <li><b>Droit de la famille</b><i>Séparation, garde, pension, convention.</i></li>
+        <li><b>Droit immobilier</b><i>Vice caché, servitude, promesse d’achat.</i></li>
+        <li><b>Litige civil</b><i>Contrat rompu, dommages, mise en demeure.</i></li>
+      </ul>
+    </section>
+
+    <button class="agir" type="button">
+      <span class="couche">
+        <span class="etiq">Prendre rendez-vous</span>
+        <span class="num">000 000-0000</span>
+      </span>
+      <span class="couche plaque" aria-hidden="true">
+        <span class="etiq">Prendre rendez-vous</span>
+        <span class="num">000 000-0000</span>
+      </span>
+    </button>
+
   </div>
+
+  <p class="pied dedans">
+    <span class="nom">Cabinet Vallières</span>
+    <span class="coord">Adresse sur demande · courriel@exemple.ca</span>
+  </p>
+
 </div>
-
-<!-- y 44 → 158 · LE BLOC-TITRE ET L'OREILLE -->
-<header class="entete bande">
-  <div class="titre">
-    <p class="sur-nom mono">Avocats · Québec · Sept personnes, un seul bureau</p>
-    <!-- Le nameplate mesure ≈ 711 px sur les 792 de C1–C3 : il reste
-         81 px de blanc dans C3. Ce blanc est VOULU, il n'est pas comblé. -->
-    <p class="nameplate">Cabinet Vallières</p>
-    <p class="sous-nom mono">Travail · Famille · Immobilier · Litige civil</p>
-  </div>
-  <aside class="oreille">
-    <p class="appel mono">Premier appel</p>
-    <a class="tel" href="tel:0000000000">000&nbsp;000-0000</a>
-    <p class="glose">Une technicienne juridique répond le jour ouvrable même.</p>
-  </aside>
-</header>
-
-<!-- y 170 → 177 -->
-<div class="filet-double"></div>
-
-<!-- y 177 → 216 -->
-<nav class="rubriques bande" aria-label="Rubriques">
-  <a href="#">Les domaines</a>
-  <a href="#">La première rencontre</a>
-  <a href="#">Le mécanisme</a>
-  <a href="#">Le cabinet</a>
-  <a href="#">Nous joindre</a>
-</nav>
-
-<!-- y 248 → 836 · LE CORPS DE LA UNE -->
-<main class="corps bande">
-
-  <!-- C1–C3 · LA MANCHETTE ET SON BLOC -->
-  <section class="une">
-    <p class="surtitre mono">La une · Les honoraires</p>
-    <div class="reglure-2"></div>
-    <!-- Elle parle de LA MÉTHODE du cabinet — jamais d'un dossier,
-         d'une cause ou d'un jugement. -->
-    <h1 class="manchette"><span class="l">Aucun dossier<i class="encre" aria-hidden="true"></i></span><span class="l">ne s’ouvre avant<i class="encre" aria-hidden="true"></i></span><span class="l">d’être estimé.<i class="encre" aria-hidden="true"></i></span></h1>
-    <div class="reglure-1 filet-manchette"></div>
-    <p class="chapeau">La rencontre où l’on regarde le dossier ne se facture pas. Ce qui suit tient sur une page : ce que le dossier va coûter, combien de temps il va prendre, et ce qui déclenche une révision.</p>
-    <div class="rang-action">
-      <a class="bouton" href="#">Demander l’estimation</a>
-      <a class="lien" href="#">Comment se fait l’estimation →</a>
-    </div>
-    <div class="reglure-fine filet-refus"></div>
-    <p class="refus mono">Ce qui se refuse : criminel · immigration · brevets · faillite · recours collectifs</p>
-  </section>
-
-  <!-- C4 · LES DOMAINES -->
-  <section class="domaines">
-    <h2 class="surtitre mono">Les domaines</h2>
-    <div class="reglure-2"></div>
-    <div class="dom-liste">
-      <a class="dom-e" href="#">
-        <h3>Droit du travail</h3>
-        <p>Congédiement, contrat de travail, plainte, fin d’emploi négociée.</p>
-      </a>
-      <a class="dom-e" href="#">
-        <h3>Droit de la famille</h3>
-        <p>Séparation, garde, pension alimentaire, convention.</p>
-      </a>
-      <a class="dom-e" href="#">
-        <h3>Droit immobilier</h3>
-        <p>Vice caché, servitude, promesse d’achat, trouble de voisinage.</p>
-      </a>
-      <a class="dom-e" href="#">
-        <h3>Litige civil</h3>
-        <p>Contrat rompu, dommages, recouvrement, mise en demeure.</p>
-      </a>
-    </div>
-    <h2 class="surtitre mono titre-2">La première rencontre</h2>
-    <div class="reglure-2"></div>
-    <p class="para">Quarante minutes, au bureau ou au téléphone. On regarde les pièces, on dit ce qui est possible et ce qui ne l’est pas, et vous repartez avec l’estimation écrite.</p>
-  </section>
-
-  <!-- C5 · CE QUI NE SE FACTURE PAS -->
-  <section class="liste">
-    <h2 class="surtitre mono">Ce qui ne se facture pas</h2>
-    <div class="reglure-2"></div>
-    <ul class="gratuits">
-      <li>La première rencontre, quelle qu’en soit l’issue.</li>
-      <li>Le courriel qui tient en trois lignes.</li>
-      <li>L’appel qui dure moins de dix minutes.</li>
-      <li>La copie de votre propre dossier, sur demande.</li>
-    </ul>
-    <div class="reglure-fine filet-photo"></div>
-    <figure class="photo">
-      <img src="../../images/secteurs-sites/juridique-3.webp" width="960" height="720"
-           alt="Porte de bronze à caissons entre deux colonnes de marbre."
-           decoding="async" fetchpriority="low">
-    </figure>
-    <figcaption class="legende mono">Porte de bronze entre deux colonnes de marbre, tirée en trame de journal. Ornement de une — ce n’est pas l’entrée du cabinet.</figcaption>
-  </section>
-
-</main>
-
-<!-- y 836 → 884 -->
-<footer class="pied bande mono">
-  <span>Cabinet Vallières · Avocats · Québec</span>
-  <span>courriel@exemple.ca · Adresse sur demande</span>
-  <span>Cahier A · Page 1</span>
-</footer>
-<div class="pli"></div>
-
-<script>
-/* Cinq lignes. Le bandeau a une hauteur fixe et le texte tient sur
-   une ligne : zéro décalage. Sans script, le repli « Édition
-   courante » reste — rien de nécessaire à la lecture n'en dépend.
-   DEUX NŒUDS ET NON UN : la forme et la plaque portent le même texte,
-   et une date écrite dans une seule des deux couches se lirait comme
-   un tremblement à l'endroit exact où la plaque passe. */
-try{
-  const jour = new Date().toLocaleDateString("fr-CA",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-  for(const n of document.querySelectorAll(".jour")) n.textContent = jour;
-}catch(e){}
-</script>
 
 </body>
 </html>
