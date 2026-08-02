@@ -20,6 +20,21 @@
       « 1:1 », le pire verdict possible sur du texte parfaitement
       lisible. Ce qui n'est pas calculable est compté à part : ni
       échec, ni succès.  D-639
+
+   3. UNE PHOTOGRAPHIE PEUT ÊTRE UN `<img>` VOISIN, PAS UN FOND CSS —
+      ET LA REMONTÉE PAR LES ANCÊTRES NE LA VOIT PAS. La précaution 2
+      ne couvrait que `background-image`. Le bandeau de titre de
+      `coiffure` est du blanc posé PAR-DESSUS un `<img>` frère : la
+      remontée passait à côté, atteignait le blanc de la page, et
+      rendait **1:1 sur trois blocs** dont le pire mesure 14,88:1 aux
+      pixels peints (`pire-pixel.mjs`). Exactement le faux verdict que
+      la précaution 2 disait éviter, par une autre porte.
+      On détecte donc aussi le recouvrement GÉOMÉTRIQUE par un élément
+      remplacé — `img`, `video`, `canvas`, `svg` — qui n'est pas un
+      descendant du texte. Ce cas ne peut que RETIRER des échecs
+      faux ; il n'en ajoute aucun. Et il ne dispense de rien : ce qui
+      est posé sur une photographie se mesure aux pixels peints, avec
+      `tools/pire-pixel.mjs`, et c'est écrit dans le compte rendu.
    ============================================================ */
 import { chromium } from "playwright";
 import fs from "node:fs";
@@ -83,8 +98,25 @@ const MESURE = () => {
     const b = rgb(getComputedStyle(document.body).backgroundColor);
     return b && b.a >= 0.95 ? { c: b.c, image } : null;
   }
+  /* Les éléments remplacés visibles, relevés UNE fois : on compare
+     ensuite chaque boîte de texte à leurs rectangles. Un texte qui
+     recouvre l'un d'eux est peint sur des pixels que les styles ne
+     décrivent pas — non calculable, comme un dégradé. */
+  const peints = [...document.querySelectorAll("img, video, canvas, svg")]
+    .filter((n) => {
+      const cs = getComputedStyle(n);
+      if (cs.visibility === "hidden" || cs.display === "none") return false;
+      if (parseFloat(cs.opacity) < 0.1) return false;
+      const b = n.getBoundingClientRect();
+      return b.width > 1 && b.height > 1;
+    })
+    .map((n) => ({ n, b: n.getBoundingClientRect() }));
+  const surImage = (el, r) => peints.some(({ n, b }) =>
+    !el.contains(n) &&
+    r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top);
+
   const echecs = [];
-  let horsCalcul = 0, approches = 0, mesures = 0, min = 99, minQuoi = "";
+  let horsCalcul = 0, approches = 0, mesures = 0, surImages = 0, min = 99, minQuoi = "";
   for (const el of document.querySelectorAll("body *")) {
     if (el.closest("[aria-hidden='true'], template, svg")) continue;
     const t = [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim())
@@ -100,6 +132,8 @@ const MESURE = () => {
     if (!r.width || !r.height) continue;
     const fg = rgb(cs.color);
     if (!fg || fg.a < 0.9) continue;
+    /* Précaution 3 : posé sur un `<img>`, ce n'est pas mesurable ici. */
+    if (surImage(el, r)) { horsCalcul++; surImages++; continue; }
     const bg = fond(el, true);
     if (bg === null) { horsCalcul++; continue; }
     const px = parseFloat(cs.fontSize);
@@ -116,12 +150,13 @@ const MESURE = () => {
       echecs.push({ ct: Math.round(ct * 100) / 100, seuil, px: Math.round(px), t: t.slice(0, 40), approche: bg.image });
     }
   }
-  return { echecs, horsCalcul, approches, mesures, min: Math.round(min * 100) / 100, minQuoi };
+  return { echecs, horsCalcul, approches, surImages, mesures, min: Math.round(min * 100) / 100, minQuoi };
 };
 
 const b = await chromium.launch();
 const R = [];
 let total = 0;
+let surImageTotal = 0;
 
 for (const cle of aFaire) {
   const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
@@ -138,8 +173,16 @@ for (const cle of aFaire) {
     await p.evaluate(() => window.scrollTo(0, 0));
     await p.waitForTimeout(400);
     const r = await p.evaluate(MESURE);
-    ligne[`${w}px`] = r.echecs.length ? `${r.echecs.length} ÉCHEC` : `ok (min ${r.min})`;
+    /* « ok » sur zéro mesure n'est pas un succès, c'est un silence.
+       Quand tout le texte est posé sur une photographie — c'est le cas
+       entier de `photo` —, il ne reste RIEN à calculer depuis les
+       styles, et l'outil doit le dire au lieu de rendre « min 99 ». */
+    ligne[`${w}px`] = r.echecs.length ? `${r.echecs.length} ÉCHEC`
+      : r.mesures ? `ok (min ${r.min})` : "rien de calculable";
     if (r.approches) ligne[`${w}px`] += ` [${r.approches} approché]`;
+    /* Ce qui est posé sur une photographie ne se tait pas : il se
+       nomme, et il envoie à l'outil qui sait le mesurer. */
+    if (r.surImages) { ligne[`${w}px`] += ` [${r.surImages} sur image]`; surImageTotal += r.surImages; }
     total += r.echecs.length;
     pires = pires.concat(r.echecs.map((e) => ({ ...e, w })));
   }
@@ -157,4 +200,8 @@ if (total) {
 } else {
   console.log(`\n${R.length} site(s) × ${LARGEURS.length} largeurs : aucun échec de contraste calculable.`);
   console.log("Les mesures « approché » sont prises contre la première couleur OPAQUE sous une image ou un dégradé — pas aux pixels peints.");
+}
+if (surImageTotal) {
+  console.log(`\n${surImageTotal} bloc(s) « sur image » : posés par-dessus un <img>, ils ne sont PAS mesurables ici.`);
+  console.log("Ils se mesurent aux pixels peints :  node tools/pire-pixel.mjs <clé> <sélecteur…>");
 }

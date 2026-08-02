@@ -14,19 +14,19 @@
      pose leur temps local à cette valeur : deux passes rendent la même
      image.
 
-     1500 ms, ET C'EST UNE CORRECTION. La page se photographiait à
-     280 ms, titre en pleine révélation : l'image rendait « deux doigt »
-     et « une », deux mots coupés net. Un visiteur qui n'a vu ni l'état
-     d'avant ni celui d'après ne lit pas un mouvement, il lit une page
-     cassée — piège 56. À 1500 ms les deux lignes du titre sont
-     ENTIÈRES et l'arête est éteinte : le titre se photographie FINI.
+     1500 ms, ET C'EST UNE CORRECTION QUI TIENT TOUJOURS. La page se
+     photographiait à 280 ms, titre en pleine révélation : l'image
+     rendait « deux doigt » et « une », deux mots coupés net. Un
+     visiteur qui n'a vu ni l'état d'avant ni celui d'après ne lit pas
+     un mouvement, il lit une page cassée — piège 70. À 1500 ms les
+     deux lignes du titre sont ENTIÈRES.
 
-     Ce qui est photographié en train de bouger, c'est la BARRE, et
-     elle est à la moitié exacte de sa course à 1500 ms, par
-     construction — voir § 2. -->
+     Ce qui est photographié en train de bouger, c'est la BARRE — le
+     filet de tête en train d'être tiré —, et elle est à la moitié
+     exacte de sa course à 1500 ms, par construction. Voir § 2. -->
 <meta name="aped-instant" content="1500">
 
-<!-- Un `swap` sur un didone de 140 px change la largeur de la ligne
+<!-- Un `swap` sur un didone de 240 px change la largeur de la ligne
      d'une image à l'autre : les deux faces qui portent la mise en page
      sont préchargées. -->
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/bodoni-moda-1.woff2" crossorigin>
@@ -37,14 +37,18 @@
    BRUME — atelier de coupe, de couleur et de soin du cheveu
    Entreprise FICTIVE. Un seul écran, 1440 × 900, arrêté.
 
-   La référence est la double page intérieure d'un mensuel de mode :
-   image à gauche sur toute la hauteur, texte à droite en colonnes,
-   réglures dans les gouttières, folio dans la marge. Le titre est une
-   cover line en bas de casse qui refuse la justification et déborde de
-   sa colonne.
+   LA RÉFÉRENCE EST LA UNE D'UN QUOTIDIEN, pas la couverture d'un
+   magazine : bandeau de titre, filet de tête, MANCHETTE en travers de
+   toutes les colonnes, puis la photographie et les colonnes de texte
+   en dessous. C'est la seule composition des douze écrans qui ait des
+   colonnes de journal, et la manchette est ce qu'elles permettent.
 
-   TROIS VALEURS, PAS QUATRE. Aucun gris : la hiérarchie se fait au
-   corps, à la graisse et à la chasse, jamais à la teinte.
+   DEUX VALEURS, PAS TROIS. Blanc de papier, noir d'encre, et RIEN
+   ENTRE LES DEUX : aucun gris, aucune teinte, chroma nul partout.
+   Les seuls gris de la page sont photographiques. Ce qui remplaçait
+   une couleur d'accent est ici une RÉSERVE — un bloc plein d'encre
+   avec le texte en blanc dedans. Quatre pleins sur tout l'écran :
+   le bouton, la barre, l'encart de l'atelier, la photographie.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── LES TROIS FACES RÉELLEMENT EMPLOYÉES ──────────────────────────
@@ -60,8 +64,7 @@
 
 :root{
   --papier:#ffffff;   /* blanc pur — jamais un gris cassé */
-  --encre:#0e0e0e;    /* 19,3 : 1 sur papier */
-  --cramoisi:#a5122b; /* 7,7 : 1 sur papier, et papier 7,7 : 1 dessus */
+  --encre:#0e0e0e;    /* 19,3 : 1 sur papier, dans les deux sens */
 }
 
 *,*::before,*::after{ box-sizing:border-box }
@@ -80,22 +83,37 @@ h1{ margin:0; font-weight:700 }
 h2{ margin:0 }
 p{ margin:0 }
 
-/* Angles vifs partout, rayon 0. Aucune ombre, aucun dégradé, aucun
-   flou : la page n'a que deux objets pleins — la photographie et le
-   rectangle cramoisi du bouton. Tout le reste est du texte et des
-   filets de 1 px. */
-
 /* ══════════════════════════════════════════════════════════════════
    1 · LA DISPOSITION DE BASE — en dessous de 1440 px
-   La composition cotée est une page de 1440 × 900. En dessous, elle se
+   La composition cotée est une une de 1440 × 900. En dessous, elle se
    réorganise en un seul flux lisible : mêmes matières, mêmes corps
    relatifs, aucune réglure (elles n'ont plus de gouttière à tenir).
    ══════════════════════════════════════════════════════════════════ */
+/* L'ORDRE DU DOM SERT LA UNE COTÉE, PAS CE FLUX-LÀ. La photographie
+   vient en premier dans le document parce qu'elle est l'élément LCP et
+   que le bandeau de titre se peint PAR-DESSUS à 1440. En dessous, où
+   tout se remet en colonne, cet ordre-là donnerait une image avant le
+   nom du salon et le titre après le texte courant : on le rétablit à
+   la mise en page, sans toucher au document. */
 .page{
+  display:flex;
+  flex-direction:column;
   max-width:680px;
   margin:0 auto;
   padding:26px 20px 40px;
 }
+.masthead{ order:1 }
+.identite{ order:2 }
+.rubriques{ order:3 }
+.mention{ order:4 }
+.rdv{ order:5 }
+.barre{ order:6 }
+.titre{ order:7 }
+figure.cliche{ order:8 }
+.chapeau{ order:9 }
+.pratique{ order:10 }
+.folio{ order:11 }
+.filets{ order:12 }
 .masthead{
   font:700 38px/1 "bodoni-moda", Georgia, serif;
   letter-spacing:-1.3px;
@@ -115,6 +133,9 @@ p{ margin:0 }
   letter-spacing:2px;
   text-transform:uppercase;
 }
+/* Le bouton : un plein d'encre, texte en réserve. Il n'y a pas de
+   couleur pour le distinguer — il n'y en a nulle part — donc c'est la
+   VALEUR qui le distingue, et elle le distingue mieux. */
 .rdv{
   position:relative;
   display:block;
@@ -122,10 +143,10 @@ p{ margin:0 }
   max-width:100%;
   height:44px;
   margin-top:20px;
-  background:var(--cramoisi);
+  background:var(--encre);
   color:var(--papier);
   text-decoration:none;
-  transition:background 180ms linear;
+  transition:background 180ms linear, color 180ms linear, box-shadow 180ms linear;
 }
 .rdv-txt{
   position:absolute;
@@ -149,66 +170,68 @@ p{ margin:0 }
 }
 .fleche::before{ transform:rotate(-45deg) }
 .fleche::after{ transform:rotate(45deg) }
-.rdv:hover,.rdv:focus-visible{ background:var(--encre) }
+/* Le survol RENVERSE le bloc : la réserve devient l'encre. Sur une
+   page à deux valeurs, la seule micro-interaction possible est
+   l'inversion — et c'est la bonne. */
+.rdv:hover,.rdv:focus-visible{
+  background:var(--papier);
+  color:var(--encre);
+  box-shadow:inset 0 0 0 1px var(--encre);
+}
 .rdv:focus-visible{ outline:1px solid var(--encre); outline-offset:3px }
 
-/* LA BARRE — le geste, et le troisième objet plein de la page.
-   Un filet cramoisi de 1 px donne le chemin entier ; la barre de 16 px
+/* LA BARRE — le geste, et le filet de tête de la une.
+   Un filet d'encre de 1 px donne le chemin entier ; la barre de 16 px
    est ce même filet EN TRAIN D'ÊTRE TIRÉ. Le même objet à deux poids :
    la réglure de la page se fait masse. Détail et cotes au § 2. */
 .barre{
   position:relative;
   display:block;
   height:16px;
-  /* 40 px au-dessus, 26 px en dessous : la barre appartient au titre
-     qu'elle introduit, pas au bouton cramoisi qui la précède. Deux
-     masses de la même teinte collées se liraient comme un seul bloc. */
-  margin-top:40px;
+  margin-top:26px;
 }
 .barre::before{
   content:"";
   position:absolute; left:0; top:7px;
   width:100%; height:1px;
-  background:var(--cramoisi);
+  background:var(--encre);
 }
 .tire{
   position:absolute; inset:0;
   display:block;
-  background:var(--cramoisi);
+  background:var(--encre);
   transform-origin:0 50%;
   animation:tirer 2000ms cubic-bezier(.65,0,.35,1) 500ms both;
 }
 
 /* Le titre : bas de casse, jamais capitales. C'est ce qui sépare une
-   page de mode d'une affiche. */
+   manchette de journal d'une affiche. */
 .titre{
   margin:26px 0 0;
-  /* Le plafond est un calcul, pas un goût : « deux doigts, » mesure
-     5,544 fois son corps en bodoni-moda chassé de −0,03 em. À 112 px
-     la ligne fait 621 px et tient dans les 640 px de la colonne la
-     plus large de cette disposition ; à 116 px elle mordait déjà dans
-     la marge. */
   font:700 clamp(40px, 12.5vw, 112px)/0.94 "bodoni-moda", Georgia, serif;
-  letter-spacing:-0.03em;
+  letter-spacing:-0.031em;
   color:var(--encre);
   white-space:nowrap;
 }
 .l{ position:relative; display:block; width:max-content }
 .t{ display:block }
 
-figure.cliche{ margin-top:26px }
+figure.cliche{ margin-top:26px; position:relative }
 .cliche img{
   width:100%;
   height:auto;
-  aspect-ratio:512/640;
+  aspect-ratio:584/464;
   object-fit:cover;
-  object-position:50% 45%;
+  object-position:50% 0%;
   /* NOIR ET BLANC À FORT CONTRASTE, SANS EXCEPTION. La source est un
      tablier noir mat, des mains claires et une mèche blonde : le
      traitement écrase le tablier vers le noir et pousse la mèche vers
-     le blanc. On obtient trois valeurs, comme la palette. */
-  filter:grayscale(1) contrast(1.28) brightness(0.94);
+     le blanc. On obtient DEUX valeurs, comme la palette. */
+  filter:grayscale(1) contrast(1.34) brightness(0.9);
 }
+/* La légende est BLANCHE, dans la photographie. Le coin bas-droit du
+   cadre est du tablier noir mesuré : luminance maximale 0 sur 255 sur
+   toute la bande. Voir le § 3. */
 .legende{
   margin-top:10px;
   font:400 10px/1.5 "archivo", system-ui, sans-serif;
@@ -220,41 +243,45 @@ figure.cliche{ margin-top:26px }
   font:400 14px/21px "archivo", system-ui, sans-serif;
   max-width:34em;
 }
-/* LA LETTRINE — la signature imprimée, deuxième des trois apparitions
-   du cramoisi.
+/* LA LETTRINE. Elle était cramoisie ; elle est noire, et elle ne perd
+   rien — ce qui la faisait exister n'était pas la teinte mais le
+   RAPPORT DE CORPS : 72 px de didone contre 14 px de grotesque, un à
+   cinq, dans un bloc de texte qui n'a aucune autre capitale.
 
-   COTE CORRIGÉE, ET LES DEUX COTES DU PLAN NE POUVAIENT PAS TENIR
-   ENSEMBLE. Le plan demande « 88 px » ET « initial-letter: 3 ». Or la
-   hauteur de capitale de bodoni-moda vaut 0,75 em : à 88 px elle fait
-   66 px, soit 3,14 interlignes — la lettre ne peut pas à la fois
-   mesurer 88 px et s'asseoir sur la troisième ligne de base. Et
-   `initial-letter: 3`, mesuré dans Chrome, sort la lettre 6 px
-   AU-DESSUS des ascendantes de la première ligne et pose sa base
-   3,5 px au-dessus de la troisième — le défaut se voit à l'œil.
-
-   La lettrine est donc posée à la main : 72 px, boîte de 63 px (trois
-   interlignes de 21 px exactement), ce qui met la base de la capitale
-   sur la troisième ligne de base et son sommet à la hauteur des
-   ascendantes de la première. C'est la définition d'une lettrine
-   imprimée. Le flottant est aussi vieux que le Web : aucun
-   `@supports` à prévoir. */
+   COTE POSÉE À LA MAIN, ET LES DEUX COTES DU PLAN NE POUVAIENT PAS
+   TENIR ENSEMBLE. La hauteur de capitale de bodoni-moda vaut 0,75 em
+   (mesurée) : à 88 px elle ferait 66 px, soit 3,14 interlignes — la
+   lettre ne peut pas à la fois mesurer 88 px et s'asseoir sur la
+   troisième ligne de base. 72 px, boîte de 63 px (trois interlignes de
+   21 px exactement) : la base de la capitale tombe sur la troisième
+   ligne de base et son sommet à la hauteur des ascendantes de la
+   première. C'est la définition d'une lettrine imprimée. */
 .chapeau::first-letter{
   float:left;
   font-family:"bodoni-moda", Georgia, serif;
   font-weight:700;
   font-size:72px;
   line-height:0.875;
-  color:var(--cramoisi);
+  color:var(--encre);
   margin-right:9px;
 }
-.pratique{ margin-top:28px }
+/* L'ENCART DE L'ATELIER — la RÉSERVE, et c'est elle qui remplace
+   l'accent de couleur. Un bloc plein d'encre, le texte en blanc
+   dedans, exactement une colonne de large. Sur une page qui n'a que
+   deux valeurs, un accent ne peut être qu'un renversement. */
+.pratique{
+  margin-top:28px;
+  background:var(--encre);
+  color:var(--papier);
+  padding:18px 18px 16px;
+}
 .pratique h2{
   font:600 10px/1 "archivo", system-ui, sans-serif;
   letter-spacing:2.2px;
   text-transform:uppercase;
 }
-.regle{ display:block; height:1px; margin-top:9px; background:var(--encre) }
-.coord{ margin-top:8px; font:400 13px/20px "archivo", system-ui, sans-serif }
+.regle{ display:block; height:1px; margin-top:9px; background:var(--papier) }
+.coord{ margin-top:10px; font:400 13px/20px "archivo", system-ui, sans-serif }
 .coord span{ display:block }
 .sur-rdv{
   margin-top:14px;
@@ -262,23 +289,20 @@ figure.cliche{ margin-top:26px }
   letter-spacing:2px;
   text-transform:uppercase;
 }
-/* LE FOLIO — troisième et dernière apparition du cramoisi. */
 .folio{
   margin-top:28px;
   font:600 11px/1 "archivo", system-ui, sans-serif;
   letter-spacing:3px;
   text-transform:uppercase;
-  color:var(--cramoisi);
 }
-.pied{
-  margin-top:26px;
-  padding-top:12px;
-  border-top:1px solid var(--encre);
-  font:400 10px/1.7 "archivo", system-ui, sans-serif;
+/* La mention obligatoire « site de démonstration » : elle tient la
+   place de la ligne d'édition d'un quotidien, sous les rubriques. */
+.mention{
+  margin-top:14px;
+  font:400 10px/1.6 "archivo", system-ui, sans-serif;
   letter-spacing:1.6px;
   text-transform:uppercase;
 }
-.pied span{ display:block }
 .filets{ display:none }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -287,18 +311,14 @@ figure.cliche{ margin-top:26px }
    L'aperçu du panneau réduit cet écran de 1440 à 421 px. Un filet de
    1 px y devient 0,29 px : le moteur l'étale en un gris que personne
    ne voit. Un geste photographié pèse donc au moins 12 px dans sa plus
-   petite dimension et se déplace d'au moins 40 px — piège 57.
+   petite dimension et se déplace d'au moins 40 px — piège 71.
 
-   ── CE QU'ON PHOTOGRAPHIE : LA BARRE ─────────────────────────────
-   Un filet cramoisi de 1 px traverse la page texte de x=600 à x=1384,
-   à y=424 — la MÉDIANE HORIZONTALE DE LA PHOTOGRAPHIE (104 → 744),
-   portée par-dessus la reliure jusqu'au bord droit de la zone de
-   texte. Ce filet s'épaissit en une barre pleine de 16 px qui se tire
-   de gauche à droite, de l'origine de C3 au bord de la page. Le même
-   objet à deux poids : la réglure de la page en train d'être tirée.
-   Le mouvement est fait de la matière de la page — c'est pour ça que
-   c'est ce geste-là, et il tombe dans le champ blanc de C3–C5, à la
-   hauteur exacte du milieu de la photographie.
+   ── CE QU'ON PHOTOGRAPHIE : LE FILET DE TÊTE EN TRAIN D'ÊTRE TIRÉ ──
+   Sous le bandeau de titre d'une une court un filet lourd. Ici il fait
+   1328 px — toute la justification — et 16 px de haut, et il se tire
+   de la marge gauche à la marge droite. Un filet d'encre de 1 px, posé
+   sur son axe, montre le chemin entier ; la barre pleine est ce même
+   filet en train d'être ruliné. Le même objet à deux poids.
 
    POURQUOI UNE COURBE SYMÉTRIQUE, ET C'EST LA CLÉ.
    `cubic-bezier(.65,0,.35,1)` passe par (0,5 ; 0,5) : à la MOITIÉ de
@@ -306,24 +326,20 @@ figure.cliche{ margin-top:26px }
    500 ms de retard + 2000 ms de course → mi-course à 1500 ms, la
    valeur déclarée dans le `<head>`. Rien à mesurer, rien à régler.
    Une courbe expo — celle du titre — aurait couvert 98 % de la
-   distance au même instant : c'est précisément ce qui rendait
-   l'ancienne capture illisible.
+   distance au même instant.
 
-   CE QUE L'IMAGE ARRÊTÉE MONTRE. 392 px de barre pleine sur 784, bord
-   d'attaque posé à x=992, ENTRE les deux réglures verticales : la
-   barre en a avalé une, n'a pas atteint l'autre, et le filet de 1 px
-   montre le chemin qui reste. 392 × 16 px à 1440, soit 114 × 4,6 px
-   une fois réduit à 0,29. Une barre n'a pas de mot à couper.
+   CE QUE L'IMAGE ARRÊTÉE MONTRE. 664 px de barre pleine sur 1328,
+   bord d'attaque posé à x=720, et le filet de 1 px qui continue seul
+   jusqu'à x=1384. 664 × 16 px à 1440, soit 193 × 4,6 px une fois
+   réduit à 0,29. Une barre n'a pas de mot à couper.
 
    ── CE QU'ON NE PHOTOGRAPHIE PLUS : LE TITRE ─────────────────────
-   Le titre se découvre toujours sous un masque qui balaye de gauche à
-   droite, avec sur l'arête un filet cramoisi de 1 px de la hauteur de
-   la ligne qui suit la même courbe. Un visiteur qui arrive le voit.
-   Mais il est fini à 1280 ms, donc à 1500 ms l'image le prend ENTIER.
-   Un masque figé à mi-course sur du TEXTE ne se lit pas comme un
-   mouvement : il se lit comme un mot tronqué, une page cassée, une
-   police qui n'a pas chargé — piège 56. Le mécanisme reste dans la
-   page ; c'est l'instant qui a bougé.
+   La manchette se découvre toujours sous un masque qui balaye de
+   gauche à droite. Un visiteur qui arrive le voit. Mais elle est finie
+   à 1280 ms, donc à 1500 ms l'image la prend ENTIÈRE. Un masque figé à
+   mi-course sur du TEXTE ne se lit pas comme un mouvement : il se lit
+   comme un mot tronqué — piège 70. Le mécanisme reste dans la page ;
+   c'est l'instant qui a bougé.
 
    Le masque est un `clip-path`, JAMAIS une opacité : ce qui est
    découvert est noir plein, jamais un gris de fondu.
@@ -342,247 +358,300 @@ figure.cliche{ margin-top:26px }
   from{ clip-path:inset(0 100% 0 0) }
   to  { clip-path:inset(0 0 0 0) }
 }
-/* L'arête et le masque interpolent le MÊME pourcentage de la MÊME
-   largeur avec la MÊME courbe : le bord droit du filet tombe au pixel
-   sur la frontière du découpage. Au repos l'arête est éteinte — un
-   filet cramoisi resté collé à la fin du titre serait un quatrième
-   objet plein sur une page qui n'en veut que deux. */
-@keyframes arete{
-  0%  { right:100%; opacity:1 }
-  99% { opacity:1 }
-  100%{ right:0;    opacity:0 }
-}
 .t{
   clip-path:inset(0 0 0 0);
   animation:decouvre 1100ms cubic-bezier(.19,1,.22,1) forwards;
 }
-.l::after{
-  content:"";
-  position:absolute;
-  left:0; top:0; bottom:0; right:0;
-  border-right:1px solid var(--cramoisi);
-  opacity:0;
-  pointer-events:none;
-  animation:arete 1100ms cubic-bezier(.19,1,.22,1) forwards;
-}
-.l2 .t,.l2::after{ animation-delay:180ms }
+.l2 .t{ animation-delay:180ms }
 
 /* Un moteur qui ne connaît pas `clip-path: inset()` voit la forme
    FINALE, jamais une page vide. */
 @supports not (clip-path:inset(0 0 0 0)){
   .t{ animation:none }
-  .l::after{ animation:none; opacity:0 }
 }
-/* L'état de repos EST l'état final : les deux lignes entières, aucune
-   arête, la barre tirée jusqu'au bout, aucune information perdue. */
+/* L'état de repos EST l'état final : les deux lignes entières, la
+   barre tirée jusqu'au bout, aucune information perdue. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{ animation:none !important; transition:none !important }
   .t{ clip-path:inset(0 0 0 0) }
-  .l::after{ opacity:0 }
   .tire{ transform:none }
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   3 · LA PAGE COTÉE — 1440 × 900, et elle s'arrête là
-   Marges de page 56 px. Zone de texte 56 → 1384 (1328 px).
+   3 · LA UNE COTÉE — 1440 × 900, et elle s'arrête là
+
+   Marges de page 56 px. Justification 56 → 1384 (1328 px).
    Cinq colonnes de 240 px, gouttières de 32 px :
      C1 56–296 · C2 328–568 · C3 600–840 · C4 872–1112 · C5 1144–1384
-   La moitié gauche (C1+C2) est la page IMAGE, la moitié droite
-   (C3+C4+C5) est la page TEXTE.
+   Gouttières (donc réglures possibles) : 312 · 584 · 856 · 1128.
+
+   L'ORDRE DE LA UNE :
+       0–464  LA PHOTOGRAPHIE, x 0 → 584. Elle SORT par le haut et par
+              la gauche, et le BANDEAU DE TITRE est imprimé DEDANS, en
+              réserve blanche
+      18– 62  le bouton, un plein d'encre, C5
+      41– 50  les rubriques, x 600 → 1112
+      96–112  le filet de tête en train d'être tiré — le geste
+     140–224  le chapeau, deux colonnes, C3+C4
+     140–288  l'encart de l'atelier, un plein d'encre, C5
+        464   le filet de séparation, x 600 → 1384 : il prolonge le
+              bord bas de la photographie. La même ligne, deux matières
+     470–872  LA MANCHETTE, sur les cinq colonnes
+     840–866  le folio, dans l'encoche de la seconde ligne
+
+   POURQUOI LA PHOTOGRAPHIE EN HAUT ET LA MANCHETTE EN BAS, ET POURQUOI
+   ELLES NE PEUVENT PAS SE SUPERPOSER. Un titre de 240 px sur deux
+   lignes occupe 402 px des 900. Une photographie qui « fait masse » en
+   demande 460. 402 + 464 = 866 : elles se suivent, au pixel, et il ne
+   reste rien. Un premier essai les avait superposées en écrasant la
+   photographie à 354 px de haut : le recadrage rendait un ONGLE de
+   340 px et plus aucun geste. Une source en portrait de 1000 × 1400
+   ne se met pas en bande.
+
+   LA LUMINANCE DE LA PHOTOGRAPHIE, MESURÉE APRÈS LE FILTRE, par cases
+   de 100 px sur la source de 1000 × 1400 (moyenne / maximum sur 255) :
+     source y    0– 200 : maximum 5 sur x 0–600 — le haut du tablier
+     source y  200–1000 : jusqu'à 199/229 — les deux mains, la mèche
+     source y 1100–1400 : maximum 24 — noir plein
+   Le cadre montre la source de y=0 à y=795, à l'échelle 0,584 : la
+   main droite y fait 313 px sur 464, c'est un gros plan de presse et
+   pas une macro. Les DEUX textes blancs se posent dans le haut, où le
+   maximum mesuré est 2 sur 255 ; la légende se pose en bas à droite
+   du cadre, où il est 0. Contraste sur le pire pixel : 19,2 : 1.
    ══════════════════════════════════════════════════════════════════ */
 @media (min-width:1440px){
 
+  /* `display:block` N'EST PAS COSMÉTIQUE, ET L'OUBLI A EFFACÉ LE
+     BANDEAU DE TITRE. Le flux étroit range ses blocs avec `order` ;
+     `order` ne réordonne pas seulement la disposition, il réordonne
+     l'ORDRE DE PEINTURE. La photographie porte `order:8` et le
+     masthead `order:1` : dans un conteneur resté en `flex`, l'image
+     se peignait PAR-DESSUS le nom du salon, et « brume » avait
+     disparu de la capture sans qu'aucune sonde ne s'en plaigne — la
+     boîte était toujours là, à la bonne place, de la bonne couleur.
+     On ne l'a vu qu'en rouvrant l'image. En `block`, `order` ne
+     s'applique plus et l'ordre du document reprend la main. */
   .page{
+    display:block;
     position:relative;
     width:1440px;
     height:900px;
     max-width:none;
     margin:0 auto;
     padding:0;
-    overflow:hidden;   /* la page fait 900 px et rien ne vit en dessous */
+    overflow:hidden;   /* la une fait 900 px et rien ne vit en dessous */
   }
   .page > *{ position:absolute }
 
-  /* ── LE BANDEAU DE TÊTE (y 0 → 88) ───────────────────────────── */
+  /* ── LA PHOTOGRAPHIE (x 0 → 584, y 0 → 464) ──────────────────────
+     Elle SORT par le haut et par la gauche : deux bords de page, pas
+     un cadre. 584 × 464 sur une source de 1000 × 1400 : l'échelle est
+     0,584 et le cadre montre les 795 premiers pixels de la source —
+     le tablier, la main droite, la mèche, la lame qui se ferme. Le
+     bas de la source, l'ongle en macro, est COUPÉ par la composition.
+
+     Son bord bas, y=464, se prolonge à droite en filet de 1 px : la
+     même ligne, deux matières. */
+  figure.cliche{ left:0; top:0; width:584px; height:464px; margin:0; overflow:hidden }
+  .cliche img{ width:584px; height:464px; aspect-ratio:auto; object-position:50% 0% }
+
+  /* ── LE BANDEAU DE TITRE — IMPRIMÉ DANS LA PHOTOGRAPHIE ──────────
+     C'est le geste de composition de la page : le nom du journal n'est
+     pas au-dessus de l'image, il est DEDANS, en réserve. Le haut du
+     tablier est noir plein sur 200 px de source — mesuré, maximum 2
+     sur 255 sous les deux textes. */
   .masthead{
-    left:56px; top:16px;
+    left:40px; top:26px;
+    color:var(--papier);
     font:700 44px/1 "bodoni-moda", Georgia, serif;
     letter-spacing:-1.5px;
-    /* ligne de base y = 54 */
+    /* ligne de base y = 60 */
   }
   .identite{
-    left:56px; top:66px; margin:0;
+    left:40px; top:74px; margin:0;
+    color:var(--papier);
     font:600 10px/1 "archivo", system-ui, sans-serif;
     letter-spacing:2.2px;
-    /* ligne de base y = 74 */
+    /* ligne de base y = 82 */
   }
-  /* Les trois métiers ne sont PAS des liens : un écran unique n'a
-     nulle part où mener, et une ancre morte est un mensonge de plus
-     qu'un site de démonstration n'a pas besoin d'écrire. Ils sont la
-     ligne de rubriques d'un titre courant, posée sur les origines de
-     colonne C2, C3 et C4. Le seul objet cliquable de l'écran est le
-     bouton — c'est ce qui le rend trouvable en un dixième de seconde. */
-  .rubriques{
-    display:block; margin:0;
-    left:0; top:43px; width:1440px;
-    font:600 11px/1 "archivo", system-ui, sans-serif;
-    letter-spacing:2px;
-    /* ligne de base y = 52 */
-  }
-  .rubriques li{ position:absolute; top:0 }
-  .rubriques li:nth-child(1){ left:328px }
-  .rubriques li:nth-child(2){ left:600px }
-  .rubriques li:nth-child(3){ left:872px }
-
-  /* Le bouton : seul objet plein et coloré du bandeau, première des
-     trois apparitions du cramoisi. Angles vifs, libellé NON centré. */
-  .rdv{
-    left:1144px; top:24px;
-    width:240px; height:44px;
-    margin:0;
-  }
-  /* x = 1160, ligne de base y = 51 : le libellé n'est PAS centré dans
-     son rectangle, pas même verticalement — un bouton centré est le
-     réflexe qu'on écarte. */
-  .rdv-txt{ left:16px; top:18px; height:auto; display:block }
-  /* COTE CORRIGÉE. Le plan fait courir le filet de la flèche de
-     x=1330 à x=1368. Mesuré, « PRENDRE RENDEZ-VOUS » en archivo 600
-     11 px chassé de 2 px occupe 173 px et se termine à x=1331 : le
-     filet lui rentrait dedans. Il part de x=1338 — la pointe reste à
-     x=1368 et les barbes à x=1362, comme coté. */
-  .fleche{ right:16px; top:22px; width:30px; margin:0 }
-
-  /* ── LA PHOTOGRAPHIE (C1 + C2) ───────────────────────────────────
-     Cadre 512 × 640 à (56, 104) : exactement C1+C2, du filet de tête
-     jusqu'à 100 px au-dessus du filet de pied. Source 1000 × 1400 en
-     portrait ; le recadrage retire 150 px sur 1400, la lame et les
-     deux mains restent entières. C'est l'élément LCP — 327 680 px²
-     contre 217 000 pour le titre. */
-  figure.cliche{ left:56px; top:104px; margin:0 }
-  .cliche img{ width:512px; height:640px; aspect-ratio:auto }
+  /* La légende, blanche aussi, mais ALIGNÉE À DROITE dans le cadre :
+     le coin bas-droit de la photographie est du tablier noir, mesuré à
+     0 sur 255, et c'est le seul endroit du bas de l'image qui le soit. */
   .legende{
-    position:absolute; left:0; top:658px; margin:0;
+    position:absolute; left:0; top:436px; margin:0;
+    width:568px;
+    text-align:right;
+    color:var(--papier);
     font:400 10px/1 "archivo", system-ui, sans-serif;
     letter-spacing:1.4px;
     white-space:nowrap;
-    /* x = 56, ligne de base y = 770 */
+    /* ligne de base y = 444 */
   }
 
-  /* ── LE CHAPEAU (C3 + C4) ────────────────────────────────────────
-     Coulé en deux colonnes de 240 px, gouttière 32 px, de x=600 à
-     x=1112. La réglure x=856 tombe exactement dans cette gouttière :
-     c'est sa raison d'être.
+  /* ── LA PAGE TEXTE (x 600 → 1384) ────────────────────────────────
+     Les trois métiers ne sont PAS des liens : un écran unique n'a
+     nulle part où mener, et une ancre morte est un mensonge de plus
+     qu'un site de démonstration n'a pas besoin d'écrire. Ils sont la
+     ligne de rubriques d'un titre courant, répartie sur la mesure
+     C3→C4. Le seul objet cliquable de l'écran est le bouton. */
+  .rubriques{
+    display:flex; justify-content:space-between; gap:0; margin:0;
+    left:600px; top:41px; width:512px;
+    font:600 11px/1 "archivo", system-ui, sans-serif;
+    letter-spacing:2px;
+    /* ligne de base y = 50 */
+  }
+  .rubriques li{ position:static }
 
-     COTE NON TENUE, ET ELLE NE POUVAIT PAS L'ÊTRE. Le plan pose
-     « quatre lignes par colonne » ET « bloc y=124 → 292 ». Quatre
-     lignes de 21 px font 84 px, pas 168 : les deux cotes se
-     contredisent, et c'est le texte exact du plan qui tranche — il
-     donne huit lignes en tout, quatre par colonne. Le bloc mesuré fait
-     donc 124 → 208. Le blanc qui suit n'est pas subi : la première
-     référence du plan tient sa page sur 80 % de vide, et ce sont les
-     réglures qui traversent ce vide qui le rendent tenu. */
+  /* La mention obligatoire tient la place de la ligne d'édition d'un
+     quotidien : sous les rubriques, au-dessus du filet de tête. */
+  .mention{
+    left:600px; top:64px; margin:0;
+    font:400 10px/1 "archivo", system-ui, sans-serif;
+    letter-spacing:1.6px;
+    text-transform:uppercase;
+    /* ligne de base y = 72 */
+  }
+
+  /* Le bouton : un plein d'encre de 240 px — exactement une colonne,
+     la même mesure que l'encart de l'atelier, et dans la même colonne
+     que lui. Angles vifs, libellé NON centré : un bouton centré est le
+     réflexe qu'on écarte. */
+  .rdv{
+    left:1144px; top:18px;
+    width:240px; height:44px;
+    margin:0;
+  }
+  .rdv-txt{ left:16px; top:18px; height:auto; display:block }
+  /* COTE MESURÉE. « PRENDRE RENDEZ-VOUS » en archivo 600 11 px chassé
+     de 2 px occupe 173 px et se termine à x=1331 : un filet parti de
+     x=1330 lui rentrait dedans. Il part de x=1338 ; la pointe reste à
+     x=1368 et les barbes à x=1362. */
+  .fleche{ right:16px; top:22px; width:30px; margin:0 }
+
+  /* ── LE FILET DE TÊTE DE LA PAGE TEXTE, LE GESTE (y 96 → 112) ────
+     x 600 → 1384 : la mesure de la page texte, 784 px. Le filet de
+     1 px est posé sur son axe, à y=103. Il ne traverse pas la
+     photographie : à cette hauteur-là l'image n'est plus noire, et un
+     blanc posé sur un gris à 184 ne se voit pas — mesuré. */
+  .barre{ left:600px; top:96px; width:784px; height:16px; margin:0 }
+
+  /* ── LE CHAPEAU (C3 + C4 + C5, y 140 → 203) ──────────────────────
+     TROIS colonnes de 240 px, gouttières de 32, de x=600 à x=1384 :
+     240 × 3 + 32 × 2 = 784, la mesure exacte de la page texte. Les
+     deux réglures x=856 et x=1128 tombent dans les gouttières — c'est
+     leur seule raison d'être, et c'est ce qui fait qu'on lit un
+     journal et pas un article de blogue. */
   .chapeau{
-    left:600px; top:124px;
-    width:512px; max-width:none; margin:0;
-    column-count:2;
+    left:600px; top:140px;
+    width:784px; max-width:none; margin:0;
+    column-count:3;
     column-gap:32px;
     font:400 14px/21px "archivo", system-ui, sans-serif;
   }
 
-  /* ── LA COLONNE PRATIQUE (C5) ────────────────────────────────── */
-  .pratique{ left:1144px; top:130px; width:240px; margin:0 }
-  /* ligne de base de « L’ATELIER » : y = 138 */
-  .regle{ position:absolute; left:0; top:18px; width:240px; margin:0 }
-  .coord{ position:absolute; left:0; top:26px; margin:0 }
-  /* trois lignes 13 px / 20 px, lignes de base y = 170 · 190 · 210 */
-  .sur-rdv{ position:absolute; left:0; top:102px; margin:0 }
-  /* ligne de base y = 240 */
+  /* ── L'ENCART DE L'ATELIER (C5, y 732 → 872) ─────────────────────
+     Un bloc PLEIN d'encre, le texte en réserve dedans, exactement une
+     colonne de large. Sur une page qui n'a que deux valeurs, un accent
+     ne peut être qu'un renversement — c'est lui qui remplace le rouge
+     qu'il y avait ici, et il tient mieux : à 0,29 il reste un
+     rectangle noir de 70 × 41 px, là où une lettrine rouge de 72 px
+     devenait un point.
 
-  /* ── LA BARRE (y 416 → 432) ──────────────────────────────────────
-     x de 600 à 1384 : l'origine de C3 — la même que le chapeau et le
-     titre — jusqu'au bord droit de la zone de texte. 784 px, la mesure
-     de la page texte. Le milieu de la barre tombe à y=424, qui est la
-     MÉDIANE HORIZONTALE DE LA PHOTOGRAPHIE (104 → 744) : la cote vient
-     de la page image, portée par-dessus la reliure. Elle traverse les
-     deux réglures verticales, comme le titre les traverse 115 px plus
-     bas, et elle occupe le champ blanc de C3–C5 sans le remplir. */
-  .barre{ left:600px; top:416px; width:784px; height:16px; margin:0 }
+     Il se pose dans l'ENCOCHE que laisse la seconde ligne : « une
+     lame » s'arrête à x=1055, il reste 329 px de blanc jusqu'à la
+     marge. Son bas, y=872, est celui de la manchette — au pixel. Son
+     haut, y=732, passe 14 px sous la virgule de la première ligne,
+     qui descend à 718. */
+  .pratique{
+    left:1144px; top:732px; width:240px; margin:0;
+    padding:14px 18px 12px;
+  }
+  .regle{ margin-top:9px }
 
-  /* ── LE TITRE (y 548 → 824) ──────────────────────────────────────
-     Ancré à x=600 — l'origine de C3, qui fait 240 px. Il en occupe
-     776 : il déborde de sa colonne sur 3,2 colonnes et traverse les
-     deux réglures de la page texte. Aucune composition centrée ni
-     aucun héros plein cadre ne peut faire ça.
+  /* ── LA MANCHETTE (y 470 → 872) ──────────────────────────────────
+     bodoni-moda 700, 240 px, chasse −0,031 em, interlignage 214 px
+     (0,89). Ancrée à x=56, la marge de page : elle court sur les CINQ
+     colonnes et ne s'aligne sur aucune d'elles — c'est la définition
+     d'une manchette. Le sommet des hampes de « deux doigts, » arrive
+     6 px sous le bord bas de la photographie : la manchette bute
+     contre l'image, elle ne s'en écarte pas.
 
-     COTE CORRIGÉE, ET LE PLAN L'AVAIT PRÉVU. Le plan pose 156 px et
-     demande de régler la valeur sur les métriques réelles. Mesurées :
-     « deux doigts, » en bodoni-moda 700 chassé de −0,03 em occupe
-     864,9 px à 156 px — la ligne finirait à x=1465, hors de la
-     fenêtre. À 140 px elle occupe 776 px et finit à x=1376, dans la
-     fourchette 1360–1384 exigée ; « une lame » finit à x=1184.
-     Et la GÉOMÉTRIE VERTICALE du plan tombe juste à 140 px, pas à
-     156 : l'ascendante du « d » (0,75 em) monte à y=547 — le plan dit
-     548 — et la descendante du « g » de la ligne 2 tombe à y=819 — le
-     plan dit 820. L'interlignage reste coté à 131 px, ce qui garde les
-     lignes de base à y=652 et y=783. */
+     LES COTES SONT CALCULÉES SUR LES MÉTRIQUES RÉELLES, PAS ESTIMÉES.
+     Mesuré dans la page, à corps 1 et chasse nulle :
+       « deux doigts, » = 5,904 em, montante 0,766, descendante 0,266
+       « une lame »     = 4,409 em, montante 0,750, descendante 0,016
+       hauteur de capitale 0,750 em · hauteur d'x 0,469 em
+     À 240 px et −0,031 em (12 avances sur la ligne 1) :
+       ligne 1 = (5,904 − 0,372) × 240 = 1328 px → x 56 → 1384, PILE
+       ligne 2 = (4,409 − 0,248) × 240 =  999 px → x 56 → 1055
+       ligne de base 1 = 654 · ligne de base 2 = 868 · bas d'encre 872
+     La hauteur d'x fait 113 px : c'est CETTE mesure-là qu'on voit,
+     puisque le titre est en bas de casse. À 140 px elle n'en faisait
+     que 66 — un titre qu'on croyait à 140 se lisait à 66, et c'est
+     exactement le reproche qui a été fait à la version précédente. */
   .titre{
-    left:600px; top:536px; margin:0;
-    font:700 140px/131px "bodoni-moda", Georgia, serif;
-    letter-spacing:-0.03em;
+    left:56px; top:460px; margin:0;
+    font:700 240px/214px "bodoni-moda", Georgia, serif;
+    letter-spacing:-0.031em;
+    /* `top` est la boîte, pas l'encre : à interlignage 214 sur corps
+       240, la première ligne de base tombe 194 px sous le haut de la
+       boîte. 460 + 194 = 654, et l'encre commence donc à 470. Mesuré
+       dans la page, jamais estimé. */
   }
 
   /* ── LE FOLIO ────────────────────────────────────────────────────
-     Dans la MARGE, hors de la zone de texte : x=20. Lecture de bas en
-     haut, extrémité basse au pixel du bas de la photographie. */
+     Dans la MARGE, hors de la justification : x=20, lecture de bas en
+     haut, à hauteur de la première ligne de la manchette. C'est la
+     seule chose qui vit dans la marge, et c'est ce qui fait qu'on lit
+     une page et pas un écran. */
   .folio{
-    left:20px; top:622px; margin:0;
+    left:20px; top:500px; margin:0;
     writing-mode:vertical-rl;
     transform:rotate(180deg);
     font:600 11px/1 "archivo", system-ui, sans-serif;
     letter-spacing:3px;
   }
 
-  /* ── LE PIED (y 846 → 900) ───────────────────────────────────── */
-  .pied{
-    left:0; top:864px; width:1440px;
-    margin:0; padding:0; border:0;
-    font:400 10px/1 "archivo", system-ui, sans-serif;
-    letter-spacing:1.6px;
-    /* ligne de base y = 872 */
-  }
-  .pied span{ position:absolute; top:0 }
-  .pied .g{ left:56px }
-  /* La chasse s'ajoute APRÈS la dernière lettre : la boîte se termine
-     1,6 px plus loin que le dernier jambage. On la pousse d'autant
-     pour que le TRAIT, et non la boîte, s'aligne sur x=1384. */
-  .pied .d{ left:0; width:1385.6px; text-align:right }
-
   /* ── LES RÉGLURES ────────────────────────────────────────────────
-     Trois verticales de 1 px, chacune avec une raison.
-       x=584   la reliure : elle sépare la page image de la page
-               texte, et court sans interruption de y=88 à y=846 ;
-       x=856   la gouttière du chapeau ;
-       x=1128  la gouttière de la page texte.
-     Les deux dernières sont INTERROMPUES de y=548 à y=824, exactement
-     là où le titre les traverse : c'est le titre qui a la priorité,
-     pas la grille. Aucune réglure dans la moitié gauche — il n'y a
-     pas de colonnes de texte à séparer.
-     Deux filets horizontaux, x 56 → 1384, à y=88 et y=846. */
+     Une horizontale et deux verticales, toutes de 1 px.
+       y=464   la séparation article / manchette, x 584 → 1384. Elle
+               PART du bord droit de la photographie, pas de l'origine
+               de C3 : c'est le bord bas de l'image qui se prolonge en
+               filet — la même ligne, deux matières. Partie de 600, il
+               restait 16 px de blanc entre les deux, et l'idée
+               tombait ;
+       x=856   la première gouttière du chapeau, y 128 → 215 ;
+       x=1128  la seconde, y 128 → 215.
+     LES VERTICALES S'ARRÊTENT AVEC LE TEXTE, 12 px au-dessus et 12 px
+     en dessous. Un premier essai les faisait courir jusqu'au filet de
+     fermeture : elles encadraient alors 240 px de rien, et trois
+     colonnes vides se lisent comme un tableau à moitié rempli, pas
+     comme du blanc de page. La réglure sépare deux colonnes de TEXTE ;
+     là où il n'y a plus de texte, il n'y a plus rien à séparer.
+     La moitié gauche n'a aucune réglure : il n'y a pas de colonnes de
+     texte à séparer, il y a une photographie et une manchette. */
   .filets{ display:block; left:0; top:0; width:1440px; height:900px }
   .filets i{ position:absolute; display:block; background:var(--encre) }
-  .h1f{ left:56px;  top:88px;  width:1328px; height:1px }
-  .h2f{ left:56px;  top:846px; width:1328px; height:1px }
-  .v1{  left:584px; top:88px;  width:1px; height:758px }
-  .v2a{ left:856px; top:88px;  width:1px; height:460px }
-  .v2b{ left:856px; top:824px; width:1px; height:22px }
-  .v3a{ left:1128px;top:88px;  width:1px; height:460px }
-  .v3b{ left:1128px;top:824px; width:1px; height:22px }
+  .h1f{ left:584px; top:464px; width:800px; height:1px }
+  .v1{  left:856px;  top:128px; width:1px; height:87px }
+  .v2{  left:1128px; top:128px; width:1px; height:87px }
 }
 </style>
 </head>
 <body>
 
 <div class="page">
+
+  <!-- La photographie vient EN PREMIER : c'est l'élément LCP, et le
+       bandeau de titre se peint par-dessus, en réserve. -->
+  <figure class="cliche">
+    <img src="../../images/secteurs-sites/coiffure-11.webp"
+         width="1000" height="1400"
+         fetchpriority="high" decoding="async"
+         alt="Deux mains tiennent une mèche claire ; la lame d’un ciseau se ferme dessus, devant un tablier noir. Noir et blanc.">
+    <figcaption class="legende">Fig. 1 — la lame se ferme sur la mèche. Atelier, Québec.</figcaption>
+  </figure>
 
   <p class="masthead">brume</p>
   <p class="identite">Salon de coiffure — Québec</p>
@@ -593,25 +662,14 @@ figure.cliche{ margin-top:26px }
     <li>Soin du cheveu</li>
   </ul>
 
+  <p class="mention">Site de démonstration — entreprise fictive</p>
+
   <a class="rdv" href="#atelier">
     <span class="rdv-txt">Prendre rendez-vous</span>
     <span class="fleche" aria-hidden="true"></span>
   </a>
 
   <span class="barre" aria-hidden="true"><span class="tire"></span></span>
-
-  <h1 class="titre">
-    <span class="l l1"><span class="t">deux doigts,</span></span>
-    <span class="l l2"><span class="t">une lame</span></span>
-  </h1>
-
-  <figure class="cliche">
-    <img src="../../images/secteurs-sites/coiffure-11.webp"
-         width="1000" height="1400"
-         fetchpriority="high" decoding="async"
-         alt="Deux mains tiennent une mèche claire ; la lame d’un ciseau se ferme dessus, devant un tablier noir. Noir et blanc.">
-    <figcaption class="legende">Fig. 1 — la lame se ferme sur la mèche. Atelier, Québec.</figcaption>
-  </figure>
 
   <p class="chapeau">Brume est un atelier de coupe, de couleur et de soin du cheveu, à Québec. On y travaille à la lame et au peigne, sur rendez-vous, jamais deux têtes en même temps. Chaque coupe part de la matière&#160;: sa densité, son épi, la façon dont elle retombe une fois sèche.</p>
 
@@ -626,18 +684,16 @@ figure.cliche{ margin-top:26px }
     <p class="sur-rdv">Sur rendez-vous</p>
   </section>
 
+  <h1 class="titre">
+    <span class="l l1"><span class="t">deux doigts,</span></span>
+    <span class="l l2"><span class="t">une lame</span></span>
+  </h1>
+
   <p class="folio">N° 01 — Brume</p>
 
-  <p class="pied">
-    <span class="g">Site de démonstration — entreprise fictive</span>
-    <span class="d">Vol. I — coupe, couleur, soin</span>
-  </p>
-
   <div class="filets" aria-hidden="true">
-    <i class="h1f"></i><i class="h2f"></i>
-    <i class="v1"></i>
-    <i class="v2a"></i><i class="v2b"></i>
-    <i class="v3a"></i><i class="v3b"></i>
+    <i class="h1f"></i>
+    <i class="v1"></i><i class="v2"></i>
   </div>
 
 </div>
