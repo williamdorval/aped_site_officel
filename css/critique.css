@@ -160,9 +160,17 @@ html.sas-ok .sas .sas-mot {
     line-height: 1;
     white-space: nowrap;
     color: var(--chambre-ink);
-    visibility: hidden;
   }
-html.sas-ok .sas .sas-mot.est-la { visibility: visible; }
+/* LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631
+     Le mot etait `visibility: hidden` en CSS et seul `est-la`, pose
+     par le script, le rendait. GSAP absent, la piste gardait ses
+     150vh d'encre et il n'y avait RIEN dedans : un aplat noir de
+     1 350 px sans un mot. C'est un etat de DEPART ecrit dans le CSS,
+     ce que le projet interdit. Le mot est donc la par defaut ; c'est
+     `sas-actif` — posee par `armer()`, donc seulement quand le
+     script pilote vraiment — qui le retire jusqu'au CRAN. */
+html.sas-ok .sas.sas-actif .sas-mot { visibility: hidden; }
+html.sas-ok .sas.sas-actif .sas-mot.est-la { visibility: visible; }
 /* Le fil du chantier : 2 px, aucun texte, le scrub y est permis.
      Repos = forme finale (tendu jusqu'a la bande) ; sas.js pose le
      depart. Centre sur la COLONNE de contenu, pas sur l'ecran : le
@@ -191,27 +199,53 @@ html.sas-ok .sas[data-sas="descente"] .sas-fil {
     background: var(--chambre-accent);
     z-index: 5;
   }
-/* 240vh, et le chiffre se deduit : la scene collante n'est
-     epinglee qu'a partir de 100vh de course. Sur 200vh, la moitie
-     du chantier servait a faire monter la plaque et il ne restait
-     que 900 px pour la forge entiere. A 240vh il en reste 1 260 —
-     la limaille a le temps de tomber, de former son banc et de se
-     reprendre sans que le visiteur ait a ralentir. */
-.sas[data-sas="descente"] { --sas-course: 240vh; }
+/* 150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630
+     A 240vh le sas coutait 2 160 px de molette a 900 de haut, soit
+     vingt-deux crans pour un mot. Le moment etait bon et trop cher :
+     on payait l'entree de la piece en defilement mort. A 150vh il
+     coute 1 350 px — treize crans, 37 % de moins — et la piece
+     arrive tout de suite apres le mot.
+     Ce qui a du bouger avec : les bornes de la choregraphie. La
+     scene collante n'est epinglee qu'a partir de 100vh de course
+     (piege 35), donc le point d'epinglage vaut 100vh / course : 0,42
+     a 240vh, 0,67 a 150vh. Des bornes ecrites en dur (0,45 · 0,90)
+     auraient joue toute la forge AVANT l'epinglage, c'est-a-dire
+     hors champ. `sas.js` les deduit maintenant de la mesure. */
+.sas[data-sas="descente"] { --sas-course: 150vh; }
 .sas[data-sas="cloture"]  { --sas-course: 100vh; }
 /* LA REMONTEE EST UN CALQUE, PAS UNE PISTE. Le volet couvre le  D-579
      debut du Calculateur et se degage vers le haut par translation :
      la question se decouvre sous l'arete. Il ne coute aucune hauteur
      de page. Repos = forme finale : parti. */
 .sas--calque { position: relative; }
-html.sas-ok .sas--calque .sas-volet {
+/* LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la  D-629
+     section entiere. Le volet portait lui-meme `top: 0; height:
+     130vh; z-index: 6; transform: translateY(-102%)`. Or `top: 0`
+     est le haut du SAS : monter de 102 % ne sort pas du document, ca
+     pose 1 193 px d'encre PAR-DESSUS ce qui precede — 88 % de
+     #visite, mesure a 1440x900, section entierement noire a l'image.
+     Trois etats sur quatre etaient couvrants : le repos CSS, GSAP
+     absent, et l'escalade de palier ou `sas.js` pose lui-meme
+     `yPercent: -102`. Seul le scrub actif etait sain. Toutes les
+     planches du depot photographient en mouvement reduit, ou ces
+     regles ne s'appliquent pas : c'est pourquoi rien ne l'a vu.
+     La voie part du haut du sas et descend de 130vh. Elle ROGNE,
+     et c'est ELLE qui porte le z-index — le volet n'est plus qu'un
+     aplat en `inset: 0` a l'interieur. Hors de la voie, il n'existe
+     pas, quel que soit l'etat. */
+html.sas-ok .sas--calque .sas-cache {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     height: 130vh;
     z-index: 6;
+    overflow: hidden;
     pointer-events: none;
+  }
+html.sas-ok .sas--calque .sas-volet {
+    position: absolute;
+    inset: 0;
     background: var(--chambre);
     transform: translateY(-102%);
     will-change: transform;
@@ -219,7 +253,7 @@ html.sas-ok .sas--calque .sas-volet {
 }
 /* LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.  D-107 */
 #visite, #calculateur, #comparatif, #processus,
-#apropos, #reference, #faq, #contact, .footer {
+#reference, #faq, #contact, .footer {
   content-visibility: auto;
 }
 /* Releve du 2026-07-31 a 1440x900, `node tools/sas-check.mjs` —

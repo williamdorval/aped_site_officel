@@ -38,7 +38,7 @@ const BASE = process.argv[3] || "http://127.0.0.1:8099/";
 const SORTIE = path.join(RACINE, "refonte-captures", NOM);
 
 const VUES = ["top", "services", "realisations", "demos", "visite", "calculateur",
-  "comparatif", "processus", "apropos", "reference", "faq", "contact"];
+  "comparatif", "processus", "reference", "faq", "contact"];
 const LARGEURS = [
   { nom: "390", w: 390, h: 844 },
   { nom: "768", w: 768, h: 1024 },

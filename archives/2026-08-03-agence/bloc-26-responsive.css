@@ -1,0 +1,54 @@
+  /* AGENCE — les trois mouvements restent pleine largeur.  D-253 · revu D-625
+     LA COLONNE COLLANTE EST RETIREE. Elle epinglait le titre et les
+     trois faits a gauche pendant que les engagements defilaient a
+     droite : a l'arrivee dans la section, le premier engagement etait
+     deja a moitie passe, et sous le dernier fait il restait 300 px de
+     ciment que rien ne bornait. Un mouvement se lit apres l'autre,
+     du haut vers le bas, comme le reste de la page.
+
+     L'ECART ENTRE DEUX MOUVEMENTS RESTE SOUS LA HAUTEUR D'UNE RANGEE.
+     A 96 px, le vide borne par le dernier filet des faits et par le
+     premier filet des engagements avait exactement le rythme d'une
+     rangee de fait : on y cherchait un chiffre manquant. A 64 px il
+     se lit pour ce qu'il est, une respiration entre deux temps. */
+  .agc { gap: var(--s-8); }
+
+  /* LA GLOSE EST POSEE A DROITE, MAIS ELLE SE LIT A GAUCHE.  D-626
+     Deux corrections en une. Sous 64 em elle n'est pas chassee du
+     tout : le contrepoids d'une rangee pleine largeur n'existe que
+     s'il y a une largeur a traverser, et sur 390 px il n'y en a pas.
+     Au-dessus, elle est chassee — mais son texte reste aligne a
+     GAUCHE dans une colonne bornee. Aligne a droite, « Gabarit
+     acheté. On repart de la page blanche / chaque fois » rendait un
+     bord gauche en dents de scie contre un chiffre de 80 px. C'est
+     ainsi que fait la reference d'ou vient ce patron : le bloc est a
+     droite, le texte ne l'est pas. */
+  /* ET LA GLOSE TOMBE DANS LA COLONNE DES PREUVES.  D-626
+     Bornee a 34ch elle commencait a 1 262 px quand les preuves des
+     engagements commencent a 1 310 : un rate de 48 px, c'est-a-dire
+     le pire cas — assez proche pour qu'on cherche l'alignement, assez
+     loin pour qu'il n'y soit pas. Les deux mouvements partagent donc
+     les MEMES pistes, et une seule verticale descend la section. */
+  .agc-faits li {
+    grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 17rem);
+    column-gap: var(--s-7);
+  }
+  .agc-faits .num { grid-column: 1 / 3; }
+  .agc-faits li > span { grid-column: 3; text-align: left; }
+
+  /* La preuve prend sa propre colonne et se rattache par un filet
+     VERTICAL : elle longe l'engagement au lieu de le suivre. */
+  .agc-eng {
+    grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 17rem);
+    column-gap: var(--s-7);
+    align-items: start;
+  }
+  .agc-preuve {
+    grid-column: 3;
+    grid-row: 1;
+    padding-top: 0.35em;
+    padding-left: var(--s-5);
+    border-top: 0;
+    border-left: var(--rule-w) solid var(--rule);
+  }
+

@@ -8,7 +8,7 @@ for (const [w,h] of [[1440,900],[390,844]]) {
   const p = await c.newPage();
   await p.goto("http://localhost:8099/", { waitUntil: "load" });
   await p.waitForTimeout(1500);
-  const ids = ["services","realisations","demos","calculateur","comparatif","processus","apropos","contact"];
+  const ids = ["services","realisations","demos","calculateur","comparatif","processus","contact"];
   const res = [];
   for (const id of ids) {
     await p.evaluate(i => { const e = document.getElementById(i); window.scrollTo(0, e.getBoundingClientRect().top + scrollY - 40); }, id);

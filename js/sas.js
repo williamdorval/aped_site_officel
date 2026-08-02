@@ -270,17 +270,45 @@
            A 0,88 tous les grains sont a leur place. Les deux pour
            cent qui suivent sont la marge : le CRAN tombe sur une
            image ou plus rien ne bouge. */
+        /* LE POINT D'EPINGLAGE SE MESURE, IL NE S'ECRIT PAS.  D-630
+           La scene est COLLANTE : elle n'est epinglee qu'a partir de
+           100vh de course (piege 35). Ce point vaut donc
+           100vh / hauteur-de-piste — 0,42 quand la course faisait
+           240vh, 0,67 depuis qu'elle en fait 150. Les bornes de la
+           choregraphie etaient ecrites en dur pour la premiere
+           valeur ; a 150vh elles auraient joue toute la forge avant
+           l'epinglage, c'est-a-dire hors de l'ecran, et le sas
+           raccourci n'aurait plus rien montre du tout.
+           `epingle` est releve a chaque rafraichissement de
+           ScrollTrigger — donc aussi apres un changement de largeur,
+           qui change innerHeight sur mobile. On raisonne ensuite en
+           progression EPINGLEE `q`, ou 0 = la plaque vient de se
+           caler et 1 = elle repart. */
+        var epingle = 0.42;
         var st = root.ScrollTrigger.create({
           trigger: piste, start: "top bottom", end: "bottom bottom", scrub: LISSE,
+          onRefresh: function () {
+            var h = piste.offsetHeight || 1;
+            epingle = clamp(root.innerHeight / h, 0, 0.92);
+          },
           onUpdate: function (self) {
             var p = self.progress;
-            if (forge && !batie && p > 0.24) batie = forge.batir();
+            var q = clamp((p - epingle) / Math.max(0.02, 1 - epingle), 0, 1);
+            /* La table de grains se batit AVANT l'epinglage : la
+               construire pendant la forge ferait sauter la premiere
+               image de la chute. */
+            if (forge && !batie && p > epingle * 0.55) batie = forge.batir();
             if (forge && batie) {
-              if (p >= 0.45 && p < 0.90) forge.peindre(clamp((p - 0.45) / 0.43, 0, 1));
+              /* q 0,02 → 0,58 : la limaille tombe puis s'aligne.
+                 q 0,58      : CRAN, le vrai mot est la.
+                 q 0,58 → 1  : il se LIT, et le fil tire vers la piece.
+                 Le mot tient 42 % de la course epinglee — c'est le
+                 « se forge, se lit, et laisse passer ». */
+              if (q >= 0.02 && q < 0.58) forge.peindre(clamp((q - 0.02) / 0.56, 0, 1));
               else forge.vider();
             }
-            if (mot) mot.classList.toggle("est-la", p >= 0.90);
-            if (filD) gsap.set(filD, { scaleY: clamp((p - 0.91) / 0.09, 0, 1) });
+            if (mot) mot.classList.toggle("est-la", q >= 0.58);
+            if (filD) gsap.set(filD, { scaleY: clamp((q - 0.60) / 0.40, 0, 1) });
           }
         });
         vivants.push(st);

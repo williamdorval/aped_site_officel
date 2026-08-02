@@ -260,9 +260,17 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     line-height: 1;
     white-space: nowrap;
     color: var(--chambre-ink);
-    visibility: hidden;
   }
-  html.sas-ok .sas .sas-mot.est-la { visibility: visible; }
+  /* LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631
+     Le mot etait `visibility: hidden` en CSS et seul `est-la`, pose
+     par le script, le rendait. GSAP absent, la piste gardait ses
+     150vh d'encre et il n'y avait RIEN dedans : un aplat noir de
+     1 350 px sans un mot. C'est un etat de DEPART ecrit dans le CSS,
+     ce que le projet interdit. Le mot est donc la par defaut ; c'est
+     `sas-actif` — posee par `armer()`, donc seulement quand le
+     script pilote vraiment — qui le retire jusqu'au CRAN. */
+  html.sas-ok .sas.sas-actif .sas-mot { visibility: hidden; }
+  html.sas-ok .sas.sas-actif .sas-mot.est-la { visibility: visible; }
   /* Le seuil de la descente perd sa bande : le volet EST la bande,
      et la carte vit DANS le volet — elle arrive et repart avec lui.
      La remontee et la cloture gardent leur bande d'encre. */
@@ -312,13 +320,19 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     background: var(--chambre-accent);
     z-index: 5;
   }
-  /* 240vh, et le chiffre se deduit : la scene collante n'est
-     epinglee qu'a partir de 100vh de course. Sur 200vh, la moitie
-     du chantier servait a faire monter la plaque et il ne restait
-     que 900 px pour la forge entiere. A 240vh il en reste 1 260 —
-     la limaille a le temps de tomber, de former son banc et de se
-     reprendre sans que le visiteur ait a ralentir. */
-  .sas[data-sas="descente"] { --sas-course: 240vh; }
+  /* 150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630
+     A 240vh le sas coutait 2 160 px de molette a 900 de haut, soit
+     vingt-deux crans pour un mot. Le moment etait bon et trop cher :
+     on payait l'entree de la piece en defilement mort. A 150vh il
+     coute 1 350 px — treize crans, 37 % de moins — et la piece
+     arrive tout de suite apres le mot.
+     Ce qui a du bouger avec : les bornes de la choregraphie. La
+     scene collante n'est epinglee qu'a partir de 100vh de course
+     (piege 35), donc le point d'epinglage vaut 100vh / course : 0,42
+     a 240vh, 0,67 a 150vh. Des bornes ecrites en dur (0,45 · 0,90)
+     auraient joue toute la forge AVANT l'epinglage, c'est-a-dire
+     hors champ. `sas.js` les deduit maintenant de la mesure. */
+  .sas[data-sas="descente"] { --sas-course: 150vh; }
   .sas[data-sas="cloture"]  { --sas-course: 100vh; }
 
   /* LA REMONTEE EST UN CALQUE, PAS UNE PISTE. Le volet couvre le  D-579
@@ -326,14 +340,34 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
      la question se decouvre sous l'arete. Il ne coute aucune hauteur
      de page. Repos = forme finale : parti. */
   .sas--calque { position: relative; }
-  html.sas-ok .sas--calque .sas-volet {
+  /* LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la  D-629
+     section entiere. Le volet portait lui-meme `top: 0; height:
+     130vh; z-index: 6; transform: translateY(-102%)`. Or `top: 0`
+     est le haut du SAS : monter de 102 % ne sort pas du document, ca
+     pose 1 193 px d'encre PAR-DESSUS ce qui precede — 88 % de
+     #visite, mesure a 1440x900, section entierement noire a l'image.
+     Trois etats sur quatre etaient couvrants : le repos CSS, GSAP
+     absent, et l'escalade de palier ou `sas.js` pose lui-meme
+     `yPercent: -102`. Seul le scrub actif etait sain. Toutes les
+     planches du depot photographient en mouvement reduit, ou ces
+     regles ne s'appliquent pas : c'est pourquoi rien ne l'a vu.
+     La voie part du haut du sas et descend de 130vh. Elle ROGNE,
+     et c'est ELLE qui porte le z-index — le volet n'est plus qu'un
+     aplat en `inset: 0` a l'interieur. Hors de la voie, il n'existe
+     pas, quel que soit l'etat. */
+  html.sas-ok .sas--calque .sas-cache {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     height: 130vh;
     z-index: 6;
+    overflow: hidden;
     pointer-events: none;
+  }
+  html.sas-ok .sas--calque .sas-volet {
+    position: absolute;
+    inset: 0;
     background: var(--chambre);
     transform: translateY(-102%);
     will-change: transform;
@@ -342,7 +376,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 
 /* LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.  D-107 */
 #visite, #calculateur, #comparatif, #processus,
-#apropos, #reference, #faq, #contact, .footer {
+#reference, #faq, #contact, .footer {
   content-visibility: auto;
 }
 /* Releve du 2026-07-31 a 1440x900, `node tools/sas-check.mjs` —
@@ -5379,161 +5413,6 @@ html:not(.js) .ba-trait { display: none; }
 .vis-p { display: block; height: 0.4em; background: var(--rule-strong); }
 .vis-p--court { width: 62%; }
 
-/* == 20. A PROPOS - trois mouvements, trois calibres ==  revu D-625
-   L'ANCIENNE COMPOSITION ET SON DEFAUT. Un trio asymetrique : titre et
-   chapo dans une colonne collante a gauche, une plaque de matiere de
-   358 px, trois faits en petits caracteres, et quatre engagements
-   identiques a droite. Releve du 2026-08-02 : TOUT y tenait entre 15
-   et 40 px. Rien a 90, rien a 11. On pouvait decouper n'importe quelle
-   bande de 300 px sans savoir laquelle. La colonne gauche epuisait son
-   contenu aux deux tiers et laissait 300 px de vide qu'aucune arete ne
-   bornait — un vide qui se lit comme un oubli, pas comme de l'air.
-
-   CE QUI LE REMPLACE. Trois mouvements empiles pleine largeur, aux
-   calibres volontairement eloignes : l'enonce (38 px), les trois faits
-   (80 px), les quatre engagements (32 px sur une gouttiere de 11 px).
-   Le seul separateur est le filet de 1 px, comme dans huit des quinze
-   sections d'agence relevees. Aucune carte, aucune boite, aucun fond
-   de bloc — la structure se lit dans les traits. */
-.agc { display: grid; gap: var(--s-8); }
-.agc-tete { display: grid; align-content: start; }
-
-/* MOUVEMENT 1 · L'ENONCE. La moitie droite ne porte rien, et c'est
-   elle qui donne l'echelle au reste. */
-.agc-head p { max-width: 46ch; }
-
-/* MOUVEMENT 2 · LES TROIS FAITS AU CALIBRE D'AFFICHE.  D-626
-   Le chiffre prend l'echelle du seul autre chiffre d'affiche du site,
-   celui de la section Reference : les deux se repondent. La glose est
-   chassee a droite, a un septieme du calibre. */
-.agc-faits {
-  display: grid;
-  border-top: var(--rule-w) solid var(--rule-strong);
-}
-.agc-faits li {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-  gap: var(--s-4) var(--s-6);
-  align-items: center;
-  padding-block: var(--s-4);
-}
-
-/* V3 · SOUDER, et c'est le verbe du seuil 08 vers 09 : le filet de
-   chaque fait se soude de GAUCHE a DROITE, dans le sens de lecture.
-   C'est un ELEMENT, pas une bordure : une bordure ne se balaye pas.
-   Au repos il est entier — `scaleX(1)` est la forme finale, jamais un
-   etat de depart pose dans le CSS. */
-.agc-filet {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: var(--rule-w);
-  background: var(--rule);
-  transform-origin: left center;
-}
-.agc-faits .num {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(2.75rem, 1.4rem + 5vw, 5rem);
-  color: var(--accent-text);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-/* LA FENETRE DU CRAN. V4 : le chiffre roule d'un cran, il ne fond
-   pas. `overflow: hidden` borne la course ; la doublure de 0.12em
-   evite que la fenetre coupe la hampe du « h » de « 12 h ». */
-.agc-roul { display: block; overflow: hidden; padding-block: 0.12em; }
-.agc-roul i { display: block; font-style: normal; }
-
-/* `> span` ET PAS `span`. La glose et la fenetre du cran sont toutes
-   deux des `span` : ecrit sans le chevron, le selecteur attrapait la
-   fenetre, lui posait 15 px et la chassait a droite. Le chiffre
-   d'affiche mesurait 7 px de large — declare a 80, rendu a 15. Le
-   `font-size` du parent ne se voit pas dans une regle qui cible
-   l'enfant : seule la geometrie le dit. */
-.agc-faits li > span {
-  font-size: var(--fs-6);
-  color: var(--ink-muted);
-  max-width: 38ch;
-}
-
-/* MOUVEMENT 3 · LES QUATRE ENGAGEMENTS EN PAS NUMEROTES.  D-627
-   Le numero quitte la colonne du texte pour une gouttiere qui lui est
-   propre : c'est ce qui fait d'un engagement un evenement plutot
-   qu'une ligne de formulaire. Releve chez Ragged Edge, ou le rapport
-   entre le numero et le titre est de 13 a 72. */
-.agc-liste { display: grid; gap: 0; }
-.agc-eng {
-  display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr);
-  column-gap: var(--s-4);
-  row-gap: var(--s-4);
-  padding-block: var(--s-7);
-  border-top: var(--rule-w) solid var(--rule-strong);
-  align-items: start;
-}
-.agc-num {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  font-weight: 700;
-  letter-spacing: var(--tracking-label);
-  color: var(--accent-text);
-  padding-top: 0.55em;
-}
-.agc-txt { display: grid; gap: var(--s-3); }
-.agc-eng h3 {
-  font-size: clamp(1.375rem, 1rem + 1.5vw, 2rem);
-  max-width: 18ch;
-}
-.agc-txt p { color: var(--ink-muted); max-width: 52ch; }
-
-/* LES QUATRE PREUVES SORTENT DE LEUR BOITE.  D-234 · revu D-627
-   Elles etaient posees sur `--surface-2` avec une bordure : quatre
-   cartes, dans une page qui n'en porte aucune ailleurs. Un aplat plus
-   un cadre annonce une elevation qui n'existe pas. Il ne reste que le
-   filet qui les rattache a leur engagement, et le dessin au trait. */
-.agc-preuve {
-  grid-column: 2;
-  display: grid;
-  gap: var(--s-2);
-  margin: 0;
-  padding-top: var(--s-4);
-  border-top: var(--rule-w) solid var(--rule);
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-}
-.pr-l { display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: var(--s-3); align-items: center; }
-.pr-l em { font-style: normal; color: var(--ink-muted); }
-.pr-l i { display: block; height: 0.75rem; background: var(--accent); transform: scaleX(1); transform-origin: left center; }
-/* Le signe d'egalite s'aligne sur le DEBUT DES BARRES, pas sur la fin
-   du libelle : `.pr-l` pose une gouttiere de `--s-3` entre les deux
-   colonnes, et sans elle le signe tombait 12 px trop a gauche. Invisible
-   tant que la preuve etait dans une boite ; flagrant une fois nue. */
-.pr-egal { padding-left: calc(6rem + var(--s-3)); color: var(--accent-text); }
-.pr-egal b { font-family: var(--font-display); font-size: var(--fs-5); font-weight: 800; }
-
-.pr-ligne { display: flex; align-items: center; gap: var(--s-3); color: var(--ink); }
-.pr-ligne--suite { color: var(--ink-muted); }
-.pr-case { position: relative; flex: none; width: 1.125rem; height: 1.125rem; border: var(--rule-w) solid var(--rule-strong); }
-/* Au repos la coche est TRACEE. Elle partait de `scaleX(0)` :  D-235 */
-.pr-case s { position: absolute; display: block; background: var(--accent); text-decoration: none; transform: scaleX(1); transform-origin: left center; }
-.pr-case s:nth-child(1) { left: 2px; top: 8px; width: 6px; height: 2px; rotate: 45deg; }
-.pr-case s:nth-child(2) { left: 5px; top: 10px; width: 10px; height: 2px; rotate: -45deg; }
-.pr-fleche { flex: none; width: 1.125rem; height: 1.125rem; border-left: var(--rule-w) solid var(--rule-strong); border-bottom: var(--rule-w) solid var(--rule-strong); }
-
-.pr-r { display: flex; justify-content: space-between; gap: var(--s-4); padding-block: 0.35rem; border-bottom: var(--rule-w) solid var(--rule); }
-.pr-r em { font-style: normal; color: var(--ink-muted); }
-.pr-r b { color: var(--accent-text); font-weight: 700; text-transform: uppercase; letter-spacing: var(--tracking-label); }
-
-.pr-sem { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--s-2); }
-.pr-sem i { display: block; height: 1.5rem; background: var(--rule-strong); transform: scaleY(1); transform-origin: bottom; }
-.pr-sem .pr-jalon { background: var(--accent); }
-.pr-note { display: flex; gap: var(--s-3); align-items: baseline; margin-top: var(--s-2); }
-.pr-note b { color: var(--accent-text); font-weight: 700; }
-.pr-note span { color: var(--ink-muted); }
-
 /* == 21. REFERENCE - le bloc sombre, dans LES DEUX themes == */
 /* LE DEFAUT CORRIGE. Le bloc etait en `--surface-inverse`,  D-236 */
 .referral {
@@ -6145,60 +6024,6 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   .ecart-rang--pont span { display: block; }
   .ecart-val { text-align: right; }
   .ecart { padding: var(--s-6); }
-
-  /* AGENCE — les trois mouvements restent pleine largeur.  D-253 · revu D-625
-     LA COLONNE COLLANTE EST RETIREE. Elle epinglait le titre et les
-     trois faits a gauche pendant que les engagements defilaient a
-     droite : a l'arrivee dans la section, le premier engagement etait
-     deja a moitie passe, et sous le dernier fait il restait 300 px de
-     ciment que rien ne bornait. Un mouvement se lit apres l'autre,
-     du haut vers le bas, comme le reste de la page.
-
-     L'ECART ENTRE DEUX MOUVEMENTS RESTE SOUS LA HAUTEUR D'UNE RANGEE.
-     A 96 px, le vide borne par le dernier filet des faits et par le
-     premier filet des engagements avait exactement le rythme d'une
-     rangee de fait : on y cherchait un chiffre manquant. A 64 px il
-     se lit pour ce qu'il est, une respiration entre deux temps. */
-  .agc { gap: var(--s-8); }
-
-  /* LA GLOSE EST POSEE A DROITE, MAIS ELLE SE LIT A GAUCHE.  D-626
-     Deux corrections en une. Sous 64 em elle n'est pas chassee du
-     tout : le contrepoids d'une rangee pleine largeur n'existe que
-     s'il y a une largeur a traverser, et sur 390 px il n'y en a pas.
-     Au-dessus, elle est chassee — mais son texte reste aligne a
-     GAUCHE dans une colonne bornee. Aligne a droite, « Gabarit
-     acheté. On repart de la page blanche / chaque fois » rendait un
-     bord gauche en dents de scie contre un chiffre de 80 px. C'est
-     ainsi que fait la reference d'ou vient ce patron : le bloc est a
-     droite, le texte ne l'est pas. */
-  /* ET LA GLOSE TOMBE DANS LA COLONNE DES PREUVES.  D-626
-     Bornee a 34ch elle commencait a 1 262 px quand les preuves des
-     engagements commencent a 1 310 : un rate de 48 px, c'est-a-dire
-     le pire cas — assez proche pour qu'on cherche l'alignement, assez
-     loin pour qu'il n'y soit pas. Les deux mouvements partagent donc
-     les MEMES pistes, et une seule verticale descend la section. */
-  .agc-faits li {
-    grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 17rem);
-    column-gap: var(--s-7);
-  }
-  .agc-faits .num { grid-column: 1 / 3; }
-  .agc-faits li > span { grid-column: 3; text-align: left; }
-
-  /* La preuve prend sa propre colonne et se rattache par un filet
-     VERTICAL : elle longe l'engagement au lieu de le suivre. */
-  .agc-eng {
-    grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 17rem);
-    column-gap: var(--s-7);
-    align-items: start;
-  }
-  .agc-preuve {
-    grid-column: 3;
-    grid-row: 1;
-    padding-top: 0.35em;
-    padding-left: var(--s-5);
-    border-top: 0;
-    border-left: var(--rule-w) solid var(--rule);
-  }
 
   /* La composition n'a plus de colonne morte : la promesse et le  D-254 */
   .referral { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-8); padding: var(--s-9) var(--s-8); }

@@ -35,7 +35,6 @@ const VUES = [
   { id: "calculateur", label: "Calculateur" },
   { id: "comparatif", label: "Comparatif" },
   { id: "processus", label: "Processus" },
-  { id: "apropos", label: "Agence" },
   { id: "reference", label: "Reference" },
   { id: "faq", label: "Questions" },
   { id: "contact", label: "Contact" }

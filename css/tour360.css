@@ -158,72 +158,20 @@
 .tour[data-tour].is-live .tour-enter,
 .tour[data-tour].is-live .tour-poster { display: none; }
 
-/* == LE PIED DE SECTION ==  D-621
-   A gauche les trois gestes, nommes, en colonne unique sous 64em et
-   en trois colonnes au-dessus. A droite la provenance, alignee a
-   droite comme le pied de la section Reference : c'est la meme
-   fonction — une mention qui doit rester lisible sans jamais peser
-   autant que ce qu'elle accompagne. */
-.tour-pied {
-  display: grid;
-  gap: var(--s-6);
-  padding-top: var(--s-5);
-  border-top: var(--rule-w) solid var(--rule);
-}
-
-.tour-gestes {
-  display: grid;
-  gap: var(--s-5);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.tour-gestes li { display: grid; gap: var(--s-2); }
-
-.tour-gestes b {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  font-weight: 700;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--ink);
-}
-
-.tour-gestes span {
-  font-size: var(--fs-7);
-  line-height: 1.5;
-  color: var(--ink-muted);
-  max-width: 34ch;
-}
-
-/* LA PROVENANCE EST UN PIED, PAS UNE COLONNE.  D-621
-   Mise a cote des gestes, elle leur disputait la ligne du haut et
-   rendait quatre colonnes la ou il y a trois gestes. Elle descend
-   d'un cran, seule, alignee a droite : c'est la place que le meme
-   genre de mention occupe deja au pied de la section Reference. */
+/* LA PROVENANCE EST UNE LEGENDE DE CADRE.  D-632
+   Elle etait le second etage d'un pied qui portait aussi trois
+   gestes en toutes lettres. Les gestes sont partis — ils
+   expliquaient avant le clic des gestes qu'on ne peut pas encore
+   faire, et repetaient le pupitre une fois dedans. Il ne reste
+   qu'elle, et une mention obligatoire se pose comme une legende :
+   sous l'objet, alignee sur son bord gauche, bornee a une mesure
+   qu'on lit d'un coup d'oeil. Aucun filet — le cadre a deja le sien
+   juste au-dessus, et deux traits a 24 px l'un de l'autre font une
+   rayure, pas une structure. */
 .tour-source {
+  margin: 0;
   color: var(--ink-muted);
-  padding-top: var(--s-4);
-  border-top: var(--rule-w) solid var(--rule);
-}
-
-@media (min-width: 64em) {
-  /* LE PIED PARTAGE SES COLONNES AVEC LES GESTES.  D-621
-     « Jamais trois colonnes egales » : les trois gestes n'ont pas la
-     meme longueur, leurs colonnes non plus. Le pied porte la MEME
-     definition de pistes, si bien que la provenance commence
-     exactement au bord de la deuxieme colonne. Bornee a la main, son
-     filet demarrait 85 px avant ce bord a 1920 px : un trait aligne
-     sur rien se voit tout de suite, et on ne sait pas dire pourquoi. */
-  .tour-pied,
-  .tour-gestes {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
-    column-gap: var(--s-7);
-  }
-  .tour-gestes { grid-column: 1 / -1; }
-  .tour-gestes span { max-width: none; }
-  .tour-source { grid-column: 2 / -1; text-align: right; max-width: none; }
+  max-width: 78ch;
 }
 
 /* Message d'echec (moteur absent, WebGL absent, fichier illisible). */

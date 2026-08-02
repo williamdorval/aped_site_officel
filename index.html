@@ -172,10 +172,9 @@
     <a href="#demos"><em>03</em>Secteurs</a>
     <a href="#visite"><em>04</em>Visite 360</a>
     <a href="#calculateur"><em>05</em>Calculateur</a>
-    <a href="#processus"><em>06</em>Processus</a>
-    <a href="#apropos"><em>07</em>Agence</a>
-    <a href="#faq"><em>08</em>Questions</a>
-    <a href="#contact"><em>09</em>Contact</a>
+    <a href="#processus"><em>06</em>Processus</a>
+    <a href="#faq"><em>07</em>Questions</a>
+    <a href="#contact"><em>08</em>Contact</a>
   </nav>
   <div class="menu-actions">
     <button class="btn btn--primary btn--block" type="button" data-modal-open="modal-start">
@@ -202,14 +201,13 @@
     <a href="#calculateur" data-rail="calculateur" style="--re: 180"><em>06</em>Calculateur</a>
     <a href="#comparatif" data-rail="comparatif" style="--re: 216"><em>07</em>Comparatif</a>
     <a href="#processus" data-rail="processus" style="--re: 252"><em>08</em>Processus</a>
-    <a href="#apropos" data-rail="apropos" style="--re: 288"><em>09</em>Agence</a>
-    <a href="#reference" data-rail="reference" style="--re: 324"><em>10</em>Référence</a>
-    <a href="#faq" data-rail="faq" style="--re: 360"><em>11</em>Questions</a>
-    <a href="#contact" data-rail="contact" style="--re: 396"><em>12</em>Contact</a>
+    <a href="#reference" data-rail="reference" style="--re: 288"><em>09</em>Référence</a>
+    <a href="#faq" data-rail="faq" style="--re: 324"><em>10</em>Questions</a>
+    <a href="#contact" data-rail="contact" style="--re: 360"><em>11</em>Contact</a>
   </nav>
   <!-- N1 · combien il en reste. La question que se pose un patron de
        PME qui defile, et a laquelle rien ne repondait. -->
-  <p class="rail-left" id="railLeft"><span class="num" id="railLeftNum">12</span> sections restantes</p>
+  <p class="rail-left" id="railLeft"><span class="num" id="railLeftNum">11</span> sections restantes</p>
 
   <p class="rail-impact">
     <span class="label">Impact annuel estimé</span>
@@ -1982,7 +1980,14 @@
     <div class="head" style="margin-top: var(--s-6);">
       <p class="head-index">Démo · Immobilier</p>
       <h2>L’acheteur fait le tour avant de prendre rendez-vous.</h2>
-      <p>Trois pièces, un seul lien. Il arrive sur la terrasse, entre au salon, monte à la chambre, depuis son téléphone. Vous arrêtez d’ouvrir la porte à des gens qui repartent après deux minutes.</p>
+      <!-- TROIS PHRASES SONT DEVENUES SEPT MOTS.  D-632
+           « Il arrive sur la terrasse, entre au salon, monte a la
+           chambre » repetait ce que le bandeau du cadre montre deja
+           en 01 · 02 · 03, et « vous arretez d'ouvrir la porte a des
+           gens qui repartent apres deux minutes » demandait de lire
+           trente mots pour un argument que le titre porte deja. Ce
+           qui reste est ce que le titre ne dit pas. -->
+      <p>Trois pièces, un seul lien, depuis son téléphone.</p>
     </div>
 
     <!-- LE CONTENANT DU LECTEUR.  D-620
@@ -2036,51 +2041,42 @@
              yeux du visiteur. Le pupitre garde donc sa hauteur et
              echange son contenu : l'entree cede la place a ce qu'on
              peut faire une fois dedans. -->
+        <!-- LE PUPITRE REPOND A LA PEUR, PAS A LA TECHNIQUE.  D-632
+             Il portait « Heberge chez nous. Rien ne se telecharge
+             avant votre clic. » — vrai, et sans interet pour un
+             patron de garage : ca parle d'octets. La seule question
+             qu'on se pose devant un bouton est « ou est-ce que ca
+             m'emmene ». La reponse tient en six mots et elle est
+             verifiable a l'ecran une seconde plus tard. -->
         <div class="tour-pupitre">
           <div class="tour-enter">
-            <p class="tour-enter-note">Hébergé chez nous. Rien ne se télécharge avant votre clic.</p>
+            <p class="tour-enter-note">Elle s’ouvre ici, dans la page.</p>
             <button class="btn btn--primary btn--lg" type="button" data-tour-start>
               <span data-tour-label>Entrer dans la visite</span>
               <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
             </button>
           </div>
-          <p class="tour-encours" aria-hidden="true">Glissez pour regarder autour. Cliquez un passage, ou une pièce du plan, pour changer de pièce.</p>
+          <!-- Le mode d'emploi est ICI, et nulle part ailleurs : il
+               n'est vrai qu'une fois la visite vivante. Il nomme les
+               trois gestes ET le clavier, ce que le pied d'avant
+               mettait en trois titres et trois phrases. -->
+          <p class="tour-encours" aria-hidden="true">Glissez pour regarder autour, ou les flèches du clavier. Cliquez un passage, ou une pièce du plan, pour changer de pièce.</p>
         </div>
 
       </div>
 
-      <!-- LE PIED : CE QU'ON PEUT FAIRE A GAUCHE, D'OU CA VIENT A DROITE.
-           Les deux paragraphes de mentions pesaient 130 mots empiles sur
-           toute la largeur — plus de surface que l'offre elle-meme. Le
-           mode d'emploi devient trois gestes nommes AVANT le clic ; la
-           provenance se range a droite, en mono, comme le pied de la
-           section Reference.  D-621 -->
-      <div class="tour-pied">
-        <!-- V2 · S'ALIGNER. Les trois gestes arrivent decales et se
-             reprennent : c'est le mecanisme generique `[data-settle]`
-             du site, pas un quarante-et-unieme mouvement. -->
-        <ul class="tour-gestes" data-settle>
-          <li>
-            <b>Regarder autour</b>
-            <span>Glissez dans l’image, ou les flèches du clavier.</span>
-          </li>
-          <li>
-            <b>Changer de pièce</b>
-            <span>Cliquez un passage, tabulez jusqu’à lui, ou passez par le plan en bas à gauche.</span>
-          </li>
-          <li>
-            <b>Cadrer</b>
-            <span>Molette, ou les touches + et −.</span>
-          </li>
-        </ul>
-
-        <p class="fine tour-source">
-          Panoramas de démonstration : Lythwood Lodge, KwaZulu-Natal, photographiés par Greg Zaal et
-          publiés par <a href="https://polyhaven.com/license" rel="noopener noreferrer">Poly Haven en
-          CC0</a>. Ce ne sont pas nos prises de vue. Moteur Pannellum 2.5.7, licence MIT, servi depuis
-          ce serveur.
-        </p>
-      </div>
+      <!-- LE PIED DE TROIS GESTES EST PARTI.  D-632
+           Trois titres et trois phrases, poses AVANT le clic, pour
+           expliquer des gestes qu'on ne peut pas encore faire : plus
+           de surface de texte que le cadre n'en avait de photo. Et
+           une fois la visite ouverte, ils repetaient mot pour mot ce
+           que le pupitre dit deja. Reste la provenance, qui n'est pas
+           du confort : « ce ne sont pas nos prises de vue » est une
+           obligation de veracite, et la licence du moteur une
+           obligation tout court. Une ligne. -->
+      <p class="fine tour-source">
+        Panoramas de démonstration <a href="https://polyhaven.com/license" rel="noopener noreferrer">Poly Haven, CC0</a> — ce ne sont pas nos prises de vue. Moteur Pannellum 2.5.7, licence MIT, servi depuis ce serveur.
+      </p>
     </div>
   </div>
 </section>
@@ -2094,8 +2090,27 @@
        V1 pur, une forme deja la. Il ne coute pas un pixel de page.
        Replie, il ne reste que la bande d'encre d'avant. -->
   <div class="sas sas--calque" data-sas="remontee">
-    <div class="sas-volet" data-sas-volet aria-hidden="true">
-      <div class="sas-arete sas-arete--haut"></div>
+    <!-- LE VOLET NE PEUT PLUS PEINDRE HORS DE SA VOIE.  D-629
+         Il vivait nu, en `top: 0; height: 130vh; transform:
+         translateY(-102%)`. Monter de 102 % ne le sortait pas du
+         document : ca le posait par-dessus les 1 193 px QUI
+         PRECEDENT, c'est-a-dire 88 % de la section Visite. Trois
+         etats sur quatre etaient couvrants — repos CSS, GSAP absent,
+         et l'escalade de palier, ou `sas.js` POSE lui-meme
+         `yPercent: -102`. Seul le scrub actif etait sain, et c'est
+         pourquoi toutes les planches en mouvement reduit sont
+         passees a cote. Mesure : 1 145 px de #visite recouverts,
+         section entiere noire a l'image.
+         `.sas-cache` est la voie : elle part du haut du sas, descend
+         de 130vh et ROGNE. Le volet y est en `inset: 0` — a
+         `yPercent: -102` il est hors de la voie, donc invisible,
+         dans TOUS les etats. Le rognage porte la couche `z-index`,
+         pas le volet : c'est elle qui doit passer devant le
+         Calculateur. -->
+    <div class="sas-cache" aria-hidden="true">
+      <div class="sas-volet" data-sas-volet>
+        <div class="sas-arete sas-arete--haut"></div>
+      </div>
     </div>
     <div class="seuil" data-seuil data-de="05" data-vers="06" data-dress="encre" data-verbe="volet" data-sens="haut">
       <div class="wrap seuil-in">
@@ -2524,137 +2539,16 @@
     </div>
   </section>
 
-  <!-- ===================== 08 · AGENCE ===================== -->
-  <!-- QUATRE ENGAGEMENTS, ET LA PREUVE DE CHACUN.  D-068 -->
-  <section id="apropos">
-      <!-- ===== FRONTIERE 09 · 08 vers 09 =====
-           G4 : souder (droite). La methode se termine, on signe : un filet unique se soude sur toute la largeur.
-           G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="08" data-vers="09" data-dress="clair" data-verbe="souder" data-sens="droite">
-        <div class="wrap seuil-in">
-          <div class="section-rule draw seuil-filet" data-section-rule></div>
-          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>08</span><span>09</span></span></b><span class="seuil-nom">Agence</span></p>
-        </div>
-      </div>
-    <div class="wrap band">
-
-      <!-- TROIS MOUVEMENTS, PAS QUATRE RANGEES IDENTIQUES.  D-625
-           Le defaut de cette section n'etait pas l'absence d'image :
-           c'etait l'absence d'EVENEMENT DE GRILLE. Tout y tenait entre
-           15 et 40 px — rien a 90, rien a 11 — et on pouvait decouper
-           n'importe quelle bande de 300 px sans distinguer laquelle.
-           Elle se lit maintenant en trois temps de calibres tres
-           differents : l'enonce, les trois faits au calibre d'affiche,
-           les quatre engagements en pas numerotes. -->
-      <div class="agc" style="margin-top: var(--s-6);">
-
-        <div class="agc-tete">
-          <div class="head agc-head" style="margin-bottom: 0;">
-            <h2>Vous parlez à la personne qui code.</h2>
-            <p>APED est une agence québécoise. Pas de sous-traitance à l’autre bout du monde, pas de gestionnaire de compte entre vous et le clavier.</p>
-          </div>
-        </div>
-
-        <!-- LES TROIS FAITS PORTENT L'IMAGE.  D-626
-             « 0 gabarit acheté » est l'argument le plus rare du site et
-             il etait compose a 24 px dans une colonne de 360. Il passe
-             au calibre d'affiche, en rangees pleine largeur, la glose
-             chassee a droite : c'est ce qui remplace la photo d'equipe
-             qu'on n'a pas et qu'on n'inventera pas.
-             V4 · CRAN — chaque chiffre roule d'un cran dans sa fenetre.
-             Aucun fondu : un chiffre a moitie fondu n'est pas un
-             chiffre, c'est une panne. -->
-        <ul class="agc-faits" data-agc-faits>
-          <li>
-            <b class="num"><span class="agc-roul"><i>1</i></span></b>
-            <span>Interlocuteur, du premier appel à la mise en ligne</span>
-            <i class="agc-filet" aria-hidden="true"></i>
-          </li>
-          <li>
-            <b class="num"><span class="agc-roul"><i>0</i></span></b>
-            <span>Gabarit acheté. On repart de la page blanche chaque fois</span>
-            <i class="agc-filet" aria-hidden="true"></i>
-          </li>
-          <li>
-            <b class="num"><span class="agc-roul"><i>12 h</i></span></b>
-            <span>Le délai de réponse, jours ouvrables</span>
-            <i class="agc-filet" aria-hidden="true"></i>
-          </li>
-        </ul>
-
-        <!-- V2 · S'ALIGNER. Les quatre engagements arrivent decales et
-             se reprennent — le mecanisme generique du site, pas un
-             mouvement de plus. Le seuil 08 vers 09 est en SOUDER : ce
-             sont les trois filets des faits qui le portent, au-dessus. -->
-        <ol class="agc-liste" data-agc data-settle>
-
-          <li class="agc-eng">
-            <p class="agc-num num">01</p>
-            <div class="agc-txt">
-              <h3>Le prix est dit au départ</h3>
-              <p>Le chiffre du premier appel est celui de la facture. S’il doit bouger, vous le savez avant, pas après, et vous décidez.</p>
-            </div>
-            <figure class="agc-preuve pr--egal" aria-hidden="true">
-              <p class="pr-l"><em>Estimation</em><i></i></p>
-              <p class="pr-egal"><b>=</b></p>
-              <p class="pr-l"><em>Facture</em><i></i></p>
-            </figure>
-          </li>
-
-          <li class="agc-eng">
-            <p class="agc-num num">02</p>
-            <div class="agc-txt">
-              <h3>Rien ne se code sans votre accord</h3>
-              <p>Vous approuvez ce que ça va donner avant qu’on ouvre l’éditeur. Les changements se demandent pendant qu’ils coûtent une minute.</p>
-            </div>
-            <figure class="agc-preuve pr--coche" aria-hidden="true">
-              <p class="pr-ligne"><span class="pr-case"><s></s><s></s></span>Maquettes approuvées</p>
-              <p class="pr-ligne pr-ligne--suite"><span class="pr-fleche"></span>Le chantier s’ouvre</p>
-            </figure>
-          </li>
-
-          <li class="agc-eng">
-            <p class="agc-num num">03</p>
-            <div class="agc-txt">
-              <h3>Le code vous appartient</h3>
-              <p>Un autre développeur peut reprendre le projet demain matin. On ne garde rien en otage, ni le code, ni l’hébergement, ni l’adresse web.</p>
-            </div>
-            <figure class="agc-preuve pr--cles" aria-hidden="true">
-              <p class="pr-r"><em>Code source</em><b>vous</b></p>
-              <p class="pr-r"><em>Hébergement</em><b>vous</b></p>
-              <p class="pr-r"><em>Adresse web</em><b>vous</b></p>
-            </figure>
-          </li>
-
-          <li class="agc-eng">
-            <p class="agc-num num">04</p>
-            <div class="agc-txt">
-              <h3>Ça va vite</h3>
-              <p>Premières maquettes en quelques jours, pas en quelques semaines. Vous voyez l’avancement en continu jusqu’à la mise en ligne.</p>
-            </div>
-            <figure class="agc-preuve pr--jours" aria-hidden="true">
-              <div class="pr-sem">
-                <i style="--d:0"></i><i style="--d:1"></i><i style="--d:2"></i><i style="--d:3"></i><i class="pr-jalon" style="--d:4"></i>
-              </div>
-              <p class="pr-note"><b>Jour 5</b><span>Premières maquettes</span></p>
-            </figure>
-          </li>
-
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== 09 · RÉFÉRENCE ===================== -->
+  <!-- ===================== 08 · RÉFÉRENCE ===================== -->
   <!-- DEUX CORRECTIONS, ET LA SECONDE EST STRATEGIQUE.  D-069 -->
   <section id="reference">
       <!-- ===== FRONTIERE 10 · 09 vers 10 =====
            G4 : relais-montant (droite). Le seul argument de la section est un chiffre : il roule d'un cran.
            G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="09" data-vers="10" data-dress="clair" data-verbe="cran" data-sens="droite" data-cible=".referral-max .num">
+      <div class="seuil" data-seuil data-de="08" data-vers="09" data-dress="clair" data-verbe="cran" data-sens="droite" data-cible=".referral-max .num">
         <div class="wrap seuil-in">
           <div class="section-rule draw seuil-filet" data-section-rule></div>
-          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>09</span><span>10</span></span></b><span class="seuil-nom">Référence</span></p>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>08</span><span>09</span></span></b><span class="seuil-nom">Référence</span></p>
         </div>
       </div>
     <div class="wrap band">
@@ -2721,15 +2615,15 @@
     </div>
   </section>
 
-  <!-- ===================== 10 · QUESTIONS ===================== -->
+  <!-- ===================== 09 · QUESTIONS ===================== -->
   <section id="faq">
       <!-- ===== FRONTIERE 11 · 10 vers 11 =====
            G4 : degager (droite). Un libelle se lit de gauche a droite : la premiere question se degage dans ce sens.
            G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="10" data-vers="11" data-dress="clair" data-verbe="degager" data-sens="droite" data-cible=".faq-item">
+      <div class="seuil" data-seuil data-de="09" data-vers="10" data-dress="clair" data-verbe="degager" data-sens="droite" data-cible=".faq-item">
         <div class="wrap seuil-in">
           <div class="section-rule draw seuil-filet" data-section-rule></div>
-          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>10</span><span>11</span></span></b><span class="seuil-nom">Questions</span></p>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>09</span><span>10</span></span></b><span class="seuil-nom">Questions</span></p>
         </div>
       </div>
     <div class="wrap band-loose">
@@ -2796,16 +2690,16 @@
     </div>
   </section>
 
-  <!-- ===================== 11 · CONTACT ===================== -->
+  <!-- ===================== 10 · CONTACT ===================== -->
   <!-- CE QUI MANQUAIT : LE DECLIC.  D-076 -->
   <section id="contact">
       <!-- ===== FRONTIERE 12 · 11 vers 12 =====
            G4 : degager (bas). Un panneau se lit de haut en bas : la tuile de contact se degage dans ce sens.
            G1 soudure du filet, G2 cran de l'index, G3 arete : partout. -->
-      <div class="seuil" data-seuil data-de="11" data-vers="12" data-dress="clair" data-verbe="degager" data-sens="bas" data-cible=".cell">
+      <div class="seuil" data-seuil data-de="10" data-vers="11" data-dress="clair" data-verbe="degager" data-sens="bas" data-cible=".cell">
         <div class="wrap seuil-in">
           <div class="section-rule draw seuil-filet" data-section-rule></div>
-          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>11</span><span>12</span></span></b><span class="seuil-nom">Contact</span></p>
+          <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>10</span><span>11</span></span></b><span class="seuil-nom">Contact</span></p>
         </div>
       </div>
     <div class="wrap band">
@@ -2921,10 +2815,10 @@
     <div class="sas-piste">
       <div class="sas-scene">
         <i class="sas-fil" data-sas-fil aria-hidden="true"></i>
-        <div class="seuil seuil--pied" data-seuil data-de="12" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
+        <div class="seuil seuil--pied" data-seuil data-de="11" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
           <div class="wrap seuil-in">
             <div class="section-rule draw seuil-filet" data-section-rule></div>
-            <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>12</span><span>00</span></span></b><span class="seuil-nom">Fin de la traversée</span></p>
+            <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>11</span><span>00</span></span></b><span class="seuil-nom">Fin de la traversée</span></p>
           </div>
         </div>
       </div>
@@ -2970,8 +2864,7 @@
           <a href="#services">Services</a>
           <a href="#realisations">Démonstrations</a>
           <a href="#demos">Secteurs</a>
-          <a href="#calculateur">Calculateur</a>
-          <a href="#apropos">Agence</a>
+          <a href="#calculateur">Calculateur</a>
           <a href="#contact">Contact</a>
         </nav>
       </div>

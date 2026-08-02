@@ -46,7 +46,7 @@ await page.waitForTimeout(1800);
    PENDANT que la section est visible, en s'arretant dessus. */
 const reels = await page.evaluate(async () => {
   const cibles = ["visite", "calculateur", "comparatif", "processus",
-    "apropos", "reference", "faq", "contact"]
+    "reference", "faq", "contact"]
     .map((id) => document.getElementById(id))
     .filter(Boolean);
   const f = document.querySelector(".footer");

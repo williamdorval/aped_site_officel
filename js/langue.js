@@ -479,7 +479,7 @@
 
   /* LES SOUS-TITRES — V1 a l'echelle d'un h3.  D-475 */
   /* `.svc-texte h3` a ete retire de cette liste le 2026-07-30 : la  D-476 */
-  if (PALIER === 0) $$(".cell h3, .sector-group h3, .parc-txt h3, .agc-txt h3")
+  if (PALIER === 0) $$(".cell h3, .sector-group h3, .parc-txt h3")
     .forEach(function (titre) {
       gsap.fromTo(titre,
         { clipPath: "inset(0 100% 0 0)" },
@@ -661,6 +661,15 @@
         document.body.appendChild(etiq);
       }
       if (etiq.firstChild.textContent !== mot) etiq.firstChild.textContent = mot;
+      /* LA POSITION SE POSE ICI AUSSI.  D-633
+         `is-on` etait ajoutee au survol, mais le `translate` n'etait
+         ecrit qu'au premier `pointermove`. Or un curseur IMMOBILE
+         que le defilement fait survoler n'en produit aucun : la
+         page glisse sous la pointe, `pointerover` part, et
+         l'etiquette s'allume a sa position de depart — 0,0, un aplat
+         noir « REGARDER AUTOUR » pose sur le logo, en haut a gauche
+         de l'ecran. Vu a l'image, jamais par une sonde. */
+      etiq.style.transform = "translate(" + (e.clientX + 18) + "px," + (e.clientY + 18) + "px)";
       etiq.classList.add("is-on");
     }, { passive: true });
 

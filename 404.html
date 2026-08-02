@@ -85,10 +85,9 @@
     <li class="derail-row" style="--i: 6"><em>06</em><a href="index.html#calculateur">Calculateur</a></li>
     <li class="derail-row" style="--i: 7"><em>07</em><a href="index.html#comparatif">Comparatif</a></li>
     <li class="derail-row" style="--i: 8"><em>08</em><a href="index.html#processus">Processus</a></li>
-    <li class="derail-row" style="--i: 9"><em>09</em><a href="index.html#apropos">Agence</a></li>
-    <li class="derail-row" style="--i: 10"><em>10</em><a href="index.html#reference">Référence</a></li>
-    <li class="derail-row" style="--i: 11"><em>11</em><a href="index.html#faq">Questions</a></li>
-    <li class="derail-row" style="--i: 12"><em>12</em><a href="index.html#contact">Contact</a></li>
+    <li class="derail-row" style="--i: 9"><em>09</em><a href="index.html#reference">Référence</a></li>
+    <li class="derail-row" style="--i: 10"><em>10</em><a href="index.html#faq">Questions</a></li>
+    <li class="derail-row" style="--i: 11"><em>11</em><a href="index.html#contact">Contact</a></li>
   </ol>
 
   <p class="derail-lead" style="margin-top: var(--s-5); font-size: var(--fs-6);">
@@ -138,13 +137,16 @@
       label(root.getAttribute("data-theme"));
       toggle.addEventListener("click", function () {
         var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        /* La classe `theme-shifting` n'existe plus : elle armait une
+           transition de couleur sur presque tout le document, et la
+           regle qui la portait a ete retiree de `base.css` (D-635).
+           Ici la bascule passe deja par `startViewTransition` quand
+           le navigateur la connait ; sinon elle roule d'un cran. */
         var apply = function () {
-          root.classList.add("theme-shifting");
           root.setAttribute("data-theme", next);
           label(next);
           if (meta) meta.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
           try { localStorage.setItem("aped-theme", next); } catch (e) {}
-          window.setTimeout(function () { root.classList.remove("theme-shifting"); }, 560);
         };
         if (d.startViewTransition && !reduced.matches) d.startViewTransition(apply);
         else apply();
