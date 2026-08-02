@@ -10,29 +10,47 @@
      GRÈS SAULNIER — UN SEUL ÉCRAN, 1440 × 900, ARRÊTÉ
      Plan : demos-secteurs/plans/boutique.md — il fait autorité.
 
-     Le modèle mental : la vitrine unique d'une galerie d'objets.
-     UN objet de 600 × 600 planté au milieu et collé au bord bas,
-     420 px de gouttière argile de chaque côté, un titre centré.
-     Aucune grille de vignettes, aucune photographie plein cadre,
-     aucun split gauche/droite.
+     LE MOMENT FORT, ET ON PEUT LE NOMMER EN UNE LIGNE :
+     « le mot “cuit.” est posé sur le grès. »
+     Le titre commence sur le papier, à x 64, et sa seconde ligne
+     TRAVERSE la couture de la photographie à x 596 : les 254
+     derniers pixels de la ligne — le mot « cuit. » entier, jamais
+     une lettre coupée (piège 70) — reposent sur l'émail de la
+     pièce. La photographie cesse d'être un carré posé à droite :
+     elle est le support d'un mot.
 
-     LE GESTE, ET IL N'Y EN A QU'UN — « L'HORIZON MONTE ».
-     La bande sauge est ancrée au bord bas et pousse depuis le sol,
-     scaleY(0) vers scaleY(1) sur 760 ms, départ à +200 ms. Rien
-     d'autre ne bouge. Un scaleY sur un aplat uni tourne sur le
-     compositeur : aucune mise en page recalculée, CLS reste à 0.
+     LA COMPOSITION EST ASYMÉTRIQUE, ET ÇA SE MESURE :
+     le titre occupe x 64 → 850 (54,6 % de la largeur), la
+     photographie x 596 → 1440 (58,6 %). 54,6 + 58,6 = 113,2 : les
+     deux majorités SE CHEVAUCHENT sur 254 px. Un split 50/50 fait
+     100,0 et ne chevauche rien.
 
-     L'INSTANT DE CAPTURE, 466 ms — ce n'est pas un chronomètre.
-     La courbe cubic-bezier(.4,0,.2,1) franchit la moitié de sa
-     course à x = 0,35 exactement (résolu : y(t) = 0,5 en t = 0,5,
-     et x(0,5) = 0,35). 200 ms de retard + 0,35 × 760 ms = 466 ms
-     de temps local. L'outil met l'animation en PAUSE et pose son
-     currentTime à cette valeur : deux passes rendent la même
-     image, et .sol mesure alors 80 px au lieu de 160.
-     La vérification se fait sur la GÉOMÉTRIE, jamais sur l'image :
-     document.querySelector('.sol').getBoundingClientRect().height
+     LA PHOTOGRAPHIE OCCUPE 844 × 900 = 58,6 % DE L'ÉCRAN.
+     Elle déborde par la droite, par le haut et par le bas ; son
+     seul bord intérieur est la couture de gauche, et c'est
+     exactement celle que le titre franchit.
+
+     LE GESTE, ET IL N'Y EN A QU'UN — « L'ÉTABLI AVANCE ».
+     La réglette d'olive part du bord gauche et pousse vers la
+     couture de la photographie : scaleX(0) → scaleX(1) sur
+     1 000 ms, départ à +200 ms. Elle N'EST PAS ARRIVÉE sur
+     l'image : son point d'arrivée — l'arête verticale de la
+     photographie — est VISIBLE dans le cadre, donc « à mi-course »
+     se lit sans rien avoir à comparer. 128 px de haut, 227 px de
+     vide devant elle : à 0,29 ça pèse encore 37 × 107 px.
+
+     L'INSTANT DE CAPTURE, 603 ms — ce n'est pas un chronomètre.
+     cubic-bezier(.4,0,.2,1) atteint y = 0,62 en u = 0,581, dont
+     l'abscisse vaut 0,403. 200 ms de retard + 0,403 × 1 000 ms =
+     603 ms de temps local. L'outil met l'animation en PAUSE et pose
+     son currentTime à cette valeur : deux passes rendent la même
+     image. La vérification se fait sur la GÉOMÉTRIE, jamais sur
+     l'image (piège 1) :
+     document.querySelector('.etabli').getBoundingClientRect().width
+     doit valoir 369 ± 4 px pour une réglette au repos de 596.
+     Relevé : 369,3 px. Photo occupée : 58,6 % (sonde, pas déduit).
      ============================================================ -->
-<meta name="aped-instant" content="466">
+<meta name="aped-instant" content="603">
 
 <link rel="preload" href="../../fonts/demos/fraunces-3.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -41,9 +59,7 @@
    fraunces 900 (affichage) · karla 400 et 700 (texte, libellés) ·
    jetbrains-mono 500 (les données). On NE déclare PAS fraunces
    600 (-0/-1) : elle n'est employée nulle part, et une page qui
-   déclare une face la télécharge. Les fichiers -0/-2 couvrent le
-   latin étendu ; aucun caractère de l'écran n'y tombe, le moteur
-   ne les demandera donc pas. */
+   déclare une face la télécharge. */
 @font-face{font-family:"fraunces";src:url("../../fonts/demos/fraunces-2.woff2") format("woff2");font-style:normal;font-weight:900;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"fraunces";src:url("../../fonts/demos/fraunces-3.woff2") format("woff2");font-style:normal;font-weight:900;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:"karla";src:url("../../fonts/demos/karla-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
@@ -54,29 +70,35 @@
 @font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 
 /* ── LA MATIÈRE — cinq valeurs, pas six ─────────────────────────
-   argile : le fond, plein cadre, un seul ton, zéro texture.
-   sauge  : la seule masse d'appui, 160 px collés au bord bas.
+   argile : le papier, plein cadre, un seul ton, zéro texture.
+   olive  : la seule masse d'appui, la réglette qui avance.
    aubergine / prune : la même famille, deux densités d'encre.
    pale   : la mention de démonstration, et rien d'autre.
    Le grès #AFA699 n'est pas déclaré : c'est le fond propre de la
    photographie, la page ne le pose jamais.
-   Contrastes (WCAG 2.1, sRGB linéarisé) : aubergine/argile 10,7:1 ·
-   prune/argile 8,3:1 · argile/aubergine 10,7:1 · pale/argile 5,1:1.
-   La bande sauge ne porte AUCUN texte, et c'est délibéré : argile
-   sur sauge tombe à 2,6:1. La bande est une masse, pas un support. */
+   Contrastes (WCAG 2.1, sRGB linéarisé, pas color-mix — piège 6) :
+   aubergine/argile 10,7:1 · prune/argile 8,3:1 · argile/aubergine
+   10,7:1 · pale/argile 7,0:1 · aubergine/émail (le titre sur la
+   photographie) 7,13:1 au pire pixel, 10,48:1 en moyenne — mesuré à
+   l'encre peinte par tools/pire-pixel.mjs, pas déduit.
+   `--pale` était #6B5661, arithmétiquement à 5,1:1. Sur du mono de
+   10 px, la mesure à l'encre peinte rendait 3,79 au pire pixel :
+   des fûts d'un pixel ne couvrent pas leur pixel. On a donc foncé
+   la valeur plutôt que discuter l'instrument.
+   L'OLIVE NE PORTE AUCUN TEXTE, et c'est délibéré : argile sur
+   olive tombe à 2,6:1 et aubergine sur olive à 4,1:1. Deux échecs.
+   La réglette est une masse, pas un support. */
 :root{
   --argile:#E7DFD2;
-  --sauge:#7E8F6E;
+  --olive:#7E8F6E;
   --aubergine:#3B2431;
   --prune:#4A3742;
-  --pale:#6B5661;
+  --pale:#54424C;
 
-  --marge:80px;   /* marge de page, gauche et droite */
-  --colg:300px;   /* gouttière gauche : sous-titre, bouton, coordonnées */
-  --cold:240px;   /* gouttière droite : filet + légende de spécimen */
-  --piece:600px;  /* le carré photographique */
-  --h1:124px;
-  --sol:160px;
+  --marge:64px;    /* le fer à gauche de toute la colonne de papier */
+  --couture:596px; /* l'arête gauche de la photographie */
+  --h1:156px;
+  --regle:128px;   /* hauteur de la réglette d'olive */
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -91,174 +113,183 @@ body{
 img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 li{list-style:none}
-
-/* L'anneau de focus, partout, sans exception. */
 a:focus-visible{outline:2px solid var(--aubergine);outline-offset:3px}
 
 /* ── LE CANEVAS ─────────────────────────────────────────────────
    900 px exactement : à 1440 × 900 le document tient dans la
    fenêtre, rien en dessous, aucune barre de défilement. */
-.ecran{position:relative;width:100%;height:900px}
+.ecran{position:relative;width:100%;height:900px;overflow:hidden}
 
-/* ── ① LE BANDEAU — y 0 → 76, filet de 1 px à y = 76 ────────────
-   Aucun fond : le bandeau est de l'argile. La hauteur déclarée est
-   77 pour que le filet occupe 76 → 77 et non 75 → 76. Les trois
-   blocs sont centrés optiquement sur y = 38. */
-.bandeau{
-  position:absolute;top:0;left:0;right:0;height:77px;
-  border-bottom:1px solid var(--aubergine);
-}
+/* ── ① LE CARTOUCHE — en haut à GAUCHE, groupé ──────────────────
+   Pas de bandeau, pas de filet, pas de nav au fer à droite : c'est
+   le trio qui fait « gabarit de boutique ». Le nom et les quatre
+   liens forment UN bloc calé sur la même marge que le titre, et le
+   reste de la ligne haute est du vide. */
 .nom{
-  position:absolute;left:var(--marge);top:25px;
+  position:absolute;left:var(--marge);top:26px;z-index:3;
   font-family:"fraunces",Georgia,serif;font-weight:900;
-  font-size:21px;line-height:26px;letter-spacing:-.005em;
+  font-size:20px;line-height:26px;letter-spacing:-.005em;
   color:var(--aubergine);
 }
-.mention{
-  position:absolute;left:calc(var(--marge) + 188px);top:31.5px;
-  font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;
-  font-size:10px;line-height:13px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--pale);white-space:nowrap;
-}
-.nav{position:absolute;right:var(--marge);top:31px}
-.nav ul{display:flex;gap:28px}
+.nav{position:absolute;left:var(--marge);top:64px;z-index:3}
+.nav ul{display:flex;gap:24px}
 .nav a{
   position:relative;display:block;
-  font-weight:700;font-size:12px;line-height:14px;letter-spacing:.18em;
+  font-weight:700;font-size:11px;line-height:14px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--aubergine);
 }
-/* Au fer à droite, l'interlettrage ajouté APRÈS le dernier signe
-   décale le bloc entier : on le reprend.
-   COTE CORRIGÉE AU PLUS PRÈS — le plan donne deux nombres qui ne
-   peuvent pas tenir ensemble : « quatre libellés séparés de 28 px »
-   ET « bloc de 346,8 px, x 1013,2 → 1360 ». Les quatre étiquettes
-   rendues en karla 700 12 px / 0,18 em mesurent 282,3 px d'encre ;
-   avec 3 × 28 px de blanc le bloc fait 366,3 px et commence à
-   x = 993,7. Descendre à 346,8 exigerait des blancs de 21,5 px.
-   On garde l'écart de 28 px, qui est la règle de composition ; la
-   largeur, elle, était une mesure dérivée. Le fer à droite reste
-   sur 1360 et l'écart à la mention (fin x 587,2) reste de 406 px. */
-.nav li:last-child a{margin-right:-.18em}
+.nav li:last-child a{margin-right:-.16em}
 /* MICRO-INTERACTION — un filet de 1 px qui SE TRACE de gauche à
    droite : la direction suit le sens de lecture. */
 .nav a::after{
-  content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;
+  content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;
   background:var(--aubergine);
   transform:scaleX(0);transform-origin:left center;
   transition:transform 160ms cubic-bezier(.4,0,.2,1);
 }
 .nav a:hover::after,.nav a:focus-visible::after{transform:scaleX(1)}
 
-/* ── ② LE TITRE — une seule ligne, 124 px, bas de casse ─────────
-   Boîte de ligne y 98 → 222 (line-height 1,0 : la boîte vaut le
-   corps). L'encre de fraunces 900 est décentrée de +2,1 px dans sa
-   boîte ; les 4 px de retrait à droite recentrent optiquement le
-   bloc de −2 px, et la boîte tombe sur x 268 → 1168. */
+/* ── ② LA PHOTOGRAPHIE — 844 × 900, 58,6 % de l'écran ───────────
+   Elle déborde à droite, en haut et en bas. Son unique bord
+   intérieur est la couture de gauche, x = 596, et c'est celle que
+   le titre traverse. Source 960 × 720, boîte 844 × 900 : le
+   facteur de recouvrement vaut 1,25 — 675 px de source pour 844 px
+   rendus, donc un CADRAGE SERRÉ (70 % de la largeur du fichier) au
+   prix d'un agrandissement de 1,25. La source est NETTE de bord à
+   bord : boutique-11 a été écartée ici pour sa faible profondeur de
+   champ, qu'un agrandissement de 1,25 rendait floue à 844 px.
+   Attributs width/height aux dimensions RÉELLES du fichier (CLS 0),
+   fetchpriority="high", aucun lazy : c'est le LCP. */
+.piece{position:static}
+.plaque{
+  position:absolute;z-index:1;top:0;bottom:0;right:0;left:var(--couture);
+}
+/* L'ÉTALONNAGE — et il n'est pas décoratif. Le fichier est éclairé
+   au jour, donc son blanc est FROID ; l'argile de la page est un
+   beige chaud. Côte à côte, la photographie tirait au gris et la
+   moitié droite de l'écran se lisait délavée. On la ramène dans la
+   famille du papier : sepia pour virer le blanc vers le chaud,
+   saturate pour lui rendre la couleur que le sepia a mangée,
+   contrast pour que l'arête de l'assiette existe. Trois valeurs,
+   relevées en regardant : sepia(.16) fondait la couture au point
+   qu'on ne voyait plus qu'il y avait une photographie ; .10 laisse
+   l'arête de l'assiette exister. */
+.plaque img{
+  width:100%;height:100%;object-fit:cover;object-position:50% 50%;
+  filter:sepia(.10) saturate(1.20) contrast(1.10);
+}
+
+/* ── ③ LE TITRE — deux lignes, 156 px, bas de casse ─────────────
+   Il PASSE PAR-DESSUS la photographie (z-index 3 contre 1). Jamais
+   l'inverse : une lettre occultée par un objet se lit comme un mot
+   tronqué (piège 70). Ici c'est l'encre qui est au-dessus, et le
+   mot « cuit. » est entier.
+   Interlignage 0,86 — à cette échelle on serre ; Ōmbia mesure 0,95
+   à 90 px, on descend parce qu'on monte. */
 .titre{
-  position:absolute;top:98px;left:0;right:0;padding-right:4px;
+  position:absolute;left:var(--marge);top:232px;z-index:3;
   font-family:"fraunces",Georgia,serif;font-weight:900;
-  font-size:var(--h1);line-height:1;letter-spacing:-.02em;
-  text-align:center;color:var(--aubergine);
+  font-size:var(--h1);line-height:.86;letter-spacing:-.03em;
+  color:var(--aubergine);
 }
 
-/* ── ⑤ GOUTTIÈRE GAUCHE — colonne de 300 px, x 80 → 380 ─────────*/
+/* ── ④ LA COLONNE DE PAPIER — sous le titre, au fer à gauche ────
+   Le paragraphe est DESCENDU : à 0,29 il pèse 4 px, c'est de la
+   texture, pas de l'information. Il est donc composé comme de la
+   texture — trois lignes régulières dans 344 px — et posé sous le
+   titre, jamais à côté de lui. */
 .soustitre{
-  position:absolute;top:408px;left:var(--marge);width:var(--colg);
-  font-weight:400;font-size:17px;line-height:28px;color:var(--prune);
+  position:absolute;left:var(--marge);top:556px;width:344px;z-index:3;
+  font-weight:400;font-size:15px;line-height:26px;color:var(--prune);
 }
-
-/* Le bouton : un rectangle plein, rayon 0, aucune ombre, aucun
-   dégradé, ni flèche ni chevron. Le filet est déclaré TRANSPARENT
-   au repos pour que l'inversion au survol ne déplace pas un pixel. */
 .bouton{
-  position:absolute;top:532px;left:var(--marge);
+  position:absolute;left:var(--marge);top:672px;z-index:3;
   display:flex;align-items:center;justify-content:center;
-  width:236px;height:56px;
+  width:232px;height:56px;
   background:var(--aubergine);border:1px solid var(--aubergine);
   color:var(--argile);
-  font-weight:700;font-size:13px;line-height:1;letter-spacing:.16em;
+  font-weight:700;font-size:12px;line-height:1;letter-spacing:.16em;
   text-transform:uppercase;
   transition:background-color 140ms cubic-bezier(.4,0,.2,1),
              color 140ms cubic-bezier(.4,0,.2,1);
 }
 .bouton span{margin-right:-.16em}
 /* MICRO-INTERACTION — l'inversion. Elle garde 10,7 : 1 ; passer le
-   fond en sauge tomberait à 2,6 : 1, donc c'est interdit. */
+   fond en olive tomberait à 2,6 : 1, donc c'est interdit. */
 .bouton:hover,.bouton:focus-visible{background:var(--argile);color:var(--aubergine)}
 
-/* top 628 et non 627 : lignes de base relevées à 640 et 658, comme
-   le plan les cote. Elles s'arrêtent 82 px au-dessus de la bande
-   sauge — aucun texte ne la touche. */
-.coord{
-  position:absolute;top:628px;left:var(--marge);width:var(--colg);
+/* La mention obligatoire tient l'autre bout de la ligne de tête :
+   le nom au fer à gauche sur x 64, elle au fer à droite sur x 532,
+   c'est-à-dire 64 px avant la couture. Elle remplit le seul bandeau
+   large de la page et laisse le coin bas-gauche entier à la
+   réglette.
+   ELLE A D'ABORD ÉTÉ POSÉE AU PIED DE LA PHOTOGRAPHIE, et c'était
+   faux : « ENTREPRISE FICTIVE » tombait sur le pied d'argile crue
+   de la tasse, un tan moucheté. La capture l'a montré tout de
+   suite — la couleur déclarée du fond ne dit rien de ce qui est
+   réellement peint sous un mot (piège 45). */
+.mention{
+  position:absolute;left:var(--marge);top:31px;z-index:3;
+  width:calc(var(--couture) - var(--marge) - 64px);text-align:right;
   font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;
-  font-size:10px;line-height:18px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--pale);
+  font-size:10px;line-height:13px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--pale);white-space:nowrap;
 }
 
-/* ── ③ L'OBJET — la seule photographie de l'écran ───────────────
-   Carré de 600 × 600, x 420 → 1020, y 300 → 900 : centré sur
-   x = 720 et collé au bord bas. Source 960 × 720 → rendu 800 × 600
-   avant recadrage, facteur 0,833 : une RÉDUCTION, jamais un
-   agrandissement. Cadrage relevé, pas deviné. */
-.piece{position:static}
-.plaque{
-  position:absolute;z-index:1;bottom:0;left:50%;
-  margin-left:calc(var(--piece) / -2);
-  width:var(--piece);height:var(--piece);
-}
-.plaque img{width:100%;height:100%;object-fit:cover;object-position:44% 40%}
-/* Le filet du spécimen est POSÉ PAR-DESSUS l'image : un `border`
-   rognerait la boîte de 2 px, un `outline` est réservé au focus.
-   Trois côtés seulement — le quatrième tomberait sur la dernière
-   rangée de pixels de l'écran, et la plaque doit sortir du cadre. */
-.plaque::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  border:1px solid var(--aubergine);border-bottom:0;
-}
-
-/* ── ⑥ GOUTTIÈRE DROITE — 240 px au fer à droite, fin sur 1360 ──
-   La légende de spécimen, et le filet de 240 px qui la surmonte à
-   y = 408 — exactement la hauteur où commence le sous-titre de
-   gauche. La colonne droite est plus courte et plus légère que la
-   gauche : l'écran ne doit pas se lire comme deux moitiés. */
+/* ── ⑤ LA LÉGENDE DE SPÉCIMEN — sur la photographie, au fer à droite
+   C'est le dispositif de signature, pris à Ōmbia : `FIG. n` en
+   monospace, une description technique, aucun adjectif. Elle est
+   posée sur le mur clair du fond de la photographie : 6,81 : 1 au
+   pire pixel, 9,29 : 1 en moyenne — vérifié à l'encre peinte par
+   tools/pire-pixel.mjs, jamais déduit d'une couleur déclarée. */
 .legende{
-  position:absolute;top:422px;right:var(--marge);width:var(--cold);
+  position:absolute;right:var(--marge);top:112px;z-index:3;width:280px;
   font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;
-  font-size:11px;line-height:20px;letter-spacing:.12em;
-  text-transform:uppercase;text-align:right;color:var(--prune);
+  font-size:11px;line-height:19px;letter-spacing:.12em;
+  text-transform:uppercase;text-align:right;color:var(--aubergine);
 }
+.legende b{font-weight:500;display:block;margin-right:-.12em}
 .legende::before{
-  content:"";position:absolute;left:0;right:0;top:-14px;height:1px;
+  content:"";position:absolute;right:0;top:-16px;width:180px;height:1px;
   background:var(--aubergine);
 }
-/* COTE CORRIGÉE AU PLUS PRÈS — le plan annonce 55,5 · 205,9 ·
-   190,1 px. Les deux premières tombent au dixième ; la troisième
-   est de 213,8 px : « GRÈS ÉMAILLÉ · FAIT AU TOUR » compte 27
-   signes, et jetbrains-mono à 11 px avec 0,12 em avance de 7,92 px
-   par signe — 190,1 px vaudrait 24 signes. Le texte est celui du
-   plan, mot pour mot ; c'est le nombre qui était faux. 213,8 tient
-   dans les 240 px de la colonne, le fer à droite reste sur 1360. */
-.legende b{font-weight:500;display:block;margin-right:-.12em}
 
-/* ── ④ L'APLAT — la bande sauge, 1440 × 160, y 740 → 900 ────────
-   Elle passe SOUS la photographie : on ne la voit donc que dans
-   les deux gouttières, x 0 → 420 et x 1020 → 1440. C'est le sol
-   sur lequel la pièce est posée, et l'unique masse de couleur. */
-.sol{
-  position:absolute;z-index:0;left:0;right:0;bottom:0;
-  height:var(--sol);background:var(--sauge);
-  transform-origin:50% 100%;
-  animation:horizon 760ms cubic-bezier(.4,0,.2,1) 200ms both;
+/* ── ⑥ LA RÉGLETTE — LE GESTE, ET IL N'Y EN A QU'UN ─────────────
+   Une masse d'olive de 596 × 128 collée au bord bas et au bord
+   gauche, qui pousse vers la couture de la photographie. Elle est
+   photographiée à 62 % : 369 px posés, 227 px de vide devant elle,
+   et l'arête de la photographie — son point d'arrivée — est dans
+   le cadre. C'est ce qui rend le « à mi-course » lisible sans
+   seconde image.
+   z-index 0 : elle passe SOUS la photographie, donc un dépassement
+   d'un sous-pixel ne peut pas mordre sur l'image.
+   `both` et non `forwards` : la règle du STANDARD vise les
+   animations pilotées par le DÉFILEMENT sur une page longue, où
+   `both` vide la moitié d'une capture pleine page. Ici la page fait
+   900 px, l'animation est pilotée par le TEMPS, et `forwards`
+   ferait sauter la réglette de 596 à 0 au bout des 200 ms de
+   retard. */
+.etabli{
+  position:absolute;z-index:0;left:0;bottom:0;
+  width:var(--couture);height:var(--regle);background:var(--olive);
+  transform-origin:0 50%;
+  animation:etabli 1000ms cubic-bezier(.4,0,.2,1) 200ms both;
   will-change:transform;
 }
-@keyframes horizon{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes etabli{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+/* Le filet qui dit où va la réglette. Statique, pleine longueur :
+   sans lui, une masse arrêtée en l'air peut se lire comme un choix
+   de composition plutôt que comme un mouvement. */
+.rail{
+  position:absolute;z-index:0;left:0;bottom:var(--regle);
+  width:var(--couture);height:1px;background:var(--aubergine);
+}
 
 /* ── MOUVEMENT RÉDUIT — l'état de repos EST l'état final ────────
-   `animation:none` rend la bande à ses 160 px pleins. Aucune
-   information ne se perd : la bande ne porte ni texte, ni lien,
-   ni donnée. Le titre, la photographie, la légende, le bouton, la
-   nav et les coordonnées sont lisibles sans une seule image de
+   `animation:none` rend la réglette à ses 560 px pleins. Aucune
+   information ne se perd : elle ne porte ni texte, ni lien, ni
+   donnée. Le titre, la photographie, la légende, le bouton et la
+   nav sont lisibles et utilisables sans une seule image de
    l'animation. */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
@@ -267,70 +298,68 @@ a:focus-visible{outline:2px solid var(--aubergine);outline-offset:3px}
 /* ── 1280 → 1439 · 1024 → 1279 ──────────────────────────────────
    La composition de 1440 est celle qu'on photographie ; en dessous
    elle se resserre par paliers CHIFFRÉS plutôt que par un calc()
-   fluide — une colonne qui rétrécit en continu finit par croiser
-   la photographie sans qu'aucune mesure ne le signale.
-   La contrainte est symétrique : marge + colonne gauche + 40 =
-   marge + colonne droite + 100 = 420 à 1440. */
+   fluide. Ce qui est tenu à chaque palier : le titre traverse
+   TOUJOURS la couture, et la réglette s'arrête TOUJOURS dessus. */
 @media (max-width:1439px) and (min-width:1280px){
-  :root{--marge:56px;--colg:280px;--cold:230px;--piece:520px;--h1:108px}
+  :root{--marge:52px;--couture:492px;--h1:134px;--regle:112px}
+  /* La ligne de tête ne tient plus le nom ET la mention côte à
+     côte : la colonne de papier a perdu 104 px. La mention passe
+     donc sous la nav, au fer à gauche. Relevé, pas supposé — elle
+     se superposait au nom, lisible sur la capture à 1280. */
+  .mention{top:96px;width:auto;text-align:left}
+  .titre{top:214px}
+  .soustitre{top:508px;width:320px}
+  .bouton{top:616px}
+  .legende{top:100px}
 }
 @media (max-width:1279px) and (min-width:1024px){
-  :root{--marge:44px;--colg:230px;--cold:210px;--piece:400px;--h1:92px}
+  :root{--marge:40px;--couture:412px;--h1:108px;--regle:94px}
+  .mention{top:96px;width:auto;text-align:left}
+  .titre{top:186px}
+  .soustitre{top:430px;width:296px}
+  .bouton{top:530px}
+  .legende{top:88px;width:230px}
+  .legende::before{width:140px}
 }
 
 /* ── SOUS 1024 px — l'écran se remet sur un seul axe ────────────
-   Les deux gouttières n'existent plus : tout s'empile sur l'axe
-   central, dans l'ordre de lecture. La bande sauge reste collée au
-   bas du document et garde son geste. */
+   Les blocs s'empilent dans l'ordre de lecture. Le titre ne
+   traverse plus rien : le chevauchement est une composition de
+   bureau, et forcé sur 390 px il rendrait un mot illisible. La
+   réglette reste, collée au bas du document, et garde son geste. */
 @media (max-width:1023px){
-  :root{--marge:28px;--sol:96px}
-  .ecran{height:auto;min-height:100vh;padding:0 var(--marge) var(--sol)}
-  .bandeau{
-    position:static;height:auto;
-    display:flex;flex-wrap:wrap;align-items:baseline;
-    gap:8px 22px;
-    margin:0 calc(var(--marge) * -1);
-    padding:20px var(--marge) 15px;
+  :root{--marge:24px;--regle:64px}
+  .ecran{height:auto;min-height:100vh;overflow:visible;
+         padding:26px var(--marge) calc(var(--regle) + 34px)}
+  .nom,.nav,.titre,.soustitre,.bouton,.mention,.legende,.plaque{
+    position:static;z-index:auto;
   }
-  .nom,.mention,.nav{position:static}
-  .mention{white-space:normal}
-  .nav{width:100%;margin-top:2px}
-  .nav ul{flex-wrap:wrap;gap:6px 22px}
-  .titre{
-    position:static;padding:0;margin:44px auto 0;
-    font-size:clamp(34px,9.2vw,84px);
-  }
-  .soustitre{position:static;width:auto;max-width:480px;margin:30px auto 0;text-align:center}
-  .bouton{position:static;margin:30px auto 0}
-  .piece{margin:44px 0 0}
+  .nav{margin-top:10px}
+  .nav ul{flex-wrap:wrap;gap:8px 20px}
+  .titre{margin-top:34px;font-size:clamp(40px,11vw,86px);letter-spacing:-.025em}
   /* `display:block` n'est PAS décoratif : .plaque est un <span>, et
-     un élément en ligne ignore `width`. Sans cette ligne la plaque
-     rendait la source en 4/3 pleine largeur au lieu du carré —
-     relevé à 768 px, 708 px de large au lieu de 460. */
-  .plaque{
-    display:block;position:relative;z-index:auto;bottom:auto;left:auto;
-    margin:0 auto;width:min(100%,460px);height:auto;
-  }
-  /* Le rapport est porté par l'IMAGE et non par sa boîte : une
-     hauteur en pourcentage contre un parent en hauteur `auto` ne se
-     résout pas, et la plaque retombait à zéro. */
-  .plaque img{width:100%;height:auto;aspect-ratio:1/1}
-  .plaque::after{border-bottom:1px solid var(--aubergine)}
-  .legende{
-    position:static;width:auto;max-width:320px;margin:28px auto 0;
-    padding-top:14px;text-align:center;
-    border-top:1px solid var(--aubergine);
-  }
+     un élément en ligne ignore `width` et `height`. */
+  .plaque{display:block;margin:30px 0 0;width:100%;height:auto}
+  .plaque img{width:100%;height:auto;aspect-ratio:4/3;object-position:50% 50%}
+  .legende{width:auto;margin-top:16px;padding-top:14px;text-align:left;
+           border-top:1px solid var(--aubergine)}
   .legende::before{display:none}
   .legende b{margin-right:0}
-  .coord{position:static;width:auto;margin:26px auto 34px;text-align:center}
+  .soustitre{width:auto;max-width:440px;margin-top:28px}
+  .bouton{margin-top:26px}
+  /* `width` et `text-align` sont REMIS : la mention porte à 1440 une
+     largeur calculée sur la couture (596 − 64 − 64 = 468 px), et
+     `--couture` n'existe plus ici. Laissée telle quelle, elle
+     débordait de 142 px à 390 px de large — mesuré, pas supposé. */
+  .mention{margin-top:26px;white-space:normal;width:auto;text-align:left}
+  .etabli{width:min(62%,320px);height:var(--regle)}
+  .rail{width:min(62%,320px)}
 }
 /* Un moteur qui ignore `aspect-ratio` rendrait la photographie dans
-   son rapport de source : on lui donne une hauteur explicite plutôt
-   qu'un cadrage qui n'est pas celui du plan. */
-@supports not (aspect-ratio: 1 / 1){
+   une hauteur nulle : on lui donne une hauteur explicite. */
+@supports not (aspect-ratio: 4 / 3){
   @media (max-width:1023px){
-    .plaque img{height:min(100vw - 56px,460px)}
+    .plaque img{height:calc((100vw - 48px) * 0.75)}
   }
 }
 </style>
@@ -339,41 +368,44 @@ a:focus-visible{outline:2px solid var(--aubergine);outline-offset:3px}
 
 <div class="ecran">
 
-  <header class="bandeau">
-    <p class="nom">Grès Saulnier</p>
-    <p class="mention">Site de démonstration — entreprise fictive</p>
-    <nav class="nav" aria-label="Navigation principale">
-      <ul>
-        <li><a href="#">Boutique</a></li>
-        <li><a href="#">Atelier</a></li>
-        <li><a href="#">Journal</a></li>
-        <li><a href="#">Panier (0)</a></li>
-      </ul>
-    </nav>
-  </header>
+  <!-- L'ORDRE DU DOCUMENT EST L'ORDRE DE LECTURE, pas l'ordre de
+       peinture : à 1440 tout est positionné en absolu et c'est le
+       z-index qui empile, donc le DOM est libre de suivre la voix
+       de synthèse. Sous 1024 px il redevient l'ordre d'empilement,
+       et il est déjà juste. -->
+  <div class="etabli" aria-hidden="true"></div>
+  <div class="rail" aria-hidden="true"></div>
 
-  <h1 class="titre">Tourné, émaillé, cuit.</h1>
+  <p class="nom">Grès Saulnier</p>
+  <nav class="nav" aria-label="Navigation principale">
+    <ul>
+      <li><a href="#">Boutique</a></li>
+      <li><a href="#">Atelier</a></li>
+      <li><a href="#">Journal</a></li>
+      <li><a href="#">Panier (0)</a></li>
+    </ul>
+  </nav>
 
-  <p class="soustitre">Grès tourné au tour, émaillé et cuit à haute température. Petites séries, faites au Bas-Saint-Laurent.</p>
-
-  <a class="bouton" href="#"><span>Voir les pièces</span></a>
+  <h1 class="titre">Tourné,<br>émaillé, cuit.</h1>
 
   <figure class="piece">
     <span class="plaque">
-      <img src="../../images/secteurs-sites/boutique-11.webp"
+      <img src="../../images/secteurs-sites/boutique-3.webp"
            width="960" height="720" fetchpriority="high"
-           alt="Trois bols de grès emboîtés l'un dans l'autre, posés sur une assiette marbrée, sur fond neutre.">
+           alt="Une grande assiette de grès émaillé blanc moucheté, coupée par le bord du cadre, et une tasse à deux tons posée derrière, sur un fond clair.">
     </span>
     <figcaption class="legende">
       <b>Fig. 01</b>
-      <b>Trois bols et une assiette</b>
+      <b>Assiette et tasse</b>
       <b>Grès émaillé · fait au tour</b>
     </figcaption>
   </figure>
 
-  <p class="coord">000 000-0000 · courriel@exemple.ca<br>Adresse sur demande</p>
+  <p class="soustitre">Vaisselle de grès faite à la main, en petites séries, dans un atelier du Bas-Saint-Laurent. La cuisson change un peu chaque pièce.</p>
 
-  <div class="sol" aria-hidden="true"></div>
+  <a class="bouton" href="#"><span>Voir les pièces</span></a>
+
+  <p class="mention">Site de démonstration — entreprise fictive</p>
 
 </div>
 
