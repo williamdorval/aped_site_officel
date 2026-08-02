@@ -1279,6 +1279,15 @@ html.entree-saut .hero-fiche .fiche-rule,
 @keyframes v11-defile { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .tou :where(p, dl, dt, dd, ul, ol, li, figure) { margin: 0; padding: 0; }
 .tou :where(ul, ol) { list-style: none; }
+/* L'ECHELLE DE LA SECTION.  D-637
+   Elle faisait 1 421 px a 1440x900 : un ecran et demi, et le panneau
+   de resultat vivait sous le pli — on poussait un curseur sans voir
+   ce qu'il changeait, ce qui est le seul geste que cette section
+   existe pour permettre. Le verdict a quitte la pleine largeur, les
+   onglets sont rentres dans la colonne des reglages, et les ecarts
+   passent d'un cran. Reste 866 px : les onglets, les trois curseurs,
+   les deux chiffres et le panneau dans une seule bande de 605. */
+#calculateur > .band { padding-block: var(--s-7); }
 .fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
 /* --- 768 px : compositions asymetriques --- */
 @media (min-width: 48em) {

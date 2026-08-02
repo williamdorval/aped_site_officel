@@ -2344,32 +2344,19 @@
       impactSpring.set(impact, immediate);
 
       $("#roiWeekly").textContent = fmtHours(saved);
-      $("#roiDays").textContent = Math.round((saved * 52) / 8).toLocaleString("fr-CA");
-      $("#roiFte").textContent = (Math.round((saved / 40) * 10) / 10).toLocaleString("fr-CA");
-      $("#roiDirect").textContent = fmtMoney(direct);
 
+      /* LES DEUX PISTES PARTAGENT ORIGINE ET ECHELLE.  D-636
+         L'echelle est la duree MANUELLE : la piste du haut est
+         toujours pleine, celle du bas en est la part qui resterait.
+         Deux echelles differentes rendraient deux barres qu'on ne
+         peut pas comparer, ce qui est exactement le defaut qu'on
+         corrige. Le suffixe « par semaine » est parti des nombres :
+         il est deja dans le libelle au-dessus, et il empechait les
+         deux chiffres de se caler sur le meme bord droit. */
       $("#barManual").style.width = totalHours > 0 ? "100%" : "0%";
       $("#barAuto").style.width = totalHours > 0 ? (remaining / totalHours) * 100 + "%" : "0%";
-      $("#barManualVal").textContent = fmtHours(totalHours) + " par semaine";
-      $("#barAutoVal").textContent = fmtHours(remaining) + " par semaine";
-
-      var top3 = perTask.filter(function (t) { return t.saved > 0; })
-        .sort(function (a, b) { return b.saved - a.saved; })
-        .slice(0, 3);
-      var top3El = $("#roiTop3");
-      var top3Empty = $("#roiTop3Empty");
-      top3El.innerHTML = "";
-      top3.forEach(function (t) {
-        var li = doc.createElement("li");
-        var name = doc.createElement("span");
-        name.textContent = t.name;
-        var val = doc.createElement("b");
-        val.textContent = fmtHours(t.saved) + " par semaine";
-        li.appendChild(name);
-        li.appendChild(val);
-        top3El.appendChild(li);
-      });
-      top3Empty.hidden = top3.length > 0;
+      $("#barManualVal").textContent = fmtHours(totalHours);
+      $("#barAutoVal").textContent = fmtHours(remaining);
 
       lastRoi = {
         employes: inEmp.value,
@@ -2420,46 +2407,13 @@
       });
     });
 
-    var roiMailForm = $("#roiMailForm");
-    roiMailForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      if (!validate(roiMailForm)) return;
-      var status = $(".form-status", roiMailForm);
-      var sendBtn = $('button[type="submit"]', roiMailForm);
-      // Ce bouton n'avait aucun etat : il restait actif pendant la requete,
-      // donc cliquable deux fois, donc deux courriels.
-      if (sendBtn && sendBtn.disabled) return;
-      var release = function () {
-        if (!sendBtn) return;
-        sendBtn.disabled = false;
-        sendBtn.classList.remove("is-loading");
-      };
-      if (sendBtn) {
-        sendBtn.disabled = true;
-        sendBtn.classList.add("is-loading");
-      }
-      var email = $("#roiEmail").value.trim();
-      say(status, "Envoi en cours…");
-      retirerRepli(status);
-      /* L'ACCUSE NE CITE PLUS QUE CE QUI EXISTE ENCORE. Il enumerait  D-431 */
-      var chargeRoi = Object.assign({ email: email }, lastRoi, {
-        _autoresponse: "Voici votre calcul d'economies APED Agence. Impact annuel estime : " + lastRoi.impact_annuel_total +
-          ". Heures recuperees par semaine : " + lastRoi.heures_recuperees_semaine +
-          ". Le montant, c'est ces heures multipliees par le taux horaire que vous avez regle, sur 52 semaines : " +
-          lastRoi.economies_directes +
-          ". C'est un ordre de grandeur, pas une soumission." +
-          " Envie de le confirmer? Reservez un appel gratuit sur notre site. - L'equipe APED"
-      });
-      sendJson("roi", chargeRoi).then(function () {
-        release();
-        say(status, "Envoyé. Vérifiez votre boîte de réception.", "ok");
-        roiMailForm.reset();
-      }).catch(function () {
-        release();
-        say(status, "L’envoi automatique n’a pas passé. Votre calcul n’est pas perdu — envoyez-le d’ici :", "err");
-        poserRepli(status, "roi", chargeRoi);
-      });
-    });
+    /* LE FORMULAIRE DE COURRIEL EST PARTI.  D-636
+       Le visiteur a deja son chiffre a l'ecran, il est chez nous, et
+       on lui demandait son adresse pour le lui renvoyer. C'est un
+       peage pose apres la valeur, pas un service. Il est remplace par
+       « Demarrer votre projet » : la seule chose qu'on veut vraiment
+       qu'il fasse a ce moment-la. `lastRoi` reste rempli — il sert a
+       l'annonce vocale. */
 
     // Premier calcul immediat : le chiffre est deja la des la section 01.
     roiUpdate(true);

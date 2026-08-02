@@ -172,7 +172,7 @@
     <a href="#demos"><em>03</em>Secteurs</a>
     <a href="#visite"><em>04</em>Visite 360</a>
     <a href="#calculateur"><em>05</em>Calculateur</a>
-    <a href="#processus"><em>06</em>Processus</a>
+    <a href="#processus"><em>06</em>Processus</a>
     <a href="#faq"><em>07</em>Questions</a>
     <a href="#contact"><em>08</em>Contact</a>
   </nav>
@@ -2121,13 +2121,15 @@
   </div>
   <section id="calculateur">
     <div class="wrap band">
-      <div class="head" style="margin-top: var(--s-6);">
+      <div class="head">
         <p class="head-index">On ne vous demande rien</p>
         <h2>Combien vous coûte le travail fait à la main.</h2>
-        <p>Choisissez votre industrie, poussez les trois curseurs. Les deux chiffres suivent. Le détail est replié dessous, si vous le voulez.</p>
+        <p>Choisissez votre industrie, poussez les curseurs. Les chiffres suivent.</p>
       </div>
 
-      <div class="roi-presets" id="roiPresets" role="group" aria-label="Profils d’industrie préréglés">
+      <div class="roi-grid">
+        <div class="roi-inputs">
+          <div class="roi-presets" id="roiPresets" role="group" aria-label="Profils d’industrie préréglés">
         <button type="button" data-preset="construction" aria-pressed="false">Métiers et chantier</button>
         <button type="button" data-preset="services" aria-pressed="false">Garage et mécanique</button>
         <button type="button" data-preset="restauration" aria-pressed="false">Restauration</button>
@@ -2135,26 +2137,9 @@
         <button type="button" data-preset="commerce" aria-pressed="false">Boutique en ligne</button>
         <button type="button" data-preset="manufacturier" aria-pressed="false">Bureau et cabinet</button>
         <button type="button" data-preset="perso" aria-pressed="true">À ma main</button>
-      </div>
+          </div>
 
-      <!-- LES DEUX CHIFFRES, AVANT TOUTE INTERACTION.  D-054 -->
-      <div class="roi-verdict">
-        <div class="roi-vcell">
-          <span class="label">Heures récupérées par semaine</span>
-          <b class="num" id="roiWeekly">0 h</b>
-        </div>
-        <div class="roi-vcell roi-vcell--accent">
-          <span class="label">Ce que ça vaut par année</span>
-          <b class="num" id="roiImpact">0 $</b>
-        </div>
-        <!-- Le montant est un `<b>`, donc muet pour un lecteur d'ecran.
-             Annonce a la fin du geste seulement : annoncer a chaque
-             image du glissement noierait l'utilisateur. -->
-        <p class="sr-only" id="roiAnnounce" role="status" aria-live="polite"></p>
-      </div>
 
-      <div class="roi-grid">
-        <div class="roi-inputs">
           <p class="roi-sub">Trois réglages, c’est tout</p>
 
           <div class="roi-field">
@@ -2214,68 +2199,82 @@
             <input type="range" id="task8" min="0" max="20" value="2" />
           </div>
           </details>
-        </div>
 
-        <div class="roi-panel">
-          <p class="roi-block">Votre semaine, avant et visée</p>
-          <div class="roi-bars">
-            <div class="roi-bar">
-              <div class="roi-bar-top"><span>Actuel, à la main</span><b id="barManualVal">0 h</b></div>
-              <i id="barManual"></i>
-            </div>
-            <div class="roi-bar roi-bar--auto">
-              <div class="roi-bar-top"><span>Une fois automatisé</span><b id="barAutoVal">0 h</b></div>
-              <i id="barAuto"></i>
-            </div>
-          </div>
-
-          <p class="roi-block">À automatiser en premier</p>
-          <ol class="roi-top3" id="roiTop3"></ol>
-          <p class="empty" id="roiTop3Empty" hidden>Tous les curseurs sont à zéro. Remontez-en un pour voir par où commencer.</p>
-
-          <button class="btn btn--primary btn--block" type="button" data-modal-open="modal-booking">
-            Réserver un appel
-            <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
-          </button>
-
-          <form class="roi-mail" id="roiMailForm" novalidate>
-            <div class="field">
-              <label for="roiEmail">Recevez ce calcul par courriel</label>
-              <div class="roi-mail-row focus-group">
-                <input id="roiEmail" name="email" type="email" inputmode="email" spellcheck="false" autocomplete="email" placeholder="prenom@entreprise.ca…" required />
-                <button class="btn-icon" type="submit" aria-label="Envoyer le calcul par courriel">
-                  <svg class="icon" aria-hidden="true"><use href="#i-send" /></svg>
-                </button>
-              </div>
-              <span class="field-error">Entrez un courriel valide.</span>
-            </div>
-            <p class="form-status" role="status" aria-live="polite"></p>
-          </form>
-
-          <!-- POINT DE CAPTURE 1, le moins intrusif des trois : le  D-056 -->
-          <div class="appat" style="margin-top: var(--s-5);">
-            <p><b>D’où sort ce chiffre ?</b> La méthode complète est dans notre document sur l’automatisation : 42 pages, 13 domaines, chaque chiffre avec sa source.</p>
-            <a class="btn btn--ghost" href="documents/aped-automatisation.pdf" download>
-              Télécharger, sans courriel
-              <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-            </a>
-          </div>
-
-          <!-- Le detail du calcul reste disponible, il n'est plus au
-               premier plan. Un patron de PME veut d'abord savoir
-               combien ; celui qui veut verifier la methode ouvre. -->
-          <details class="roi-details roi-details--panel">
-            <summary>Le détail du calcul<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
-            <!-- B6 · DEUX LIGNES RETIREES LE 2026-07-29.  D-057 -->
-            <div class="roi-rows">
-              <div><span>Jours de travail récupérés par an</span><b id="roiDays">0</b></div>
-              <div><span>Ça équivaut à combien d’employés</span><b id="roiFte">0</b></div>
-              <div><span>Heures facturables rendues</span><b id="roiDirect">0 $</b></div>
-            </div>
-            <p class="roi-note">Le montant, c’est les heures récupérées multipliées par <b>le taux horaire que vous avez réglé plus haut</b>, sur cinquante-deux semaines. Rien d’autre n’y entre. Le taux de récupération change selon la tâche, de 50 à 90 %, parce qu’aucune ne tombe à zéro — même méthode que notre document sur l’automatisation, où une minute par semaine récupérée vaut 28 $ par année, sur une base de 35 $ l’heure. C’est un ordre de grandeur, pas une soumission.</p>
+          <!-- LA METHODE SORT DU PANNEAU, ELLE NE DISPARAIT PAS.  D-636
+               « Rien d'autre dans le panneau » est une regle de
+               composition ; « le visiteur peut-il le verifier » est une
+               regle de veracite, et elle passe avant. Le repli descend
+               sous la grille, ferme, ou il ne dispute rien au resultat.
+               Les trois rangees de chiffres derives sont parties avec le
+               reste : elles reexpliquaient le calcul au lieu de le
+               justifier. -->
+          <details class="roi-details roi-methode">
+            <summary>D’où sort ce chiffre<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p class="roi-note">Les heures récupérées, multipliées par <b>le taux horaire que vous avez réglé plus haut</b>, sur cinquante-deux semaines. Rien d’autre n’y entre. Le taux de récupération change selon la tâche, de 50 à 90 %, parce qu’aucune ne tombe à zéro. C’est un ordre de grandeur, pas une soumission.</p>
           </details>
         </div>
+
+        <!-- LE PANNEAU NE GARDE QUE CE QUI FAIT DECROCHER LE TELEPHONE.  D-636
+             Il portait six choses : deux barres, un palmares de trois
+             taches, un bouton d'appel, un formulaire de courriel, un
+             appat vers le PDF et un repli de methode. Cinq d'entre
+             elles repondent a une question que personne ne se pose
+             devant un resultat. Restent les deux chiffres de la
+             semaine et les deux actions.
+
+             LES DEUX NOMBRES PARTAGENT LEUR BORD DROIT, LES DEUX
+             PISTES LEUR ORIGINE ET LEUR ECHELLE. Releve sur les
+             calculateurs de Wise : c'est le seul alignement qui rende
+             deux nombres comparables d'un coup d'oeil. Deux nombres
+             seuls ne font pas un « avant / apres » — c'est la piste
+             sous le nombre qui le fait, et l'ecart SIGNE pose sur le
+             filet de separation qui nomme le gain sans faire calculer.
+             L'ecart est en encre : c'est un constat, pas une action.
+             Le minium ne tombe qu'a un endroit du panneau, le fond du
+             bouton primaire. -->
+        <div class="roi-panel">
+          <!-- LES DEUX CHIFFRES, AVANT TOUTE INTERACTION.  D-054 -->
+          <div class="roi-verdict">
+            <div class="roi-vcell">
+              <span class="label">Heures récupérées par semaine</span>
+              <b class="num" id="roiWeekly">0 h</b>
+            </div>
+            <div class="roi-vcell roi-vcell--accent">
+              <span class="label">Ce que ça vaut par année</span>
+              <b class="num" id="roiImpact">0 $</b>
+            </div>
+            <!-- Le montant est un `<b>`, donc muet pour un lecteur d'ecran.
+                 Annonce a la fin du geste seulement : annoncer a chaque
+                 image du glissement noierait l'utilisateur. -->
+            <p class="sr-only" id="roiAnnounce" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="roi-etat">
+            <p class="roi-block">Actuel, à la main</p>
+            <b class="num" id="barManualVal">0 h</b>
+            <i class="roi-piste" aria-hidden="true"><s id="barManual"></s></i>
+          </div>
+
+
+          <div class="roi-etat">
+            <p class="roi-block">Une fois automatisé</p>
+            <b class="num" id="barAutoVal">0 h</b>
+            <i class="roi-piste" aria-hidden="true"><s id="barAuto"></s></i>
+          </div>
+
+          <div class="roi-actes">
+            <button class="btn btn--primary btn--block" type="button" data-modal-open="modal-booking">
+              Réserver un appel
+              <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+            </button>
+            <button class="btn btn--ghost btn--block" type="button" data-modal-open="modal-start">
+              Démarrer votre projet
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+            </button>
+          </div>
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -2864,7 +2863,7 @@
           <a href="#services">Services</a>
           <a href="#realisations">Démonstrations</a>
           <a href="#demos">Secteurs</a>
-          <a href="#calculateur">Calculateur</a>
+          <a href="#calculateur">Calculateur</a>
           <a href="#contact">Contact</a>
         </nav>
       </div>

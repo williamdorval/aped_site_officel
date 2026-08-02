@@ -3475,24 +3475,36 @@ html:not(.js) .ba-trait { display: none; }
 /* Les regles des ANCIENNES maquettes de secteur — `.mock-top`,  D-225 */
 /* == 17. CALCULATEUR - deux moities, le resultat vit a droite == */
 .roi-presets { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-5); }
-/* LE VERDICT — deux chiffres, poses avant toute interaction.  D-226 */
+/* LE VERDICT — deux chiffres, poses avant toute interaction.  D-226
+   IL A QUITTE LA PLEINE LARGEUR POUR LE HAUT DU PANNEAU.  D-637
+   Il occupait une bande de 145 px en travers de la page, entre les
+   onglets et la grille : c'est 145 px que la section entiere ne
+   pouvait plus tenir dans un ecran, et c'est le reproche exact qu'on
+   lui faisait. En tete du panneau il ne coute plus rien en hauteur —
+   la colonne de droite etait la plus courte des deux — et il se
+   retrouve la ou il devait etre depuis le debut : au-dessus du
+   resultat qu'il resume, pas au-dessus des reglages. */
 .roi-verdict {
   display: grid;
   gap: 1px;
-  margin-bottom: var(--s-6);
   background: var(--rule-strong);
-  border: var(--rule-w) solid var(--rule-strong);
+}
+.roi-panel > .roi-verdict {
+  margin: calc(-1 * var(--s-5)) calc(-1 * var(--s-5)) var(--s-2);
+  border-bottom: var(--rule-w) solid var(--rule-strong);
 }
 .roi-vcell {
   display: grid;
-  gap: var(--s-2);
+  gap: var(--s-1);
   align-content: center;
-  padding: var(--s-5) var(--s-5) var(--s-6);
+  padding: var(--s-4) var(--s-5);
   background: var(--surface-2);
 }
 .roi-vcell b {
   font-family: var(--font-data);
-  font-size: clamp(2.25rem, 6.4vw, 4rem);
+  /* Le calibre suit la colonne, pas la page : a pleine largeur il
+     montait a 64 px, ce qui n'a plus de sens dans 420. */
+  font-size: clamp(1.75rem, 1rem + 2.4vw, 2.75rem);
   font-weight: 700;
   line-height: 0.96;
   letter-spacing: -0.05em;
@@ -3538,7 +3550,8 @@ html:not(.js) .ba-trait { display: none; }
 }
 .roi-presets button:hover { border-color: var(--ink); }
 .roi-presets button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.roi-inputs { display: grid; gap: var(--s-5); align-content: start; }
+.roi-inputs { display: grid; gap: var(--s-4); align-content: start; }
+.roi-presets { margin-bottom: 0; }
 .roi-sub {
   font-family: var(--font-data);
   font-size: var(--fs-8);
@@ -3563,46 +3576,62 @@ html:not(.js) .ba-trait { display: none; }
   display: grid;
   gap: var(--s-4);
 }
-.roi-rows { display: grid; gap: 1px; }
-.roi-rows div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--s-4);
-  padding: var(--s-3) 0;
-  border-top: var(--rule-w) solid var(--rule);
-}
-.roi-rows span { font-size: var(--fs-7); color: var(--ink-muted); }
-.roi-rows b { font-family: var(--font-data); font-size: var(--fs-6); font-variant-numeric: tabular-nums; }
 .roi-block { font-family: var(--font-data); font-size: var(--fs-8); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-muted); }
-/* Barres sans piste de fond : seule la valeur est dessinee. */
-.roi-bars { display: grid; gap: var(--s-4); }
-.roi-bar { display: grid; gap: var(--s-2); }
-.roi-bar .roi-bar-top { display: flex; justify-content: space-between; gap: var(--s-4); font-family: var(--font-data); font-size: var(--fs-8); }
-.roi-bar i { display: block; height: 3px; width: 0; background: var(--ink-muted); transition: width var(--t-3) var(--e-drive); }
-.roi-bar--auto i { background: var(--accent); }
-.roi-top3 { display: grid; gap: 1px; counter-reset: t; }
-.roi-top3 li {
-  display: grid;
-  grid-template-columns: 2rem 1fr auto;
-  gap: var(--s-3);
-  padding: var(--s-3) 0;
-  border-top: var(--rule-w) solid var(--rule);
-  font-size: var(--fs-7);
-  counter-increment: t;
-}
-.roi-top3 li::before {
-  content: counter(t, decimal-leading-zero);
+/* == L'AVANT ET L'APRES ==  D-636
+   Deux etats, et ils ne se comparent que s'ils partagent DEUX
+   choses : le bord droit des nombres et l'origine des pistes.
+   Releve sur les calculateurs de Wise et les barres d'Our World in
+   Data. Chiffres tabulaires, sinon les colonnes de chiffres dansent
+   d'une valeur a l'autre et le bord droit ne veut plus rien dire. */
+.roi-etat { display: grid; gap: var(--s-2); }
+.roi-etat .num {
+  justify-self: end;
   font-family: var(--font-data);
-  font-size: var(--fs-8);
-  color: var(--accent-text);
+  font-size: clamp(1.75rem, 1rem + 2.6vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
 }
-.roi-top3 li b { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); font-weight: 400; }
+/* La piste est une PISTE : un creux constant ou la valeur se pose.
+   Sans elle, deux barres nues de longueurs differentes ne disent pas
+   de quoi elles sont la part. */
+.roi-piste {
+  display: block;
+  height: 10px;
+  background: var(--rule);
+}
+.roi-piste s {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--ink);
+  text-decoration: none;
+  transition: width var(--t-3) var(--e-drive);
+}
+/* Le second etat est separe par un filet et porte le minium : c'est
+   celui qu'on vend. Le premier reste en encre — c'est un constat.
+   PAS DE LIGNE D'ECART ICI, et c'est une correction : elle affichait
+   exactement le nombre que « Heures recuperees par semaine » donne
+   deja trois lignes plus haut, au calibre d'affiche. Un meme nombre
+   deux fois dans une colonne de 420 px se lit comme deux nombres. */
+.roi-etat + .roi-etat {
+  padding-top: var(--s-4);
+  border-top: var(--rule-w) solid var(--rule-strong);
+}
+.roi-etat + .roi-etat .roi-piste s { background: var(--accent); }
+/* Les deux actions, empilees, primaire en haut. Un filet plus epais
+   les separe du resultat : le changement d'EPAISSEUR remplace le
+   changement de fond qu'on s'interdit. */
+.roi-actes {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+  padding-top: var(--s-5);
+  border-top: 2px solid var(--rule-strong);
+}
 .roi-note { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; color: var(--ink-muted); }
-.roi-mail { display: grid; gap: var(--s-2); }
-.roi-mail-row { display: flex; gap: var(--s-2); }
-.roi-mail-row input { flex: 1; }
-.roi-mail-row .btn-icon { width: auto; padding-inline: var(--s-4); height: auto; }
+.roi-methode { margin-top: var(--s-6); }
 /* == 18. COMPARATIF - deux barres nues par tache == */
 /* LE SCHEMA DE L'ECART.  D-227 */
 .ecart {
@@ -4560,7 +4589,15 @@ html.js .derail-row,
 .roi-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
 .roi-inputs { grid-column: 1 / span 6; }
 .roi-panel { grid-column: 8 / span 5; }
-.roi-verdict { grid-template-columns: 1fr 1fr; }
+/* LE VERDICT NE SE MET PLUS SUR DEUX COLONNES.  D-637
+     Il tenait la pleine largeur de la page : deux cellules de 550 px
+     y logeaient « 39 100 $ » a 64 px sans effort. Descendu dans le
+     panneau, chaque cellule ne fait plus que 200 px — le montant
+     debordait, le « $ » passait a la ligne et sortait du cadre noir.
+     Vu a l'image, jamais par une sonde : le DOM etait juste, le
+     rectangle etait juste, seul le glyphe sortait. Deux rangees
+     pleine largeur de panneau, et le calibre suit la colonne. */
+.roi-verdict { grid-template-columns: minmax(0, 1fr); }
 .sectors-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
 /* 3 colonnes donnaient un apercu de 250 px : aucune maquette n'y
      etait lisible. 5 colonnes le portent a ~430 px, ce pour quoi les

@@ -196,6 +196,26 @@ for (const vue of VUES) {
       }
       await page.waitForTimeout(600);
 
+      /* ON PHOTOGRAPHIE LA SECTION, PAS LE SAS QUI PASSE DESSUS.
+         Le volet du calque couvre le haut du Calculateur et se degage
+         au defilement : cale pile au sommet de la section, on
+         photographie 17 % d'encre. Ce n'est pas un defaut — c'est le
+         geste en cours — mais ce n'est pas la section. On avance
+         jusqu'a ce que le volet soit passe, sans jamais depasser un
+         demi-ecran. */
+      for (let i = 0; i < 8; i++) {
+        const couvre = await page.evaluate(() => {
+          const v = document.querySelector(".sas--calque .sas-volet");
+          if (!v) return 0;
+          const r = v.getBoundingClientRect();
+          return r.bottom > 4 && r.top < innerHeight ? Math.ceil(r.bottom) : 0;
+        });
+        if (!couvre) break;
+        await page.evaluate((d) => window.scrollBy(0, d), Math.min(couvre + 8, Math.round(vue.h / 8)));
+        await page.waitForTimeout(120);
+      }
+      await page.waitForTimeout(400);
+
       const haut = await page.evaluate((s) => {
         const e = document.querySelector(s);
         return { h: Math.round(e.getBoundingClientRect().height) };
