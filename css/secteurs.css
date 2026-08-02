@@ -15,53 +15,39 @@
   line-height: 1.4;
 }
 
-.sec-chrome,
 .sec-page {
   /* 640 px de cadre -> 11,4 px ; 300 px -> 5,85 px ; plancher a
      5,2 px, en dessous la maquette cesse de ressembler a un site. */
   font-size: clamp(5.2px, 1.95cqw, 11.4px);
 }
 
-/* La barre de chrome porte le domaine. Fond `--surface-0` et non
-   `--surface-1` : en clair, `--ink-muted` sur `--surface-1` ne donne
-   que 4,27:1. Sur `--surface-0` il donne 5,18:1. */
+/* LA BARRE NE PORTE PLUS D'ADRESSE.  D-693
+   Elle en portait une — `bistro-nordet.ca`, `salon-brume.ca` — et une
+   adresse dit « va voir ». Il n'y a rien a aller voir : ce sont des
+   demonstrations. Ne reste que le metier.
+   Et elle ne prend plus sa taille dans le cadre : `cqw` n'avait plus
+   de conteneur depuis qu'elle est sortie de `.mock` (D-687), donc il
+   retombait sur la fenetre. Une taille en token, qui ne depend que
+   d'APED — c'est le cartouche d'APED, pas la fenetre du client. */
 .sec-chrome {
   display: flex;
   align-items: center;
-  gap: 0.45em;
   min-width: 0;
-  padding: 0.7em 0.95em;
+  padding: var(--s-2) var(--s-4);
   background: var(--surface-0);
   border-bottom: var(--rule-w) solid var(--rule-strong);
   font-family: var(--font-data);
-  color: var(--ink-muted);
+  font-size: var(--fs-8);
 }
-.sec-chrome i {
-  flex: none;
-  width: 0.6em;
-  height: 0.6em;
-  background: var(--rule-strong);
-}
-.sec-chrome span {
+.sec-chrome em {
   min-width: 0;
-  margin-left: 0.65em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.84em;
-  letter-spacing: 0.03em;
-  color: var(--ink);
-}
-.sec-chrome em {
-  flex: none;
-  margin-left: auto;
-  padding-left: 0.8em;
   font-style: normal;
-  font-size: 0.74em;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent-text);
-  white-space: nowrap;
 }
 
 .sec-page {

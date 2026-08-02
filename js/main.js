@@ -2479,12 +2479,12 @@
     var mocks = $$(".mock", preview);
     var pills = $$(".sector-pills button");
 
-    /* UNE SEULE BARRE D'ADRESSE POUR LES TREIZE.  D-687
-       Elle vivait dans chaque maquette ; elle est maintenant au-dessus
-       de la scene, et c'est ce qui permet a la scene de porter le
-       rapport exact de la prise de vue. Son contenu suit le secteur. */
+    /* UN SEUL CARTOUCHE POUR LES TREIZE.  D-687
+       Il vivait dans chaque maquette ; il est maintenant au-dessus de
+       la scene, et c'est ce qui permet a la scene de porter le rapport
+       exact de la prise de vue. Il ne porte plus d'adresse (D-693) :
+       une adresse dit « va voir », et il n'y a rien a aller voir. */
     var barre = $("#sectorChrome");
-    var barreHote = barre ? barre.querySelector("span") : null;
     var barreMetier = barre ? barre.querySelector("em") : null;
 
     var secteurCourant = null;
@@ -2493,10 +2493,7 @@
       mocks.forEach(function (m) {
         var on = m.dataset.mock === key;
         m.classList.toggle("is-on", on);
-        if (on && barreHote) {
-          barreHote.textContent = m.dataset.hote || "";
-          if (barreMetier) barreMetier.textContent = m.dataset.metier || "";
-        }
+        if (on && barreMetier) barreMetier.textContent = m.dataset.metier || "";
       });
       pills.forEach(function (p) {
         var on = p.dataset.sector === key;

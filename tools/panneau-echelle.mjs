@@ -57,7 +57,13 @@ for (const L of LARGEURS) {
         stage: [+st.width.toFixed(1), +st.height.toFixed(1)],
         rapport: +(st.width / st.height).toFixed(4),
         img: img ? { w: +img.getBoundingClientRect().width.toFixed(1), charge: img.complete && img.naturalWidth > 0, nat: img.naturalWidth } : null,
-        hote: document.querySelector("#sectorChrome span")?.textContent || "",
+        /* AUCUNE ADRESSE WEB, ET C'EST L'OUTIL QUI LE PROUVE.  D-693
+           On lit le TEXTE RENDU du cartouche et de la maquette, pas la
+           source : un `data-hote` oublie se serait vu dans le premier
+           et pas dans la seconde. Piege 72 — un retrait non verifie
+           dans le rendu peut avoir ete defait par autre chose. */
+        adresse: ((document.querySelector("#sectorChrome")?.textContent || "") + " " + (mock?.textContent || ""))
+          .match(/[a-z0-9][a-z0-9-]{2,}\.(ca|com|net|org)\b/gi) || [],
         dessin: !img && !!mock,
       };
     });
@@ -69,8 +75,10 @@ for (const L of LARGEURS) {
   const echelles = [...new Set(lignes.filter((l) => l.img).map((l) => +(l.img.w / 1440).toFixed(4)))];
   const pasCharge = lignes.filter((l) => l.img && !l.img.charge).map((l) => l.c);
   const petites = lignes.filter((l) => l.img && l.img.nat < 1440).map((l) => `${l.c}:${l.img.nat}`);
+  const adresses = [...new Set(lignes.flatMap((l) => l.adresse))];
 
   const mal = [];
+  if (adresses.length) mal.push(`adresse(s) web : ${adresses.join(" ")}`);
   if (rapports.length !== 1 || Math.abs(rapports[0] - 1.6) > 0.01) mal.push(`rapport de scène ${rapports.join("/")} ≠ 1,6`);
   if (echelles.length !== 1) mal.push(`échelles différentes : ${echelles.join(" ")}`);
   if (pasCharge.length) mal.push(`images jamais chargées : ${pasCharge.join(" ")}`);
