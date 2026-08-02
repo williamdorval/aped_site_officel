@@ -1,24 +1,49 @@
 <!doctype html>
-<html lang="fr-CA">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grès du Nord — céramique utilitaire, atelier et boutique en ligne</title>
-<meta name="description" content="Grès émaillé tourné une pièce à la fois. Bols, tasses, assiettes. Atelier et boutique en ligne, livraison au Québec.">
 <meta name="robots" content="noindex,nofollow">
-<link rel="icon" href="data:,">
-<style>
-/* ════════════════════════════════════════════════════════════════
-   GRÈS DU NORD — galerie d'objets.
-   Un objet, un fond de couleur, beaucoup d'air.
-   Argile · papier · encre, et trois émaux en aplat pleine largeur :
-   céladon, oxyde, sable. Aucun orange, aucun rouge.
-   Affichage fraunces 900 bas de casse · texte karla ·
-   jetbrains-mono uniquement pour les codes et les cotes de pièce.
-   Angles vifs, aucune ombre, aucun dégradé, aucun flou.
-   Zéro script : tout le mouvement est piloté par le défilement.
-   ════════════════════════════════════════════════════════════════ */
+<title>Grès Saulnier — céramique utilitaire de grès · site de démonstration</title>
 
+<!-- ============================================================
+     GRÈS SAULNIER — UN SEUL ÉCRAN, 1440 × 900, ARRÊTÉ
+     Plan : demos-secteurs/plans/boutique.md — il fait autorité.
+
+     Le modèle mental : la vitrine unique d'une galerie d'objets.
+     UN objet de 600 × 600 planté au milieu et collé au bord bas,
+     420 px de gouttière argile de chaque côté, un titre centré.
+     Aucune grille de vignettes, aucune photographie plein cadre,
+     aucun split gauche/droite.
+
+     LE GESTE, ET IL N'Y EN A QU'UN — « L'HORIZON MONTE ».
+     La bande sauge est ancrée au bord bas et pousse depuis le sol,
+     scaleY(0) vers scaleY(1) sur 760 ms, départ à +200 ms. Rien
+     d'autre ne bouge. Un scaleY sur un aplat uni tourne sur le
+     compositeur : aucune mise en page recalculée, CLS reste à 0.
+
+     L'INSTANT DE CAPTURE, 466 ms — ce n'est pas un chronomètre.
+     La courbe cubic-bezier(.4,0,.2,1) franchit la moitié de sa
+     course à x = 0,35 exactement (résolu : y(t) = 0,5 en t = 0,5,
+     et x(0,5) = 0,35). 200 ms de retard + 0,35 × 760 ms = 466 ms
+     de temps local. L'outil met l'animation en PAUSE et pose son
+     currentTime à cette valeur : deux passes rendent la même
+     image, et .sol mesure alors 80 px au lieu de 160.
+     La vérification se fait sur la GÉOMÉTRIE, jamais sur l'image :
+     document.querySelector('.sol').getBoundingClientRect().height
+     ============================================================ -->
+<meta name="aped-instant" content="466">
+
+<link rel="preload" href="../../fonts/demos/fraunces-3.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+/* ── LES POLICES — trois familles, quatre faces, huit fichiers ──
+   fraunces 900 (affichage) · karla 400 et 700 (texte, libellés) ·
+   jetbrains-mono 500 (les données). On NE déclare PAS fraunces
+   600 (-0/-1) : elle n'est employée nulle part, et une page qui
+   déclare une face la télécharge. Les fichiers -0/-2 couvrent le
+   latin étendu ; aucun caractère de l'écran n'y tombe, le moteur
+   ne les demandera donc pas. */
 @font-face{font-family:"fraunces";src:url("../../fonts/demos/fraunces-2.woff2") format("woff2");font-style:normal;font-weight:900;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"fraunces";src:url("../../fonts/demos/fraunces-3.woff2") format("woff2");font-style:normal;font-weight:900;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:"karla";src:url("../../fonts/demos/karla-0.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
@@ -28,570 +53,329 @@
 @font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-0.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 @font-face{font-family:"jetbrains-mono";src:url("../../fonts/demos/jetbrains-mono-1.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 
+/* ── LA MATIÈRE — cinq valeurs, pas six ─────────────────────────
+   argile : le fond, plein cadre, un seul ton, zéro texture.
+   sauge  : la seule masse d'appui, 160 px collés au bord bas.
+   aubergine / prune : la même famille, deux densités d'encre.
+   pale   : la mention de démonstration, et rien d'autre.
+   Le grès #AFA699 n'est pas déclaré : c'est le fond propre de la
+   photographie, la page ne le pose jamais.
+   Contrastes (WCAG 2.1, sRGB linéarisé) : aubergine/argile 10,7:1 ·
+   prune/argile 8,3:1 · argile/aubergine 10,7:1 · pale/argile 5,1:1.
+   La bande sauge ne porte AUCUN texte, et c'est délibéré : argile
+   sur sauge tombe à 2,6:1. La bande est une masse, pas un support. */
 :root{
-  --argile:#e9e1d5;
-  --papier:#f7f3ec;
-  --encre:#221f1a;
-  --celadon:#93a78c;
-  --oxyde:#7d4a3a;
-  --sable:#cdb894;
-  --aff:"fraunces",Georgia,"Times New Roman",serif;
-  --txt:"karla",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif;
-  --mono:"jetbrains-mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
-  --large:1320px;
-  --marge:clamp(20px,4.4vw,60px);
-  --vide:clamp(88px,11.5vw,168px);
+  --argile:#E7DFD2;
+  --sauge:#7E8F6E;
+  --aubergine:#3B2431;
+  --prune:#4A3742;
+  --pale:#6B5661;
+
+  --marge:80px;   /* marge de page, gauche et droite */
+  --colg:300px;   /* gouttière gauche : sous-titre, bouton, coordonnées */
+  --cold:240px;   /* gouttière droite : filet + légende de spécimen */
+  --piece:600px;  /* le carré photographique */
+  --h1:124px;
+  --sol:160px;
 }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background-color:var(--argile)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--argile)}
 body{
-  color:var(--encre);
-  font:400 15px/1.68 var(--txt);
-  background-color:var(--argile);
-  overflow-x:hidden;
+  min-height:100%;
+  background:var(--argile);
+  color:var(--prune);
+  font-family:"karla",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
 }
-img{display:block;max-width:100%;height:auto}
-ul,ol{list-style:none}
+img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+li{list-style:none}
 
-/* ══ LA SIGNATURE : LE FOND DE LA PAGE CHANGE D'ÉMAIL AU DÉFILEMENT ══
-   argile → papier → sable → céladon. Les quatre gardent l'encre
-   au-dessus de 6:1. Les trois écrans de produit, eux, posent leur
-   propre aplat opaque par-dessus. */
-@keyframes sol{
-  0%{background-color:#e9e1d5}
-  12%{background-color:#e9e1d5}
-  28%{background-color:#f7f3ec}
-  44%{background-color:#f7f3ec}
-  60%{background-color:#cdb894}
-  74%{background-color:#cdb894}
-  88%{background-color:#93a78c}
-  100%{background-color:#93a78c}
+/* L'anneau de focus, partout, sans exception. */
+a:focus-visible{outline:2px solid var(--aubergine);outline-offset:3px}
+
+/* ── LE CANEVAS ─────────────────────────────────────────────────
+   900 px exactement : à 1440 × 900 le document tient dans la
+   fenêtre, rien en dessous, aucune barre de défilement. */
+.ecran{position:relative;width:100%;height:900px}
+
+/* ── ① LE BANDEAU — y 0 → 76, filet de 1 px à y = 76 ────────────
+   Aucun fond : le bandeau est de l'argile. La hauteur déclarée est
+   77 pour que le filet occupe 76 → 77 et non 75 → 76. Les trois
+   blocs sont centrés optiquement sur y = 38. */
+.bandeau{
+  position:absolute;top:0;left:0;right:0;height:77px;
+  border-bottom:1px solid var(--aubergine);
 }
-body{animation:sol linear both;animation-timeline:scroll(root)}
-
-@keyframes monte{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
-@keyframes glisse{from{opacity:0;transform:translateX(-52px)}to{opacity:1;transform:none}}
-@keyframes grandit{from{transform:scale(.94)}to{transform:scale(1)}}
-@keyframes devoile{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
-@keyframes avance{from{transform:translateX(0)}to{transform:translateX(233%)}}
-@keyframes arrive{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
-
-/* `forwards`, jamais `both` : avec `both`, un élément qui n'a pas
-   encore atteint sa plage garde son état de DÉPART — donc opacité 0.
-   Une capture pleine page prise en haut du document rend alors la
-   moitié du site invisible (mesuré : dix blocs blancs). Avec
-   `forwards`, l'avant-plage n'applique rien, l'élément porte son
-   style de base — et le visiteur ne voit aucune différence, puisque
-   ce moment-là se passe sous la ligne de flottaison. */
-.rv{animation:monte forwards;animation-timeline:view();animation-range:entry 0% cover 22%}
-.rv2{animation:monte forwards;animation-timeline:view();animation-range:entry 6% cover 25%}
-.gl{animation:glisse forwards;animation-timeline:view();animation-range:entry 0% cover 24%}
-.gr{animation:grandit forwards;animation-timeline:view();animation-range:entry 0% cover 25%}
-.dv{animation:devoile forwards;animation-timeline:view();animation-range:entry 0% cover 20%}
-
-.ar{animation:arrive .6s cubic-bezier(.2,.72,.2,1) both}
-.ar2{animation-delay:.09s}
-.ar3{animation-delay:.18s}
-.ar4{animation-delay:.27s}
-
-@supports not (animation-timeline: view()){
-  body{animation:none}
-  .rv,.rv2,.gl,.gr,.dv{animation:none;opacity:1;transform:none;clip-path:none}
-  .jauge i{animation:none;transform:none}
+.nom{
+  position:absolute;left:var(--marge);top:25px;
+  font-family:"fraunces",Georgia,serif;font-weight:900;
+  font-size:21px;line-height:26px;letter-spacing:-.005em;
+  color:var(--aubergine);
 }
+.mention{
+  position:absolute;left:calc(var(--marge) + 188px);top:31.5px;
+  font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;
+  font-size:10px;line-height:13px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--pale);white-space:nowrap;
+}
+.nav{position:absolute;right:var(--marge);top:31px}
+.nav ul{display:flex;gap:28px}
+.nav a{
+  position:relative;display:block;
+  font-weight:700;font-size:12px;line-height:14px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--aubergine);
+}
+/* Au fer à droite, l'interlettrage ajouté APRÈS le dernier signe
+   décale le bloc entier : on le reprend.
+   COTE CORRIGÉE AU PLUS PRÈS — le plan donne deux nombres qui ne
+   peuvent pas tenir ensemble : « quatre libellés séparés de 28 px »
+   ET « bloc de 346,8 px, x 1013,2 → 1360 ». Les quatre étiquettes
+   rendues en karla 700 12 px / 0,18 em mesurent 282,3 px d'encre ;
+   avec 3 × 28 px de blanc le bloc fait 366,3 px et commence à
+   x = 993,7. Descendre à 346,8 exigerait des blancs de 21,5 px.
+   On garde l'écart de 28 px, qui est la règle de composition ; la
+   largeur, elle, était une mesure dérivée. Le fer à droite reste
+   sur 1360 et l'écart à la mention (fin x 587,2) reste de 406 px. */
+.nav li:last-child a{margin-right:-.18em}
+/* MICRO-INTERACTION — un filet de 1 px qui SE TRACE de gauche à
+   droite : la direction suit le sens de lecture. */
+.nav a::after{
+  content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;
+  background:var(--aubergine);
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform 160ms cubic-bezier(.4,0,.2,1);
+}
+.nav a:hover::after,.nav a:focus-visible::after{transform:scaleX(1)}
+
+/* ── ② LE TITRE — une seule ligne, 124 px, bas de casse ─────────
+   Boîte de ligne y 98 → 222 (line-height 1,0 : la boîte vaut le
+   corps). L'encre de fraunces 900 est décentrée de +2,1 px dans sa
+   boîte ; les 4 px de retrait à droite recentrent optiquement le
+   bloc de −2 px, et la boîte tombe sur x 268 → 1168. */
+.titre{
+  position:absolute;top:98px;left:0;right:0;padding-right:4px;
+  font-family:"fraunces",Georgia,serif;font-weight:900;
+  font-size:var(--h1);line-height:1;letter-spacing:-.02em;
+  text-align:center;color:var(--aubergine);
+}
+
+/* ── ⑤ GOUTTIÈRE GAUCHE — colonne de 300 px, x 80 → 380 ─────────*/
+.soustitre{
+  position:absolute;top:408px;left:var(--marge);width:var(--colg);
+  font-weight:400;font-size:17px;line-height:28px;color:var(--prune);
+}
+
+/* Le bouton : un rectangle plein, rayon 0, aucune ombre, aucun
+   dégradé, ni flèche ni chevron. Le filet est déclaré TRANSPARENT
+   au repos pour que l'inversion au survol ne déplace pas un pixel. */
+.bouton{
+  position:absolute;top:532px;left:var(--marge);
+  display:flex;align-items:center;justify-content:center;
+  width:236px;height:56px;
+  background:var(--aubergine);border:1px solid var(--aubergine);
+  color:var(--argile);
+  font-weight:700;font-size:13px;line-height:1;letter-spacing:.16em;
+  text-transform:uppercase;
+  transition:background-color 140ms cubic-bezier(.4,0,.2,1),
+             color 140ms cubic-bezier(.4,0,.2,1);
+}
+.bouton span{margin-right:-.16em}
+/* MICRO-INTERACTION — l'inversion. Elle garde 10,7 : 1 ; passer le
+   fond en sauge tomberait à 2,6 : 1, donc c'est interdit. */
+.bouton:hover,.bouton:focus-visible{background:var(--argile);color:var(--aubergine)}
+
+/* top 628 et non 627 : lignes de base relevées à 640 et 658, comme
+   le plan les cote. Elles s'arrêtent 82 px au-dessus de la bande
+   sauge — aucun texte ne la touche. */
+.coord{
+  position:absolute;top:628px;left:var(--marge);width:var(--colg);
+  font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;
+  font-size:10px;line-height:18px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--pale);
+}
+
+/* ── ③ L'OBJET — la seule photographie de l'écran ───────────────
+   Carré de 600 × 600, x 420 → 1020, y 300 → 900 : centré sur
+   x = 720 et collé au bord bas. Source 960 × 720 → rendu 800 × 600
+   avant recadrage, facteur 0,833 : une RÉDUCTION, jamais un
+   agrandissement. Cadrage relevé, pas deviné. */
+.piece{position:static}
+.plaque{
+  position:absolute;z-index:1;bottom:0;left:50%;
+  margin-left:calc(var(--piece) / -2);
+  width:var(--piece);height:var(--piece);
+}
+.plaque img{width:100%;height:100%;object-fit:cover;object-position:44% 40%}
+/* Le filet du spécimen est POSÉ PAR-DESSUS l'image : un `border`
+   rognerait la boîte de 2 px, un `outline` est réservé au focus.
+   Trois côtés seulement — le quatrième tomberait sur la dernière
+   rangée de pixels de l'écran, et la plaque doit sortir du cadre. */
+.plaque::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  border:1px solid var(--aubergine);border-bottom:0;
+}
+
+/* ── ⑥ GOUTTIÈRE DROITE — 240 px au fer à droite, fin sur 1360 ──
+   La légende de spécimen, et le filet de 240 px qui la surmonte à
+   y = 408 — exactement la hauteur où commence le sous-titre de
+   gauche. La colonne droite est plus courte et plus légère que la
+   gauche : l'écran ne doit pas se lire comme deux moitiés. */
+.legende{
+  position:absolute;top:422px;right:var(--marge);width:var(--cold);
+  font-family:"jetbrains-mono",ui-monospace,monospace;font-weight:500;
+  font-size:11px;line-height:20px;letter-spacing:.12em;
+  text-transform:uppercase;text-align:right;color:var(--prune);
+}
+.legende::before{
+  content:"";position:absolute;left:0;right:0;top:-14px;height:1px;
+  background:var(--aubergine);
+}
+/* COTE CORRIGÉE AU PLUS PRÈS — le plan annonce 55,5 · 205,9 ·
+   190,1 px. Les deux premières tombent au dixième ; la troisième
+   est de 213,8 px : « GRÈS ÉMAILLÉ · FAIT AU TOUR » compte 27
+   signes, et jetbrains-mono à 11 px avec 0,12 em avance de 7,92 px
+   par signe — 190,1 px vaudrait 24 signes. Le texte est celui du
+   plan, mot pour mot ; c'est le nombre qui était faux. 213,8 tient
+   dans les 240 px de la colonne, le fer à droite reste sur 1360. */
+.legende b{font-weight:500;display:block;margin-right:-.12em}
+
+/* ── ④ L'APLAT — la bande sauge, 1440 × 160, y 740 → 900 ────────
+   Elle passe SOUS la photographie : on ne la voit donc que dans
+   les deux gouttières, x 0 → 420 et x 1020 → 1440. C'est le sol
+   sur lequel la pièce est posée, et l'unique masse de couleur. */
+.sol{
+  position:absolute;z-index:0;left:0;right:0;bottom:0;
+  height:var(--sol);background:var(--sauge);
+  transform-origin:50% 100%;
+  animation:horizon 760ms cubic-bezier(.4,0,.2,1) 200ms both;
+  will-change:transform;
+}
+@keyframes horizon{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* ── MOUVEMENT RÉDUIT — l'état de repos EST l'état final ────────
+   `animation:none` rend la bande à ses 160 px pleins. Aucune
+   information ne se perd : la bande ne porte ni texte, ni lien,
+   ni donnée. Le titre, la photographie, la légende, le bouton, la
+   nav et les coordonnées sont lisibles sans une seule image de
+   l'animation. */
 @media (prefers-reduced-motion: reduce){
-  html{scroll-behavior:auto}
   *,*::before,*::after{animation:none !important;transition:none !important}
 }
 
-/* ── ossature ─────────────────────────────────────────────────── */
-.dedans{max-width:var(--large);margin:0 auto;padding:0 var(--marge)}
-.bloc{padding:var(--vide) 0}
-.f-papier{background-color:var(--papier)}
-.f-celadon{background-color:var(--celadon)}
-.f-oxyde{background-color:var(--oxyde);color:var(--papier)}
-.f-sable{background-color:var(--sable)}
-.f-encre{background-color:var(--encre);color:var(--papier)}
-section[id]{scroll-margin-top:12px}
-
-/* ── typographie ──────────────────────────────────────────────── */
-h1,h2,.nom{
-  font-family:var(--aff);font-weight:900;text-transform:lowercase;
-  line-height:.9;letter-spacing:-.022em;text-wrap:balance;
+/* ── 1280 → 1439 · 1024 → 1279 ──────────────────────────────────
+   La composition de 1440 est celle qu'on photographie ; en dessous
+   elle se resserre par paliers CHIFFRÉS plutôt que par un calc()
+   fluide — une colonne qui rétrécit en continu finit par croiser
+   la photographie sans qu'aucune mesure ne le signale.
+   La contrainte est symétrique : marge + colonne gauche + 40 =
+   marge + colonne droite + 100 = 420 à 1440. */
+@media (max-width:1439px) and (min-width:1280px){
+  :root{--marge:56px;--colg:280px;--cold:230px;--piece:520px;--h1:108px}
 }
-h1{font-size:clamp(46px,10.2vw,150px);line-height:.88;letter-spacing:-.03em}
-h2{font-size:clamp(36px,5.6vw,76px);max-width:15ch}
-.nom{font-size:clamp(38px,5.8vw,86px);max-width:12ch}
-h3{font-family:var(--aff);font-weight:900;font-size:clamp(21px,2.1vw,29px);
-  line-height:.98;letter-spacing:-.02em;text-transform:lowercase}
-p{max-width:58ch}
-.lede{font-size:clamp(16px,1.35vw,19px);line-height:1.55;max-width:44ch}
-.txt{font-size:15px;line-height:1.72;max-width:52ch}
-.txt+.txt{margin-top:15px}
-strong{font-weight:700}
-.code{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.06em}
-.cote{font-family:var(--mono);font-weight:500;font-size:12.5px;letter-spacing:.02em;line-height:2}
-.eti{font-family:var(--txt);font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
-
-/* ── entête ───────────────────────────────────────────────────── */
-.tete{flex:none;padding:26px 0 0}
-.tete .dedans{display:flex;align-items:baseline;gap:20px 34px;flex-wrap:wrap}
-.logo{font-family:var(--aff);font-weight:900;font-size:21px;letter-spacing:-.03em;
-  text-transform:lowercase;line-height:1}
-.menu{display:flex;gap:26px;margin-left:auto;flex-wrap:wrap}
-.menu a{position:relative;font-weight:700;font-size:13.5px;padding:2px 0;
-  transition:opacity .18s ease}
-.menu a::after{content:"";position:absolute;left:0;bottom:-2px;width:0;height:2px;
-  background:currentColor;transition:width .2s cubic-bezier(.2,.72,.2,1)}
-.menu a:hover::after,.menu a:focus-visible::after{width:100%}
-.menu a:active{opacity:.6}
-.demo{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.13em;
-  text-transform:uppercase;border:1px solid currentColor;padding:5px 9px 4px}
-
-/* ── boutons ──────────────────────────────────────────────────── */
-.btn{display:inline-block;font-weight:700;font-size:13.5px;letter-spacing:.01em;
-  padding:15px 26px;border:1.5px solid var(--encre);background:transparent;color:var(--encre);
-  transition:background-color .18s ease,color .18s ease,transform .18s ease,border-color .18s ease}
-.btn:hover{background-color:var(--encre);color:var(--papier)}
-.btn:active{transform:translateY(2px)}
-.btn--plein{background-color:var(--encre);color:var(--papier)}
-.btn--plein:hover{background-color:var(--oxyde);border-color:var(--oxyde);color:var(--papier)}
-.f-encre .btn,.carte--fin .btn{border-color:var(--papier);color:var(--papier);background-color:transparent}
-.f-encre .btn:hover,.carte--fin .btn:hover{background-color:var(--papier);color:var(--encre)}
-
-/* ── héros ────────────────────────────────────────────────────── */
-/* LE PREMIER ÉCRAN EST UN ÉMAIL, PAS LE FOND DE PAGE.
-   Sur la planche des douze, la boutique et le salon de coiffure
-   étaient la paire la plus proche : deux clairs chauds, un serif
-   d'affichage en bas de casse à gauche, un bouton noir. Le reste
-   diffère — l'un est en argile avec un index en mono, l'autre en
-   blanc avec une photographie pleine hauteur — mais la première
-   impression était la même famille.
-   Le héros prend donc le céladon. Aucun des douze n'a de premier
-   écran vert, la signature du site (« le fond change d'émail ») se
-   voit dès l'ouverture au lieu d'attendre le troisième écran, et
-   l'encre y tient 6,3:1. */
-.heros{min-height:100svh;display:flex;flex-direction:column;background-color:var(--celadon)}
-.heros-h{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
-  padding:clamp(30px,4.6vw,64px) 0 clamp(28px,3.4vw,52px)}
-.heros-h .dedans{display:grid;grid-template-columns:minmax(0,1fr) auto;
-  column-gap:clamp(28px,4vw,72px);align-items:end}
-.heros h1{grid-column:1;margin:0 0 clamp(24px,3vw,44px)}
-.heros-b{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:clamp(24px,3.4vw,64px);align-items:flex-end}
-.heros-act{display:flex;gap:12px;flex-wrap:wrap}
-/* l'index de la tablette : un catalogue de vente par correspondance
-   annonce ce qu'il contient avant de le montrer */
-.index{grid-column:2;text-align:right;min-width:270px;padding-bottom:clamp(24px,3vw,44px)}
-.index-t{font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
-  padding-bottom:10px;border-bottom:1px solid rgba(34,31,26,.3)}
-.index a{display:flex;justify-content:flex-end;align-items:baseline;gap:16px;
-  padding:9px 0;border-bottom:1px solid rgba(34,31,26,.16);
-  transition:padding-right .18s cubic-bezier(.2,.72,.2,1),opacity .18s ease}
-.index a:hover{padding-right:8px}
-.index a:active{opacity:.6}
-.index b{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.04em;
-  order:-1;color:var(--oxyde)}
-/* L'oxyde ne descend qu'à 2,79:1 sur le céladon — il tenait 5,56:1
-   sur l'argile, et c'était le minimum de toute la page. Sur l'émail
-   du héros le code passe donc à l'encre : la mono et la chasse
-   suffisent à le séparer du nom. L'accent oxyde reste partout
-   ailleurs. */
-.heros .index b{color:var(--encre)}
-.index span{font-weight:700;font-size:13.5px}
-.heros-ph{position:relative;flex:none;height:clamp(160px,23vh,280px);overflow:hidden;
-  background-color:var(--encre)}
-.heros-ph img{width:100%;height:100%;object-fit:cover;object-position:50% 58%}
-.leg-ph{position:absolute;bottom:0;left:max(var(--marge),calc((100% - var(--large))/2 + var(--marge)));
-  background-color:var(--papier);color:var(--encre);
-  padding:11px 18px 10px;max-width:min(84%,660px);font-size:12.5px;line-height:1.5}
-
-/* ── ouverture ────────────────────────────────────────────────── */
-.ouv{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
-  gap:clamp(34px,5vw,88px);align-items:start}
-.ouv h2{margin-bottom:clamp(22px,2.4vw,34px)}
-.fiches li{display:flex;justify-content:space-between;gap:20px;align-items:baseline;
-  padding:14px 0;border-bottom:1px solid rgba(34,31,26,.22)}
-.fiches li:first-child{border-top:1px solid rgba(34,31,26,.22)}
-.fiches b{font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
-.fiches span{font-family:var(--mono);font-weight:500;font-size:13px;text-align:right}
-
-/* ── bande photo pleine largeur ───────────────────────────────── */
-.bande{position:relative;height:clamp(320px,58vh,620px);overflow:hidden;background-color:var(--encre)}
-.bande img{width:100%;height:100%;object-fit:cover;object-position:50% 50%}
-
-/* ── écran de produit ─────────────────────────────────────────── */
-.ecran{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:clamp(34px,5.6vw,96px);align-items:center}
-.ecran--inv .ecran-ph{order:2}
-.ecran-ph{position:relative}
-.ecran-ph img{width:100%;aspect-ratio:1;object-fit:cover;transform-origin:50% 50%}
-.ecran-t .code{display:block;margin-bottom:16px}
-.ecran-t .nom{margin-bottom:22px}
-.ecran-t .txt{margin-bottom:26px}
-.mesures{display:flex;flex-wrap:wrap;gap:0 30px;
-  border-top:1px solid currentColor;padding-top:14px;max-width:44ch}
-.mesures span{font-family:var(--mono);font-weight:500;font-size:12.5px;letter-spacing:.02em}
-
-/* ── la collection : rail latéral ─────────────────────────────── */
-.coll{timeline-scope:--piste}
-.coll-h{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);
-  gap:22px clamp(34px,5vw,88px);align-items:end;margin-bottom:clamp(30px,3.6vw,52px)}
-.coll-h .lede{padding-bottom:6px}
-.rail{
-  display:flex;gap:clamp(16px,1.8vw,26px);
-  overflow-x:auto;overflow-y:hidden;
-  scroll-snap-type:x mandatory;
-  scroll-timeline:--piste inline;
-  scrollbar-width:none;
-  padding-inline:max(var(--marge),calc((100% - var(--large))/2 + var(--marge)));
-  scroll-padding-inline-start:max(var(--marge),calc((100% - var(--large))/2 + var(--marge)));
-  padding-bottom:4px;
+@media (max-width:1279px) and (min-width:1024px){
+  :root{--marge:44px;--colg:230px;--cold:210px;--piece:400px;--h1:92px}
 }
-.rail::-webkit-scrollbar{display:none}
-.carte{flex:0 0 clamp(280px,32vw,430px);scroll-snap-align:start;
-  background-color:var(--papier);color:var(--encre);
-  transition:transform .2s cubic-bezier(.2,.72,.2,1)}
-.carte-ph{overflow:hidden;background-color:var(--argile)}
-.carte-ph img{width:100%;aspect-ratio:1;object-fit:cover;
-  transition:transform .24s cubic-bezier(.2,.72,.2,1)}
-.carte-t{padding:22px 24px 26px;border-top:3px solid transparent;
-  transition:border-color .18s ease}
-.carte h3{margin-bottom:8px}
-.carte .code{display:block;margin-bottom:12px;color:var(--oxyde)}
-.carte p{font-size:13.5px;line-height:1.62}
-.carte:hover .carte-ph img,.carte:focus-within .carte-ph img{transform:scale(1.045)}
-.carte:hover .carte-t,.carte:focus-within .carte-t{border-top-color:var(--oxyde)}
-.carte:hover{transform:translateY(-4px)}
-.carte--fin{background-color:var(--encre);color:var(--papier);
-  display:flex;flex-direction:column;justify-content:flex-end;padding:32px}
-.carte--fin h3{margin-bottom:14px}
-.carte--fin p{font-size:13.5px;line-height:1.62;margin-bottom:22px}
-.carte--fin .code{color:var(--sable)}
-.carte--fin:hover{transform:translateY(-4px)}
-.jauge-l{display:flex;align-items:center;gap:18px;margin-top:clamp(24px,2.6vw,38px)}
-.jauge{position:relative;flex:1 1 auto;height:3px;background-color:rgba(34,31,26,.22);overflow:hidden}
-.jauge i{display:block;width:30%;height:100%;background-color:var(--encre);
-  animation:avance linear both;animation-timeline:--piste}
-.jauge-t{font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;flex:none}
 
-/* ── atelier ──────────────────────────────────────────────────── */
-/* la photo garde TOUJOURS la colonne large, des deux côtés :
-   sinon un geste sur deux a une image plus petite que l'autre */
-.geste{display:grid;grid-template-columns:minmax(0,1.16fr) minmax(0,1fr);
-  gap:clamp(28px,4.4vw,72px);align-items:center;margin-top:clamp(52px,6.4vw,104px)}
-.geste--inv{grid-template-columns:minmax(0,1fr) minmax(0,1.16fr)}
-.geste--inv .geste-ph{order:2}
-.geste-ph img{width:100%;object-fit:cover}
-.geste-ph--pano img{aspect-ratio:16/9}
-.geste-ph--large img{aspect-ratio:4/3}
-/* TROIS GESTES, TROIS ÉCHELLES — et c'est ce qui manquait.
-   La première version posait trois rangs de même poids : image-texte,
-   texte-image, image-texte. C'est la mise en page d'un ARTICLE, pas
-   d'un catalogue, et c'était la section la plus faible de la page —
-   relevée deux fois à l'image avant d'être corrigée. Chaque geste a
-   maintenant sa forme, et aucune ne revient. */
-.geste--bande{display:block;margin-top:clamp(52px,6.4vw,104px)}
-.geste--bande .geste-ph img{width:100%;aspect-ratio:21/9}
-.geste--bande .geste-t{display:grid;
-  grid-template-columns:minmax(0,.86fr) minmax(0,1.3fr);
-  gap:clamp(28px,4.4vw,72px);margin-top:clamp(26px,2.9vw,44px)}
-.geste--menu{grid-template-columns:minmax(0,.6fr) minmax(0,1.4fr);align-items:flex-end}
-.geste--menu .geste-ph img{aspect-ratio:3/4}
-.geste--detail{grid-template-columns:minmax(0,1.52fr) minmax(0,.48fr);align-items:flex-start}
-.geste--detail .geste-ph{order:2}
-.geste--detail .geste-ph img{aspect-ratio:1}
-.geste h3{margin-bottom:14px}
-/* l'encre, pas l'oxyde : le fond de cette section-là roule du sable
-   au céladon, et l'oxyde n'y tient pas 4,5:1 */
-.geste .code{display:block;margin-bottom:12px}
-
-/* ── commander et pied ────────────────────────────────────────── */
-.fin{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);
-  gap:clamp(34px,5vw,88px);align-items:start}
-.fin h2{margin-bottom:24px}
-.fin .txt{margin-bottom:30px}
-.coord li{padding:9px 0;font-size:14px;border-bottom:1px solid rgba(247,243,236,.2)}
-.coord li:first-child{border-top:1px solid rgba(247,243,236,.2)}
-.coord a{transition:color .18s ease,opacity .18s ease}
-.coord a:hover{color:var(--sable)}
-.coord a:active{opacity:.6}
-.pied{border-top:1px solid rgba(247,243,236,.2);margin-top:clamp(52px,6vw,96px);
-  padding-top:30px;display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap}
-.pied p{font-size:12px;line-height:1.6;max-width:64ch;opacity:.8}
-.f-encre{padding-bottom:clamp(56px,6vw,86px)}
-
-/* ── largeurs ─────────────────────────────────────────────────── */
-@media (max-width:1080px){
-  .heros-h .dedans{grid-template-columns:1fr}
-  .index{grid-column:1;text-align:left;padding-bottom:0;margin-bottom:clamp(24px,3vw,40px);
-    max-width:420px}
-  .index a{justify-content:flex-start}
-  .index b{order:0;margin-left:auto}
-  .index a:hover{padding-right:0;padding-left:8px}
+/* ── SOUS 1024 px — l'écran se remet sur un seul axe ────────────
+   Les deux gouttières n'existent plus : tout s'empile sur l'axe
+   central, dans l'ordre de lecture. La bande sauge reste collée au
+   bas du document et garde son geste. */
+@media (max-width:1023px){
+  :root{--marge:28px;--sol:96px}
+  .ecran{height:auto;min-height:100vh;padding:0 var(--marge) var(--sol)}
+  .bandeau{
+    position:static;height:auto;
+    display:flex;flex-wrap:wrap;align-items:baseline;
+    gap:8px 22px;
+    margin:0 calc(var(--marge) * -1);
+    padding:20px var(--marge) 15px;
+  }
+  .nom,.mention,.nav{position:static}
+  .mention{white-space:normal}
+  .nav{width:100%;margin-top:2px}
+  .nav ul{flex-wrap:wrap;gap:6px 22px}
+  .titre{
+    position:static;padding:0;margin:44px auto 0;
+    font-size:clamp(34px,9.2vw,84px);
+  }
+  .soustitre{position:static;width:auto;max-width:480px;margin:30px auto 0;text-align:center}
+  .bouton{position:static;margin:30px auto 0}
+  .piece{margin:44px 0 0}
+  /* `display:block` n'est PAS décoratif : .plaque est un <span>, et
+     un élément en ligne ignore `width`. Sans cette ligne la plaque
+     rendait la source en 4/3 pleine largeur au lieu du carré —
+     relevé à 768 px, 708 px de large au lieu de 460. */
+  .plaque{
+    display:block;position:relative;z-index:auto;bottom:auto;left:auto;
+    margin:0 auto;width:min(100%,460px);height:auto;
+  }
+  /* Le rapport est porté par l'IMAGE et non par sa boîte : une
+     hauteur en pourcentage contre un parent en hauteur `auto` ne se
+     résout pas, et la plaque retombait à zéro. */
+  .plaque img{width:100%;height:auto;aspect-ratio:1/1}
+  .plaque::after{border-bottom:1px solid var(--aubergine)}
+  .legende{
+    position:static;width:auto;max-width:320px;margin:28px auto 0;
+    padding-top:14px;text-align:center;
+    border-top:1px solid var(--aubergine);
+  }
+  .legende::before{display:none}
+  .legende b{margin-right:0}
+  .coord{position:static;width:auto;margin:26px auto 34px;text-align:center}
 }
-@media (max-width:1000px){
-  .ouv,.ecran,.geste,.geste--inv,.geste--menu,.geste--detail,
-  .geste--bande .geste-t,.fin,.coll-h{grid-template-columns:1fr}
-  .ecran--inv .ecran-ph,.geste--inv .geste-ph,.geste--detail .geste-ph{order:0}
-  .geste--menu .geste-ph img,.geste--detail .geste-ph img{aspect-ratio:4/3}
-  .ecran-ph img{max-height:560px}
-  .menu{width:100%;margin-left:0;gap:18px}
-}
-@media (max-width:620px){
-  .tete{padding-top:20px}
-  .heros-b{align-items:flex-start}
-  .lede{max-width:100%}
-  .carte{flex:0 0 min(84vw,300px)}
-  .fiches li{flex-direction:column;gap:3px;align-items:flex-start}
-  .fiches span{text-align:left}
-  .mesures{gap:0 20px}
-  .pied{flex-direction:column}
+/* Un moteur qui ignore `aspect-ratio` rendrait la photographie dans
+   son rapport de source : on lui donne une hauteur explicite plutôt
+   qu'un cadrage qui n'est pas celui du plan. */
+@supports not (aspect-ratio: 1 / 1){
+  @media (max-width:1023px){
+    .plaque img{height:min(100vw - 56px,460px)}
+  }
 }
 </style>
 </head>
 <body>
 
-<section class="heros" id="haut">
-  <header class="tete">
-    <div class="dedans">
-      <a class="logo" href="#haut">grès du nord</a>
-      <nav class="menu">
-        <a href="#collection">la collection</a>
-        <a href="#atelier">l’atelier</a>
-        <a href="#commander">commander</a>
-      </nav>
-      <span class="demo">Site de démonstration</span>
-    </div>
-  </header>
-  <div class="heros-h">
-    <div class="dedans">
-      <h1 class="ar">la terre,<br>le feu,<br>la table</h1>
-      <div class="index ar ar2">
-        <p class="index-t">Sur la tablette</p>
-        <a href="#collection"><b>BOL-G3</b><span>bols gigognes</span></a>
-        <a href="#collection"><b>ASS-26</b><span>assiette de table</span></a>
-        <a href="#collection"><b>TAS-38</b><span>la tasse 38</span></a>
-        <a href="#collection"><b>BOL-62</b><span>bol à déjeuner</span></a>
-        <a href="#collection"><b>GOB-28</b><span>gobelet sans anse</span></a>
-        <a href="#collection"><b>CRU-12</b><span>cruche et tasses</span></a>
-      </div>
-      <div class="heros-b">
-        <p class="lede ar ar3">Grès émaillé, tourné une pièce à la fois dans un atelier de l’Abitibi-Témiscamingue. De la vaisselle faite pour servir tous les jours.</p>
-        <div class="heros-act ar ar4">
-          <a class="btn btn--plein" href="#collection">Voir la collection</a>
-          <a class="btn" href="#atelier">L’atelier</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="heros-ph ar ar4" style="animation-delay:.36s">
-    <img src="../../images/secteurs-sites/boutique-1.webp" width="1920" height="1080" fetchpriority="high" decoding="async" alt="Claies de séchage en bois superposées, garnies de dizaines de tasses crues alignées en rangs serrés, anses tournées vers l’avant.">
-    <p class="leg-ph">Le séchoir de l’atelier. Des tasses crues attendent leur pied, quatre jours avant le biscuit.</p>
-  </div>
-</section>
+<div class="ecran">
 
-<section class="bloc f-papier">
-  <div class="dedans ouv">
-    <div>
-      <h2 class="rv">vingt-six jours pour une tasse</h2>
-      <p class="txt rv2">Une tasse se tourne un lundi. Elle raffermit trois jours, le temps qu’on puisse la retourner sans l’écraser. On lui tourne son pied, on lui soude son anse, elle sèche encore huit jours. Elle passe au biscuit, puis elle attend la prochaine fournée d’émail.</p>
-      <p class="txt rv2">Sur ces vingt-six jours, le tour occupe quatre heures. Tout le reste est du séchage, du ponçage, du chargement de four — et de la casse. Ce qui casse ici ne se facture pas deux fois.</p>
-    </div>
-    <ul class="fiches rv2">
-      <li><b>Terre</b><span>grès chamotté 5 %</span></li>
-      <li><b>Biscuit</b><span>980 °C</span></li>
-      <li><b>Émail</b><span>1 240 °C · montée 11 h</span></li>
-      <li><b>Retrait</b><span>12 % du tour à la table</span></li>
-      <li><b>Fournée</b><span>84 pièces enfournées</span></li>
-    </ul>
-  </div>
-</section>
-
-<div class="bande dv">
-  <img src="../../images/secteurs-sites/boutique-2.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Champ de petits bols crus vus en enfilade, alignés en rangs serrés, la profondeur de champ se perdant vers l’arrière.">
-  <p class="leg-ph">Une fournée en attente : des bols crus alignés sur les claies, avant l’enfournement.</p>
-</div>
-
-<section class="bloc f-celadon">
-  <div class="dedans ecran">
-    <div class="ecran-ph">
-      <img class="gr" src="../../images/secteurs-sites/boutique-11.webp" width="960" height="720" loading="lazy" decoding="async" alt="Deux bols de grès à glaçure marbrée blanc et brun, emboîtés l’un dans l’autre et posés au centre d’une assiette assortie, sur un fond beige uni.">
-    </div>
-    <div class="ecran-t gl">
-      <span class="code">BOL-G3 · glaçure marbrée</span>
-      <h2 class="nom">bols gigognes</h2>
-      <p class="txt">Deux bols qui s’emboîtent dans leur assiette et repartent dans l’armoire en une seule pile. Le marbré vient de deux terres tournées ensemble : le motif traverse la paroi, il n’est pas peint dessus. Aucun jeu n’est identique à un autre.</p>
-      <div class="mesures">
-        <span>ø 168 et 132 mm</span><span>h 86 mm</span><span>1 240 g</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="bloc coll" id="collection">
-  <div class="dedans coll-h">
-    <h2 class="rv">ce qui est sur la tablette</h2>
-    <p class="lede rv2">Chaque pièce est mesurée et pesée avant d’être mise en ligne. Les écarts d’une pièce à l’autre vont jusqu’à 3 mm : c’est tourné, pas moulé.</p>
-  </div>
-
-  <div class="rail">
-
-    <article class="carte">
-      <div class="carte-ph"><img src="../../images/secteurs-sites/boutique-4.webp" width="960" height="720" loading="lazy" decoding="async" alt="Bol et assiettes de grès jaune pâle empilés sur une table de bois, avec un pot couvert moucheté et un bol de bois à l’arrière-plan."></div>
-      <div class="carte-t">
-        <h3>bol à déjeuner</h3>
-        <span class="code">BOL-62 · jaune de blé</span>
-        <p>Un émail de cendre : il fonce légèrement d’une fournée à l’autre, et deux bols achetés à six mois d’écart ne seront pas du même jaune. ø 148 mm · h 72 mm · 620 ml.</p>
-      </div>
-    </article>
-
-    <article class="carte">
-      <div class="carte-ph"><img src="../../images/secteurs-sites/boutique-5.webp" width="960" height="720" loading="lazy" decoding="async" alt="Gobelets crème sans anse et bols emboîtés en grès émaillé, posés sur une tablette claire devant un mur pâle."></div>
-      <div class="carte-t">
-        <h3>gobelet sans anse</h3>
-        <span class="code">GOB-28 · crème</span>
-        <p>La forme la plus simple de l’atelier. Sans anse, il n’y a rien à décoller ni à casser ; la paroi est montée à 6 mm pour tenir la chaleur. ø 82 mm · h 96 mm · 280 ml.</p>
-      </div>
-    </article>
-
-    <article class="carte">
-      <div class="carte-ph"><img src="../../images/secteurs-sites/boutique-6.webp" width="960" height="720" loading="lazy" decoding="async" alt="Tasse à parois taillées en facettes, encore crue et non émaillée, posée sur une pile de galettes d’argile dans un atelier de céramique."></div>
-      <div class="carte-t">
-        <h3>tasse à facettes</h3>
-        <span class="code">TAS-F12 · sur commande</span>
-        <p>Douze facettes taillées à l’estèque quand la terre est encore molle. Photographiée crue, sur ses galettes : c’est le seul moment où la taille se voit sans l’émail dessus.</p>
-      </div>
-    </article>
-
-    <article class="carte">
-      <div class="carte-ph"><img src="../../images/secteurs-sites/boutique-12.webp" width="960" height="720" loading="lazy" decoding="async" alt="Cruche et tasses de grès crues, non émaillées, alignées sur les ailettes d’un radiateur de fonte peint en blanc pour finir de sécher."></div>
-      <div class="carte-t">
-        <h3>cruche et tasses</h3>
-        <span class="code">CRU-12 · prochaine fournée</span>
-        <p>En séchage sur le radiateur, avec les tasses de la même fournée. Le bec est pincé à la main. Ces pièces-là partent en ligne le lendemain de l’ouverture du four.</p>
-      </div>
-    </article>
-
-    <article class="carte carte--fin">
-      <span class="code">SIX FOURNÉES PAR ANNÉE</span>
-      <h3>la prochaine ouverture du four</h3>
-      <p>On ne garde pas de stock : une fournée se remplit, elle ne se lance pas pour une tasse. Écrivez si vous cherchez une forme qui n’est pas là — on garde les moules.</p>
-      <a class="btn" href="#commander">Nous écrire</a>
-    </article>
-
-  </div>
-
-  <div class="dedans">
-    <div class="jauge-l">
-      <span class="jauge-t">Faites glisser</span>
-      <span class="jauge"><i></i></span>
-    </div>
-  </div>
-</section>
-
-<section class="bloc f-oxyde">
-  <div class="dedans ecran ecran--inv">
-    <div class="ecran-ph">
-      <img class="gr" src="../../images/secteurs-sites/boutique-3.webp" width="960" height="720" loading="lazy" decoding="async" alt="Grande assiette de grès blanche mouchetée vue de près, et à côté une tasse blanche dont le bas est laissé en grès nu, sur un fond clair uni.">
-    </div>
-    <div class="ecran-t gl">
-      <span class="code">ASS-26 · blanc de lin moucheté</span>
-      <h2 class="nom">assiette de table</h2>
-      <p class="txt">Les points sombres ne sont pas un décor : c’est le fer de la terre qui ressort à travers l’émail pendant la cuisson. Ils changent de place à chaque fournée. La tasse posée à côté est laissée en grès nu sous la ligne d’émail, pour qu’on voie de quoi elle est faite.</p>
-      <div class="mesures">
-        <span>ø 264 mm</span><span>h 28 mm</span><span>620 g</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="bloc" id="atelier">
-  <div class="dedans">
-    <h2 class="rv">trois gestes, et rien de secret</h2>
-
-    <!-- 01 · la photo traverse, le texte se range dessous en deux parts -->
-    <div class="geste geste--bande">
-      <div class="geste-ph">
-        <img class="gr" src="../../images/secteurs-sites/boutique-9.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Deux mains étalent une plaque d’argile au rouleau sur une table de travail grise, avec mirettes, estèques, bol d’eau et éponge posés à côté.">
-      </div>
-      <div class="geste-t gl">
-        <div>
-          <span class="code">GESTE 01</span>
-          <h3>les assiettes ne sont pas tournées</h3>
-        </div>
-        <p class="txt">Elles sont étalées au rouleau à 9 mm, puis coupées au gabarit. Une assiette tournée serait plus épaisse au centre et se déformerait au four. La plaque donne une épaisseur constante : c’est ce qui permet d’en empiler douze sans qu’aucune ne berce.</p>
-      </div>
-    </div>
-
-    <!-- 02 · la photo devient la colonne ÉTROITE, le texte prend la largeur -->
-    <div class="geste geste--menu">
-      <div class="geste-ph">
-        <img class="gr" src="../../images/secteurs-sites/boutique-8.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Vue de dessus d’un plan de travail en bois : deux mains posent une galette d’argile sur un linge, entourées de moules de plâtre, d’un pot de barbotine et d’outils de tournage.">
-      </div>
-      <div class="gl">
-        <span class="code">GESTE 02</span>
-        <h3>le plâtre boit l’eau</h3>
-        <p class="txt">La plaque est posée sur un moule de plâtre, creux vers le bas. Le plâtre tire l’humidité par-dessous, la terre se raffermit en trente minutes et prend la courbe sans qu’on ait à la forcer. Un moule fait environ trois cents assiettes avant de refuser de boire.</p>
-      </div>
-    </div>
-
-    <!-- 03 · un détail carré, petit, calé à droite d'un texte large -->
-    <div class="geste geste--detail">
-      <div class="geste-ph">
-        <img class="gr" src="../../images/secteurs-sites/boutique-10.webp" width="960" height="720" loading="lazy" decoding="async" alt="Détail rapproché : une trace de barbotine grise déposée sur une feuille de papier par un outil de métal noir, à côté de doigts couverts d’argile séchée.">
-      </div>
-      <div class="gl">
-        <span class="code">GESTE 03</span>
-        <h3>la colle, c’est la même terre</h3>
-        <p class="txt">Une anse ne se colle pas : elle se soude. On griffe les deux surfaces, on met de la barbotine — de la terre délayée à l’eau — et on presse. Après cuisson, il n’y a plus de joint : c’est une seule pièce. C’est pour ça qu’une anse d’ici ne se décolle pas dans l’eau chaude.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<section class="bloc f-sable">
-  <div class="dedans ecran">
-    <div class="ecran-ph">
-      <img class="gr" src="../../images/secteurs-sites/boutique-7.webp" width="960" height="720" loading="lazy" decoding="async" alt="Deux mains retournent une tasse de grès crue et mouchetée au-dessus d’un linge rayé pour montrer le pied tourné ; une seconde paire de mains couverte d’argile se tient derrière.">
-    </div>
-    <div class="ecran-t gl">
-      <span class="code">TAS-38 · tournée à l’unité</span>
-      <h2 class="nom">la tasse 38</h2>
-      <p class="txt">Le pied se tourne à l’envers, deux jours après la pièce. C’est le moment où les fêlures de séchage se voient, et c’est le moment où on jette. Chaque tasse est ensuite pesée : celle qui sort de 40 g de sa moyenne ne part pas dans la même commande qu’une autre.</p>
-      <div class="mesures">
-        <span>ø 92 mm</span><span>h 78 mm</span><span>310 ml</span><span>340 g</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer class="bloc f-encre" id="commander">
-  <div class="dedans">
-    <div class="fin">
-      <div>
-        <h2 class="rv">commander</h2>
-        <p class="txt rv2">La boutique est ouverte tant qu’il y a des pièces sur la tablette. Ce qui est marqué « prochaine fournée » part quand le four ouvre, et pas avant. On livre au Québec seulement : le transport hors province casse trop de pièces pour qu’on l’assume.</p>
-        <p class="txt rv2">Le lave-vaisselle et le micro-ondes ne posent pas de problème — aucune de nos glaçures ne contient de métal. Ce qui abîme une pièce, c’est le choc contre l’inox, pas l’eau.</p>
-      </div>
-      <ul class="coord rv2">
-        <li>000 000-0000</li>
-        <li><a href="mailto:courriel@exemple.ca">courriel@exemple.ca</a></li>
-        <li>Adresse sur demande</li>
-        <li>Visite de l’atelier sur rendez-vous</li>
-        <li>gresdunord.ca</li>
+  <header class="bandeau">
+    <p class="nom">Grès Saulnier</p>
+    <p class="mention">Site de démonstration — entreprise fictive</p>
+    <nav class="nav" aria-label="Navigation principale">
+      <ul>
+        <li><a href="#">Boutique</a></li>
+        <li><a href="#">Atelier</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">Panier (0)</a></li>
       </ul>
-    </div>
+    </nav>
+  </header>
 
-    <div class="pied">
-      <p>© 2026 Grès du Nord — entreprise fictive. Les codes de pièce, les cotes et les délais affichés sont des exemples.</p>
-      <p><strong>Site de démonstration</strong> réalisé par APED Agency. Aucune commande ne peut être passée depuis cette page, aucun formulaire n’y envoie de données, aucune requête ne sort vers un service tiers.</p>
-    </div>
-  </div>
-</footer>
+  <h1 class="titre">Tourné, émaillé, cuit.</h1>
+
+  <p class="soustitre">Grès tourné au tour, émaillé et cuit à haute température. Petites séries, faites au Bas-Saint-Laurent.</p>
+
+  <a class="bouton" href="#"><span>Voir les pièces</span></a>
+
+  <figure class="piece">
+    <span class="plaque">
+      <img src="../../images/secteurs-sites/boutique-11.webp"
+           width="960" height="720" fetchpriority="high"
+           alt="Trois bols de grès emboîtés l'un dans l'autre, posés sur une assiette marbrée, sur fond neutre.">
+    </span>
+    <figcaption class="legende">
+      <b>Fig. 01</b>
+      <b>Trois bols et une assiette</b>
+      <b>Grès émaillé · fait au tour</b>
+    </figcaption>
+  </figure>
+
+  <p class="coord">000 000-0000 · courriel@exemple.ca<br>Adresse sur demande</p>
+
+  <div class="sol" aria-hidden="true"></div>
+
+</div>
 
 </body>
 </html>
