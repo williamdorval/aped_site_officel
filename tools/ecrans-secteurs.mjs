@@ -1,0 +1,320 @@
+/* ============================================================
+   LE PREMIER ÉCRAN DES DOUZE SECTEURS
+   `node tools/ecrans-secteurs.mjs [clé…] [--port 8099] [--png]`
+
+   Un métier = UN écran, arrêté. Pas de page longue, pas de tuiles,
+   pas de couture, pas de défilement.  D-681
+
+   ── POURQUOI 1440 × 900 ET PAS 760 NI 1280 ──────────────────────
+   L'aperçu du panneau donnait l'impression d'une LOUPE, et la cause
+   n'était pas l'affichage : c'était la prise de vue. Les tuiles
+   étaient photographiées à **760 px de large**, la largeur d'une
+   tablette. À cette largeur un site rend sa mise en page étroite —
+   un titre par ligne, des cartes empilées, une typographie
+   proportionnellement énorme. Réduite dans un cadre de 421 px, elle
+   se lit comme un gros plan, jamais comme un site.
+
+   1440 × 900 est la fenêtre d'un vrai bureau. Réduite à 421 px de
+   large, elle rend un facteur de **0,29** : le texte courant tombe
+   sous 5 px, et c'est exactement à ça que ressemble un moniteur posé
+   à trois mètres. C'est la commande.  D-683
+
+   Densité 2 : la sortie fait 1 440 px pour un cadre qui va de 348 à
+   621 px selon la fenêtre. On photographie à 2 880 pour que la
+   réduction par demi-pas ne crénèle pas.
+
+   ── CE QUE L'OUTIL REFUSE DE LIVRER ─────────────────────────────
+   · une capture PLATE, mesurée par tranches — une image peut être
+     riche en haut et vide en bas, et une moyenne d'ensemble le cache
+     (piège 40, D-614) ;
+   · une capture prise avant que les polices et les images soient
+     là — `document.fonts.ready`, puis `complete && naturalWidth > 0`
+     sur chaque `<img>`, chaque attente bornée (pièges 39 et 52) ;
+   · un paramètre illisible : un `NaN` rend « tout va bien » sur
+     n'importe quoi (piège 30).
+
+   ── LE MASQUAGE ─────────────────────────────────────────────────
+   Les trois projets RÉELS portent des marques, des numéros et des
+   adresses. Le registre des masques est dans `demos-sites.mjs`, une
+   seule source pour cet outil et pour `demos-capture.mjs` : une
+   règle de véracité se corrige PARTOUT, en une fois.
+   ============================================================ */
+import { chromium } from "playwright";
+import { spawn } from "node:child_process";
+import net from "node:net";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { PROJETS } from "./demos-sites.mjs";
+
+const ICI = path.dirname(fileURLToPath(import.meta.url));
+const RACINE = path.resolve(ICI, "..");
+const SORTIE_PNG = path.join(ICI, "_ecrans");
+const SORTIE_WEBP = path.join(RACINE, "images", "realisations");
+fs.mkdirSync(SORTIE_PNG, { recursive: true });
+fs.mkdirSync(SORTIE_WEBP, { recursive: true });
+
+const LARG = 1440;
+const HAUT = 900;
+const DENSITE = 2;
+const QUALITE = 0.82;
+
+/* ── LES DOUZE ──────────────────────────────────────────────────
+   `instant` : le nombre de millisecondes qu'on laisse tourner AVANT
+   de déclencher. Ce n'est pas un délai de confort — c'est le moment
+   où le geste de l'écran est à mi-course, et donc VISIBLE sur une
+   image arrêtée (D-685). Un écran sans geste garde 1400, le temps
+   que tout se pose. */
+const ECRANS = {
+  restaurant: { projet: "restau", instant: 1400 },
+  boutique: { statique: "boutique", instant: 1400 },
+  coiffure: { statique: "coiffure", instant: 1400 },
+  gym: { statique: "gym", instant: 1400 },
+  hotel: { statique: "hotel", instant: 1400 },
+  garage: { projet: "garage", instant: 1400 },
+  construction: { statique: "construction", instant: 1400 },
+  paysagement: { projet: "deneigement", instant: 1400 },
+  clinique: { statique: "clinique", instant: 1400 },
+  immobilier: { statique: "immobilier", instant: 1400 },
+  juridique: { statique: "juridique", instant: 1400 },
+  photo: { statique: "photo", instant: 1400 },
+};
+
+/* ── LES PARAMÈTRES ─────────────────────────────────────────────
+   Un paramètre qui ne se lit pas ARRÊTE l'outil. Il ne retombe
+   jamais en silence sur une valeur par défaut : toute comparaison
+   avec `NaN` est fausse, donc un seuil illisible rend « aucune
+   différence » sur n'importe quelle image (piège 30). */
+const args = process.argv.slice(2);
+const iPort = args.indexOf("--port");
+let PORT = 8099;
+if (iPort >= 0) {
+  PORT = Number(args[iPort + 1]);
+  if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+    throw new Error(`--port illisible : ${JSON.stringify(args[iPort + 1])}`);
+  }
+  args.splice(iPort, 2);
+}
+const GARDER_PNG = args.includes("--png");
+const cles = args.filter((a) => !a.startsWith("--"));
+const liste = cles.length ? cles : Object.keys(ECRANS);
+for (const c of liste) if (!ECRANS[c]) throw new Error(`clé inconnue : ${c}\nconnues : ${Object.keys(ECRANS).join(" ")}`);
+
+/* ── LA SONDE DE PORT INTERROGE `localhost` ─────────────────────
+   Vite se lie à `localhost`, que Windows résout en `::1` : le
+   serveur écoute donc en IPv6 SEULEMENT. Une sonde branchée sur
+   l'IPv4 rend « port libre » pendant que le serveur répond « port
+   déjà utilisé » — deux verdicts contradictoires sur le même port.
+   Piège 38 / D-611. */
+function ecoute(port) {
+  return new Promise((res) => {
+    const s = net.connect({ host: "localhost", port }, () => { s.destroy(); res(true); });
+    s.on("error", () => res(false));
+    s.setTimeout(900, () => { s.destroy(); res(false); });
+  });
+}
+async function attendrePort(port, limite = 60000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < limite) {
+    if (await ecoute(port)) return true;
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  return false;
+}
+
+/* ── LA PLATITUDE, PAR TRANCHES ─────────────────────────────────
+   Une capture uniforme n'est pas une capture, et une moyenne
+   d'ensemble cache une image riche en haut et vide en bas. On mesure
+   l'écart-type de luminance sur huit bandes. Sous le seuil, l'outil
+   ARRÊTE : livrer du vide en silence est le défaut qu'on a déjà payé
+   deux fois. */
+const SEUIL_PLATITUDE = 6;
+async function platitude(page, fichier) {
+  return page.evaluate(async (u) => {
+    const img = new Image();
+    img.src = u;
+    await img.decode();
+    const c = document.createElement("canvas");
+    c.width = 480;
+    c.height = Math.round((480 * img.naturalHeight) / img.naturalWidth);
+    const x = c.getContext("2d");
+    x.imageSmoothingQuality = "high";
+    x.drawImage(img, 0, 0, c.width, c.height);
+    const bandes = [];
+    for (let t = 0; t < 8; t++) {
+      const y0 = Math.floor((c.height * t) / 8);
+      const y1 = Math.max(y0 + 1, Math.floor((c.height * (t + 1)) / 8));
+      const d = x.getImageData(0, y0, c.width, y1 - y0).data;
+      let s = 0, s2 = 0, n = 0;
+      for (let i = 0; i < d.length; i += 4) {
+        const l = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+        s += l; s2 += l * l; n++;
+      }
+      const m = s / n;
+      bandes.push(+Math.sqrt(Math.max(0, s2 / n - m * m)).toFixed(1));
+    }
+    return { bandes, pire: Math.min(...bandes) };
+  }, "data:image/png;base64," + fs.readFileSync(fichier).toString("base64"));
+}
+
+/* ── L'ENCODAGE ─────────────────────────────────────────────────
+   Par le navigateur lui-même : aucune dépendance nouvelle, et le
+   dépôt continue de ne dépendre de rien. La réduction se fait par
+   demi-pas — un `drawImage` qui divise par plus de deux d'un coup
+   crénèle. */
+async function versWebp(page, entree, sortie) {
+  const b64 = fs.readFileSync(entree).toString("base64");
+  const dataUrl = await page.evaluate(async ({ b64, L, Q }) => {
+    const img = new Image();
+    img.src = "data:image/png;base64," + b64;
+    await img.decode();
+    const h = Math.round((L * img.naturalHeight) / img.naturalWidth);
+    let cw = img.naturalWidth, ch = img.naturalHeight;
+    let src = document.createElement("canvas");
+    src.width = cw; src.height = ch;
+    src.getContext("2d").drawImage(img, 0, 0);
+    while (cw / 2 > L) {
+      const nw = Math.round(cw / 2), nh = Math.round(ch / 2);
+      const c2 = document.createElement("canvas");
+      c2.width = nw; c2.height = nh;
+      const x2 = c2.getContext("2d");
+      x2.imageSmoothingQuality = "high";
+      x2.drawImage(src, 0, 0, nw, nh);
+      src = c2; cw = nw; ch = nh;
+    }
+    const c = document.createElement("canvas");
+    c.width = L; c.height = h;
+    const x = c.getContext("2d");
+    x.imageSmoothingQuality = "high";
+    x.drawImage(src, 0, 0, cw, ch, 0, 0, L, h);
+    return c.toDataURL("image/webp", Q);
+  }, { b64, L: LARG, Q: QUALITE });
+  if (!dataUrl.startsWith("data:image/webp")) throw new Error("le moteur n'a pas rendu du WebP");
+  fs.writeFileSync(sortie, Buffer.from(dataUrl.split(",")[1], "base64"));
+  return fs.statSync(sortie).size;
+}
+
+/* ── LA PRISE DE VUE ────────────────────────────────────────────── */
+const nav = await chromium.launch();
+const utilitaire = await nav.newPage();          // sert au calcul et à l'encodage
+const serveurs = [];
+const rapport = [];
+let echecs = 0;
+
+try {
+  for (const cle of liste) {
+    const def = ECRANS[cle];
+    let url;
+
+    if (def.statique) {
+      if (!(await ecoute(PORT))) {
+        throw new Error(`rien n'écoute sur ${PORT} — lancer \`node tools/serve.mjs ${PORT}\` dans un autre terminal`);
+      }
+      url = `http://localhost:${PORT}/demos-secteurs/${def.statique}/index.html`;
+    } else {
+      const p = PROJETS[def.projet];
+      if (!p) throw new Error(`projet inconnu dans demos-sites.mjs : ${def.projet}`);
+      if (!(await ecoute(p.port))) {
+        console.log(`   ${cle} — démarrage de ${def.projet} sur ${p.port}`);
+        const proc = spawn("npm", p.cmd, { cwd: p.dossier, shell: true, stdio: "ignore" });
+        serveurs.push(proc);
+        if (!(await attendrePort(p.port))) throw new Error(`${def.projet} n'a jamais répondu sur ${p.port}`);
+        await new Promise((r) => setTimeout(r, 2500));
+      }
+      url = `http://localhost:${p.port}/`;
+    }
+
+    const page = await nav.newPage({ viewport: { width: LARG, height: HAUT }, deviceScaleFactor: DENSITE });
+    const erreurs = [];
+    page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
+    page.on("pageerror", (e) => erreurs.push("pageerror: " + e.message));
+    await page.goto(url, { waitUntil: "load", timeout: 45000 });
+
+    /* Les polices d'abord : un titre mesuré avant `fonts.ready` est
+       mesuré dans la police de secours, et la mise en page bouge
+       après la capture. L'attente est BORNÉE. */
+    await page.evaluate(() => Promise.race([
+      document.fonts.ready,
+      new Promise((r) => setTimeout(r, 6000)),
+    ]));
+
+    /* Puis les images. Une image DÉCLARÉE n'est pas une image
+       CHARGÉE (piège 52), et `decode()` ne rejette jamais sur une
+       image jamais demandée (piège 39) : chaque attente porte donc
+       sa propre limite. */
+    const img = await page.evaluate(async () => {
+      const tout = [...document.images];
+      const dans = tout.filter((i) => {
+        const r = i.getBoundingClientRect();
+        return r.top < innerHeight && r.bottom > 0 && r.width > 0;
+      });
+      await Promise.all(dans.map((i) => Promise.race([
+        i.complete && i.naturalWidth > 0 ? Promise.resolve() : new Promise((r) => { i.addEventListener("load", r, { once: true }); i.addEventListener("error", r, { once: true }); }),
+        new Promise((r) => setTimeout(r, 5000)),
+      ])));
+      return {
+        dans: dans.length,
+        chargees: dans.filter((i) => i.complete && i.naturalWidth > 0).length,
+      };
+    });
+
+    /* LE MASQUAGE EST TEXTUEL, PAS STRUCTUREL. On remplace des
+       chaînes dans les nœuds de texte ; retirer un élément
+       déplacerait tout ce qui suit et on photographierait une mise
+       en page qui n'existe pas. */
+    const p = def.projet ? PROJETS[def.projet] : null;
+    let remplaces = 0;
+    if (p && (p.masques.length || p.retirer.length)) {
+      remplaces = await page.evaluate(({ masques, retirer }) => {
+        let n = 0;
+        const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const noeuds = [];
+        while (w.nextNode()) noeuds.push(w.currentNode);
+        for (const nd of noeuds) {
+          let t = nd.nodeValue;
+          const avant = t;
+          for (const [motif, drapeaux, par] of masques) t = t.replace(new RegExp(motif, drapeaux), par);
+          for (const r of retirer) if (t.includes(r)) t = t.split(r).join("");
+          if (t !== avant) { nd.nodeValue = t; n++; }
+        }
+        return n;
+      }, {
+        masques: p.masques.map(([re, par]) => [re.source, re.flags, par]),
+        retirer: p.retirer,
+      });
+    }
+
+    /* L'INSTANT. Un mouvement ne compte que s'il se voit sur l'image
+       arrêtée : on déclenche au moment où il est à mi-course. */
+    await page.waitForTimeout(def.instant);
+
+    const fPng = path.join(SORTIE_PNG, `${cle}.png`);
+    await page.screenshot({ path: fPng });               // pas `fullPage` : c'est UN écran
+
+    const plat = await platitude(utilitaire, fPng);
+    const fWebp = path.join(SORTIE_WEBP, `ecran-${cle}.webp`);
+    let ko = 0;
+    if (plat.pire < SEUIL_PLATITUDE) {
+      echecs++;
+      console.log(`✗ ${cle.padEnd(13)} CAPTURE PLATE — pire bande ${plat.pire} < ${SEUIL_PLATITUDE}  ${JSON.stringify(plat.bandes)}`);
+      console.log(`  la capture reste dans ${path.relative(RACINE, fPng)} pour être REGARDÉE ; rien n'est écrit en WebP`);
+    } else {
+      ko = Math.round((await versWebp(utilitaire, fPng, fWebp)) / 1024);
+      console.log(`✓ ${cle.padEnd(13)} ${LARG}×${HAUT}  ${String(ko).padStart(3)} ko  images ${img.chargees}/${img.dans}  bandes ${JSON.stringify(plat.bandes)}${erreurs.length ? `  ⚠ ${erreurs.length} erreur(s) console` : ""}${remplaces ? `  ${remplaces} nœud(s) masqué(s)` : ""}`);
+    }
+    if (erreurs.length) {
+      echecs++;
+      for (const e of erreurs.slice(0, 4)) console.log(`    console: ${e.slice(0, 160)}`);
+    }
+    rapport.push({ cle, ko, bandes: plat.bandes, pire: plat.pire, images: img, erreurs: erreurs.length });
+    if (!GARDER_PNG && plat.pire >= SEUIL_PLATITUDE) fs.unlinkSync(fPng);
+    await page.close();
+  }
+} finally {
+  for (const s of serveurs) { try { s.kill(); } catch {} }
+  await nav.close();
+}
+
+fs.writeFileSync(path.join(SORTIE_PNG, "rapport.json"), JSON.stringify(rapport, null, 1), "utf8");
+console.log(`\n${rapport.length} écran(s) · ${echecs} problème(s) · sortie images/realisations/ecran-<clé>.webp`);
+process.exit(echecs ? 1 : 0);
