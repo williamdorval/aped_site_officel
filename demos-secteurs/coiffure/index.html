@@ -160,7 +160,10 @@ p{ margin:0 }
   position:relative;
   display:block;
   height:16px;
-  margin-top:30px;
+  /* 40 px au-dessus, 26 px en dessous : la barre appartient au titre
+     qu'elle introduit, pas au bouton cramoisi qui la précède. Deux
+     masses de la même teinte collées se liraient comme un seul bloc. */
+  margin-top:40px;
 }
 .barre::before{
   content:"";

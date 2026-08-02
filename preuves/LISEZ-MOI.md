@@ -137,3 +137,23 @@ atteints et les écarts de pixels entre deux images.
 **Ce qu'aucune de ces images ne prouve :** le geste au doigt. La
 propriété `overscroll-behavior` est mesurée, le pouce ne l'est pas.
 `RESERVES.md` le dit en entier.
+
+---
+
+## Chantier 7 · Les douze premiers écrans — `chantier7-ecrans/` · 2026-08-01
+
+`node tools/ecrans-secteurs.mjs` puis `node tools/planche-secteurs-12.mjs 460`
+
+| Ce qu'il faut voir | Fichiers |
+|---|---|
+| **Les douze côte à côte, même échelle** — le seul test qui décide | `planche-douze-460.png` |
+| La même, assez grande pour lire les titres | `planche-douze-720.png` |
+
+Trois questions à se poser devant la planche, et elles sont écrites
+dans `chantier7-ecrans/LISEZ-MOI.md` : *devine-t-on que ça vient du
+même studio ? · un écran a-t-il l'air cassé ? · voit-on quelque chose
+bouger à cette taille-là ?*
+
+C'est le seul dossier de preuves dont le verdict est **un jugement
+d'œil et pas une mesure**. Il l'assume : une planche où deux écrans se
+ressemblent est un échec que nul outil ne signalera.

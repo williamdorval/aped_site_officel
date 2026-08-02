@@ -10,13 +10,20 @@
 <meta name="color-scheme" content="dark">
 
 <!-- L'INSTANT DE LA CAPTURE.
-     Le geste unique de l'écran — « LE RELEVÉ », le filet de laiton qui
-     se remplit du bas vers le haut — dure 1800 ms après 400 ms
+     Le geste unique de l'écran — « LA LAISSE », la plaque de laiton
+     qui court de gauche à droite sous le nom, comme une laisse de
+     haute mer le long d'une grève — dure 1800 ms après 400 ms
      d'attente. À t = 1500 ms le remplissage vaut
-     (1500 − 400) / 1800 = 61,1 % : 252 px de laiton de y = 848 à
-     y = 596, et 160 px de ligne fantôme au-dessus. Un trait à moitié
-     rempli se lit comme un mouvement pris en vol, jamais comme un
-     bogue. -->
+     (1500 − 400) / 1800 = 61,1 % : 315 px de laiton pleine masse, de
+     x = 112 à x = 427, sur 16 px de haut.
+
+     POURQUOI PAS UN FILET D'1 PX. L'aperçu du panneau réduit la
+     capture de 1440 à 421 px, soit 0,29. Un filet d'1 px y vaut
+     0,29 px : le moteur l'étale en un gris que personne ne voit
+     (piège 57). La plaque, elle, pèse 16 px de haut — 4,6 px après
+     réduction — et son bord de fuite parcourt 516 px, soit 150 px
+     dans le panneau. Le mouvement se prouve dans la page ; il se
+     VEND dans le panneau. -->
 <meta name="aped-instant" content="1500">
 
 <link rel="preload" as="font" type="font/woff2" href="../../fonts/demos/cormorant-3.woff2" crossorigin>
@@ -77,10 +84,20 @@ img{display:block}
    1920 × 1080 recouverte dans 1440 × 900 : la hauteur pilote, 0,833
    de réduction, la largeur affichée devient 1600 px et 80 px sont
    rognés de chaque côté. AUCUN agrandissement.
-   Le traitement est mesuré, pas choisi : la neige tombe de #d0d3d7 à
-   #5a6064 (bleu > vert > rouge, donc la neige est bleue) et la
-   façade de bois passe à #212528, froide elle aussi — il ne reste
-   aucun ambre. */
+
+   POURQUOI CE FICHIER, ET PAS `hotel-1`. `hotel-1` est un massif
+   européen : toiture à très forte pente à quinze lucarnes, pierrier
+   alpin dans le coin haut-droit, pins de montagne en amorce. L'écran
+   se dit sur la HAUTE-CÔTE-NORD. Une photo ne contredit jamais le
+   texte de la page ; quand les deux se contredisent, c'est la photo
+   qui change (STANDARD § 4.5). `hotel-2` ne porte aucun signe
+   étranger : feuillus nus chargés de neige, sol enneigé, pavillons de
+   bois à toit sombre, brunante bleue.
+
+   Le traitement est mesuré, pas choisi : la neige bleue de la
+   brunante tombe de #b9cfe3 à #2a363d, le bois éclairé des pavillons
+   passe de l'ambre au brun sourd, et il ne reste que 59 pixels
+   « chauds » sur 1 296 000 — 0,05 ‰, les carreaux allumés. */
 /* ── L'ORDRE DE PEINTURE, ÉCRIT PLUTÔT QUE SUBI ───────────────────
    Un descendant STATIQUE se peint sous un descendant POSITIONNÉ,
    même quand il vient après lui dans le document. En dessous de
@@ -100,10 +117,7 @@ img{display:block}
 /* ── 2 · LA NAPPE FROIDE — plate, sans mode de fusion ───────────── */
 .nappe{position:absolute;top:0;right:0;bottom:0;left:0;z-index:1;background:rgba(18,44,58,.26)}
 
-/* ── 3 · LE DÉGRADÉ DU BAS — de y = 400 à y = 900 ─────────────────
-   Aucun voile en haut : le tiers supérieur est du mur d'épinettes
-   traité à Y = 0,011, la nav y mesure déjà 13,22:1 sans rien
-   ajouter. La photographie est intacte de y = 0 à y = 400. */
+/* ── 3 · LE DÉGRADÉ DU BAS — de y = 400 à y = 900 ───────────────── */
 .degrade{
   position:absolute;left:0;right:0;bottom:0;z-index:2;height:500px;
   background:linear-gradient(180deg,
@@ -113,6 +127,31 @@ img{display:block}
     rgba(9,18,15,.82) 62%,
     rgba(9,18,15,.94) 84%,
     rgba(9,18,15,.97) 100%);
+}
+
+/* ── 3 bis · LE VOILE DU HAUT — 190 px, ET IL EST NOUVEAU ─────────
+   La version précédente n'en avait pas, et elle avait raison : son
+   tiers supérieur était un mur d'épinettes plein, traité à
+   Y = 0,011, sur lequel la nav mesurait déjà 13,22:1.
+
+   La nouvelle matière est l'inverse — un lacis de branches chargées
+   de neige, clair et haché. Mesuré sans voile : le pire pixel sous
+   le numéro de téléphone rend 3,82:1, sous la mention de
+   démonstration 2,20:1, sous la nav 3,23:1. Une moyenne à 12,87
+   n'excuse pas une hampe de « 5 » posée sur une branche blanche.
+
+   Avec ce voile : 7,41 · 3,58 · 6,22 au pire pixel, et la mention
+   passe de 62 % à 72 % d'os pour finir de payer sa part. Ce qu'il
+   coûte à la photographie est mesuré aussi : la luminance moyenne de
+   la bande 0→400 tombe de 43,4 à 38,7 et son écart-type de 26,4 à
+   22,5 — 11 % de nuit en plus, 14 % de grain en moins. La
+   photographie reste intacte de y = 190 à y = 400. */
+.voile-haut{
+  position:absolute;top:0;left:0;right:0;z-index:2;height:190px;
+  background:linear-gradient(180deg,
+    rgba(9,18,15,.62) 0,
+    rgba(9,18,15,.34) 45%,
+    rgba(9,18,15,0)   100%);
 }
 
 /* ── 4·5·6·7 · LA LIGNE DU HAUT ─────────────────────────────────── */

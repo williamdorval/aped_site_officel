@@ -96,7 +96,11 @@ h1{
   margin:24px 0 0;
   font-weight:700;
   font-size:min(92px,(100vw - 48px) * 0.1156667);
-  line-height:0.92;
+  /* 1,02 et pas 0,92 : l'accent du « É » culmine à 0,987 em. Sous
+     0,99 d'interlignage il remonte au-dessus de la ligne de base de
+     « ON DESSINE » et se lit comme une virgule. Même relevé qu'au
+     grand format, même correction. */
+  line-height:1.02;
   letter-spacing:-0.02em;
   color:var(--trait);
 }
@@ -152,13 +156,17 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   font-family:"jetbrains-mono",monospace;font-weight:500;font-size:10px;line-height:18px;
   text-align:center;color:var(--cyan);background:transparent;
 }
-.b1{left:10%;top:23.0769%}
+/* 01 relevé de 12 px vers le bas et la droite par rapport au plan :
+   à (144, 600) la pointe du renvoi tombait dans le ciel, à l'arête de
+   l'avant-toit. À (156, 612) elle se pose sur le poteau d'angle de
+   l'ossature neuve. Une bulle qui désigne le vide ne désigne rien. */
+.b1{left:11.4285%;top:26.9230%}
 .b2{left:77.1428%;top:73.0769%}
 /* Les lignes de renvoi : 48 px à 45°, terminées par un carré plein
    de 3 px. Elles désignent, elles ne mesurent pas. */
 .renvoi{position:absolute;width:48px;height:1px;background:var(--cyan);transform-origin:0 50%}
 .renvoi::after{content:"";position:absolute;right:-1px;top:-1px;width:3px;height:3px;background:var(--cyan)}
-.r1{left:calc(10% + 20px);top:calc(23.0769% + 20px);transform:rotate(45deg)}
+.r1{left:calc(11.4285% + 20px);top:calc(26.9230% + 20px);transform:rotate(45deg)}
 .r2{left:77.1428%;top:73.0769%;transform:rotate(225deg)}
 
 /* ── LA LÉGENDE ────────────────────────────────────────────────── */
@@ -285,7 +293,9 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   .f-cart-v{right:300px;bottom:0;width:1px;height:112px}
 
   /* La bande de coordonnées, hors cadre, y = 864. */
-  .coordonnees{position:fixed;left:60px;right:60px;bottom:24px;padding:0;height:12px;line-height:12px;flex-wrap:nowrap;gap:24px}
+  /* `height:auto` et non 12 px : sous 1440 la bande passe sur deux
+     lignes, et une boîte de 12 px la ferait déborder sous le bord. */
+  .coordonnees{position:fixed;left:60px;right:60px;bottom:24px;padding:0;height:auto;line-height:12px;gap:6px 24px}
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -469,7 +479,13 @@ a:focus-visible,.bouton:focus-visible{outline:1px solid var(--cyan);outline-offs
   <div class="legende">
     <span class="intitule">LÉGENDE</span>
     <p><span class="cle">01</span> · AGRANDISSEMENT GREFFÉ SUR LE BÂTI EXISTANT</p>
-    <p><span class="cle">02</span> · MUR EXISTANT CONSERVÉ, PAREMENT DÉPOSÉ</p>
+    <!-- LA LÉGENDE DÉCRIT CE QUE LA PHOTOGRAPHIE MONTRE, PAS CE QUE
+         LE PLAN AVAIT PRÉVU. Le plan écrivait « PAREMENT DÉPOSÉ » ;
+         à l'endroit désigné par 02, le parement de bois est en place
+         — ce sont les OUVERTURES qui sont condamnées au contreplaqué.
+         On corrige la légende : une légende qui contredit son image
+         est la première chose qu'un visiteur vérifie. -->
+    <p><span class="cle">02</span> · MUR EXISTANT CONSERVÉ, OUVERTURES CONDAMNÉES</p>
   </div>
 
   <i class="f f-cart-g" aria-hidden="true"></i>

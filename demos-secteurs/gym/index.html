@@ -251,6 +251,9 @@ body{
      F = 100vw / (7,94922 × 1,18982) = 10,573vw fait tomber L4
      exactement sur le bord droit, à toute largeur. */
   .mur{--F:10.573vw;position:relative;width:100%;height:4.67652em}
+  /* À 360 px le filet proportionnel tomberait à 0,5 px : le navigateur
+     le rendrait en gris pâle et la trace ne se verrait plus. Plancher. */
+  .t{height:max(1.5px,calc(0.01314 * var(--F)))}
   .bandeau{position:static;width:auto;height:auto;margin-top:auto;
            display:grid;grid-template-columns:100%;
            padding:clamp(14px,4vw,26px) clamp(16px,4vw,28px) clamp(18px,5vw,28px)}

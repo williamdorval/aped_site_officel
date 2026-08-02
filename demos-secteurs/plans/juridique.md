@@ -173,7 +173,7 @@ ScrollTrigger + Swiper.
 | **Composition du premier écran** | **Voir le tableau au pixel ci-dessous.** |
 | **Formes** | **Angles vifs partout, rayon 0.** Aucune ombre, aucun dégradé de fondu, aucun flou. **La profondeur n'existe pas** : il n'y a qu'une feuille. Quatre épaisseurs de filet, et pas une de plus : **3 px + 1 px** (le filet double sous le bloc-titre, avec 3 px de papier entre les deux) · **2 px encre** (sous chaque titre de colonne et sous le surtitre de la manchette) · **1 px encre** (fermeture du bandeau de rubriques, fermeture du pied, filet de l'oreille) · **1 px `#e3cfc0` ou `#d9c3b4`** (séparations internes et gouttières). Le seul aplat de couleur de la page est le bandeau de date, plein bordeaux, 36 px, et le bouton, plein bordeaux, 248 × 44. |
 | **Traitement photo** | **Une seule image sur tout l'écran**, 248 × 186, dans la colonne 5. Fichier `../../images/secteurs-sites/juridique-3.webp` (960 × 720, porte de bronze entre deux colonnes de marbre). **Duotone bordeaux / papier, tramé à 45°** : `filter: grayscale(1) contrast(1.35) brightness(1.05)`, une couche `#6d1a2c` en `mix-blend-mode: multiply`, et par-dessus une **trame** `repeating-linear-gradient(45deg, #fff1e5 0 1px, transparent 1px 3px)` en `mix-blend-mode: screen`, opacité 0,45. **Arrêts durs uniquement — c'est un grain de similigravure, pas un fondu ; il n'y a aucun dégradé sur cette page.** L'image porte ses dimensions réelles `width="960" height="720"` (CLS 0, le rapport 4:3 est exact), `decoding="async"`, `fetchpriority="low"`, **pas de `loading="lazy"`** : il n'y a pas de ligne de flottaison. |
-| **Le geste et l'instant de capture** | **Voir la section « Le geste » ci-dessous.** Un seul : **la manchette s'imprime**, ligne par ligne, sous une arête d'encre bordeaux qui traverse de gauche à droite. Capture à **t = 940 ms**. |
+| **Le geste et l'instant de capture** | **Voir la section « Le geste » ci-dessous.** Deux passages, dans l'ordre d'une presse — le noir, puis la couleur d'appoint. **1 · la manchette s'imprime**, ligne par ligne, sous une arête d'encre bordeaux qui traverse de gauche à droite (0 → 1220 ms). **2 · la plaque du bandeau de date se tire**, de gauche à droite (1250 → 2250 ms). **Ce qu'on photographie est la plaque, à `t = 1900 ms`** — 65,0 % de sa course : une barre bordeaux **pleine de 936 × 36 px**, arête franche à `x = 936`, et **la manchette entière**. La manchette n'est plus l'instant de capture : saisie à mi-course elle rendait « d'être e| », et un mot coupé en deux se lit comme du texte tronqué, pas comme une révélation (**piège 56**, écrit à partir de cet écran). Une barre n'a pas de mot à couper, et ses 36 px de haut valent encore **10,4 px** une fois l'écran réduit à 421 px, là où l'ancienne arête de 2 px n'en valait plus que 0,58 (**piège 57**). |
 | **Ce qu'on ne fait pas** | Aucune photographie plein cadre, aucun héros photo, aucun fond d'image · **aucun centrage, nulle part** — pas un titre, pas un bouton, pas une légende · aucune carte, aucun bloc flottant, aucun panneau posé sur la page · aucun rayon, aucune ombre, aucun dégradé de fondu, aucun flou · aucun orange, aucun or, aucun bleu · aucune balance, aucun marteau de juge, aucune poignée de main, aucune colonnade en grand · **aucun nom d'avocat, aucun barreau, aucune cause, aucun jugement, aucun taux de réussite** · aucun prix, aucune note, aucun avis, aucun témoignage · **aucune manchette qui invente une affaire** — elle parle du cabinet et de sa méthode, jamais d'un dossier · aucune identité APED : pas de minium `#e2401f`, pas de ciment, pas d'`archivo`. |
 
 ### La grille, au pixel — 1440 × 900
@@ -197,7 +197,7 @@ verticaux de la page : **312 · 584 · 856 · 1128**.
 
 | y | Ce qui s'y trouve |
 |---|---|
-| **0 → 36** | **Le bandeau de date.** Pleine largeur de fenêtre (bord à bord, 0 → 1440), aplat **bordeaux** plein, texte **papier**, mono 11 px capitales, interlettrage 0,16em. Trois items, **ferrés sur la grille, jamais centrés** : à `x = 52` la date · à `x = 596` (bord de C3) « ÉDITION DU CABINET · CAHIER A » · **ferré à droite, fin à `x = 1388`** « SITE DE DÉMONSTRATION ». |
+| **0 → 36** | **Le bandeau de date.** Pleine largeur de fenêtre (bord à bord, 0 → 1440), aplat **bordeaux** plein, texte **papier**, mono 11 px capitales, interlettrage 0,16em. Trois items, **ferrés sur la grille, jamais centrés** : à `x = 52` la date · à `x = 596` (bord de C3) « ÉDITION DU CABINET · CAHIER A » · **ferré à droite, fin à `x = 1388`** « SITE DE DÉMONSTRATION ». **Il est fait de deux couches** — la **forme** (le même texte composé en **bordeaux sur le papier**) et la **plaque** (texte papier sur l'aplat bordeaux) qui se tire par-dessus. **Au repos, la plaque couvre tout** : le bandeau est exactement celui décrit ici. Les deux couches existent pour une seule raison, dite dans « Le geste ». |
 | **44 → 158** | **Le bloc-titre.** Sur C1–C3 (52 → 844) : à `y 44–56` une ligne mono 10 px gris ; le **nameplate** « Cabinet Vallières », `libre-baskerville` 700 **76 px**, boîte de ligne 76 px, `y 60 → 136`, ferré à gauche à `x = 52` (largeur mesurée ≈ 711 px, il reste 81 px de blanc dans C3 — **ce blanc est voulu, il n'est pas comblé**) ; à `y 146–158` une seconde ligne mono 10 px gris, interlettrage 0,20em. |
 | **44 → 158** | **L'oreille**, dans C5. Elle n'est pas une boîte : elle est **isolée par deux filets seulement** — un filet vertical **1 px encre** à `x = 1128` de `y 44` à `y 158`, et un filet horizontal **1 px encre** à `y = 158` de `x 1140` à `x 1388`. Contenu ferré à gauche à `x = 1140` : `y 50–64` « PREMIER APPEL » mono 10 px bordeaux, 0,18em · `y 74–106` le téléphone en `libre-baskerville` 700 **26 px / 32 px** encre · `y 112–148` deux lignes `source-serif` 13/18 gris. |
 | **170 → 177** | **Le filet double**, pleine largeur utile (52 → 1388) : **3 px encre**, 3 px de papier, **1 px encre**. C'est la séparation canonique sous un bloc-titre de broadsheet, et elle n'apparaît **qu'ici**. |
@@ -246,11 +246,19 @@ verticaux de la page : **312 · 584 · 856 · 1128**.
 
 ## Le geste
 
-**Un seul : LA MANCHETTE S'IMPRIME.** Une arête d'encre bordeaux
-traverse chaque ligne de gauche à droite ; derrière elle la ligne est
-imprimée, devant elle il n'y a que du papier. C'est un rouleau
-d'encrage, et **le sens est le sens de lecture**, sans exception. Tout
-le reste de la page est déjà imprimé à la première image.
+**La page s'imprime en deux passages, comme une presse : le noir
+d'abord, la couleur d'appoint ensuite.** Le sens est toujours le sens
+de lecture, gauche → droite, sans exception. Tout le reste de la page
+est déjà imprimé à la première image.
+
+| | Passage | Course | Ce qu'il fait |
+|---|---|---|---|
+| **1** | **La manchette s'imprime** | 0 → 1220 ms | Une arête d'encre bordeaux traverse chaque ligne ; derrière elle la ligne est imprimée, devant elle il n'y a que du papier. |
+| **2** | **La plaque de couleur se tire** | 1250 → 2250 ms | L'aplat bordeaux du bandeau de date se pose de gauche à droite sur un texte déjà composé. **C'est celui-là qu'on photographie.** |
+
+---
+
+### Passage 1 · La manchette s'imprime
 
 **Comment il est fait — et pourquoi dans ce sens-là.**
 
@@ -290,20 +298,89 @@ constante.**
 `animation-timing-function: linear` · `animation-fill-mode: forwards` ·
 **état de repos = imprimé.**
 
-**L'INSTANT DE CAPTURE : `t = 940 ms` après le premier rendu.**
+> **CE PASSAGE NE SE PHOTOGRAPHIE PLUS, ET C'EST LA CORRECTION DU
+> 2026-08-01.** L'instant était `t = 940 ms` : L1 et L2 imprimées, L3
+> encrée à 54,8 %, l'arête debout à `x = 411`. Conforme au plan, et
+> faux quand même — la manchette rendait **« Aucun dossier ne s'ouvre
+> avant d'être e| »**. Un mot coupé en deux ne se lit pas comme une
+> révélation en cours : il se lit comme du texte tronqué, un
+> `overflow` mal réglé, une police qui n'a pas chargé. Sur la planche
+> des douze, à côté de onze écrans entiers, c'était le seul qui avait
+> l'air cassé. **`PIEGES.md § 56` a été écrit à partir de cet
+> écran.** Second grief, `§ 57` : l'arête de 2 px devenait **0,58 px**
+> dans le panneau à 421 px — mesurée, prouvée, invisible.
+>
+> **Le mécanisme reste dans la page** : il joue pour un visiteur qui
+> arrive, et c'est lui qui fait tenir le LCP (le texte est peint à
+> `t = 0` et couvert). Il n'est simplement plus **ce qu'on
+> photographie**. Un geste qui porte sur du texte se photographie
+> **fini**, et le mouvement se met ailleurs.
+
+---
+
+### Passage 2 · La plaque de couleur se tire — c'est lui qu'on photographie
+
+**Le bandeau de date est fait de deux couches, et le texte est le même
+dans les deux.**
+
+| | Couche | Ce qu'elle porte |
+|---|---|---|
+| dessous | **la forme** | le texte composé en **bordeaux sur le papier**, peint à la première image |
+| dessus | **la plaque** | le même texte en **papier sur l'aplat bordeaux**, `position:absolute; inset:0`, tirée par un `clip-path: inset(0 100% 0 0)` → `inset(0 0 0 0)` |
+
+**Pourquoi deux couches et pas une.** Une plaque tirée sur une couche
+unique cacherait « SITE DE DÉMONSTRATION » pendant toute la première
+seconde : ce serait le piège 56 déplacé, pas corrigé — un mot absent
+au lieu d'un mot coupé. Ici **la ligne se lit d'un bout à l'autre à
+toute image** : bordeaux sur papier devant l'arête, papier sur
+bordeaux derrière. Les deux sens tiennent le contraste, **10,3:1**
+dans un cas comme dans l'autre.
+
+**`clip-path` et non `transform`** : le texte de la plaque doit rester
+au pixel sur celui de la forme. Un décalage d'un demi-pixel entre les
+deux couches se verrait comme un tremblement à l'endroit exact où
+l'œil regarde. Mesuré aux six largeurs de repli : **0,0 px d'écart de
+hauteur** entre les deux couches, 360 → 1440.
+
+**`both` et non `forwards`** : la plaque a un retard de 1250 ms, et
+sans le volet `backwards` elle se poserait **pleine** pendant ce
+retard puis **sauterait à zéro**. L'état de repos, lui, reste la forme
+finale : sans animation du tout — `prefers-reduced-motion`, script
+absent, moteur ancien — `clip-path: inset(0)` couvre tout le bandeau
+et la page est celle du plan. **Aucune information n'est perdue,
+jamais.**
+
+**Le minutage — `linear`, une plaque avance à vitesse constante.**
+
+| Élément | Retard | Durée | Fin |
+|---|---|---|---|
+| la plaque | 1250 ms | 1000 ms | 2250 ms |
+
+**L'INSTANT DE CAPTURE : `t = 1900 ms` après le premier rendu.**
 
 À cet instant, et c'est ce qu'on doit voir sur l'image arrêtée :
 
-- **L1 « Aucun dossier » — imprimée en entier** (finie à 620 ms) ;
-- **L2 « ne s'ouvre avant » — imprimée en entier** (finie à 920 ms, il
-  s'en faut de 20 ms — c'est voulu, la ligne vient tout juste de se
-  fermer) ;
-- **L3 « d'être estimé. » — encrée à 54,8 %.** Les mots « d'être es »
-  sont imprimés, la fin de « estimé. » est encore du papier nu ;
-- **l'arête d'encre bordeaux `#6d1a2c`, 2 px de large et 111 px de haut
-  (83 px de ligne + 2 × 14 px de garde), se tient debout à `x = 411`, de
-  `y = 454` à `y = 565`.** C'est la seule verticale bordeaux de la page :
-  on ne peut pas la manquer.
+- **la manchette est ENTIÈRE** — « Aucun dossier / ne s'ouvre avant /
+  d'être estimé. », les trois arêtes sorties du cadre (mesuré : les
+  trois masques à droite de leur ligne) ;
+- **la plaque est à 65,0 % de sa course** : un aplat bordeaux plein de
+  **936 × 36 px**, du bord gauche de la fenêtre à `x = 936` ;
+- **l'arête est franche et verticale à `x = 936`**, sur les 36 px de
+  hauteur du bandeau ;
+- **aucun glyphe n'est à cheval sur l'arête** : « ÉDITION DU CABINET ·
+  CAHIER A » finit à `x = 838,5` (97,5 px de dégagement) et « SITE DE
+  DÉMONSTRATION » commence à `x = 1212,4` (276,4 px). Le pourcentage
+  n'est pas rond par hasard — il tombe dans la gouttière la plus large
+  du bandeau.
+
+**Ce que le geste pèse, et à quelle échelle.** À 1440 : **936 × 36 px**
+de couleur pleine, une arête qui s'est déplacée de **936 px**. Réduit à
+421 px (le facteur 0,29 du panneau) : **271 × 10,4 px**, déplacement
+**271 px**. Les deux seuils du piège 57 — 12 px de masse, 40 px de
+course — sont passés d'un ordre de grandeur, là où l'ancienne arête de
+2 px en rendait 0,58.
+
+---
 
 **Comment on fige la capture, sans le piège 16.** On ne touche pas à
 `animation-play-state` — c'est un raccourci, il se fait remettre à
@@ -312,8 +389,13 @@ l'API des animations, qui est déterministe et reproductible d'une passe
 à l'autre :
 
 ```js
-document.getAnimations().forEach(a => { a.pause(); a.currentTime = 940 })
+document.getAnimations().forEach(a => { a.pause(); a.currentTime = 1900 })
 ```
+
+`currentTime` compte **le retard compris** : à 1900 ms la plaque, qui
+part à 1250 pour 1000 ms, est à `(1900 − 1250) / 1000` = **65,0 %**, et
+les quatre animations de la page se posent du même coup. Deux passes
+rendent la même image.
 
 **Micro-interactions.** Le survol et le focus du bouton, des cinq
 rubriques de nav, du lien secondaire et des quatre domaines existent
@@ -321,14 +403,17 @@ rubriques de nav, du lien secondaire et des quatre domaines existent
 standard les exige sur chaque cible cliquable. **Ce ne sont pas le
 geste** : sur une image arrêtée, aucune n'est en cours.
 
-**Le bandeau de date.** Il est écrit par quatre lignes de script en
+**La date du bandeau.** Elle est écrite par cinq lignes de script en
 ligne — `toLocaleDateString('fr-CA', { weekday:'long', day:'numeric',
-month:'long', year:'numeric' })`, mis en capitales par le CSS. **Zéro
+month:'long', year:'numeric' })`, mise en capitales par le CSS. **Zéro
 requête tierce, zéro erreur console, zéro décalage** : le bandeau a une
 hauteur fixe de 36 px et le texte tient sur une ligne. Le repli écrit
 dans le HTML est « ÉDITION COURANTE » — une date en dur serait fausse
 dès le lendemain, et une fausseté dans le bandeau de date d'un journal
-est une fausseté sur toute la page.
+est une fausseté sur toute la page. **Le script écrit dans les DEUX
+couches** (`querySelectorAll('.jour')`, pas `getElementById`) : une
+date posée dans une seule d'entre elles se lirait comme un tremblement
+à l'endroit exact où la plaque passe.
 
 ---
 
