@@ -62,7 +62,7 @@ function ratio(a, b) {
 }
 
 const nav = await chromium.launch();
-const rapport = { themes: {}, hero: {}, contraste: {}, console: [], exclus: 0 };
+const rapport = { themes: {}, hero: {}, contraste: {}, mesures: {}, console: [], exclus: 0 };
 
 for (const vp of LARGEURS) {
   for (const theme of ["light", "dark"]) {
@@ -81,7 +81,24 @@ for (const vp of LARGEURS) {
     }, theme);
 
     await page.goto(BASE, { waitUntil: "load" });
-    await page.waitForTimeout(900);
+    /* ON ATTEND `data-palier`, ON NE DEVINE PAS 900 ms.  D-715 */
+    await page.waitForFunction(() => document.documentElement.dataset.palier != null,
+      null, { timeout: 8000 });
+    await page.waitForTimeout(400);
+
+    /* ON TRAVERSE AVANT DE MESURER.  D-715
+       Sept sections et le pied portent `content-visibility: auto` :
+       hors ecran leur rectangle est NUL, et le filtre `!r.width` les
+       jetait en silence. Mesure du 2026-08-03 : 389 elements de texte
+       vus a 900 ms sans defiler, 747 apres traversee — 47,9 % du
+       texte du site n'etait JAMAIS soumis au seuil de contraste. */
+    const hTotal = await page.evaluate(() => document.body.scrollHeight);
+    for (let y = 0; y < hTotal; y += 600) {
+      await page.evaluate((yy) => window.scrollTo(0, yy), y);
+      await page.waitForTimeout(70);
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(600);
 
     const applique = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
     rapport.themes[`${vp.nom}/${theme}`] = applique;
@@ -135,6 +152,8 @@ for (const vp of LARGEURS) {
       }
       const out = [];
       let exclus = 0;
+      /* « 0 echec » ne veut rien dire sans « 0 sur combien ».  D-715 */
+      let mesures = 0;
       const tous = document.querySelectorAll("body *");
       for (const el of tous) {
         if (el.closest("[aria-hidden='true']")) continue;
@@ -156,6 +175,7 @@ for (const vp of LARGEURS) {
         const fg = rgbOf(cs.color);
         if (!fg) continue;
         const bg = fondReel(el);
+        mesures++;
         const l1 = lum(fg.rgb), l2 = lum(bg);
         const ct = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
         const px = parseFloat(cs.fontSize);
@@ -172,9 +192,10 @@ for (const vp of LARGEURS) {
           });
         }
       }
-      return { echecs: out, exclus };
+      return { echecs: out, exclus, mesures };
     });
     rapport.contraste[`${vp.nom}/${theme}`] = echecs.echecs;
+    rapport.mesures[`${vp.nom}/${theme}`] = echecs.mesures;
     rapport.exclus += echecs.exclus;
 
     /* ---- captures par section ---- */
@@ -210,7 +231,9 @@ console.log(JSON.stringify(rapport.hero, null, 2));
 console.log("\nDEBORDEMENT :");
 for (const [k, v] of Object.entries(rapport.themes)) if (k.endsWith("/debord")) console.log(`  ${k}  ${v}`);
 console.log("\nECHECS DE CONTRASTE :");
-for (const [k, v] of Object.entries(rapport.contraste)) console.log(`  ${k}  ${v.length}`);
+for (const [k, v] of Object.entries(rapport.contraste)) {
+  console.log(`  ${k}  ${v.length} echec(s) sur ${rapport.mesures[k]} element(s) de texte mesure(s)`);
+}
 console.log(`  elements exclus (sous [role="img"], reconstitutions) : ${rapport.exclus}`);
 const tous = Object.entries(rapport.contraste).flatMap(([k, v]) => v.map((x) => ({ vue: k, ...x })));
 const vus = new Set();
@@ -222,3 +245,28 @@ for (const e of tous) {
 }
 console.log(`\nCONSOLE : ${rapport.console.length}`);
 rapport.console.slice(0, 20).forEach((c) => console.log("    " + c));
+
+/* UN OUTIL DE SEUIL DOIT POUVOIR ECHOUER.  D-715
+   `CLAUDE.md` publie « echecs de contraste, 5 largeurs x 2 themes :
+   0 » comme seuil a ne jamais faire regresser. Cet outil est le seul
+   qui le mesure, et il n'avait aucun `process.exit` : il imprimait un
+   nombre que rien ne relisait. */
+const mesures = Object.values(rapport.contraste).reduce((n, v) => n + v.length, 0);
+const debords = Object.entries(rapport.themes)
+  .filter(([k, v]) => k.endsWith("/debord") && v !== "aucun");
+
+if (!Object.keys(rapport.contraste).length) {
+  console.error("\nARRET : aucune vue mesuree. Zero sans erreur est un mensonge.");
+  process.exit(2);
+}
+
+const fautes = [];
+if (mesures) fautes.push(`${mesures} echec(s) de contraste`);
+if (debords.length) fautes.push(`${debords.length} debordement(s) horizontaux`);
+if (rapport.console.length) fautes.push(`${rapport.console.length} erreur(s) console`);
+
+if (fautes.length) {
+  console.error(`\nECHEC : ${fautes.join(" · ")}`);
+  process.exit(1);
+}
+console.log("\nok — 0 echec de contraste, 0 debordement, 0 erreur console");
