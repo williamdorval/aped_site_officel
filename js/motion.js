@@ -305,15 +305,10 @@
      dans la liste. Le seul mouvement qui reste est le filet
      ci-dessus, qui se trace au defilement (V3 · SOUDER).  D-523 */
 
-  /* 13bis. « Ce qui arrive apres » — N2.  D-524 */
-  var filetSuite = $(".suite-fil b");
-  if (filetSuite) {
-    gsap.fromTo(filetSuite, { scaleX: 0 }, {
-      scaleX: 1,
-      ease: "none",
-      scrollTrigger: { trigger: ".suite-temps", start: "top 84%", end: "bottom 66%", scrub: 0.5 }
-    });
-  }
+  /* 13bis. Le filet de « Ce qui arrive apres votre message » est
+     parti avec le bloc : la section Contact a ete refondue en trois
+     niveaux, et ce qu'il promettait est dit par `.contact-sur` en
+     quatre chiffres.  D-524 */
 
   /* 14. Recalcul apres chargement des images.  D-525 */
   window.addEventListener("load", function () { ScrollTrigger.refresh(); });

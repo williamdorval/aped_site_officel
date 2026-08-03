@@ -5386,45 +5386,32 @@ html:not(.js) .ba-trait { display: none; }
 .cell--moyen:hover { background: var(--surface-1); }
 .cell--moyen .num { color: var(--accent-text); }
 
-/* CE QUI ARRIVE APRES. L'inconnu d'apres l'envoi est ce qui retient  D-242 */
-.suite { margin-top: var(--s-7); display: grid; gap: var(--s-5); }
-.suite-temps { position: relative; display: grid; gap: var(--s-6); }
-.suite-temps li { display: grid; gap: var(--s-2); align-content: start; }
-.suite-temps .num {
+/* « CE QUI ARRIVE APRES VOTRE MESSAGE » EST RETIRE, et ses seize
+   regles avec lui. Ce qu'il promettait — 12 h, appel gratuit,
+   proposition ecrite, aucune relance — est dit juste dessous par
+   `.contact-sur`, en quatre chiffres au lieu de trois paragraphes.
+   Le scrub de son filet part avec, dans `motion.js`.  D-242 */
+
+/* OU CHAQUE TUILE MENE, ET C'EST LA CORRECTION PRINCIPALE.
+   Les cinq entrees portaient toutes la meme fleche « lien externe »
+   alors que quatre sur cinq ouvrent une boite de dialogue DANS la
+   page. Une option qui ne dit pas ou elle mene se clique une fois,
+   puis plus jamais. La ligne est en bas de la tuile, au-dessus de la
+   fleche, et la fleche dit maintenant la meme chose qu'elle. */
+.cell-ou {
   font-family: var(--font-data);
   font-size: var(--fs-8);
-  color: var(--accent-text);
+  line-height: 1.4;
   letter-spacing: var(--tracking-label);
+  color: var(--ink-muted);
+  /* La fleche est absolue en bas a droite : la ligne s'arrete avant. */
+  padding-right: var(--s-6);
 }
-.suite-temps strong { font-size: var(--fs-5); }
-.suite-temps li > span:not(.num) { font-size: var(--fs-7); color: var(--ink-muted); }
-.suite-delai {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--ink);
-  border-top: var(--rule-w) solid var(--rule);
-  padding-top: var(--s-2);
-  margin-top: var(--s-2);
-}
-.suite-fil {
-  position: absolute;
-  left: 0;
-  top: -0.75rem;
-  width: 100%;
-  height: var(--rule-w);
-  background: var(--rule);
-  overflow: hidden;
-}
-.suite-fil b {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background-image: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px);
-  transform: scaleX(1);
-  transform-origin: left center;
-}
+.cell:hover .cell-ou,
+.cell:focus-visible .cell-ou { color: var(--ink); }
+.cell--lead .cell-ou,
+.cell--lead:hover .cell-ou,
+.cell--lead:focus-visible .cell-ou { color: var(--accent-ink); }
 
 /* La plaque « Ce qui change avec nous » est retiree du processus, et
    ses neuf regles avec elle. Son filet en trame de minium portait un
@@ -5433,26 +5420,10 @@ html:not(.js) .ba-trait { display: none; }
    que son jumeau `.referral-line b` se trace au defilement. Un filet
    qui ne se trace pas n'est pas un V3.  D-711 */
 
-/* La porte de sortie. Certains n'ouvriront aucun formulaire :
-   l'adresse doit etre lisible et copiable, en clair. */
-.contact-direct {
-  display: grid;
-  gap: var(--s-2);
-  margin-top: var(--s-7);
-  padding-top: var(--s-5);
-  border-top: var(--rule-w) solid var(--rule-strong);
-}
-.contact-direct a {
-  font-family: var(--font-data);
-  font-size: var(--fs-4);
-  width: fit-content;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  border-bottom: var(--focus-w) solid var(--accent);
-  padding-bottom: var(--s-2);
-  transition: color var(--t-2) var(--e-snap);
-}
-.contact-direct a:hover { color: var(--accent-text); }
+/* La porte de sortie n'est plus une note de bas de section : elle est
+   une TUILE du deuxieme niveau, a cote de l'appel. Certains
+   n'ouvriront aucun formulaire — et l'adresse etait la derniere chose
+   lue de la section.  D-243 */
 
 /* Reassurance : quatre faits, quatre chiffres, un filet. */
 .contact-sur {
@@ -5790,18 +5761,23 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
      prime », c'etait le contraire de la consigne. */
   .referral > .referral-foot .fine { margin-top: 0 !important; max-width: 38ch; }
 
-  /* TROIS POIDS, pas cinq tuiles egales :  D-255 */
+  /* TROIS NIVEAUX, ET ILS SE VOIENT AVANT D'ETRE LUS.  D-255
+       rangee 1-2 : le chemin recommande, seul, sur quatre colonnes
+                    et deux rangees — a cote de lui, les DEUX facons
+                    de parler a quelqu'un ;
+       rangee 3   : les trois cas particuliers, a poids egal.
+     La hierarchie est la GEOMETRIE, pas une etiquette : une tuile
+     quatre fois plus grande n'a pas besoin qu'on ecrive « la plus
+     importante » dessus. */
   .bento { grid-template-columns: repeat(6, 1fr); }
   .cell:nth-child(1) { grid-column: span 4; grid-row: span 2; min-height: 21rem; }
   .cell:nth-child(2) { grid-column: span 2; }
   .cell:nth-child(3) { grid-column: span 2; }
-  .cell:nth-child(4) { grid-column: span 3; min-height: 9rem; }
-  .cell:nth-child(5) { grid-column: span 3; min-height: 9rem; }
+  .cell:nth-child(4) { grid-column: span 2; min-height: 10rem; }
+  .cell:nth-child(5) { grid-column: span 2; min-height: 10rem; }
+  .cell:nth-child(6) { grid-column: span 2; min-height: 10rem; }
 
   .contact-sur { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--gutter); }
-  /* Les trois temps de « ce qui arrive apres » se lisent de gauche
-     a droite, relies par le filet qui les traverse. */
-  .suite-temps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-4); }
   .contact-sur li { border-bottom: 0; }
 
   .footer-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }

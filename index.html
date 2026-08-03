@@ -2675,15 +2675,21 @@
       </div>
     <div class="wrap band">
       <div class="head" style="margin-top: var(--s-6);">
-        <h2>Cinq façons de nous joindre.</h2>
+        <h2>Comment nous joindre.</h2>
         <!-- B4 · E3 — UNE STATISTIQUE INVENTEE SUR NOTRE PROPRE  D-077 -->
-        <p>La première est celle qu’on recommande. Les quatre autres sont là pour les cas particuliers — et l’adresse courriel est en bas de page si vous préférez écrire.</p>
+        <!-- TROIS NIVEAUX, ET LE VISITEUR N'A QU'A LIRE LE PREMIER.
+             La section disait « cinq facons » et les alignait toutes
+             a plat : aucune ne disait ou elle menait, et le courriel
+             — la seule voie qui ne depend d'aucun service — etait la
+             derniere, apres deux autres blocs. -->
+        <p>Le premier est celui qu’on recommande. Chaque entrée dit ce qu’elle ouvre&nbsp;: tout se passe dans cette page, sauf le courriel.</p>
       </div>
 
       <div class="bento">
+        <!-- NIVEAU 1 · LE CHEMIN RECOMMANDE, ET IL EST SEUL -->
         <button class="cell cell--lead" type="button" data-modal-open="modal-project">
           <!-- Cinq questions, pas sept, et plus de minutes.  D-703 -->
-          <span class="num">Le plus direct · 5 questions</span>
+          <span class="num">Recommandé · 5 questions</span>
           <span>
             <h3>Démarrer votre projet</h3>
             <p>Des questions simples, une à la fois. Vous joignez vos photos et vos documents, on revient avec une proposition écrite.</p>
@@ -2692,25 +2698,42 @@
               <i></i>Vous pouvez tout envoyer plus tard
             </span>
           </span>
-          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+          <span class="cell-ou">Ouvre le questionnaire, ici</span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
 
-        <button class="cell cell--moyen" type="button" data-modal-open="modal-estimate">
-          <span class="num">Six questions</span>
-          <span>
-            <h3>Estimation rapide</h3>
-            <p>Six questions, votre fourchette à l’écran. Sans appel, sans attendre.</p>
-          </span>
-          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-        </button>
-
+        <!-- NIVEAU 2 · PARLER A QUELQU'UN. Deux voies, et la seconde
+             ne depend d'aucun formulaire : c'est la porte de sortie,
+             promue au rang de tuile. Elle etait en bas de section. -->
         <button class="cell cell--moyen" type="button" data-modal-open="modal-booking">
-          <span class="num">30 minutes</span>
+          <span class="num">30 minutes · gratuit</span>
           <span>
             <h3>Réserver un appel</h3>
-            <p>Vous choisissez la date et l’heure, sur Google Meet. L’appel ne coûte rien.</p>
+            <p>Vous choisissez la date et l’heure. La rencontre se fait sur Google&nbsp;Meet.</p>
           </span>
+          <span class="cell-ou">Ouvre le calendrier, ici</span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+        </button>
+
+        <a class="cell cell--moyen" href="mailto:dorvalwilliam11@gmail.com?subject=Projet">
+          <span class="num">Sans formulaire</span>
+          <span>
+            <h3>Écrire un courriel</h3>
+            <p>dorvalwilliam11@gmail.com — réponse en 12&nbsp;h ouvrables.</p>
+          </span>
+          <span class="cell-ou">Ouvre votre logiciel de messagerie</span>
           <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        </a>
+
+        <!-- NIVEAU 3 · LES CAS PARTICULIERS -->
+        <button class="cell" type="button" data-modal-open="modal-estimate">
+          <span class="num">6 questions</span>
+          <span>
+            <h3>Estimation rapide</h3>
+            <p>Votre fourchette à l’écran. Personne n’est contacté.</p>
+          </span>
+          <span class="cell-ou">Ouvre le calculateur, ici</span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
 
         <button class="cell" type="button" data-modal-open="modal-urgent">
@@ -2719,47 +2742,19 @@
             <h3>Urgence</h3>
             <p>Site en panne ou lancement qui dérape.</p>
           </span>
-          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+          <span class="cell-ou">Ouvre un formulaire court, ici</span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
 
         <button class="cell" type="button" data-modal-open="modal-refer">
           <span class="num">Jusqu’à 5 000 $</span>
           <span>
             <h3>Référer une entreprise</h3>
-            <p>Commission versée dès que le contrat est signé.</p>
+            <p>Vous n’avez pas de projet, mais vous connaissez quelqu’un.</p>
           </span>
-          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+          <span class="cell-ou">Ouvre le formulaire de référence, ici</span>
+          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
-      </div>
-
-      <!-- CE QUI ARRIVE APRES. L'inconnu d'apres l'envoi est ce qui
-           retient le doigt au-dessus du bouton : trois temps, trois
-           delais, et c'est reglé. -->
-      <div class="suite" data-suite>
-        <p class="label">Ce qui arrive après votre message</p>
-        <ol class="suite-temps">
-          <li>
-            <span class="num">01</span>
-            <strong>On le lit</strong>
-            <span>Une vraie personne, pas un accusé de réception automatique.</span>
-            <!-- A6 · « LE JOUR MEME » EST INTENABLE ET SE CONTREDIT A  D-078 -->
-            <!-- « AU PLUS TARD » : sans lui, la lecture semblait plus  D-701 -->
-            <b class="suite-delai">le prochain jour ouvrable au plus tard</b>
-          </li>
-          <li>
-            <span class="num">02</span>
-            <strong>On vous répond</strong>
-            <span>Avec des questions s’il en manque, ou directement avec une proposition.</span>
-            <b class="suite-delai">sous 12 h ouvrables</b>
-          </li>
-          <li>
-            <span class="num">03</span>
-            <strong>Vous décidez</strong>
-            <span>Une proposition écrite, un prix ferme, et le droit de dire non.</span>
-            <b class="suite-delai">quand vous voulez</b>
-          </li>
-          <i class="suite-fil" aria-hidden="true"><b></b></i>
-        </ol>
       </div>
 
       <ul class="contact-sur">
@@ -2769,12 +2764,13 @@
         <li><b class="num">Jamais</b><span>De relance insistante, de liste d’envoi non demandée, ni de revente de vos coordonnées.</span></li>
       </ul>
 
-      <!-- La porte de sortie. Certains n'ouvriront aucun formulaire :
-           l'adresse doit etre lisible et copiable, en clair. -->
-      <p class="contact-direct">
-        <span class="label">Ou simplement</span>
-        <a href="mailto:dorvalwilliam11@gmail.com?subject=Projet">dorvalwilliam11@gmail.com</a>
-      </p>
+      <!-- LA PORTE DE SORTIE A CHANGE DE PLACE, PAS DE ROLE.
+           « Ou simplement · dorvalwilliam11@gmail.com » vivait ICI,
+           en bas de section, apres deux blocs — c'est-a-dire que la
+           seule voie qui ne depend d'aucun formulaire etait la
+           derniere chose lue. Elle est maintenant une TUILE, au
+           deuxieme niveau, a cote de l'appel. L'adresse reste lisible
+           et copiable en clair, et le pied de page la reprend. -->
     </div>
   </section>
 
