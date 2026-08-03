@@ -4096,40 +4096,12 @@ html:not(.js) .ba-trait { display: none; }
   transform: scaleX(1);
   transform-origin: left center;
 }
-/* La plaque de cloture du processus : ce qui nous distingue.  D-711 */
-.distinct {
-  margin-top: var(--s-8);
-  padding-top: var(--s-5);
-  border-top: var(--rule-w) solid var(--rule-strong);
-  display: grid;
-  gap: var(--s-5);
-}
-.distinct-liste { position: relative; display: grid; gap: var(--s-6); }
-.distinct-liste li { display: grid; gap: var(--s-2); align-content: start; }
-.distinct-liste .num {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  color: var(--accent-text);
-  letter-spacing: var(--tracking-label);
-}
-.distinct-liste strong { font-size: var(--fs-5); }
-.distinct-liste li > span:not(.num) { font-size: var(--fs-7); color: var(--ink); }
-.distinct-fil {
-  position: absolute;
-  left: 0;
-  top: -0.75rem;
-  width: 100%;
-  height: var(--rule-w);
-  background: var(--rule);
-  overflow: hidden;
-}
-.distinct-fil b {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background-image: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px);
-  transform-origin: left center;
-}
+/* La plaque « Ce qui change avec nous » est retiree du processus, et
+   ses neuf regles avec elle. Son filet en trame de minium portait un
+   `transform-origin: left center` sans aucun `scaleX` pour l'utiliser
+   ni aucun JS pour le piloter : il etait plein en permanence, alors
+   que son jumeau `.referral-line b` se trace au defilement. Un filet
+   qui ne se trace pas n'est pas un V3.  D-711 */
 /* La porte de sortie. Certains n'ouvriront aucun formulaire :
    l'adresse doit etre lisible et copiable, en clair. */
 .contact-direct {
@@ -4462,9 +4434,6 @@ html.js .derail-row,
 /* Les trois temps de « ce qui arrive apres » se lisent de gauche
      a droite, relies par le filet qui les traverse. */
 .suite-temps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-4); }
-/* Les quatre points se lisent de gauche a droite, relies par le
-     meme filet.  D-711 */
-.distinct-liste { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-4); }
 .contact-sur li { border-bottom: 0; }
 .footer-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
 .footer-left { grid-column: 1 / span 6; }
