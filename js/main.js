@@ -2118,7 +2118,7 @@
   var roiSection = $("#calculateur");
 
   if (roiSection) {
-    /* DEUX CURSEURS SONT PARTIS PARCE QU'ILS NE CHANGEAIENT RIEN.  D-693 */
+    /* DEUX CURSEURS SONT PARTIS PARCE QU'ILS NE CHANGEAIENT RIEN.  D-699 */
     var inRate = $("#inRate");
     var inAdmin = $("#inAdmin");
     var outRate = $("#outRate");
@@ -2159,7 +2159,7 @@
     var navValue = $("#navImpactValue");
     var impactEl = $("#roiImpact");
 
-    /* `emp` et `rev` ont quitte les profils avec leurs curseurs.  D-693 */
+    /* `emp` et `rev` ont quitte les profils avec leurs curseurs.  D-699 */
     var PRESETS = {
       construction:  { rate: 40, tasks: [5, 5, 4, 3, 3, 2, 6, 1] },
       services:      { rate: 55, tasks: [4, 8, 4, 4, 4, 3, 4, 2] },

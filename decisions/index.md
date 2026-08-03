@@ -1883,3 +1883,60 @@ maintenant — plein pour ce qui reste, trame pour ce qui
 part — a la seule echelle qui change : celle de la journee
 entiere. Le detail devient litteralement sa decomposition.
 440 minutes a la main, 104 automatisees, 336 de moins.
+
+## D-697 · La differenciation vit dans #processus
+
+`#apropos` a ete retiree. Avec elle est partie la seule reponse a
+« qui etes-vous ? » — la premiere peur d'un patron devant une agence
+qu'il ne connait pas. Ce qui nous distingue existait encore, mais
+eparpille en cinq endroits, et n'etait dit nulle part : « rien de
+gabarit » au hero, « un seul interlocuteur » au socle, « le code
+s'ecrit ici » a l'etape 03, la propriete en FAQ 6, les technologies
+en FAQ 7. Le visiteur devait la reconstituer. Il ne le fera pas.
+
+Elle vit maintenant en cloture de `#processus`, apres l'etape 06 :
+c'est la que le visiteur vient de voir COMMENT on travaille, et
+juste avant la FAQ et le contact. Pas de section nouvelle, donc pas
+de renumerotage des onze, du rail, du menu, des seuils ni des sas.
+
+Quatre points, aucun invente — chacun etait deja ecrit ailleurs :
+  01 le code est a vous (FAQ 6) ;
+  02 un seul interlocuteur (socle du hero) ;
+  03 code ici (etape 03) ;
+  04 **la preuve, c'est ce site**.
+
+Le quatrieme est le seul verifiable SUR-LE-CHAMP, et c'est pour ca
+qu'il est la. Il ne porte AUCUN chiffre : le LCP mesure est de
+136 ms, mais toutes les mesures de ce projet viennent de Chromium
+sous Playwright sur un poste Windows, jamais d'un appareil reel —
+un chiffre de millisecondes serait invendable au telephone. Ce qui
+s'ecrit tient sans mesure : code a la main, sans gabarit achete,
+sans publicite, sans mouchard, et le visiteur vient de le charger.
+
+## D-698 · Le sur-titre nomme A QUI, et pourquoi rien de plus
+
+« Web, immobilier, automatisation · Quebec » ne disait pas la cible :
+« Quebec » est un lieu, pas un client. « PME du Quebec » la nomme,
+sur la meme ligne, pour le meme prix. Les trois domaines restent en
+tete : D-015 tient.
+
+CE QUI N'A PAS ETE FAIT, ET LA MESURE QUI L'A ARRETE. L'audit
+demandait une preuve VERIFIABLE au premier ecran. J'avais ajoute
+« Ce site-ci, on l'a code pareil. » au sous-titre. Mesure du pli,
+quatre largeurs :
+
+| 1024 x 768 | avant | avec la phrase |
+|---|---|---|
+| CTA second | 757 — au pli | **784 — sous** |
+| fiche technique | 757 — au pli | **784 — sous** |
+
+Une phrase de plus coute une ligne au sous-titre, et cette ligne
+pousse sous le pli le second CTA **et les quatre delais chiffres** —
+c'est-a-dire le seul objet qui ressemble a une preuve au pli de
+1024. Mauvais echange. La phrase est retiree ; le pli est identique
+a l'octet pres a ce qu'il etait.
+
+Le socle, lui, etait DEJA sous le pli a 1024 avant ce chantier
+(862 pour 768). Le corriger demande de deplacer la structure du
+hero, ce que le brief interdit sans accord. C'est documente en P3
+dans `CRO-A-TESTER.md`, avec les nombres.
