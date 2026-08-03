@@ -59,17 +59,12 @@
       var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduit) d.classList.add("reduced-motion");
 
-      /* LES SAS SE DECIDENT ICI, AVANT LA PREMIERE MISE EN PAGE.  D-581
-         La hauteur des pistes doit etre stable quand le navigateur
-         calcule une arrivee par ancre : decidee plus tard, elle
-         faisait sauter la page de 1 700 px. Memes portes que le
-         palier 1 de langue.js. */
-      var sasOk = !reduit &&
-        window.matchMedia("(min-width: 64em)").matches &&
-        !window.matchMedia("(pointer: coarse)").matches &&
-        (navigator.hardwareConcurrency || 8) > 4 &&
-        (navigator.deviceMemory || 8) > 4;
-      if (sasOk) d.classList.add("sas-ok");
+      /* LES SAS N'EXISTENT PLUS — cinq lignes de moins dans le seul
+         script BLOQUANT de la page.  D-581
+         `html.sas-ok` ouvrait les pistes des trois sas. Le dernier,
+         la cloture, est parti le 2026-08-03 : sa piste de 100vh ne
+         portait plus qu'un trait de 2 px au milieu de 900 px de
+         vide. Plus aucune regle ne lit cette classe. */
 
       /* SEQUENCE D'ENTREE — la decision se prend AVANT le premier  D-005 */
       var type = "navigate";
@@ -2837,18 +2832,29 @@
   </section>
 
   <!-- ===================== PIED DE PAGE ===================== -->
-  <!-- ===== SAS 3 · LA CLOTURE · 12 vers le pied ===== D-569 Le fil du chantier…  D-569 -->
-  <div class="sas" data-sas="cloture">
-    <div class="sas-piste">
-      <div class="sas-scene">
-        <i class="sas-fil" data-sas-fil aria-hidden="true"></i>
-        <div class="seuil seuil--pied" data-seuil data-de="11" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
-          <div class="wrap seuil-in">
-            <div class="section-rule draw seuil-filet" data-section-rule></div>
-            <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>11</span><span>00</span></span></b><span class="seuil-nom">Fin de la traversée</span></p>
-          </div>
-        </div>
-      </div>
+  <!-- ===== FRONTIERE 12 · 11 vers le pied =====  D-569
+       LE SAS DE CLOTURE EST RETIRE, ET C'EST LA CAUSE REELLE DE LA
+       « GROSSE LIGNE PARASITE ».
+
+       Ce n'etait pas un defaut de peinture : c'etait 900 px de page
+       VIDE — une piste de 100vh a scene collante — dont le seul
+       contenu peint etait `.sas-fil`, un trait de 2 px de large et
+       673 px de haut, gris a 38 %, plante au milieu du blanc. Il
+       avait un sens quand il faisait partie de l'arc de luminance,
+       avec la chambre noire et les deux autres sas ; ceux-la sont
+       partis le 2026-08-03, et le fil est reste seul dans un champ
+       vide, ou il ne se lit plus que comme une rature.
+
+       Supprimer le fil sans la piste aurait laisse 900 px de vide.
+       C'est la piste qui n'a plus de raison d'etre : elle n'existait
+       que pour donner au fil la place de se tracer.
+
+       La bande « Fin de la traversee » reste, en frontiere normale,
+       posee juste avant le pied. -->
+  <div class="seuil seuil--pied" data-seuil data-de="11" data-vers="00" data-dress="encre" data-verbe="volet" data-sens="bas" data-cible=".footer-mark">
+    <div class="wrap seuil-in">
+      <div class="section-rule draw seuil-filet" data-section-rule></div>
+      <p class="seuil-carte" aria-hidden="true" translate="no"><b class="seuil-num"><span class="seuil-roul"><span>11</span><span>00</span></span></b><span class="seuil-nom">Fin de la traversée</span></p>
     </div>
   </div>
 
@@ -3571,7 +3577,7 @@
       ["js/limaille.js", "js/trame.js", "js/main.js", "js/hero.js"],
       /* `langue.js` — le langage de mouvement de la phase 8 — arrive  D-091 */
       ["js/vendor/gsap.min.js", "js/vendor/ScrollTrigger.min.js",
-       "js/sas.js", "js/motion.js", "js/langue.js", "js/pointe.js", "js/tour360.js"]
+       "js/motion.js", "js/langue.js", "js/pointe.js", "js/tour360.js"]
     ];
     /* LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.  D-092 */
     function poserVague(liste, apres) {

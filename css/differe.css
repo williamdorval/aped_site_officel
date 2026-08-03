@@ -99,16 +99,6 @@
 }
 /* PALIER 2 — le geste propre a chaque frontiere tombe, les trois  D-106 */
 :root[data-palier="2"] .seuil[data-verbe] { --seuil-g4: none; }
-@media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
-html.sas-ok .sas[data-sas="cloture"] .seuil {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
-    margin: 0;
-  }
-}
 #visite, #calculateur, #comparatif, #processus,
 #reference, #faq, #contact, .footer {
   content-visibility: auto;

@@ -123,57 +123,22 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 /* PALIER 2 — le geste propre a chaque frontiere tombe, les trois  D-106 */
 :root[data-palier="2"] .seuil[data-verbe] { --seuil-g4: none; }
 
-/* == 1ter. LE SAS DE CLOTURE ==  D-571
-   IL N'Y EN A PLUS QU'UN. La descente et la remontee — le volet
-   noir, l'arete de grains, la forge et le mot « Essayez. » — sont
-   parties avec la chambre noire : la section Visite 360 ne se
-   presente plus par une mise en scene, elle se presente toute seule.
-   Ce qui reste est le sas de CLOTURE, qui n'a jamais rien peint en
-   noir : une piste, une scene collante, et un fil qui se soude.
+/* == 1ter. LES SAS N'EXISTENT PLUS ==  D-571
+   Il y en avait trois. La descente et la remontee — le volet noir,
+   l'arete de grains, la forge de limaille et le mot « Essayez. » —
+   sont parties avec la chambre noire. La CLOTURE est partie le
+   2026-08-03 : sa piste de 100vh ne portait plus, sur 900 px de page
+   vide, qu'un trait de 2 px de large et 673 px de haut, plante au
+   milieu du blanc. C'etait la « grosse ligne parasite » entre la fin
+   du Contact et la bande « Fin de la traversee ».
 
-   Replie par defaut : sans script, sous 64em, machine faible ou
-   mouvement reduit, un sas EST sa bande de seuil, rien de plus.
-   `html.sas-ok` se decide dans le HEAD, AVANT la premiere mise en
-   page : une hauteur de piste posee apres coup fait sauter les
-   arrivees par ancre de 1 700 px. Ces regles sont CRITIQUES pour
-   la meme raison — `differe.css` arrive apres l'ancre. */
-.sas-piste { position: relative; }
-.sas-scene { position: relative; }
-.sas-fil { display: none; }
+   Vingt-quatre regles, une classe decidee dans le script BLOQUANT du
+   `<head>` (`html.sas-ok`), et `js/sas.js` en entier sont partis avec
+   elle. La bande de cloture reste, en frontiere normale.
 
-@media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
-  html.sas-ok .sas .sas-piste { height: var(--sas-course, 220vh); }
-  html.sas-ok .sas .sas-scene {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-  }
-  html.sas-ok .sas[data-sas="cloture"] .sas-scene { overflow: hidden; }
-  html.sas-ok .sas[data-sas="cloture"] .seuil {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
-    margin: 0;
-  }
-  /* Le fil du chantier : 2 px, aucun texte, le scrub y est permis.
-     Repos = forme finale (tendu jusqu'a la bande) ; sas.js pose le
-     depart. Centre sur la COLONNE de contenu, pas sur l'ecran : le
-     rail vit a gauche et n'est pas la scene. */
-  html.sas-ok .sas .sas-fil {
-    display: block;
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: 2px;
-    height: calc(100vh - 96px);
-    background: var(--rule-strong);
-    transform-origin: top center;
-    will-change: transform;
-  }
-  .sas[data-sas="cloture"]  { --sas-course: 100vh; }
-}
+   Ce qui a survecu au retrait : rien. C'est ce qu'on verifie quand on
+   retire un systeme — pas seulement qu'il ne peint plus, mais qu'il
+   ne reste aucune regle, aucun fichier, aucun drapeau. */
 
 /* LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.  D-107 */
 #visite, #calculateur, #comparatif, #processus,
