@@ -25,14 +25,13 @@
     cadeau: "Documents demandes - site APED"
   };
 
-  /* == LE BAREME PUBLIE — et ce qui a disparu d'ici. ==  D-353 */
-  var BAREME = [
-    { bas: 2500, haut: 5000 },
-    { bas: 5000, haut: 10000 },
-    { bas: 10000, haut: 20000 },
-    { bas: 20000, haut: 40000 },
-    { bas: 40000, haut: null }   /* au-dela : sur devis */
-  ];
+  /* LE BAREME N'EXISTE PLUS.  D-353
+     Cinq paliers, de 2 500 $ a 40 000 $ et plus, affiches a l'etape 8
+     de l'estimateur : c'etait la grille tarifaire d'APED, publiee.
+     Les seuls prix du site sont maintenant 75 $ l'heure, 40 % au
+     demarrage, et le plafond de 5 000 $ du programme de reference.
+     `POIDS` reste : il sert encore a ordonner les reponses, plus a
+     choisir une fourchette. */
 
   /* Le score est GROSSIER a dessein : plusieurs combinaisons tombent
      dans la meme fourchette, donc aucune ne peut etre isolee. */
@@ -2003,17 +2002,22 @@
   var answers = {};
   var E_TOTAL = 8;
 
-  function computeEstimate() {
-    var score = (POIDS.type[answers.type] || 0)
-      + (POIDS.envergure[answers.envergure] || 0)
-      + (POIDS.design[answers.design] || 0)
-      + (POIDS.delai[answers.delai] || 0);
-    /* Dix points au maximum, cinq fourchettes : deux points par
-       fourchette. Le seuil est volontairement large — c'est lui qui
-       garantit que plusieurs profils partagent une meme reponse. */
-    var i = Math.min(BAREME.length - 1, Math.floor(score / 2));
-    var f = BAREME[i];
-    return { low: f.bas, high: f.haut, surDevis: f.haut === null };
+  /* CE QU'ON A COMPRIS, PAS UN PRIX.  D-353
+     `computeEstimate` rendait une fourchette en dollars tiree du
+     bareme, affichee a l'etape 8. Le bareme et son affichage sont
+     partis le 2026-08-03 : le site ne publie plus que 75 $ l'heure,
+     40 % au demarrage et le plafond de 5 000 $ du programme de
+     reference. Ce qui reste utile au visiteur, c'est de VOIR que ses
+     six reponses ont ete lues — et c'est verifiable par lui, ce
+     qu'un chiffre invente ne serait pas. */
+  function resumeProjet() {
+    var bouts = [
+      ANSWER_LABELS[answers.type],
+      ANSWER_LABELS[answers.industrie],
+      ANSWER_LABELS[answers.envergure],
+      ANSWER_LABELS[answers.delai]
+    ].filter(function (x) { return x; });
+    return bouts.length ? bouts.join(" · ") : "Votre projet";
   }
 
   function goEStep(n) {
@@ -2066,39 +2070,21 @@
         setLoading(btn, true, "Calcul en cours…");
         say(status, "");
 
-        var result = computeEstimate();
+        var resume = resumeProjet();
         var payload = Object.assign({}, serialize(estimateForm), {
           type_de_projet: ANSWER_LABELS[answers.type] || "",
           domaine: ANSWER_LABELS[answers.industrie] || "",
           envergure: ANSWER_LABELS[answers.envergure] || "",
           niveau_design: ANSWER_LABELS[answers.design] || "",
           echeancier: ANSWER_LABELS[answers.delai] || "",
-          site_existant: ANSWER_LABELS[answers.site_existant] || "",
-          fourchette_estimee: result.surDevis
-            ? "a partir de " + result.low.toLocaleString("fr-CA") + " $, sur devis"
-            : result.low.toLocaleString("fr-CA") + " $ a " + result.high.toLocaleString("fr-CA") + " $"
+          site_existant: ANSWER_LABELS[answers.site_existant] || ""
         });
 
         var reveal = function () {
           setLoading(btn, false);
           goEStep(8);
-          var lowEl = $("#priceLow");
-          var highEl = $("#priceHigh");
-          var suite = $("#priceSuite");
-          var sLow = new Spring(function (v) { lowEl.textContent = Math.round(v).toLocaleString("fr-CA"); }, 90, 22);
-          sLow.set(result.low);
-          /* La derniere fourchette n'a pas de borne haute : les
-             plateformes vont sur devis, et inventer un plafond
-             serait un chiffre faux affiche avec aplomb. */
-          if (result.surDevis) {
-            if (suite) suite.textContent = "et plus, sur devis";
-            highEl.hidden = true;
-          } else {
-            if (suite) suite.textContent = "$";
-            highEl.hidden = false;
-            var sHigh = new Spring(function (v) { highEl.textContent = Math.round(v).toLocaleString("fr-CA"); }, 90, 22);
-            sHigh.set(result.high);
-          }
+          var res = $("#estimateResume");
+          if (res) res.textContent = resume;
         };
 
         /* L'ETAT DE SORTIE EST CELUI DE L'ETAPE 8, PAS CELUI DU  D-425 */
@@ -2106,7 +2092,7 @@
         retirerRepli(sortie);
         say(sortie, "");
         sendJson("estimate", payload).then(reveal).catch(function () {
-          /* L'ORDRE COMPTE. On revele d'abord la fourchette — c'est ce  D-426 */
+          /* L'ORDRE COMPTE. On revele d'abord le resume — c'est ce  D-426 */
           reveal();
           say(sortie, "L’envoi automatique n’a pas passé. Envoyez-nous cette estimation d’ici pour qu’on vous rappelle.", "err");
           poserRepli(sortie, "estimate", payload);

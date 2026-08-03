@@ -5239,17 +5239,20 @@ html:not(.js) .ba-trait { display: none; }
 .fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
 
 /* == 22. FAQ - deux colonnes, accordeon == */
-/* La sortie de secours de la colonne de gauche. Elle n'existe qu'a  D-238 */
-.faq-aside { display: none; }
-.faq-mail {
-  font-family: var(--font-data);
-  font-size: var(--fs-7);
-  border-bottom: var(--rule-w) solid var(--rule-strong);
-  padding-bottom: var(--s-2);
-  width: fit-content;
-  transition: color var(--t-2) var(--e-snap), border-color var(--t-2) var(--e-snap);
+/* LA SORTIE DE SECOURS EXISTE MAINTENANT SUR TELEPHONE AUSSI.  D-238
+   Elle etait en `display: none` sous 64em : un visiteur de telephone
+   dont la question n'y etait pas n'avait aucune issue depuis cette
+   section. Elle ne coute que trois objets. */
+.faq-aside {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-4);
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: var(--rule-w) solid var(--rule-strong);
 }
-.faq-mail:hover { color: var(--accent-text); border-color: var(--accent-text); }
+/* `.faq-mail` est partie avec l'adresse courriel : plus aucune
+   adresse n'est affichee sur le site. */
 
 .faq-list { display: grid; gap: 0; }
 .faq-item { border-top: var(--rule-w) solid var(--rule); }
@@ -5280,6 +5283,10 @@ html:not(.js) .ba-trait { display: none; }
    sur douze : a 1920 px, une reponse sans borne rendait des lignes de
    plus de 90 signes, et l'oeil perd le debut de la suivante. */
 .faq-item p { padding-bottom: var(--s-5); color: var(--ink-muted); font-size: var(--fs-7); max-width: 62ch; }
+/* L'invitation qui ferme une reponse : elle porte un bouton, donc
+   elle n'a ni la couleur ni la largeur d'un paragraphe. */
+.faq-cta { padding-bottom: var(--s-5); max-width: none; }
+.faq-item p.faq-cta { padding-top: 0; }
 
 /* == 23. CONTACT - cinq cellules pour cinq entrees, aucune vide == */
 .bento { display: grid; gap: 1px; background: var(--rule-strong); border: var(--rule-w) solid var(--rule-strong); }
@@ -5821,14 +5828,9 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   .faq-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
   .faq-head { grid-column: 1 / span 4; position: sticky; top: calc(var(--nav-h) + var(--s-6)); align-self: start; }
   .faq-list { grid-column: 6 / span 7; }
-  .faq-aside {
-    display: grid;
-    justify-items: start;
-    gap: var(--s-4);
-    margin-top: var(--s-7);
-    padding-top: var(--s-5);
-    border-top: var(--rule-w) solid var(--rule-strong);
-  }
+  /* La sortie de secours respire davantage quand la colonne est
+     collante : elle a toute la hauteur pour elle. */
+  .faq-aside { margin-top: var(--s-7); }
 
   .roi-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
   .roi-inputs { grid-column: 1 / span 6; }
