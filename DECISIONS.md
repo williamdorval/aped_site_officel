@@ -65,7 +65,7 @@ Deux niveaux :
 | **Ce qui a été décidé** | 66 | 1 041 |
 | **La section 09 · Agence est retirée** | 40 | 582 |
 | **Ce que ça a coûté en instruments** | 21 | 227 |
-| **Le chantier de conversion — 2026-08-02** | 32 | 1 391 |
+| **Le chantier de conversion — 2026-08-02** | 33 | 1 561 |
 
 <!-- INDEX:FIN -->
 
@@ -978,6 +978,7 @@ tranchées dans `CRO-A-TESTER.md`.
 | D-709 | **Le plus gros chiffre du site n'avait aucune suite.** `#comparatif` produit « − 5 h 36 par jour » et ne proposait rien : aucun bouton, aucun lien, dans toute la section |
 | D-710 | **Sous 384 px, c'est le montant qui part, pas le mot.** La règle était exactement à l'envers : le bouton perdait « Référez » et gardait « 5 000 $ » — la seule fois où le site montrait un montant sans sa phrase. Ce correctif seul ne tenait pas ; D-704 dit pourquoi |
 | D-711 | **La différenciation vit en clôture de `#processus`.** Elle existait, éparpillée en cinq endroits, et n'était dite nulle part depuis le retrait de `#apropos`. Quatre points, aucun inventé, et le quatrième — « la preuve, c'est ce site » — ne porte **aucun chiffre** : le LCP mesuré est de 136 ms, mais aucune mesure de ce projet ne vient d'un appareil réel |
+| D-712 | **La vérification finale mourait sur une modale que le CTA n'ouvre plus.** `verif.mjs` cliquait `.hero-cta .btn--primary` puis attendait `#modal-start` ; ce bouton ouvre `modal-project` depuis un chantier antérieur. Le script levait une exception à la mesure d'INP, donc **aucun** des neuf seuils n'était gardé — ni le LCP, ni le CLS, ni les 109 arrêts au clavier. Une seconde occurrence, ligne 156, aurait rendu « la modale ne tient pas le focus » à tort dès la première réparée : les deux se corrigent ensemble ou pas du tout. `modal-start` reste vivant, ouvert par les treize boutons de secteur |
 
 Et la leçon de mesure du chantier : **trois sondes ont menti, chacune
 autrement.** L'une lisait à 1 500 ms, avant `data-lettres` et avant

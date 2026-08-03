@@ -36,12 +36,26 @@ commit séparé.
 | écart de cascade, découpée vs entière | **0** sur 273 240 propriétés | 0 |
 | prix « A RETIRER dans le source » | **0** | 0 |
 | prix « A VERIFIER dans le rendu » | **0** | 0 |
+| LCP | **216 ms** | < 300 |
+| CLS | **0** | 0 |
+| i/s moyenne · p95 · pire | **60 · 60 · 60** | 60 |
+| arrêts au clavier sans anneau de focus | **0** sur 109 arrêts | 0 |
+| piège de focus des modales | tient · retour au déclencheur | — |
+| requêtes tierces | **0** | 0 |
+| erreurs console, page d'accueil | **0** | 0 |
+| poids | 907 Ko | — |
+| INP au clic du CTA primaire | 173 ms | — |
+| tâches longues | 99 ms · 61 ms | — |
+| relief le pire, 240 images | 14,8 sur `contact-1920-sombre-2` | > 8 |
 
-Restent à relever avant la première modification : LCP, CLS, i/s
-médiane, contrastes, débordement, erreurs console, requêtes tierces.
+**Ces mesures n'existaient pas avant aujourd'hui.** `tools/verif.mjs`
+mourait d'une exception non rattrapée à la mesure d'INP ; aucun des
+neuf seuils n'était donc gardé. Voir l'item 1.
 
 Planche « avant » : `preuves/2026-08-03-audit/avant/` — douze ancres,
-cinq largeurs, deux thèmes, en mouvement **plein**.
+cinq largeurs, deux thèmes, en mouvement **plein**. 240 images,
+zéro erreur console, aucune surface morte sauf l'ancre `footer`, qui
+n'existe pas (item à venir).
 
 ---
 

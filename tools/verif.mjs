@@ -59,7 +59,8 @@ const browser = await chromium.launch();
   await page.waitForTimeout(500);
   const t0 = Date.now();
   await page.click(".hero-cta .btn--primary");
-  await page.waitForSelector("#modal-start.is-open", { timeout: 4000 });
+  /* Le CTA primaire du hero ouvre `modal-project`, pas `modal-start`.  D-712 */
+  await page.waitForSelector("#modal-project.is-open", { timeout: 4000 });
   const inp = Date.now() - t0;
   await page.keyboard.press("Escape");
 
@@ -153,7 +154,7 @@ const browser = await chromium.launch();
   const dedans = [];
   for (let i = 0; i < 14; i++) {
     await page.keyboard.press("Tab");
-    dedans.push(await page.evaluate(() => !!document.activeElement.closest("#modal-start")));
+    dedans.push(await page.evaluate(() => !!document.activeElement.closest("#modal-project")));
   }
   await page.keyboard.press("Escape");
   await page.waitForTimeout(400);
