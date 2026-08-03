@@ -65,7 +65,7 @@ Deux niveaux :
 | **Ce qui a été décidé** | 66 | 1 041 |
 | **La section 09 · Agence est retirée** | 40 | 582 |
 | **Ce que ça a coûté en instruments** | 21 | 227 |
-| **Le chantier de conversion — 2026-08-02** | 34 | 1 747 |
+| **Le chantier de conversion — 2026-08-02** | 35 | 1 947 |
 
 <!-- INDEX:FIN -->
 
@@ -980,6 +980,7 @@ tranchées dans `CRO-A-TESTER.md`.
 | D-711 | **La différenciation vit en clôture de `#processus`.** Elle existait, éparpillée en cinq endroits, et n'était dite nulle part depuis le retrait de `#apropos`. Quatre points, aucun inventé, et le quatrième — « la preuve, c'est ce site » — ne porte **aucun chiffre** : le LCP mesuré est de 136 ms, mais aucune mesure de ce projet ne vient d'un appareil réel |
 | D-712 | **La vérification finale mourait sur une modale que le CTA n'ouvre plus.** `verif.mjs` cliquait `.hero-cta .btn--primary` puis attendait `#modal-start` ; ce bouton ouvre `modal-project` depuis un chantier antérieur. Le script levait une exception à la mesure d'INP, donc **aucun** des neuf seuils n'était gardé — ni le LCP, ni le CLS, ni les 109 arrêts au clavier. Une seconde occurrence, ligne 156, aurait rendu « la modale ne tient pas le focus » à tort dès la première réparée : les deux se corrigent ensemble ou pas du tout. `modal-start` reste vivant, ouvert par les treize boutons de secteur |
 | D-713 | **Le pied donne son propre `id`, l'outil ne lui en fabrique plus un.** `<footer class="footer">` ne portait aucune ancre — la seule section du site dans ce cas, et zéro `href="#footer"` dans le document. `plages.mjs` synthétisait `id="footer"` à partir de la classe, puis son `verifier` comparait l'invention à elle-même : il ne pouvait structurellement pas voir le trou, et rendait « à jour » pendant que le tableau publiait une ancre inexistante. Conséquence la plus coûteuse : `plaques.mjs` rendait « footer ABSENTE » sur les dix plaques, donc le pied échappait à toute preuve par l'image. Le repli silencieux est remplacé par un ARRÊT qui nomme la cause |
+| D-714 | **Le plus gros chiffre du site était multiplié par cinq, et démenti par le document qu'on remet au même prospect.** `#comparatif` affichait « − 5 h 36 **par jour** » et disait les six tâches « **chronométrées** bout à bout ». La légende du guide gratuit, `aped-automatisation.html`, dit mot pour mot : « en **minutes par semaine**, pour l'entreprise au complet […] C'est un **ordre de grandeur d'atelier**, pas une donnée d'enquête. » Les six valeurs du site (100, 90, 90, 60, 60, 40) sont exactement celles de la table du guide. Q1 échoue deux fois — et la section promet elle-même « chaque chiffre porte sa source ». « par semaine » et « estimées » : aucune ligne de mise en page ne bouge, vérifié à 390 px |
 
 Et la leçon de mesure du chantier : **trois sondes ont menti, chacune
 autrement.** L'une lisait à 1 500 ms, avant `data-lettres` et avant

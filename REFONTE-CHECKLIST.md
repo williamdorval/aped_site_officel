@@ -214,4 +214,5 @@ n'est pas commité ET prouvé.
 | Item | Défaut | Commit | Preuve |
 |---|---|---|---|
 | 1 | La vérification finale ne vérifiait plus rien (défaut 1) | `a9f48ec` | Test cassé volontairement → sortie 1 ; remis → sortie 0 |
-| 2 | Le pied n'avait pas d'ancre, et le générateur lui en inventait une (défauts 2 et 7) | *(ce commit)* | `plaques.mjs footer` : **16 images, 0 surface morte**, contre « ABSENTE » sur 10 plaques sur 10 avant. Ancre retirée → `plages.mjs` sort **2** et nomme la cause ; remise → sortie 0 |
+| 2 | Le pied n'avait pas d'ancre, et le générateur lui en inventait une (défauts 2 et 7) | `b74d810` | `plaques.mjs footer` : **16 images, 0 surface morte**, contre « ABSENTE » sur 10 plaques sur 10 avant. Ancre retirée → `plages.mjs` sort **2** et nomme la cause ; remise → sortie 0 |
+| 3 | **« − 5 h 36 par jour » — le plus gros chiffre du site, multiplié par cinq** | *(ce commit)* | Le guide source dit « minutes **par semaine** » et « ordre de grandeur d'atelier, **pas une donnée d'enquête** ». Corrigé aux trois endroits, y compris le texte pour lecteur d'écran. Image à 390 px : tient sur une ligne. `verif.mjs` sortie 0, tous seuils tenus |
