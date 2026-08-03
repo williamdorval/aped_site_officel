@@ -257,6 +257,8 @@ const browser = await chromium.launch();
   await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
   const errs = [];
   page.on("pageerror", e => errs.push(String(e)));
+  /* `pageerror` seul rate les `console.error`.  D-717 */
+  page.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.waitForTimeout(1800);
   R.mouvementReduit = await page.evaluate(() => {
@@ -279,3 +281,53 @@ const browser = await chromium.launch();
 await browser.close();
 fs.writeFileSync(path.join(OUT, "verif.json"), JSON.stringify(R, null, 2));
 console.log(JSON.stringify(R, null, 2));
+
+/* ============================================================
+   LE VERDICT — il n'y en avait aucun.  D-717
+
+   Cet outil s'appelle « VERIFICATION FINALE » et porte les seuils de
+   `CLAUDE.md`. Il n'avait aucun `process.exit` : il imprimait un JSON
+   que rien ne relisait. Neuf outils de controle sur dix etaient dans
+   ce cas le 2026-08-03.
+
+   DEUX MESURES DELIBEREMENT ABSENTES DE LA PORTE.
+     · `p404.erreurs` — l'outil vise `/page-qui-nexiste-pas`, le
+       serveur rend un vrai HTTP 404 pour le document et Chromium le
+       journalise. C'est le comportement attendu ; en faire une faute
+       rendrait la porte rouge en permanence, donc inutile.
+     · `mouvementReduit.elementsInvisibles` — il compte les 12 `.mock`
+       de `#demos`, qui portent `content-visibility: hidden` et vivent
+       sous un `aria-hidden`. Ni peints ni annonces, donc corrects.
+       Une porte qui echoue toujours ne garde rien.
+   ============================================================ */
+const fautes = [];
+const dit = (ok, quoi) => { if (!ok) fautes.push(quoi); };
+
+dit(typeof R.perf.lcp === "number" && R.perf.lcp < 300, `LCP ${R.perf.lcp} ms >= 300`);
+dit(R.perf.cls === 0, `CLS ${R.perf.cls} != 0`);
+dit(R.perf.fps && R.perf.fps.moy >= 60, `i/s moyenne ${R.perf.fps && R.perf.fps.moy} < 60`);
+dit(R.perf.requetesTierces === 0, `${R.perf.requetesTierces} requete(s) tierce(s)`);
+dit(R.clavier.sansAnneau === 0, `${R.clavier.sansAnneau} arret(s) clavier sans anneau de focus`);
+dit(!R.clavier.piege, `piege de tabulation : ${R.clavier.piege}`);
+dit(R.clavier.modaleTientLeFocus === true, "la modale ne tient pas le focus");
+dit(R.clavier.retourAuDeclencheur === true, "le focus ne revient pas au declencheur");
+dit(R.orientation.toutesRepondent === true, "une position d'orientation ne repond pas");
+dit(R.mobile.erreurs.length === 0,
+  `${R.mobile.erreurs.length} erreur(s) console : ${R.mobile.erreurs.slice(0, 2).join(" | ")}`);
+dit(R.p404.debord === false, "debordement horizontal sur 404.html");
+dit(R.mouvementReduit.erreurs.length === 0,
+  `${R.mouvementReduit.erreurs.length} erreur(s) console en mouvement reduit`);
+
+/* Zero mesure veut dire que l'outil n'a rien regarde, pas que tout
+   va bien. C'est le piege 30/40/62, et il s'arrete ici. */
+if (!R.clavier.arrets) {
+  console.error("\nARRET : zero arret au clavier releve. L'outil n'a rien parcouru.");
+  process.exit(2);
+}
+
+if (fautes.length) {
+  console.error(`\nECHEC — ${fautes.length} seuil(s) franchi(s) :`);
+  fautes.forEach((f) => console.error(`  · ${f}`));
+  process.exit(1);
+}
+console.log(`\nok — les seuils tiennent. ${R.clavier.arrets} arrets au clavier parcourus.`);
