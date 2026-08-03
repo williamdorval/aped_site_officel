@@ -112,16 +112,38 @@ for (const f of FICHIERS) {
   });
 }
 
-/* Les grilles de calcul vivent dans le script : elles produisent le
-   chiffre du prospect et ne s'affichent jamais telles quelles. On
-   les releve quand meme, pour que la decision soit visible. */
+/* LA GRILLE EST AFFICHEE, ET LA SONDE NE LA VOYAIT PAS.  D-716
+   Cette sonde cherchait `PRICING` et `base: { vitrine`. La variable
+   s'appelle `BAREME` (js/main.js:29) : elle ne matchait rien, et le
+   titre imprime plus bas jurait que la grille « ne s'affiche jamais
+   telle quelle ». Elle s'affiche : `main.js` pose ses bornes dans le
+   textContent de #priceLow et #priceHigh a l'etape 8 de l'estimateur.
+   On la releve, on la NOMME, et on refuse de rendre zero. */
 const grilles = [];
 {
   const p = path.join(RACINE, "js/main.js");
   const lignes = fs.readFileSync(p, "utf8").split("\n");
+  let dansBareme = false;
   lignes.forEach((l, i) => {
-    if (/PRICING|base:\s*\{\s*vitrine/.test(l)) grilles.push({ ligne: i + 1, texte: l.trim().slice(0, 110) });
+    if (/\bvar\s+BAREME\s*=|PRICING|base:\s*\{\s*vitrine/.test(l)) {
+      dansBareme = true;
+      grilles.push({ ligne: i + 1, texte: l.trim().slice(0, 110) });
+      return;
+    }
+    if (dansBareme) {
+      if (/^\s*\]/.test(l)) { dansBareme = false; return; }
+      if (/\d/.test(l)) grilles.push({ ligne: i + 1, texte: l.trim().slice(0, 110) });
+    }
   });
+  if (!grilles.length) {
+    console.error(
+      "ARRET  js/main.js — aucune grille trouvee.\n" +
+      "       Il y en avait une (var BAREME, cinq paliers). Zero ici\n" +
+      "       veut dire que la sonde a derive, pas que la grille a\n" +
+      "       disparu : va le verifier a la main avant de me croire."
+    );
+    process.exit(2);
+  }
 }
 
 /* ---- passe 2 : le texte reellement rendu ---- */
@@ -188,7 +210,29 @@ console.log("=== SOURCE ===");
 source.forEach((s) => console.log(`  ${s.fichier}:${s.ligne}  ${s.montant}  ${s.verdict}`));
 console.log("\n=== TEXTE RENDU, modales et accordeons ouverts ===");
 renduTries.forEach((r) => console.log(`  ${r.montant}  ${r.verdict}   « …${r.avant} ${r.montant} ${r.apres}… »`));
-console.log(`\n=== GRILLE DE CALCUL (jamais affichee telle quelle) ===`);
+console.log(`\n=== GRILLE PUBLIEE — AFFICHEE AU VISITEUR, ETAPE 8 DE L'ESTIMATEUR ===`);
 grilles.forEach((g) => console.log(`  js/main.js:${g.ligne}  ${g.texte}`));
+console.log(
+  `  ^ ${grilles.length} ligne(s). Ces bornes arrivent dans le textContent de\n` +
+  `    #priceLow et #priceHigh (js/main.js:2088-2101). Le visiteur les LIT.\n` +
+  `    CLAUDE.md interdit « aucun prix, nulle part » ; D-353 documente ce\n` +
+  `    bareme comme une decision assumee. Les deux ne peuvent pas etre\n` +
+  `    vrais. ARBITRAGE DU PROPRIETAIRE — cet outil ne tranche pas, il\n` +
+  `    refuse seulement de rendre zero en silence.`
+);
 console.log(`\nA RETIRER dans le source : ${aRetirer.length}`);
 console.log(`A VERIFIER dans le rendu : ${aVerifier.length}`);
+
+/* UN INTERDIT ABSOLU DOIT POUVOIR ECHOUER.  D-716
+   `CLAUDE.md` ecrit « doit rester a 0 » et cet outil n'avait aucun
+   `process.exit` : il imprimait un nombre que rien ne relisait. La
+   grille publiee, elle, est signalee sans faire echouer — elle
+   attend un arbitrage, elle n'est pas une derive. */
+if (aRetirer.length || aVerifier.length) {
+  console.error(
+    `\nECHEC : ${aRetirer.length} prix a retirer dans le source, ` +
+    `${aVerifier.length} a verifier dans le rendu.`
+  );
+  process.exit(1);
+}
+console.log("\nok — 0 prix non autorise. La grille publiee reste en attente d'arbitrage.");
