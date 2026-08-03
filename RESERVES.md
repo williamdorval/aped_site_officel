@@ -77,6 +77,14 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ La FAQ n'a pas de sortie de secours sur téléphone | 9 | 111 |
 | &nbsp;&nbsp;↳ Le serveur 8099 ne tournait pas | 6 | 62 |
 | &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 6 | 58 |
+| **Corrections de design — 2026-08-03** | 5 | 36 |
+| &nbsp;&nbsp;↳ Une adresse courriel reste atteignable, et c'est délibéré | 16 | 196 |
+| &nbsp;&nbsp;↳ Les deux PDF publient une grille de prix APED | 14 | 164 |
+| &nbsp;&nbsp;↳ tools/prix-check.mjs sort en code 2 | 10 | 132 |
+| &nbsp;&nbsp;↳ Le déneigement est présenté comme une entreprise fictive | 13 | 173 |
+| &nbsp;&nbsp;↳ Le masque RBQ ne masque plus rien | 7 | 78 |
+| &nbsp;&nbsp;↳ Le téléphone du popup n'est pas validé | 6 | 58 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 5 | 48 |
 
 <!-- INDEX:FIN -->
 
@@ -922,3 +930,79 @@ au premier appel. Démarré par la session avec `node tools/serve.mjs
 > **AUCUNE mesure de ce chantier non plus n'a été prise sur un
 > appareil réel.** Chromium sous Playwright, poste de bureau Windows,
 > relevés « téléphone » compris.
+
+## Corrections de design — 2026-08-03
+
+Sept items livrés. Détail et captures :
+`preuves/2026-08-03-corrections-design/RAPPORT.md`.
+
+### Une adresse courriel reste atteignable, et c'est délibéré
+
+Le site n'affiche plus aucune adresse : zéro `mailto:`, zéro adresse
+écrite, vérifié sur le rendu d'`index.html` et de `404.html`, modales
+et popup ouverts.
+
+**Sauf une.** `CONTACT_EMAIL` dans `js/main.js` alimente le repli
+`mailto:` qui s'affiche **quand un envoi de formulaire échoue** —
+« Ouvrir mon courriel, message déjà écrit ». Comme FormSubmit n'a
+jamais été activé, c'est aujourd'hui le chemin **normal**, pas
+l'exception. Un balayage statique ne le voit pas.
+
+Retiré aujourd'hui, il ferait échouer les formulaires **en silence**.
+Il disparaît au branchement vers le Sheet. **C'est la première chose
+à faire au prochain chantier.**
+
+### Les deux PDF publient une grille de prix APED
+
+`documents/src/aped-automatisation.html`, tableau « Le point mort » :
+mise en place de 700 $ à 12 000 $ par type de mandat, abonnements
+annuels, « coût an 1 » jusqu'à 16 300 $, et une note de méthode qui
+valorise « l'entretien à 35 $ l'heure ».
+
+Les seuls prix autorisés sur le site sont désormais **75 $ l'heure,
+40 % au démarrage et le plafond de 5 000 $**. Ces deux documents se
+téléchargent depuis le popup : ils sont donc publics.
+
+Non régénérés — un chapitre entier de 42 pages repose sur ces
+chiffres. **Arbitrage du propriétaire.**
+
+### `tools/prix-check.mjs` sort en code 2
+
+Il exige que `BAREME` existe et refuse de rendre zéro en silence. Le
+barème a été retiré volontairement le 2026-08-03 ; l'outil ne peut pas
+le savoir. Son propre message dit : « va le vérifier à la main avant
+de me croire ». Fait, avec une sonde hors dépôt qui lit la page
+rendue : seuls 75 $, 40 % et 5 000 $ subsistent, plus les sorties
+vivantes du calculateur, qui sont les chiffres du visiteur.
+**L'outil est à mettre à jour.**
+
+### Le déneigement est présenté comme une entreprise fictive
+
+`#realisations` annonce « Quatre démonstrations, entreprises fictives
+— pas des mandats livrés ». Le « après » du déneigement est la
+capture d'un site RÉEL : « Déneigement MV », « Shawinigan depuis
+2005 », et son adresse civique — **1250, avenue de la Station** — que
+les masques de `tools/demos-sites.mjs` ne couvrent pas. Ils masquent
+le téléphone, le RBQ et le courriel, pas l'adresse, contrairement aux
+trois autres projets où elle devient « Adresse sur demande ».
+
+Antérieur à ce chantier. Soit le libellé est faux, soit l'adresse ne
+doit pas être publiée.
+
+### Le masque RBQ ne masque plus rien
+
+`demos-capture.mjs` signale `RBQ\s*:?\s*[\d-]+` comme SANS EFFET : le
+site du client ne porte plus son numéro. Sans conséquence, mais un
+masque qu'on croit actif et qui ne l'est plus est exactement ce qui
+laisse passer la prochaine donnée.
+
+### Le téléphone du popup n'est pas validé
+
+`validate()` vérifie qu'il n'est pas vide. Un visiteur qui tape « 1 »
+passe et repart avec les guides. La validation de forme viendra avec
+le doublage côté serveur.
+
+### Et celle qui gouverne tout le reste
+
+> **AUCUNE mesure de ce chantier non plus n'a été prise sur un
+> appareil réel.** Chromium sous Playwright, poste de bureau Windows.

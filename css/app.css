@@ -732,7 +732,14 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
   text-transform: uppercase;
   color: var(--ink-muted);
 }
-.field .opt { text-transform: none; letter-spacing: 0; opacity: 0.7; }
+/* L'OPACITE EST PARTIE, ET C'EST UN CORRECTIF DE CONTRASTE.
+   `opacity: 0.7` sur une etiquette deja en `--ink-muted` la faisait
+   tomber a 2,89:1 — sous le seuil de 4,5. Le defaut existait sur les
+   dix « (optionnel) » du site ; il ne s'est vu que le jour ou l'un
+   d'eux est arrive dans le flux de la page, donc a une position
+   d'arret au clavier. Une couleur nommee dit la meme chose qu'une
+   opacite, et elle se mesure. */
+.field .opt { text-transform: none; letter-spacing: 0; color: var(--ink-muted); }
 
 .field input,
 .field select,
