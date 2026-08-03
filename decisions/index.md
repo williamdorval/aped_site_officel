@@ -1978,3 +1978,38 @@ contredisent : la lecture semblait plus lente que la reponse.
 « le prochain jour ouvrable **au plus tard** » enleve le plancher
 sans rien promettre de neuf. Le hero (« Reponse en 12 h »), la FAQ,
 l'etape 06 et les modales restent mot pour mot.
+
+
+## D-703 · Le chemin dit « le plus direct » etait le plus long
+
+La tuile de `#contact` annoncait « Le plus direct · 7 etapes ·
+4 minutes ». C'etait le chemin le plus LONG du site : sept ecrans,
+21 champs, dix obligatoires. Le plus direct dans le nom seulement.
+
+Trois coupes, chacune argumentee :
+
+**L'etape des fichiers disparait comme etape.** Un ecran entier pour
+un depot facultatif — « Cette etape se saute sans probleme », disait
+son propre texte. Le depot rejoint la description du projet, ou il
+etait de toute facon : on decrit son projet ET on montre son logo,
+c'est un seul geste. Sept ecrans deviennent six, dont cinq questions.
+
+**Le telephone n'est plus obligatoire.** Ce que le site promet est
+« une proposition ECRITE » : le courriel suffit a la tenir. Exiger un
+numero est le frein le plus cher d'un formulaire d'affaires, pour une
+information dont on n'a pas besoin pour repondre. Il reste demande,
+en optionnel. L'urgence, elle, le garde obligatoire — la, on rappelle.
+
+**Les minutes s'en vont.** « 4 minutes » ne survit pas a un client qui
+dit « ca m'en a pris six ». « 5 questions » repond a la meme peur, se
+compte, et ne se conteste pas.
+
+Ce qui RESTE obligatoire, et pourquoi : nom, entreprise, domaine,
+nombre d'employes, site existant, un besoin, objectif, budget,
+echeancier, courriel. Neuf champs au lieu de dix. Chacun change ce
+qu'on ecrit dans la proposition — c'est le test qui les a gardes.
+
+`P_TOTAL` gouverne desormais les quatre endroits qui comptaient les
+etapes a la main : le libelle du bouton, l'avance, l'arrivee et la
+barre. Preuve : la traversee complete, cinq etapes, aucune bloquee,
+bouton « Envoyer ma demande » a la cinquieme, 0 erreur console.

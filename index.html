@@ -2712,7 +2712,8 @@
 
       <div class="bento">
         <button class="cell cell--lead" type="button" data-modal-open="modal-project">
-          <span class="num">Le plus direct · 7 étapes · 4 minutes</span>
+          <!-- Cinq questions, pas sept, et plus de minutes.  D-703 -->
+          <span class="num">Le plus direct · 5 questions</span>
           <span>
             <h3>Démarrer votre projet</h3>
             <p>Des questions simples, une à la fois. Vous joignez vos photos et vos documents, on revient avec une proposition écrite.</p>
@@ -3198,21 +3199,18 @@
           <label for="prMsg">Décrivez votre projet dans vos mots <span class="opt">(optionnel)</span></label>
           <textarea id="prMsg" name="description" rows="3" placeholder="Ce que vous avez en tête, vos inspirations, ce qui vous dérange de votre site actuel…"></textarea>
         </div>
-      </div>
-
-      <div class="step" data-pstep="5" hidden>
-        <p class="step-q">Des photos ou des documents à nous montrer ? <span class="opt">(optionnel)</span></p>
+        <!-- LES FICHIERS N'AVAIENT PAS BESOIN D'UNE ETAPE A EUX.  D-703 -->
         <label class="dropzone" for="prFiles">
           <svg class="icon" aria-hidden="true"><use href="#i-cloud-upload" /></svg>
-          <strong>Déposez votre logo, vos photos, vos inspirations</strong>
+          <strong>Déposez votre logo, vos photos, vos inspirations <span class="opt">(optionnel)</span></strong>
           <span>Images ou PDF, 10&nbsp;Mo maximum au total</span>
           <input id="prFiles" name="fichiers" type="file" multiple accept="image/*,.pdf" hidden />
         </label>
         <ul class="file-list" id="prFileList"></ul>
-        <p class="empty" id="prFileEmpty">Aucun fichier pour l’instant. Cette étape se saute sans problème.</p>
+        <p class="empty" id="prFileEmpty">Aucun fichier pour l’instant. Ça se saute sans problème.</p>
       </div>
 
-      <div class="step" data-pstep="6" hidden>
+      <div class="step" data-pstep="5" hidden>
         <p class="step-q">Où peut-on vous joindre ?</p>
         <div class="form-row">
           <div class="field">
@@ -3221,8 +3219,9 @@
             <span class="field-error">Entrez un courriel valide.</span>
           </div>
           <div class="field">
-            <label for="prPhone">Téléphone</label>
-            <input id="prPhone" name="telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+            <!-- LA PROPOSITION EST ECRITE : LE COURRIEL SUFFIT.  D-703 -->
+            <label for="prPhone">Téléphone <span class="opt">(optionnel)</span></label>
+            <input id="prPhone" name="telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="418 555 0142…" />
             <span class="field-error">Entrez votre numéro.</span>
           </div>
         </div>
@@ -3238,7 +3237,7 @@
         <p class="form-status" role="status" aria-live="polite"></p>
       </div>
 
-      <div class="step success" data-pstep="7" hidden>
+      <div class="step success" data-pstep="6" hidden>
         <span class="num">01 / 01</span>
         <h4>Reçu cinq sur cinq.</h4>
         <p class="modal-sub" style="margin-top:0">On regarde votre projet et on revient en moins de 12 h ouvrables avec la suite.</p>

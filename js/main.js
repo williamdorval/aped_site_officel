@@ -1838,7 +1838,8 @@
   var projectBack = $("#projectBack");
   var projectNext = $("#projectNext");
   var projectNav = $("#projectNav");
-  var P_TOTAL = 7;
+  /* Six, depuis que les fichiers ont rejoint la description.  D-703 */
+  var P_TOTAL = 6;
   var pStep = 1;
   var pickedFiles = [];
   var MAX_BYTES = 10 * 1024 * 1024;
@@ -1855,7 +1856,7 @@
     projectBack.hidden = n === 1 || n === P_TOTAL;
     projectNav.hidden = n === P_TOTAL;
     var label = $("[data-label]", projectNext);
-    label.textContent = n === 6 ? "Envoyer ma demande" : "Continuer";
+    label.textContent = n === P_TOTAL - 1 ? "Envoyer ma demande" : "Continuer";
     projectNext.dataset.idle = label.textContent;
     var visible = $('.step[data-pstep="' + n + '"]', projectWizard);
     if (visible) {
@@ -1966,7 +1967,7 @@
     var advance = function () {
       var current = $('.step[data-pstep="' + pStep + '"]', projectWizard);
       if (!validate(current)) return;
-      if (pStep < 6) { goPStep(pStep + 1); return; }
+      if (pStep < P_TOTAL - 1) { goPStep(pStep + 1); return; }
 
       var status = $(".form-status", projectWizard);
       setLoading(projectNext, true);
@@ -1978,7 +1979,7 @@
       Object.keys(data).forEach(function (k) { fd.append(k, data[k]); });
       pickedFiles.forEach(function (f, i) { fd.append("fichier_" + (i + 1), f, f.name); });
 
-      var done = function () { setLoading(projectNext, false); goPStep(7); };
+      var done = function () { setLoading(projectNext, false); goPStep(P_TOTAL); };
       var attempt = pickedFiles.length ? sendMultipart("project", fd) : sendJson("project", data);
 
       attempt.then(done).catch(function () {
@@ -1986,7 +1987,7 @@
         // fichiers que pas de demande du tout.
         sendJson("project", data).then(done).catch(function () {
           setLoading(projectNext, false);
-          say(status, "L’envoi automatique n’a pas passé. Vos sept étapes ne sont pas perdues — envoyez-les d’ici :", "err");
+          say(status, "L’envoi automatique n’a pas passé. Vos réponses ne sont pas perdues — envoyez-les d’ici :", "err");
           poserRepli(status, "project", data, pickedFiles.length > 0);
         });
       });
