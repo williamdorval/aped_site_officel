@@ -204,6 +204,42 @@ ouverte ; « msr » = prouvé par une mesure et sa commande.
 | 25 | Le socle du hero laisse des `·` orphelins en fin de ligne à 768 px | img |
 | 26 | Trois masses minium se disputent le premier écran : la puce « Référez… 5 000 $ », la plaque, le CTA primaire. « Un seul foyer d'attention par écran » | img |
 
+### Famille G · Le contrôle n'existe pas — trouvé en dernier, et c'est le plus grave
+
+Neuf outils de contrôle sur dix **n'ont aucun `process.exit`**. Ils
+impriment un JSON et réussissent toujours. La table « SEUILS À NE
+JAMAIS FAIRE RÉGRESSER » de `CLAUDE.md` n'est donc gardée par rien.
+
+| # | Défaut | Preuve |
+|---|---|---|
+| 27 | `verif` · `traversee-check` · `cascade-check` · `theme-check` · `prix-check` · `secteurs-check` · `estimateur-check` · `sas-check` · `cadeau-check` : **0 `process.exit`** chacun | msr · `grep -c 'process\.exit'` |
+| 28 | `theme-check` mesurait 47,9 % du texte en moins et ne pouvait pas échouer | msr · **CORRIGÉ**, item 4 |
+| 29 | `prix-check.mjs:123` cherche `/PRICING\|base:\s*\{\s*vitrine/` ; la variable s'appelle `BAREME` (`js/main.js:29`). **Le garde-fou du prix ne voit pas la grille de prix** | msr |
+| 30 | `palier-check.mjs:395` assied son verdict sur `.plaque-corps`, qui n'existe plus. `[].every()` rend `true` : l'assertion ne peut pas échouer | msr |
+| 31 | `accueil-check.mjs:367` — `catch (e) {}` **vide** sur le calcul même qui prouve le mouvement. Décodage raté → « 0 écart », c'est-à-dire « rien ne bouge », rendu par un instrument en panne | msr |
+| 32 | `index-doc.mjs:106` — un fichier ABSENT n'incrémente pas le compteur de dérive. `verifier FICHIER-INEXISTANT.md` sort **0** | msr |
+| 33 | `debord.mjs:7` teste 320 → 768 px ; le seuil du projet dit **320 → 1920** | msr |
+| 34 | `commentaires.mjs:270` en mode `appliquer` réécrit 11 fichiers sources **sans compter les `/*` et les `*/`** — le piège 75 en personne — et renumérote à partir de `D-001`, en collision avec les identifiants posés | msr |
+| 35 | 34 sélecteurs de la famille `svc-*` sondent le vide : les outils tournent, ne trouvent rien, et rendent 0 sans dire qu'ils n'ont rien cherché | msr |
+
+### Famille H · Structure et accessibilité
+
+| # | Défaut | Preuve |
+|---|---|---|
+| 36 | `<footer>` dans `<main>` : arbre AX réel → **`contentinfo` trouvé : 0**. `404.html` fait l'inverse et gagne le sien — ce n'est pas une convention maison, c'est une anomalie | msr |
+| 37 | Les cinq tuiles de contact sont des `<button>` contenant un `<h3>` et un `<p>` : noms accessibles de **226, 101, 104, 64 et 86 caractères**. `<h3>` dans `<button>` est en plus invalide | msr |
+| 38 | Le seul mode d'emploi de la visite 360 (`index.html:2028`) et le seul indicateur de pièce courante (`:2011`) sont `aria-hidden="true"`. `#visite` n'a **aucune région vive** ; les trois boutons de pièce n'ont ni `aria-current` ni `aria-pressed` | msr |
+| 39 | Modales : `aria-modal="true"` mais **rien n'est `inert`** — 105 éléments focalisables restent dans l'arbre. Le menu plein écran n'a ni `role="dialog"`, ni `aria-modal`, ni `inert` (83 éléments) | msr |
+| 40 | `index.html:155` — texte visible « Référez, gagnez jusqu'à 5 000 $ », nom accessible « Référer une entreprise et gagner… ». WCAG 2.5.3 *Label in Name*, niveau A : la commande vocale « cliquer Référez » n'active rien | msr |
+| 41 | Quatre `div.ba-vitre` en `overflow-y: auto` sont des arrêts clavier **sans rôle, sans nom, sans `tabindex` déclaré** (arrêts 35, 37, 39, 41 sur 109) | msr |
+| 42 | À **320 px**, `.tour-cadre` mesure 346 px : la liste des pièces se coupe sur « 03 CHAM », le filet droit disparaît. Rogné par `body{overflow-x:hidden}`, sans indice | img |
+| 43 | `index.html:3137` — `<input type="hidden" required>` : `main.js:1474` fait `focus()` dessus, sans effet. Le message d'erreur s'affiche, le focus ne va nulle part | msr |
+| 44 | Second `<h1>` du document (`index.html:983`), à l'intérieur d'une maquette | msr |
+| 45 | Dix `<output>` en `role=status, live=polite` : un seul clic de profil en modifie **12 d'un coup**, dix annonces polies s'empilent | msr |
+| 46 | **Il y a neuf écrans de métier, pas douze.** `CLAUDE.md` et `index.html:1755` disent « douze » | msr |
+| 47 | `demos-secteurs/photo` n'a **aucun titre** ; `coiffure` pose un `<h2>` avant son `<h1>` ; `coiffure`, `juridique`, `boutique` n'ont pas de `<main>` ; `gym` reproduit le `<footer>` dans `<main>` ; quatre écrans imbriquent `<header>` dans `<main>` | msr |
+| 48 | `demos-secteurs/hotel:530` — le numéro fictif est **composable** : `<a href="tel:0000000000">` | msr |
+
 ---
 
 ## JOURNAL DES ITEMS
