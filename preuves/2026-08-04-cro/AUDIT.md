@@ -202,10 +202,27 @@ la reconstituer lui-même — il ne le fera pas.
 
 **Et le plus gros gisement de preuve est hors d'atteinte : les neuf
 écrans de secteur (`demos-secteurs/`) ne sont liés depuis aucune page
-du site.** `grep -c "demos-secteurs" index.html` → **0**. Les neuf
-répondent en 200 sur le serveur, entre 20 et 35 ko chacun. Pour une
-agence sans client public, ce sont neuf sites complets qu'on peut
-faire visiter — et personne ne peut y aller.
+du site.** `grep -c "demos-secteurs" index.html` → **0**.
+
+> **Deux corrections à ce que j'avais d'abord écrit ici.**
+>
+> 1. Ils ne sont pas *inertes* : ils jouent déjà, en `<iframe>`
+>    inerte au survol (D-672) — mais uniquement sur grand écran, à la
+>    souris, au palier 0, à l'échelle **0,29**, où le texte courant
+>    tombe sous 5 px *à dessein* (D-683). Le visiteur voit la
+>    composition, jamais le travail. Et il ne peut en ouvrir aucun.
+> 2. Ce ne sont **pas des « sites complets »**. `STANDARD.md § 0 bis`
+>    (2026-08-01) : **« UN ÉCRAN, PAS UN SITE »**. Les neuf sites
+>    longs ont été archivés dans `archives/2026-08-01-sites-longs/`.
+>    Chacun est **un premier écran arrêté**, 25 à 116 éléments,
+>    `scrollHeight <= 900`, dont les cinq liens de menu sont
+>    `href="#"`.
+
+Ce qui reste vrai : neuf premiers écrans complets, chacun avec sa
+propre direction visuelle, chacun répondant en 200, **et personne ne
+peut en ouvrir un**. Pour une agence sans client public, c'est la
+meilleure preuve disponible, et elle est fermée. Vérifié aussi : ils
+sont responsifs, **aucun débordement à 390, 768 ni 1024**.
 
 ---
 

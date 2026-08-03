@@ -4485,6 +4485,46 @@ html:not(.js) .ba-trait { display: none; }
 .sector-pills button:hover,
 .sector-pills button.is-on { border-color: var(--accent-text); color: var(--accent-text); background: var(--accent-wash); }
 
+/* Les neuf demos s'ouvrent : liste filetee, pas pastilles.  D-690 */
+.demos-liens { display: grid; }
+.demos-liens .fiche-rule { display: block; }
+.demos-liens a {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  transition: padding-left var(--t-2) var(--e-snap), color var(--t-2) var(--e-snap);
+}
+.demos-liens a:hover,
+.demos-liens a:focus-visible { padding-left: var(--s-2); color: var(--accent-text); }
+.demos-liens em {
+  font-family: var(--font-data);
+  font-style: normal;
+  font-size: var(--fs-8);
+  color: var(--ink-muted);
+  letter-spacing: var(--tracking-label);
+}
+.demos-liens span { font-size: var(--fs-7); }
+.demos-liens b {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--accent-text);
+}
+.demos-liens .icon { width: 0.875em; height: 0.875em; }
+.demos-mot {
+  margin-top: var(--s-4);
+  font-size: var(--fs-7);
+  color: var(--ink-muted);
+}
+
 /* L'apercu etait `display: none` sous 64em : sur telephone, la  D-220 */
 .sector-preview {
   position: relative;
@@ -4761,6 +4801,7 @@ html:not(.js) .ba-trait { display: none; }
 /* Chaque borne se pose SOUS son bout de piste : celle de gauche a
    l'origine, celle de droite au bout. C'est ce qui remplace l'axe. */
 .ecart-bornes { position: relative; display: block; margin: 0; max-width: none; min-height: 3.25rem; }
+/* `--ink-muted` est calibre sur `--surface-0` : sur le ciment  D-691 */
 .ecart-borne {
   position: absolute;
   top: 0;
@@ -4768,7 +4809,7 @@ html:not(.js) .ba-trait { display: none; }
   gap: 2px;
   font-family: var(--font-data);
   font-size: var(--fs-8);
-  color: var(--ink-muted);
+  color: var(--ink);
 }
 .ecart-borne b {
   font-family: var(--font-display);
