@@ -5441,6 +5441,28 @@ html:not(.js) .ba-trait { display: none; }
    n'ouvriront aucun formulaire — et l'adresse etait la derniere chose
    lue de la section.  D-243 */
 
+/* LE MESSAGE ORDINAIRE — le formulaire qui manquait.  D-244
+   Il ferme la section : c'est la voie de celui qui n'a ni urgence ni
+   projet, et elle ne doit pas se lire comme une sixieme tuile. Il a
+   donc son propre filet en tete, et le meme habillage de champs que
+   les formulaires des modales. */
+.contact-mot {
+  margin-top: var(--s-8);
+  padding-top: var(--s-6);
+  border-top: var(--rule-w) solid var(--rule-strong);
+  display: grid;
+  gap: var(--s-6);
+}
+.contact-mot .head { margin-bottom: 0; }
+.contact-mot h3 { font-size: var(--fs-3); max-width: 18ch; }
+/* UN CHAMP DE 1 048 px NE SE REMPLIT PAS, IL S'ARPENTE. Les
+   formulaires des modales sont bornes par le panneau ; celui-ci est
+   en pleine page et n'avait rien pour l'arreter. */
+.contact-mot .form { max-width: 46rem; }
+/* Le bouton d'envoi est un objet, pas une barre : en enfant de
+   grille il s'etirait sur toute la largeur du formulaire. */
+.contact-mot .form [type="submit"] { justify-self: start; }
+
 /* Reassurance : quatre faits, quatre chiffres, un filet. */
 .contact-sur {
   display: grid;
@@ -5789,9 +5811,11 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   .cell:nth-child(1) { grid-column: span 4; grid-row: span 2; min-height: 21rem; }
   .cell:nth-child(2) { grid-column: span 2; }
   .cell:nth-child(3) { grid-column: span 2; }
-  .cell:nth-child(4) { grid-column: span 2; min-height: 10rem; }
-  .cell:nth-child(5) { grid-column: span 2; min-height: 10rem; }
-  .cell:nth-child(6) { grid-column: span 2; min-height: 10rem; }
+  /* CINQ TUILES, PLUS SIX : « Ecrire un courriel » est partie avec
+     l'adresse. Les deux cas particuliers reprennent trois colonnes
+     chacun — a deux, ils laissaient une colonne morte. */
+  .cell:nth-child(4) { grid-column: span 3; min-height: 10rem; }
+  .cell:nth-child(5) { grid-column: span 3; min-height: 10rem; }
 
   .contact-sur { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--gutter); }
   .contact-sur li { border-bottom: 0; }

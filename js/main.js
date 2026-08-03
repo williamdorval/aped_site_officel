@@ -21,7 +21,7 @@
     refer: "Nouvelle reference - site APED",
     estimate: "Demande d'estimation - site APED",
     booking: "Demande de rendez-vous - site APED",
-    roi: "Calcul ROI - site APED",
+    contact: "Message - site APED",
     cadeau: "Documents demandes - site APED"
   };
 
@@ -1606,8 +1606,13 @@
     if (ancien) ancien.parentNode.removeChild(ancien);
   }
 
-  /* Formulaires simples : urgence et reference */
-  $$('form[data-form="urgent"], form[data-form="refer"]').forEach(function (form) {
+  /* LE HANDLER COMMUN — urgence, reference, et le message ordinaire.
+     Ces trois-la ne connaissent RIEN de l'envoi : ils declarent leur
+     `data-form`, et tout le reste — validation, etats du bouton,
+     message de succes, message d'echec avec un moyen de nous joindre
+     quand meme — vient d'ici. Un quatrieme formulaire s'ajoute en
+     ecrivant son nom dans ce selecteur, nulle part ailleurs. */
+  $$('form[data-form="urgent"], form[data-form="refer"], form[data-form="contact"]').forEach(function (form) {
     var kind = form.getAttribute("data-form");
     var btn = $("[data-submit]", form);
     var status = $(".form-status", form);

@@ -2731,26 +2731,22 @@
           <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
 
-        <a class="cell cell--moyen" href="mailto:dorvalwilliam11@gmail.com?subject=Projet">
-          <span class="num">Sans formulaire</span>
-          <span>
-            <h3>Écrire un courriel</h3>
-            <p>dorvalwilliam11@gmail.com — réponse en 12&nbsp;h ouvrables.</p>
-          </span>
-          <span class="cell-ou">Ouvre votre logiciel de messagerie</span>
-          <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-        </a>
-
-        <!-- NIVEAU 3 · LES CAS PARTICULIERS -->
-        <button class="cell" type="button" data-modal-open="modal-estimate">
+        <!-- LA TUILE « Ecrire un courriel » EST PARTIE. Elle affichait
+             l'adresse en clair, et le site n'en affiche plus aucune.
+             Ce qu'elle offrait — nous ecrire sans declarer une urgence
+             ni demarrer un projet — est repris par le formulaire
+             simple, au bas de cette section. -->
+        <button class="cell cell--moyen" type="button" data-modal-open="modal-estimate">
           <span class="num">6 questions</span>
           <span>
             <h3>Cadrer votre projet</h3>
             <p>Six questions. On vous rappelle avec un prix ferme.</p>
           </span>
-          <span class="cell-ou">Ouvre le calculateur, ici</span>
+          <span class="cell-ou">Ouvre le questionnaire, ici</span>
           <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
+
+        <!-- NIVEAU 3 · LES CAS PARTICULIERS -->
 
         <button class="cell" type="button" data-modal-open="modal-urgent">
           <span class="num">Traité en premier</span>
@@ -2780,13 +2776,63 @@
         <li><b class="num">Jamais</b><span>De relance insistante, de liste d’envoi non demandée, ni de revente de vos coordonnées.</span></li>
       </ul>
 
-      <!-- LA PORTE DE SORTIE A CHANGE DE PLACE, PAS DE ROLE.
-           « Ou simplement · dorvalwilliam11@gmail.com » vivait ICI,
-           en bas de section, apres deux blocs — c'est-a-dire que la
-           seule voie qui ne depend d'aucun formulaire etait la
-           derniere chose lue. Elle est maintenant une TUILE, au
-           deuxieme niveau, a cote de l'appel. L'adresse reste lisible
-           et copiable en clair, et le pied de page la reprend. -->
+      <!-- ===== LE MESSAGE ORDINAIRE =====
+           IL N'Y EN AVAIT AUCUN. Pour nous ecrire sans declarer une
+           urgence ni demarrer un projet, la seule voie affichee etait
+           une adresse courriel — qui est partie du site entier.
+
+           PRET A BRANCHER, et c'est la contrainte qui a dicte sa
+           forme :
+           · quatre champs aux noms STABLES — `nom`, `email`,
+             `telephone`, `message` — qui deviendront les colonnes de
+             l'onglet « Contact simple » ;
+           · `data-form="contact"` le fait passer par le handler
+             COMMUN de `main.js`, celui de l'urgence et de la
+             reference. Aucune logique d'envoi propre : le prochain
+             chantier remplace `sendJson` a UN seul endroit et les six
+             formulaires suivent ;
+           · le handler commun donne deja les etats — envoi en cours,
+             bouton desactive, succes, echec avec un moyen de nous
+             joindre quand meme ;
+           · `novalidate` : la validation du navigateur est coupee, la
+             notre passe par `validate()`, et elle sera doublee cote
+             serveur au prochain chantier. -->
+      <div class="contact-mot">
+        <div class="head">
+          <p class="head-index">Sans urgence, sans projet</p>
+          <h3>Une question, tout simplement.</h3>
+          <p>Vous voulez juste nous écrire&nbsp;? C’est ici. On répond en 12&nbsp;h ouvrables.</p>
+        </div>
+        <form class="form" data-form="contact" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label for="ctName">Votre nom</label>
+              <input id="ctName" name="nom" type="text" required autocomplete="name" />
+              <span class="field-error">Entrez votre nom.</span>
+            </div>
+            <div class="field">
+              <label for="ctPhone">Téléphone <span class="opt">(optionnel)</span></label>
+              <input id="ctPhone" name="telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="418 555 0142…" />
+              <span class="field-error">Entrez un numéro valide, ou laissez vide.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="ctEmail">Courriel</label>
+            <input id="ctEmail" name="email" type="email" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+            <span class="field-error">Entrez un courriel valide.</span>
+          </div>
+          <div class="field">
+            <label for="ctMsg">Votre message</label>
+            <textarea id="ctMsg" name="message" rows="4" required placeholder="Ce que vous voulez nous demander…"></textarea>
+            <span class="field-error">Écrivez-nous quelques mots.</span>
+          </div>
+          <button class="btn btn--primary" type="submit" data-submit>
+            <span data-label>Envoyer le message</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-send" /></svg>
+          </button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
     </div>
   </section>
 
