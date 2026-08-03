@@ -1125,6 +1125,12 @@ html.entree-saut .hero-fiche .fiche-rule,
    stations de plus, et la section ne doit PAS grandir. Meme geste
    que `#calculateur > .band`. */
 #processus > .band-loose { padding-top: var(--s-8); }
+/* LES TROIS PREUVES SONT PARTIES — vingt-cinq regles, une bulle de
+   texto, une signature en SVG et un avis de depot. Elles illustraient
+   le mecanisme sans l'expliquer, et l'etape qui manquait — remplir le
+   formulaire — n'avait aucune illustration parce qu'elle n'existait
+   pas dans la liste. La clarte prime sur le spectacle : quatre
+   etapes, un titre, une ligne.  D-237 */
 .fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
 /* --- 768 px : compositions asymetriques --- */
 @media (min-width: 48em) {

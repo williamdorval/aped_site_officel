@@ -296,28 +296,14 @@
       scrollTrigger: { trigger: ".referral-steps", start: "top 82%", end: "bottom 62%", scrub: 0.5 }
     });
   }
-  /* Les trois PREUVES. Le bareme en regle graduee a ete retire —  D-522 */
-  /* == `immediateRender: false` SUR ONZE TWEENS — CORRECTIF DU ==  D-523 */
-  $$(".ref-preuve").forEach(function (preuve) {
-    var tl = gsap.timeline({ scrollTrigger: { trigger: preuve, start: "top 84%", once: true } });
-
-    var bulle = $(".rp-bulle", preuve);
-    if (bulle) tl.fromTo(bulle, { x: -14, opacity: 0.12 }, { x: 0, opacity: 1, duration: 0.34, ease: "power3.out", immediateRender: false });
-
-    var trait = $(".rp-signature path", preuve);
-    if (trait) {
-      /* Ici le trace SVG est justifie : c'est UNE seule courte
-         courbe, jouee une seule fois, pas quarante rectangles
-         repeints a chaque image. */
-      tl.fromTo(trait, { strokeDashoffset: 220 }, { strokeDashoffset: 0, duration: 0.72, ease: "power2.inOut" });
-    }
-
-    var avis = $$(".rp-avis", preuve);
-    if (avis.length) tl.fromTo(avis, { opacity: 0.12, y: -6 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.1, ease: "power3.out", immediateRender: false });
-
-    var etat = $(".rp-etat", preuve);
-    if (etat) tl.fromTo(etat, { opacity: 0.1 }, { opacity: 1, duration: 0.24, ease: "power2.out", immediateRender: false }, "-=0.06");
-  });
+  /* LES TROIS PREUVES SONT PARTIES, ET LEURS ONZE TWEENS AVEC.  D-522
+     La section Reference est passee en version SOBRE, sur demande :
+     quatre etapes, un titre, une ligne. La bulle de texto, le trace
+     de signature et l'avis de depot illustraient un mecanisme qu'ils
+     n'expliquaient pas — et l'etape qui manquait, remplir le
+     formulaire, n'avait aucune illustration parce qu'elle n'etait pas
+     dans la liste. Le seul mouvement qui reste est le filet
+     ci-dessus, qui se trace au defilement (V3 · SOUDER).  D-523 */
 
   /* 13bis. « Ce qui arrive apres » — N2.  D-524 */
   var filetSuite = $(".suite-fil b");

@@ -2524,54 +2524,53 @@
         <!-- Le plafond est un bloc a lui, dans la colonne de droite :  D-070 -->
         <p class="referral-max">
           <span class="label">Jusqu’à</span>
-          <b class="num">5 000 $</b>
+          <b class="num">5&nbsp;000&nbsp;$</b>
           <span>par entreprise référée, versés à la signature. Aucun plafond sur le nombre de références.</span>
         </p>
 
-        <!-- LES TROIS TEMPS. Le filet qui les relie se trace au
-             defilement : c'est le dossier qui avance d'un temps a
-             l'autre. Chaque temps porte sa preuve. -->
+        <!-- LES QUATRE ETAPES, ET LA SOBRIETE EST DELIBEREE.  D-070
+             Cette section ne cherche pas a impressionner : elle doit
+             se comprendre. Les trois « preuves » d'avant — une bulle
+             de texto, une signature en SVG, un avis de depot — ont
+             ete retirees : elles illustraient un mecanisme qu'elles
+             n'expliquaient pas, et l'etape la plus importante,
+             REMPLIR LE FORMULAIRE, n'y figurait meme pas.
+             Un titre, une ligne, rien de plus.
+             Le seul mouvement est le filet qui se trace au
+             defilement (V3 · SOUDER) : la progression se voit, elle
+             ne se joue pas. -->
         <ol class="referral-steps" data-ref>
           <li>
             <span class="num">01</span>
-            <strong>Vous nous présentez</strong>
-            <span>« Appelle APED, ils refont des sites. » Un texto suffit.</span>
-            <figure class="ref-preuve pr--texto" aria-hidden="true">
-              <p class="rp-bulle">Appelle APED, ils refont<br>des sites. 418 555 0142</p>
-              <p class="rp-etat"><i></i>Envoyé</p>
-            </figure>
+            <strong>Vous remplissez le formulaire</strong>
+            <span>Le nom de l’entreprise, et à qui parler.</span>
           </li>
           <li>
             <span class="num">02</span>
-            <strong>Le contrat se signe</strong>
-            <span>On appelle, on chiffre, on livre. Vous n’y êtes pour rien.</span>
-            <figure class="ref-preuve pr--signe" aria-hidden="true">
-              <p class="rp-doc"><span></span><span></span><span class="rp-court"></span></p>
-              <svg class="rp-signature" viewBox="0 0 120 28" aria-hidden="true">
-                <path d="M4 20c8-14 12 6 18-2s8-12 14-4 8 10 14 2 10-12 16-4 10 8 16 2 8-6 14-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="butt" />
-              </svg>
-              <p class="rp-etat"><i></i>Signé</p>
-            </figure>
+            <strong>On contacte votre référence</strong>
+            <span>On appelle, on chiffre. Vous n’avez rien à suivre.</span>
           </li>
           <li>
             <span class="num">03</span>
+            <strong>On signe avec elle</strong>
+            <span>Si le contrat se fait. Sinon, vous ne devez rien.</span>
+          </li>
+          <li>
+            <span class="num">04</span>
             <strong>Vous êtes payé</strong>
-            <span>Viré à la signature. Autant de fois que vous voulez.</span>
-            <figure class="ref-preuve pr--vire" aria-hidden="true">
-              <p class="rp-avis"><em>Dépôt</em><b>reçu</b></p>
-              <p class="rp-avis"><em>Plafond</em><b>aucun</b></p>
-              <p class="rp-etat"><i></i>Encaissé</p>
-            </figure>
+            <span>Un montant fixe selon la valeur du contrat, viré à la signature.</span>
           </li>
           <i class="referral-line" aria-hidden="true"><b></b></i>
         </ol>
 
         <div class="referral-foot">
+          <!-- Le bouton dit l'ETAPE 01, mot pour mot : c'est la seule
+               chose que le visiteur a a faire. -->
           <button class="btn btn--primary btn--lg" type="button" data-modal-open="modal-refer">
-            Encaissez jusqu’à 5 000 $
+            Remplir le formulaire
             <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
           </button>
-          <p class="fine" style="margin-top: var(--s-4);">Commission versée uniquement à la signature, selon la valeur du contrat. Le détail vous est donné dans le formulaire. Aucun plafond sur le nombre de références.</p>
+          <p class="fine" style="margin-top: var(--s-4);">La commission est un montant fixe, fonction de la valeur du contrat signé. La grille complète est dans le formulaire. Aucun plafond sur le nombre de références.</p>
         </div>
       </div>
     </div>

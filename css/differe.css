@@ -3851,6 +3851,14 @@ html:not(.js) .ba-trait { display: none; }
   font-size: clamp(2.75rem, 1.4rem + 5vw, 5rem);
   line-height: 0.92;
   letter-spacing: -0.05em;
+  /* LE CHIFFRE SE LISAIT « 5000$ ». Le `letter-spacing` negatif
+     s'applique AUSSI aux espaces : a 5 rem il en mangeait la
+     totalite, et le montant le plus important du site rendait un
+     bloc de cinq caracteres colles. `word-spacing` le rend — et les
+     DEUX separateurs sont des espaces insecables, sinon le moteur
+     traite le separateur de milliers et celui du dollar autrement et
+     le montant rend « 5000 $ », faux d'un cran de plus. */
+  word-spacing: 0.10em;
   color: var(--ref-accent);
   font-variant-numeric: tabular-nums;
 }
@@ -3866,9 +3874,9 @@ html:not(.js) .ba-trait { display: none; }
 }
 .referral-steps strong { font-size: var(--fs-5); color: var(--ref-encre); }
 .referral-steps li > span:not(.num) { font-size: var(--fs-7); color: var(--ref-mute); }
-/* Le filet qui relie les trois temps. Il se trace au defilement :
+/* Le filet qui relie les quatre etapes. Il se trace au defilement :
    c'est le dossier qui avance. Trame de grains, meme matiere que
-   partout ailleurs. */
+   partout ailleurs. C'est le SEUL mouvement de la section. */
 .referral-line {
   position: absolute;
   left: 0;
@@ -3887,35 +3895,6 @@ html:not(.js) .ba-trait { display: none; }
   transform: scaleX(1);
   transform-origin: left center;
 }
-/* LES TROIS PREUVES  D-237 */
-.ref-preuve {
-  display: grid;
-  gap: var(--s-2);
-  margin-top: var(--s-3);
-  padding: var(--s-4);
-  background: color-mix(in srgb, var(--ref-encre) 7%, var(--ref-fond));
-  border: var(--rule-w) solid var(--ref-filet);
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  line-height: 1.5;
-}
-.rp-bulle {
-  padding: var(--s-3);
-  background: var(--ref-encre);
-  color: var(--ref-fond);
-  justify-self: start;
-  max-width: 100%;
-}
-.rp-etat { display: flex; align-items: center; gap: var(--s-2); color: var(--ref-accent); }
-.rp-etat i { width: 0.5rem; height: 0.5rem; background: var(--ref-accent); flex: none; }
-.rp-doc { display: grid; gap: 0.35rem; }
-.rp-doc span { display: block; height: 3px; background: var(--ref-filet); }
-.rp-doc .rp-court { width: 58%; }
-.rp-signature { display: block; width: 100%; max-width: 9rem; height: auto; color: var(--ref-accent); }
-.rp-signature path { stroke-dasharray: 220; stroke-dashoffset: 0; }
-.rp-avis { display: flex; justify-content: space-between; gap: var(--s-3); padding-bottom: 0.35rem; border-bottom: var(--rule-w) solid var(--ref-filet); }
-.rp-avis em { font-style: normal; color: var(--ref-mute); }
-.rp-avis b { color: var(--ref-encre); font-weight: 700; }
 /* == 22. FAQ - deux colonnes, accordeon == */
 /* La sortie de secours de la colonne de gauche. Elle n'existe qu'a  D-238 */
 .faq-aside { display: none; }
@@ -4405,12 +4384,14 @@ html.js .derail-row,
     padding-top: 0;
     border-top: 0;
   }
-/* Les trois temps prennent la LARGEUR PLEINE : serres sur six
-     colonnes, chaque preuve tombait sous 11 rem et le texto y
-     revenait a la ligne au milieu d'un mot. */
+/* QUATRE ETAPES, DEUX PAR DEUX A CETTE LARGEUR. A 768 px, quatre
+     colonnes laissent 150 px chacune : « Vous remplissez le
+     formulaire » y tomberait sur quatre lignes et l'ordre de lecture
+     se perdrait. Deux rangees de deux se lisent 1-2 puis 3-4, et le
+     filet passe au-dessus des deux premieres — il reste juste. */
 .referral > .referral-steps {
     grid-column: 1 / span 12;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--s-6);
     padding-top: var(--s-5);
   }
@@ -4422,7 +4403,11 @@ html.js .derail-row,
     justify-content: space-between;
     gap: var(--s-5);
   }
-.referral > .referral-foot .fine { margin-top: 0 !important; max-width: 34ch; text-align: right; }
+/* LA MENTION N'EST PLUS ALIGNEE A DROITE. En monospace, un texte
+     ferre a droite oblige l'oeil a rechercher le debut de chaque
+     ligne — sur la seule section dont la consigne est « la clarte
+     prime », c'etait le contraire de la consigne. */
+.referral > .referral-foot .fine { margin-top: 0 !important; max-width: 38ch; }
 /* TROIS POIDS, pas cinq tuiles egales :  D-255 */
 .bento { grid-template-columns: repeat(6, 1fr); }
 .cell:nth-child(1) { grid-column: span 4; grid-row: span 2; min-height: 21rem; }
@@ -4443,6 +4428,18 @@ html.js .derail-row,
 }
 @media (min-width: 64em) {
 /* LA HAUTEUR IMPOSEE A DISPARU AVEC LE PIN.  D-256 */
+/* LES QUATRE ETAPES SUR UNE SEULE RANGEE, et c'est la seule
+     largeur ou elles y tiennent. Le filet qui les traverse dit alors
+     ce qu'il est cense dire : un dossier qui avance de 01 a 04, en
+     une ligne, de gauche a droite — le sens de lecture. */
+.referral > .referral-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* LES QUATRE LIGNES DE CORPS DOIVENT PARTIR DE LA MEME HAUTEUR.
+     Sur 236 px de colonne, « Vous remplissez le formulaire » tient
+     sur deux lignes et « On signe avec elle » sur une : les corps
+     demarraient en escalier et le balayage 01 → 04 sautait. Deux
+     lignes reservees pour tous ; celui qui n'en prend qu'une garde
+     l'espace. */
+.referral > .referral-steps strong { min-height: 2.6em; }
 .faq-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
 .faq-head { grid-column: 1 / span 4; position: sticky; top: calc(var(--nav-h) + var(--s-6)); align-self: start; }
 .faq-list { grid-column: 6 / span 7; }
