@@ -1650,12 +1650,29 @@
   function minDate() { return startOfDay(new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000)); }
   function maxDate() { return startOfDay(new Date(Date.now() + BOOKING.horizonDays * 24 * 3600 * 1000)); }
 
+  /* UN JOUR SANS PLAGE NE S'OFFRE PAS.  D-694 */
+  function plagesDuJour(date) {
+    var floor = new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000);
+    return BOOKING.slots.filter(function (slot) {
+      var p = slot.split(":");
+      var when = new Date(date);
+      when.setHours(Number(p[0]), Number(p[1]), 0, 0);
+      return when >= floor;
+    });
+  }
+
+  function jourOuvert(date) {
+    return BOOKING.businessDays.indexOf(date.getDay()) !== -1 &&
+      date >= minDate() && date <= maxDate() &&
+      plagesDuJour(date).length > 0;
+  }
+
   /* == LE CALENDRIER OUVRE SUR LE PREMIER JOUR RESERVABLE.  D-622 */
   function premierJourOuvrable() {
     var d = minDate();
     var fin = maxDate();
     for (var i = 0; i < 60 && d <= fin; i++) {
-      if (BOOKING.businessDays.indexOf(d.getDay()) !== -1) return d;
+      if (jourOuvert(d)) return d;
       d = new Date(d.getTime() + 86400000);
     }
     return minDate();
@@ -1679,7 +1696,6 @@
 
     var firstDay = new Date(y, m, 1).getDay();
     var count = new Date(y, m + 1, 0).getDate();
-    var lo = minDate();
     var hi = maxDate();
     var today = startOfDay(new Date());
 
@@ -1698,7 +1714,7 @@
         btn.className = "cal-day";
         btn.textContent = day;
         btn.setAttribute("aria-label", date.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" }));
-        var open = BOOKING.businessDays.indexOf(date.getDay()) !== -1 && date >= lo && date <= hi;
+        var open = jourOuvert(date);
         if (date.getTime() === today.getTime()) btn.classList.add("is-today");
         if (!open) {
           btn.disabled = true;
@@ -1738,12 +1754,9 @@
       return;
     }
     slotsTitle.textContent = selectedDate.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" });
-    var floor = new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000);
-    BOOKING.slots.forEach(function (slot) {
-      var parts = slot.split(":");
-      var when = new Date(selectedDate);
-      when.setHours(Number(parts[0]), Number(parts[1]), 0, 0);
-      if (when < floor) return;
+    /* MEME SOURCE que le calendrier : deux bornes calculees a deux
+       endroits, c'etait exactement le defaut.  D-694 */
+    plagesDuJour(selectedDate).forEach(function (slot) {
       var btn = doc.createElement("button");
       btn.type = "button";
       btn.className = "slot";

@@ -45,3 +45,27 @@ Les deux qui restent comptent tous les deux. Verifie : 10 curseurs,
 
 Le nombre d'employes reste demande la ou il sert vraiment, dans le
 formulaire de projet (`nombre_employes`).
+
+## D-694 · Un jour offert a toujours au moins une plage
+
+La borne du JOUR etait calculee a minuit (`minDate()`, +24 h puis
+`startOfDay`), celle des PLAGES a l'heure (`floor`, +24 h exactement).
+Deux bornes, deux endroits, un decalage : tous les soirs apres
+16 h 30 — la derniere plage — le premier jour offert etait cliquable
+et **vide**. « Plus rien de libre ce jour-la. Prenez une autre date. »
+
+C'est le visiteur le plus presse qui tombait dessus, a l'heure ou un
+patron de PME regarde un site : le soir.
+
+Une seule source, `plagesDuJour(date)`, sert desormais aux deux :
+`jourOuvert()` la consulte pour desactiver la case, `renderSlots()`
+pour peindre les boutons. Un jour sans plage ne s'offre plus.
+
+`#slotsEmpty` reste en place. Ce n'est pas la rustine du defaut — le
+defaut etait la borne, pas le message : c'est l'etat d'erreur du cas
+ou la modale reste ouverte en franchissant 16 h 30.
+
+Preuve : la sonde eprouve six heures d'horloge, dont 17 h et 21 h 30.
+Sur le code d'avant elle rend **2 en defaut** ; sur celui-ci, **0**.
+Le compte des jours offerts passe de 19 a 18 apres 16 h 30 — le jour
+est retenu au lieu d'etre offert vide.
