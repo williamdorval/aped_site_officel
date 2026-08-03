@@ -288,7 +288,117 @@ des deux PDF) et `CREDITS.md` : zéro adresse.
 
 ## ITEM 1 · LA COMPARAISON DU DÉNEIGEMENT
 
-*(section complétée dans le commit des photos)*
+`item1-avant.png` · `item1-apres.png` · `item1-moitie.png`
+
+### Ce qui n'allait pas
+
+Le « avant » était un gabarit de **rénovation** avec des titres de
+déneigement collés dessus. En face, un « après » qui dit
+**« Déneigement MV, Shawinigan, depuis 2005 »**.
+
+| | avant le correctif |
+|---|---|
+| bannière | « Réalisez la maison de vos rêves » |
+| accroche | « partenaire de confiance en **construction et en rénovation** » |
+| services | décrits en armoires, céramique, isolation, bardeau |
+| réalisations | « Cuisine — Secteur nord », « Salle de bain — Secteur sud » |
+| FAQ | « Combien de temps dure une **rénovation de cuisine** ? » |
+| nom | « MV Déneigement » |
+| monogramme | **« CN »** |
+
+Deux métiers, deux noms. Un visiteur ne pouvait pas croire que c'était
+le même commerce, donc la comparaison ne prouvait rien.
+
+### Ce qui a été fait
+
+**Même nom des deux côtés** — Déneigement MV, monogramme MV. **Même
+ville** — Shawinigan. **Même métier.**
+
+La reconstitution suit ce que font vraiment les sites du métier, relevé
+sur **vingt sites québécois** :
+
+- le titre de bannière est **une requête Google**, pas une promesse :
+  « Déneigement résidentiel et commercial à Shawinigan » — le patron de
+  ~75 % des sites vus ;
+- **six services qui répètent la même phrase**, dont un porte une faute
+  en production : « Déneigement **commerical** » (relevée telle quelle
+  sur un vrai site) ;
+- le menu **vend à trois publics** : « Emplois » y pèse autant que
+  « Services » ;
+- **les quatre vraies questions du métier sont affichées et aucune ne
+  s'ouvre** : le délai après une bordée, le prix d'une entrée, le
+  territoire, ce qui arrive si on brise l'asphalte. Sur vingt sites,
+  **zéro** répond aux deux dernières ;
+- **les chiffres se contredisent dans la page** : « plus de 25 ans »
+  d'un côté, « fondée en 2005 » de l'autre. La contradiction est
+  **interne**, pas entre les deux côtés ;
+- le pied s'est arrêté à **2014-2019**, la bannière souhaite encore la
+  **saison 2018-2019**, et le **télécopieur** est toujours là.
+
+### La mention
+
+« avant : un gabarit acheté » → **« avant : un site resté à l'hiver
+2019 »**. Personne n'achète un gabarit pour une entreprise de
+déneigement, et ce n'était plus ce que la reconstitution montrait.
+
+### Les photos
+
+Les quatre colonnes montraient encore des intérieurs de rénovation —
+une charpente en construction sous un titre de déneigement.
+`STANDARD.md § 4.5` : *on change la photo, jamais le texte.*
+
+**14 photos refaites**, toutes Pexels (licence gratuite, usage
+commercial, modification permise). Poly Haven a été écarté : sur ses
+982 HDRI, les 29 panoramas d'hiver sont des champs et des forêts — ça
+lit « hiver », jamais « déneigement », et à 92 px de haut un champ de
+neige est un aplat.
+
+| colonne | contenu |
+|---|---|
+| `ban` 760×289 | lame orange d'un tracteur poussant un andain, chaussée dégagée derrière |
+| `apropos` 340×198 | chargeur avec chaînes, portes de garage au fond |
+| `svc` 280×92 ×6 | pelle sur allée · lame devant vitrine · toiture · abrasifs · tondeuse · râteau |
+| `real` 280×105 ×6 | rue au crépuscule · stationnement vu du ciel · entrée double · cour à semi-remorques · toiture et glaçons · chemin damé |
+
+**Écartées pour marque lisible** — un véhicule de déneigement porte
+presque toujours un nom, et ça se lit à la loupe, pas à l'estime :
+sceau municipal sur une portière · nom et téléphone peints sur une
+caisse · « TOWMASTER » · « epoke » · « FISHER » sur une trémie ·
+plaques d'immatriculation lisibles · « BRIGGS & STRATTON » sur un
+moteur · bidon de marque · enseignes de commerce · numéros civiques.
+Deux autres écartées pour cause d'aplat illisible à 92 px.
+
+**Point faible assumé :** la carte « épandage d'abrasifs » lit
+« entretien hivernal » plutôt qu'« épandage ». Toutes les vraies photos
+d'épandeuse trouvées portaient une marque. Une image honnête et un peu
+générique vaut mieux qu'une marque lisible ; la légende porte le sens.
+
+**Réserve :** le décor n'est québécois que par ressemblance — maisons à
+pignon, brique, épinettes, garages doubles. Deux photos viennent
+d'Europe de l'Est, une du Canada anglais. Rien n'y désigne un lieu.
+
+### Ce que ça donne
+
+| | |
+|---|---|
+| hauteur de la reconstitution | **1 942 px** — la plus haute des quatre |
+| blocs | **13** |
+| mots | **585** |
+| `ba-check` | **passe**, rapport 4,240 contre 4,155 attendu, dérive **2,0 %** (seuil 3 %) |
+| les quatre fonds du côté « avant » | **chargent**, 0 en échec |
+
+Comparaison des quatre reconstitutions :
+
+| bloc | hauteur | blocs | mots |
+|---|---|---|---|
+| garage | 540 px | 1 | 234 |
+| design | 1 246 px | 8 | 527 |
+| restaurant | 1 105 px | 10 | 441 |
+| **déneigement** | **1 942 px** | **13** | **585** |
+
+**Règle légale tenue :** entreprise fictive, aucun logo réel,
+coordonnées neutres (`819 555-0000`, `000, rue Principale`,
+`RBQ# 0000-0000-00`), aucun nom d'entreprise réelle dans les photos.
 
 ---
 

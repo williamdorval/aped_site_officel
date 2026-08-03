@@ -138,60 +138,82 @@ const COLONNES = [
   },
   {
     fichier: "avant-renov-ban", larg: 760, haut: 289, q: 0.74,
-    /* Le carrousel du gabarit achete, sous « REALISEZ LA MAISON DE
-       VOS REVES ». Une maison en construction : c'est ce qu'un
-       gabarit de renovation met la, et c'est une photographie
-       EXTERIEURE — aucun panorama d'interieur ne peut la rendre. */
+    /* Le carrousel du gabarit achete, sous « Deneigement residentiel
+       et commercial a Shawinigan ». Une lame orange qui pousse un
+       andain devant un tracteur : c'est la seule image du bloc qui
+       dise « deneigement » sans sa legende, et c'est une photographie
+       EXTERIEURE — aucun panorama d'interieur ne peut la rendre.
+       ECARTE : un camion de deneigement porte presque toujours un
+       nom, lu a la loupe et pas devine. `#35030432` (sceau « NORTH
+       STRABANE TOWNSHIP » sur la portiere), `#20088977` (« William
+       A. Gerhardt » et un numero de telephone peints sur la caisse),
+       `#10664763` (« TOWMASTER » sur la benne), `#14531981` et
+       `#15454405` (« epoke · VIRTUS MINI AST » en clair). */
     tuiles: [
-      { src: "url:" + PX + "/37627682/pexels-photo-37627682.jpeg" + GRAND, page: "https://www.pexels.com/photo/new-home-construction-in-elk-grove-37627682/", licence: LIC_PEXELS, fen: { x: 0, y: 0.12, w: 1 } }
+      { src: "url:" + PX + "/27306437/pexels-photo-27306437.jpeg" + GRAND, page: "https://www.pexels.com/photo/snow-clearing-27306437/", licence: LIC_PEXELS, fen: { x: 0, y: 0.02, w: 1 } }
     ]
   },
   {
     fichier: "avant-renov-apropos", larg: 340, haut: 198, q: 0.75,
-    /* Le bloc « QUI SOMMES-NOUS ? ». Un atelier de menuiserie en
-       service : le gabarit y met toujours « l'equipe au travail »,
-       et une photo sans visage est la seule qu'on puisse publier. */
+    /* Le bloc « Qui sommes-nous ? ». Le tracteur chargeur sous la
+       neige, porte de garage au fond : le gabarit y met toujours
+       « l'equipe au travail », et une photo sans visage est la seule
+       qu'on puisse publier.
+       ECARTE : `#35826504` (une flotte de camions de nuit — plaques
+       d'immatriculation lisibles et « HENKE » sur une lame, deux
+       motifs pour un), `#10948893` (un ecusson colle sur la cabine),
+       `#30836355` (le nom du constructeur en clair sur le chargeur). */
     tuiles: [
-      { src: "ph:carpentry_shop_01", page: "https://polyhaven.com/a/carpentry_shop_01", licence: LIC_PH, yaw: 270, pitch: -4, hfov: 78, bande: 215 }
+      { src: "url:" + PX + "/11680712/pexels-photo-11680712.jpeg" + GRAND, page: "https://www.pexels.com/photo/green-and-orange-snow-tractor-on-snow-covered-ground-11680712/", licence: LIC_PEXELS, fen: { x: 0.40, y: 0.28, w: 0.60 } }
     ]
   },
   {
     fichier: "avant-renov-svc", larg: 280, haut: 92, q: 0.75,
-    /* Les six cartes de « NOS SERVICES ». Le gabarit annonce du
-       deneigement et decrit des cuisines : la contradiction est le
-       SUJET du bloc, elle est deja dans le texte. Les images, elles,
-       sont le stock generique qu'un gabarit livre — cuisine, salle
-       de bain, salon, chantier, combles, terrasse.
-       ECARTE : `ph:unfinished_office` (un mur blanc et trois
-       interrupteurs), `ph:small_empty_house` (un aplat olive, il
-       passait la mesure de justesse a 15), `ph:carpentry_shop_02`
-       (un fouillis illisible a 133 px). Les trois etaient dans la
-       premiere passe et se sont vus a l'image. */
+    /* Les six cartes de « Nos services », dans l'ordre des legendes :
+       deneigement residentiel, deneigement commercial, deneigement de
+       toiture, epandage d'abrasifs, tonte de pelouse, ouverture et
+       fermeture de terrain. Les deux dernieres sont ESTIVALES — c'est
+       voulu, l'entreprise fait les deux saisons, et le vert contre le
+       blanc coupe le bloc en deux moities lisibles d'un coup d'oeil.
+       A 92 px de haut il faut un sujet qui tienne en une forme et
+       deux couleurs : pelle rouge, lame orange, silhouette sur un
+       faite, veste orange, tondeuse rouge, rateau orange.
+       ECARTE : `#30731980` (« BRIGGS & STRATTON » en clair sur le
+       moteur de la souffleuse), `#35826495` et `#30090823` (le
+       recadrage sortait « GENGRAS » du champ mais laissait entrer
+       « FISHER », et « Winterdienst · epoke » sur l'autre),
+       `#11108148` (un bidon « MORTON ICE MELT » ET le numero civique
+       215 sur la maison, deux motifs pour un). */
     tuiles: [
-      { src: "ph:kiara_interior", page: "https://polyhaven.com/a/kiara_interior", licence: LIC_PH, yaw: 180, pitch: -6, hfov: 84, bande: 200 },
-      { src: "ph:modern_bathroom", page: "https://polyhaven.com/a/modern_bathroom", licence: LIC_PH, yaw: 135, pitch: -6, hfov: 84, bande: 200 },
-      { src: "ph:wooden_lounge", page: "https://polyhaven.com/a/wooden_lounge", licence: LIC_PH, yaw: 0, pitch: -6, hfov: 84, bande: 200 },
-      { src: "ph:interior_construction", page: "https://polyhaven.com/a/interior_construction", licence: LIC_PH, yaw: 135, pitch: -6, hfov: 84, bande: 200 },
-      { src: "ph:pine_attic", page: "https://polyhaven.com/a/pine_attic", licence: LIC_PH, yaw: 180, pitch: -6, hfov: 84, bande: 200 },
-      { src: "ph:veranda", page: "https://polyhaven.com/a/veranda", licence: LIC_PH, yaw: 0, pitch: -6, hfov: 84, bande: 200 }
+      { src: "url:" + PX + "/6952498/pexels-photo-6952498.jpeg" + GRAND, page: "https://www.pexels.com/photo/photo-of-a-person-in-a-blue-jacket-shoveling-white-snow-6952498/", licence: LIC_PEXELS, fen: { x: 0, y: 0.32, w: 1 } },
+      { src: "url:" + PX + "/27306405/pexels-photo-27306405.jpeg" + GRAND, page: "https://www.pexels.com/photo/snow-clearing-27306405/", licence: LIC_PEXELS, fen: { x: 0, y: 0.20, w: 1 } },
+      { src: "url:" + PX + "/10739887/pexels-photo-10739887.jpeg" + GRAND, page: "https://www.pexels.com/photo/man-clearing-snow-from-a-house-roof-10739887/", licence: LIC_PEXELS, fen: { x: 0.02, y: 0.25, w: 0.62 } },
+      { src: "url:" + PX + "/27306417/pexels-photo-27306417.jpeg" + GRAND, page: "https://www.pexels.com/photo/snow-clearing-27306417/", licence: LIC_PEXELS, fen: { x: 0, y: 0.06, w: 1 } },
+      { src: "url:" + PX + "/4162016/pexels-photo-4162016.jpeg" + GRAND, page: "https://www.pexels.com/photo/red-and-black-push-lawn-mower-on-green-grass-4162016/", licence: LIC_PEXELS, fen: { x: 0, y: 0.22, w: 1 } },
+      { src: "url:" + PX + "/8116107/pexels-photo-8116107.jpeg" + GRAND, page: "https://www.pexels.com/photo/orange-leaf-rake-on-green-grass-8116107/", licence: LIC_PEXELS, fen: { x: 0, y: 0.48, w: 1 } }
     ]
   },
   {
     fichier: "avant-renov-real", larg: 280, haut: 105, q: 0.75,
-    /* Les six vignettes de « NOS REALISATIONS » — cuisine, salle de
-       bain, sous-sol, agrandissement, toiture, facade. Elles suivent
-       les six legendes, dans l'ordre.
-       ECARTE : `ph:skylit_garage` — c'est un stationnement etage, et
-       deux voitures y portent un ecusson lisible. Deux raisons, une
-       seule aurait suffi. `ph:small_empty_room_2` : une piece vide
-       aux murs marbres, elle ne lit ni sous-sol ni rien. */
+    /* Les six vignettes de « Nos realisations » — entree
+       residentielle, stationnement commercial, entree double, aire de
+       chargement, toiture, entree en pente. Elles suivent les six
+       legendes, dans l'ordre. Le bloc montre le RESULTAT quand les
+       cartes de services montrent le geste : ici des surfaces
+       degagees, pas des machines.
+       ECARTE : `#36201561` (une enseigne « KLATT · CUDAHY, WI » et un
+       « NO PARKING » avec un numero de telephone sur le quai),
+       `#30180552` (« SPEEDMart » sur la facade), `#34283402` (un
+       panneau d'affichage de village a l'entree de l'allee),
+       `#11034690` (l'ecusson et la plaque d'une voiture au premier
+       plan), `#3375371` (le nom d'un armateur sur un conteneur). */
     tuiles: [
-      { src: "ph:kiara_interior", page: "https://polyhaven.com/a/kiara_interior", licence: LIC_PH, yaw: 45, pitch: -6, hfov: 80, bande: 200 },
-      { src: "ph:modern_bathroom", page: "https://polyhaven.com/a/modern_bathroom", licence: LIC_PH, yaw: 180, pitch: -6, hfov: 80, bande: 200 },
-      { src: "ph:interior_construction", page: "https://polyhaven.com/a/interior_construction", licence: LIC_PH, yaw: 270, pitch: -6, hfov: 80, bande: 200 },
-      { src: "ph:relax_inn_seaview_suite", page: "https://polyhaven.com/a/relax_inn_seaview_suite", licence: LIC_PH, yaw: 270, pitch: -6, hfov: 80, bande: 200 },
-      { src: "ph:pine_attic", page: "https://polyhaven.com/a/pine_attic", licence: LIC_PH, yaw: 90, pitch: -6, hfov: 80, bande: 200 },
-      { src: "url:" + PX + "/8817834/pexels-photo-8817834.jpeg" + GRAND, page: "https://www.pexels.com/photo/construction-of-framework-of-house-with-softwood-materials-8817834/", licence: LIC_PEXELS, fen: { x: 0.04, y: 0.10, w: 0.92 } }
+      { src: "url:" + PX + "/24038128/pexels-photo-24038128.jpeg" + GRAND, page: "https://www.pexels.com/photo/snow-covered-street-at-dusk-24038128/", licence: LIC_PEXELS, fen: { x: 0, y: 0.30, w: 1 } },
+      { src: "url:" + PX + "/30180555/pexels-photo-30180555.jpeg" + GRAND, page: "https://www.pexels.com/photo/snowy-parking-lot-with-tire-tracks-from-above-30180555/", licence: LIC_PEXELS, fen: { x: 0, y: 0.18, w: 1 } },
+      { src: "url:" + PX + "/4061591/pexels-photo-4061591.jpeg" + GRAND, page: "https://www.pexels.com/photo/empty-road-leading-to-suburb-house-4061591/", licence: LIC_PEXELS, fen: { x: 0, y: 0.30, w: 1 } },
+      { src: "url:" + PX + "/6936558/pexels-photo-6936558.jpeg" + GRAND, page: "https://www.pexels.com/photo/aerial-shot-of-parked-container-trucks-6936558/", licence: LIC_PEXELS, fen: { x: 0, y: 0.20, w: 1 } },
+      { src: "url:" + PX + "/30282409/pexels-photo-30282409.jpeg" + GRAND, page: "https://www.pexels.com/photo/snow-covered-roof-with-icicles-in-winter-30282409/", licence: LIC_PEXELS, fen: { x: 0, y: 0.22, w: 1 } },
+      { src: "url:" + PX + "/6397442/pexels-photo-6397442.jpeg" + GRAND, page: "https://www.pexels.com/photo/snowy-pathway-among-tall-trees-6397442/", licence: LIC_PEXELS, fen: { x: 0, y: 0.42, w: 1 } }
     ]
   }
 ];
@@ -356,20 +378,32 @@ fs.writeFileSync(path.join(ICI, "_demos", "_avant-photos-registre.json"), JSON.s
 
    POLY HAVEN — CC0, domaine public. Aucune attribution exigee,
    usage commercial et modification autorises. `https://polyhaven.com/license`
-     auto_service · lythwood_room · relax_inn_seaview_suite ·
-     wooden_lounge · hotel_room · fireplace · modern_bathroom ·
-     bush_restaurant · comfy_cafe · warm_bar · newman_cafeteria ·
-     warm_restaurant_night · carpentry_shop_01 · carpentry_shop_02 ·
-     interior_construction · unfinished_office · small_empty_house ·
-     pine_attic · kiara_interior · small_empty_room_2 · veranda ·
-     skylit_garage
+     lythwood_room · relax_inn_seaview_suite · wooden_lounge ·
+     hotel_room · modern_bathroom · bush_restaurant · comfy_cafe ·
+     warm_bar · warm_restaurant · warm_restaurant_night
 
    PEXELS — licence gratuite : usage commercial, modification
    permise, attribution non exigee. `https://www.pexels.com/license/`
-     #37627682 — new home construction in Elk Grove
+     #33814734 — atelier de reparation automobile
+     #27306437 — lame orange poussant un andain, rue degagee
+     #11680712 — tracteur chargeur sous la neige, devant un garage
+     #6952498  — pelletage d'une allee pavee, pelle rouge
+     #27306405 — lame de chargeur et banc de neige devant un commerce
+     #10739887 — deneigement du faite d'une maison de brique
+     #27306417 — neige chargee d'abrasifs pelletee, veste orange
+     #4162016  — tondeuse rouge sur une pelouse verte
+     #8116107  — rateau a feuilles orange sur une pelouse verte
+     #24038128 — rue residentielle enneigee au crepuscule, garages
+     #30180555 — stationnement deneige vu du ciel, traces de pneus
+     #4061591  — garage double et entree d'asphalte degagee
+     #6936558  — cour a semi-remorques deneigee, vue du ciel
+     #30282409 — neige et glacons au bord d'une toiture
+     #6397442  — chemin degage montant entre deux bancs de neige
 
-   AUCUNE des vingt-trois pieces ne porte de marque lisible, de logo
-   ni de visage identifiable. C'est le critere qui a ecarte les
-   candidats d'atelier avec un mecanicien de face, deja note dans
-   `secteurs-photos.mjs`.
+   AUCUNE des vingt-cinq pieces ne porte de marque lisible, de logo,
+   de plaque d'immatriculation, de numero civique ni de visage
+   identifiable. Chaque tuile a ete OUVERTE en pleine resolution et
+   regardee avant d'etre retenue : c'est ce critere, et lui seul, qui
+   a ecarte la douzaine de camions de deneigement listes plus haut —
+   un vehicule de chantier porte presque toujours un nom.
    ============================================================ */

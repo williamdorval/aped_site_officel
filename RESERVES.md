@@ -84,6 +84,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le déneigement est présenté comme une entreprise fictive | 13 | 173 |
 | &nbsp;&nbsp;↳ Le masque RBQ ne masque plus rien | 7 | 78 |
 | &nbsp;&nbsp;↳ Le téléphone du popup n'est pas validé | 6 | 58 |
+| &nbsp;&nbsp;↳ Le decor des photos du « avant » n'est quebecois que par ressemblance | 12 | 168 |
 | &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 7 | 50 |
 | **2026-08-03 · SIX CORRECTIONS** | 2 | 9 |
 | &nbsp;&nbsp;↳ Aucun formulaire du site ne livre, et maintenant il le dit | 12 | 165 |
@@ -1013,6 +1014,18 @@ laisse passer la prochaine donnée.
 `validate()` vérifie qu'il n'est pas vide. Un visiteur qui tape « 1 »
 passe et repart avec les guides. La validation de forme viendra avec
 le doublage côté serveur.
+
+### Le decor des photos du « avant » n'est quebecois que par ressemblance
+
+Les 14 photos de la reconstitution du deneigement viennent de Pexels.
+Maisons a pignon, brique, epinettes, garages doubles : ca ressemble.
+Mais deux viennent d'Europe de l'Est et une du Canada anglais. Rien
+n'y designe un lieu, aucune marque, aucun visage identifiable a la
+taille rendue — verifie sur la tuile produite agrandie trois fois.
+
+La carte « epandage d'abrasifs » lit « entretien hivernal » plutot
+qu'« epandage » : toutes les vraies photos d'epandeuse trouvees
+portaient une marque lisible. La legende porte le sens.
 
 ### Et celle qui gouverne tout le reste
 
