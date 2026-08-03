@@ -437,7 +437,7 @@ C'est pour ça que la densité d'échantillonnage compte.
 > **C'est la seule chose que je ne pouvais pas faire, et c'est la plus
 > rapide à faire.**
 
-Cherche dans `dorvalwilliam11@gmail.com` un message de FormSubmit avec
+Cherche dans `l-adresse-personnelle-retiree` un message de FormSubmit avec
 un lien **« Activate Form »**. Clique. C'est fini.
 
 Puis lance, pour confirmer :

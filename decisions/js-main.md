@@ -1977,3 +1977,49 @@ Preuve : la sonde eprouve six heures d'horloge, dont 17 h et 21 h 30.
 Sur le code d'avant elle rend **2 en defaut** ; sur celui-ci, **0**.
 Le compte des jours offerts passe de 19 a 18 apres 16 h 30 — le jour
 est retenu au lieu d'etre offert vide.
+
+## D-719 · L'ADRESSE PERSONNELLE EST PARTIE DU CODE.
+
+*Retiree de `js/main.js` le 2026-08-03.*
+
+L'ADRESSE PERSONNELLE EST PARTIE D'ICI.  D-719
+
+Elle etait la DERNIERE adresse reelle du projet, et la seule qui
+restait atteignable. On la croyait « au fond du source » : elle ne
+l'etait pas. Trois chemins la sortaient.
+
+  1. `FORM_ENDPOINT` valait `https://formsubmit.co/ajax/` + elle.
+     Chaque soumission l'affichait dans l'onglet Reseau.
+  2. `lienRepli()` construisait un `mailto:` AVEC elle, et
+     `poserRepli()` l'inserait dans le DOM sous le formulaire.
+     L'adresse etait lisible dans la barre d'etat au survol.
+  3. `js/main.js` est servi en clair, non minifie.
+
+Et le chemin 2 n'etait pas un cas rare : FormSubmit n'a jamais ete
+active — un `200` avec `success: "false"`. L'echec est donc le cas
+NOMINAL, et le bouton `mailto:` paraissait sous CHAQUE envoi.
+
+CE QUE CA FORCE. L'adresse EST le point de sortie : on ne peut pas
+retirer l'une en gardant l'autre. `FORM_ENDPOINT` est donc vide, et
+`sendJson`/`sendMultipart` refusent tout de suite avec le drapeau
+`duService` — le meme qu'un refus du service, donc le meme etat
+visible. UN POINT DE SORTIE VIDE NE RETOMBE JAMAIS EN SILENCE SUR
+UN SUCCES.
+
+Aucune livraison n'est perdue au passage : il n'y en avait aucune.
+
+CE QU'ON GARDE. Le repli protegeait la SAISIE du visiteur, et ca,
+ca valait la peine. Sans adresse, il offre maintenant :
+  · « Copier ce que j'ai ecrit » — le presse-papiers, un geste du
+    visiteur suffit a l'autoriser. Sans l'API, le bouton ne parait
+    pas : on ne montre pas une commande qui ne fait rien ;
+  · « Reserver un appel » — SAUF sous le formulaire de rendez-vous.
+    Proposer un rendez-vous sous un rendez-vous en panne serait
+    renvoyer le visiteur dans le mur.
+
+Les quatre messages d'echec disaient « envoyez-le d'ici : » en
+pointant le bouton `mailto:`. Ils disent maintenant ce qui est
+vrai : l'envoi n'a pas passe, rien n'est perdu.
+
+LE PROCHAIN CHANTIER remplace `FORM_ENDPOINT` et rien d'autre. Les
+sept formulaires ne connaissent toujours rien de l'envoi.

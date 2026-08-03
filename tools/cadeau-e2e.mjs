@@ -88,7 +88,10 @@ await page.screenshot({ path: path.join(SORTIE, "01-popup-ouvert.png") });
    qu'une seule action. Ils sont devoiles a la seconde ou l'adresse
    est donnee — y compris si l'envoi echoue. On suit donc le
    parcours dans son vrai ordre. */
-const ADRESSE = REEL ? "dorvalwilliam11@gmail.com" : "test-parcours@aped-verification.ca";
+/* L'adresse reelle ne vit plus dans le fichier : elle se donne au
+   lancement, `APED_COURRIEL=... node tools/cadeau-e2e.mjs --reel`.
+   Rien d'autre ne change ici — c'est une valeur, pas un verdict. */
+const ADRESSE = REEL ? (process.env.APED_COURRIEL || "test-parcours@aped-verification.ca") : "test-parcours@aped-verification.ca";
 await page.fill("#cadeauEmail", ADRESSE);
 await page.click(".cadeau-go");
 /* Quinze secondes, pas trois : le premier contact avec un service

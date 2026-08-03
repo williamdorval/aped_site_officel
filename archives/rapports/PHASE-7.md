@@ -345,7 +345,7 @@ personne n'écrit. Corrigé : on lit le corps de la réponse et on porte
 le message du service jusqu'à l'affichage.
 
 **Action requise de votre côté :** cliquer le lien d'activation
-FormSubmit reçu à `dorvalwilliam11@gmail.com`. Tant que ce n'est pas
+FormSubmit reçu à `l-adresse-personnelle-retiree`. Tant que ce n'est pas
 fait, aucun formulaire ne délivre.
 
 ### La grille de l'estimateur

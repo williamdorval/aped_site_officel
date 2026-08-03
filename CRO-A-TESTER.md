@@ -15,7 +15,7 @@
 **Activer FormSubmit.** Tant que ce n'est pas fait, il n'y a rien à
 mesurer : aucun formulaire ne livre. Le service répond `HTTP 200`
 avec `{"success":"false"}` — « This form needs Activation ». Le
-courriel d'activation a été envoyé à `dorvalwilliam11@gmail.com` le
+courriel d'activation a été envoyé à `l-adresse-personnelle-retiree` le
 2026-08-02 par la sonde `tools/_sondes/cro-formulaire.mjs`. Un clic
 sur « Activate Form ».
 
@@ -145,7 +145,7 @@ clarté pour un gain marginal. **À tester si le trafic le permet.**
    versement** : je ne les connais pas, et les inventer aurait échoué
    Q1. Écris-les, je les mettrai.
 
-2. **L'adresse de courriel.** `dorvalwilliam11@gmail.com` apparaît
+2. **L'adresse de courriel.** `l-adresse-personnelle-retiree` apparaît
    quatre fois et sert d'adresse de contact. Pour un patron de 55 ans
    qui évalue une agence, une adresse Gmail personnelle dit « ce n'est
    pas une entreprise ». Il faut un nom de domaine.

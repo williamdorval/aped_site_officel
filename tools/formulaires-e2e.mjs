@@ -134,16 +134,21 @@ const nav = await chromium.launch();
    ============================================================ */
 {
   const page = await page1(nav);
-  const r = await page.evaluate(async () => {
+  /* L'adresse reelle ne vit plus dans le fichier : elle se donne au
+     lancement, `APED_COURRIEL=... node tools/formulaires-e2e.mjs`.
+     Sans elle, la sonde vise l'adresse d'essai — elle mesurera donc
+     l'etat du service, pas celui d'une boite reelle. */
+  const DEST = process.env.APED_COURRIEL || "test-parcours@aped-verification.ca";
+  const r = await page.evaluate(async (dest) => {
     try {
-      const res = await fetch("https://formsubmit.co/ajax/dorvalwilliam11@gmail.com", {
+      const res = await fetch("https://formsubmit.co/ajax/" + dest, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ _subject: "SONDE APED", sonde: "etat du service", _captcha: "false" }),
       });
       return { statut: res.status, corps: (await res.text()).slice(0, 220) };
     } catch (e) { return { erreur: String(e) }; }
-  });
+  }, DEST);
   rapport.service = r;
   console.log("=== 0 · ETAT DU SERVICE D'ENVOI ===");
   console.log("  statut :", r.statut);

@@ -806,14 +806,18 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 .form-status.is-err { color: var(--danger); }
 
 /* LE REPLI D'ENVOI. Pose par `js/main.js` quand l'envoi automatique  D-125 */
+/* Le repli porte maintenant DEUX boutons au lieu d'un lien : ils    D-719
+   tiennent sur une rangee, et la note passe dessous, toute seule. */
 .form-repli {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--s-2);
-  justify-items: start;
   margin-top: var(--s-3);
   padding-top: var(--s-3);
   border-top: var(--rule-w) solid var(--rule-strong);
 }
+.form-repli small { flex: 1 0 100%; }
 .form-repli small {
   font-family: var(--font-data);
   font-size: var(--fs-8);

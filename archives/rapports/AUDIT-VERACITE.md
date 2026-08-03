@@ -236,7 +236,7 @@ chaque cadre, et l'affirmation devient la meilleure preuve du site. Si elles n'e
 catégorie A.
 
 **V2 · Aucun formulaire du site ne livre.**
-`js/main.js:15` → `https://formsubmit.co/ajax/dorvalwilliam11@gmail.com`. Le point d'entrée
+`js/main.js:15` → `https://formsubmit.co/ajax/l-adresse-personnelle-retiree`. Le point d'entrée
 existe mais n'a jamais été confirmé côté FormSubmit. **Il me manque : une soumission réelle
 qui arrive dans la boîte.** Tant qu'elle n'arrive pas, **toutes** les promesses de délai
 reposent sur un message que personne ne reçoit : « 12 h » (7 emplacements), « le jour même »

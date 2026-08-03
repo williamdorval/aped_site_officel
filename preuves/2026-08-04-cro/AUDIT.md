@@ -29,7 +29,7 @@ passé. Votre demande n'est pas perdue — envoyez-la d'ici : »). Mais :
   décider.
 
 Le geste manquant ne m'appartient pas : ma sonde a déclenché l'envoi
-du courriel d'activation à `dorvalwilliam11@gmail.com`. **Un clic sur
+du courriel d'activation à `l-adresse-personnelle-retiree`. **Un clic sur
 « Activate Form » ouvre le tunnel.**
 
 ---
@@ -245,7 +245,7 @@ voix d'APED. Vérifié :
 **Le seul chiffre affiché sans que le visiteur l'ait demandé** est le
 « ≈ 39 100 $ » du rail (§ 1.4).
 
-**Un point de forme** : `dorvalwilliam11@gmail.com` apparaît quatre
+**Un point de forme** : `l-adresse-personnelle-retiree` apparaît quatre
 fois dans `index.html` et sert d'adresse de contact. Pour un patron
 de 55 ans qui évalue une agence, une adresse Gmail personnelle dit
 « ce n'est pas une entreprise ». Le correctif demande un nom de

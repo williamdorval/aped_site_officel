@@ -62,7 +62,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | **Le chantier de conversion — 2026-08-02** | 2 | 12 |
 | &nbsp;&nbsp;↳ Aucun formulaire du site n'a jamais livré | 11 | 152 |
 | &nbsp;&nbsp;↳ Les modalités de paiement n'existent nulle part | 8 | 98 |
-| &nbsp;&nbsp;↳ L'adresse de contact est une adresse Gmail personnelle | 8 | 95 |
+| &nbsp;&nbsp;↳ L'adresse de contact est une adresse Gmail personnelle | 8 | 96 |
 | &nbsp;&nbsp;↳ Le socle du hero reste sous le pli à 1024 × 768 | 9 | 127 |
 | &nbsp;&nbsp;↳ Trois des douze métiers n'ont pas d'écran | 6 | 53 |
 | &nbsp;&nbsp;↳ Les deux nouveaux pièges sont des pièges de MESURE, pas de code | 8 | 114 |
@@ -801,7 +801,7 @@ volontairement incomplète.
 
 ### L'adresse de contact est une adresse Gmail personnelle
 
-`dorvalwilliam11@gmail.com`, quatre fois dans `index.html`, plus le
+`l-adresse-personnelle-retiree`, quatre fois dans `index.html`, plus le
 point d'arrivée de tous les formulaires. Pour un patron de PME qui
 évalue une agence, c'est un signal de « ce n'est pas une entreprise ».
 Le correctif demande un nom de domaine — ce n'est pas une décision de

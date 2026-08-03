@@ -3,9 +3,15 @@
 (function () {
   "use strict";
 
-  /* == Constantes metier. Inchangees. == */
-  var CONTACT_EMAIL = "dorvalwilliam11@gmail.com";
-  var FORM_ENDPOINT = "https://formsubmit.co/ajax/" + CONTACT_EMAIL;
+  /* == Constantes metier. == */
+
+  /* L'ADRESSE PERSONNELLE EST PARTIE D'ICI.  D-719
+     Elle etait la seule adresse reelle qui restait dans le site, et
+     elle n'etait pas qu'« au fond du source » : elle sortait par
+     l'adresse du service d'envoi, et surtout par le `mailto:` de
+     repli qui s'affichait sous CHAQUE formulaire en echec.
+     Le POURQUOI est dans `decisions/js-main.md`. */
+  var FORM_ENDPOINT = "";
 
   var BOOKING = {
     businessDays: [1, 2, 3, 4, 5],
@@ -1538,7 +1544,18 @@
     });
   }
 
+  /* PAS D'ADRESSE, PAS D'ENVOI — ET ON LE DIT.  D-719
+     Un point de sortie vide ne retombe pas en silence sur un succes :
+     il echoue tout de suite, avec le meme drapeau qu'un refus du
+     service, donc le meme etat visible sous le formulaire. */
+  function sansPoint() {
+    var e = new Error("L’envoi n’est pas branché.");
+    e.duService = true;
+    return Promise.reject(e);
+  }
+
   function sendJson(kind, data) {
+    if (!FORM_ENDPOINT) return sansPoint();
     var payload = Object.assign({}, data, {
       _subject: SUBJECTS[kind] || "Message - site APED",
       _template: "table",
@@ -1552,6 +1569,7 @@
   }
 
   function sendMultipart(kind, formData) {
+    if (!FORM_ENDPOINT) return sansPoint();
     formData.append("_subject", SUBJECTS[kind] || "Message - site APED");
     formData.append("_template", "table");
     formData.append("_captcha", "false");
@@ -1596,21 +1614,22 @@
     });
     var corps = lignes.join("\n");
     if (corps.length > REPLI_MAX) {
-      corps = corps.slice(0, REPLI_MAX) + "\n\n[La suite a été coupée par la longueur maximale d’un courriel préparé. Ajoutez ce qui manque avant d’envoyer.]";
+      corps = corps.slice(0, REPLI_MAX) + "\n\n[La suite a été coupée. Ajoutez ce qui manque.]";
     }
     if (avecFichiers) {
-      corps += "\n\nVos fichiers ne peuvent pas voyager par ce chemin : joignez-les au message avant de l’envoyer.";
+      corps += "\n\nVos fichiers ne sont pas dans cette copie : ils sont restés sur votre appareil.";
     }
     return corps;
   }
 
-  function lienRepli(kind, data, avecFichiers) {
-    return "mailto:" + CONTACT_EMAIL +
-      "?subject=" + encodeURIComponent(SUBJECTS[kind] || "Message - site APED") +
-      "&body=" + encodeURIComponent(corpsCourriel(data, avecFichiers));
-  }
+  /* LE REPLI NE PASSE PLUS PAR UNE ADRESSE.  D-719
+     Il faisait exactement ce qu'on lui demandait — livrer quand le
+     service refuse — mais il le faisait en ecrivant l'adresse
+     personnelle dans un `href`, lisible dans la barre d'etat au
+     survol. Ce qu'il protegeait vraiment, c'est la SAISIE du
+     visiteur : elle ne se perd pas. On garde ca, sans adresse.
 
-  /* Pose le repli JUSTE APRES le message d'etat, dans le meme parent,  D-424 */
+     Pose JUSTE APRES le message d'etat, dans le meme parent.  D-424 */
   function poserRepli(status, kind, data, avecFichiers) {
     if (!status || !status.parentNode) return;
     var hote = status.parentNode;
@@ -1621,18 +1640,47 @@
     boite.className = "form-repli";
     boite.setAttribute("data-repli", "");
 
-    var lien = doc.createElement("a");
-    lien.className = "btn btn--primary";
-    lien.href = lienRepli(kind, data, avecFichiers);
-    lien.textContent = "Ouvrir mon courriel, message déjà écrit";
+    var premier = null;
+
+    /* 1 · RIEN DE CE QUI A ETE ECRIT NE SE PERD. Le presse-papiers
+       demande un geste du visiteur : le clic sur ce bouton en est un.
+       Sans l'API, le bouton ne parait pas — on ne montre pas une
+       commande qui ne fait rien. */
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      var copier = doc.createElement("button");
+      copier.type = "button";
+      copier.className = "btn btn--primary";
+      copier.textContent = "Copier ce que j’ai écrit";
+      copier.addEventListener("click", function () {
+        navigator.clipboard.writeText(corpsCourriel(data, avecFichiers)).then(
+          function () { copier.textContent = "Copié."; },
+          function () { copier.textContent = "La copie a échoué."; }
+        );
+      });
+      boite.appendChild(copier);
+      premier = copier;
+    }
+
+    /* 2 · UNE AUTRE ROUTE — mais jamais celle qui vient d'echouer :
+       proposer « Reserver un appel » sous un formulaire de rendez-vous
+       en panne serait renvoyer le visiteur dans le mur. */
+    if (kind !== "booking") {
+      var appel = doc.createElement("button");
+      appel.type = "button";
+      appel.className = "btn btn--ghost";
+      appel.textContent = "Réserver un appel";
+      appel.addEventListener("click", function () { openModal("modal-booking"); });
+      boite.appendChild(appel);
+      if (!premier) premier = appel;
+    }
 
     var note = doc.createElement("small");
-    note.textContent = "Tout ce que vous avez rempli est déjà dans le message. Il ne reste qu’à l’envoyer.";
+    note.textContent = "Rien de ce que vous avez rempli n’est perdu. Réessayez dans un moment&nbsp;: le formulaire est encore là, tel que vous l’avez laissé."
+      .replace(/&nbsp;/g, " ");
 
-    boite.appendChild(lien);
     boite.appendChild(note);
     hote.insertBefore(boite, status.nextSibling);
-    lien.focus();
+    if (premier) premier.focus();
   }
 
   /* Un nouvel essai efface le repli du precedent : laisser un bouton
@@ -1669,7 +1717,7 @@
         window.setTimeout(function () { closeModal(); say(status, ""); }, 2200);
       }).catch(function () {
         setLoading(btn, false);
-        say(status, "L’envoi automatique n’a pas passé. Votre message n’est pas perdu — envoyez-le d’ici :", "err");
+        say(status, "L’envoi n’a pas passé. Votre message n’est pas perdu.", "err");
         poserRepli(status, kind, contenu);
       });
     });
@@ -1868,7 +1916,7 @@
         goBStep(3);
       }).catch(function () {
         setLoading(btn, false);
-        say(status, "L’envoi automatique n’a pas passé. Votre demande de plage n’est pas perdue — envoyez-la d’ici :", "err");
+        say(status, "L’envoi n’a pas passé. Votre demande de plage n’est pas perdue.", "err");
         poserRepli(status, "booking", data);
       });
     });
@@ -2029,7 +2077,7 @@
         // fichiers que pas de demande du tout.
         sendJson("project", data).then(done).catch(function () {
           setLoading(projectNext, false);
-          say(status, "L’envoi automatique n’a pas passé. Vos réponses ne sont pas perdues — envoyez-les d’ici :", "err");
+          say(status, "L’envoi n’a pas passé. Vos réponses ne sont pas perdues.", "err");
           poserRepli(status, "project", data, pickedFiles.length > 0);
         });
       });
@@ -2137,7 +2185,7 @@
         sendJson("estimate", payload).then(reveal).catch(function () {
           /* L'ORDRE COMPTE. On revele d'abord le resume — c'est ce  D-426 */
           reveal();
-          say(sortie, "L’envoi automatique n’a pas passé. Envoyez-nous cette estimation d’ici pour qu’on vous rappelle.", "err");
+          say(sortie, "L’envoi n’a pas passé. Vos réponses ne sont pas perdues.", "err");
           poserRepli(sortie, "estimate", payload);
         });
       });

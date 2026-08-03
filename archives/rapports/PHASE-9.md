@@ -24,7 +24,7 @@ référence n'ont jamais délivré un courriel. Le site répondait « envoyé »
 à des visiteurs dont le message n'existait pas.
 
 **Ce qui n'est pas de notre ressort :** le lien d'activation est arrivé
-dans `dorvalwilliam11@gmail.com`. Personne d'autre ne peut cliquer.
+dans `l-adresse-personnelle-retiree`. Personne d'autre ne peut cliquer.
 
 **Ce qui est vérifié malgré ça** — la requête part, elle va au bon
 endroit, elle transporte l'adresse du visiteur, l'accusé au visiteur
@@ -393,7 +393,7 @@ Ils ont tous produit un faux verdict avant d'être trouvés.
 
 ## 6 · CE QUI RESTE À FAIRE, ET PAR QUI
 
-1. **Activer FormSubmit.** Lien dans `dorvalwilliam11@gmail.com`,
+1. **Activer FormSubmit.** Lien dans `l-adresse-personnelle-retiree`,
    expéditeur `formsubmit.co`. Puis
    `node tools/cadeau-e2e.mjs 8099 --envoi-reel`.
 2. **Neuf contrastes sous seuil restent**, tous antérieurs à cette phase
