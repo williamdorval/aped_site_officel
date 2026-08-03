@@ -104,8 +104,22 @@ function sectionsHTML() {
   const marques = [];
   L.forEach((l, i) => {
     let m = l.match(/<section[^>]*\bid="([^"]+)"/);
-    if (m) marques.push({ id: m[1], ligne: i + 1 });
-    else if (/<footer[^>]*class="footer"/.test(l)) marques.push({ id: "footer", ligne: i + 1 });
+    if (m) return void marques.push({ id: m[1], ligne: i + 1 });
+    /* Le pied donne son PROPRE id, il ne s'en fabrique plus un.  D-713 */
+    if (/<footer[^>]*class="footer"/.test(l)) {
+      const f = l.match(/<footer[^>]*\bid="([^"]+)"/);
+      if (!f) {
+        console.error(
+          `ARRET  index.html:${i + 1} — <footer class="footer"> n'a pas d'id.\n` +
+          `       Cet outil en fabriquait un a partir de la classe, puis son\n` +
+          `       « verifier » comparait l'invention a elle-meme et rendait\n` +
+          `       toujours « a jour ». Le tableau publiait donc une ancre que\n` +
+          `       le document ne portait pas. Pose un id sur le pied.`
+        );
+        process.exit(2);
+      }
+      marques.push({ id: f[1], ligne: i + 1 });
+    }
   });
   const fermeture = L.findIndex((l) => /<\/main>/.test(l));
   return marques.map((m, k) => ({

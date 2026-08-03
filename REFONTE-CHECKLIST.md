@@ -214,3 +214,4 @@ n'est pas commité ET prouvé.
 | Item | Défaut | Commit | Preuve |
 |---|---|---|---|
 | 1 | La vérification finale ne vérifiait plus rien (défaut 1) | `a9f48ec` | Test cassé volontairement → sortie 1 ; remis → sortie 0 |
+| 2 | Le pied n'avait pas d'ancre, et le générateur lui en inventait une (défauts 2 et 7) | *(ce commit)* | `plaques.mjs footer` : **16 images, 0 surface morte**, contre « ABSENTE » sur 10 plaques sur 10 avant. Ancre retirée → `plages.mjs` sort **2** et nomme la cause ; remise → sortie 0 |
