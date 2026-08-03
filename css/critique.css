@@ -363,21 +363,25 @@ html.sas-ok .sas--calque .sas-volet {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+/* Deux libelles dans le markup, un seul peint a la fois.  D-704 */
+/* LA SPECIFICITE EST LE FOND DU CORRECTIF : `langue.js` pose la  D-704 */
+.nav .btn.nav-refer .nav-refer-court { display: none; }
 /* Sur telephone, le libelle complet ne rentre pas a cote du bourgeon  D-116 */
 @media (max-width: 47.99em) {
-.nav .btn.nav-refer { font-size: 0; padding-inline: 0.5rem; gap: var(--s-2); }
-.nav .btn.nav-refer::before {
-    content: "Référez";
+.nav .btn.nav-refer { padding-inline: 0.5rem; gap: var(--s-2); }
+.nav .btn.nav-refer .nav-refer-long { display: none; }
+.nav .btn.nav-refer .nav-refer-court {
+    display: inline-block;
     font-family: var(--font-text);
     font-size: var(--fs-8);
     font-weight: 600;
     color: var(--ink);
   }
-.nav-refer-num { font-size: var(--fs-8); }
+.nav .btn.nav-refer .nav-refer-num { font-size: var(--fs-8); }
 }
 /* SOUS 384 px, C'EST LE MONTANT QUI PART, PAS LE MOT.  D-696 */
 @media (max-width: 24em) {
-.nav-refer-num { display: none; }
+.nav .btn.nav-refer .nav-refer-num { display: none; }
 }
 /* == 4. BOUTONS ==  D-117 */
 .btn {

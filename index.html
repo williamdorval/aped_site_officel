@@ -151,9 +151,12 @@
     </button>
     <!-- Le programme de reference est un levier de revenu : il ne  D-012 -->
     <!-- A5 · « JUSQU'A » N'EST PAS UN ORNEMENT, C'EST LA PARTIE VRAIE.  D-013 -->
-    <button class="btn btn--ghost nav-refer" type="button" data-modal-open="modal-refer">
-      Référez, gagnez jusqu’à
-      <b class="nav-refer-num">5 000 $</b>
+    <!-- LE LIBELLE N'EST PLUS UN `::before`.  D-704 -->
+    <button class="btn btn--ghost nav-refer" type="button" data-modal-open="modal-refer"
+            aria-label="Référer une entreprise et gagner jusqu’à 5 000 $">
+      <span class="nav-refer-long" aria-hidden="true">Référez, gagnez jusqu’à</span>
+      <span class="nav-refer-court" aria-hidden="true">Référez</span>
+      <b class="nav-refer-num" aria-hidden="true">5 000 $</b>
     </button>
     <button class="btn btn--primary nav-cta" type="button" data-modal-open="modal-project">
       Démarrer votre projet

@@ -3498,8 +3498,11 @@ Mesure, largeur par largeur : sous 384 px (320, 360, 375 — iPhone SE,
 disait « Referez 5 000 $ ». La regle etait exactement a l'envers.
 
 Desormais c'est `.nav-refer-num` qui disparait : il reste « Referez ».
-Le nom accessible du bouton porte toujours la phrase entiere — le
-texte n'est pas cache, il est a `font-size: 0`.
+
+> **CE CORRECTIF SEUL NE MARCHAIT PAS, ET D-704 DIT POURQUOI.** Je
+> l'avais verifie a 1 500 ms — avant que `langue.js` pose
+> `data-lettres`. Une fois les lettres posees, il ne tenait plus.
+> Corrige et reverifie a 3 200 ms, palier 1, a l'image.
 
 
 ## D-702 · La reassurance manquait au seul endroit ou on decide
@@ -3517,3 +3520,47 @@ sans engagement. » Aucune affirmation nouvelle.
 En `--ink` et non `--ink-muted` : le panneau est sur `--surface-2`,
 et D-691 a montre ce que coute une encre attenuee sur une surface
 qui n'est pas `--surface-0`.
+
+
+## D-704 · Le libelle quitte le `::before`, et la sonde change d'heure
+
+DEUX DEFAUTS EN UN, ET AUCUN N'ETAIT VISIBLE A 1 500 ms.
+
+**1 · `::before` etait deja pris.** `.btn[data-lettres]::before`
+(D-264) est l'aplat d'encre du verbe V4 CRAN : `position: absolute`,
+`inset: 0`, `background: var(--ink)`, `scaleX(0)`. Le libelle du
+bouton de reference (D-116) utilisait le MEME pseudo-element pour
+porter le mot « Referez ». Des que `langue.js` pose `data-lettres`,
+la regle de l'aplat gagne `position` et `background` — le mot devient
+une plaque d'encre invisible, hors flux, de largeur nulle.
+
+Resultat mesure a 3 200 ms, palier 1 : le bouton tombait de 130 a
+80 px et ne montrait plus que **« 5 000 $ »**, a TOUTES les largeurs
+sous 768 px. Pas seulement sous 384 px comme l'audit le disait.
+
+**2 · `.btn .l` bat toute regle a une seule classe.** `langue.js`
+pose la classe `.l` sur CHAQUE enfant element d'un bouton
+(`langue.js:332`), et `.btn .l { display: inline-block }` pese
+(0,2,0). Mes regles `.nav-refer-num { display: none }` pesaient
+(0,1,0) : une requete de media n'ajoute pas de specificite. Elles ne
+s'appliquaient jamais une fois les lettres posees.
+
+**Le correctif.** Le libelle sort du pseudo-element : deux `<span>`
+dans le markup, un long et un court, et le bouton porte un
+`aria-label` explicite — les trois enfants sont `aria-hidden`, donc
+le nom accessible ne depend plus de ce qui est peint. Les regles
+d'affichage sont ecrites en `.nav .btn.nav-refer .nav-refer-*`
+(0,4,0), au-dessus de `.btn .l`. Le `::before` est rendu a l'aplat.
+
+**LA LECON DE MESURE, ET ELLE VAUT POUR TOUT LE DEPOT.** Mes trois
+premieres sondes ont menti, chacune autrement : l'une lisait a
+1 500 ms, avant `data-lettres` ; l'autre supposait quatre canaux sur
+une image RGB et rendait `NaN` sans erreur ; la troisieme parcourait
+les feuilles de style et rendait **zero regle** sans le signaler.
+Ce qui a tranche a chaque fois, c'est l'image agrandie du bouton
+seul. **Une sonde du DOM ne peut pas voir un defaut de peinture.**
+
+Verifie a 3 200 ms, palier 1, a l'image, six largeurs :
+sous 384 px « Referez » · de 384 a 768 px « Referez 5 000 $ » ·
+au-dessus « Referez, gagnez jusqu'a 5 000 $ ». Le V4 CRAN joue
+toujours : l'aplat passe de `scaleX(0)` a `scaleX(1)` au survol.
