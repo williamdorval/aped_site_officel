@@ -67,6 +67,16 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Trois des douze métiers n'ont pas d'écran | 6 | 53 |
 | &nbsp;&nbsp;↳ Les deux nouveaux pièges sont des pièges de MESURE, pas de code | 8 | 114 |
 | &nbsp;&nbsp;↳ Et la réserve qui gouverne tout le reste n'a toujours pas bougé | 9 | 99 |
+| **Le chantier des sept items — 2026-08-03** | 6 | 60 |
+| &nbsp;&nbsp;↳ Les trois vrais projets n'ont aucune adresse publique | 12 | 151 |
+| &nbsp;&nbsp;↳ La commission de référence est un montant fixe, pas un pourcentage | 9 | 125 |
+| &nbsp;&nbsp;↳ Quatre outils du sas mesurent une chose qui n'existe plus | 15 | 174 |
+| &nbsp;&nbsp;↳ tools/etats-check.mjs rend un échec antérieur au chantier | 7 | 85 |
+| &nbsp;&nbsp;↳ Le CLS n'était pas à zéro avant, et il ne l'est toujours pas | 15 | 154 |
+| &nbsp;&nbsp;↳ tools/contraste-min.mjs sort en erreur sur une zone non touchée | 7 | 87 |
+| &nbsp;&nbsp;↳ La FAQ n'a pas de sortie de secours sur téléphone | 9 | 111 |
+| &nbsp;&nbsp;↳ Le serveur 8099 ne tournait pas | 6 | 62 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 6 | 58 |
 
 <!-- INDEX:FIN -->
 
@@ -820,3 +830,95 @@ signaler. Les trois ont été trouvées par l'image, jamais par le DOM.
 > règle, pas l'exception, et c'est justement ce qui rendait le piège
 > 87 invisible.
 
+
+## Le chantier des sept items — 2026-08-03
+
+Sept items demandés, sept livrés, plus un correctif de
+non-régression. Point de retour `49d3bc3`. Détail et captures :
+`preuves/2026-08-03-chantier-sept-items/RAPPORT.md`.
+
+### Les trois vrais projets n'ont aucune adresse publique
+
+L'item 1 demandait de garder l'action « ouvrir ou visiter » sur les
+trois métiers qui ont un site complet derrière — garage, restauration,
+paysagement et déneigement. **Aucun des trois n'est publié.**
+`demo-carroserie`, `restau` et `MV-deneigement` sont des projets
+locaux, et le dépôt ne contient aucune URL vers eux.
+
+L'action pointe donc vers leur avant/après, dans `#realisations` — la
+seule destination réelle que le site contrôle. Trois adresses
+publiques la rendraient exacte.
+
+### La commission de référence est un montant fixe, pas un pourcentage
+
+Le libellé demandé pour l'étape 04 était « Vous touchez votre
+pourcentage ». La grille publiée dans `#modal-refer` verse un montant
+FIXE par tranche : 500 · 700 · 1 500 · 3 000 · 4 000 · 5 000 $ selon
+la valeur du contrat. L'étape dit « Vous êtes payé ». **Si le
+programme est passé au pourcentage, deux endroits sont à corriger
+ensemble**, et `tools/prix-check.mjs` le verra.
+
+### Quatre outils du sas mesurent une chose qui n'existe plus
+
+Le sas « descente », sa forge de limaille et le mot « Essayez. » sont
+partis avec la chambre noire. Restent, sans cible :
+
+- `tools/forge-check.mjs` — cherche `.sas[data-sas="descente"]`, son
+  volet et son mot, et vérifie que le fond vaut `--chambre` ;
+- `tools/sas-sequence.mjs` — piste, mot, forge de la descente ;
+- `tools/_sas-1920.mjs` et `tools/_sas-sombre.mjs` — même piste ;
+- `tools/sas-check.mjs` — lit le fond de `#visite` en attendant du
+  noir.
+
+**Ils vont crier, et ils auront tort.** Non corrigés : le chantier
+interdisait de toucher aux outils.
+
+### `tools/etats-check.mjs` rend un échec antérieur au chantier
+
+Il clique `.nav-cta`, qui porte `data-modal-open="modal-project"`, et
+assère ensuite sur `#modal-start`. Avec le balisage actuel
+l'assertion ne peut pas passer. `git diff 49d3bc3` est **vide** sur
+ces deux zones : le défaut vit dans l'outil.
+
+### Le CLS n'était pas à zéro avant, et il ne l'est toujours pas
+
+Relevé A/B en worktree contre `49d3bc3`, même machine, même fenêtre :
+
+| | CLS | décalages |
+|---|---:|---:|
+| avant le chantier | 0,0021 | 29 |
+| après les sept items | 0,0033 | 31 |
+| après le correctif | **0,0019** | 29 |
+
+Le décalage ajouté était `P.referral-max` — le montant « 5 000 $ » se
+remesurait à l'échange de police. Corrigé. Ce qui reste vient de
+l'odomètre du calculateur et des lettres des boutons, tous antérieurs.
+**Le seuil du projet dit CLS = 0 ; il n'est pas tenu.**
+
+### `tools/contraste-min.mjs` sort en erreur sur une zone non touchée
+
+Un chevron `›` de 5 px sur fond photographique dans `#realisations`,
+à 1,77:1. L'outil note lui-même « 63 hors calcul : fond en image ou
+dégradé, à mesurer à l'image ». `tools/theme-check.mjs`, qui mesure
+5 largeurs × 2 thèmes, rend 0 échec.
+
+### La FAQ n'a pas de sortie de secours sur téléphone
+
+`.faq-aside` — l'adresse courriel et « Poser la question de vive
+voix » — est en `display: none` sous 64em (D-238). Un visiteur de
+téléphone dont la question n'y est pas n'a aucune issue depuis cette
+section ; il lui reste le pied de page et le menu. Non corrigé : la
+consigne de l'item 6 était « polir seulement, ne change pas la
+structure ».
+
+### Le serveur 8099 ne tournait pas
+
+Il devait tourner du côté du propriétaire ; `ERR_CONNECTION_REFUSED`
+au premier appel. Démarré par la session avec `node tools/serve.mjs
+8099`, sans quoi aucune capture n'était possible.
+
+### Et celle qui gouverne tout le reste
+
+> **AUCUNE mesure de ce chantier non plus n'a été prise sur un
+> appareil réel.** Chromium sous Playwright, poste de bureau Windows,
+> relevés « téléphone » compris.
