@@ -1707,3 +1707,179 @@ Le journal complet, avec les relevés, est dans `DECISIONS.md`
 | D-622 | `js/main.js` | le calendrier ouvre sur le premier jour réservable |
 | D-623, D-624 | `tools/production-check.mjs` | les écouteurs demandés au moteur · le clic qui tranche |
 | D-625 | `css/app.css` | la dégradation s'hérite |
+
+## D-602 · LE RENVOI VERS LES DEMONSTRATIONS.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+LE RENVOI VERS LES DEMONSTRATIONS.  D-602
+« Pas de gabarit acheté » ne se prouve pas dans une
+phrase : ca se regarde. Le dessin montre la forme
+de ce qui attend en bas — une page coupee en deux
+par le filet minium — et le bouton y mene.
+
+## D-603 · CE SERVICE EST LE PLUS ABSTRAIT DES CINQ, DONC D-603 C'EST CELUI QUI A LE…
+
+*Extrait de `index.html` le 2026-08-03.*
+
+CE SERVICE EST LE PLUS ABSTRAIT DES CINQ, DONC  D-603
+C'EST CELUI QUI A LE PLUS BESOIN D'ETRE MONTRE.
+Quatre stations nommees en francais de tous les
+jours, une piece de minium qui les parcourt sans
+que personne la pousse, et chaque station qui se
+coche d'un CRAN quand la piece y arrive.
+Sous mouvement reduit ou au palier 2, la course
+s'arrete et les quatre marques restent : le
+dessin dit la meme chose immobile.
+
+## D-605 · ON VOIT CE QU'ON VA OBTENIR AVANT DE CLIQUER.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+ON VOIT CE QU'ON VA OBTENIR AVANT DE CLIQUER.  D-605
+L'affiche est la VRAIE premiere image du lecteur
+installe plus bas, pas une illustration. Le bouton
+ferme le panneau, descend a la section, et LANCE
+la visite une fois arrive.
+
+## D-606 · « ECRAN PAR ECRAN » NE SE LIT PAS, CA SE REGARDE.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+« ECRAN PAR ECRAN » NE SE LIT PAS, CA SE REGARDE.  D-606
+Deux ecrans dessines, au meme vocabulaire que le
+schema du 05 : celui de votre equipe, et celui que
+votre client voit. Redessines, jamais captures —
+une capture d'un logiciel livre serait la preuve
+d'un mandat qu'on ne peut pas montrer.
+
+## D-687 · UN SEUL CARTOUCHE POUR LES TREIZE.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+UN SEUL CARTOUCHE POUR LES TREIZE.  D-687
+Il vivait dans chaque maquette. Tant qu'il y etait, la
+scene ne pouvait pas porter le rapport 1440/900 : il
+aurait fallu lui retrancher une hauteur qui change avec
+la largeur de la fenetre, et l'ecran se serait fait
+rogner du bas — la ou les douze posent leur bandeau,
+leur cartouche et leur plaque.
+PLUS D'ADRESSE.  D-693  Il en portait une, et une
+adresse dit « va voir ». Il n'y a rien a aller voir.
+
+## D-632 · TROIS PHRASES SONT DEVENUES SEPT MOTS.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+TROIS PHRASES SONT DEVENUES SEPT MOTS.  D-632
+« Il arrive sur la terrasse, entre au salon, monte a la
+chambre » repetait ce que le bandeau du cadre montre deja
+en 01 · 02 · 03, et « vous arretez d'ouvrir la porte a des
+gens qui repartent apres deux minutes » demandait de lire
+trente mots pour un argument que le titre porte deja. Ce
+qui reste est ce que le titre ne dit pas.
+
+## D-620 · LE CONTENANT DU LECTEUR.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+LE CONTENANT DU LECTEUR.  D-620
+Le lecteur lui-meme ne bouge pas d'une ligne : `[data-tour]`,
+`[data-tour-stage]`, `[data-tour-start]`, `[data-tour-label]`
+et `[data-tour-poster]` sont le contrat de `js/tour360.js`.
+Ce qui change est autour — un CADRE a trois etages : le
+manifeste des pieces en haut, la piece au milieu, l'entree en
+bas. La plaque d'entree quitte l'INTERIEUR de la scene, ou
+elle mangeait 36 % de la photo, pour devenir l'etage bas du
+cadre. `.is-live` la masque toujours : c'est la meme regle.
+
+## D-624 · L'ETIQUETTE DE LIEU.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+L'ETIQUETTE DE LIEU.  D-624
+Relevé sur Basement, Giraffe360 et Halo Lab : une
+etiquette mono accrochee au bas du media. Ce qu'elle dit
+est verifiable a l'oeil — l'affiche EST la terrasse, et
+c'est la piece 01 du manifeste au-dessus.
+Ce qu'elle ne dit PAS : « glisser pour regarder autour ».
+Tant qu'on n'a pas cliqué, glisser ne fait rien. Une
+pastille de geste serait fausse jusqu'au chargement ; les
+trois gestes sont nommes sous le cadre, ou ils sont
+vrais.
+
+## D-622 · L'ETAGE BAS NE SE REPLIE JAMAIS.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+L'ETAGE BAS NE SE REPLIE JAMAIS.  D-622
+`.is-live` masque `.tour-enter` — c'est la regle d'origine
+et elle ne change pas. Mais un etage qui disparait en
+pleine visite fait remonter tout le pied de 62 px sous les
+yeux du visiteur. Le pupitre garde donc sa hauteur et
+echange son contenu : l'entree cede la place a ce qu'on
+peut faire une fois dedans.
+
+## D-629 · LE VOLET NE PEUT PLUS PEINDRE HORS DE SA VOIE.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+LE VOLET NE PEUT PLUS PEINDRE HORS DE SA VOIE.  D-629
+Il vivait nu, en `top: 0; height: 130vh; transform:
+translateY(-102%)`. Monter de 102 % ne le sortait pas du
+document : ca le posait par-dessus les 1 193 px QUI
+PRECEDENT, c'est-a-dire 88 % de la section Visite. Trois
+etats sur quatre etaient couvrants — repos CSS, GSAP absent,
+et l'escalade de palier, ou `sas.js` POSE lui-meme
+`yPercent: -102`. Seul le scrub actif etait sain, et c'est
+pourquoi toutes les planches en mouvement reduit sont
+passees a cote. Mesure : 1 145 px de #visite recouverts,
+section entiere noire a l'image.
+`.sas-cache` est la voie : elle part du haut du sas, descend
+de 130vh et ROGNE. Le volet y est en `inset: 0` — a
+`yPercent: -102` il est hors de la voie, donc invisible,
+dans TOUS les etats. Le rognage porte la couche `z-index`,
+pas le volet : c'est elle qui doit passer devant le
+Calculateur.
+
+## D-636 · LA METHODE SORT DU PANNEAU, ELLE NE DISPARAIT PAS.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+LA METHODE SORT DU PANNEAU, ELLE NE DISPARAIT PAS.  D-636
+« Rien d'autre dans le panneau » est une regle de
+composition ; « le visiteur peut-il le verifier » est une
+regle de veracite, et elle passe avant. Le repli descend
+sous la grille, ferme, ou il ne dispute rien au resultat.
+Les trois rangees de chiffres derives sont parties avec le
+reste : elles reexpliquaient le calcul au lieu de le
+justifier.
+
+## D-639 · LE TOTAL ET SON DETAIL, COTE A COTE.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+LE TOTAL ET SON DETAIL, COTE A COTE.  D-639
+Empiles, ils demandaient 1 054 px : un ecran et quart pour
+une idee. Ils ne peuvent PAS partager une piste — le resume
+est a l'echelle de la journee, le detail a celle d'une
+tache, et les mettre sur la meme regle graduee fabriquerait
+exactement la fausse comparaison que cette section existe
+pour eviter. Mais ils peuvent partager une LIGNE : le total
+a gauche, sa decomposition a droite, deux colonnes qu'on ne
+confond pas. La hauteur devient le plus grand des deux au
+lieu de leur somme.
+
+## D-638 · LE RESUME EST LE MEME OBJET, AU CALIBRE D'AFFICHE.
+
+*Extrait de `index.html` le 2026-08-03.*
+
+LE RESUME EST LE MEME OBJET, AU CALIBRE D'AFFICHE.  D-638
+Il parlait une autre langue que le tableau qu'il resume :
+une barre grise, une barre minium, et un « pont » en
+accolade portant une pastille. Trois idees graphiques pour
+dire ce que le detail dit en une. Meme grammaire
+maintenant — plein pour ce qui reste, trame pour ce qui
+part — a la seule echelle qui change : celle de la journee
+entiere. Le detail devient litteralement sa decomposition.
+440 minutes a la main, 104 automatisees, 336 de moins.

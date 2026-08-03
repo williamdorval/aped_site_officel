@@ -2971,3 +2971,461 @@ Pose dans le panneau du calculateur (~420 px) sous une media 48em, il
 ecrasait son paragraphe en colonne d'un mot par ligne. Flex avec
 `flex: 1 1 26ch` sur le texte : la bascule suit la largeur REELLE de
 la boite, sans media.
+
+## D-591 · PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.  D-591
+L'arete de grains vit HORS de la plaque, sur son bord qui
+avance : rognee, elle n'existe pas. Rien d'autre ne deborde —
+le volet est en `inset: 0` sans transformation, le canevas et
+le mot sont mesures pour tenir dans la colonne.
+
+## D-592 · L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.  D-592
+Elle etait posee sous le volet, sur le bord qu'il pousse quand
+il balaye vers le bas. Or ce balayage se jouait ENTIEREMENT
+HORS DE L'ECRAN : la scene est collante, donc elle n'est
+epinglee qu'a partir du moment ou le haut de la piste touche le
+haut de la fenetre — la premiere moitie de la course, le volet
+jouait sa descente dans une scene encore en train d'entrer par
+le bas. Releve : a p = 0,20 le bord bas du volet etait a 964 px,
+soit 64 px sous la fenetre. L'arete n'a jamais ete vue.
+Le balayage est donc SUPPRIME : la plaque est deja la, c'est le
+visiteur qui descend dedans — V1 dans sa definition exacte,
+« une forme DEJA LA se decouvre sous une arete franche ». Le
+bord qui avance est celui du HAUT, et la frange y est.
+Trois rangs de densite decroissante : un bord n'est pas une
+ligne, c'est une matiere qui se rarefie.
+
+## D-590 · LA SCENE EST DEJA LA COLONNE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LA SCENE EST DEJA LA COLONNE.  D-590
+Le fil ecartait le rail une seconde fois — `calc(--rail-w + …)`
+sur une scene dont le bord gauche vaut deja 296 px : la piece
+partait 124 px a droite du mot qu'elle etait censee prolonger.
+Mesure : mot centre a 868, fil a 992. Un centrage se releve, il
+ne se deduit pas.
+
+## D-631 · LE REPOS EST LA FORME FINALE — regle 3 du projet.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631
+Le mot etait `visibility: hidden` en CSS et seul `est-la`, pose
+par le script, le rendait. GSAP absent, la piste gardait ses
+150vh d'encre et il n'y avait RIEN dedans : un aplat noir de
+1 350 px sans un mot. C'est un etat de DEPART ecrit dans le CSS,
+ce que le projet interdit. Le mot est donc la par defaut ; c'est
+`sas-actif` — posee par `armer()`, donc seulement quand le
+script pilote vraiment — qui le retire jusqu'au CRAN.
+
+## D-630 · 150vh, et le chiffre est un ARBITRAGE, pas un calcul.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630
+A 240vh le sas coutait 2 160 px de molette a 900 de haut, soit
+vingt-deux crans pour un mot. Le moment etait bon et trop cher :
+on payait l'entree de la piece en defilement mort. A 150vh il
+coute 1 350 px — treize crans, 37 % de moins — et la piece
+arrive tout de suite apres le mot.
+Ce qui a du bouger avec : les bornes de la choregraphie. La
+scene collante n'est epinglee qu'a partir de 100vh de course
+(piege 35), donc le point d'epinglage vaut 100vh / course : 0,42
+a 240vh, 0,67 a 150vh. Des bornes ecrites en dur (0,45 · 0,90)
+auraient joue toute la forge AVANT l'epinglage, c'est-a-dire
+hors champ. `sas.js` les deduit maintenant de la mesure.
+
+## D-629 · LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la D-629 section…
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la  D-629
+section entiere. Le volet portait lui-meme `top: 0; height:
+130vh; z-index: 6; transform: translateY(-102%)`. Or `top: 0`
+est le haut du SAS : monter de 102 % ne sort pas du document, ca
+pose 1 193 px d'encre PAR-DESSUS ce qui precede — 88 % de
+#visite, mesure a 1440x900, section entierement noire a l'image.
+Trois etats sur quatre etaient couvrants : le repos CSS, GSAP
+absent, et l'escalade de palier ou `sas.js` pose lui-meme
+`yPercent: -102`. Seul le scrub actif etait sain. Toutes les
+planches du depot photographient en mouvement reduit, ou ces
+regles ne s'appliquent pas : c'est pourquoi rien ne l'a vu.
+La voie part du haut du sas et descend de 130vh. Elle ROGNE,
+et c'est ELLE qui porte le z-index — le volet n'est plus qu'un
+aplat en `inset: 0` a l'interieur. Hors de la voie, il n'existe
+pas, quel que soit l'etat.
+
+## D-609 · LE VOCABULAIRE DU DESSIN NE VIT PLUS SOUS UNE SEULE BOITE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LE VOCABULAIRE DU DESSIN NE VIT PLUS SOUS UNE SEULE BOITE.  D-609
+Il etait porte par `.svc-plan2d` seul. Le renvoi du panneau 01
+n'est pas un `.svc-plan2d` — il a son propre cadre et son texte a
+cote — donc AUCUNE de ses classes ne s'appliquait et le dessin
+rendait en NOIR PLEIN, remplissage par defaut du SVG. Vu a la
+capture, pas au code : un `p2-plaque` sans regle ne leve aucune
+erreur. `:is()` garde la specificite a l'identique, donc la
+cascade ne bouge pas d'un cran.
+
+## D-602 · == LE RENVOI VERS LES DEMONSTRATIONS — panneau 01.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== LE RENVOI VERS LES DEMONSTRATIONS — panneau 01. ==  D-602
+Le panneau disait « pas de gabarit acheté » sans jamais montrer la
+difference. Le renvoi porte donc un DESSIN de ce qu'on va voir :
+une comparaison coupee en deux par le filet minium, exactement la
+mecanique de la section ou il mene. On ne promet pas une preuve,
+on en montre la forme.
+
+## D-603 · == L'AUTOMATISATION QUI TOURNE TOUTE SEULE — panneau 02.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== L'AUTOMATISATION QUI TOURNE TOUTE SEULE — panneau 02. ==  D-603
+C'est le service le plus abstrait des cinq : c'est celui qui a le
+plus besoin d'etre MONTRE. Pas un schema de developpeur — quatre
+stations nommees en francais de tous les jours, et une piece de
+minium qui les parcourt sans que personne la pousse. Chaque
+station se coche d'un CRAN quand la piece y arrive : une seule
+image separe « pas fait » de « fait », jamais un fondu.
+Sous mouvement reduit, la course s'arrete et TOUT est coche : la
+piece est a la derniere station, les quatre marques sont la.
+L'information ne depend jamais du mouvement.
+
+## D-605 · == LA VISITE, MONTREE AVANT D'ETRE OUVERTE — panneau 03.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== LA VISITE, MONTREE AVANT D'ETRE OUVERTE — panneau 03. ==  D-605
+L'affiche est la VRAIE premiere image de la visite du site
+(`images/tour/poster.webp`), pas une illustration : on voit ce
+qu'on va obtenir avant de cliquer. Elle est differee et ne pese
+sur rien tant que le panneau est ferme.
+
+## D-595 · LA PLANCHE NE REMPLIT PLUS LA VITRE — ET C'EST LE CORRECTIF D-595 DU TROU.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LA PLANCHE NE REMPLIT PLUS LA VITRE — ET C'EST LE CORRECTIF  D-595
+DU TROU. Elle la remplissait (`min-height: 100%`), donc chaque
+carte etait etiree sur toute la hauteur ; et comme le corps de
+la carte est colle EN BAS de sa rangee `1fr` (D-490), tout
+l'excedent s'accumulait en un vide au-dessus du titre. Releve a
+1440x900 : plusieurs centaines de pixels entre le filet du
+numero et le nom du service.
+Maintenant la planche fait la hauteur de son contenu et se
+CENTRE dans la vitre. Les cartes restent etirees entre elles —
+`align-items: stretch` sur le flex — donc les deux lignes
+d'horizon tiennent : le filet des numeros en haut, le corps des
+cartes en bas. Ce qui disparait, c'est seulement l'excedent.
+
+## D-596 · LE PANNEAU DE CLOTURE S'INSCRIT DANS LA MEME GRILLE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LE PANNEAU DE CLOTURE S'INSCRIT DANS LA MEME GRILLE.  D-596
+Il n'avait pas de `.svc-plan-num`, donc son corps se placait
+tout seul en RANGEE 1 — c'est-a-dire colle EN HAUT — pendant que
+les cinq cartes ont le leur en rangee 2, colle en bas. Deux
+lignes d'horizon opposees dans la meme vitre, et il etait deux
+fois plus etroit par-dessus le marche.
+On lui rend la largeur d'une carte et on reserve sa rangee 1
+avec une boite de meme gabarit typographique que le numero,
+vide, sur un filet LEGER : meme horizon, mais on voit qu'il
+n'est pas le sixieme service. Le numero, lui, ne revient pas —
+D-469 tient.
+
+## D-628 · == LE CADRE DEVIENT UN PETIT ECRAN, ET ON DEFILE DEDANS.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== LE CADRE DEVIENT UN PETIT ECRAN, ET ON DEFILE DEDANS. ==  D-628
+Ce qu'on montrait etait un GROS PLAN sur un morceau de page : on
+ne voyait jamais le site. Un visiteur ne peut pas juger un site
+dont il ne voit qu'un fragment agrandi.
+Maintenant chaque comparaison est un ecran — un cadre, une barre
+d'adresse, et la page dedans, a l'echelle d'un ecran. Le visiteur
+DEFILE lui-meme, a son rythme, des deux cotes a la fois : les
+deux vues vivent dans la MEME vitre, donc elles ne peuvent pas se
+desynchroniser.
+La boucle automatique disparait avec ce chantier. Elle existait
+pour montrer ce qu'une fenetre fixe ne pouvait pas montrer ; la
+main du visiteur le fait mieux, et c'est une animation permanente
+de moins au budget des paliers.
+
+## D-636 · AU DOIGT, C'EST L'INVERSE — ET C'EST UN PIEGE EVITE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+AU DOIGT, C'EST L'INVERSE — ET C'EST UN PIEGE EVITE.  D-636
+`contain` empeche le CHAINAGE : une fois le cadre au bout, le
+geste ne passe pas a la page. A la molette c'est ce qu'on veut. Au
+doigt, non : un pouce qui se pose sur le cadre ne peut plus faire
+descendre la page, et il n'a aucun moyen de le savoir. Sur un
+telephone le cadre occupe presque toute la largeur, donc le pouce
+y tombe souvent.
+On rend donc le chainage aux pointeurs grossiers : le cadre defile
+d'abord, la page prend le relais au bout. Personne ne reste
+coince.
+
+## D-645 · == LES DEUX COTES DEFILENT EN POURCENTAGE, PAS EN PIXELS.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== LES DEUX COTES DEFILENT EN POURCENTAGE, PAS EN PIXELS. ==  D-645
+CE QUI NE MARCHAIT PAS, ET POURQUOI C'ETAIT STRUCTUREL.
+Les deux vues vivaient DANS la vitre, empilees en grille : une
+seule course, celle du plus grand. Comme chaque « apres » etait
+coupe a la hauteur de son « avant » (D-632), la course commune
+valait celle du site de 2011 — quelques centaines de pixels — et
+le site neuf, haut de dix mille, se bloquait avec lui. Le
+proprietaire l'a dit en une phrase : « j'arrive au bas du site
+avant, tout se bloque, et le après a encore beaucoup a montrer ».
+Deux pages de hauteurs tres differentes ne peuvent pas partager
+une course en pixels. Elles peuvent partager une course en
+POURCENTAGE : a mi-chemin d'un cote, on est a mi-chemin de
+l'autre. C'est le seul verrou qui garde la comparaison lisible
+sans qu'aucun des deux ne plafonne l'autre.
+La vitre ne contient donc plus que sa PISTE — un espaceur vide qui
+ne sert qu'a donner de la course. La pile, elle, est posee
+par-dessus, ne defile pas, et chaque cote y est TRANSLATE de sa
+propre fraction. `pointer-events: none` sur la pile : la molette
+et le doigt traversent et trouvent la vitre en dessous, qui est le
+vrai conteneur defilant.
+Sans JavaScript, `.ba-cadre` est retire de la page (D-510) : rien
+de ce qui suit n'est necessaire a la lecture.
+
+## D-617 · L'APRES EST UNE CAPTURE DU VRAI SITE, PLUS UNE MAQUETTE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+L'APRES EST UNE CAPTURE DU VRAI SITE, PLUS UNE MAQUETTE.  D-617
+Les quatre « apres » etaient redessines a la main dans notre
+propre langue. Ils etaient jolis et ils MENTAIENT par omission :
+trois d'entre eux portaient des rectangles gris a la place des
+photos — des placeholders, dans une section dont le sujet est la
+preuve. Ce sont maintenant les quatre projets reels, servis par
+leur propre serveur et photographies a 1 280 px de large — la
+largeur d'un ecran d'ordinateur —, coordonnees masquees a la
+prise de vue. Chaque capture est decoupee au RAPPORT de la
+reconstitution qui lui fait face, pour que les deux cotes
+finissent a la meme ligne.  D-628
+
+## D-644 · == LES SCENES EPINGLEES SE REJOUENT, ELLES NE S'EMPILENT PLUS.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== LES SCENES EPINGLEES SE REJOUENT, ELLES NE S'EMPILENT PLUS. ==  D-644
+CE QUE LE PROPRIETAIRE VOYAIT : dans le restaurant et le design,
+« les images se superposent les unes sur les autres », et ca faisait
+passer nos propres sites pour du travail bâclé.
+LA CAUSE, ET ELLE EST DE MOI. Ces deux sites epinglent une section
+en `position: fixed` pendant deux a trois mille pixels de
+defilement : la page avance, le contenu reste en place et glisse
+LATERALEMENT. Ma couture faisait deux fautes qui se composaient —
+elle masquait tous les elements fixes a partir de la deuxieme
+fenetre (donc la scene epinglee disparaissait), et elle posait
+chaque fenetre a sa hauteur de defilement (donc ce qui restait se
+recouvrait). Ni GSAP ni ScrollTrigger dans ces sites : l'epinglage
+est maison.
+UNE IMAGE PLATE NE PEUT PAS PORTER CA. A une hauteur donnee, une
+scene epinglee n'a qu'un seul etat horizontal. On la photographie
+donc IMAGE PAR IMAGE sur toute sa course, on empile les vues en
+planche verticale, et c'est le defilement du visiteur DANS LE
+CADRE qui choisit laquelle montrer. La transition qu'il voit est
+la vraie, prise sur le vrai site — ce n'est pas le site qui tourne,
+c'est sa transition qui se rejoue sous sa main.
+
+## D-651 · == UNE BANDE CONTINUE : LE FOND, ET LA PISTE QUI GLISSE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== UNE BANDE CONTINUE : LE FOND, ET LA PISTE QUI GLISSE. ==  D-651
+CE QUE CETTE FORME REMPLACE. D-644 rejouait la scene epinglee en
+DIX VUES. Dix vues sur 2 400 px de defilement, c'est un saut tous
+les 240 px : ce n'est pas un mouvement, c'est un diaporama — et
+sur la section censee prouver notre maitrise du mouvement, c'etait
+le pire endroit possible.
+La mesure a tranche : dans les deux scenes concernees, UN SEUL
+element translate, purement a l'horizontale, pendant que rien ne
+bouge verticalement. Une piste de 3 917 px pour le design, 2 933
+pour le restaurant. Ce n'etait donc pas « plus d'images » qu'il
+fallait, c'etait UNE BANDE — et une translation est continue par
+construction : elle n'a pas de pas, donc elle ne peut pas sauter,
+quelle que soit la finesse du defilement.
+Le poids tombe au passage de 493 Ko a 96 Ko pour les deux scenes.
+
+## D-619 · UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.  D-619
+Des que l'apres est devenu une capture, le glissement s'est
+remis a coller : la valeur suivait le curseur sur le premier
+deplacement, puis se figeait. Cause : le navigateur reconnaissait
+un debut de glisser-deposer d'IMAGE et emettait `pointercancel`,
+ce que notre pilote lit — a juste titre — comme « le geste m'a
+ete retire ». On refuse donc le glisser natif, sur l'image comme
+sur la selection de texte des reconstitutions.
+
+## D-693 · == LA BARRE D'ADRESSE — c'est elle qui dit « c'est un ecran ».
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+== LA BARRE D'ADRESSE — c'est elle qui dit « c'est un ecran ». ==
+Meme grammaire que les maquettes de Secteurs : trois carres et un
+filet dessous. Rayon 0, aucune ombre.
+
+PLUS DE DOMAINE.  D-693
+Elle en portait un — « atelier-meridien.ca », « restaurant-cendre.ca »,
+« studio-norden.ca », « mv-deneigement.ca ». Les trois projets sont
+REELS ; ces adresses-la ne le sont pas, et une adresse dit « va
+voir ». Meme correction que le cartouche des Secteurs : une regle
+de veracite se corrige PARTOUT, et « ailleurs » comptait quatre
+barres de plus que celles qu'on m'avait montrees.
+
+## D-650 · LA LOUPE EST RETIREE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LA LOUPE EST RETIREE.  D-650
+Le cadre pouvait s'ouvrir en grand dans un `<dialog>` : bouton dans
+la barre d'adresse, Echap, clic dehors, retour a la place exacte.
+Elle marchait et elle etait prouvee. Le proprietaire n'en veut pas.
+Tout part — le bouton, le dialogue, le trou qui gardait la place,
+les regles de la vue agrandie, le pilote et les deux sections de
+test. Ce qui reste de D-647 est son entree dans `DECISIONS.md`,
+pour que personne ne la reinvente en croyant qu'elle manquait.
+
+## D-508 · LES DEUX ETIQUETTES SONT PERMANENTES.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LES DEUX ETIQUETTES SONT PERMANENTES.  D-508
+ELLES VIVENT DANS LA BARRE D'ADRESSE, PAS SUR LA PAGE.  D-638
+Elles etaient posees dans les coins hauts de la scene, donc
+par-dessus la barre de navigation des deux sites — releve a
+l'image le 2026-07-31 : « APRES » couvrait le bouton d'appel a
+l'action du site neuf, sur les quatre comparaisons.
+Le cadre a maintenant une barre d'adresse, et une barre d'adresse
+est de l'espace mort par construction : c'est la qu'elles vont.
+Le cadre y gagne deux fois — rien n'est plus couvert, et
+l'etiquette se lit comme le libelle d'un onglet.
+
+## D-640 · LE BOUTON DE LA POIGNEE PREND LE DOIGT, ET LUI SEUL.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LE BOUTON DE LA POIGNEE PREND LE DOIGT, ET LUI SEUL.  D-640
+Ce qui a casse, et pourquoi ca ne pouvait pas tenir : le
+glissement etait pilote sur TOUTE la scene, en `touch-action:
+pan-y`. Tant que la scene ne defilait pas, `pan-y` n'avait rien a
+faire defiler et le navigateur laissait passer le geste
+horizontal. Depuis que la vitre defile, il PREND le geste des le
+premier deplacement : `pointercancel`, et la poignee se fige apres
+un seul pas. Mesure du 2026-07-31 : `--ba-p` va de 50 a 42 et
+s'arrete, sur les quatre comparaisons.
+Les deux gestes se disputent le meme rectangle, et au doigt ils ne
+peuvent pas gagner tous les deux. On tranche par la SURFACE :
+partout dans le cadre, le doigt DEFILE ; sur le bouton de la
+poignee, large de 2,75 rem et haut de tout le cadre, il COMPARE.
+`touch-action: none` sur ce seul element, donc le navigateur ne
+revendique rien tant que le doigt est dessus.
+A la souris, rien ne change : la molette defile, le glissement
+compare, et ils ne se croisent jamais.
+
+## D-641 · LA PRISE S'ALLUME DES QU'UN DOIGT EXISTE SUR LA MACHINE.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LA PRISE S'ALLUME DES QU'UN DOIGT EXISTE SUR LA MACHINE.  D-641
+`any-pointer: coarse`, pas `pointer: coarse` : un portable tactile
+annonce un pointeur PRIMAIRE fin, et sous `pointer: coarse` la
+prise ne s'y serait jamais allumee — le doigt n'aurait eu aucun
+moyen de deplacer la poignee sur ces machines-la. Un controle mort
+coute plus cher qu'un reglage imparfait.
+Ce que ca coutait, et qui est corrige a cote : le filet vit dans
+la SCENE, pas dans la vitre, donc son ancetre defilant est la
+PAGE. La molette posee dessus faisait descendre la page au lieu du
+cadre — et la poignee est au milieu au repos, exactement la ou une
+souris se pose. Mesure du 2026-07-31 : les cinq ecarts de la
+descente tombes a 0,00 % sur les quatre comparaisons, la page
+deplacee de 330 a 590 px. `main.js` renvoie desormais la molette a
+la vitre depuis ce filet ; les deux gestes tiennent ensemble.
+
+## D-637 · LA MENTION PASSE TOUJOURS A LA LIGNE, ET CE N'EST PAS UN DETAIL.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LA MENTION PASSE TOUJOURS A LA LIGNE, ET CE N'EST PAS UN DETAIL.
+En `flex-wrap`, elle restait a cote du titre quand celui-ci etait
+court et tombait dessous quand il etait long : sur une rangee de
+deux, une legende faisait une ligne et sa voisine deux, donc les
+deux cadres ne s'alignaient plus par le bas. Releve a l'image le
+2026-07-31 entre « Carrosserie et peinture » et « Design interieur
+residentiel ». Elle passe donc a la ligne dans les quatre cas :
+une regularite vaut mieux qu'une economie de place.  D-637
+
+## D-634 · LES BLOCS PHOTO DES RECONSTITUTIONS SONT DE VRAIES PHOTOS.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LES BLOCS PHOTO DES RECONSTITUTIONS SONT DE VRAIES PHOTOS.  D-634
+Ils etaient vingt-quatre rectangles gris, et c'etait defendu comme
+du contenu d'epoque. Le proprietaire les lit comme des
+PLACEHOLDERS — et il a raison : dans une section dont le sujet est
+la preuve, un carre vide ne dit pas « le vieux site etait
+mauvais », il dit « le travail n'est pas fini ».
+Chaque famille de blocs tire d'une COLONNE de tuiles, une seule
+requete pour six vignettes. Fabrique par `tools/avant-photos.mjs`,
+qui porte l'adresse et la licence de chaque piece — Poly Haven CC0
+ou Pexels, aucune marque, aucun visage, aucun logo.
+
+## D-625 · ET CE QUI TOMBE AU PALIER 1 RESTE TOMBE AU PALIER 2.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+ET CE QUI TOMBE AU PALIER 1 RESTE TOMBE AU PALIER 2.  D-625
+La regle ne visait QUE `[data-palier="1"]`. Or l'attribut porte
+une seule valeur : a « 2 », le selecteur ne mord plus, et le
+texte defilant de 2011 se REMETTAIT A TOURNER sur la machine la
+plus serree des trois. L'escalade est a sens unique — ce qu'elle
+coupe ne revient pas parce qu'on est descendu d'un cran de plus.
+Releve par `palier-check.mjs`, palier 2 exerce par bridage x6.
+
+## D-684 · PLUS DE `aspect-ratio: 4/3`.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+PLUS DE `aspect-ratio: 4/3`.  D-684
+Il etait la parce que les tuiles DEFILAIENT : la hauteur du cadre
+etait arbitraire, il fallait bien en choisir une. Avec une image
+unique, une hauteur imposee ne peut que rogner ou cadrer en boite
+aux lettres — et le rapport du cadre variait deja de 1,58 a 1,86
+selon la largeur, donc le rognage n'aurait meme pas ete le meme
+partout. La hauteur se deduit du contenu : barre, ecran, legende.
+
+## D-638 · LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.
+
+*Extrait de `css/app.css` le 2026-08-03.*
+
+LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.  D-638
+Il portait son propre vocabulaire : une barre grise, une barre
+minium, un axe de cinq graduations et un « pont » en accolade avec
+une pastille. Quatre idees graphiques pour dire ce que six rangees
+disent en une, quinze centimetres plus bas. Il reprend maintenant
+la grammaire du detail — plein pour ce qui reste, trame pour ce qui
+part — et seule l'echelle change : la journee entiere au lieu d'une
+tache. L'axe est parti : un axe est une legende, et le public ne
+lit pas les legendes. Les deux bornes sont ecrites sous la piste,
+chacune sous son bout.

@@ -132,3 +132,19 @@ La cible peut bouger pendant le passage : une frontiere
         la mise en page. Un voile plein ecran, lui, est deja fixe :
         relire la racine chaque image ne dirait rien de neuf.
 
+## D-634 · LA MUTATION PART AVANT LE DEMONTAGE.
+
+*Extrait de `js/trame.js` le 2026-08-03.*
+
+LA MUTATION PART AVANT LE DEMONTAGE.  D-634
+`onFin` ne sert qu'a une chose chez ses deux appelants : MUTER
+la page sous le couvert de la trame — changer de theme, charger
+une autre piece. Il etait appele APRES le retrait du canevas :
+la mutation se voyait donc a nu pendant au moins une image, et
+c'est ce trou qu'un fondu de page entiere servait a cacher. Un
+couvercle qu'on retire avant de peindre ne couvre rien.
+L'ordre inverse ne coute rien : le `degager` que l'appelant
+lance dans `onFin` cree son propre canevas, qui part COUVRANT
+et se pose par-dessus celui-ci avant qu'il ne parte. Les deux
+se chevauchent d'une image, ce qui est exactement ce qu'on
+veut.

@@ -1581,3 +1581,328 @@ au chargement avec ancre puis a la fin du defilement doux d'un clic
 (`scrollend`, repli 750 ms). Abandon immediat des que le visiteur
 reprend la main (molette, touche, doigt). Les ancres #svc- gardent
 leur propre visee, prouvee 10/10.
+
+## D-598 · LA MARGE DE FIN N'EST PAS CELLE DU TEXTE.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+LA MARGE DE FIN N'EST PAS CELLE DU TEXTE.  D-598
+Elle l'etait, et le dernier item ne pouvait donc jamais se
+centrer : sa cible `centre - W/2` depassait le `scrollLeft`
+maximal et se faisait borner, si bien que le panneau de
+cloture se calait contre le bord droit — 222 px a droite de
+la ou toutes les autres cartes s'arretent. On reserve donc a
+DROITE la gouttiere de centrage d'une carte. La marge de
+gauche, elle, reste celle du texte : au repos, la premiere
+carte doit s'aligner sur le titre.
+
+## D-597 · LA ZONE MORTE PASSE DE 18 % A 10 %.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+LA ZONE MORTE PASSE DE 18 % A 10 %.  D-597
+Elle s'ajoutait au lissage : 18 % de plat, puis TOUTE la
+distance parcourue sur les 64 % du milieu, puis 18 % de plat.
+La pente maximale valait donc 1,5 / 0,64 = 2,34 fois la
+moyenne — la carte restait immobile, partait d'un coup, se
+rearretait. C'est ce qu'on ressentait comme « ca n'a pas de
+rythme ». A 10 %, la pente maximale tombe a 1,79, et le pas
+vertical a ete ouvert a 400 px pour compenser la glisse plus
+longue. Le repos, lui, ne change pas : arrivee et depart
+restent a derivee nulle, donc aucun depassement — ζ = 1.
+
+## D-599 · == LE RATTRAPAGE — LE CORRECTIF DE « CA NE GLISSE PAS ».
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+== LE RATTRAPAGE — LE CORRECTIF DE « CA NE GLISSE PAS ». ==  D-599
+La cible ci-dessus est une fonction PURE de la position de
+defilement, et elle le reste. Mais une molette n'avance pas de
+facon continue : elle envoie des paliers d'environ 100 px,
+donc le rail se posait vingt fois par seconde a des endroits
+distants les uns des autres, et sautait. Meme cause que la
+saccade du sas, meme correctif : entre deux crans de molette,
+on rejoint la cible sur le rythme d'affichage.
+Ce qui compte est preserve : A L'ARRET, la position converge
+vers la valeur exacte de la cible — donc une meme position de
+defilement rend toujours le meme cadrage, et un arret en plein
+vol reste un etat legitime. Toute mesure doit laisser 400 ms
+de convergence avant de lire.
+
+## D-607 · == OUVRIR LA VISITE DEPUIS LE PANNEAU 03.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+== OUVRIR LA VISITE DEPUIS LE PANNEAU 03. ==  D-607
+Trois choses doivent s'etre produites avant que le clic serve a
+quelque chose, et aucune n'est instantanee :
+1. le panneau doit etre ferme, sinon le verrou de defilement
+tient encore la page ;
+2. l'ancre `#visite` doit avoir fini d'atterrir — la re-visee
+de `viserLesAncres` repasse jusqu'a 900 ms apres le saut,
+et un lecteur qui demarre pendant qu'on corrige la
+position donne une arrivee bancale ;
+3. `tour360.js` doit etre CABLE. Il arrive en vague 2 : un
+`.click()` envoye avant frappe un bouton sans ecouteur et
+ne fait rien, en silence. D'ou le drapeau `data-tour-pret`
+pose par ce fichier-la.
+On attend donc le drapeau, jusqu'a quatre secondes, puis on
+clique UNE fois. Si le drapeau n'arrive jamais, on ne fait
+rien : le visiteur est de toute facon devant le bouton, a
+l'endroit exact ou il faut cliquer.
+
+## D-593 · --- LE GLISSEMENT, ET IL EST EXPLICITE.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+--- LE GLISSEMENT, ET IL EST EXPLICITE. ---  D-593
+Le `input[type=range]` reste : c'est la bonne semantique
+pour le clavier, le lecteur d'ecran et `aria-valuetext`.
+Mais son glissement NATIF ne repondait pas. Releve du
+2026-07-31, vrai `mouse.down` puis `mouse.move` sur huit
+positions de 15 % a 90 % de la scene : `--ba-p` est reste
+a 50 du debut a la fin, les huit fois, souris ET doigt.
+Le clavier, lui, marchait — donc le champ n'etait ni
+desactive ni couvert.
+Cause : le champ est etire en `inset: 0` sur toute la
+scene et son pouce fait `height: 100%`, mais la PISTE du
+champ n'a aucune hauteur. Chromium ne suit le pointeur que
+s'il est dans la piste : une bande mince, qui n'est pas la
+ou le visiteur attrape.
+`ba-check.mjs` ne POUVAIT pas le voir : il synthetisait un
+evenement `input` au lieu de glisser. Piege 17 — un test
+qui verrouille le defaut qu'il devait attraper.
+On pilote donc au pointeur, et on garde le champ.
+
+## D-641 · LA MOLETTE POSEE SUR LA PRISE DOIT DESCENDRE DANS LE CADRE, PAS DANS LA PAGE.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+LA MOLETTE POSEE SUR LA PRISE DOIT DESCENDRE DANS LE CADRE,
+PAS DANS LA PAGE.  D-641
+La prise de la poignee est une colonne de 2,75 rem, large
+assez pour un doigt. Elle vit dans la SCENE, pas dans la
+vitre : son ancetre defilant est donc la PAGE. Mesure du
+2026-07-31, molette posee au milieu — la ou la poignee se
+trouve au repos, donc la ou une souris se pose : les cinq
+ecarts de la descente sont tombes a 0,00 % sur les quatre
+comparaisons, et la page a bouge de 330 a 590 px. Le
+correctif d'un geste avait casse l'autre.
+On renvoie donc la molette a la vitre a la main. Onze
+lignes, et les deux gestes tiennent sur toutes les
+machines — y compris un portable tactile, ou le pointeur
+fin et le doigt cohabitent sur le meme ecran.
+`passive: false` parce qu'on refuse le defilement de la
+page ; sans script, la prise n'existe pas du tout
+(`html:not(.js) .ba-trait { display: none }`) et la vitre
+defile nativement partout.
+
+## D-645 · --- LE VERROU EN POURCENTAGE --- D-645 Les deux cotes n'ont pas la meme…
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+--- LE VERROU EN POURCENTAGE ---  D-645
+Les deux cotes n'ont pas la meme hauteur — un site de 2011
+fait quelques centaines de pixels, un site neuf en fait dix
+mille. Une course partagee EN PIXELS plafonne donc le grand
+a la hauteur du petit : c'est le blocage releve par le
+proprietaire. Une course partagee EN POURCENTAGE ne
+plafonne rien : a mi-chemin d'un cote, on est a mi-chemin
+de l'autre, et les deux atteignent leur pied ensemble.
+La vitre ne contient qu'une PISTE vide. C'est elle qui
+donne la course ; les deux pages sont posees par-dessus et
+translatees, chacune de sa propre fraction.
+Tout est calcule en `cqw` — centiemes de la largeur du
+cadre — donc rien n'est a recalculer quand la fenetre
+change de taille, et la meme valeur sert au cadre en
+grille comme au cadre agrandi.  D-646
+
+## D-648 · 100 cqw = la largeur du cadre.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+100 cqw = la largeur du cadre. LES DEUX HAUTEURS SE
+MESURENT DANS LE DOCUMENT.  D-648
+Celle de l'« apres » se lisait sur l'image, par son
+rapport naturel. Elle est maintenant une PILE DE TUILES :
+la premiere ne dit plus rien de la hauteur totale. Et
+une mesure prise sur `naturalHeight` ne vaut qu'une fois
+l'image arrivee, alors que les attributs `width` et
+`height` reservent la place tout de suite — c'est ce qui
+garde le CLS a zero, et c'est donc ce qu'il faut lire.
+
+## D-651 · UNE BANDE SE POSE PAR SA FRACTION, PAS PAR UN INDICE.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+UNE BANDE SE POSE PAR SA FRACTION, PAS PAR UN INDICE.  D-651
+Une piste CONTINUE se translate de `fraction x course` :
+la valeur est reelle, donc le mouvement n'a pas de pas et
+ne peut pas sauter. Une bande rejouee en N vues garde son
+indice entier — c'est le repli, et lui saute par nature.
+
+## D-654 · ON PEINT DANS L'EVENEMENT, PAS UNE IMAGE PLUS TARD.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+ON PEINT DANS L'EVENEMENT, PAS UNE IMAGE PLUS TARD.  D-654
+La premiere version etalait le rendu sur un
+`requestAnimationFrame` — le reflexe habituel pour ne pas
+surcharger un ecouteur de defilement. Ici c'etait FAUX, et
+mesure : sur 18 images ou le defilement avancait,
+l'image a suivi 0 fois dans la meme image. CENT POUR
+CENT de retard d'une image, systematique.
+Ce que ca donne a l'ecran : la vitre defile sur le
+compositeur, mais ce qu'on voit est la PILE, posee
+par-dessus et deplacee par nous. Une image de retard, et
+la pile montre encore l'etat d'avant pendant que la
+barre est deja ailleurs — deux contenus qui ne se
+correspondent plus. Dans une scene epinglee, ou le
+recouvrement occupe toute la fenetre, ca se lit comme du
+contenu duplique et deborde.
+Un evenement `scroll` est distribue AVANT la peinture :
+y ecrire la transformation la fait partir dans la meme
+image. Le cout est de deux proprietes personnalisees par
+evenement, et c'est moins cher qu'une image de retard.
+
+## D-594 · AU DOIGT, ON NE PREND PAS LA MAIN TOUT DE SUITE : le D-594 meme geste peut…
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+AU DOIGT, ON NE PREND PAS LA MAIN TOUT DE SUITE : le  D-594
+meme geste peut vouloir dire « je compare » ou « je
+continue a lire ». On attend le premier deplacement pour
+trancher ; s'il est plutot vertical, le doigt est rendu
+a la page et le defilement n'est jamais bloque.
+
+## D-628 · --- 2 · L'OEIL QUI ALLUMAIT LA BOUCLE EST RETIRE --- D-628 Il posait…
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+--- 2 · L'OEIL QUI ALLUMAIT LA BOUCLE EST RETIRE ---  D-628
+Il posait `data-vif` sur chaque scene visible, et `data-vif`
+commandait la boucle de defilement des maquettes (D-533). La
+boucle est partie avec ce chantier : le cadre est devenu un
+petit ecran dans lequel le visiteur descend lui-meme.
+Verifie avant la coupe : plus une seule regle de `app.css` ne
+lit `data-vif`. Un observateur qui ne commande plus rien reste
+un observateur qui tourne — a chaque entree de scene, sur
+quatre scenes — et un piege pour la prochaine lecture.
+
+## D-635 · LA BASCULE EST UN CRAN.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+LA BASCULE EST UN CRAN.  D-635
+Elle posait `theme-shifting` pendant 560 ms, ce qui armait une
+transition de couleur sur 3 549 elements. Mesure : pire image
+549,9 ms. Le changement se fait sous le couvert de la trame
+(voir `basculerTheme`), donc il n'y a rien a fondre — et sans
+trame, un etat roule d'un cran, c'est le verbe V4.
+
+## D-622 · == LE CALENDRIER OUVRE SUR LE PREMIER JOUR RESERVABLE.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+== LE CALENDRIER OUVRE SUR LE PREMIER JOUR RESERVABLE.  D-622
+Il ouvrait sur le MOIS COURANT. Un 31 du mois, avec un preavis
+de 24 h, il ne reste aucune date ouverte dans ce mois-la : le
+visiteur voyait quarante et un jours GRISES, sans un mot pour
+lui dire d'aller au mois suivant. Releve le 2026-07-31 par
+`formulaires-e2e.mjs`, qui a cherche une plage libre sur dix
+jours et n'en a trouve aucune.
+On ouvre donc sur le mois du premier jour ouvrable — la fleche
+« precedent » se desactive d'elle-meme, rien d'autre a changer.
+
+## D-636 · LES DEUX PISTES PARTAGENT ORIGINE ET ECHELLE.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+LES DEUX PISTES PARTAGENT ORIGINE ET ECHELLE.  D-636
+L'echelle est la duree MANUELLE : la piste du haut est
+toujours pleine, celle du bas en est la part qui resterait.
+Deux echelles differentes rendraient deux barres qu'on ne
+peut pas comparer, ce qui est exactement le defaut qu'on
+corrige. Le suffixe « par semaine » est parti des nombres :
+il est deja dans le libelle au-dessus, et il empechait les
+deux chiffres de se caler sur le meme bord droit.
+
+## D-687 · UN SEUL CARTOUCHE POUR LES TREIZE.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+UN SEUL CARTOUCHE POUR LES TREIZE.  D-687
+Il vivait dans chaque maquette ; il est maintenant au-dessus de
+la scene, et c'est ce qui permet a la scene de porter le rapport
+exact de la prise de vue. Il ne porte plus d'adresse (D-693) :
+une adresse dit « va voir », et il n'y a rien a aller voir.
+
+## D-672 · ================================================================== L'APERCU…
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+==================================================================
+L'APERCU VIVANT — un aperçu FIGE ne prouve pas qu'on sait animer.
+D-672
+
+CE QUI NE CHANGE PAS. La planche de captures reste le poster :
+elle porte le texte de remplacement, elle tient la geometrie
+(donc CLS a zero), elle est ce que voient le clavier, les
+lecteurs d'ecran, le tactile et tout palier au-dessus de zero.
+Elle est aussi le seul aperçu des TROIS projets reels, qui
+vivent hors de ce depot et qu'aucun serveur d'ici ne sert.
+
+CE QUI S'AJOUTE. Sur un poste large, pointeur fin, palier 0, et
+SEULEMENT pendant que le pointeur est sur le panneau : un
+`<iframe>` de meme origine charge le vrai site de demonstration
+et le fait defiler tout seul. Ce n'est pas une reconstitution du
+mouvement, c'est le mouvement.
+
+POURQUOI L'IFRAME ET PAS AUTRE CHOSE. Trois solutions ont ete
+pesees. Une video par secteur : deux a trois megaoctets chacune,
+a refaire a chaque retouche d'un site, et ce serait un
+ENREGISTREMENT — la section vendrait une capture d'ecran de sa
+preuve. Rejouer les animations en miniature dans le panneau :
+une reconstitution, donc un faux, et le depot interdit d'afficher
+ce qu'il ne peut pas defendre. L'iframe est le seul des trois qui
+montre la chose elle-meme.
+
+CE QU'ELLE COUTE, ET COMMENT ON LE BORNE. Un site de secteur pese
+de 200 a 700 ko une fois ses polices et ses premieres images
+chargees. On n'en tient QU'UN a la fois, on ne le cree qu'apres
+le premier survol du panneau — donc bien apres le LCP, qui se
+joue dans le heros — et on le detruit des que le pointeur sort.
+Le survol qui balaie douze pastilles ne charge rien : un delai
+de 320 ms avale le balayage.
+
+`inert` FERME LA PORTE AU CLAVIER, ET C'EST VOULU. Une page de
+demonstration porte une trentaine d'arrets de tabulation. Les
+laisser entrer dans le fil de la page d'accueil serait un piege
+de focus deguise en demonstration. Le vivant est donc inerte,
+invisible aux lecteurs d'ecran, et il DISPARAIT des qu'un focus
+clavier arrive sur le panneau : le visiteur au clavier retrouve
+la planche, son etiquette et son defilement.
+==================================================================
+
+## D-688 · LE CADRE FAIT 1440 x 900 EN PROPRE ET SE REDUIT.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+LE CADRE FAIT 1440 x 900 EN PROPRE ET SE REDUIT.  D-688
+Il faisait la largeur de la scene — 348 a 621 px selon la
+fenetre — et rendait donc la mise en page TELEPHONE d'un ecran
+dessine pour 1440. Le vivant et la planche montraient deux
+compositions differentes du meme site, et c'est la planche qui
+avait raison. On rend a la vraie largeur et on met a l'echelle :
+meme geometrie que la capture, au pixel.
+
+## D-681 · IL N'Y A PLUS RIEN A FAIRE DEFILER.
+
+*Extrait de `js/main.js` le 2026-08-03.*
+
+IL N'Y A PLUS RIEN A FAIRE DEFILER.  D-681
+Le cadre poussait le defilement de deux pixels par image : c'est
+ce qui faisait bouger un site de douze mille pixels. Un premier
+ecran n'en a que neuf cents, il n'y a aucune course, et le seul
+mouvement est celui que l'ecran joue lui-meme au chargement —
+ce qui est exactement ce que la section doit prouver.

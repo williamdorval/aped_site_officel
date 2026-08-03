@@ -6,12 +6,7 @@
   gap: var(--s-6);
 }
 
-/* LE CADRE A TROIS ETAGES.  D-620
-   Un seul trait fait le tour des trois etages : le manifeste des
-   pieces, la piece, le pupitre. C'est le meme objet que le panneau de
-   la section 04 — un cadre plat, un bandeau mono, aucun rayon, aucune
-   ombre — mais a l'echelle de la section entiere au lieu d'une
-   colonne, pour que les deux ne se confondent pas. */
+/* LE CADRE A TROIS ETAGES.  D-620 */
 .tour-cadre {
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -97,11 +92,7 @@
 
 .tour[data-tour].is-live .tour-encours { display: flex; }
 
-/* L'etiquette de lieu, posee sur l'affiche.  D-624
-   Elle est sur photo, donc elle ne suit pas le theme : elle suit son
-   fond, comme l'ancienne plaque d'entree. Aplat franc, rayon 0.
-   Elle disparait des que la visite est vivante — le plan du lecteur
-   occupe alors ce coin, et c'est lui qui dit ou on est. */
+/* L'etiquette de lieu, posee sur l'affiche.  D-624 */
 .tour-lieu {
   position: absolute;
   left: var(--s-4);
@@ -133,12 +124,7 @@
   object-fit: cover;
 }
 
-/* L'ENTREE QUITTE LA PHOTO.  D-336 · revu D-620
-   La plaque etait posee DANS la scene, en `inset: auto 0 0 0` : elle
-   mangeait 36 % de la piece au 16:9, et 52 % au 4:3 du telephone. On
-   ne vendait plus la piece, on vendait un aplat noir. Elle devient
-   l'etage bas du cadre : la photo est entiere, et l'appel a l'action
-   se lit sur le ciment comme partout ailleurs sur le site. */
+/* L'ENTREE QUITTE LA PHOTO.  D-336 */
 .tour-enter {
   display: flex;
   flex-wrap: wrap;
@@ -158,16 +144,7 @@
 .tour[data-tour].is-live .tour-enter,
 .tour[data-tour].is-live .tour-poster { display: none; }
 
-/* LA PROVENANCE EST UNE LEGENDE DE CADRE.  D-632
-   Elle etait le second etage d'un pied qui portait aussi trois
-   gestes en toutes lettres. Les gestes sont partis — ils
-   expliquaient avant le clic des gestes qu'on ne peut pas encore
-   faire, et repetaient le pupitre une fois dedans. Il ne reste
-   qu'elle, et une mention obligatoire se pose comme une legende :
-   sous l'objet, alignee sur son bord gauche, bornee a une mesure
-   qu'on lit d'un coup d'oeil. Aucun filet — le cadre a deja le sien
-   juste au-dessus, et deux traits a 24 px l'un de l'autre font une
-   rayure, pas une structure. */
+/* LA PROVENANCE EST UNE LEGENDE DE CADRE.  D-632 */
 .tour-source {
   margin: 0;
   color: var(--ink-muted);

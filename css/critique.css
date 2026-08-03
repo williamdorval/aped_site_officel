@@ -36,14 +36,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 .sas-scene { position: relative; }
 .sas-volet { position: relative; }
 .sas-arete, .sas-forge, .sas-mot, .sas-fil { display: none; }
-/* LA CHAMBRE NOIRE — la section 05, seule piece sombre du site.  D-572
-   ELLE NE DEPEND PAS DU THEME, et c'est la correction du 2026-07-31 :  D-586
-   elle prenait le jeu de jetons du theme OPPOSE, donc en sombre elle
-   virait au ciment clair et le sas forgeait « Essayez. » sur du blanc.
-   L'arc de luminance raconte une descente ; un recit qui s'inverse
-   avec le theme n'a plus de direction. Un seul jeu, les deux themes :
-   les jetons `--chambre-*` de `tokens.css`. Chaque paire est celle du
-   theme sombre, rehaussee par un fond plus profond. */
+/* LA CHAMBRE NOIRE — la section 05, seule piece sombre du site.  D-572 */
 #visite {
   color-scheme: dark;
   --surface-0: var(--chambre); --surface-1: var(--chambre-1); --surface-2: var(--chambre-2);
@@ -70,11 +63,7 @@ html.sas-ok .sas .sas-scene {
     top: 0;
     height: 100vh;
   }
-/* PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.  D-591
-     L'arete de grains vit HORS de la plaque, sur son bord qui
-     avance : rognee, elle n'existe pas. Rien d'autre ne deborde —
-     le volet est en `inset: 0` sans transformation, le canevas et
-     le mot sont mesures pour tenir dans la colonne. */
+/* PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.  D-591 */
 html.sas-ok .sas[data-sas="cloture"] .sas-scene { overflow: hidden; }
 html.sas-ok .sas .sas-volet {
     position: absolute;
@@ -83,21 +72,7 @@ html.sas-ok .sas .sas-volet {
     background: var(--chambre);
     will-change: transform;
   }
-/* L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.  D-592
-     Elle etait posee sous le volet, sur le bord qu'il pousse quand
-     il balaye vers le bas. Or ce balayage se jouait ENTIEREMENT
-     HORS DE L'ECRAN : la scene est collante, donc elle n'est
-     epinglee qu'a partir du moment ou le haut de la piste touche le
-     haut de la fenetre — la premiere moitie de la course, le volet
-     jouait sa descente dans une scene encore en train d'entrer par
-     le bas. Releve : a p = 0,20 le bord bas du volet etait a 964 px,
-     soit 64 px sous la fenetre. L'arete n'a jamais ete vue.
-     Le balayage est donc SUPPRIME : la plaque est deja la, c'est le
-     visiteur qui descend dedans — V1 dans sa definition exacte,
-     « une forme DEJA LA se decouvre sous une arete franche ». Le
-     bord qui avance est celui du HAUT, et la frange y est.
-     Trois rangs de densite decroissante : un bord n'est pas une
-     ligne, c'est une matiere qui se rarefie. */
+/* L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.  D-592 */
 html.sas-ok .sas .sas-arete {
     display: block;
     position: absolute;
@@ -123,12 +98,7 @@ html.sas-ok .sas--calque .sas-arete {
       repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 7px),
       repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 13px);
   }
-/* LA SCENE EST DEJA LA COLONNE.  D-590
-     Le fil ecartait le rail une seconde fois — `calc(--rail-w + …)`
-     sur une scene dont le bord gauche vaut deja 296 px : la piece
-     partait 124 px a droite du mot qu'elle etait censee prolonger.
-     Mesure : mot centre a 868, fil a 992. Un centrage se releve, il
-     ne se deduit pas. */
+/* LA SCENE EST DEJA LA COLONNE.  D-590 */
 html.sas-ok .sas .sas-forge {
     display: block;
     position: absolute;
@@ -161,14 +131,7 @@ html.sas-ok .sas .sas-mot {
     white-space: nowrap;
     color: var(--chambre-ink);
   }
-/* LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631
-     Le mot etait `visibility: hidden` en CSS et seul `est-la`, pose
-     par le script, le rendait. GSAP absent, la piste gardait ses
-     150vh d'encre et il n'y avait RIEN dedans : un aplat noir de
-     1 350 px sans un mot. C'est un etat de DEPART ecrit dans le CSS,
-     ce que le projet interdit. Le mot est donc la par defaut ; c'est
-     `sas-actif` — posee par `armer()`, donc seulement quand le
-     script pilote vraiment — qui le retire jusqu'au CRAN. */
+/* LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631 */
 html.sas-ok .sas.sas-actif .sas-mot { visibility: hidden; }
 html.sas-ok .sas.sas-actif .sas-mot.est-la { visibility: visible; }
 /* Le fil du chantier : 2 px, aucun texte, le scrub y est permis.
@@ -199,18 +162,7 @@ html.sas-ok .sas[data-sas="descente"] .sas-fil {
     background: var(--chambre-accent);
     z-index: 5;
   }
-/* 150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630
-     A 240vh le sas coutait 2 160 px de molette a 900 de haut, soit
-     vingt-deux crans pour un mot. Le moment etait bon et trop cher :
-     on payait l'entree de la piece en defilement mort. A 150vh il
-     coute 1 350 px — treize crans, 37 % de moins — et la piece
-     arrive tout de suite apres le mot.
-     Ce qui a du bouger avec : les bornes de la choregraphie. La
-     scene collante n'est epinglee qu'a partir de 100vh de course
-     (piege 35), donc le point d'epinglage vaut 100vh / course : 0,42
-     a 240vh, 0,67 a 150vh. Des bornes ecrites en dur (0,45 · 0,90)
-     auraient joue toute la forge AVANT l'epinglage, c'est-a-dire
-     hors champ. `sas.js` les deduit maintenant de la mesure. */
+/* 150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630 */
 .sas[data-sas="descente"] { --sas-course: 150vh; }
 .sas[data-sas="cloture"]  { --sas-course: 100vh; }
 /* LA REMONTEE EST UN CALQUE, PAS UNE PISTE. Le volet couvre le  D-579
@@ -218,21 +170,7 @@ html.sas-ok .sas[data-sas="descente"] .sas-fil {
      la question se decouvre sous l'arete. Il ne coute aucune hauteur
      de page. Repos = forme finale : parti. */
 .sas--calque { position: relative; }
-/* LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la  D-629
-     section entiere. Le volet portait lui-meme `top: 0; height:
-     130vh; z-index: 6; transform: translateY(-102%)`. Or `top: 0`
-     est le haut du SAS : monter de 102 % ne sort pas du document, ca
-     pose 1 193 px d'encre PAR-DESSUS ce qui precede — 88 % de
-     #visite, mesure a 1440x900, section entierement noire a l'image.
-     Trois etats sur quatre etaient couvrants : le repos CSS, GSAP
-     absent, et l'escalade de palier ou `sas.js` pose lui-meme
-     `yPercent: -102`. Seul le scrub actif etait sain. Toutes les
-     planches du depot photographient en mouvement reduit, ou ces
-     regles ne s'appliquent pas : c'est pourquoi rien ne l'a vu.
-     La voie part du haut du sas et descend de 130vh. Elle ROGNE,
-     et c'est ELLE qui porte le z-index — le volet n'est plus qu'un
-     aplat en `inset: 0` a l'interieur. Hors de la voie, il n'existe
-     pas, quel que soit l'etat. */
+/* LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la D-629 section…  D-629 */
 html.sas-ok .sas--calque .sas-cache {
     position: absolute;
     left: 0;
@@ -760,14 +698,7 @@ html.compo-attend .hero-fiche .fiche-rule,
 html.entree-attend .he,
 html.entree-attend .he::after,
 html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused !important; }
-/* LE CONTRAT DU VOYAGE — l'assemblage du rail.  D-584
-   Pendant que la composition du hero se pose, les douze stations
-   arrivent decalees et se reprennent (V2, 28 px, 520 ms, aucun
-   depassement, aucun fondu) : le visiteur voit d'emblee qu'il y a
-   douze stations et qu'il est a la premiere. C'est l'annonce du
-   contrat de lecture — jamais un « scroll to explore ». Les crans
-   partent avec les horloges de `compo-hero` et se taisent avec
-   elles ; sans sequence d'entree, le rail est simplement la. */
+/* LE CONTRAT DU VOYAGE — l'assemblage du rail.  D-584 */
 html.compo-hero .rail-list a {
   animation: rail-aligne 520ms var(--e-snap) calc(160ms + var(--re, 0) * 1ms) both;
 }
@@ -1282,31 +1213,11 @@ html.entree-saut .hero-fiche .fiche-rule,
 @keyframes v11-defile { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .tou :where(p, dl, dt, dd, ul, ol, li, figure) { margin: 0; padding: 0; }
 .tou :where(ul, ol) { list-style: none; }
-/* L'ECHELLE DE LA SECTION.  D-637
-   Elle faisait 1 421 px a 1440x900 : un ecran et demi, et le panneau
-   de resultat vivait sous le pli — on poussait un curseur sans voir
-   ce qu'il changeait, ce qui est le seul geste que cette section
-   existe pour permettre. Le verdict a quitte la pleine largeur, les
-   onglets sont rentres dans la colonne des reglages, et les ecarts
-   passent d'un cran. Reste 866 px : les onglets, les trois curseurs,
-   les deux chiffres et le panneau dans une seule bande de 605. */
+/* L'ECHELLE DE LA SECTION.  D-637 */
 #calculateur > .band { padding-block: var(--s-7); }
 /* == 18. COMPARATIF - deux barres nues par tache == */
-/* LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.  D-638
-   Il portait son propre vocabulaire : une barre grise, une barre
-   minium, un axe de cinq graduations et un « pont » en accolade avec
-   une pastille. Quatre idees graphiques pour dire ce que six rangees
-   disent en une, quinze centimetres plus bas. Il reprend maintenant
-   la grammaire du detail — plein pour ce qui reste, trame pour ce qui
-   part — et seule l'echelle change : la journee entiere au lieu d'une
-   tache. L'axe est parti : un axe est une legende, et le public ne
-   lit pas les legendes. Les deux bornes sont ecrites sous la piste,
-   chacune sous son bout. */
-/* L'ECHELLE.  D-638
-   1 125 px a 1440x900 pour six rangees et un resume : la section
-   demandait un ecran et quart pour une idee qui tient en un coup
-   d'oeil. Rien n'a ete retire de plus — ce sont les respirations qui
-   passent d'un cran, la ou elles ne separaient plus rien. */
+/* LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.  D-638 */
+/* L'ECHELLE.  D-638 */
 #comparatif > .band { padding-block: var(--s-7); }
 /* == 19. PROCESSUS - le parcours d'atelier ==  D-230 */
 /* SIX STATIONS, PAS QUATRE.  Le public est un patron de PME qui ne

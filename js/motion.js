@@ -111,16 +111,7 @@
   });
 
 
-  /* 6. LE CADRE DE LA VISITE — V1 · DEGAGER, sens BAS.  D-623
-     Le cadre remplacait sa venue par le fondu generique de `.rise` :
-     un mouvement qui ne se reclame d'aucun des quatre verbes, sur le
-     seul objet de la section. Il se DEGAGE maintenant sous une arete
-     franche qui balaye du HAUT vers le BAS — c'est un panneau, et un
-     panneau se decouvre dans le sens ou on le lit.
-
-     L'etat de repos reste la forme FINALE : `inset(0 0 0 0)` n'est
-     jamais ecrit dans le CSS, et `immediateRender: false` empeche la
-     vague 2 de faire disparaitre un cadre deja peint. */
+  /* 6.  D-623 */
   var cadre = $(".tour-cadre");
   if (cadre) {
     gsap.fromTo(cadre,

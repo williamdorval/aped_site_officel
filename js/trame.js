@@ -108,18 +108,7 @@
     var debut = 0;
     var obj = { el: el, cv: cv, mort: false };
 
-    /* LA MUTATION PART AVANT LE DEMONTAGE.  D-634
-       `onFin` ne sert qu'a une chose chez ses deux appelants : MUTER
-       la page sous le couvert de la trame — changer de theme, charger
-       une autre piece. Il etait appele APRES le retrait du canevas :
-       la mutation se voyait donc a nu pendant au moins une image, et
-       c'est ce trou qu'un fondu de page entiere servait a cacher. Un
-       couvercle qu'on retire avant de peindre ne couvre rien.
-       L'ordre inverse ne coute rien : le `degager` que l'appelant
-       lance dans `onFin` cree son propre canevas, qui part COUVRANT
-       et se pose par-dessus celui-ci avant qu'il ne parte. Les deux
-       se chevauchent d'une image, ce qui est exactement ce qu'on
-       veut. */
+    /* LA MUTATION PART AVANT LE DEMONTAGE.  D-634 */
     function fin() {
       if (obj.mort) return;
       obj.mort = true;

@@ -29,27 +29,7 @@ body {
   overflow-x: hidden;
 }
 
-/* LE FONDU UNIVERSEL DE BASCULE EST SUPPRIME.  D-635
-   Il posait une transition sur `*:not(svg):not(svg *)` — mesure a
-   1440x900 : 3 549 elements sur 3 969 transitionnaient quatre
-   proprietes de couleur a chaque clic, soit plus de quatorze mille
-   animations simultanees, chacune forcant la repeinture de sa boite.
-   Releve : pire image 549,9 ms, p95 entre 183 et 400 ms sur les cinq
-   endroits mesures, 200 images sur 790 au-dessus de 20 ms. Le seul
-   geste du site cense montrer notre maitrise etait le plus lourd.
-
-   Et il etait redondant : la bascule passe DEJA par une trame qui
-   couvre l'ecran (D-410). Le changement de couleur se fait sous le
-   couvert — il n'a rien a fondre. Un fondu par-dessus ne cachait
-   rien, il ajoutait une queue de 300 ms apres le retrait de la
-   trame.
-
-   Ce que dit la grammaire du projet, verbe V4 : « un etat ne fond
-   pas dans un autre, il roule d'un cran ». Un fondu de page entiere
-   etait le contraire de ce qu'on ecrit partout ailleurs. Sans
-   trame — script absent, mouvement reduit — la bascule est
-   instantanee, ce que fait tout systeme d'exploitation et ce que
-   personne ne lit comme une panne. */
+/* LE FONDU UNIVERSEL DE BASCULE EST SUPPRIME.  D-635 */
 
 /* == Typographie == */
 h1, h2, h3, h4 {

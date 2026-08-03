@@ -135,14 +135,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 .sas-volet { position: relative; }
 .sas-arete, .sas-forge, .sas-mot, .sas-fil { display: none; }
 
-/* LA CHAMBRE NOIRE — la section 05, seule piece sombre du site.  D-572
-   ELLE NE DEPEND PAS DU THEME, et c'est la correction du 2026-07-31 :  D-586
-   elle prenait le jeu de jetons du theme OPPOSE, donc en sombre elle
-   virait au ciment clair et le sas forgeait « Essayez. » sur du blanc.
-   L'arc de luminance raconte une descente ; un recit qui s'inverse
-   avec le theme n'a plus de direction. Un seul jeu, les deux themes :
-   les jetons `--chambre-*` de `tokens.css`. Chaque paire est celle du
-   theme sombre, rehaussee par un fond plus profond. */
+/* LA CHAMBRE NOIRE — la section 05, seule piece sombre du site.  D-572 */
 #visite {
   color-scheme: dark;
   --surface-0: var(--chambre); --surface-1: var(--chambre-1); --surface-2: var(--chambre-2);
@@ -170,11 +163,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     top: 0;
     height: 100vh;
   }
-  /* PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.  D-591
-     L'arete de grains vit HORS de la plaque, sur son bord qui
-     avance : rognee, elle n'existe pas. Rien d'autre ne deborde —
-     le volet est en `inset: 0` sans transformation, le canevas et
-     le mot sont mesures pour tenir dans la colonne. */
+  /* PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.  D-591 */
   html.sas-ok .sas[data-sas="cloture"] .sas-scene { overflow: hidden; }
   html.sas-ok .sas .sas-volet {
     position: absolute;
@@ -183,21 +172,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     background: var(--chambre);
     will-change: transform;
   }
-  /* L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.  D-592
-     Elle etait posee sous le volet, sur le bord qu'il pousse quand
-     il balaye vers le bas. Or ce balayage se jouait ENTIEREMENT
-     HORS DE L'ECRAN : la scene est collante, donc elle n'est
-     epinglee qu'a partir du moment ou le haut de la piste touche le
-     haut de la fenetre — la premiere moitie de la course, le volet
-     jouait sa descente dans une scene encore en train d'entrer par
-     le bas. Releve : a p = 0,20 le bord bas du volet etait a 964 px,
-     soit 64 px sous la fenetre. L'arete n'a jamais ete vue.
-     Le balayage est donc SUPPRIME : la plaque est deja la, c'est le
-     visiteur qui descend dedans — V1 dans sa definition exacte,
-     « une forme DEJA LA se decouvre sous une arete franche ». Le
-     bord qui avance est celui du HAUT, et la frange y est.
-     Trois rangs de densite decroissante : un bord n'est pas une
-     ligne, c'est une matiere qui se rarefie. */
+  /* L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.  D-592 */
   html.sas-ok .sas .sas-arete {
     display: block;
     position: absolute;
@@ -223,12 +198,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
       repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 7px),
       repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 13px);
   }
-  /* LA SCENE EST DEJA LA COLONNE.  D-590
-     Le fil ecartait le rail une seconde fois — `calc(--rail-w + …)`
-     sur une scene dont le bord gauche vaut deja 296 px : la piece
-     partait 124 px a droite du mot qu'elle etait censee prolonger.
-     Mesure : mot centre a 868, fil a 992. Un centrage se releve, il
-     ne se deduit pas. */
+  /* LA SCENE EST DEJA LA COLONNE.  D-590 */
   html.sas-ok .sas .sas-forge {
     display: block;
     position: absolute;
@@ -261,14 +231,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     white-space: nowrap;
     color: var(--chambre-ink);
   }
-  /* LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631
-     Le mot etait `visibility: hidden` en CSS et seul `est-la`, pose
-     par le script, le rendait. GSAP absent, la piste gardait ses
-     150vh d'encre et il n'y avait RIEN dedans : un aplat noir de
-     1 350 px sans un mot. C'est un etat de DEPART ecrit dans le CSS,
-     ce que le projet interdit. Le mot est donc la par defaut ; c'est
-     `sas-actif` — posee par `armer()`, donc seulement quand le
-     script pilote vraiment — qui le retire jusqu'au CRAN. */
+  /* LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631 */
   html.sas-ok .sas.sas-actif .sas-mot { visibility: hidden; }
   html.sas-ok .sas.sas-actif .sas-mot.est-la { visibility: visible; }
   /* Le seuil de la descente perd sa bande : le volet EST la bande,
@@ -320,18 +283,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     background: var(--chambre-accent);
     z-index: 5;
   }
-  /* 150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630
-     A 240vh le sas coutait 2 160 px de molette a 900 de haut, soit
-     vingt-deux crans pour un mot. Le moment etait bon et trop cher :
-     on payait l'entree de la piece en defilement mort. A 150vh il
-     coute 1 350 px — treize crans, 37 % de moins — et la piece
-     arrive tout de suite apres le mot.
-     Ce qui a du bouger avec : les bornes de la choregraphie. La
-     scene collante n'est epinglee qu'a partir de 100vh de course
-     (piege 35), donc le point d'epinglage vaut 100vh / course : 0,42
-     a 240vh, 0,67 a 150vh. Des bornes ecrites en dur (0,45 · 0,90)
-     auraient joue toute la forge AVANT l'epinglage, c'est-a-dire
-     hors champ. `sas.js` les deduit maintenant de la mesure. */
+  /* 150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630 */
   .sas[data-sas="descente"] { --sas-course: 150vh; }
   .sas[data-sas="cloture"]  { --sas-course: 100vh; }
 
@@ -340,21 +292,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
      la question se decouvre sous l'arete. Il ne coute aucune hauteur
      de page. Repos = forme finale : parti. */
   .sas--calque { position: relative; }
-  /* LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la  D-629
-     section entiere. Le volet portait lui-meme `top: 0; height:
-     130vh; z-index: 6; transform: translateY(-102%)`. Or `top: 0`
-     est le haut du SAS : monter de 102 % ne sort pas du document, ca
-     pose 1 193 px d'encre PAR-DESSUS ce qui precede — 88 % de
-     #visite, mesure a 1440x900, section entierement noire a l'image.
-     Trois etats sur quatre etaient couvrants : le repos CSS, GSAP
-     absent, et l'escalade de palier ou `sas.js` pose lui-meme
-     `yPercent: -102`. Seul le scrub actif etait sain. Toutes les
-     planches du depot photographient en mouvement reduit, ou ces
-     regles ne s'appliquent pas : c'est pourquoi rien ne l'a vu.
-     La voie part du haut du sas et descend de 130vh. Elle ROGNE,
-     et c'est ELLE qui porte le z-index — le volet n'est plus qu'un
-     aplat en `inset: 0` a l'interieur. Hors de la voie, il n'existe
-     pas, quel que soit l'etat. */
+  /* LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la D-629 section…  D-629 */
   html.sas-ok .sas--calque .sas-cache {
     position: absolute;
     left: 0;
@@ -1314,14 +1252,7 @@ html.entree-attend .he,
 html.entree-attend .he::after,
 html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused !important; }
 
-/* LE CONTRAT DU VOYAGE — l'assemblage du rail.  D-584
-   Pendant que la composition du hero se pose, les douze stations
-   arrivent decalees et se reprennent (V2, 28 px, 520 ms, aucun
-   depassement, aucun fondu) : le visiteur voit d'emblee qu'il y a
-   douze stations et qu'il est a la premiere. C'est l'annonce du
-   contrat de lecture — jamais un « scroll to explore ». Les crans
-   partent avec les horloges de `compo-hero` et se taisent avec
-   elles ; sans sequence d'entree, le rail est simplement la. */
+/* LE CONTRAT DU VOYAGE — l'assemblage du rail.  D-584 */
 html.compo-hero .rail-list a {
   animation: rail-aligne 520ms var(--e-snap) calc(160ms + var(--re, 0) * 1ms) both;
 }
@@ -2413,14 +2344,7 @@ html:not(.js) .svc-fiche-x { display: none; }
 :is(.svc-plan2d, .svc-renvoi) .p2-masse { fill: var(--surface-1); stroke: var(--ink-muted); stroke-width: 1; }
 :is(.svc-plan2d, .svc-renvoi) .p2-lame { stroke: var(--rule-strong); stroke-width: 1; }
 :is(.svc-plan2d, .svc-renvoi) .p2-sol { fill: var(--surface-1); }
-/* LE VOCABULAIRE DU DESSIN NE VIT PLUS SOUS UNE SEULE BOITE.  D-609
-   Il etait porte par `.svc-plan2d` seul. Le renvoi du panneau 01
-   n'est pas un `.svc-plan2d` — il a son propre cadre et son texte a
-   cote — donc AUCUNE de ses classes ne s'appliquait et le dessin
-   rendait en NOIR PLEIN, remplissage par defaut du SVG. Vu a la
-   capture, pas au code : un `p2-plaque` sans regle ne leve aucune
-   erreur. `:is()` garde la specificite a l'identique, donc la
-   cascade ne bouge pas d'un cran. */
+/* LE VOCABULAIRE DU DESSIN NE VIT PLUS SOUS UNE SEULE BOITE.  D-609 */
 /* Ajouts du 2026-07-31, pour les panneaux 01 a 04. Le vocabulaire  D-601
    du 05 est repris tel quel — c'etait le point de D-475 : aucune
    regle n'y etait specifique au 05. Trois classes de remplissage
@@ -2431,12 +2355,7 @@ html:not(.js) .svc-fiche-x { display: none; }
 :is(.svc-plan2d, .svc-renvoi) .p2-mute { fill: var(--ink-muted); }
 :is(.svc-plan2d, .svc-renvoi) .p2-fin { fill: none; stroke: var(--rule-strong); stroke-width: 1; }
 
-/* == LE RENVOI VERS LES DEMONSTRATIONS — panneau 01. ==  D-602
-   Le panneau disait « pas de gabarit acheté » sans jamais montrer la
-   difference. Le renvoi porte donc un DESSIN de ce qu'on va voir :
-   une comparaison coupee en deux par le filet minium, exactement la
-   mecanique de la section ou il mene. On ne promet pas une preuve,
-   on en montre la forme. */
+/* == LE RENVOI VERS LES DEMONSTRATIONS — panneau 01.  D-602 */
 .svc-renvoi {
   display: grid;
   gap: var(--s-4);
@@ -2453,16 +2372,7 @@ html:not(.js) .svc-fiche-x { display: none; }
 .svc-renvoi-dit p { margin: 0; font-size: var(--fs-7); color: var(--ink-muted); }
 .svc-renvoi-dit b { color: var(--ink); }
 
-/* == L'AUTOMATISATION QUI TOURNE TOUTE SEULE — panneau 02. ==  D-603
-   C'est le service le plus abstrait des cinq : c'est celui qui a le
-   plus besoin d'etre MONTRE. Pas un schema de developpeur — quatre
-   stations nommees en francais de tous les jours, et une piece de
-   minium qui les parcourt sans que personne la pousse. Chaque
-   station se coche d'un CRAN quand la piece y arrive : une seule
-   image separe « pas fait » de « fait », jamais un fondu.
-   Sous mouvement reduit, la course s'arrete et TOUT est coche : la
-   piece est a la derniere station, les quatre marques sont la.
-   L'information ne depend jamais du mouvement. */
+/* == L'AUTOMATISATION QUI TOURNE TOUTE SEULE — panneau 02.  D-603 */
 .svc-auto { display: grid; gap: var(--s-3); }
 .svc-auto svg { display: block; width: 100%; height: auto; }
 .svc-auto .p2-piece { fill: var(--accent); }
@@ -2519,11 +2429,7 @@ html[data-palier="3"] .svc-auto .p2-soudure { transform: scaleX(1); }
 @keyframes svc-fait-3 { 0%, 57% { opacity: 0; } 58%, 100% { opacity: 1; } }
 @keyframes svc-fait-4 { 0%, 82% { opacity: 0; } 83%, 100% { opacity: 1; } }
 
-/* == LA VISITE, MONTREE AVANT D'ETRE OUVERTE — panneau 03. ==  D-605
-   L'affiche est la VRAIE premiere image de la visite du site
-   (`images/tour/poster.webp`), pas une illustration : on voit ce
-   qu'on va obtenir avant de cliquer. Elle est differee et ne pese
-   sur rien tant que le panneau est ferme. */
+/* == LA VISITE, MONTREE AVANT D'ETRE OUVERTE — panneau 03.  D-605 */
 .svc-visu {
   display: grid;
   gap: var(--s-3);
@@ -2618,18 +2524,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   }
 
   /* LA VITRE EST UN CONTENEUR DE DEFILEMENT, ET C'EST ELLE QUI  D-194 */
-  /* LA PLANCHE NE REMPLIT PLUS LA VITRE — ET C'EST LE CORRECTIF  D-595
-     DU TROU. Elle la remplissait (`min-height: 100%`), donc chaque
-     carte etait etiree sur toute la hauteur ; et comme le corps de
-     la carte est colle EN BAS de sa rangee `1fr` (D-490), tout
-     l'excedent s'accumulait en un vide au-dessus du titre. Releve a
-     1440x900 : plusieurs centaines de pixels entre le filet du
-     numero et le nom du service.
-     Maintenant la planche fait la hauteur de son contenu et se
-     CENTRE dans la vitre. Les cartes restent etirees entre elles —
-     `align-items: stretch` sur le flex — donc les deux lignes
-     d'horizon tiennent : le filet des numeros en haut, le corps des
-     cartes en bas. Ce qui disparait, c'est seulement l'excedent. */
+  /* LA PLANCHE NE REMPLIT PLUS LA VITRE — ET C'EST LE CORRECTIF D-595 DU TROU.  D-595 */
   html.js .svc-vitre {
     overflow: hidden;
     scroll-behavior: auto;
@@ -2666,17 +2561,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
     border-bottom: var(--rule-w) solid var(--rule-strong);
   }
   html.js .svc-plan-bas { gap: var(--s-4); }
-  /* LE PANNEAU DE CLOTURE S'INSCRIT DANS LA MEME GRILLE.  D-596
-     Il n'avait pas de `.svc-plan-num`, donc son corps se placait
-     tout seul en RANGEE 1 — c'est-a-dire colle EN HAUT — pendant que
-     les cinq cartes ont le leur en rangee 2, colle en bas. Deux
-     lignes d'horizon opposees dans la meme vitre, et il etait deux
-     fois plus etroit par-dessus le marche.
-     On lui rend la largeur d'une carte et on reserve sa rangee 1
-     avec une boite de meme gabarit typographique que le numero,
-     vide, sur un filet LEGER : meme horizon, mais on voit qu'il
-     n'est pas le sixieme service. Le numero, lui, ne revient pas —
-     D-469 tient. */
+  /* LE PANNEAU DE CLOTURE S'INSCRIT DANS LA MEME GRILLE.  D-596 */
   html.js .svc-plan--fin { width: var(--svc-larg); }
   html.js .svc-plan--fin::before {
     content: "\200B";
@@ -2834,19 +2719,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   --rule-accent: #c8371b;
 }
 
-/* == LE CADRE DEVIENT UN PETIT ECRAN, ET ON DEFILE DEDANS. ==  D-628
-   Ce qu'on montrait etait un GROS PLAN sur un morceau de page : on
-   ne voyait jamais le site. Un visiteur ne peut pas juger un site
-   dont il ne voit qu'un fragment agrandi.
-   Maintenant chaque comparaison est un ecran — un cadre, une barre
-   d'adresse, et la page dedans, a l'echelle d'un ecran. Le visiteur
-   DEFILE lui-meme, a son rythme, des deux cotes a la fois : les
-   deux vues vivent dans la MEME vitre, donc elles ne peuvent pas se
-   desynchroniser.
-   La boucle automatique disparait avec ce chantier. Elle existait
-   pour montrer ce qu'une fenetre fixe ne pouvait pas montrer ; la
-   main du visiteur le fait mieux, et c'est une animation permanente
-   de moins au budget des paliers. */
+/* == LE CADRE DEVIENT UN PETIT ECRAN, ET ON DEFILE DEDANS.  D-628 */
 .ba-vitre {
   position: absolute;
   inset: 0;
@@ -2859,41 +2732,11 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   scrollbar-width: thin;
   scrollbar-color: var(--rule-strong) transparent;
 }
-/* AU DOIGT, C'EST L'INVERSE — ET C'EST UN PIEGE EVITE.  D-636
-   `contain` empeche le CHAINAGE : une fois le cadre au bout, le
-   geste ne passe pas a la page. A la molette c'est ce qu'on veut. Au
-   doigt, non : un pouce qui se pose sur le cadre ne peut plus faire
-   descendre la page, et il n'a aucun moyen de le savoir. Sur un
-   telephone le cadre occupe presque toute la largeur, donc le pouce
-   y tombe souvent.
-   On rend donc le chainage aux pointeurs grossiers : le cadre defile
-   d'abord, la page prend le relais au bout. Personne ne reste
-   coince. */
+/* AU DOIGT, C'EST L'INVERSE — ET C'EST UN PIEGE EVITE.  D-636 */
 @media (pointer: coarse) {
   .ba-vitre { overscroll-behavior: auto; }
 }
-/* == LES DEUX COTES DEFILENT EN POURCENTAGE, PAS EN PIXELS. ==  D-645
-   CE QUI NE MARCHAIT PAS, ET POURQUOI C'ETAIT STRUCTUREL.
-   Les deux vues vivaient DANS la vitre, empilees en grille : une
-   seule course, celle du plus grand. Comme chaque « apres » etait
-   coupe a la hauteur de son « avant » (D-632), la course commune
-   valait celle du site de 2011 — quelques centaines de pixels — et
-   le site neuf, haut de dix mille, se bloquait avec lui. Le
-   proprietaire l'a dit en une phrase : « j'arrive au bas du site
-   avant, tout se bloque, et le après a encore beaucoup a montrer ».
-   Deux pages de hauteurs tres differentes ne peuvent pas partager
-   une course en pixels. Elles peuvent partager une course en
-   POURCENTAGE : a mi-chemin d'un cote, on est a mi-chemin de
-   l'autre. C'est le seul verrou qui garde la comparaison lisible
-   sans qu'aucun des deux ne plafonne l'autre.
-   La vitre ne contient donc plus que sa PISTE — un espaceur vide qui
-   ne sert qu'a donner de la course. La pile, elle, est posee
-   par-dessus, ne defile pas, et chaque cote y est TRANSLATE de sa
-   propre fraction. `pointer-events: none` sur la pile : la molette
-   et le doigt traversent et trouvent la vitre en dessous, qui est le
-   vrai conteneur defilant.
-   Sans JavaScript, `.ba-cadre` est retire de la page (D-510) : rien
-   de ce qui suit n'est necessaire a la lecture. */
+/* == LES DEUX COTES DEFILENT EN POURCENTAGE, PAS EN PIXELS.  D-645 */
 .ba-piste { width: 100%; height: var(--ba-piste, 100%); }
 .ba-pile {
   position: absolute;
@@ -2922,40 +2765,11 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   background: var(--surface-0);
   color: var(--ink);
 }
-/* L'APRES EST UNE CAPTURE DU VRAI SITE, PLUS UNE MAQUETTE.  D-617
-   Les quatre « apres » etaient redessines a la main dans notre
-   propre langue. Ils etaient jolis et ils MENTAIENT par omission :
-   trois d'entre eux portaient des rectangles gris a la place des
-   photos — des placeholders, dans une section dont le sujet est la
-   preuve. Ce sont maintenant les quatre projets reels, servis par
-   leur propre serveur et photographies a 1 280 px de large — la
-   largeur d'un ecran d'ordinateur —, coordonnees masquees a la
-   prise de vue. Chaque capture est decoupee au RAPPORT de la
-   reconstitution qui lui fait face, pour que les deux cotes
-   finissent a la meme ligne.  D-628 */
+/* L'APRES EST UNE CAPTURE DU VRAI SITE, PLUS UNE MAQUETTE.  D-617 */
 .ba-page--shot { min-height: 0; background: none; }
 .ba-shot { display: block; width: 100%; height: auto; }
 
-/* == LES SCENES EPINGLEES SE REJOUENT, ELLES NE S'EMPILENT PLUS. ==  D-644
-   CE QUE LE PROPRIETAIRE VOYAIT : dans le restaurant et le design,
-   « les images se superposent les unes sur les autres », et ca faisait
-   passer nos propres sites pour du travail bâclé.
-   LA CAUSE, ET ELLE EST DE MOI. Ces deux sites epinglent une section
-   en `position: fixed` pendant deux a trois mille pixels de
-   defilement : la page avance, le contenu reste en place et glisse
-   LATERALEMENT. Ma couture faisait deux fautes qui se composaient —
-   elle masquait tous les elements fixes a partir de la deuxieme
-   fenetre (donc la scene epinglee disparaissait), et elle posait
-   chaque fenetre a sa hauteur de defilement (donc ce qui restait se
-   recouvrait). Ni GSAP ni ScrollTrigger dans ces sites : l'epinglage
-   est maison.
-   UNE IMAGE PLATE NE PEUT PAS PORTER CA. A une hauteur donnee, une
-   scene epinglee n'a qu'un seul etat horizontal. On la photographie
-   donc IMAGE PAR IMAGE sur toute sa course, on empile les vues en
-   planche verticale, et c'est le defilement du visiteur DANS LE
-   CADRE qui choisit laquelle montrer. La transition qu'il voit est
-   la vraie, prise sur le vrai site — ce n'est pas le site qui tourne,
-   c'est sa transition qui se rejoue sous sa main. */
+/* == LES SCENES EPINGLEES SE REJOUENT, ELLES NE S'EMPILENT PLUS.  D-644 */
 .ba-bande {
   position: absolute;
   left: 0;
@@ -2971,20 +2785,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   transform: translateY(calc(var(--ba-bande-i, 0) * var(--ba-b-h) * -1cqw));
 }
 
-/* == UNE BANDE CONTINUE : LE FOND, ET LA PISTE QUI GLISSE. ==  D-651
-   CE QUE CETTE FORME REMPLACE. D-644 rejouait la scene epinglee en
-   DIX VUES. Dix vues sur 2 400 px de defilement, c'est un saut tous
-   les 240 px : ce n'est pas un mouvement, c'est un diaporama — et
-   sur la section censee prouver notre maitrise du mouvement, c'etait
-   le pire endroit possible.
-   La mesure a tranche : dans les deux scenes concernees, UN SEUL
-   element translate, purement a l'horizontale, pendant que rien ne
-   bouge verticalement. Une piste de 3 917 px pour le design, 2 933
-   pour le restaurant. Ce n'etait donc pas « plus d'images » qu'il
-   fallait, c'etait UNE BANDE — et une translation est continue par
-   construction : elle n'a pas de pas, donc elle ne peut pas sauter,
-   quelle que soit la finesse du defilement.
-   Le poids tombe au passage de 493 Ko a 96 Ko pour les deux scenes. */
+/* == UNE BANDE CONTINUE : LE FOND, ET LA PISTE QUI GLISSE.  D-651 */
 .ba-bande--continue .ba-bande-fond {
   position: absolute;
   inset: 0;
@@ -3015,28 +2816,11 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
 @media (prefers-reduced-motion: reduce) {
   .ba-bande img { transform: translateY(calc((var(--ba-b-n, 1) - 1) * var(--ba-b-h) * -1cqw)); }
 }
-/* UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.  D-619
-   Des que l'apres est devenu une capture, le glissement s'est
-   remis a coller : la valeur suivait le curseur sur le premier
-   deplacement, puis se figeait. Cause : le navigateur reconnaissait
-   un debut de glisser-deposer d'IMAGE et emettait `pointercancel`,
-   ce que notre pilote lit — a juste titre — comme « le geste m'a
-   ete retire ». On refuse donc le glisser natif, sur l'image comme
-   sur la selection de texte des reconstitutions. */
+/* UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.  D-619 */
 .ba-scene { user-select: none; -webkit-user-select: none; }
 .ba-shot { -webkit-user-drag: none; }
 
-/* == LA BARRE D'ADRESSE — c'est elle qui dit « c'est un ecran ». ==
-   Meme grammaire que les maquettes de Secteurs : trois carres et un
-   filet dessous. Rayon 0, aucune ombre.
-
-   PLUS DE DOMAINE.  D-693
-   Elle en portait un — « atelier-meridien.ca », « restaurant-cendre.ca »,
-   « studio-norden.ca », « mv-deneigement.ca ». Les trois projets sont
-   REELS ; ces adresses-la ne le sont pas, et une adresse dit « va
-   voir ». Meme correction que le cartouche des Secteurs : une regle
-   de veracite se corrige PARTOUT, et « ailleurs » comptait quatre
-   barres de plus que celles qu'on m'avait montrees. */
+/* == LA BARRE D'ADRESSE — c'est elle qui dit « c'est un ecran ».  D-693 */
 .ba-chrome {
   display: flex;
   align-items: center;
@@ -3050,11 +2834,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   letter-spacing: 0.04em;
   color: var(--ink-muted);
 }
-/* LES TROIS CARRES SONT PARTIS AVEC L'ADRESSE.  D-693
-   Ils etaient le motif de FENETRE autour du domaine. Sans domaine
-   ils ne cadrent plus rien : trois carres accroches a « Avant » avec
-   un vide de 900 px derriere eux. Ce qui reste est ce que la barre
-   dit vraiment — un etat a gauche, l'autre a droite. */
+/* LES TROIS CARRES SONT PARTIS AVEC L'ADRESSE.  D-693 */
 .ba-chrome em { margin-left: auto; font-style: normal; white-space: nowrap; }
 /* Le cadre porte la requete de conteneur : la barre se met a
    l'echelle de l'ecran, comme la page dedans. */
@@ -3065,25 +2845,9 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   background: var(--surface-2);
 }
 
-/* LA LOUPE EST RETIREE.  D-650
-   Le cadre pouvait s'ouvrir en grand dans un `<dialog>` : bouton dans
-   la barre d'adresse, Echap, clic dehors, retour a la place exacte.
-   Elle marchait et elle etait prouvee. Le proprietaire n'en veut pas.
-   Tout part — le bouton, le dialogue, le trou qui gardait la place,
-   les regles de la vue agrandie, le pilote et les deux sections de
-   test. Ce qui reste de D-647 est son entree dans `DECISIONS.md`,
-   pour que personne ne la reinvente en croyant qu'elle manquait. */
+/* LA LOUPE EST RETIREE.  D-650 */
 
-/* LES DEUX ETIQUETTES SONT PERMANENTES.  D-508
-   ELLES VIVENT DANS LA BARRE D'ADRESSE, PAS SUR LA PAGE.  D-638
-   Elles etaient posees dans les coins hauts de la scene, donc
-   par-dessus la barre de navigation des deux sites — releve a
-   l'image le 2026-07-31 : « APRES » couvrait le bouton d'appel a
-   l'action du site neuf, sur les quatre comparaisons.
-   Le cadre a maintenant une barre d'adresse, et une barre d'adresse
-   est de l'espace mort par construction : c'est la qu'elles vont.
-   Le cadre y gagne deux fois — rien n'est plus couvert, et
-   l'etiquette se lit comme le libelle d'un onglet. */
+/* LES DEUX ETIQUETTES SONT PERMANENTES.  D-508 */
 .ba-etq {
   flex: 0 0 auto;
   padding: 0.25em 0.7em;
@@ -3108,23 +2872,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   background: var(--accent);
   pointer-events: none;
 }
-/* LE BOUTON DE LA POIGNEE PREND LE DOIGT, ET LUI SEUL.  D-640
-   Ce qui a casse, et pourquoi ca ne pouvait pas tenir : le
-   glissement etait pilote sur TOUTE la scene, en `touch-action:
-   pan-y`. Tant que la scene ne defilait pas, `pan-y` n'avait rien a
-   faire defiler et le navigateur laissait passer le geste
-   horizontal. Depuis que la vitre defile, il PREND le geste des le
-   premier deplacement : `pointercancel`, et la poignee se fige apres
-   un seul pas. Mesure du 2026-07-31 : `--ba-p` va de 50 a 42 et
-   s'arrete, sur les quatre comparaisons.
-   Les deux gestes se disputent le meme rectangle, et au doigt ils ne
-   peuvent pas gagner tous les deux. On tranche par la SURFACE :
-   partout dans le cadre, le doigt DEFILE ; sur le bouton de la
-   poignee, large de 2,75 rem et haut de tout le cadre, il COMPARE.
-   `touch-action: none` sur ce seul element, donc le navigateur ne
-   revendique rien tant que le doigt est dessus.
-   A la souris, rien ne change : la molette defile, le glissement
-   compare, et ils ne se croisent jamais. */
+/* LE BOUTON DE LA POIGNEE PREND LE DOIGT, ET LUI SEUL.  D-640 */
 .ba-trait { --ba-prise: 2.75rem; }
 .ba-trait::before {
   content: "‹ ›";
@@ -3156,20 +2904,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   width: var(--ba-prise);
   transform: translateX(-50%);
 }
-/* LA PRISE S'ALLUME DES QU'UN DOIGT EXISTE SUR LA MACHINE.  D-641
-   `any-pointer: coarse`, pas `pointer: coarse` : un portable tactile
-   annonce un pointeur PRIMAIRE fin, et sous `pointer: coarse` la
-   prise ne s'y serait jamais allumee — le doigt n'aurait eu aucun
-   moyen de deplacer la poignee sur ces machines-la. Un controle mort
-   coute plus cher qu'un reglage imparfait.
-   Ce que ca coutait, et qui est corrige a cote : le filet vit dans
-   la SCENE, pas dans la vitre, donc son ancetre defilant est la
-   PAGE. La molette posee dessus faisait descendre la page au lieu du
-   cadre — et la poignee est au milieu au repos, exactement la ou une
-   souris se pose. Mesure du 2026-07-31 : les cinq ecarts de la
-   descente tombes a 0,00 % sur les quatre comparaisons, la page
-   deplacee de 330 a 590 px. `main.js` renvoie desormais la molette a
-   la vitre depuis ce filet ; les deux gestes tiennent ensemble. */
+/* LA PRISE S'ALLUME DES QU'UN DOIGT EXISTE SUR LA MACHINE.  D-641 */
 @media (any-pointer: coarse) {
   .ba-trait::before,
   .ba-trait::after {
@@ -3193,16 +2928,7 @@ html.js .svc-fiche[data-ouvert][data-sortant] { animation: svc-degage 260ms var(
   -webkit-appearance: none;
   appearance: none;
   cursor: ew-resize;
-  /* LE CHAMP NE PREND PLUS LE POINTEUR.  D-629
-     Il est etire sur toute la scene. Tant qu'il le captait, la
-     molette au-dessus de lui cherchait un conteneur defilant parmi
-     SES ancetres — la scene, qui rogne sans defiler — et remontait
-     donc a la PAGE : le cadre ne defilait jamais, c'est la page
-     derriere qui bougeait. Le pointeur passe maintenant a la vitre,
-     qui est le conteneur defilant, et le glissement de la poignee
-     est de toute facon pilote sur la scene (D-593). Le champ reste
-     pour le clavier et pour `aria-valuetext` ; `pointer-events` ne
-     touche ni au parcours de tabulation ni au focus. */
+  /* LE CHAMP NE PREND PLUS LE POINTEUR.  D-629 */
   pointer-events: none;
   /* Le doigt garde le defilement vertical de la page, et donne  D-511 */
   touch-action: pan-y;
@@ -3217,14 +2943,7 @@ html:not(.js) .ba-poignee,
 html:not(.js) .ba-trait { display: none; }
 
 /* == LA LEGENDE — un titre court, une ligne, jamais un paragraphe. ==  D-513 */
-/* LA MENTION PASSE TOUJOURS A LA LIGNE, ET CE N'EST PAS UN DETAIL.
-   En `flex-wrap`, elle restait a cote du titre quand celui-ci etait
-   court et tombait dessous quand il etait long : sur une rangee de
-   deux, une legende faisait une ligne et sa voisine deux, donc les
-   deux cadres ne s'alignaient plus par le bas. Releve a l'image le
-   2026-07-31 entre « Carrosserie et peinture » et « Design interieur
-   residentiel ». Elle passe donc a la ligne dans les quatre cas :
-   une regularite vaut mieux qu'une economie de place.  D-637 */
+/* LA MENTION PASSE TOUJOURS A LA LIGNE, ET CE N'EST PAS UN DETAIL.  D-637 */
 .ba-tete {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -3254,12 +2973,7 @@ html:not(.js) .ba-trait { display: none; }
 /* La derniere ligne de la section : l'honnetete, en fine, une fois. */
 .ba-fin { margin: 0; color: var(--ink-muted); }
 
-/* DEUX PAR DEUX, ET DE L'AIR AUTOUR.  D-630
-   Les comparaisons prenaient toute la colonne : on ne pouvait pas
-   embrasser une rangee d'un seul regard, et le rythme vertical de la
-   section agressait. On borne la largeur d'un ecran a 30 rem et on
-   centre la grille : elle respire, et deux comparaisons completes
-   tiennent dans une fenetre de 900 px de haut. */
+/* DEUX PAR DEUX, ET DE L'AIR AUTOUR.  D-630 */
 @media (min-width: 56em) {
   .ba-grille {
     grid-template-columns: repeat(2, minmax(0, 30rem));
@@ -3267,13 +2981,7 @@ html:not(.js) .ba-trait { display: none; }
     gap: var(--s-9) var(--s-9);
   }
 }
-/* SUR UN GRAND ECRAN, LE CADRE PREND LA PLACE QU'IL Y A.
-   30 rem sur une fenetre de 1920 laissait 400 px de vide de chaque
-   cote et rendait la section timide : les quatre ecrans devenaient
-   des timbres. On monte a 33 rem au-dela de 90em — la rangee tient
-   toujours dans une fenetre de 1080, mesure. En dessous, rien ne
-   change : c'est la largeur qui avait ete reduite pour de bonnes
-   raisons.  D-637 */
+/* SUR UN GRAND ECRAN, LE CADRE PREND LA PLACE QU'IL Y A.  D-637 */
 @media (min-width: 90em) {
   .ba-grille {
     grid-template-columns: repeat(2, minmax(0, 33rem));
@@ -3281,17 +2989,7 @@ html:not(.js) .ba-trait { display: none; }
   }
 }
 
-/* == L'APRES — LES QUATRE MAQUETTES SONT PARTIES. ==  D-617
-   246 lignes de regles `.ap-*` vivaient ici pour dessiner a la main
-   quatre pages « apres ». Elles ne servent plus : l'apres est une
-   capture du vrai projet. On les retire au lieu de les laisser
-   dormir — du CSS mort dans une feuille differee reste des octets
-   servis a chaque visiteur, et une regle qui ne peint plus rien est
-   un piege pour la prochaine lecture.
-   Verification faite avant la coupe : aucune classe `.ap-*` ne
-   subsiste dans `index.html`. La reconstitution du 05 (`.ap-es-*`,
-   l'outil d'estimation) partait avec elles ; c'est voulu, elle
-   n'existe plus dans le document. */
+/* == L'APRES — LES QUATRE MAQUETTES SONT PARTIES.  D-617 */
 
 /* == L'AVANT · 01 — 2008-2012, RECONSTITUE SUR PIECES. ==  D-213 */
 /* LES INTERDITS DU SITE NE S'APPLIQUENT PAS ICI, ET C'EST LE SUJET.  D-518 */
@@ -3338,16 +3036,7 @@ html:not(.js) .ba-trait { display: none; }
    seul span, que le navigateur bride deja hors ecran. */
 .v11-defile span { animation: v11-defile 16s linear infinite; }
 .v11-h1 { margin: 0 0 1.4cqw; font-family: "Arial Black", Arial, sans-serif; font-size: 2.4cqw; color: #1b3d6d; }
-/* LES BLOCS PHOTO DES RECONSTITUTIONS SONT DE VRAIES PHOTOS.  D-634
-   Ils etaient vingt-quatre rectangles gris, et c'etait defendu comme
-   du contenu d'epoque. Le proprietaire les lit comme des
-   PLACEHOLDERS — et il a raison : dans une section dont le sujet est
-   la preuve, un carre vide ne dit pas « le vieux site etait
-   mauvais », il dit « le travail n'est pas fini ».
-   Chaque famille de blocs tire d'une COLONNE de tuiles, une seule
-   requete pour six vignettes. Fabrique par `tools/avant-photos.mjs`,
-   qui porte l'adresse et la licence de chaque piece — Poly Haven CC0
-   ou Pexels, aucune marque, aucun visage, aucun logo. */
+/* LES BLOCS PHOTO DES RECONSTITUTIONS SONT DE VRAIES PHOTOS.  D-634 */
 .v11-photo {
   height: 16cqw;
   margin-bottom: 1.4cqw;
@@ -3509,12 +3198,7 @@ html:not(.js) .ba-trait { display: none; }
   border-color: #adb5bc;
   box-shadow: 0 0.2cqw 0.7cqw rgb(16 24 32 / 0.13);
 }
-/* SIX INTERIEURS DIFFERENTS, UNE SEULE REQUETE.  D-634
-   La colonne fait six tuiles carrees empilees ; `600%` de hauteur de
-   fond met une tuile par vignette, et le rang se choisit au
-   pourcentage. Six photos DISTINCTES, parce que c'est un repertoire :
-   chaque entreprise y met la sienne, et c'est justement ce qui rend
-   la page indistincte. */
+/* SIX INTERIEURS DIFFERENTS, UNE SEULE REQUETE.  D-634 */
 .ba-vue--avant .ann-vig {
   flex: 0 0 14cqw;
   height: 14cqw;
@@ -3971,12 +3655,7 @@ html:not(.js) .ba-trait { display: none; }
   background: #ffffff;
   box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
 }
-/* SIX CARTES DE SERVICE, SIX PHOTOS DE STOCK.  D-634
-   Le gabarit annonce du deneigement et decrit des cuisines : la
-   contradiction est le sujet du bloc, elle est deja dans le texte.
-   Les images restent ce qu'un gabarit livre — cuisine, salle de
-   bain, salon, chantier, combles, terrasse — et c'est ce
-   decalage-la qui se lit. */
+/* SIX CARTES DE SERVICE, SIX PHOTOS DE STOCK.  D-634 */
 .gab .gab-svc-i {
   height: 9.5cqw;
   background-color: #8d97a3;
@@ -4323,14 +4002,7 @@ html:not(.js) .ba-trait { display: none; }
   overflow: hidden;
   height: 15cqw;
   padding-bottom: 1.6cqw;
-  /* LA BANNIERE EST UNE VRAIE PHOTOGRAPHIE.  D-634
-     Elle etait dessinee : trois aplats et une trame pour figurer une
-     rive, plus deux pseudo-elements pour figurer une auberge. Le
-     dessin tenait, mais il restait un dessin — et la legende juste
-     dessous dit « Photo d'illustration de la categorie ». Une
-     legende qui annonce une photo au-dessus d'un degrade est
-     exactement le genre de detail qui trahit une reconstitution.
-     Le voile sombre reste : il porte le nom en blanc. */
+  /* LA BANNIERE EST UNE VRAIE PHOTOGRAPHIE.  D-634 */
   background:
     linear-gradient(rgba(8, 22, 32, .34) 0%, rgba(8, 22, 32, 0) 42%, rgba(8, 22, 32, .62) 100%),
     url("../images/realisations/avant-resto-ban.webp") center / cover no-repeat,
@@ -4732,13 +4404,7 @@ html:not(.js) .ba-trait { display: none; }
   padding-top: 1.6cqw;
   border-top: 1px solid rgba(255, 255, 255, .15);
 }
-/* LA BANDE DES PARTENAIRES N'EST PAS UNE PHOTO, ET NE PEUT PAS EN
-   ETRE UNE : ce sont des LOGOS. On n'en invente pas — un faux logo
-   dans une reconstitution est exactement le genre de chose qui
-   ressemble a une vraie marque. On pose donc la silhouette qu'un
-   pied de page d'annuaire montre : une pastille et un mot,
-   detrempes. Ca se lit « logos de partenaires en gris », pas
-   « cinq boites vides ».  D-634 */
+/* LA BANDE DES PARTENAIRES N'EST PAS UNE PHOTO, ET NE PEUT PAS EN ETRE UNE : ce…  D-634 */
 .tou .tou-parts i {
   position: relative;
   width: 12cqw;
@@ -4786,18 +4452,8 @@ html:not(.js) .ba-trait { display: none; }
   .v11-defile span { animation: none !important; }
 }
 /* PALIER 1 — LA SEULE ANIMATION PERMANENTE TOMBE LA PREMIERE.  D-520 */
-/* Le texte defilant de 2011 tourne sans fin et sans declencheur :
-   c'est exactement le poste qu'un appareil serre doit perdre en
-   premier. La boucle de defilement des maquettes tombe avec lui ;
-   L'apres n'a plus de mouvement interieur a garder : c'est une
-   capture du vrai site, une image fixe (D-617). */
-/* ET CE QUI TOMBE AU PALIER 1 RESTE TOMBE AU PALIER 2.  D-625
-   La regle ne visait QUE `[data-palier="1"]`. Or l'attribut porte
-   une seule valeur : a « 2 », le selecteur ne mord plus, et le
-   texte defilant de 2011 se REMETTAIT A TOURNER sur la machine la
-   plus serree des trois. L'escalade est a sens unique — ce qu'elle
-   coupe ne revient pas parce qu'on est descendu d'un cran de plus.
-   Releve par `palier-check.mjs`, palier 2 exerce par bridage x6. */
+/* Le texte defilant de 2011 tourne sans fin et sans declencheur : c'est…  D-617 */
+/* ET CE QUI TOMBE AU PALIER 1 RESTE TOMBE AU PALIER 2.  D-625 */
 :root[data-palier="1"] .ba-page,
 :root[data-palier="2"] .ba-page,
 :root[data-palier="3"] .ba-page,
@@ -4836,13 +4492,7 @@ html:not(.js) .ba-trait { display: none; }
   top: calc(var(--nav-h) + var(--s-6));
   border: var(--rule-w) solid var(--rule-strong);
   background: var(--surface-2);
-  /* PLUS DE `aspect-ratio: 4/3`.  D-684
-     Il etait la parce que les tuiles DEFILAIENT : la hauteur du cadre
-     etait arbitraire, il fallait bien en choisir une. Avec une image
-     unique, une hauteur imposee ne peut que rogner ou cadrer en boite
-     aux lettres — et le rapport du cadre variait deja de 1,58 a 1,86
-     selon la largeur, donc le rognage n'aurait meme pas ete le meme
-     partout. La hauteur se deduit du contenu : barre, ecran, legende. */
+  /* PLUS DE `aspect-ratio: 4/3`.  D-684 */
   overflow: hidden;
   /* La legende est un ETAGE de la plaque, plus un bandeau pose  D-221 */
   display: flex;
@@ -4938,15 +4588,7 @@ html:not(.js) .ba-trait { display: none; }
 /* == 17. CALCULATEUR - deux moities, le resultat vit a droite == */
 .roi-presets { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-5); }
 
-/* LE VERDICT — deux chiffres, poses avant toute interaction.  D-226
-   IL A QUITTE LA PLEINE LARGEUR POUR LE HAUT DU PANNEAU.  D-637
-   Il occupait une bande de 145 px en travers de la page, entre les
-   onglets et la grille : c'est 145 px que la section entiere ne
-   pouvait plus tenir dans un ecran, et c'est le reproche exact qu'on
-   lui faisait. En tete du panneau il ne coute plus rien en hauteur —
-   la colonne de droite etait la plus courte des deux — et il se
-   retrouve la ou il devait etre depuis le debut : au-dessus du
-   resultat qu'il resume, pas au-dessus des reglages. */
+/* LE VERDICT — deux chiffres, poses avant toute interaction.  D-226 */
 .roi-verdict {
   display: grid;
   gap: 1px;
@@ -5015,14 +4657,7 @@ html:not(.js) .ba-trait { display: none; }
 .roi-presets button:hover { border-color: var(--ink); }
 .roi-presets button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 
-/* L'ECHELLE DE LA SECTION.  D-637
-   Elle faisait 1 421 px a 1440x900 : un ecran et demi, et le panneau
-   de resultat vivait sous le pli — on poussait un curseur sans voir
-   ce qu'il changeait, ce qui est le seul geste que cette section
-   existe pour permettre. Le verdict a quitte la pleine largeur, les
-   onglets sont rentres dans la colonne des reglages, et les ecarts
-   passent d'un cran. Reste 866 px : les onglets, les trois curseurs,
-   les deux chiffres et le panneau dans une seule bande de 605. */
+/* L'ECHELLE DE LA SECTION.  D-637 */
 #calculateur > .band { padding-block: var(--s-7); }
 .roi-inputs { display: grid; gap: var(--s-4); align-content: start; }
 .roi-presets { margin-bottom: 0; }
@@ -5053,12 +4688,7 @@ html:not(.js) .ba-trait { display: none; }
 }
 .roi-block { font-family: var(--font-data); font-size: var(--fs-8); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-muted); }
 
-/* == L'AVANT ET L'APRES ==  D-636
-   Deux etats, et ils ne se comparent que s'ils partagent DEUX
-   choses : le bord droit des nombres et l'origine des pistes.
-   Releve sur les calculateurs de Wise et les barres d'Our World in
-   Data. Chiffres tabulaires, sinon les colonnes de chiffres dansent
-   d'une valeur a l'autre et le bord droit ne veut plus rien dire. */
+/* == L'AVANT ET L'APRES == D-636 Deux etats, et ils ne se comparent que s'ils…  D-636 */
 .roi-etat { display: grid; gap: var(--s-2); }
 .roi-etat .num {
   justify-self: end;
@@ -5113,34 +4743,15 @@ html:not(.js) .ba-trait { display: none; }
 .roi-methode { margin-top: var(--s-6); }
 
 /* == 18. COMPARATIF - deux barres nues par tache == */
-/* LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.  D-638
-   Il portait son propre vocabulaire : une barre grise, une barre
-   minium, un axe de cinq graduations et un « pont » en accolade avec
-   une pastille. Quatre idees graphiques pour dire ce que six rangees
-   disent en une, quinze centimetres plus bas. Il reprend maintenant
-   la grammaire du detail — plein pour ce qui reste, trame pour ce qui
-   part — et seule l'echelle change : la journee entiere au lieu d'une
-   tache. L'axe est parti : un axe est une legende, et le public ne
-   lit pas les legendes. Les deux bornes sont ecrites sous la piste,
-   chacune sous son bout. */
-/* L'ECHELLE.  D-638
-   1 125 px a 1440x900 pour six rangees et un resume : la section
-   demandait un ecran et quart pour une idee qui tient en un coup
-   d'oeil. Rien n'a ete retire de plus — ce sont les respirations qui
-   passent d'un cran, la ou elles ne separaient plus rien. */
+/* LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.  D-638 */
+/* L'ECHELLE.  D-638 */
 #comparatif > .band { padding-block: var(--s-7); }
 .ecart {
   padding: var(--s-5);
   background: var(--surface-1);
   border: var(--rule-w) solid var(--rule-strong);
 }
-/* L'ENCRE ATTENUEE NE PASSE PAS SUR CE PLAT.  D-640
-   `--ink-muted` sur `--surface-1` rend **4,41**, sous le seuil de 4,50
-   du projet — mesure `tools/theme-check.mjs`, theme clair, aux cinq
-   largeurs. Le plat est plus clair que la page, donc le meme jeton
-   qui passe ailleurs echoue ici. Les deux textes concernes passent en
-   encre pleine ; la hierarchie est portee par le corps et la graisse,
-   qui ne dependent d'aucun contraste. */
+/* L'ENCRE ATTENUEE NE PASSE PAS SUR CE PLAT.  D-640 */
 .ecart > .label { margin-bottom: var(--s-5); max-width: 46ch; color: var(--ink); }
 
 .ecart-grand { display: grid; gap: var(--s-3); }
@@ -5202,19 +4813,7 @@ html:not(.js) .ba-trait { display: none; }
 }
 .vs-task { font-size: var(--fs-6); font-weight: 600; }
 
-/* == UNE BARRE, DEUX MATIERES ==  D-638
-   Le tableau portait DOUZE barres pour six taches : a chaque rangee,
-   deux longueurs a apparier soi-meme. Une seule barre maintenant, et
-   elle ne demande pas de comparer — elle montre ce qu'on RETIRE.
-     · encre pleine, de zero a la duree automatisee : ce qui reste ;
-     · trame, de la jusqu'a la duree manuelle : ce qui part ;
-     · un cran vertical a la bascule.
-   C'est V3 : la trame est la matiere de la soudure, le plein est le
-   trait soude. Ce n'est pas un degrade — c'est un grain, la meme
-   `repeating-linear-gradient` que la signature.
-   Toutes les pistes partagent leur ORIGINE et leur ECHELLE : `--m` et
-   `--a` sont deux parts des memes 100 minutes. Sans ca, six barres ne
-   se classent pas entre elles. */
+/* == UNE BARRE, DEUX MATIERES == D-638 Le tableau portait DOUZE barres pour six…  D-638 */
 .vs-track {
   position: relative;
   height: 20px;
@@ -5238,21 +4837,9 @@ html:not(.js) .ba-trait { display: none; }
 }
 /* Ce qui reste, pose PAR-DESSUS depuis la meme origine. */
 .vs-reste { width: var(--a, 0%); background: var(--ink); }
-/* PAS DE TRAIT A LA BASCULE, ET C'EST UNE CORRECTION.  D-638
-   Un cran vertical y avait ete pose. En encre, contre le bout d'une
-   barre en encre, il etait invisible ; en minium il aurait mis de la
-   couleur d'action sur ce qui n'est pas actionnable. Le bord entre le
-   plein et la trame EST le cran : deux matieres qui se touchent font
-   une arete plus franche qu'un trait par-dessus. */
+/* PAS DE TRAIT A LA BASCULE, ET C'EST UNE CORRECTION.  D-638 */
 
-/* LE CHIFFRE EST SIGNE, ET IL EST DEHORS.  D-638
-   « 60 min → 15 min · 75 % » demandait de lire trois nombres et de
-   faire la soustraction. Un seul nombre, signe, pose apres le bout de
-   la piste — jamais dedans : a 9 minutes sur une echelle de 100, le
-   segment fait 65 px et le chiffre n'y rentre pas (releve sur les
-   barres de Datawrapper, qui le SUPPRIMENT dans ce cas plutot que de
-   le loger). Le pourcentage est parti : 70 · 75 · 75 · 75 · 80 · 85
-   ne classe rien, les minutes si. */
+/* LE CHIFFRE EST SIGNE, ET IL EST DEHORS.  D-638 */
 .vs-gain {
   font-family: var(--font-data);
   font-size: var(--fs-7);
@@ -5573,15 +5160,7 @@ html:not(.js) .ba-trait { display: none; }
 .vis-p { display: block; height: 0.4em; background: var(--rule-strong); }
 .vis-p--court { width: 62%; }
 
-/* --- 768 px : LE RAIL RESTE DROIT, ET LES SIX TITRES SUR LA MEME
-       VERTICALE. Le bloc 26 pose encore le serpentement de D-250 : un
-       retrait qui croit avec `--r`, et l'inversion des colonnes une
-       etape sur deux. Calibre pour QUATRE etapes ; a six, un titre sur
-       deux changeait de colonne et la liste cessait de se balayer.
-       `--r` vaut 0 (voir `.parc-etape`) ; les deux regles de colonne
-       sont reprises ici a specificite superieure, parce que le bloc 26
-       est plus bas dans le fichier. Les regles d'origine restent la ou
-       elles sont : ce bloc-ci n'a pas le droit de les modifier. --- */
+/* --- 768 px : LE RAIL RESTE DROIT, ET LES SIX TITRES SUR LA MEME VERTICALE.  D-250 */
 @media (min-width: 48em) {
   .parc-bar { grid-template-columns: auto minmax(0, 1fr) auto; }
   .parc-bar .parc-reste { grid-column: auto; justify-self: end; text-align: right; }
@@ -6204,17 +5783,7 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   /* LES QUATRE CHANTIERS NE SE RANGENT PLUS EN GRILLE : ils  D-249 */
   .sector-group { grid-template-columns: 15rem 1fr; gap: var(--s-6); }
 
-  /* LE CHEMIN NE SERPENTE PLUS.  D-250, retire D-641
-     Le retrait croissant `--r` et l'inversion des colonnes une etape
-     sur deux etaient calibres pour QUATRE etapes ; a six, un titre sur
-     deux changeait de colonne et la liste cessait de se balayer. Le
-     bloc 19 les avait NEUTRALISES — `--r: 0` plus quatre selecteurs a
-     specificite superieure — ce qui laissait ici des regles mortes
-     qu'un lecteur croyait vivantes. Un contournement survit toujours
-     au correctif (piege 46). Comme `--r` valait 0, leur retrait est
-     une identite : `calc(var(--s-5) + 0 * var(--s-8))` vaut
-     `var(--s-5)`, et `calc(1rem + 0)` vaut `1rem`. Rien n'est peint
-     autrement. */
+  /* LE CHEMIN NE SERPENTE PLUS.  D-250 */
   .parc-etape { grid-template-columns: 2.75rem minmax(0, 1fr); }
   .parc-corps {
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
@@ -6225,11 +5794,7 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   .parc-branche { width: 1rem; }
 
   /* ECHELLE REDUITE. Les quatre colonnes tenaient sur 18 rem de  D-251 */
-  /* TROIS BORDS DURS VERTICAUX, ET RIEN NE FLOTTE.  D-638
-     Le libelle est cadre a DROITE contre l'origine des pistes : c'est
-     ce qui rend une pile de six rangees lisible (releve sur les barres
-     de Datawrapper et d'Our World in Data). La quatrieme colonne est
-     partie avec le pourcentage. */
+  /* TROIS BORDS DURS VERTICAUX, ET RIEN NE FLOTTE.  D-638 */
   /* DEUX COLONNES : LE TOTAL, PUIS SA DECOMPOSITION.  D-639 */
   .vs-deux {
     display: grid;
@@ -6327,14 +5892,7 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   .roi-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
   .roi-inputs { grid-column: 1 / span 6; }
   .roi-panel { grid-column: 8 / span 5; }
-  /* LE VERDICT NE SE MET PLUS SUR DEUX COLONNES.  D-637
-     Il tenait la pleine largeur de la page : deux cellules de 550 px
-     y logeaient le montant annuel a 64 px sans effort. Descendu dans le
-     panneau, chaque cellule ne fait plus que 200 px — le montant
-     debordait, le « $ » passait a la ligne et sortait du cadre noir.
-     Vu a l'image, jamais par une sonde : le DOM etait juste, le
-     rectangle etait juste, seul le glyphe sortait. Deux rangees
-     pleine largeur de panneau, et le calibre suit la colonne. */
+  /* LE VERDICT NE SE MET PLUS SUR DEUX COLONNES.  D-637 */
   .roi-verdict { grid-template-columns: minmax(0, 1fr); }
 
   .sectors-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }

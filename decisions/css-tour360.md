@@ -104,3 +104,38 @@ Pannellum impose `box-sizing: content-box` a tous ses descendants, et
   d'echange de scene de Pannellum et nos transitions.
   ------------------------------------------------------------
 
+## D-620 · LE CADRE A TROIS ETAGES.
+
+*Extrait de `css/tour360.css` le 2026-08-03.*
+
+LE CADRE A TROIS ETAGES.  D-620
+Un seul trait fait le tour des trois etages : le manifeste des
+pieces, la piece, le pupitre. C'est le meme objet que le panneau de
+la section 04 — un cadre plat, un bandeau mono, aucun rayon, aucune
+ombre — mais a l'echelle de la section entiere au lieu d'une
+colonne, pour que les deux ne se confondent pas.
+
+## D-624 · L'etiquette de lieu, posee sur l'affiche.
+
+*Extrait de `css/tour360.css` le 2026-08-03.*
+
+L'etiquette de lieu, posee sur l'affiche.  D-624
+Elle est sur photo, donc elle ne suit pas le theme : elle suit son
+fond, comme l'ancienne plaque d'entree. Aplat franc, rayon 0.
+Elle disparait des que la visite est vivante — le plan du lecteur
+occupe alors ce coin, et c'est lui qui dit ou on est.
+
+## D-632 · LA PROVENANCE EST UNE LEGENDE DE CADRE.
+
+*Extrait de `css/tour360.css` le 2026-08-03.*
+
+LA PROVENANCE EST UNE LEGENDE DE CADRE.  D-632
+Elle etait le second etage d'un pied qui portait aussi trois
+gestes en toutes lettres. Les gestes sont partis — ils
+expliquaient avant le clic des gestes qu'on ne peut pas encore
+faire, et repetaient le pupitre une fois dedans. Il ne reste
+qu'elle, et une mention obligatoire se pose comme une legende :
+sous l'objet, alignee sur son bord gauche, bornee a une mesure
+qu'on lit d'un coup d'oeil. Aucun filet — le cadre a deja le sien
+juste au-dessus, et deux traits a 24 px l'un de l'autre font une
+rayure, pas une structure.

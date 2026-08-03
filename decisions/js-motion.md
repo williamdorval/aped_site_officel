@@ -385,3 +385,17 @@ Les trois PREUVES. Le bareme en regle graduee a ete retire —
     tant qu'elles ne sont pas chargees, leur hauteur est fausse.
     ------------------------------------------------------------
 
+## D-623 · 6.
+
+*Extrait de `js/motion.js` le 2026-08-03.*
+
+6. LE CADRE DE LA VISITE — V1 · DEGAGER, sens BAS.  D-623
+Le cadre remplacait sa venue par le fondu generique de `.rise` :
+un mouvement qui ne se reclame d'aucun des quatre verbes, sur le
+seul objet de la section. Il se DEGAGE maintenant sous une arete
+franche qui balaye du HAUT vers le BAS — c'est un panneau, et un
+panneau se decouvre dans le sens ou on le lit.
+
+L'etat de repos reste la forme FINALE : `inset(0 0 0 0)` n'est
+jamais ecrit dans le CSS, et `immediateRender: false` empeche la
+vague 2 de faire disparaitre un cadre deja peint.

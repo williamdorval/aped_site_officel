@@ -661,14 +661,7 @@
         document.body.appendChild(etiq);
       }
       if (etiq.firstChild.textContent !== mot) etiq.firstChild.textContent = mot;
-      /* LA POSITION SE POSE ICI AUSSI.  D-633
-         `is-on` etait ajoutee au survol, mais le `translate` n'etait
-         ecrit qu'au premier `pointermove`. Or un curseur IMMOBILE
-         que le defilement fait survoler n'en produit aucun : la
-         page glisse sous la pointe, `pointerover` part, et
-         l'etiquette s'allume a sa position de depart — 0,0, un aplat
-         noir « REGARDER AUTOUR » pose sur le logo, en haut a gauche
-         de l'ecran. Vu a l'image, jamais par une sonde. */
+      /* LA POSITION SE POSE ICI AUSSI.  D-633 */
       etiq.style.transform = "translate(" + (e.clientX + 18) + "px," + (e.clientY + 18) + "px)";
       etiq.classList.add("is-on");
     }, { passive: true });

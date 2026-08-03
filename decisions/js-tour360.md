@@ -139,3 +139,13 @@ PHASE 10 — LE PASSAGE D'UNE PIECE A L'AUTRE.
             tout de suite, exactement comme avant. La visite ne
             depend pas de la mise en scene.
 
+## D-607 · LE BOUTON EST CABLE — ET C'EST UN DRAPEAU, PAS UN DETAIL.
+
+*Extrait de `js/tour360.js` le 2026-08-03.*
+
+LE BOUTON EST CABLE — ET C'EST UN DRAPEAU, PAS UN DETAIL.  D-607
+Ce fichier arrive en VAGUE 2, donc au premier geste du visiteur
+ou 1,2 s apres le rendu. Le panneau du service 03 propose
+« Ouvrir la visite » : un `.click()` envoye avant ce moment-la
+frappe un bouton sans ecouteur et ne fait RIEN, en silence. On
+pose donc de quoi attendre.

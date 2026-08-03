@@ -67,3 +67,18 @@ La barre passe AU-DESSUS du menu plein ecran. Elle etait dessous, donc
     moyen visible de refermer le menu, et pas de touche Echap. Le
     `padding-top` du menu reservait deja la hauteur de la barre.
 
+## D-586 · == LA CHAMBRE NOIRE — hors des deux themes, et c'est le point.
+
+*Extrait de `css/tokens.css` le 2026-08-03.*
+
+== LA CHAMBRE NOIRE — hors des deux themes, et c'est le point. ==  D-586
+Une piece sombre qui devient blanche quand on eteint la lumiere
+n'est pas une piece sombre. L'arc de luminance raconte une
+DESCENTE : on entre dans l'encre, on en ressort. Un recit qui
+s'inverse avec le theme n'a plus de direction — et en sombre, le
+sas jouait sa forge sur un fond ciment clair.
+L'encre y est a pleine concentration, un cran sous l'encre de
+page (#101211) : meme matiere, plus dense. Les paires de contraste
+qui s'y rendent sont celles du theme sombre, TOUTES rehaussees par
+un fond plus profond — 14,84:1 pour le texte, 7,54:1 pour le
+attenue, 7,80:1 pour l'accent lisible. Aucune ne baisse.
