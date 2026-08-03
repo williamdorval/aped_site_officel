@@ -2878,7 +2878,15 @@
              fait pour faire.
              La phrase « gratuits et sans courriel » partait avec eux :
              elle est devenue fausse le jour ou le courriel est devenu
-             la condition. -->
+             la condition.
+
+             CE QUI RESTE EST UNE PORTE, PAS UN TELECHARGEMENT. Sans
+             elle, quelqu'un qui a deja donne ses coordonnees n'aurait
+             plus aucun chemin vers ses guides : le popup ne se
+             represente jamais tout seul. -->
+        <p class="footer-guides">
+          <button class="link-btn" type="button" data-cadeau-ouvrir>Les deux guides &middot; 91 pages</button>
+        </p>
       </div>
       <div class="footer-right">
         <span class="footer-mark"><svg class="wordmark-mark" viewBox="0 0 685 501" aria-hidden="true"><path fill="currentColor" d="M227.2 0 454.3 487 179.1 487 202.9 436 373.5 436 227.2 122.2 57.1 487 .1 487Z"/><path fill="currentColor" opacity=".47" d="M289.7 4H519.5a131.5 131.5 0 0 1 0 263H402.7L378 214H519.5a78.5 78.5 0 0 0 0-157H314.4Z"/><path fill="var(--accent)" d="M424.9 322H571.5V373H448.6ZM478 436H571.5V487H501.8Z"/><path fill="currentColor" opacity=".47" d="M605 302.5a101.5 101.5 0 0 1 0 198V448.9a52.5 52.5 0 0 0 0-94.8Z"/></svg></span>
@@ -2919,9 +2927,16 @@
     </div>
 
     <div class="cadeau-dire">
-      <!-- CE QU'ON DIT, ET DANS QUEL ORDRE ON LE DIT.  D-083 -->
-      <p class="label cadeau-eyebrow">Cadeau &middot; Gratuit &middot; Sans compte</p>
-      <h2 id="cadeauTitre">C&rsquo;est pour vous.</h2>
+      <!-- CE N'EST PAS UN CADEAU, C'EST UN ECHANGE, ET ON LE DIT.  D-083
+           L'ancienne version annoncait « Cadeau · Gratuit · Sans
+           compte » et offrait les deux guides en telechargement
+           direct, le courriel etant facultatif « pour les retrouver
+           plus tard ». Elle ne capturait donc rien.
+           Maintenant : les coordonnees sont la CONDITION. On l'ecrit
+           en clair — un echange annonce se refuse ou s'accepte ; un
+           echange deguise en cadeau se decouvre, et c'est pire. -->
+      <p class="label cadeau-eyebrow">2 guides &middot; 91 pages &middot; contre vos coordonn&eacute;es</p>
+      <h2 id="cadeauTitre">Ce que vous payez &agrave; la main.</h2>
 
       <p class="cadeau-fiche" translate="no">
         <span><b>2</b>guides</span>
@@ -2929,35 +2944,61 @@
         <span><b>24</b>t&acirc;ches chiffr&eacute;es</span>
       </p>
 
-      <p class="cadeau-lead">Ce que vous pouvez arr&ecirc;ter de faire &agrave; la main, ce que &ccedil;a vous co&ucirc;te aujourd&rsquo;hui, et par o&ugrave; commencer.</p>
+      <p class="cadeau-lead">Ce que vous pouvez arr&ecirc;ter de faire &agrave; la main, ce que &ccedil;a vous co&ucirc;te aujourd&rsquo;hui, et par o&ugrave; commencer. Laissez-nous o&ugrave; vous joindre, et les deux se t&eacute;l&eacute;chargent tout de suite.</p>
 
-      <!-- A3 · C4 · C5 — LE COURRIEL N'EST PLUS UN PEAGE, ET L'ORDRE  D-084 -->
-      <div class="cadeau-recu">
-        <a class="btn btn--primary" href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">
-          Guide 1 &middot; Automatisation
-          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-        </a>
-        <a class="btn btn--ghost" href="documents/aped-ia-croissance.pdf" download data-cadeau-pdf="ia">
-          Guide 2 &middot; L&rsquo;IA pour grossir
-          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-        </a>
-      </div>
-
+      <!-- PRET A BRANCHER : deux champs aux noms STABLES, `email` et
+           `telephone`, qui deviendront les colonnes de l'onglet
+           « Coordonnees popup ». Les deux sont REQUIS — c'est le but
+           du bloc. L'envoi passera par le point unique de `main.js`. -->
       <form class="cadeau-form" id="cadeauForm" novalidate>
         <div class="field">
-          <label for="cadeauEmail">Ou recevez-les par courriel, pour les retrouver plus tard</label>
+          <label for="cadeauEmail">Votre courriel</label>
           <input id="cadeauEmail" name="email" type="email" inputmode="email" spellcheck="false"
-                 autocomplete="email" placeholder="prenom@entreprise.ca" />
+                 required autocomplete="email" placeholder="prenom@entreprise.ca" />
           <span class="field-error">Entrez un courriel valide.</span>
         </div>
-        <button class="btn btn--ghost cadeau-go" type="submit">
-          <span data-label>Me les envoyer par courriel</span>
-          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
+        <div class="field">
+          <label for="cadeauTel">Votre t&eacute;l&eacute;phone</label>
+          <input id="cadeauTel" name="telephone" type="tel" inputmode="tel"
+                 required autocomplete="tel" placeholder="418 555 0142" />
+          <span class="field-error">Entrez un num&eacute;ro o&ugrave; on peut vous joindre.</span>
+        </div>
+        <button class="btn btn--primary cadeau-go" type="submit" data-submit>
+          <span data-label>T&eacute;l&eacute;charger les documents</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
         <p class="form-status" role="status" aria-live="polite"></p>
       </form>
 
-      <p class="cadeau-fin">Gratuit &middot; Sans compte &middot; Votre adresse sert &agrave; envoyer les deux guides, et &agrave; rien d&rsquo;autre</p>
+      <p class="cadeau-fin">Vos coordonn&eacute;es servent &agrave; vous rappeler une fois. Jamais de liste d&rsquo;envoi, jamais de revente.</p>
+
+      <!-- L'APRES-TELECHARGEMENT. Une personne qui vient de
+           telecharger est chaude : c'est le meilleur moment. Ce bloc
+           remplace le formulaire une fois les guides remis. -->
+      <div class="cadeau-suite" hidden>
+        <p class="label cadeau-eyebrow">C&rsquo;est t&eacute;l&eacute;charg&eacute;</p>
+        <p class="cadeau-lead">Les deux guides sont dans vos t&eacute;l&eacute;chargements. La question qu&rsquo;ils posent tous les deux, c&rsquo;est&nbsp;: par o&ugrave; commencer chez vous&nbsp;?</p>
+        <button class="btn btn--primary" type="button" data-cadeau-projet>
+          R&eacute;pondons-y ensemble
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+        </button>
+        <p class="cadeau-liens">
+          <a href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">Retélécharger le guide 1</a>
+          <a href="documents/aped-ia-croissance.pdf" download data-cadeau-pdf="ia">Retélécharger le guide 2</a>
+        </p>
+      </div>
+
+      <!-- LE RETOUR. Une personne qui a deja donne ses coordonnees ne
+           revoit plus le popup ; si elle y revient par un autre
+           chemin, elle ne redonne rien. -->
+      <div class="cadeau-deja" hidden>
+        <p class="label cadeau-eyebrow">Vous les avez d&eacute;j&agrave;</p>
+        <p class="cadeau-lead">Vous avez r&eacute;cup&eacute;r&eacute; vos guides. Reprenez-les quand vous voulez.</p>
+        <p class="cadeau-liens">
+          <a href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">Retélécharger le guide 1</a>
+          <a href="documents/aped-ia-croissance.pdf" download data-cadeau-pdf="ia">Retélécharger le guide 2</a>
+        </p>
+      </div>
 
       <button class="cadeau-non link-btn" type="button" data-cadeau-non>Non merci</button>
     </div>

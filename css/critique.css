@@ -821,10 +821,6 @@ html.entree-on .entree-saut-mot { display: none; }
 @keyframes cadeau-soude {
   to { background-size: 100% var(--rule-w); }
 }
-/* `.svc-appat` a ete retire le 2026-07-30 avec le bloc appat de la  D-156 */
-/* `.footer-docs-mot` est partie avec les deux telechargements
-   directs : « Deux documents, 91 pages, gratuits et sans courriel »
-   est devenu faux le jour ou le courriel est devenu la condition. */
 /* == 12. HERO - plaque typographique == */
 .hero {
   padding-top: calc(var(--nav-h) + var(--s-5));

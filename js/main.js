@@ -909,11 +909,16 @@
     var boite = $("#cadeau");
     if (!boite || typeof boite.showModal !== "function") return;
 
-    /* Les deux marqueurs de l'ancienne regle sont effaces a chaque  D-401 */
-    try {
-      localStorage.removeItem("aped-cadeau");
-      localStorage.removeItem("aped-cadeau-donne");
-    } catch (e) {}
+    /* LA MEMOIRE EST DE RETOUR, ET ELLE A UN SENS MAINTENANT.  D-401
+       Elle avait ete abolie quand les guides etaient offerts sans
+       contrepartie : reproposer un cadeau ne coute rien. Depuis que
+       les coordonnees sont la CONDITION, redemander a quelqu'un qui a
+       deja donne est une faute — on lui redemande ce qu'on a deja.
+       Une seule cle, et elle ne contient rien de personnel : la date
+       du don suffit a savoir qu'il a eu lieu. */
+    var CLE_DONNE = "aped-guides-donnes";
+    var deja = false;
+    try { deja = !!localStorage.getItem(CLE_DONNE); } catch (e) {}
 
     /* L'INTERRUPTEUR DES OUTILS DE MESURE. Voir l'en-tete. */
     var vu = false;
@@ -994,83 +999,116 @@
       b.addEventListener("click", fermer);
     });
 
-    /* --- LE FORMULAIRE. Il vit meme si le popup ne parait jamais :
-           le meme document est offert ailleurs sur le site. --- */
+    /* --- LES DEUX GUIDES, ET CE QU'ILS COUTENT MAINTENANT. --- */
+    var GUIDES = [
+      { fichier: "documents/aped-automatisation.pdf", nom: "aped-ce-que-vous-pourriez-automatiser.pdf" },
+      { fichier: "documents/aped-ia-croissance.pdf", nom: "aped-lia-pour-faire-grossir-votre-entreprise.pdf" }
+    ];
+
+    /* LE TELECHARGEMENT SE FAIT ICI, PAS PAR COURRIEL.  D-406
+       L'ancienne version promettait un envoi par courriel, alors
+       qu'aucun service d'envoi n'a jamais ete active : la promesse ne
+       tenait pas. Un `<a download>` clique par le script telecharge
+       tout de suite, sans reseau, sans promesse. */
+    function telecharger() {
+      GUIDES.forEach(function (g, i) {
+        window.setTimeout(function () {
+          var a = doc.createElement("a");
+          a.href = g.fichier;
+          a.download = g.nom;
+          a.rel = "noopener";
+          doc.body.appendChild(a);
+          a.click();
+          doc.body.removeChild(a);
+        }, i * 350);   /* deux telechargements simultanes : le second est souvent ignore */
+      });
+    }
+
+    var form = $("#cadeauForm");
+    var suite = $(".cadeau-suite", boite);
+    var dejaBloc = $(".cadeau-deja", boite);
+    var fin = $(".cadeau-fin", boite);
+
+    /* CE QUE VOIT QUELQU'UN QUI A DEJA DONNE : pas le formulaire. */
+    function montrerDeja() {
+      if (form) form.hidden = true;
+      if (fin) fin.hidden = true;
+      if (suite) suite.hidden = true;
+      if (dejaBloc) dejaBloc.hidden = false;
+    }
+    if (deja) montrerDeja();
+
     (function formulaire() {
-      var form = $("#cadeauForm");
       if (!form) return;
-      var champ = $("#cadeauEmail", form);
       var etat = $(".form-status", form);
       var bouton = $(".cadeau-go", form);
-      var recu = $(".cadeau-recu", boite);
-
-      /* A3 · LA REMISE N'EST PLUS CACHEE AU DEPART.  D-404 */
-      function remettre() {
-        if (!recu) return;
-        recu.hidden = false;
-        var a = $("a", recu);
-        if (a) a.focus();
-      }
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        say(etat, "");
-        /* LE CHAMP N'EST PLUS `required`, DONC `validate()` NE PEUT  D-405 */
-        var adresse = champ.value.trim();
-        var champBoite = champ.closest(".field");
-        var valide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adresse);
-        if (!valide) {
-          if (champBoite) markField(champBoite, false);
-          say(etat, adresse
-            ? "Cette adresse ne semble pas valide. Les deux guides restent téléchargeables juste au-dessus."
-            : "Entrez une adresse pour recevoir la copie. Les deux guides sont déjà téléchargeables juste au-dessus.", "err");
-          champ.focus();
+        /* La validation passe par `validate()`, comme partout : les
+           deux champs sont `required`, donc elle mord. */
+        if (!validate(form)) {
+          say(etat, "Les deux sont nécessaires pour vous envoyer les guides.", "err");
           return;
         }
-        if (champBoite) markField(champBoite, true);
-        if (bouton) setLoading(bouton, true, "Envoi en cours…");
+        var donnees = serialize(form);
+        setLoading(bouton, true, "Préparation…");
+        say(etat, "");
 
-        /* CE QUI PART VERS LE VISITEUR, ET CE QUI N'EST PAS POSSIBLE.  D-406 */
-        var lien1 = new URL("documents/aped-automatisation.pdf", location.href).href;
-        var lien2 = new URL("documents/aped-ia-croissance.pdf", location.href).href;
-        var reponse = [
-          "Merci — voici vos deux guides.",
-          "",
-          "1. Ce que votre entreprise pourrait automatiser (42 pages)",
-          "   " + lien1,
-          "",
-          "2. Comment utiliser l'IA pour faire grossir votre entreprise (49 pages)",
-          "   " + lien2,
-          "",
-          "Ils sont a vous, meme si vous ne nous engagez jamais.",
-          "Une question ? Repondez simplement a ce courriel.",
-          "",
-          "APED Agence — Quebec",
-          CONTACT_EMAIL
-        ].join("\n");
+        /* LE TELECHARGEMENT NE DEPEND PAS DE L'ENVOI. Le visiteur a
+           donne ce qu'on demandait : il repart avec les guides, que
+           l'enregistrement de ses coordonnees aboutisse ou non. */
+        try { localStorage.setItem(CLE_DONNE, new Date().toISOString().slice(0, 10)); } catch (err) {}
+        telecharger();
 
-        sendJson("cadeau", {
-          email: adresse,
+        var finir = function () {
+          setLoading(bouton, false);
+          form.hidden = true;
+          if (fin) fin.hidden = true;
+          if (suite) {
+            suite.hidden = false;
+            var b = $("[data-cadeau-projet]", suite);
+            if (b) b.focus();
+          }
+        };
+
+        sendJson("cadeau", Object.assign({}, donnees, {
           documents: "Automatisation (42 p.) + IA et croissance (49 p.)",
-          origine: "Popup cadeau",
-          lien_automatisation: lien1,
-          lien_ia: lien2,
-          _autoresponse: reponse
-        }).then(function () {
-          say(etat, "C’est parti vers " + adresse + ". Les deux guides sont aussi téléchargeables ici, tout de suite.", "ok");
-        }).catch(function () {
-          /* L'envoi a echoue : le cadeau, lui, ne peut pas echouer.
-             On le remet sur place et on le dit sans jargon. */
-          say(etat, "L’envoi par courriel n’a pas passé. Vos deux guides sont téléchargeables ici, tout de suite.", "err");
-        }).then(function () {
-          form.reset();
-          if (bouton) setLoading(bouton, false);
-          remettre();
-        });
+          origine: "Popup guides"
+        })).then(finir).catch(finir);
       });
     })();
 
-    if (vu) return;
+    /* L'ENCHAINEMENT. Une personne qui vient de telecharger est
+       chaude : le popup se retire et la modale de projet s'ouvre. */
+    var versProjet = $("[data-cadeau-projet]", boite);
+    if (versProjet) {
+      versProjet.addEventListener("click", function () {
+        fermer();
+        window.setTimeout(function () { openModal("modal-project"); }, 260);
+      });
+    }
+
+    /* UNE ENTREE MANUELLE, et c'est la CONTREPARTIE du retrait des
+       telechargements directs du pied. Sans elle, quelqu'un qui a
+       deja donne ses coordonnees n'aurait plus AUCUN chemin vers ses
+       guides : le popup ne se represente jamais, et le pied ne les
+       offre plus. Elle est cablee AVANT la sortie ci-dessous, sinon
+       elle ne le serait pas pour ceux-la memes qui en ont besoin. */
+    $$("[data-cadeau-ouvrir]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (ouvert) return;
+        ouvert = true;
+        paru = true;
+        declencheur = doc.activeElement;
+        boite.showModal();
+        var x = $(".cadeau-x", boite);
+        if (x) x.focus();
+      });
+    });
+
+    /* Quelqu'un qui a deja donne ne revoit plus le popup TOUT SEUL. */
+    if (vu || deja) return;
 
     /* LES DEUX COUVERTURES SONT CHARGEES A L'AVANCE, mais PAS au  D-407 */
     window.setTimeout(function () {

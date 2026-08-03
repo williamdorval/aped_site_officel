@@ -627,9 +627,30 @@
   text-transform: none;
 }
 .cadeau-lead { color: var(--ink-muted); font-size: var(--fs-6); max-width: 40ch; }
-.cadeau-form { display: grid; gap: var(--s-3); }
+.cadeau-form { display: grid; gap: var(--s-4); }
+.cadeau-form[hidden] { display: none; }
 .cadeau-form .field { display: grid; gap: var(--s-2); }
 .cadeau-go { justify-self: stretch; text-align: left; }
+/* L'APRES-TELECHARGEMENT ET LE RETOUR. Deux blocs qui prennent la
+   place du formulaire, jamais affiches en meme temps que lui.  D-084 */
+.cadeau-suite,
+.cadeau-deja { display: grid; gap: var(--s-4); justify-items: start; }
+.cadeau-suite[hidden],
+.cadeau-deja[hidden] { display: none; }
+.cadeau-liens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  max-width: none;
+}
+.cadeau-liens a {
+  border-bottom: var(--rule-w) solid var(--rule-strong);
+  padding-bottom: var(--s-1);
+  transition: color var(--t-2) var(--e-snap), border-color var(--t-2) var(--e-snap);
+}
+.cadeau-liens a:hover { color: var(--accent-text); border-color: var(--accent-text); }
 .cadeau-fin {
   font-family: var(--font-data);
   font-size: var(--fs-8);
@@ -637,11 +658,10 @@
   letter-spacing: 0.01em;
   max-width: 46ch;
 }
-/* LA REMISE. Deux liens, reveles a la seconde ou l'adresse est
-   donnee — y compris si l'envoi echoue. Le visiteur repart
-   toujours avec ce qu'on lui a promis. */
-.cadeau-recu { display: flex; flex-wrap: wrap; gap: var(--s-3); }
-.cadeau-recu[hidden] { display: none; }
+.cadeau-fin[hidden] { display: none; }
+/* `.cadeau-recu` est partie : les deux guides ne se telechargent plus
+   avant d'avoir donne ses coordonnees. Le telechargement se declenche
+   maintenant par le script, a l'envoi du formulaire. */
 /* Le refus est un MOT, pas seulement une croix de douze pixels. Un
    popup dont on ne trouve pas la sortie se ferme quand meme — en
    quittant le site. */
@@ -696,6 +716,14 @@
 .appat p { flex: 1 1 26ch; font-size: var(--fs-7); color: var(--ink-muted); max-width: 44ch; }
 .appat b { color: var(--ink); font-weight: 700; }
 .appat .btn { flex: 0 0 auto; margin-left: auto; }
+/* `.svc-appat` a ete retire le 2026-07-30 avec le bloc appat de la  D-156 */
+/* `.footer-docs-mot` est partie avec les deux telechargements
+   directs : « Deux documents, 91 pages, gratuits et sans courriel »
+   est devenu faux le jour ou le courriel est devenu la condition.
+   Ce qui reste est une PORTE vers le popup, pas un telechargement. */
+.footer-guides { margin-top: var(--s-6); }
+.footer-guides .link-btn { color: var(--ink-muted); transition: color var(--t-2) var(--e-snap); }
+.footer-guides .link-btn:hover { color: var(--accent-text); }
 .hero-plate.is-live canvas { display: block; }
 /* Une fois la matiere posee, le texte reel sort de la vue mais
    reste dans l'arbre d'accessibilite. */
