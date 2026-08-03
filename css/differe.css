@@ -3462,6 +3462,23 @@ html:not(.js) .ba-trait { display: none; }
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
+/* L'acte, sous le plus gros chiffre du site.  D-695 */
+.ecart-acte {
+  margin-top: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: var(--rule-w) solid var(--rule-strong);
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+.ecart-acte .btn { width: 100%; justify-content: space-between; }
+.ecart-sur {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  color: var(--ink);
+  max-width: none;
+}
 .ecart-sous { margin-top: var(--s-6); margin-bottom: var(--s-3); }
 .vs { display: grid; gap: 0; }
 .vs-row {

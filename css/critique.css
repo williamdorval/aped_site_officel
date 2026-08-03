@@ -375,8 +375,9 @@ html.sas-ok .sas--calque .sas-volet {
   }
 .nav-refer-num { font-size: var(--fs-8); }
 }
+/* SOUS 384 px, C'EST LE MONTANT QUI PART, PAS LE MOT.  D-696 */
 @media (max-width: 24em) {
-.nav .btn.nav-refer::before { content: none; }
+.nav-refer-num { display: none; }
 }
 /* == 4. BOUTONS ==  D-117 */
 .btn {

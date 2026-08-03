@@ -41,3 +41,31 @@ depuis `avant-cro`.
 
 Meme correctif que D-640 : `--ink`. La hierarchie tient toute seule,
 le nombre etant en `--fs-4` display gras contre `--fs-8` mono.
+
+## D-695 · Le plus gros chiffre du site n'avait aucune suite
+
+`#comparatif` produit « − 5 h 36 par jour » — le chiffre le plus fort
+de la page — et ne proposait **rien**. Aucun bouton, aucun lien, dans
+toute la section.
+
+Un acte, un seul, sous le chiffre : « Reserver un appel », avec la
+reassurance qui l'accompagne partout ailleurs — « 30 minutes, et
+l'appel ne coute rien ». Aucune affirmation nouvelle : c'est la
+version courte de la plaque de `#contact`, deja verifiee.
+
+Il ouvre `modal-booking` directement, pas un choix (D-690).
+
+## D-696 · Sous 384 px, c'est le montant qui part, pas le mot
+
+Le bouton de reference de l'en-tete perdait son libelle sous 24 em et
+gardait « 5 000 $ » — un montant en dollars, seul, en minium, colle au
+logo. La seule fois ou le site affichait un montant sans sa phrase :
+ca se lit comme un prix.
+
+Mesure, largeur par largeur : sous 384 px (320, 360, 375 — iPhone SE,
+8, X) le bouton ne disait QUE « 5 000 $ » ; a 390 px et au-dessus il
+disait « Referez 5 000 $ ». La regle etait exactement a l'envers.
+
+Desormais c'est `.nav-refer-num` qui disparait : il reste « Referez ».
+Le nom accessible du bouton porte toujours la phrase entiere — le
+texte n'est pas cache, il est a `font-size: 0`.
