@@ -1940,3 +1940,41 @@ Le socle, lui, etait DEJA sous le pli a 1024 avant ce chantier
 (862 pour 768). Le corriger demande de deplacer la structure du
 hero, ce que le brief interdit sans accord. C'est documente en P3
 dans `CRO-A-TESTER.md`, avec les nombres.
+
+
+## D-700 · Deux questions qui n'avaient plus de reponse
+
+**« Vous avez fait quoi, avant ? »** — la premiere peur d'un patron
+devant une agence qu'il ne connait pas, et plus rien n'y repondait
+depuis le retrait de `#apropos`.
+
+La reponse ne peut pas etre un temoignage : il n'y a aucun client
+livre publiquement, et le brief l'interdit formellement. Elle est
+donc faite de ce qui est verifiable : ce site, et les neuf premiers
+ecrans de `#demos` qu'on vient d'ouvrir (D-690). Elle dit aussi ce
+qu'elle ne fait pas — « on ne publie aucun mandat livre, et on n'en
+invente pas » — et ce qui changera : « le jour ou on aura un client
+a nommer, il sera nomme ici avec son accord ».
+
+**« Comment se fait le paiement ? »** — aucun mot nulle part sur
+l'acompte, l'echelonnement, ni le moment de la facture.
+
+CE QUE LA REPONSE NE DIT PAS, ET POURQUOI. Elle ne donne AUCUN
+pourcentage d'acompte ni calendrier de versement : je ne les connais
+pas, et les inventer echouerait Q1. Elle ne reprend que ce que le
+site affirme deja ailleurs — « le chiffre dit a l'appel est celui du
+contrat » (etape 02), « une proposition ecrite, un prix ferme »
+(#contact) — et repond ainsi a la vraie peur, qui est la surprise,
+pas le calendrier. **Les modalites exactes restent a ecrire ; c'est
+en reserve.**
+
+## D-701 · « au plus tard », parce que deux delais se lisaient a l'envers
+
+`#contact` disait que le message est LU « le prochain jour ouvrable »
+et REPONDU « sous 12 h ouvrables ». Les deux tiennent ensemble — 12 h
+ouvrables valent environ un jour et demi — mais lus a la suite ils se
+contredisent : la lecture semblait plus lente que la reponse.
+
+« le prochain jour ouvrable **au plus tard** » enleve le plancher
+sans rien promettre de neuf. Le hero (« Reponse en 12 h »), la FAQ,
+l'etape 06 et les modales restent mot pour mot.

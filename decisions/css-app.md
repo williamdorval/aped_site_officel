@@ -3500,3 +3500,20 @@ disait « Referez 5 000 $ ». La regle etait exactement a l'envers.
 Desormais c'est `.nav-refer-num` qui disparait : il reste « Referez ».
 Le nom accessible du bouton porte toujours la phrase entiere — le
 texte n'est pas cache, il est a `font-size: 0`.
+
+
+## D-702 · La reassurance manquait au seul endroit ou on decide
+
+Releve endroit par endroit : le hero a ses trois lignes, `#contact`
+sa plaque de quatre, le pied ses deux points, `#comparatif` la sienne
+depuis D-695. Le panneau du calculateur, lui, posait **deux boutons
+nus** — juste sous le plus gros montant de la page, la ou le doigt
+hesite le plus.
+
+Une ligne, faite de deux affirmations deja verifiees ailleurs :
+« L'appel de 30 minutes ne coute rien. La proposition est ecrite, et
+sans engagement. » Aucune affirmation nouvelle.
+
+En `--ink` et non `--ink-muted` : le panneau est sur `--surface-2`,
+et D-691 a montre ce que coute une encre attenuee sur une surface
+qui n'est pas `--surface-0`.
