@@ -2105,13 +2105,10 @@
   var roiSection = $("#calculateur");
 
   if (roiSection) {
-    var inEmp = $("#inEmp");
+    /* DEUX CURSEURS SONT PARTIS PARCE QU'ILS NE CHANGEAIENT RIEN.  D-693 */
     var inRate = $("#inRate");
-    var inRev = $("#inRev");
     var inAdmin = $("#inAdmin");
-    var outEmp = $("#outEmp");
     var outRate = $("#outRate");
-    var outRev = $("#outRev");
     var outAdmin = $("#outAdmin");
     var taskFields = $$(".roi-task", roiSection);
 
@@ -2149,31 +2146,42 @@
     var navValue = $("#navImpactValue");
     var impactEl = $("#roiImpact");
 
+    /* `emp` et `rev` ont quitte les profils avec leurs curseurs.  D-693 */
     var PRESETS = {
-      construction:  { emp: 8,  rate: 40, rev: 60000,  tasks: [5, 5, 4, 3, 3, 2, 6, 1] },
-      services:      { emp: 5,  rate: 55, rev: 45000,  tasks: [4, 8, 4, 4, 4, 3, 4, 2] },
-      restauration:  { emp: 12, rate: 22, rev: 70000,  tasks: [3, 4, 6, 3, 2, 5, 1, 4] },
-      sante:         { emp: 4,  rate: 35, rev: 30000,  tasks: [3, 5, 8, 3, 2, 4, 1, 3] },
-      commerce:      { emp: 6,  rate: 28, rev: 90000,  tasks: [4, 6, 3, 5, 3, 6, 2, 4] },
-      manufacturier: { emp: 20, rate: 38, rev: 250000, tasks: [6, 5, 3, 6, 5, 3, 5, 1] },
-      perso:         { emp: 5,  rate: 42, rev: 65000,  tasks: [4, 6, 3, 3, 2, 3, 3, 2] }
+      construction:  { rate: 40, tasks: [5, 5, 4, 3, 3, 2, 6, 1] },
+      services:      { rate: 55, tasks: [4, 8, 4, 4, 4, 3, 4, 2] },
+      restauration:  { rate: 22, tasks: [3, 4, 6, 3, 2, 5, 1, 4] },
+      sante:         { rate: 35, tasks: [3, 5, 8, 3, 2, 4, 1, 3] },
+      commerce:      { rate: 28, tasks: [4, 6, 3, 5, 3, 6, 2, 4] },
+      manufacturier: { rate: 38, tasks: [6, 5, 3, 6, 5, 3, 5, 1] },
+      perso:         { rate: 42, tasks: [4, 6, 3, 3, 2, 3, 3, 2] }
     };
 
     var lastRoi = {};
 
+    /* LE MONTANT N'EST PAS LE SIEN TANT QU'IL N'A RIEN REGLE.  D-692 */
+    var roiRegle = false;
+
     var impactSpring = new Spring(function (v) {
       var text = fmtImpact(v);
       if (impactEl) impactEl.textContent = text;
+      if (!roiRegle) return;
       if (railValue) railValue.textContent = text;
       if (navValue) navValue.textContent = text;
     }, 90, 22);
 
+    /* Le premier geste allume le rail et l'en-tete, une seule fois. */
+    function roiRegler() {
+      if (roiRegle) return;
+      roiRegle = true;
+      var text = fmtImpact(impactSpring.value);
+      if (railValue) { railValue.removeAttribute("data-vide"); railValue.textContent = text; }
+      if (navValue) { navValue.removeAttribute("data-vide"); navValue.textContent = text; }
+    }
+
     function roiUpdate(immediate, depuisMaitre) {
       var rate = Number(inRate.value);
-      var rev = Number(inRev.value);
-      outEmp.textContent = inEmp.value;
       outRate.textContent = rate.toLocaleString("fr-CA") + " $";
-      outRev.textContent = rev.toLocaleString("fr-CA") + " $";
 
       var totalHours = 0;
       var saved = 0;
@@ -2208,9 +2216,7 @@
       $("#barAutoVal").textContent = fmtHours(remaining);
 
       lastRoi = {
-        employes: inEmp.value,
         taux_horaire: rate + " $",
-        revenus_mensuels: rev.toLocaleString("fr-CA") + " $",
         heures_recuperees_semaine: fmtHours(saved),
         impact_annuel_total: fmtImpact(impact),
         economies_directes: fmtMoney(direct)
@@ -2221,6 +2227,7 @@
 
     if (inAdmin) {
       inAdmin.addEventListener("input", function () {
+        roiRegler();
         repartir(Number(inAdmin.value));
         roiUpdate(false, true);
       });
@@ -2231,7 +2238,7 @@
          repartit avant de recalculer. Il garde en revanche le meme
          `change`, donc la meme annonce vocale que les autres. */
       if (slider !== inAdmin) {
-        slider.addEventListener("input", function () { roiUpdate(false); });
+        slider.addEventListener("input", function () { roiRegler(); roiUpdate(false); });
       }
       // `change` = fin du geste. Un seul message par reglage.
       slider.addEventListener("change", function () {
@@ -2246,11 +2253,10 @@
       btn.addEventListener("click", function () {
         var preset = PRESETS[btn.dataset.preset];
         if (!preset) return;
+        roiRegler();
         $$("button", presets).forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
         btn.setAttribute("aria-pressed", "true");
-        inEmp.value = preset.emp;
         inRate.value = preset.rate;
-        inRev.value = preset.rev;
         taskFields.forEach(function (field, i) { $("input", field).value = preset.tasks[i]; });
         roiUpdate(false);
       });

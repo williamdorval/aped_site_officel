@@ -583,6 +583,9 @@ html.sas-ok .sas--calque .sas-volet {
   letter-spacing: -0.04em;
   font-variation-settings: "wdth" 87.5;
 }
+/* Le minium ne se pose que sur un montant REEL : le cadratin qui  D-692 */
+.rail-impact b[data-vide],
+.nav-impact b[data-vide] { color: var(--ink-muted); }
 .rail-impact small {
   font-family: var(--font-data);
   font-size: var(--fs-8);
