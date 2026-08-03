@@ -1,16 +1,14 @@
 {
-  "liens": 71,
+  "liens": 63,
   "parGenre": {
-    "ancre": 53,
-    "mailto": 4,
-    "relatif": 13,
-    "externe": 1
+    "ancre": 59,
+    "relatif": 4
   },
   "liensMorts": [],
-  "boutons": 98,
+  "boutons": 101,
   "boutonsMuets": [],
   "motsDeRemplissage": [],
-  "images": 44,
+  "images": 43,
   "imagesVides": [
     {
       "src": "images/realisations/ecran-boutique.webp",

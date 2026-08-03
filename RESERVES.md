@@ -84,7 +84,19 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le déneigement est présenté comme une entreprise fictive | 13 | 173 |
 | &nbsp;&nbsp;↳ Le masque RBQ ne masque plus rien | 7 | 78 |
 | &nbsp;&nbsp;↳ Le téléphone du popup n'est pas validé | 6 | 58 |
-| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 5 | 48 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 7 | 50 |
+| **2026-08-03 · SIX CORRECTIONS** | 2 | 9 |
+| &nbsp;&nbsp;↳ Aucun formulaire du site ne livre, et maintenant il le dit | 12 | 165 |
+| &nbsp;&nbsp;↳ Les deux états « envoi en cours » et « succès » ne sont pas | 1 | 18 |
+| &nbsp;&nbsp;↳ atteignables sur le site tel qu'il est | 7 | 86 |
+| &nbsp;&nbsp;↳ tools/prix-check.mjs rend toujours le code 2 | 9 | 126 |
+| &nbsp;&nbsp;↳ tools/production-check.mjs rend ECHEC : | 1 | 13 |
+| &nbsp;&nbsp;↳ toutesLesImagesChargent | 9 | 109 |
+| &nbsp;&nbsp;↳ La flèche du carrousel de la reconstitution est à 1,77:1 | 7 | 77 |
+| &nbsp;&nbsp;↳ Le « après » du déneigement reste un vrai mandat sous une | 1 | 17 |
+| &nbsp;&nbsp;↳ étiquette « entreprises fictives » | 8 | 100 |
+| &nbsp;&nbsp;↳ Les quatre mentions sous les comparaisons ne sont pas accordées | 8 | 102 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 7 | 73 |
 
 <!-- INDEX:FIN -->
 
@@ -1006,3 +1018,77 @@ le doublage côté serveur.
 
 > **AUCUNE mesure de ce chantier non plus n'a été prise sur un
 > appareil réel.** Chromium sous Playwright, poste de bureau Windows.
+
+---
+
+## 2026-08-03 · SIX CORRECTIONS
+
+### Aucun formulaire du site ne livre, et maintenant il le dit
+
+L'item 6 a retiré l'adresse personnelle. Elle **était** le point de
+sortie : `FORM_ENDPOINT` valait `https://formsubmit.co/ajax/` + elle.
+On ne pouvait pas retirer l'une en gardant l'autre.
+
+`FORM_ENDPOINT` est donc vide, et les sept formulaires échouent tout
+de suite, avec un message visible et la saisie conservée. **Rien n'a
+été perdu au passage** : FormSubmit n'a jamais été activé, l'échec
+était déjà le cas nominal. Mais le site est maintenant une coquille
+franche, et c'est exactement ce que le prochain chantier branche.
+
+### Les deux états « envoi en cours » et « succès » ne sont pas
+### atteignables sur le site tel qu'il est
+
+Ils existent dans le code et ils ont été photographiés — mais en
+**détournant le réseau** dans la sonde, pas sur le site servi. Sans
+point de sortie, l'échec est instantané et ces deux états passent
+sans être vus. Ils reviendront d'eux-mêmes au prochain chantier.
+
+### `tools/prix-check.mjs` rend toujours le code 2
+
+Inchangé depuis le chantier précédent : la grille `BAREME` qu'il
+cherche n'existe plus, et l'outil refuse de rendre zéro en silence.
+Vérifié à la main sur le RENDU : les seuls montants affichés sont les
+trois autorisés, plus le **42 $** du calculateur — qui est la valeur
+que **le visiteur règle lui-même** (« Ce que vous coûte une heure de
+main-d'œuvre »), pas un prix d'APED. Antérieur à ce chantier.
+
+### `tools/production-check.mjs` rend `ECHEC :
+### toutesLesImagesChargent`
+
+Onze écrans de secteur sont comptés « VIDE ». Ils vivent dans
+`<template id="tplSecteurs">` (D-051), donc inertes tant qu'un métier
+n'est pas choisi — et le seul chargé, `ecran-restaurant`, est
+justement le seul absent de la liste. Les douze fichiers existent et
+aucun n'a bougé dans ce chantier. Verdict antérieur, pas une
+régression. L'outil n'a pas été touché.
+
+### La flèche du carrousel de la reconstitution est à 1,77:1
+
+`tools/contraste-min.mjs` la relève dans `#realisations`. C'est le
+`›` du carrousel **du mauvais site reconstitué** — un défaut
+représenté, pas un défaut du site d'APED. Antérieur. Le minimum réel
+du site est 4,7:1.
+
+### Le « après » du déneigement reste un vrai mandat sous une
+### étiquette « entreprises fictives »
+
+L'item 1 a rendu le « avant » cohérent avec lui — même nom, même
+ville, même métier. Mais l'en-tête de la section dit « quatre
+démonstrations, entreprises fictives », alors que la capture du
+déneigement vient d'un vrai projet livré, avec sa ville visible.
+Réserve ouverte depuis le chantier précédent, non résolue ici.
+
+### Les quatre mentions sous les comparaisons ne sont pas accordées
+
+`Avant&nbsp;: un site de 2011` · `avant : une fiche d'annuaire` ·
+`Fiche tenue par l'office` · `avant : un site resté à l'hiver 2019`.
+Casse du « a » et espacement avant le deux-points diffèrent, et la
+troisième n'annonce pas un « avant ». Seule la quatrième était dans
+le périmètre de ce chantier.
+
+### Et celle qui gouverne tout le reste
+
+> **AUCUNE mesure de ce chantier non plus n'a été prise sur un
+> appareil réel.** Chromium sous Playwright, poste de bureau Windows.
+> Les relevés « 390 px » de l'item 5 sont une fenêtre redimensionnée,
+> pas un téléphone.
