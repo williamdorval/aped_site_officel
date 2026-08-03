@@ -769,6 +769,21 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 }
 .field select option { background: var(--surface-2); color: var(--ink); }
 
+/* L'ANNEAU DE FOCUS DES CHAMPS ETAIT CELUI DU NAVIGATEUR.  D-720
+   Il y en avait un — le seuil « zero arret sans anneau » passait —
+   mais il n'etait pas dessine : bleu systeme, epaisseur systeme, au
+   milieu d'une page qui n'a que du ciment, de l'encre et du minium.
+   Le voici en minium, a la meme epaisseur que les autres arrets de
+   la page, et la bordure du champ passe a l'encre pleine pour que
+   l'etat se lise aussi sans couleur. */
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: var(--focus-w) solid var(--accent-text);
+  outline-offset: 2px;
+  border-color: var(--ink);
+}
+
 .field-error {
   display: none;
   font-family: var(--font-data);
@@ -5442,6 +5457,25 @@ html:not(.js) .ba-trait { display: none; }
 /* Le bouton d'envoi est un objet, pas une barre : en enfant de
    grille il s'etirait sur toute la largeur du formulaire. */
 .contact-mot .form [type="submit"] { justify-self: start; }
+
+/* LE TITRE PASSE A GAUCHE DU FORMULAIRE.  D-720
+   Empiles, les deux faisaient une colonne de 736 px avec 312 px de
+   vide a sa droite, et une descente si longue que le bouton d'envoi
+   sortait de la fenetre. Le titre et le formulaire sont deux choses
+   differentes : l'un dit ou on est, l'autre se remplit. Cote a cote,
+   le vide disparait, la descente se raccourcit, et le bloc se lit
+   d'un coup. Ce n'est toujours PAS une tuile — D-244 tient : un seul
+   filet, en tete, et rien autour. */
+@media (min-width: 64em) {
+  .contact-mot {
+    grid-template-columns: minmax(0, 21rem) minmax(0, 1fr);
+    column-gap: var(--s-7);
+    align-items: start;
+  }
+  /* La colonne borne deja le formulaire : la borne de 46 rem le
+     recentrerait a gauche et rouvrirait un vide a droite. */
+  .contact-mot .form { max-width: none; }
+}
 
 /* Reassurance : quatre faits, quatre chiffres, un filet. */
 .contact-sur {

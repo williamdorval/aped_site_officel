@@ -246,6 +246,20 @@
   padding-right: 2.25rem;
 }
 .field select option { background: var(--surface-2); color: var(--ink); }
+/* L'ANNEAU DE FOCUS DES CHAMPS ETAIT CELUI DU NAVIGATEUR.  D-720
+   Il y en avait un — le seuil « zero arret sans anneau » passait —
+   mais il n'etait pas dessine : bleu systeme, epaisseur systeme, au
+   milieu d'une page qui n'a que du ciment, de l'encre et du minium.
+   Le voici en minium, a la meme epaisseur que les autres arrets de
+   la page, et la bordure du champ passe a l'encre pleine pour que
+   l'etat se lise aussi sans couleur. */
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: var(--focus-w) solid var(--accent-text);
+  outline-offset: 2px;
+  border-color: var(--ink);
+}
 .field-error {
   display: none;
   font-family: var(--font-data);
@@ -4118,6 +4132,16 @@ html:not(.js) .ba-trait { display: none; }
 /* Le bouton d'envoi est un objet, pas une barre : en enfant de
    grille il s'etirait sur toute la largeur du formulaire. */
 .contact-mot .form [type="submit"] { justify-self: start; }
+@media (min-width: 64em) {
+.contact-mot {
+    grid-template-columns: minmax(0, 21rem) minmax(0, 1fr);
+    column-gap: var(--s-7);
+    align-items: start;
+  }
+/* La colonne borne deja le formulaire : la borne de 46 rem le
+     recentrerait a gauche et rouvrirait un vide a droite. */
+.contact-mot .form { max-width: none; }
+}
 /* Reassurance : quatre faits, quatre chiffres, un filet. */
 .contact-sur {
   display: grid;

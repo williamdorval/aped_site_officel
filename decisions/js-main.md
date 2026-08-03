@@ -2023,3 +2023,44 @@ vrai : l'envoi n'a pas passe, rien n'est perdu.
 
 LE PROCHAIN CHANTIER remplace `FORM_ENDPOINT` et rien d'autre. Les
 sept formulaires ne connaissent toujours rien de l'envoi.
+
+## D-720 · LE TITRE PASSE A GAUCHE DU FORMULAIRE.
+
+*Applique a `css/app.css` le 2026-08-03.*
+
+LE TITRE PASSE A GAUCHE DU FORMULAIRE.  D-720
+
+Le formulaire « Une question, tout simplement » fonctionnait. Ce
+qui n'allait pas etait sa COMPOSITION, et ca se mesure :
+
+  · le bloc faisait 1 048 px de large et le formulaire 736 ;
+    312 px de vide a sa droite, sur toute sa hauteur ;
+  · empiles, le titre et le formulaire faisaient une descente si
+    longue que le bouton d'envoi sortait de la fenetre. Un
+    formulaire dont on ne voit pas le bouton n'est pas un
+    formulaire, c'est une page.
+
+Cote a cote : 21 rem pour le titre, le reste pour les champs. Le
+vide a droite tombe a 0, le bloc passe de descente a rectangle —
+mesure 1 048 x 484 — et tout se voit d'un coup.
+
+CE QUI N'A PAS ETE FAIT, ET POURQUOI. Pas de cadre autour, pas de
+fond, pas de tuile. D-244 dit que ce bloc ne doit pas se lire comme
+une sixieme tuile du bento : c'est la voie de celui qui n'a ni
+urgence ni projet. Un seul filet, en tete. Il tient.
+
+Sous 64 em, une seule colonne, et la borne de 46 rem reprend la
+main. 350 px de large, champs a 50 px de haut.
+
+L'ANNEAU DE FOCUS. Les champs n'en avaient aucun de dessine : ils
+vivaient sur celui du navigateur. Le seuil « zero arret au clavier
+sans anneau » passait donc — un anneau systeme reste un anneau —
+mais il etait bleu, au milieu d'une page qui n'a que trois
+matieres. Il est maintenant en minium, 2 px, decale de 2 px, et la
+bordure du champ passe a l'encre pleine : l'etat se lit aussi sans
+la couleur.
+
+Les six etats sont photographies : repos, focus, saisie, erreur,
+envoi en cours, succes. « Envoi en cours » et « succes » ne peuvent
+pas se produire tant qu'aucun point de sortie n'est branche : ils
+ont ete provoques en detournant le reseau, sur le vrai code.
