@@ -100,19 +100,6 @@
 /* PALIER 2 — le geste propre a chaque frontiere tombe, les trois  D-106 */
 :root[data-palier="2"] .seuil[data-verbe] { --seuil-g4: none; }
 @media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
-/* Le seuil de la descente perd sa bande : le volet EST la bande,
-     et la carte vit DANS le volet — elle arrive et repart avec lui.
-     La remontee et la cloture gardent leur bande d'encre. */
-html.sas-ok .sas[data-sas="descente"] .seuil {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: var(--s-8);
-    z-index: 5;
-    margin: 0;
-    padding-block: 0;
-    background: transparent;
-  }
 html.sas-ok .sas[data-sas="cloture"] .seuil {
     position: absolute;
     left: 0;

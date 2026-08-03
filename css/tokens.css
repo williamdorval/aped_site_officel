@@ -121,18 +121,12 @@
   --scrim: rgb(8 9 8 / 0.82);
 }
 
-/* == LA CHAMBRE NOIRE — hors des deux themes, et c'est le point.  D-586 */
-:root {
-  --chambre: #060807;
-  --chambre-1: #0e100f;
-  --chambre-2: #171a18;
-  --chambre-ink: #dcdedb;
-  --chambre-ink-muted: #9aa09c;
-  --chambre-accent: #e8562f;
-  --chambre-accent-text: #ff7a52;
-  --chambre-rule: rgb(220 222 219 / 0.18);
-  --chambre-rule-strong: rgb(220 222 219 / 0.40);
-}
+/* LA CHAMBRE NOIRE N'EXISTE PLUS.  D-586
+   Ses neuf jetons servaient a UNE section — la Visite 360 — et aux
+   volets des deux sas qui y menaient. La section est revenue sur la
+   page claire et les sas sont partis : plus une seule regle ne les
+   nommait. `tokens.css` est un fichier BLOQUANT ; neuf declarations
+   mortes s'y payaient a chaque premier rendu. */
 
 /* == Typographie == */
 :root {

@@ -407,19 +407,9 @@
   border: 0;
 }
 
-/* Le lien de licence, sous la visite.  D-340 */
-.tour .fine a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.18em;
-}
-
-.tour .fine a:hover { text-decoration-thickness: 2px; }
-
-.tour .fine a:focus-visible {
-  outline: var(--focus-w) solid var(--accent-text);
-  outline-offset: 2px;
-}
+/* Le lien de licence est parti avec la mention technique : le detail
+   vit dans CREDITS.md, pas a l'ecran. Il n'y a plus aucun lien dans
+   `.tour` — ces trois regles n'avaient plus de cible.  D-340 · D-632 */
 
 /* Mouvement reduit. La derive automatique ne demarre jamais (c'est  D-341 */
 @media (prefers-reduced-motion: reduce) {

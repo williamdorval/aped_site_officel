@@ -123,8 +123,15 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 /* PALIER 2 — le geste propre a chaque frontiere tombe, les trois  D-106 */
 :root[data-palier="2"] .seuil[data-verbe] { --seuil-g4: none; }
 
-/* == 1ter. LES TROIS SAS — L'ARC DE LUMINANCE ==  D-571 */
-/* Replie par defaut : sans script, sous 64em, machine faible ou
+/* == 1ter. LE SAS DE CLOTURE ==  D-571
+   IL N'Y EN A PLUS QU'UN. La descente et la remontee — le volet
+   noir, l'arete de grains, la forge et le mot « Essayez. » — sont
+   parties avec la chambre noire : la section Visite 360 ne se
+   presente plus par une mise en scene, elle se presente toute seule.
+   Ce qui reste est le sas de CLOTURE, qui n'a jamais rien peint en
+   noir : une piste, une scene collante, et un fil qui se soude.
+
+   Replie par defaut : sans script, sous 64em, machine faible ou
    mouvement reduit, un sas EST sa bande de seuil, rien de plus.
    `html.sas-ok` se decide dans le HEAD, AVANT la premiere mise en
    page : une hauteur de piste posee apres coup fait sauter les
@@ -132,29 +139,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
    la meme raison — `differe.css` arrive apres l'ancre. */
 .sas-piste { position: relative; }
 .sas-scene { position: relative; }
-.sas-volet { position: relative; }
-.sas-arete, .sas-forge, .sas-mot, .sas-fil { display: none; }
-
-/* LA CHAMBRE NOIRE — la section 05, seule piece sombre du site.  D-572 */
-#visite {
-  color-scheme: dark;
-  --surface-0: var(--chambre); --surface-1: var(--chambre-1); --surface-2: var(--chambre-2);
-  --surface-inverse: var(--chambre-ink);
-  --ink: var(--chambre-ink); --ink-muted: var(--chambre-ink-muted); --ink-inverse: var(--chambre);
-  --accent: var(--chambre-accent); --accent-text: var(--chambre-accent-text);
-  --accent-ink: var(--chambre);
-  --accent-wash: rgb(232 86 47 / 0.14);
-  --accent-on-inverse: #9b2810;
-  --rule: var(--chambre-rule); --rule-strong: var(--chambre-rule-strong);
-  --rule-accent: var(--chambre-accent);
-  --danger: #ff8b7a; --danger-wash: rgb(255 139 122 / 0.12); --ok: #6fcf8f;
-  --scrim: rgb(4 5 4 / 0.86);
-}
-#visite { background: var(--surface-0); color: var(--ink); }
-/* Les jetons du sas ne sont PAS poses sur `.sas` : un sas replie
-   contient une bande de seuil qui doit garder les couleurs de la
-   page, au pixel pres, sur telephone. Ce qui est PROPRE au sas — le
-   volet, l'arete, le mot, la forge — nomme `--chambre-*` en clair. */
+.sas-fil { display: none; }
 
 @media (min-width: 64em) and (prefers-reduced-motion: no-preference) {
   html.sas-ok .sas .sas-piste { height: var(--sas-course, 220vh); }
@@ -163,90 +148,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     top: 0;
     height: 100vh;
   }
-  /* PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.  D-591 */
   html.sas-ok .sas[data-sas="cloture"] .sas-scene { overflow: hidden; }
-  html.sas-ok .sas .sas-volet {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background: var(--chambre);
-    will-change: transform;
-  }
-  /* L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.  D-592 */
-  html.sas-ok .sas .sas-arete {
-    display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(-1 * var(--s-4));
-    height: var(--s-4);
-    background-image:
-      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 13px),
-      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 7px),
-      repeating-linear-gradient(90deg, var(--chambre) 0 3px, transparent 3px 5px);
-    background-size: 100% 34%, 100% 33%, 100% 33%;
-    background-position: 0 0, 0 34%, 0 100%;
-    background-repeat: repeat-x;
-  }
-  /* La remontee est un calque qui se DEGAGE vers le haut : son bord
-     qui avance est celui du bas, et sa frange s'y densifie. */
-  html.sas-ok .sas--calque .sas-arete {
-    top: auto;
-    bottom: calc(-1 * var(--s-4));
-    background-image:
-      repeating-linear-gradient(90deg, var(--chambre) 0 3px, transparent 3px 5px),
-      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 7px),
-      repeating-linear-gradient(90deg, var(--chambre) 0 2px, transparent 2px 13px);
-  }
-  /* LA SCENE EST DEJA LA COLONNE.  D-590 */
-  html.sas-ok .sas .sas-forge {
-    display: block;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-  }
-  /* Le mot forge. Il n'apparait JAMAIS en fondu : `est-la` bascule
-     la visibilite en une image (V4), posee par sas.js quand les
-     grains sont a leur place. */
-  html.sas-ok .sas .sas-mot {
-    display: block;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 4;
-    margin: 0;
-    font-family: var(--font-display);
-    /* Il occupe la COLONNE, pas un timbre au milieu du noir. Mesure :
-       le mot rend 5,02 fois son corps a tous les crans de largeur.
-       A 12 vw il remplit 76 a 85 % de la colonne, de 1024 a 1920 px,
-       sans jamais toucher les bords. */
-    font-size: clamp(3rem, 12vw, 12rem);
-    font-weight: 800;
-    font-stretch: 118%;
-    letter-spacing: var(--tracking-display);
-    line-height: 1;
-    white-space: nowrap;
-    color: var(--chambre-ink);
-  }
-  /* LE REPOS EST LA FORME FINALE — regle 3 du projet.  D-631 */
-  html.sas-ok .sas.sas-actif .sas-mot { visibility: hidden; }
-  html.sas-ok .sas.sas-actif .sas-mot.est-la { visibility: visible; }
-  /* Le seuil de la descente perd sa bande : le volet EST la bande,
-     et la carte vit DANS le volet — elle arrive et repart avec lui.
-     La remontee et la cloture gardent leur bande d'encre. */
-  html.sas-ok .sas[data-sas="descente"] .seuil {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: var(--s-8);
-    z-index: 5;
-    margin: 0;
-    padding-block: 0;
-    background: transparent;
-  }
   html.sas-ok .sas[data-sas="cloture"] .seuil {
     position: absolute;
     left: 0;
@@ -270,46 +172,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
     transform-origin: top center;
     will-change: transform;
   }
-  /* Le fil de la descente est MINIUM : il nait sous le mot forge et
-     tire vers la piece sombre — la couleur d'action, la ou l'on va
-     agir. */
-  /* Le fil de la descente NAIT SOUS LE MOT, pas dedans : a `top:50%`
-     il traversait le « y ». Le mot fait 12 vw de haut, donc 6 vw de
-     demi-hauteur ; 7,5 vw laisse une respiration a toutes les
-     largeurs sans jamais mordre. */
-  html.sas-ok .sas[data-sas="descente"] .sas-fil {
-    top: calc(50% + 7.5vw);
-    height: calc(50vh - 7.5vw);
-    background: var(--chambre-accent);
-    z-index: 5;
-  }
-  /* 150vh, et le chiffre est un ARBITRAGE, pas un calcul.  D-630 */
-  .sas[data-sas="descente"] { --sas-course: 150vh; }
   .sas[data-sas="cloture"]  { --sas-course: 100vh; }
-
-  /* LA REMONTEE EST UN CALQUE, PAS UNE PISTE. Le volet couvre le  D-579
-     debut du Calculateur et se degage vers le haut par translation :
-     la question se decouvre sous l'arete. Il ne coute aucune hauteur
-     de page. Repos = forme finale : parti. */
-  .sas--calque { position: relative; }
-  /* LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la D-629 section…  D-629 */
-  html.sas-ok .sas--calque .sas-cache {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 130vh;
-    z-index: 6;
-    overflow: hidden;
-    pointer-events: none;
-  }
-  html.sas-ok .sas--calque .sas-volet {
-    position: absolute;
-    inset: 0;
-    background: var(--chambre);
-    transform: translateY(-102%);
-    will-change: transform;
-  }
 }
 
 /* LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.  D-107 */
@@ -317,10 +180,12 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 #reference, #faq, #contact, .footer {
   content-visibility: auto;
 }
-/* Releve du 2026-07-31 a 1440x900, `node tools/sas-check.mjs` —
-   les valeurs precedentes dataient d'un contenu anterieur et
-   faussaient de pres de 2 900 px les arrivees par ancre.  D-580 */
-#visite { contain-intrinsic-size: auto 1256px; }
+/* Releve du 2026-08-03 a 1440x900, section a l'ecran apres une
+   traversee complete de la page — `content-visibility: auto` rend la
+   taille RESERVEE tant qu'elle ne l'a pas ete (pieges 4 et 34).
+   1256 px datait de la chambre noire ; la section porte maintenant sa
+   propre bande de seuil et ne porte plus de sas.  D-580 */
+#visite { contain-intrinsic-size: auto 1149px; }
 #calculateur { contain-intrinsic-size: auto 1711px; }
 #comparatif { contain-intrinsic-size: auto 1125px; }
 /* 1602 -> 1183 : le parcours est passe de quatre a six etapes SANS
