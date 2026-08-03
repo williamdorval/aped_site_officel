@@ -115,9 +115,11 @@
     var etiquette = bouton.querySelector("[data-tour-label]") || bouton;
     var etiquetteInitiale = etiquette.textContent;
 
-    bouton.addEventListener("click", function () {
-      if (lance) return;
+    /* UN SEUL CHEMIN DE DEMARRAGE, DEUX PORTES.  D-718 */
+    function lancer(seul) {
+      if (lance || mort) return;
       lance = true;
+      if (seul) bloc.setAttribute("data-tour-auto", "");
       bloc.classList.add("is-loading");
       bouton.classList.add("is-loading");
       bouton.setAttribute("aria-busy", "true");
@@ -125,12 +127,39 @@
       scene.setAttribute("aria-busy", "true");
 
       Promise.all([charger(base + MOTEUR_CSS, true), charger(base + MOTEUR_JS, false)])
-        .then(monter)
+        .then(function () { monter(seul); })
         .catch(echec);
-    });
+    }
+
+    bouton.addEventListener("click", function () { lancer(false); });
+
+    /* LA VISITE S'OUVRE SEULE QUAND ON ARRIVE DESSUS.  D-718 */
+    function ouvrirSeul() {
+      if (!window.IntersectionObserver) return;
+      /* Un forfait de donnees ne se fait pas imposer un panorama sans
+         l'avoir demande : `veutHd` est deja faux sur `saveData` et sur
+         la 2g. Le bouton reste alors la seule porte, et il reste la. */
+      if (!veutHd) return;
+
+      var oeil = new IntersectionObserver(function (entrees) {
+        for (var i = 0; i < entrees.length; i++) {
+          if (!entrees[i].isIntersecting) continue;
+          oeil.disconnect();
+          /* Le palier se lit A CE MOMENT-LA, pas au chargement du
+             script : il est pose apres coup et peut avoir monte.  D-718 */
+          var palier = +(doc.documentElement.getAttribute("data-palier") || 0);
+          if (palier >= 2) return;
+          lancer(true);
+          return;
+        }
+      }, { rootMargin: "260px 0px", threshold: 0.01 });
+
+      oeil.observe(bloc);
+    }
 
     /* LE BOUTON EST CABLE — ET C'EST UN DRAPEAU, PAS UN DETAIL.  D-607 */
     bloc.setAttribute("data-tour-pret", "");
+    ouvrirSeul();
 
     function echec() {
       lance = false;
@@ -147,7 +176,7 @@
       scene.appendChild(p);
     }
 
-    function monter() {
+    function monter(seul) {
       if (!window.pannellum || !window.pannellum.viewer) { echec(); return; }
 
       vue = doc.createElement("div");
@@ -223,8 +252,12 @@
       });
 
       /* Le clic vient de creer le widget : le focus doit y entrer,
-         sinon les fleches ne repondent a personne. */
-      try { vue.focus({ preventScroll: true }); } catch (e) { vue.focus(); }
+         sinon les fleches ne repondent a personne. QUAND LA VISITE
+         S'EST OUVERTE SEULE, PERSONNE N'A RIEN DEMANDE — on ne
+         deplace pas le focus de quelqu'un qui ne fait que passer. */
+      if (!seul) {
+        try { vue.focus({ preventScroll: true }); } catch (e) { vue.focus(); }
+      }
     }
 
     function fabriquer(p, hd) {

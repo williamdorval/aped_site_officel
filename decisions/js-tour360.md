@@ -149,3 +149,48 @@ ou 1,2 s apres le rendu. Le panneau du service 03 propose
 « Ouvrir la visite » : un `.click()` envoye avant ce moment-la
 frappe un bouton sans ecouteur et ne fait RIEN, en silence. On
 pose donc de quoi attendre.
+
+## D-718 · LA VISITE S'OUVRE SEULE QUAND ON ARRIVE DESSUS.
+
+*Ajoute a `js/tour360.js` le 2026-08-03.*
+
+LA VISITE S'OUVRE SEULE QUAND ON ARRIVE DESSUS.  D-718
+
+Le lecteur n'a jamais ete casse : mesure le 2026-08-03, un clic
+sur `[data-tour-start]` montait le panorama, la rotation et les
+passages en 6 s, zero erreur. Ce qui etait casse, c'est ce qui y
+amenait.
+
+Avant le 2026-08-03, la section etait precedee d'un sas noir de
+100 vh qui portait le mot « Essayez. ». Le sas est parti (D-567).
+Il ne lancait rien — mais il annoncait qu'il y avait quelque
+chose a faire. Sans lui, un visiteur qui arrive sur #visite voit
+une PHOTO FIXE : l'affiche du lecteur. Le bouton qui la reveille
+est a 1 114 px du haut de la section, donc SOUS LE PLI d'une
+fenetre de 900 px. Rien ne bouge, rien n'invite : la seule
+lecture possible est « c'est une image ».
+
+D'ou : un `IntersectionObserver` sur `.tour`, `rootMargin` de
+260 px pour que le panorama soit pret quand le visiteur arrive,
+et non pendant qu'il attend.
+
+Trois retenues :
+
+  1. `veutHd` est deja faux sous `saveData` et sous 2g. On ne
+     lance alors RIEN tout seul : un forfait de donnees ne se
+     fait pas imposer un panorama. Le bouton reste la seule
+     porte, et il reste visible.
+  2. Le palier se lit DANS le rappel de l'observateur, pas au
+     chargement du script. `data-palier` est pose apres coup et
+     peut avoir monte entre les deux (piege 87). A partir du
+     palier 2, on ne lance rien.
+  3. `monter()` recoit l'origine du lancement. Apres un CLIC, le
+     focus entre dans la vue — le visiteur l'a demande, et sans
+     ca les fleches ne repondent a personne. Apres une ouverture
+     AUTOMATIQUE, on ne touche pas au focus : personne n'a rien
+     demande, et deplacer le focus de quelqu'un qui ne fait que
+     defiler est un defaut, pas un service.
+
+`.tour-stage` porte `aspect-ratio: 16/9` : la hauteur est prise
+avant le montage. Mesure — bloc a 771 px au repos, 770 px en
+marche. L'ouverture automatique ne deplace rien.
