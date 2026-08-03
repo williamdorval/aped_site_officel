@@ -1,17 +1,95 @@
 {
-  "liens": 66,
+  "liens": 62,
   "parGenre": {
-    "ancre": 56,
+    "ancre": 53,
     "mailto": 4,
     "externe": 1,
-    "relatif": 5
+    "relatif": 4
   },
   "liensMorts": [],
   "boutons": 97,
   "boutonsMuets": [],
   "motsDeRemplissage": [],
-  "images": 46,
-  "imagesVides": [],
+  "images": 44,
+  "imagesVides": [
+    {
+      "src": "images/realisations/ecran-boutique.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-coiffure.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-gym.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-hotel.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-garage.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-construction.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-paysagement.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-clinique.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-immobilier.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-juridique.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
+    {
+      "src": "images/realisations/ecran-photo.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    }
+  ],
   "imagesDormantes": [
     {
       "src": "images/doc-automatisation.webp",
@@ -47,7 +125,7 @@
     "aucunLienMort": true,
     "aucunBoutonMuet": true,
     "aucunMotDeRemplissage": true,
-    "toutesLesImagesChargent": true,
+    "toutesLesImagesChargent": false,
     "toutesLesImagesSontDimensionnees": true,
     "lesDeuxDocumentsRepondent": true,
     "aucuneRequeteTierce": true,
