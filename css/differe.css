@@ -126,24 +126,6 @@
   color: var(--ink);
 }
 .footer-mark .wordmark-mark { height: 2.75rem; }
-/* Les deux documents, telechargeables sans contrepartie. */
-.footer-docs { display: grid; gap: 1px; margin-top: var(--s-6); }
-.footer-docs a {
-  display: grid;
-  gap: var(--s-1);
-  padding: var(--s-3) 0;
-  border-top: var(--rule-w) solid var(--rule);
-  font-size: var(--fs-7);
-  transition: color var(--t-2) var(--e-snap);
-}
-.footer-docs li:last-child a { border-bottom: var(--rule-w) solid var(--rule); }
-.footer-docs a:hover { color: var(--accent-text); }
-.footer-docs b {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  font-weight: 400;
-  color: var(--ink-muted);
-}
 /* Etat de chargement : une barre indeterminee sous le bouton.
    Aucun cercle qui tourne. */
 .btn.is-loading { cursor: progress; }
@@ -714,16 +696,6 @@
 .appat p { flex: 1 1 26ch; font-size: var(--fs-7); color: var(--ink-muted); max-width: 44ch; }
 .appat b { color: var(--ink); font-weight: 700; }
 .appat .btn { flex: 0 0 auto; margin-left: auto; }
-/* `.svc-appat` a ete retire le 2026-07-30 avec le bloc appat de la  D-156 */
-.footer-docs-mot {
-  margin-top: var(--s-6);
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  line-height: 1.6;
-  color: var(--ink-muted);
-  max-width: 46ch;
-}
-.footer-docs-mot + .footer-docs { margin-top: var(--s-3); }
 .hero-plate.is-live canvas { display: block; }
 /* Une fois la matiere posee, le texte reel sort de la vue mais
    reste dans l'arbre d'accessibilite. */
