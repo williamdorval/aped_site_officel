@@ -113,7 +113,9 @@ correctif.
 | &nbsp;&nbsp;↳ 83 · Un voile en pointer-events: none est INVISIBLE à elementFromPoint | 24 | 319 |
 | &nbsp;&nbsp;↳ 84 · Une planche en mouvement réduit ne peut PAS voir un défaut de sas | 23 | 303 |
 | &nbsp;&nbsp;↳ 85 · String.prototype.replace lit $$ comme un $ littéral | 18 | 232 |
-| &nbsp;&nbsp;↳ 86 · . ne matche pas \r en JavaScript, et un fichier CRLF fait échouer /^…$/ en silence | 41 | 631 |
+| &nbsp;&nbsp;↳ 86 · . ne matche pas \r en JavaScript, et un fichier CRLF fait échouer /^…$/ en silence | 43 | 632 |
+| &nbsp;&nbsp;↳ 87 · Une sonde lue trop tôt ne voit pas l'état réel : data-palier et data-lettres arrivent après | 27 | 379 |
+| &nbsp;&nbsp;↳ 88 · Sur un .btn, ::before est déjà pris, et .btn .l bat toute règle à une classe | 34 | 470 |
 
 <!-- INDEX:FIN -->
 
@@ -1589,3 +1591,66 @@ Un compteur de parties à 0 sur un document qui a forcément des titres
 n’est pas un résultat, c’est une panne. Sans ce garde-fou, l’instrument
 s’est tu sur exactement le défaut qu’il devait voir. Même famille que les
 pièges 30, 40 et 62.
+
+---
+
+### 87 · Une sonde lue trop tôt ne voit pas l'état réel : `data-palier` et `data-lettres` arrivent après
+
+**Le faux verdict.** Sonde de l'en-tête à 1 500 ms : le bouton de
+référence mesure 130 px et affiche « Référez 5 000 $ ». Verdict écrit
+dans l'audit : « le montant nu ne touche que les écrans sous 384 px ».
+**Faux.** À 3 200 ms le même bouton mesure 80 px et n'affiche plus que
+« 5 000 $ », à *toutes* les largeurs sous 768 px.
+
+**La cause.** Deux attributs arrivent tard et changent la peinture :
+
+| attribut | posé par | quand | ce qu'il change |
+|---|---|---|---|
+| `data-palier` | `main.js` | ~1,6 s, ou dès qu'une image dépasse le budget | des dizaines de règles `:root[data-palier="1"]` |
+| `data-lettres` | `langue.js` | vague 2 des scripts — premier geste ou 1,2 s | ajoute `.l` à **chaque enfant** du bouton et arme `.btn[data-lettres]::before` |
+
+Une sonde qui lit avant eux mesure une page qui n'existera plus une
+seconde plus tard. Sur un vrai téléphone, l'escalade de palier est la
+règle, pas l'exception.
+
+**Le correctif.** Toute sonde qui juge un bouton, un libellé ou une
+couleur attend **au moins 3 000 ms** et **relève `data-palier` dans sa
+sortie**. Si le palier n'est pas imprimé à côté du verdict, le verdict
+ne veut rien dire. Voir aussi le piège 84 : c'est la même famille —
+photographier un état que le visiteur ne verra jamais.
+
+---
+
+### 88 · Sur un `.btn`, `::before` est déjà pris, et `.btn .l` bat toute règle à une classe
+
+**Le faux verdict.** `@media (max-width: 24em) { .nav-refer-num { display: none } }`
+— règle écrite, cascade vérifiée à **0 écart**, `getComputedStyle`
+confirmant `content: "Référez"`. Et à l'écran, rien : le bouton
+affichait « 5 000 $ » nu. La règle ne s'appliquait jamais.
+
+**Les deux causes, superposées.**
+
+1. **`::before` est occupé.** `.btn[data-lettres]::before` (D-264) est
+   l'aplat d'encre de V4 CRAN : `position: absolute`, `inset: 0`,
+   `background: var(--ink)`, `scaleX(0)`. Un `::before` de *contenu*
+   sur le même bouton hérite de ce `position` et de ce fond : le texte
+   devient une plaque d'encre invisible, hors flux, de largeur nulle.
+   `getComputedStyle(el, "::before").content` rend toujours
+   `"Référez"` — la propriété gagne, la peinture non.
+2. **`.btn .l` pèse (0,2,0).** `langue.js:332` pose la classe `.l` sur
+   **chaque enfant élément** d'un bouton découpé, et
+   `.btn .l { display: inline-block }` écrase toute règle à une seule
+   classe. **Une requête de média n'ajoute aucune spécificité.**
+
+**Le correctif.** Ne jamais porter du texte dans un `::before` de
+`.btn` : un `<span>` dans le markup, et un `aria-label` explicite sur
+le bouton si les enfants deviennent `aria-hidden`. Écrire les règles
+d'affichage à la spécificité du contexte
+(`.nav .btn.nav-refer .nav-refer-num`, soit 0,4,0), au-dessus de
+`.btn .l`.
+
+**Ce qui a tranché** : ni la cascade, ni `getComputedStyle`, ni le
+dump des feuilles de style — qui a d'ailleurs rendu **zéro règle** sans
+le signaler (piège 30). L'arbitre a été
+`page.locator(".nav-refer").screenshot()` à densité 3, agrandie.
+

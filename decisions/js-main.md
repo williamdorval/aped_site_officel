@@ -1907,7 +1907,7 @@ ecran n'en a que neuf cents, il n'y a aucune course, et le seul
 mouvement est celui que l'ecran joue lui-meme au chargement —
 ce qui est exactement ce que la section doit prouver.
 
-## D-692 · Le montant se tait tant que le visiteur n'a rien regle
+## D-707 · Le montant se tait tant que le visiteur n'a rien regle
 
 Le rail affichait « IMPACT ANNUEL ESTIME ≈ 39 100 $ » **des le premier
 ecran**, avant que le visiteur ait touche quoi que ce soit. C'etait la
@@ -1954,7 +1954,7 @@ Les deux qui restent comptent tous les deux. Verifie : 10 curseurs,
 Le nombre d'employes reste demande la ou il sert vraiment, dans le
 formulaire de projet (`nombre_employes`).
 
-## D-694 · Un jour offert a toujours au moins une plage
+## D-708 · Un jour offert a toujours au moins une plage
 
 La borne du JOUR etait calculee a minuit (`minDate()`, +24 h puis
 `startOfDay`), celle des PLAGES a l'heure (`floor`, +24 h exactement).

@@ -58,7 +58,15 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Les 110 planches « avant » de ce chantier ne prouvent PAS la réparation | 15 | 208 |
 | &nbsp;&nbsp;↳ Trois états sur quatre ont été raisonnés, un seul a été photographié | 9 | 121 |
 | &nbsp;&nbsp;↳ La course de 150vh est un arbitrage, et il n'a pas été mesuré sur un visiteur | 8 | 101 |
-| &nbsp;&nbsp;↳ Et la réserve qui gouverne tout le reste n'a pas bougé | 8 | 97 |
+| &nbsp;&nbsp;↳ Et la réserve qui gouverne tout le reste n'a pas bougé | 10 | 98 |
+| **Le chantier de conversion — 2026-08-02** | 2 | 12 |
+| &nbsp;&nbsp;↳ Aucun formulaire du site n'a jamais livré | 11 | 152 |
+| &nbsp;&nbsp;↳ Les modalités de paiement n'existent nulle part | 8 | 98 |
+| &nbsp;&nbsp;↳ L'adresse de contact est une adresse Gmail personnelle | 8 | 95 |
+| &nbsp;&nbsp;↳ Le socle du hero reste sous le pli à 1024 × 768 | 9 | 127 |
+| &nbsp;&nbsp;↳ Trois des douze métiers n'ont pas d'écran | 6 | 53 |
+| &nbsp;&nbsp;↳ Les deux nouveaux pièges sont des pièges de MESURE, pas de code | 8 | 114 |
+| &nbsp;&nbsp;↳ Et la réserve qui gouverne tout le reste n'a toujours pas bougé | 9 | 99 |
 
 <!-- INDEX:FIN -->
 
@@ -749,3 +757,66 @@ assez, non.**
 > `sas-sequence.mjs` tournent sous Chromium/Playwright sur un poste de
 > bureau Windows. Le palier 2 n'a jamais été atteint autrement qu'en
 > bridant le processeur.
+
+---
+
+## Le chantier de conversion — 2026-08-02
+
+### Aucun formulaire du site n'a jamais livré
+
+FormSubmit rend `HTTP 200` avec `{"success":"false"}` — « This form
+needs Activation ». Sondé depuis la page servie, donc avec la bonne
+origine. Le repli D-422 tient et ne ment pas au visiteur, mais **les
+pièces jointes du formulaire de projet sont perdues** sur ce chemin,
+et un visiteur en webmail sans gestionnaire `mailto:` n'aboutit nulle
+part. Le courriel d'activation a été envoyé à l'adresse de contact le
+2026-08-02. **Tant qu'il n'est pas cliqué, tout le reste du chantier
+est décoratif.**
+
+### Les modalités de paiement n'existent nulle part
+
+La question ajoutée à la FAQ répond à la peur de la surprise — « le
+prix est ferme et il est écrit » — mais **ne donne aucun acompte ni
+calendrier de versement**. Je ne les connais pas, et les inventer
+aurait échoué Q1. C'est la seule question du site dont la réponse est
+volontairement incomplète.
+
+### L'adresse de contact est une adresse Gmail personnelle
+
+`dorvalwilliam11@gmail.com`, quatre fois dans `index.html`, plus le
+point d'arrivée de tous les formulaires. Pour un patron de PME qui
+évalue une agence, c'est un signal de « ce n'est pas une entreprise ».
+Le correctif demande un nom de domaine — ce n'est pas une décision de
+code.
+
+### Le socle du hero reste sous le pli à 1024 × 768
+
+Mesuré avant comme après : `bas = 862` pour une fenêtre de 768. Sur le
+portable le plus courant, aucune des trois réassurances n'est visible
+au premier écran. **Non corrigé** — le corriger demande de déplacer la
+structure du hero, que le brief interdit sans accord. Une tentative
+par le texte a été mesurée puis **retirée** : elle poussait le second
+CTA et les quatre délais chiffrés sous le pli (D-698).
+
+### Trois des douze métiers n'ont pas d'écran
+
+Restauration, garage, paysagement. Leur aperçu au survol existe, mais
+il n'y a rien à ouvrir. Les neuf autres sont liés depuis `#demos`
+(D-705).
+
+### Les deux nouveaux pièges sont des pièges de MESURE, pas de code
+
+87 et 88. Trois de mes sondes ont rendu un faux verdict pendant ce
+chantier : lecture à 1 500 ms avant `data-lettres` et avant l'escalade
+de palier ; `NaN` silencieux sur une image RGB lue comme RGBA ; et un
+parcours des feuilles de style qui a rendu **zéro règle** sans le
+signaler. Les trois ont été trouvées par l'image, jamais par le DOM.
+
+### Et la réserve qui gouverne tout le reste n'a toujours pas bougé
+
+> **AUCUNE mesure de ce chantier non plus n'a été prise sur un
+> appareil réel.** Le palier 1 y est atteint sous Chromium/Playwright
+> sur un poste de bureau Windows — sur un vrai téléphone il serait la
+> règle, pas l'exception, et c'est justement ce qui rendait le piège
+> 87 invisible.
+

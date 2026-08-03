@@ -1884,7 +1884,7 @@ part — a la seule echelle qui change : celle de la journee
 entiere. Le detail devient litteralement sa decomposition.
 440 minutes a la main, 104 automatisees, 336 de moins.
 
-## D-697 · La differenciation vit dans #processus
+## D-711 · La differenciation vit dans #processus
 
 `#apropos` a ete retiree. Avec elle est partie la seule reponse a
 « qui etes-vous ? » — la premiere peur d'un patron devant une agence
@@ -1951,7 +1951,7 @@ depuis le retrait de `#apropos`.
 La reponse ne peut pas etre un temoignage : il n'y a aucun client
 livre publiquement, et le brief l'interdit formellement. Elle est
 donc faite de ce qui est verifiable : ce site, et les neuf premiers
-ecrans de `#demos` qu'on vient d'ouvrir (D-690). Elle dit aussi ce
+ecrans de `#demos` qu'on vient d'ouvrir (D-705). Elle dit aussi ce
 qu'elle ne fait pas — « on ne publie aucun mandat livre, et on n'en
 invente pas » — et ce qui changera : « le jour ou on aura un client
 a nommer, il sera nomme ici avec son accord ».

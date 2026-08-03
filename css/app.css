@@ -550,7 +550,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
   }
   .nav .btn.nav-refer .nav-refer-num { font-size: var(--fs-8); }
 }
-/* SOUS 384 px, C'EST LE MONTANT QUI PART, PAS LE MOT.  D-696 */
+/* SOUS 384 px, C'EST LE MONTANT QUI PART, PAS LE MOT.  D-710 */
 @media (max-width: 24em) {
   .nav .btn.nav-refer .nav-refer-num { display: none; }
 }
@@ -832,7 +832,7 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
   letter-spacing: -0.04em;
   font-variation-settings: "wdth" 87.5;
 }
-/* Le minium ne se pose que sur un montant REEL : le cadratin qui  D-692 */
+/* Le minium ne se pose que sur un montant REEL : le cadratin qui  D-707 */
 .rail-impact b[data-vide],
 .nav-impact b[data-vide] { color: var(--ink-muted); }
 .rail-impact small {
@@ -4494,7 +4494,7 @@ html:not(.js) .ba-trait { display: none; }
 .sector-pills button:hover,
 .sector-pills button.is-on { border-color: var(--accent-text); color: var(--accent-text); background: var(--accent-wash); }
 
-/* Les neuf demos s'ouvrent : liste filetee, pas pastilles.  D-690 */
+/* Les neuf demos s'ouvrent : liste filetee, pas pastilles.  D-705 */
 .demos-liens { display: grid; }
 .demos-liens .fiche-rule { display: block; }
 .demos-liens a {
@@ -4820,7 +4820,7 @@ html:not(.js) .ba-trait { display: none; }
 /* Chaque borne se pose SOUS son bout de piste : celle de gauche a
    l'origine, celle de droite au bout. C'est ce qui remplace l'axe. */
 .ecart-bornes { position: relative; display: block; margin: 0; max-width: none; min-height: 3.25rem; }
-/* `--ink-muted` est calibre sur `--surface-0` : sur le ciment  D-691 */
+/* `--ink-muted` est calibre sur `--surface-0` : sur le ciment  D-706 */
 .ecart-borne {
   position: absolute;
   top: 0;
@@ -4861,7 +4861,7 @@ html:not(.js) .ba-trait { display: none; }
   font-variant-numeric: tabular-nums;
 }
 
-/* L'acte, sous le plus gros chiffre du site.  D-695 */
+/* L'acte, sous le plus gros chiffre du site.  D-709 */
 .ecart-acte {
   margin-top: var(--s-5);
   padding-top: var(--s-5);
@@ -5574,7 +5574,7 @@ html:not(.js) .ba-trait { display: none; }
   transform-origin: left center;
 }
 
-/* La plaque de cloture du processus : ce qui nous distingue.  D-697 */
+/* La plaque de cloture du processus : ce qui nous distingue.  D-711 */
 .distinct {
   margin-top: var(--s-8);
   padding-top: var(--s-5);
@@ -5973,7 +5973,7 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
      a droite, relies par le filet qui les traverse. */
   .suite-temps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-4); }
   /* Les quatre points se lisent de gauche a droite, relies par le
-     meme filet.  D-697 */
+     meme filet.  D-711 */
   .distinct-liste { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-4); }
   .contact-sur li { border-bottom: 0; }
 

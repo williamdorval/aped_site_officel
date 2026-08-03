@@ -156,7 +156,7 @@ clarté pour un gain marginal. **À tester si le trafic le permet.**
 
 4. **`demos-secteurs/` : trois métiers sur douze n'ont pas d'écran** —
    restauration, garage, paysagement. Les neuf autres sont ouverts
-   depuis `#demos` (D-690). Les trois manquants sont les seuls dont
+   depuis `#demos` (D-705). Les trois manquants sont les seuls dont
    l'aperçu au survol ne mène nulle part.
 
 ---

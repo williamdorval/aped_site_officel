@@ -379,7 +379,7 @@ html.sas-ok .sas--calque .sas-volet {
   }
 .nav .btn.nav-refer .nav-refer-num { font-size: var(--fs-8); }
 }
-/* SOUS 384 px, C'EST LE MONTANT QUI PART, PAS LE MOT.  D-696 */
+/* SOUS 384 px, C'EST LE MONTANT QUI PART, PAS LE MOT.  D-710 */
 @media (max-width: 24em) {
 .nav .btn.nav-refer .nav-refer-num { display: none; }
 }
@@ -588,7 +588,7 @@ html.sas-ok .sas--calque .sas-volet {
   letter-spacing: -0.04em;
   font-variation-settings: "wdth" 87.5;
 }
-/* Le minium ne se pose que sur un montant REEL : le cadratin qui  D-692 */
+/* Le minium ne se pose que sur un montant REEL : le cadratin qui  D-707 */
 .rail-impact b[data-vide],
 .nav-impact b[data-vide] { color: var(--ink-muted); }
 .rail-impact small {

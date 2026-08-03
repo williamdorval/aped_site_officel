@@ -64,7 +64,8 @@ Deux niveaux :
 | **Le défaut, et pourquoi rien ne l'a vu** | 25 | 407 |
 | **Ce qui a été décidé** | 66 | 1 041 |
 | **La section 09 · Agence est retirée** | 40 | 582 |
-| **Ce que ça a coûté en instruments** | 19 | 226 |
+| **Ce que ça a coûté en instruments** | 21 | 227 |
+| **Le chantier de conversion — 2026-08-02** | 32 | 1 391 |
 
 <!-- INDEX:FIN -->
 
@@ -951,3 +952,37 @@ pas :
 Et la leçon qui gouverne les deux : **quand un instrument neuf accuse,
 on mesure le code d'avant — mais si le code d'avant accuse aussi, ce
 n'est pas l'instrument qui a tort.**
+
+---
+
+## Le chantier de conversion — 2026-08-02
+
+Quatorze décisions. Le brief : « ce site existe pour UNE chose,
+transformer le visiteur en client ». Étiquette de départ `avant-cro`.
+Audit complet dans `preuves/2026-08-04-cro/AUDIT.md`, hypothèses non
+tranchées dans `CRO-A-TESTER.md`.
+
+| | |
+|---|---|
+| D-698 | **Une phrase de plus au sous-titre du hero coûte la fiche technique.** Mesure du pli à 1024 × 768 : le second CTA et les quatre délais chiffrés passaient de 757 (au pli) à 784 (sous). Le sur-titre nomme la cible — « PME du Québec » et non « Québec » — parce que ça ne coûte pas une ligne. La preuve verifiable au premier écran, elle, n'a pas trouvé de place : documenté en P3, pas maquillé |
+| D-699 | **Deux curseurs du calculateur ne changeaient rien.** L'impact vaut `heures × taux × 52` : ni le nombre d'employés ni le chiffre d'affaires n'y entrent. De 5 à 50 employés, l'impact ne bougeait pas d'un dollar. Un patron qui pousse le premier curseur et voit le chiffre figé conclut que le calculateur est faux — il a raison |
+| D-700 | **Deux questions n'avaient plus de réponse.** « Vous avez fait quoi, avant ? » depuis le retrait de `#apropos` ; « comment se fait le paiement ? » nulle part. La première se répond par ce qui est vérifiable — ce site, les neuf premiers écrans — jamais par un témoignage. La seconde **ne donne aucun acompte** : je ne les connais pas, et les inventer aurait échoué Q1 |
+| D-701 | **Deux délais se lisaient à l'envers.** Lire « le prochain jour ouvrable », répondre « sous 12 h ouvrables » : compatibles, mais lus à la suite la lecture semblait plus lente que la réponse. « au plus tard » enlève le plancher sans rien promettre de neuf |
+| D-702 | **La réassurance manquait au seul endroit où on décide.** Le panneau du calculateur posait deux boutons nus, juste sous le plus gros montant de la page. Le hero, `#contact`, le pied et `#comparatif` ont tous la leur |
+| D-703 | **Le chemin dit « le plus direct » était le plus long.** Sept écrans, 21 champs, dix obligatoires. L'étape des fichiers disparaît comme étape — son propre texte disait « cette étape se saute sans problème ». Le téléphone passe en optionnel : ce qui est promis est une proposition ÉCRITE. Les minutes s'en vont, « 4 minutes » ne survit pas à un client qui dit « ça m'en a pris six » |
+| D-704 | **Sur un `.btn`, `::before` est déjà pris par l'aplat de V4 CRAN.** Le libellé du bouton de référence l'utilisait : dès que `langue.js` pose `data-lettres`, le mot devient une plaque d'encre invisible, hors flux. Et `.btn .l` pèse (0,2,0) — une requête de média n'ajoute aucune spécificité, donc les règles à une classe ne s'appliquaient jamais. Pièges 87 et 88 |
+| D-705 | **Les neuf écrans de secteur ne se lisaient de nulle part.** `grep -c "demos-secteurs" index.html` rendait 0. Ils jouaient au survol, en cadre inerte à l'échelle 0,29, sur grand écran et souris seulement. Ce ne sont PAS des sites : `STANDARD.md § 0 bis` dit « UN ÉCRAN, PAS UN SITE ». Le texte dit donc « neuf premiers écrans » et « le menu ne mène nulle part » |
+| D-706 | **`--ink-muted` est calibré sur `--surface-0` et rend 4,41:1 sur `--surface-1`.** Défaut préexistant, zéro ligne changée depuis `avant-cro`, sous le seuil de 4,5 aux cinq largeurs |
+| D-707 | **Le montant du rail n'était pas celui du visiteur.** « ≈ 39 100 $ » s'affichait dès le premier écran, sortie des curseurs par défaut. Q2 et Q4 échouent : invérifiable avant la section 06, et à côté du logo ça se lit comme un prix. Un cadratin au repos, le montant au premier geste |
+| D-708 | **Un jour offert doit avoir au moins une plage.** La borne du jour était à minuit, celle des plages à l'heure : tous les soirs après 16 h 30, le premier jour offert était cliquable et vide. Une seule source, `plagesDuJour(date)` |
+| D-709 | **Le plus gros chiffre du site n'avait aucune suite.** `#comparatif` produit « − 5 h 36 par jour » et ne proposait rien : aucun bouton, aucun lien, dans toute la section |
+| D-710 | **Sous 384 px, c'est le montant qui part, pas le mot.** La règle était exactement à l'envers : le bouton perdait « Référez » et gardait « 5 000 $ » — la seule fois où le site montrait un montant sans sa phrase. Ce correctif seul ne tenait pas ; D-704 dit pourquoi |
+| D-711 | **La différenciation vit en clôture de `#processus`.** Elle existait, éparpillée en cinq endroits, et n'était dite nulle part depuis le retrait de `#apropos`. Quatre points, aucun inventé, et le quatrième — « la preuve, c'est ce site » — ne porte **aucun chiffre** : le LCP mesuré est de 136 ms, mais aucune mesure de ce projet ne vient d'un appareil réel |
+
+Et la leçon de mesure du chantier : **trois sondes ont menti, chacune
+autrement.** L'une lisait à 1 500 ms, avant `data-lettres` et avant
+l'escalade de palier. L'autre supposait quatre canaux sur une image
+RGB et rendait `NaN` sans erreur. La troisième parcourait les feuilles
+de style et rendait **zéro règle** sans le signaler. Ce qui a tranché
+à chaque fois, c'est l'image agrandie de l'objet seul.
+

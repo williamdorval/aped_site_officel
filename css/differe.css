@@ -3132,7 +3132,7 @@ html:not(.js) .ba-trait { display: none; }
 }
 .sector-pills button:hover,
 .sector-pills button.is-on { border-color: var(--accent-text); color: var(--accent-text); background: var(--accent-wash); }
-/* Les neuf demos s'ouvrent : liste filetee, pas pastilles.  D-690 */
+/* Les neuf demos s'ouvrent : liste filetee, pas pastilles.  D-705 */
 .demos-liens { display: grid; }
 .demos-liens .fiche-rule { display: block; }
 .demos-liens a {
@@ -3432,7 +3432,7 @@ html:not(.js) .ba-trait { display: none; }
 /* Chaque borne se pose SOUS son bout de piste : celle de gauche a
    l'origine, celle de droite au bout. C'est ce qui remplace l'axe. */
 .ecart-bornes { position: relative; display: block; margin: 0; max-width: none; min-height: 3.25rem; }
-/* `--ink-muted` est calibre sur `--surface-0` : sur le ciment  D-691 */
+/* `--ink-muted` est calibre sur `--surface-0` : sur le ciment  D-706 */
 .ecart-borne {
   position: absolute;
   top: 0;
@@ -3471,7 +3471,7 @@ html:not(.js) .ba-trait { display: none; }
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-/* L'acte, sous le plus gros chiffre du site.  D-695 */
+/* L'acte, sous le plus gros chiffre du site.  D-709 */
 .ecart-acte {
   margin-top: var(--s-5);
   padding-top: var(--s-5);
@@ -4116,7 +4116,7 @@ html:not(.js) .ba-trait { display: none; }
   transform: scaleX(1);
   transform-origin: left center;
 }
-/* La plaque de cloture du processus : ce qui nous distingue.  D-697 */
+/* La plaque de cloture du processus : ce qui nous distingue.  D-711 */
 .distinct {
   margin-top: var(--s-8);
   padding-top: var(--s-5);
@@ -4483,7 +4483,7 @@ html.js .derail-row,
      a droite, relies par le filet qui les traverse. */
 .suite-temps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-4); }
 /* Les quatre points se lisent de gauche a droite, relies par le
-     meme filet.  D-697 */
+     meme filet.  D-711 */
 .distinct-liste { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-4); }
 .contact-sur li { border-bottom: 0; }
 .footer-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }

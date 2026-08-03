@@ -209,6 +209,13 @@ de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
     *(18)*
 12. **`.` ne matche pas `\r` en JavaScript** — sur un fichier CRLF,
     `/^…$/` échoue en silence et l'outil rend « 0 » sans erreur. *(86)*
+13. **Une sonde lue avant 3 s ne voit pas la vraie page** —
+    `data-palier` et `data-lettres` arrivent après, et changent la
+    peinture. Toute sonde imprime `data-palier` à côté de son
+    verdict. *(87)*
+14. **Sur un `.btn`, `::before` est pris par l'aplat de V4**, et
+    `.btn .l` bat toute règle à une classe — une requête de média
+    n'ajoute aucune spécificité. *(88)*
 
 ## RÉSERVE — à ne jamais oublier
 

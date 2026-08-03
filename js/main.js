@@ -1650,7 +1650,7 @@
   function minDate() { return startOfDay(new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000)); }
   function maxDate() { return startOfDay(new Date(Date.now() + BOOKING.horizonDays * 24 * 3600 * 1000)); }
 
-  /* UN JOUR SANS PLAGE NE S'OFFRE PAS.  D-694 */
+  /* UN JOUR SANS PLAGE NE S'OFFRE PAS.  D-708 */
   function plagesDuJour(date) {
     var floor = new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000);
     return BOOKING.slots.filter(function (slot) {
@@ -1755,7 +1755,7 @@
     }
     slotsTitle.textContent = selectedDate.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" });
     /* MEME SOURCE que le calendrier : deux bornes calculees a deux
-       endroits, c'etait exactement le defaut.  D-694 */
+       endroits, c'etait exactement le defaut.  D-708 */
     plagesDuJour(selectedDate).forEach(function (slot) {
       var btn = doc.createElement("button");
       btn.type = "button";
@@ -2173,7 +2173,7 @@
 
     var lastRoi = {};
 
-    /* LE MONTANT N'EST PAS LE SIEN TANT QU'IL N'A RIEN REGLE.  D-692 */
+    /* LE MONTANT N'EST PAS LE SIEN TANT QU'IL N'A RIEN REGLE.  D-707 */
     var roiRegle = false;
 
     var impactSpring = new Spring(function (v) {

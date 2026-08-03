@@ -3430,7 +3430,7 @@ tache. L'axe est parti : un axe est une legende, et le public ne
 lit pas les legendes. Les deux bornes sont ecrites sous la piste,
 chacune sous son bout.
 
-## D-690 · Les neuf ecrans de secteur s'ouvrent
+## D-705 · Les neuf ecrans de secteur s'ouvrent
 
 Neuf des douze metiers ont un site de demonstration complet monte
 dans `demos-secteurs/`. Ils jouaient deja, en `<iframe>` inerte au
@@ -3462,7 +3462,7 @@ Aucun mouvement nouveau : le bloc entre avec les trois autres par le
 seuil 04, verbe V2 S'ALIGNER, sens droite. La `data-cible` du seuil
 passe de `.sector-group` a `.sector-group, .demos-ouvrir`.
 
-## D-691 · `--ink-muted` ne tient pas sur `--surface-1`
+## D-706 · `--ink-muted` ne tient pas sur `--surface-1`
 
 `--ink-muted` est calibre sur `--surface-0` (5,18:1). Sur
 `--surface-1` (#cbcec9) il rend **4,41:1**, sous le seuil de 4,5 pour
@@ -3473,7 +3473,7 @@ depuis `avant-cro`.
 Meme correctif que D-640 : `--ink`. La hierarchie tient toute seule,
 le nombre etant en `--fs-4` display gras contre `--fs-8` mono.
 
-## D-695 · Le plus gros chiffre du site n'avait aucune suite
+## D-709 · Le plus gros chiffre du site n'avait aucune suite
 
 `#comparatif` produit « − 5 h 36 par jour » — le chiffre le plus fort
 de la page — et ne proposait **rien**. Aucun bouton, aucun lien, dans
@@ -3484,9 +3484,9 @@ reassurance qui l'accompagne partout ailleurs — « 30 minutes, et
 l'appel ne coute rien ». Aucune affirmation nouvelle : c'est la
 version courte de la plaque de `#contact`, deja verifiee.
 
-Il ouvre `modal-booking` directement, pas un choix (D-690).
+Il ouvre `modal-booking` directement, pas un choix (D-705).
 
-## D-696 · Sous 384 px, c'est le montant qui part, pas le mot
+## D-710 · Sous 384 px, c'est le montant qui part, pas le mot
 
 Le bouton de reference de l'en-tete perdait son libelle sous 24 em et
 gardait « 5 000 $ » — un montant en dollars, seul, en minium, colle au
@@ -3509,7 +3509,7 @@ Desormais c'est `.nav-refer-num` qui disparait : il reste « Referez ».
 
 Releve endroit par endroit : le hero a ses trois lignes, `#contact`
 sa plaque de quatre, le pied ses deux points, `#comparatif` la sienne
-depuis D-695. Le panneau du calculateur, lui, posait **deux boutons
+depuis D-709. Le panneau du calculateur, lui, posait **deux boutons
 nus** — juste sous le plus gros montant de la page, la ou le doigt
 hesite le plus.
 
@@ -3518,7 +3518,7 @@ Une ligne, faite de deux affirmations deja verifiees ailleurs :
 sans engagement. » Aucune affirmation nouvelle.
 
 En `--ink` et non `--ink-muted` : le panneau est sur `--surface-2`,
-et D-691 a montre ce que coute une encre attenuee sur une surface
+et D-706 a montre ce que coute une encre attenuee sur une surface
 qui n'est pas `--surface-0`.
 
 
