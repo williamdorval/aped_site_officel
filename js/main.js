@@ -1011,7 +1011,11 @@
     function poser(i) {
       if (i === courante) return;
       courante = i;
-      etapes.forEach(function (e, k) { e.classList.toggle("is-on", k <= i); });
+      /* UN SEUL CRAN ALLUME A LA FOIS. `k <= i` allumait toutes les
+         stations franchies : a six etapes, ca faisait jusqu'a six
+         nodules de minium en meme temps, et le minium ne designait
+         plus rien. L'accent tombe sur l'etape EN COURS, une seule. */
+      etapes.forEach(function (e, k) { e.classList.toggle("is-on", k === i); });
       /* PHASE 8 · V4 — l'etape roule d'un cran. */
       if (num) rouler(num, ("0" + (i + 1)).slice(-2));
       if (nom) nom.textContent = etapes[i].getAttribute("data-parc") || "";

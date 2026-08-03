@@ -3637,7 +3637,14 @@ html:not(.js) .ba-trait { display: none; }
   background: var(--surface-1);
   border: var(--rule-w) solid var(--rule-strong);
 }
-.ecart > .label { margin-bottom: var(--s-5); max-width: 46ch; }
+/* L'ENCRE ATTENUEE NE PASSE PAS SUR CE PLAT.  D-640
+   `--ink-muted` sur `--surface-1` rend **4,41**, sous le seuil de 4,50
+   du projet — mesure `tools/theme-check.mjs`, theme clair, aux cinq
+   largeurs. Le plat est plus clair que la page, donc le meme jeton
+   qui passe ailleurs echoue ici. Les deux textes concernes passent en
+   encre pleine ; la hierarchie est portee par le corps et la graisse,
+   qui ne dependent d'aucun contraste. */
+.ecart > .label { margin-bottom: var(--s-5); max-width: 46ch; color: var(--ink); }
 .ecart-grand { display: grid; gap: var(--s-3); }
 .ecart-grand .ecart-piste { position: relative; height: 36px; }
 .ecart-grand .ecart-piste i { position: absolute; top: 0; bottom: 0; left: 0; display: block; }
@@ -3670,7 +3677,7 @@ html:not(.js) .ba-trait { display: none; }
   border-top: var(--rule-w) solid var(--rule-strong);
   font-family: var(--font-data);
   font-size: var(--fs-7);
-  color: var(--ink-muted);
+  color: var(--ink);
   max-width: none;
   text-align: right;
 }
@@ -3751,20 +3758,19 @@ html:not(.js) .ba-trait { display: none; }
   white-space: nowrap;
 }
 .vs-gain b { font-family: var(--font-display); font-size: var(--fs-5); font-weight: 700; color: var(--ink); letter-spacing: -0.03em; }
-/* == 19. PROCESSUS - le parcours d'atelier ==  D-230 */
 /* N1 · le compteur d'etape. Il ne descend jamais dans la
    hierarchie : c'est lui qui repond a « ou j'en suis ». */
 .parc-bar {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: baseline;
-  gap: var(--s-3) var(--s-4);
-  margin-bottom: var(--s-7);
+  gap: var(--s-2) var(--s-4);
+  margin-bottom: var(--s-6);
   padding-bottom: var(--s-3);
   border-bottom: var(--rule-w) solid var(--rule);
 }
 .parc-compte { display: flex; align-items: baseline; gap: 0.3em; font-family: var(--font-display); font-weight: 800; line-height: 1; }
-.parc-compte b { font-size: var(--fs-3); color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.parc-compte b { font-size: var(--fs-3); color: var(--ink); font-variant-numeric: tabular-nums; }
 .parc-compte span { font-family: var(--font-data); font-size: var(--fs-8); color: var(--ink-muted); }
 .parc-nom { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-4); }
 .parc-reste {
@@ -3777,33 +3783,52 @@ html:not(.js) .ba-trait { display: none; }
 }
 .parc { display: grid; gap: 0; }
 .parc-etape {
+  /* Le retrait progressif de D-250 (bloc 26) etait calibre pour
+     QUATRE etapes. A six, la derniere reculait de 20 rem. `--r`
+     vaut 0 partout : le rail reste droit. */
+  --r: 0;
   position: relative;
   display: grid;
   grid-template-columns: 2.75rem minmax(0, 1fr);
-  padding-bottom: var(--s-9);
+  padding-bottom: var(--s-5);
 }
 .parc-etape:last-child { padding-bottom: 0; }
-/* LE FIL. Un rectangle en `scaleY`, donc composite : un
-   `stroke-dashoffset` repeindrait le trace a chaque image. */
+/* LE RAIL. Un filet CONTINU du centre du nodule 01 au centre du
+   nodule 06 : il ne depasse ni avant ni apres, et les nodules le
+   coupent parce que leur fond est opaque. Il est plus LEGER que le
+   trait des stations — 1 px de filet contre 2 px d'encre — donc le
+   rail recule et les stations dominent. C'est ce qui fait sentir
+   l'irreversibilite : six numeros posent des options, un rail pose
+   une suite.
+   Un rectangle en `scaleY`, donc composite : un `stroke-dashoffset`
+   repeindrait le trace a chaque image. */
 .parc-fil {
   position: absolute;
-  left: 0.6875rem;
+  left: 0.875rem;
   top: 0;
   bottom: 0;
-  width: 2px;
-  background: var(--rule);
+  width: 1px;
+  background: var(--rule-strong);
 }
+/* V3 · SOUDER — la portion deja franchie se ressoude en trait plein.
+   `motion.js` la scrubbe en `scaleY`. A l'ENCRE, pas au minium. Sans
+   script ou sous mouvement reduit, elle reste pleine : le rail est
+   entier, aucune information perdue. */
 .parc-fil b {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--accent);
+  background: var(--ink);
   transform: scaleY(1);
   transform-origin: top center;
 }
-/* La derniere station ferme le fil a son nodule : sans ca le trait
-   depassait dans le vide sous la quatrieme etape. */
-.parc-etape:last-child .parc-fil { bottom: auto; height: 1.375rem; }
+/* 1 rem = 0.125 rem de marge haute + la moitie des 1.75 rem du
+   nodule. Le rail part donc du CENTRE de la premiere station et
+   meurt au CENTRE de la derniere. */
+.parc-etape:first-child .parc-fil { top: 1rem; }
+.parc-etape:last-child .parc-fil { bottom: auto; height: 1rem; }
+/* LA STATION. Carre, trait de 2 px d'encre, fond OPAQUE — c'est le
+   fond qui coupe le rail, pas un artifice de trace. Rayon 0. */
 .parc-nodule {
   position: relative;
   z-index: 1;
@@ -3813,24 +3838,35 @@ html:not(.js) .ba-trait { display: none; }
   place-items: center;
   width: 1.75rem;
   height: 1.75rem;
-  margin-top: 0.375rem;
-  background: var(--surface-inverse);
-  color: var(--accent-on-inverse);
+  margin-top: 0.125rem;
+  background: var(--surface-0);
+  border: 2px solid var(--ink);
+  color: var(--ink);
   font-family: var(--font-data);
   font-size: var(--fs-8);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.parc-etape.is-on .parc-nodule { background: var(--accent); color: var(--accent-ink); }
-.parc-nodule--fin { background: var(--accent); color: var(--accent-ink); }
-/* L'embranchement : le segment horizontal qui relie le fil a la
-   station. C'est lui qui fait serpenter le chemin. */
+/* V4 · CRAN — LE SEUL MINIUM DE LA SECTION, et un seul a la fois :
+   l'etat ne fond pas dans le suivant, il roule d'un cran. Pose par
+   `main.js`, qui repond a « ou j'en suis » ; jamais par `motion.js`,
+   qui s'arrete net sous `prefers-reduced-motion`. */
+.parc-etape.is-on .parc-nodule {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+/* L'embranchement : le segment horizontal qui relie le rail a la
+   station. Meme poids que le rail — il en est la suite. Sa largeur
+   VA JUSQU'AU BORD GAUCHE DU TITRE : a 1 rem il s'arretait 24 px
+   avant le texte et ne designait plus rien. Un trait qui relie doit
+   toucher les deux bouts. */
 .parc-branche {
   position: absolute;
   left: 1.75rem;
-  top: 1.25rem;
-  width: 1rem;
-  height: 2px;
+  top: 1rem;
+  width: 2rem;
+  height: 1px;
   background: var(--rule-strong);
   transform: scaleX(1);
   transform-origin: left center;
@@ -3842,7 +3878,10 @@ html:not(.js) .ba-trait { display: none; }
   padding-left: var(--s-4);
 }
 .parc-txt { display: grid; gap: var(--s-3); align-content: start; }
-.parc-etape h3 { font-size: var(--fs-3); }
+/* Le titre descend de --fs-3 a un corps propre : a six etapes, six
+   titres de 40 px se disputent le h2 de la section et la liste ne se
+   balaye plus. 26 px tient la hierarchie sans couter 120 px. */
+.parc-etape h3 { font-size: clamp(1.25rem, 1.05rem + 0.75vw, 1.625rem); }
 .parc-txt p { color: var(--ink-muted); max-width: 54ch; }
 .parc-livre {
   display: flex;
@@ -3858,9 +3897,12 @@ html:not(.js) .ba-trait { display: none; }
   color: var(--ink-muted) !important;
   max-width: none !important;
 }
-.parc-livre i { width: 0.5rem; height: 0.5rem; background: var(--accent); flex: none; align-self: center; }
+.parc-livre i { width: 0.5rem; height: 0.5rem; background: var(--ink); flex: none; align-self: center; }
 .parc-livre b { color: var(--ink); letter-spacing: 0.02em; text-transform: none; }
-/* LES QUATRE COMPOSANTS. Chacun montre ce que son etape PRODUIT :  D-231 */
+/* LES SIX COMPOSANTS. Chacun montre ce que son etape PRODUIT :  D-231
+   six SILHOUETTES distinctes, parce que la silhouette remplace la
+   couleur qu'on n'a pas. Filets, aplats, mono — ni photo, ni
+   illustration, ni icone. */
 .parc-vis {
   container-type: inline-size;
   display: grid;
@@ -3870,14 +3912,17 @@ html:not(.js) .ba-trait { display: none; }
   border: var(--rule-w) solid var(--rule-strong);
   overflow: hidden;
 }
+/* L'interlignage du corps de texte (1,6) etait celui d'un paragraphe.
+   Un composant n'est pas un paragraphe : c'est un tableau de bord
+   miniature, et 1,6 lui donnait 30 px de vide par cadre. */
 .vis-tete,
-.vis-corps { font-size: clamp(7px, 2.4cqw, 12px); }
+.vis-corps { font-size: clamp(7px, 2.4cqw, 12px); line-height: 1.35; }
 .vis-tete {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1em;
-  padding: 0.8em 1em;
+  padding: 0.7em 1em;
   background: var(--surface-1);
   border-bottom: var(--rule-w) solid var(--rule);
   font-family: var(--font-data);
@@ -3888,43 +3933,126 @@ html:not(.js) .ba-trait { display: none; }
 .vis-tete em { min-width: 0; overflow-wrap: anywhere; }
 .vis-tete b { font-weight: 700; color: var(--ink); }
 .vis-tete em { font-style: normal; color: var(--ink-muted); }
-.vis-live { color: var(--accent-text) !important; }
-.vis-corps { display: grid; gap: 0.7em; align-content: start; padding: 1em; min-width: 0; }
+/* Specificite plutot qu'`!important` : c'est `.vis-tete em` qu'il
+   faut battre, et rien d'autre. */
+.vis-tete .vis-live { color: var(--ink); font-weight: 700; }
+.vis-corps { display: grid; gap: 0.6em; align-content: start; padding: 0.9em 1em; min-width: 0; }
 /* Meme raison que pour les ecrans de Services : le cadre est
    declare conteneur, donc plus rien ne force ses enfants a rentrer.
    Il faut les rendre compressibles un par un. */
 .vis-corps > *,
 .vis-grille i,
 .vis-code p { min-width: 0; }
-.vis-l { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); gap: 0.8em; align-items: center; font-family: var(--font-data); }
+/* 01 · LA FICHE D'APPEL — elle s'ecrit toute seule.
+   V1 · DEGAGER : chaque filet se decouvre sous une arete franche qui
+   balaye de GAUCHE A DROITE, dans le sens de lecture d'un libelle
+   (`motion.js`, `.vis-l i`). */
+/* 7,5 em et non 6,5 : « Ce qui bloque » se cassait en deux lignes et
+   le filet se recentrait sur un libelle de deux etages. */
+.vis-l { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 0.8em; align-items: center; font-family: var(--font-data); }
 .vis-l em { font-style: normal; color: var(--ink-muted); }
 .vis-l i { display: block; height: 0.5em; background: var(--rule-strong); transform: scaleX(1); transform-origin: left center; }
 .vis-sortie {
   display: flex;
   justify-content: space-between;
   gap: 1em;
-  margin-top: 0.4em;
-  padding-top: 0.7em;
+  margin-top: 0.3em;
+  padding-top: 0.6em;
   border-top: var(--rule-w) solid var(--rule);
   font-family: var(--font-data);
 }
 .vis-sortie b { color: var(--ink); }
-.vis-sortie s { text-decoration: none; color: var(--accent-text); font-weight: 700; }
-.vis-grille { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6em; }
-.vis-grille i { display: block; height: 2.2em; background: var(--rule-strong); border: var(--rule-w) solid var(--rule-strong); }
-.vis-grille i:nth-child(1) { grid-column: span 4; background: var(--surface-inverse); }
-.vis-grille i:nth-child(2) { grid-column: span 2; }
-.vis-grille i:nth-child(6) { background: var(--accent); border-color: var(--accent); }
+.vis-sortie s { text-decoration: none; color: var(--ink); font-weight: 700; }
+/* 02 · LE CONTRAT. Trois filets pleine largeur, un quatrieme a 40 %,
+   et le cartouche SIGNE encadre de 2 px A CHEVAL sur l'angle bas
+   droit du document. C'est le DEBORD qui dit « appose » — le mot seul
+   ne le dirait pas. Le cartouche porte le fond du cadre, donc il
+   perce le filet du document au lieu de flotter dessus.
+   Les quatre filets sont des `.vis-l` sans libelle : la colonne du
+   libelle tombe, et le balayage V1 de `motion.js` les prend deja. */
+.vis-doc {
+  position: relative;
+  display: grid;
+  gap: 0.9em;
+  padding: 1.1em 1.2em 1.7em;
+  border: var(--rule-w) solid var(--rule);
+}
+/* Le document recule d'un cran a droite : sans ca le cartouche
+   arrivait a 2 px du filet du cadre et se lisait comme un debord
+   ROGNE, pas comme un debord voulu. */
+.vis--signe .vis-corps { padding-right: 2em; }
+.vis--signe .vis-l { grid-template-columns: minmax(0, 1fr); }
+.vis-l--40 { width: 40%; }
+.vis-sceau {
+  position: absolute;
+  right: -0.8em;
+  bottom: -0.6em;
+  padding: 0.4em 0.8em;
+  background: var(--surface-2);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+}
+/* 03 · LA LISTE DE CHANTIER. Deux lignes faites, une en cours :
+   l'etat intermediaire est LISIBLE a l'arret. */
 .vis-code { display: grid; gap: 0.45em; font-family: var(--font-data); }
 .vis-code p { display: flex; gap: 0.9em; }
 .vis-code em { font-style: normal; color: var(--ink-muted); }
 .c-k { color: var(--ink); }
 .c-n { color: var(--ink-muted); }
-.c-a { color: var(--accent-text); font-weight: 700; }
+.c-a { color: var(--ink); font-weight: 700; }
+/* LES BLOCS QUI S'ALIGNENT — V2 · S'ALIGNER. `motion.js` les fait
+   arriver decales lateralement puis se reprendre, sans depassement
+   (`.vis-grille i`). Deux silhouettes s'en servent : les crans de
+   l'etape 04 et les semaines de l'etape 06. */
+.vis-grille i { display: block; border: var(--rule-w) solid var(--rule-strong); }
+/* 04 · LA BARRE A CRANS. Six carres : trois pleins, le quatrieme A
+   MOITIE, deux vides a filet. C'est le SEUL des six composants qui
+   soit lisible A MI-COURSE — un cran a moitie se lit comme un etat,
+   jamais comme une erreur, contrairement a un mot coupe (piege 70). */
+.vis-date { font-family: var(--font-data); color: var(--ink-muted); }
+.vis-crans { display: flex; gap: 0.55em; }
+.vis-crans i { position: relative; width: 2.1em; height: 2.1em; }
+.vis-crans i.vis-demi { border-color: var(--ink); }
+.vis-crans i.vis-demi::before { content: ""; position: absolute; inset: 0 50% 0 0; background: var(--ink); }
+/* 06 · LES SEMAINES QUI SUIVENT. Sept par trois, un seul plein :
+   « ca continue » se dit par la grille, pas par une phrase de plus. */
+.vis-suite { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.3em; align-items: center; }
+/* 1,15 em rendait des carres de 11 px : a cette taille le seul carre
+   plein ne se distinguait plus des vingt autres, et la grille se
+   lisait comme une salissure. 1,7 em la rend a 16 px. */
+.vis-semaines { display: grid; grid-template-columns: repeat(7, 1.7em); gap: 0.45em; }
+.vis-semaines i { height: 1.7em; }
+.vis-note { font-family: var(--font-data); color: var(--ink-muted); line-height: 1.5; }
+.vis-grille i.vis-plein { background: var(--ink); border-color: var(--ink); }
+/* 05 · LA PAGE EN LIGNE. */
 .vis-page { display: grid; gap: 0.5em; padding: 0.8em; border: var(--rule-w) solid var(--rule); }
 .vis-h { display: block; height: 1.1em; background: var(--ink); }
 .vis-p { display: block; height: 0.4em; background: var(--rule-strong); }
 .vis-p--court { width: 62%; }
+@media (min-width: 48em) {
+.parc-bar { grid-template-columns: auto minmax(0, 1fr) auto; }
+.parc-bar .parc-reste { grid-column: auto; justify-self: end; text-align: right; }
+/* Le retrait du corps passe a 1.5 rem ici (bloc 26) : l'embranchement
+     s'allonge d'autant pour continuer de toucher le titre. */
+.parc .parc-branche { width: 2.5rem; }
+.parc .parc-corps,
+  .parc .parc-etape:nth-child(even) .parc-corps {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--s-6);
+    /* Le composant est cale EN HAUT sur le titre : c'est l'arete du
+       haut qui aligne les six, pas leur milieu. */
+    align-items: start;
+  }
+}
+@media (min-width: 90em) {
+.parc .parc-corps,
+  .parc .parc-etape:nth-child(even) .parc-corps {
+    grid-template-columns: minmax(0, 1fr) 25rem;
+  }
+}
 /* == 21. REFERENCE - le bloc sombre, dans LES DEUX themes == */
 /* LE DEFAUT CORRIGE. Le bloc etait en `--surface-inverse`,  D-236 */
 .referral {
@@ -4474,17 +4602,25 @@ html.js .derail-row,
 /* Alternance : un projet sur deux inverse ses colonnes. */
 /* LES QUATRE CHANTIERS NE SE RANGENT PLUS EN GRILLE : ils  D-249 */
 .sector-group { grid-template-columns: 15rem 1fr; gap: var(--s-6); }
-/* LE CHEMIN SERPENTE. Le retrait de la station alterne — nul,  D-250 */
+/* LE CHEMIN NE SERPENTE PLUS.  D-250, retire D-641
+     Le retrait croissant `--r` et l'inversion des colonnes une etape
+     sur deux etaient calibres pour QUATRE etapes ; a six, un titre sur
+     deux changeait de colonne et la liste cessait de se balayer. Le
+     bloc 19 les avait NEUTRALISES — `--r: 0` plus quatre selecteurs a
+     specificite superieure — ce qui laissait ici des regles mortes
+     qu'un lecteur croyait vivantes. Un contournement survit toujours
+     au correctif (piege 46). Comme `--r` valait 0, leur retrait est
+     une identite : `calc(var(--s-5) + 0 * var(--s-8))` vaut
+     `var(--s-5)`, et `calc(1rem + 0)` vaut `1rem`. Rien n'est peint
+     autrement. */
 .parc-etape { grid-template-columns: 2.75rem minmax(0, 1fr); }
 .parc-corps {
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
     gap: var(--s-7);
     align-items: center;
-    padding-left: calc(var(--s-5) + var(--r) * var(--s-8));
+    padding-left: var(--s-5);
   }
-.parc-etape:nth-child(even) .parc-corps { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
-.parc-etape:nth-child(even) .parc-vis { order: -1; }
-.parc-branche { width: calc(1rem + var(--r) * var(--s-8)); }
+.parc-branche { width: 1rem; }
 /* ECHELLE REDUITE. Les quatre colonnes tenaient sur 18 rem de  D-251 */
 /* TROIS BORDS DURS VERTICAUX, ET RIEN NE FLOTTE.  D-638
      Le libelle est cadre a DROITE contre l'origine des pistes : c'est
@@ -4576,7 +4712,7 @@ html.js .derail-row,
 .roi-panel { grid-column: 8 / span 5; }
 /* LE VERDICT NE SE MET PLUS SUR DEUX COLONNES.  D-637
      Il tenait la pleine largeur de la page : deux cellules de 550 px
-     y logeaient « 39 100 $ » a 64 px sans effort. Descendu dans le
+     y logeaient le montant annuel a 64 px sans effort. Descendu dans le
      panneau, chaque cellule ne fait plus que 200 px — le montant
      debordait, le « $ » passait a la ligne et sortait du cadre noir.
      Vu a l'image, jamais par une sonde : le DOM etait juste, le

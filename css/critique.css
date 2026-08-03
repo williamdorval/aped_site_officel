@@ -262,7 +262,10 @@ html.sas-ok .sas--calque .sas-volet {
 #visite { contain-intrinsic-size: auto 1256px; }
 #calculateur { contain-intrinsic-size: auto 1711px; }
 #comparatif { contain-intrinsic-size: auto 1125px; }
-#processus { contain-intrinsic-size: auto 1602px; }
+/* 1602 -> 1183 : le parcours est passe de quatre a six etapes SANS
+   grandir (releve 2026-08-02 a 1440x900 et a 1920x1080, identiques).
+   Laisser l'ancienne valeur, c'est le defaut que D-580 a repare. */
+#processus { contain-intrinsic-size: auto 1183px; }
 #apropos { contain-intrinsic-size: auto 1108px; }
 #reference { contain-intrinsic-size: auto 1165px; }
 #faq { contain-intrinsic-size: auto 913px; }
@@ -1305,6 +1308,24 @@ html.entree-saut .hero-fiche .fiche-rule,
    d'oeil. Rien n'a ete retire de plus — ce sont les respirations qui
    passent d'un cran, la ou elles ne separaient plus rien. */
 #comparatif > .band { padding-block: var(--s-7); }
+/* == 19. PROCESSUS - le parcours d'atelier ==  D-230 */
+/* SIX STATIONS, PAS QUATRE.  Le public est un patron de PME qui ne
+   lit pas : un titre, UNE ligne, un livrable, un composant. La
+   progression doit se SENTIR sans lecture, donc elle est portee par
+   la geometrie — un rail continu, six noeuds au meme pas — et jamais
+   par la longueur des paragraphes. Les deux etapes qui arrivent sont
+   payees par les paragraphes qui sautent : la section ne grandit pas.
+
+   L'ACCENT NE TOMBE QU'A UN SEUL ENDROIT DE LA SECTION : le nodule de
+   l'etape en cours. Toutes les autres marques de minium de ce bloc
+   (compteur, pastille du livrable, sortie des composants, derniere
+   station) sont passees a l'encre. Quatorze taches de la meme couleur
+   qui disent quatorze choses ne disent plus rien ; une seule tire
+   l'oeil a l'endroit qui repond a « ou j'en suis ». */
+/* La bande respire moins par le haut que la valeur commune : deux
+   stations de plus, et la section ne doit PAS grandir. Meme geste
+   que `#calculateur > .band`. */
+#processus > .band-loose { padding-top: var(--s-8); }
 .fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
 /* --- 768 px : compositions asymetriques --- */
 @media (min-width: 48em) {

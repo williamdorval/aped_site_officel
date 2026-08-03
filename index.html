@@ -2430,30 +2430,36 @@
         </div>
       </div>
     <div class="wrap band-loose">
-      <div class="head" style="margin-top: var(--s-6);">
+      <div class="head">
         <h2>Comment ça se passe.</h2>
-        <p>Quatre étapes, de l’appel à la mise en ligne. Vous approuvez chacune avant qu’on passe à la suivante.</p>
+        <p>Six étapes, de l’appel jusqu’après la mise en ligne.</p>
       </div>
 
       <!-- N1 · ORIENTATION. Le compteur vit en tête du parcours et
            suit le défilement. Sans script il affiche l'étape 01,
            ce qui reste vrai : c'est là qu'on commence. -->
       <div class="parc-bar">
-        <p class="parc-compte"><b class="num" id="parcNum">01</b><span class="num">/ 04</span></p>
+        <p class="parc-compte"><b class="num" id="parcNum">01</b><span class="num">/ 06</span></p>
         <p class="parc-nom" id="parcNom">On se parle</p>
-        <p class="parc-reste" id="parcReste">3 étapes après celle-ci</p>
+        <p class="parc-reste" id="parcReste">5 étapes après celle-ci</p>
       </div>
 
+      <!-- SIX STATIONS SUR UN SEUL RAIL.  Un titre, UNE ligne, un
+           livrable, un composant. Le patron de PME ne lit pas : la
+           progression se sent par la géométrie — un filet continu du
+           centre du nodule 01 au centre du nodule 06 — et pas par la
+           longueur des paragraphes. Deux étapes de plus se paient
+           avec les paragraphes qui sautent. -->
       <ol class="parc" id="parc">
 
-        <li class="parc-etape" data-parc="On se parle" style="--r:0">
+        <li class="parc-etape" data-parc="On se parle">
           <i class="parc-fil" aria-hidden="true"><b></b></i>
           <span class="parc-nodule num" aria-hidden="true">01</span>
           <i class="parc-branche" aria-hidden="true"></i>
           <div class="parc-corps">
             <div class="parc-txt">
               <h3>On se parle</h3>
-              <p>Trente minutes au téléphone. Votre entreprise, votre clientèle, et ce que le projet doit vraiment régler. On repart avec une proposition écrite, pas avec une intention.</p>
+              <p>Trente minutes au téléphone. Un plan, pas une intention.</p>
               <p class="parc-livre"><i></i>Ce que vous recevez <b>une proposition écrite, sans engagement</b></p>
             </div>
 
@@ -2462,9 +2468,7 @@
               <div class="vis-tete"><b>Appel · 30 min</b><em>Notes</em></div>
               <div class="vis-corps">
                 <p class="vis-l"><em>Entreprise</em><i></i></p>
-                <p class="vis-l"><em>Clientèle</em><i></i></p>
                 <p class="vis-l"><em>Ce qui bloque</em><i></i></p>
-                <p class="vis-l"><em>Échéance</em><i></i></p>
                 <!-- C6 · LES 12 H SONT LE DELAI DE REPONSE, PAS CELUI  D-063 -->
                 <p class="vis-sortie"><b>Réponse</b><s>12 h</s></p>
               </div>
@@ -2472,67 +2476,101 @@
           </div>
         </li>
 
-        <li class="parc-etape" data-parc="On dessine" style="--r:1">
+        <li class="parc-etape" data-parc="On signe">
           <i class="parc-fil" aria-hidden="true"><b></b></i>
           <span class="parc-nodule num" aria-hidden="true">02</span>
           <i class="parc-branche" aria-hidden="true"></i>
           <div class="parc-corps">
             <div class="parc-txt">
-              <h3>On dessine</h3>
-              <p>Des maquettes que vous approuvez avant qu’une ligne de code existe. Vous voyez à quoi ça va ressembler, sur écran et sur téléphone, et vous demandez les changements pendant qu’ils coûtent une minute.</p>
-              <p class="parc-livre"><i></i>Ce que vous recevez <b>les maquettes, écran et téléphone</b></p>
+              <h3>On signe</h3>
+              <p>Le chiffre dit à l’appel est celui du contrat.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>un contrat, et une date de mise en ligne</b></p>
             </div>
 
-            <!-- La maquette s'assemble en limaille : les blocs  D-064 -->
-            <figure class="parc-vis vis--maq" aria-hidden="true">
-              <div class="vis-tete"><b>Maquette · v3</b><em>Approuvée</em></div>
-              <div class="vis-corps vis-grille">
-                <i style="--d:0"></i><i style="--d:1"></i><i style="--d:2"></i>
-                <i style="--d:3"></i><i style="--d:4"></i><i style="--d:5"></i>
-                <i style="--d:6"></i><i style="--d:7"></i>
+            <!-- Le contrat : quatre filets, et le cartouche SIGNÉ à
+                 cheval sur le bord. C'est le débord qui dit « apposé ».
+                 Les filets sont des `.vis-l` sans libellé, donc déjà
+                 pris par le balayage V1 de `motion.js`. -->
+            <figure class="parc-vis vis--signe" aria-hidden="true">
+              <div class="vis-tete"><b>Contrat</b><em>Date de mise en ligne</em></div>
+              <div class="vis-corps">
+                <div class="vis-doc">
+                  <p class="vis-l"><i></i></p>
+                  <p class="vis-l"><i></i></p>
+                  <p class="vis-l"><i></i></p>
+                  <p class="vis-l vis-l--40"><i></i></p>
+                  <b class="vis-sceau">SIGNÉ</b>
+                </div>
               </div>
             </figure>
           </div>
         </li>
 
-        <li class="parc-etape" data-parc="On code" style="--r:2">
+        <li class="parc-etape" data-parc="On code">
           <i class="parc-fil" aria-hidden="true"><b></b></i>
           <span class="parc-nodule num" aria-hidden="true">03</span>
           <i class="parc-branche" aria-hidden="true"></i>
           <div class="parc-corps">
             <div class="parc-txt">
               <h3>On code</h3>
-              <p>Vous voyez l’avancement en continu, sur une adresse à vous. Aucune boîte noire, aucune surprise le jour de la livraison, et le code s’écrit ici, pas à l’autre bout du monde.</p>
-              <p class="parc-livre"><i></i>Ce que vous recevez <b>un lien qui montre l’avancement, chaque jour</b></p>
+              <p>Le code s’écrit ici, pas à l’autre bout du monde.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>les maquettes approuvées avant le code</b></p>
             </div>
 
             <figure class="parc-vis vis--code" aria-hidden="true">
               <div class="vis-tete"><b>Chantier · en cours</b><em>Aujourd’hui</em></div>
               <div class="vis-corps">
                 <div class="vis-code">
-                  <p><em>01</em><span class="c-k">section</span> <span class="c-n">accueil</span></p>
                   <!-- D5 · « grille 12 colonnes » est une notion de  D-065 -->
-                  <p><em>02</em><span class="c-k">galerie</span> <span class="c-n">photos intégrées</span></p>
-                  <p><em>03</em><span class="c-k">panier</span> <span class="c-a">branché</span></p>
-                  <p><em>04</em><span class="c-k">paiement</span> <span class="c-a">testé</span></p>
+                  <p><em>01</em><span class="c-k">accueil</span> <span class="c-a">fait</span></p>
+                  <p><em>02</em><span class="c-k">galerie</span> <span class="c-a">fait</span></p>
+                  <!-- D6 · « Tests passés — 24 / 24 » cumulait deux  D-066 -->
+                  <p><em>03</em><span class="c-k">paiement</span> <span class="c-n">en cours</span></p>
+                  <p><em>04</em><span class="c-k">essais</span> <span class="c-n">à venir</span></p>
                 </div>
-                <!-- D6 · « Tests passés — 24 / 24 » cumulait deux  D-066 -->
-                <p class="vis-sortie"><b>Vérifications</b><s>faites</s></p>
               </div>
             </figure>
           </div>
         </li>
 
-        <li class="parc-etape" data-parc="On met en ligne" style="--r:3">
-          <i class="parc-fil parc-fil--fin" aria-hidden="true"><b></b></i>
-          <span class="parc-nodule parc-nodule--fin num" aria-hidden="true">04</span>
+        <li class="parc-etape" data-parc="Vous suivez">
+          <i class="parc-fil" aria-hidden="true"><b></b></i>
+          <span class="parc-nodule num" aria-hidden="true">04</span>
+          <i class="parc-branche" aria-hidden="true"></i>
+          <div class="parc-corps">
+            <div class="parc-txt">
+              <h3>Vous suivez</h3>
+              <p>Une adresse à vous, l’avancement visible chaque jour.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>un lien qui montre où ça en est</b></p>
+            </div>
+
+            <!-- La barre à crans. Trois pleins, le quatrième À MOITIÉ,
+                 deux vides : c'est le seul des six composants qui soit
+                 lisible à mi-course. -->
+            <figure class="parc-vis vis--crans" aria-hidden="true">
+              <div class="vis-tete"><b>Suivi du chantier</b><em>Accès privé</em></div>
+              <div class="vis-corps">
+                <p class="vis-date">Mise à jour · vendredi</p>
+                <div class="vis-grille vis-crans">
+                  <i class="vis-plein"></i><i class="vis-plein"></i><i class="vis-plein"></i>
+                  <i class="vis-demi"></i><i></i><i></i>
+                </div>
+                <p class="vis-sortie"><b>Accès</b><s>à vous</s></p>
+              </div>
+            </figure>
+          </div>
+        </li>
+
+        <li class="parc-etape" data-parc="On met en ligne">
+          <i class="parc-fil" aria-hidden="true"><b></b></i>
+          <span class="parc-nodule num" aria-hidden="true">05</span>
           <i class="parc-branche" aria-hidden="true"></i>
           <div class="parc-corps">
             <div class="parc-txt">
               <h3>On met en ligne</h3>
               <!-- « une heure de formation » retire le 2026-07-29 :  D-067 -->
-              <p>Mise en ligne, remise de tous les accès, et on répond encore après la facture. Le code, l’hébergement et l’adresse web sont à vous : un autre développeur peut reprendre demain matin.</p>
-              <p class="parc-livre"><i></i>Ce que vous recevez <b>les clés, le code, et une réponse en 12 h</b></p>
+              <p>Les clés, le code et l’hébergement sont à vous.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>tous les accès, et le code source</b></p>
             </div>
 
             <figure class="parc-vis vis--live" aria-hidden="true">
@@ -2544,6 +2582,40 @@
                   <span class="vis-p vis-p--court"></span>
                 </div>
                 <p class="vis-sortie"><b>Propriétaire</b><s>vous</s></p>
+              </div>
+            </figure>
+          </div>
+        </li>
+
+        <li class="parc-etape" data-parc="On s’occupe de la suite">
+          <i class="parc-fil" aria-hidden="true"><b></b></i>
+          <span class="parc-nodule num" aria-hidden="true">06</span>
+          <i class="parc-branche" aria-hidden="true"></i>
+          <div class="parc-corps">
+            <div class="parc-txt">
+              <h3>On s’occupe de la suite</h3>
+              <!-- Les 12 h sont le delai de reponse, et il est deja
+                   affirme au socle de l'accueil, mot pour mot. Les
+                   mises a jour, elles, sont au plan mensuel — la FAQ
+                   le dit : « Ce n'est pas obligatoire ». -->
+              <p>Réponse en 12 h, jours ouvrables.</p>
+              <p class="parc-livre"><i></i>Ce que vous recevez <b>les mises à jour, sur un plan mensuel</b></p>
+            </div>
+
+            <!-- Sept par trois, un seul plein : « ça continue » se dit
+                 par la grille, pas par une phrase de plus. -->
+            <figure class="parc-vis vis--suite" aria-hidden="true">
+              <div class="vis-tete"><b>Après la mise en ligne</b><em>Ça continue</em></div>
+              <div class="vis-corps">
+                <div class="vis-suite">
+                  <div class="vis-grille vis-semaines">
+                    <i></i><i></i><i></i><i></i><i></i><i class="vis-plein"></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                  <p class="vis-note">Un courriel,<br>une réponse.</p>
+                </div>
+                <p class="vis-sortie"><b>Plan mensuel</b><s>au choix</s></p>
               </div>
             </figure>
           </div>
