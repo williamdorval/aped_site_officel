@@ -56,15 +56,15 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | 01 | **Accueil** | `#top` | 223-281 | 59 | 1582-1845 · 1066-1341 | `main.js` 113-218 | — |
 | 02 | **Services** | `#services` | 282-900 | 619 | 1846-2494 | `main.js` 219-618 | — |
 | 03 | **Réalisations** | `#realisations` | 901-1743 | 843 | 2495-4316 | `main.js` 619-865 | — |
-| 04 | **Secteurs** | `#demos` | 1744-1949 | 206 | 4317-4470 | `main.js` 2314-2508 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
-| 05 | **Visite 360** | `#visite` | 1950-2029 | 80 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2030-2171 | 142 | 4471-4637 | `main.js` 2147-2313 | — |
-| 07 | **Comparatif** | `#comparatif` | 2172-2288 | 117 | 4638-4764 | — | — |
-| 08 | **Processus** | `#processus` | 2289-2517 | 229 | 4765-5107 | `main.js` 866-906 | — |
-| 09 | **Référence** | `#reference` | 2518-2591 | 74 | 5108-5216 | — | — |
-| 10 | **Questions** | `#faq` | 2592-2676 | 85 | 5217-5266 | `langue.js` 613-641 | — |
-| 11 | **Contact** | `#contact` | 2677-2860 | 184 | 5267-5465 | `main.js` 1469-1514 · `main.js` 1515-1580 · `main.js` 1581-1677 | — |
-| — | **Pied de page** | `#footer` | 2861-2911 | 51 | 5466-5526 | `main.js` 2796-2816 | — |
+| 04 | **Secteurs** | `#demos` | 1744-1956 | 213 | 4317-4470 | `main.js` 2314-2508 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 05 | **Visite 360** | `#visite` | 1957-2036 | 80 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
+| 06 | **Calculateur** | `#calculateur` | 2037-2178 | 142 | 4471-4637 | `main.js` 2147-2313 | — |
+| 07 | **Comparatif** | `#comparatif` | 2179-2295 | 117 | 4638-4764 | — | — |
+| 08 | **Processus** | `#processus` | 2296-2524 | 229 | 4765-5107 | `main.js` 866-906 | — |
+| 09 | **Référence** | `#reference` | 2525-2598 | 74 | 5108-5216 | — | — |
+| 10 | **Questions** | `#faq` | 2599-2683 | 85 | 5217-5266 | `langue.js` 613-641 | — |
+| 11 | **Contact** | `#contact` | 2684-2873 | 190 | 5267-5465 | `main.js` 1469-1514 · `main.js` 1515-1580 · `main.js` 1581-1677 | — |
+| — | **Pied de page** | `#footer` | 2874-2924 | 51 | 5466-5526 | `main.js` 2796-2816 | — |
 
 <!-- PLAGES:FIN -->
 
