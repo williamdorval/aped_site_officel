@@ -5183,6 +5183,15 @@ html:not(.js) .ba-trait { display: none; }
   word-spacing: 0.10em;
   color: var(--ref-accent);
   font-variant-numeric: tabular-nums;
+  /* LE MONTANT TIENT SA PROPRE LIGNE, ET C'EST UN CORRECTIF DE CLS.
+     Mesure du 2026-08-03 : ce bloc valait a lui seul 0,00128 de
+     decalage cumule — le plus gros de la page. En police de secours
+     le nombre n'a pas la meme chasse qu'en Archivo ; le bloc se
+     remesurait a l'echange et passait de 501x218 a 530x188. Une
+     ligne bloc insecable a une hauteur qui ne depend plus de la
+     police disponible. */
+  display: block;
+  white-space: nowrap;
 }
 .referral-max > span:last-child { font-size: var(--fs-7); color: var(--ref-mute); max-width: 30ch; }
 
