@@ -21,8 +21,36 @@ desktop.ini
 .idea/
 *.swp
 
-# Sorties de mesure dans tools/ — tout ce qui commence par un souligne
-tools/_*
+# Sorties de mesure dans tools/
+#
+# CETTE REGLE ETAIT `tools/_*`, ET ELLE A EMPORTE DU CODE.
+# `tools/_adresse.mjs` — que huit outils importent — n'a jamais ete
+# commite a cause d'elle. Sur un depot clone, les huit s'arretaient
+# sur « Cannot find module ». Un outil de mesure qui ne demarre pas
+# ne rend pas un echec, il rend un silence, et un silence se lit
+# comme « rien a signaler ».
+# On nomme donc les DOSSIERS de sortie un par un, au lieu de jeter
+# un filet sur tout ce qui commence par un souligne.
+tools/_captures/
+tools/_sondes/
+tools/_sorties/
 
 # Sorties du MCP Playwright
 .playwright-mcp/
+
+# ============================================================
+# LES SECRETS ET CE QUI EN DECOULE
+#
+# `.env.local` porte l'adresse du deploiement Apps Script.
+# `js/config.local.js` en est fabrique par `tools/config-envoi.mjs`
+# et n'est donc jamais une source : le regenerer suffit.
+#
+# `.env.local.example` EST suivi, lui : c'est le modele, il ne
+# contient aucune valeur reelle, et sans lui personne ne sait
+# quelles cles poser.
+# ============================================================
+.env
+.env.local
+.env.*.local
+!.env.local.example
+js/config.local.js
