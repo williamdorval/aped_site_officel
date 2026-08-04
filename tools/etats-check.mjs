@@ -25,23 +25,37 @@ await page.waitForTimeout(1700);
 let ko = 0;
 const dire = (ok, t) => { console.log((ok ? "  OK   " : "  ECHEC") + "  " + t); if (!ok) ko++; };
 
-/* --- modale : ouverture, focus, fermeture, retour --- */
-await page.click('.nav-cta');
+/* --- modale : ouverture, focus, fermeture, retour ---
+
+   LA CIBLE SE LIT SUR LE BOUTON, ELLE N'EST PLUS ECRITE ICI.
+   Cet outil cliquait `.nav-cta` puis interrogeait `#modal-start`.
+   Le bouton a change de cible — il ouvre `modal-project` — et le
+   test est reste sur l'ancienne. Resultat : « modale ouverte »
+   echouait sur du code intact, ET les quatre assertions suivantes
+   PASSAIENT A VIDE, sur une modale que personne n'avait ouverte.
+   `hidden` valait bien `true` : elle n'avait jamais bouge.
+
+   Un echec visible vaut mieux que quatre succes creux, mais les
+   deux ensemble sont le piege 17 dans sa forme la plus trompeuse.
+   On demande donc au bouton ce qu'il ouvre. Le jour ou il changera
+   encore, l'outil suivra tout seul. */
+const CIBLE = await page.getAttribute(".nav-cta", "data-modal-open");
+await page.click(".nav-cta");
 await page.waitForTimeout(420);
-const ouverte = await page.evaluate(() => {
-  const m = document.querySelector("#modal-start");
+const ouverte = await page.evaluate((id) => {
+  const m = document.getElementById(id);
   const p = m && m.querySelector(".modal-panel");
   return { open: !!m && m.classList.contains("is-open"), clip: p ? getComputedStyle(p).clipPath : "", focus: document.activeElement.tagName };
-});
-dire(ouverte.open, "modale ouverte");
+}, CIBLE);
+dire(ouverte.open, `modale ouverte (${CIBLE})`);
 dire(ouverte.clip === "none" || /inset\(0px\)/.test(ouverte.clip), `panneau entierement degage apres l'ouverture : ${ouverte.clip}`);
 await page.keyboard.press("Escape");
 await page.waitForTimeout(500);
-const refermee = await page.evaluate(() => {
-  const m = document.querySelector("#modal-start");
+const refermee = await page.evaluate((id) => {
+  const m = document.getElementById(id);
   const p = m && m.querySelector(".modal-panel");
   return { hidden: m.hidden, clip: p ? getComputedStyle(p).clipPath : "", focus: (document.activeElement.className || document.activeElement.tagName) };
-});
+}, CIBLE);
 dire(refermee.hidden, "modale refermee et retiree du document");
 dire(refermee.clip === "none" || /inset\(0px\)/.test(refermee.clip), `clip-path de sortie nettoye : ${refermee.clip}`);
 dire(/nav-cta/.test(refermee.focus), `focus rendu au declencheur : ${refermee.focus}`);

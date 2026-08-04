@@ -65,7 +65,8 @@ for (const w of VUES) {
       { sel: ".seuil-num, .entree-cran, .odo, .odo-c", pourquoi: "fenetre d'un compteur a crans : elle tient DEUX valeurs et n'en montre qu'une. Le rognage est le mecanisme, pas un defaut" },
       { sel: ".sas-scene", pourquoi: "la scene d'un sas rogne expres : l'arete de grains du volet depasse son bord pour mordre sur ce qu'il avale (D-571)" },
       { sel: ".ba-vue", pourquoi: "les deux cotes d'une comparaison sont plus hauts que leur cadre PAR CONSTRUCTION : la boucle n'en parcourt qu'une fenetre. Les selecteurs `.ap-*` qui figuraient ici sont partis avec les maquettes redessinees, remplacees par des captures des vrais sites (D-617)" },
-      { sel: ".v11-defile", pourquoi: "le texte defilant de la maquette 2011 est un marquee diegetique : il deborde parce que les sites de 2011 debordaient (A79e)" }
+      { sel: ".v11-defile", pourquoi: "le texte defilant de la maquette 2011 est un marquee diegetique : il deborde parce que les sites de 2011 debordaient (A79e)" },
+      { sel: ".piege", pourquoi: "le piege a robots est SORTI DU CADRE expres (left: -9999px). Il ne peut pas etre `display: none` ni `hidden` : un robot serieux ecarte les deux, et le piege ne prendrait plus rien. Personne ne le voit, ne l'atteint au clavier ni ne l'entend — il n'a donc aucun texte a rendre lisible (D-726)" }
     ];
     const out = [];
     for (const el of document.querySelectorAll("body *")) {
