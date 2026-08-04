@@ -2858,6 +2858,19 @@
           <p>Vous voulez juste nous écrire&nbsp;? C’est ici. On répond en 12&nbsp;h ouvrables.</p>
         </div>
         <form class="form" data-form="contact" novalidate>
+        <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
+             un robot un peu serieux saute ce qui porte `hidden`.
+             Il est sorti du cadre par le style, retire de l'ordre de
+             tabulation et de l'arbre d'accessibilite. Un humain ne
+             peut ni le voir, ni l'atteindre au clavier, ni l'entendre
+             au lecteur d'ecran ; un robot qui remplit tout le
+             remplit. Rempli, `doPost` jette la soumission EN
+             SILENCE — repondre « refuse » apprendrait au robot qu'il
+             a ete vu. -->
+        <div class="piege" aria-hidden="true">
+          <label for="hpContact">Ne remplissez pas ce champ</label>
+          <input id="hpContact" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
           <div class="form-row">
             <div class="field">
               <label for="ctName">Votre nom</label>
@@ -3010,6 +3023,19 @@
            « Coordonnees popup ». Les deux sont REQUIS — c'est le but
            du bloc. L'envoi passera par le point unique de `main.js`. -->
       <form class="cadeau-form" id="cadeauForm" novalidate>
+        <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
+             un robot un peu serieux saute ce qui porte `hidden`.
+             Il est sorti du cadre par le style, retire de l'ordre de
+             tabulation et de l'arbre d'accessibilite. Un humain ne
+             peut ni le voir, ni l'atteindre au clavier, ni l'entendre
+             au lecteur d'ecran ; un robot qui remplit tout le
+             remplit. Rempli, `doPost` jette la soumission EN
+             SILENCE — repondre « refuse » apprendrait au robot qu'il
+             a ete vu. -->
+        <div class="piege" aria-hidden="true">
+          <label for="hpCadeau">Ne remplissez pas ce champ</label>
+          <input id="hpCadeau" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
         <div class="field">
           <label for="cadeauEmail">Votre courriel</label>
           <input id="cadeauEmail" name="email" type="email" inputmode="email" spellcheck="false"
@@ -3111,7 +3137,7 @@
     </div>
 
     <div class="step" data-bstep="1">
-      <p class="modal-sub" style="margin-top:0">La date, puis l’heure. Rencontre de 30 minutes sur Google Meet.</p>
+      <p class="modal-sub" style="margin-top:0">La date, puis l’heure. Trente minutes, par téléphone ou sur Google Meet — vous choisissez à l’étape suivante.</p>
       <div class="booking">
         <div>
           <div class="cal-head">
@@ -3135,9 +3161,39 @@
     </div>
 
     <div class="step" data-bstep="2" hidden>
-      <p class="modal-sub" style="margin-top:0">Vos coordonnées, et l’invitation Google Meet part.</p>
+      <p class="modal-sub" style="margin-top:0">Vos coordonnées, et la confirmation part.</p>
       <p class="recap"><span id="bookingRecap"></span><button type="button" class="link-btn" id="bookingChange">Changer</button></p>
       <form class="form" data-form="booking" novalidate>
+        <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
+             un robot un peu serieux saute ce qui porte `hidden`.
+             Il est sorti du cadre par le style, retire de l'ordre de
+             tabulation et de l'arbre d'accessibilite. Un humain ne
+             peut ni le voir, ni l'atteindre au clavier, ni l'entendre
+             au lecteur d'ecran ; un robot qui remplit tout le
+             remplit. Rempli, `doPost` jette la soumission EN
+             SILENCE — repondre « refuse » apprendrait au robot qu'il
+             a ete vu. -->
+        <div class="piege" aria-hidden="true">
+          <label for="hpBooking">Ne remplissez pas ce champ</label>
+          <input id="hpBooking" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <!-- LE MODE SE DEMANDE, IL NE SE SUPPOSE PAS.
+             Le site promettait Google Meet a tout le monde. Une
+             bonne part des PME qu'on sert prefere le telephone, et
+             leur envoyer un lien de visioconference qu'elles
+             n'ouvriront pas, c'est un rendez-vous manque.
+             Meme motif que « Avez-vous deja un site web ? » : deux
+             boutons, un champ cache. Rien de nouveau a apprendre. -->
+        <div class="field">
+          <p class="field-legend" id="bkModeLegend">Comment préférez-vous qu’on se parle ?</p>
+          <div class="choices" data-choice="mode" role="group" aria-labelledby="bkModeLegend">
+            <button type="button" data-value="Google Meet">Google Meet</button>
+            <button type="button" data-value="Appel téléphonique">Téléphone</button>
+          </div>
+          <input type="hidden" name="mode" required />
+          <span class="field-error">Choisissez le mode de l’appel.</span>
+          <p class="field-note" id="bkModeNote"></p>
+        </div>
         <div class="form-row">
           <div class="field">
             <label for="bkName">Votre nom</label>
@@ -3175,8 +3231,15 @@
 
     <div class="step success" data-bstep="3" hidden>
       <span class="num">01 / 01</span>
-      <h4>Demande reçue.</h4>
-      <p class="modal-sub" style="margin-top:0">On confirme la plage par courriel avec l’invitation Google Meet, en moins de 12 h.</p>
+      <h4>C’est réservé.</h4>
+      <!-- LA PROMESSE A CHANGE PARCE QUE LE FAIT A CHANGE.
+           « On confirme en moins de 12 h » decrivait un formulaire
+           qui n'ecrivait nulle part : quelqu'un devait lire et
+           repondre a la main. La plage est maintenant tenue au
+           calendrier au moment ou ce panneau parait, et la
+           confirmation est deja partie. Laisser l'ancienne phrase
+           ferait attendre douze heures un courriel deja recu. -->
+      <p class="modal-sub" style="margin-top:0">La plage est retenue et la confirmation vient de partir vers votre courriel.</p>
       <button class="btn btn--ghost" type="button" data-modal-close>
         Fermer
         <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
@@ -3198,6 +3261,19 @@
     <div class="progress" role="progressbar" aria-label="Progression du formulaire" aria-valuemin="0" aria-valuemax="100" aria-valuenow="14"><i id="projectBar"></i></div>
 
     <form id="projectWizard" novalidate>
+        <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
+             un robot un peu serieux saute ce qui porte `hidden`.
+             Il est sorti du cadre par le style, retire de l'ordre de
+             tabulation et de l'arbre d'accessibilite. Un humain ne
+             peut ni le voir, ni l'atteindre au clavier, ni l'entendre
+             au lecteur d'ecran ; un robot qui remplit tout le
+             remplit. Rempli, `doPost` jette la soumission EN
+             SILENCE — repondre « refuse » apprendrait au robot qu'il
+             a ete vu. -->
+        <div class="piege" aria-hidden="true">
+          <label for="hpProject">Ne remplissez pas ce champ</label>
+          <input id="hpProject" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
 
       <div class="step" data-pstep="1">
         <p class="step-q">Qui êtes-vous ?</p>
@@ -3400,6 +3476,19 @@
       </button>
     </div>
     <form class="form" data-form="urgent" novalidate>
+        <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
+             un robot un peu serieux saute ce qui porte `hidden`.
+             Il est sorti du cadre par le style, retire de l'ordre de
+             tabulation et de l'arbre d'accessibilite. Un humain ne
+             peut ni le voir, ni l'atteindre au clavier, ni l'entendre
+             au lecteur d'ecran ; un robot qui remplit tout le
+             remplit. Rempli, `doPost` jette la soumission EN
+             SILENCE — repondre « refuse » apprendrait au robot qu'il
+             a ete vu. -->
+        <div class="piege" aria-hidden="true">
+          <label for="hpUrgent">Ne remplissez pas ce champ</label>
+          <input id="hpUrgent" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
       <div class="form-row">
         <div class="field">
           <label for="urName">Votre nom</label>
@@ -3445,6 +3534,19 @@
       </button>
     </div>
     <form class="form" data-form="refer" novalidate>
+        <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
+             un robot un peu serieux saute ce qui porte `hidden`.
+             Il est sorti du cadre par le style, retire de l'ordre de
+             tabulation et de l'arbre d'accessibilite. Un humain ne
+             peut ni le voir, ni l'atteindre au clavier, ni l'entendre
+             au lecteur d'ecran ; un robot qui remplit tout le
+             remplit. Rempli, `doPost` jette la soumission EN
+             SILENCE — repondre « refuse » apprendrait au robot qu'il
+             a ete vu. -->
+        <div class="piege" aria-hidden="true">
+          <label for="hpRefer">Ne remplissez pas ce champ</label>
+          <input id="hpRefer" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
 
       <p class="form-legend">Vous</p>
       <div class="form-row">
@@ -3614,6 +3716,19 @@
       <div class="step" data-step="7" hidden>
         <p class="step-q">Où envoyer votre estimation ?</p>
         <form class="form" data-form="estimate" novalidate>
+        <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
+             un robot un peu serieux saute ce qui porte `hidden`.
+             Il est sorti du cadre par le style, retire de l'ordre de
+             tabulation et de l'arbre d'accessibilite. Un humain ne
+             peut ni le voir, ni l'atteindre au clavier, ni l'entendre
+             au lecteur d'ecran ; un robot qui remplit tout le
+             remplit. Rempli, `doPost` jette la soumission EN
+             SILENCE — repondre « refuse » apprendrait au robot qu'il
+             a ete vu. -->
+        <div class="piege" aria-hidden="true">
+          <label for="hpEstimate">Ne remplissez pas ce champ</label>
+          <input id="hpEstimate" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
           <div class="form-row">
             <div class="field">
               <label for="esName">Votre nom</label>
@@ -3664,8 +3779,18 @@
   (function () {
     /* DEUX VAGUES, ET L'ORDRE EST L'ARGUMENT.  D-089 */
     var vagues = [
+      /* `config.local.js` VIENT EN PREMIER, ET IL PEUT MANQUER.  D-720
+         Il ne contient qu'une ligne — l'adresse du service qui
+         recoit les formulaires — et il n'est PAS suivi par git :
+         `node tools/config-envoi.mjs` le fabrique a partir de
+         `.env.local`. Absent, son `onerror` est compte comme un
+         chargement (voir `poserVague`), la vague continue, et
+         `FORM_ENDPOINT` reste vide : les formulaires echouent
+         franchement, comme avant qu'on branche quoi que ce soit.
+         `async = false` garantit qu'il s'execute AVANT `main.js`,
+         qui le lit. */
       /* `trame.js` — le moteur de passage de la phase 10 — est en  D-090 */
-      ["js/limaille.js", "js/trame.js", "js/main.js", "js/hero.js"],
+      ["js/config.local.js", "js/limaille.js", "js/trame.js", "js/main.js", "js/hero.js"],
       /* `langue.js` — le langage de mouvement de la phase 8 — arrive  D-091 */
       ["js/vendor/gsap.min.js", "js/vendor/ScrollTrigger.min.js",
        "js/motion.js", "js/langue.js", "js/pointe.js", "js/tour360.js"]

@@ -798,6 +798,42 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 }
 .field.is-invalid .field-error { display: block; }
 
+/* La note qui suit un choix : elle dit ce que le bouton retenu   D-725
+   entraine. Sous le mode de la reservation, elle evite de promettre
+   un lien Meet a quelqu'un qu'on va appeler. Vide au repos, donc
+   elle ne reserve aucune hauteur tant que rien n'est choisi. */
+.field-note {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.field-note:empty { display: none; }
+
+/* LE PIEGE A ROBOTS.  D-726
+   PAS `display: none`, PAS `hidden`, PAS `visibility: hidden` : les
+   trois sont la premiere chose qu'un robot ecarte, et le piege ne
+   prendrait plus rien. On le sort du cadre.
+
+   `position: absolute` retire du flux — donc aucune hauteur, aucun
+   decalage de mise en page. `left: -9999px` le met hors champ sans
+   le retirer du document. `clip-path: inset(50%)` couvre le cas du
+   navigateur qui ramenerait le champ a l'ecran en lui donnant le
+   focus. `tabindex="-1"` et `aria-hidden` (poses dans le HTML)
+   ferment le clavier et le lecteur d'ecran.
+
+   Ce champ ne porte AUCUN texte que quelqu'un doive lire : il est
+   donc hors de portee des mesures de contraste, et c'est voulu. */
+.piege {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
 .form { display: grid; gap: var(--s-5); }
 .form-row { display: grid; gap: var(--s-5); }
 .form-legend {

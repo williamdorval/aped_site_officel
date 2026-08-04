@@ -11,7 +11,30 @@
      l'adresse du service d'envoi, et surtout par le `mailto:` de
      repli qui s'affichait sous CHAQUE formulaire en echec.
      Le POURQUOI est dans `decisions/js-main.md`. */
-  var FORM_ENDPOINT = "";
+
+  /* LE POINT DE SORTIE NE VIT PLUS DANS CE FICHIER.  D-720
+     Il vient de `js/config.local.js`, qui n'est PAS suivi par git :
+     `node tools/config-envoi.mjs` le fabrique a partir de
+     `.env.local`. Trois raisons.
+
+     1. Le depot est public. Une adresse de deploiement ecrite ici
+        serait publiee, et n'importe qui pourrait arroser le
+        classeur de l'agence.
+     2. L'adresse change a chaque NOUVEAU deploiement. La sortir du
+        code evite de recommiter le site pour un changement qui
+        n'est pas du code.
+     3. Absent, le fichier ne casse rien : l'injecteur avale son
+        `onerror`, `FORM_ENDPOINT` reste vide, et `sansPoint()` rend
+        l'echec franc qu'on avait deja. Un depot fraichement clone
+        se comporte exactement comme avant ce chantier.
+
+     CE N'EST PAS UN SECRET AU SENS FORT, ET IL NE FAUT PAS SE
+     RACONTER LE CONTRAIRE : sur un site statique, tout ce que le
+     navigateur appelle est lisible dans l'onglet reseau. Ce que la
+     manoeuvre protege, c'est le depot public et l'historique — pas
+     la requete. La vraie defense du service est ailleurs : le
+     honeypot, la validation serveur, et le verrou d'Apps Script. */
+  var FORM_ENDPOINT = (window.APED_ENVOI || "");
 
   var BOOKING = {
     businessDays: [1, 2, 3, 4, 5],
@@ -1554,30 +1577,74 @@
     return Promise.reject(e);
   }
 
-  function sendJson(kind, data) {
+  /* LE TYPE DE CONTENU EST `text/plain`, ET C'EST DELIBERE.  D-721
+     Une Web App Apps Script ne repond pas aux requetes prealables
+     CORS : avec `application/json` le navigateur en envoie une, ne
+     recoit rien, et la requete meurt AVANT de partir. `text/plain`
+     fait une requete « simple », donc sans preliminaire. Le corps
+     reste du JSON — c'est l'en-tete qui ment, pas le contenu, et
+     `doPost` le lit avec `JSON.parse`.
+
+     `mode: "no-cors"` reglerait aussi le probleme et serait un
+     piege : la reponse devient opaque, `res.json()` echoue, et
+     TOUS les formulaires afficheraient un echec meme quand
+     l'enregistrement a reussi. */
+  function poster(payload) {
     if (!FORM_ENDPOINT) return sansPoint();
-    var payload = Object.assign({}, data, {
-      _subject: SUBJECTS[kind] || "Message - site APED",
-      _template: "table",
-      _captcha: "false"
-    });
     return fetch(FORM_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload)
     }).then(lireReponse);
   }
 
-  function sendMultipart(kind, formData) {
+  /* `_form` est ce qui aiguille vers le bon onglet du classeur.
+     `_subject` reste : il sert au sujet de l'avis interne. */
+  function sendJson(kind, data) {
+    return poster(Object.assign({}, data, {
+      _form: kind,
+      _subject: SUBJECTS[kind] || "Message - site APED"
+    }));
+  }
+
+  /* LES PIECES JOINTES VOYAGENT EN BASE64, PAS EN MULTIPART.  D-722
+     `doPost` d'Apps Script recoit `e.postData.contents` comme une
+     CHAINE : il ne sait pas reconstruire les parties binaires d'un
+     `multipart/form-data`. Les fichiers sont donc lus dans le
+     navigateur et encodes dans le meme JSON que le reste ; le
+     script les repose dans un dossier Drive et n'ecrit que leurs
+     liens dans le classeur.
+
+     La lecture peut echouer — fichier retire du disque entre le
+     choix et l'envoi, permission refusee. On ne fait pas echouer
+     la demande pour autant : `envoyerProjet` retombe deja sur un
+     envoi sans pieces, qui vaut infiniment mieux que rien. */
+  function lireFichier(f) {
+    return new Promise(function (resoudre, rejeter) {
+      var lecteur = new FileReader();
+      lecteur.onload = function () {
+        var res = String(lecteur.result || "");
+        var virgule = res.indexOf(",");
+        resoudre({
+          nom: f.name,
+          type: f.type || "application/octet-stream",
+          base64: virgule >= 0 ? res.slice(virgule + 1) : ""
+        });
+      };
+      lecteur.onerror = function () { rejeter(lecteur.error || new Error("lecture")); };
+      lecteur.readAsDataURL(f);
+    });
+  }
+
+  function sendAvecFichiers(kind, data, fichiers) {
     if (!FORM_ENDPOINT) return sansPoint();
-    formData.append("_subject", SUBJECTS[kind] || "Message - site APED");
-    formData.append("_template", "table");
-    formData.append("_captcha", "false");
-    return fetch(FORM_ENDPOINT, {
-      method: "POST",
-      headers: { Accept: "application/json" },
-      body: formData
-    }).then(lireReponse);
+    return Promise.all(fichiers.map(lireFichier)).then(function (pieces) {
+      return poster(Object.assign({}, data, {
+        _form: kind,
+        _subject: SUBJECTS[kind] || "Message - site APED",
+        _fichiers: pieces
+      }));
+    });
   }
 
   /* Le bouton reste actif jusqu'au depart de la requete, puis
@@ -1735,6 +1802,7 @@
 
   var selectedDate = null;
   var selectedSlotLabel = "";
+  var selectedSlotISO = "";
 
   function startOfDay(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
   function minDate() { return startOfDay(new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000)); }
@@ -1855,6 +1923,20 @@
         selectedSlotLabel = selectedDate.toLocaleDateString("fr-CA", {
           weekday: "long", day: "numeric", month: "long", year: "numeric"
         }) + " à " + slotLabel(slot);
+        /* LA PLAGE LISIBLE PAR UNE MACHINE.  D-723
+           `selectedSlotLabel` est une phrase francaise — « lundi 5
+           aout 2026 a 9 h 00 ». Elle est parfaite pour un humain et
+           inutilisable pour poser un evenement au calendrier. On
+           garde la phrase telle quelle (elle est deja la colonne
+           « Plage demandee » et rien ne la renomme) et on AJOUTE
+           l'instant exact a cote.
+           `toISOString()` porte le decalage : une reservation prise
+           depuis un autre fuseau tombe a la bonne heure de Quebec
+           sans qu'on ait a deviner d'ou vient le visiteur. */
+        var p = slot.split(":");
+        var t = new Date(selectedDate);
+        t.setHours(Number(p[0]), Number(p[1]), 0, 0);
+        selectedSlotISO = t.toISOString();
         $("#bookingRecap").textContent = selectedSlotLabel;
         goBStep(2);
         var firstField = $('.step[data-bstep="2"] input', bookingModal);
@@ -1873,6 +1955,7 @@
     calView = premierJourOuvrable();
     selectedDate = null;
     selectedSlotLabel = "";
+    selectedSlotISO = "";
     renderCalendar();
     renderSlots();
     goBStep(1);
@@ -1883,6 +1966,15 @@
       var btn = $("[data-submit]", form);
       if (btn) setLoading(btn, false);
       $$(".field.is-invalid", form).forEach(function (f) { markField(f, true); });
+      /* `form.reset()` vide bien le champ cache du mode, mais il ne
+         releve pas les boutons : ils resteraient allumes sur un
+         choix que le formulaire ne porte plus.  D-725 */
+      $$(".choices button", form).forEach(function (b) {
+        b.classList.remove("is-on");
+        b.setAttribute("aria-pressed", "false");
+      });
+      var note = $("#bkModeNote");
+      if (note) note.textContent = "";
     }
   }
 
@@ -1911,11 +2003,32 @@
       retirerRepli(status);
       var data = serialize(bookingForm);
       data.plage_demandee = selectedSlotLabel;
+      data.plage_iso = selectedSlotISO;
       sendJson("booking", data).then(function () {
         setLoading(btn, false);
         goBStep(3);
-      }).catch(function () {
+      }).catch(function (err) {
         setLoading(btn, false);
+        /* UNE PLAGE DEJA PRISE N'EST PAS UNE PANNE.  D-724
+           Le service refuse la reservation et dit pourquoi. Repondre
+           « l'envoi n'a pas passe » enverrait le visiteur reessayer
+           exactement la meme plage, qui echouera exactement pareil.
+           On lui rend la phrase du service et on le ramene au
+           calendrier, ou il en choisira une autre.
+           Le repli generique n'a rien a faire la : rien n'est en
+           panne, et « copier ce que j'ai ecrit » ne repare pas un
+           conflit d'horaire. */
+        var conflit = err && err.duService && /prise|24 h/i.test(err.message || "");
+        if (conflit) {
+          say(status, err.message, "err");
+          window.setTimeout(function () {
+            goBStep(1);
+            renderCalendar();
+            renderSlots();
+            say(status, "");
+          }, 2600);
+          return;
+        }
         say(status, "L’envoi n’a pas passé. Votre demande de plage n’est pas perdue.", "err");
         poserRepli(status, "booking", data);
       });
@@ -2013,27 +2126,51 @@
     goPStep(1);
   }
 
-  if (projectWizard) {
-    $$(".choices", projectWizard).forEach(function (row) {
-      var key = row.dataset.choice;
-      var hidden = $('input[type="hidden"][name="' + key + '"]', projectWizard);
-      $$("button", row).forEach(function (btn) {
-        btn.setAttribute("aria-pressed", "false");
-        btn.addEventListener("click", function () {
-          $$("button", row).forEach(function (b) {
-            b.classList.remove("is-on");
-            b.setAttribute("aria-pressed", "false");
-          });
-          btn.classList.add("is-on");
-          btn.setAttribute("aria-pressed", "true");
-          hidden.value = btn.dataset.value;
-          markField(hidden.closest(".field"), true);
-          if (key === "site_existant") {
-            $("#prUrlField").hidden = btn.dataset.value !== "Oui";
-          }
+  /* LES CHOIX A DEUX BOUTONS SERVENT MAINTENANT A DEUX ENDROITS.  D-725
+     Ce bloc etait enferme dans `if (projectWizard)` et ne voyait que
+     le formulaire de projet. La reservation a besoin du meme geste
+     — deux boutons, un champ cache, `aria-pressed` — pour le mode
+     de l'appel. On le sort d'un cran plutot que d'ecrire un second
+     controle qui ferait la meme chose avec un autre style : un
+     visiteur qui a compris « Oui / Non » a deja compris
+     « Telephone / Google Meet ».
+     La recherche du champ cache part de la rangee, plus du wizard :
+     c'est ce qui la rend portable. */
+  $$(".choices").forEach(function (row) {
+    var key = row.dataset.choice;
+    var portee = row.closest("form") || doc;
+    var hidden = $('input[type="hidden"][name="' + key + '"]', portee);
+    if (!hidden) return;
+    $$("button", row).forEach(function (btn) {
+      btn.setAttribute("aria-pressed", "false");
+      btn.addEventListener("click", function () {
+        $$("button", row).forEach(function (b) {
+          b.classList.remove("is-on");
+          b.setAttribute("aria-pressed", "false");
         });
+        btn.classList.add("is-on");
+        btn.setAttribute("aria-pressed", "true");
+        hidden.value = btn.dataset.value;
+        markField(hidden.closest(".field"), true);
+        if (key === "site_existant" && $("#prUrlField")) {
+          $("#prUrlField").hidden = btn.dataset.value !== "Oui";
+        }
+        /* Le mode commande ce que le visiteur lit sous les boutons :
+           on ne promet pas un lien Meet a quelqu'un qu'on va
+           appeler. */
+        if (key === "mode") {
+          var note = $("#bkModeNote");
+          if (note) {
+            note.textContent = btn.dataset.value === "Google Meet"
+              ? "L’invitation et le lien Meet partent vers votre courriel et votre calendrier."
+              : "On vous appelle au numéro ci-dessous, à l’heure choisie.";
+          }
+        }
       });
     });
+  });
+
+  if (projectWizard) {
 
     var fileInput = $("#prFiles");
     var dropzone = $(".dropzone", projectWizard);
@@ -2064,13 +2201,12 @@
       say(status, "");
       retirerRepli(status);
 
-      var fd = new FormData();
       var data = serialize(projectWizard);
-      Object.keys(data).forEach(function (k) { fd.append(k, data[k]); });
-      pickedFiles.forEach(function (f, i) { fd.append("fichier_" + (i + 1), f, f.name); });
 
       var done = function () { setLoading(projectNext, false); goPStep(P_TOTAL); };
-      var attempt = pickedFiles.length ? sendMultipart("project", fd) : sendJson("project", data);
+      var attempt = pickedFiles.length
+        ? sendAvecFichiers("project", data, pickedFiles)
+        : sendJson("project", data);
 
       attempt.then(done).catch(function () {
         // Deuxieme essai sans piece jointe : mieux vaut la demande sans
