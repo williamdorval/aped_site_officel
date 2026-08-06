@@ -2060,22 +2060,91 @@ function autotest() {
   return texte;
 }
 
-/* Efface les lignes d'essai laissées par `autotest()`. */
-function nettoyerAutotest() {
-  var n = 0;
+/* LES MARQUEURS D'ESSAI. Toute ligne qui en contient un est du
+   jetable — et rien de ce qui vient d'un vrai visiteur ne peut en
+   contenir : `exemple.ca` est un domaine réservé à la
+   documentation, il n'existe pas.
+
+   `ZZTEST` est le préfixe des sondes lancées contre le VRAI service
+   le 2026-08-06. Il est en majuscules et commence par deux Z pour
+   qu'aucun nom réel ne le porte, et pour qu'un tri alphabétique les
+   rassemble au bout. */
+var MARQUEURS_ESSAI = ["essai@exemple.ca", "zztest@exemple.ca", "ZZTEST",
+                       "exemple.ca", "@exemple.com"];
+
+/* Efface les lignes d'essai. Sans argument, cherche tous les
+   marqueurs ci-dessus ; on peut en passer un seul.
+
+   ELLE COMPTE ET ELLE NOMME. Une fonction de suppression qui rend
+   « 0 » sans rien dire est indiscernable d'une fonction qui n'a
+   pas trouvé sa cible. Celle-ci journalise chaque onglet et chaque
+   ligne retirée, avec ce qu'elle contenait. */
+function nettoyerAutotest(marqueur) {
+  var cherches = marqueur ? [marqueur] : MARQUEURS_ESSAI;
+  var total = 0;
+  var detail = [];
+
   Object.keys(SCHEMA).forEach(function (kind) {
     var feuille = classeur().getSheetByName(SCHEMA[kind].onglet);
     if (!feuille || feuille.getLastRow() < 2) return;
-    var cols = colonnes(kind).map(function (c) { return c.titre; });
-    var largeur = cols.length;
+    var largeur = colonnes(kind).length;
     var lignes = feuille.getRange(2, 1, feuille.getLastRow() - 1, largeur).getValues();
+    var n = 0;
+    /* À REBOURS : supprimer la ligne 5 fait remonter la 6 à sa
+       place. En descendant, on saute une ligne sur deux. */
     for (var r = lignes.length - 1; r >= 0; r--) {
-      if (lignes[r].join("|").indexOf("essai@exemple.ca") !== -1) {
-        feuille.deleteRow(r + 2);
-        n++;
-      }
+      var texte = lignes[r].join("|");
+      var touche = cherches.some(function (m) { return texte.indexOf(m) !== -1; });
+      if (!touche) continue;
+      feuille.deleteRow(r + 2);
+      n++;
+      total++;
     }
+    if (n) detail.push("  " + SCHEMA[kind].onglet + " : " + n + " ligne(s)");
   });
-  Logger.log(n + " ligne(s) d'essai retirée(s).");
-  return n;
+
+  var texte = total + " ligne(s) d'essai retirée(s)."
+    + (detail.length ? "\n" + detail.join("\n") : "")
+    + "\nMarqueurs cherchés : " + cherches.join(", ")
+    + "\n\nLes ÉVÉNEMENTS d'essai du calendrier ne sont PAS touchés :"
+    + "\nlancez `nettoyerRendezVousEssai()` pour ceux-là.";
+  Logger.log(texte);
+  return texte;
+}
+
+/* Les rendez-vous d'essai vivent au calendrier, pas au classeur, et
+   TANT QU'ILS Y SONT ILS BLOQUENT LEURS CRÉNEAUX sur le site. Un
+   classeur nettoyé et un agenda qui ne l'est pas, c'est un
+   calendrier public plein de trous inexplicables. */
+function nettoyerRendezVousEssai() {
+  var f = fenetreReservable();
+  var cal = DISPONIBILITES.CALENDRIER_ID
+    ? CalendarApp.getCalendarById(DISPONIBILITES.CALENDRIER_ID)
+    : CalendarApp.getDefaultCalendar();
+
+  var debut = new Date(Date.now() - 7 * 86400000);
+  var fin = new Date(f.plafond.getTime() + 86400000);
+  var evenements = cal.getEvents(debut, fin);
+  var retires = [];
+
+  evenements.forEach(function (ev) {
+    var titre = String(ev.getTitle() || "");
+    var desc = "";
+    try { desc = String(ev.getDescription() || ""); } catch (e) {}
+    var touche = MARQUEURS_ESSAI.some(function (m) {
+      return titre.indexOf(m) !== -1 || desc.indexOf(m) !== -1;
+    });
+    /* Un rendez-vous posé par le site porte toujours ce préfixe :
+       on ne touche donc jamais à un événement personnel. */
+    if (!touche || titre.indexOf("Appel APED") !== 0) return;
+    retires.push(titre + " — " + quand(ev.getStartTime()));
+    ev.deleteEvent();
+  });
+
+  var texte = retires.length + " rendez-vous d'essai retiré(s)."
+    + (retires.length ? "\n  " + retires.join("\n  ") : "")
+    + "\n\nSeuls les événements dont le titre commence par « Appel APED »"
+    + "\nET qui portent un marqueur d'essai sont touchés.";
+  Logger.log(texte);
+  return texte;
 }

@@ -108,7 +108,19 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ palier-check échoue sur trois assertions, avant comme après | 10 | 134 |
 | &nbsp;&nbsp;↳ Dix montants en dollars dorment dans des commentaires | 20 | 261 |
 | &nbsp;&nbsp;↳ Aucune animation n'a été ajoutée au panneau des créneaux | 13 | 179 |
-| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 9 | 108 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 11 | 109 |
+| **OUVERTES PAR LE CHANTIER DE STRESS — 2026-08-06** | 2 | 14 |
+| &nbsp;&nbsp;↳ FERMÉE · le secret n'a jamais été poussé | 13 | 161 |
+| &nbsp;&nbsp;↳ Le trou du verrou était une liste blanche d'extensions | 11 | 146 |
+| &nbsp;&nbsp;↳ Le vrai service rend HTTP 404 par intermittence | 15 | 176 |
+| &nbsp;&nbsp;↳ Les temps de réponse du vrai service | 13 | 159 |
+| &nbsp;&nbsp;↳ Six envois simultanés : 18,4 s pour le dernier | 13 | 156 |
+| &nbsp;&nbsp;↳ L'injection de formule est corrigée SANS preuve côté Google | 16 | 203 |
+| &nbsp;&nbsp;↳ Le Sheet et le calendrier d'APED n'ont pas été regardés | 17 | 211 |
+| &nbsp;&nbsp;↳ Les cibles tactiles ne passent pas partout | 19 | 189 |
+| &nbsp;&nbsp;↳ Le changement de Code.gs n'est pas déployé | 8 | 89 |
+| &nbsp;&nbsp;↳ Le préchargement n'a jamais été mesuré contre le vrai service | 6 | 76 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 8 | 92 |
 
 <!-- INDEX:FIN -->
 
@@ -1260,3 +1272,146 @@ intermédiaire, et cessent d'être cliquables. Elles restent lisibles.
 > et la phrase du guide « bloquez une journée depuis votre
 > téléphone » décrit un geste dans Google Agenda, pas un geste
 > vérifié sur le site.
+
+---
+
+## OUVERTES PAR LE CHANTIER DE STRESS — 2026-08-06
+
+### FERMÉE · le secret n'a jamais été poussé
+
+`.env.local.example` — suivi par git — portait la vraie adresse de
+déploiement et l’adresse de l’agence. Vérifié à trois endroits :
+
+- `git log --all -S "<identifiant du déploiement>"` ne rend **rien** ;
+- `origin/main:.env.local.example` porte `APED_WEB_APP_URL=` **vide** ;
+- seul le fichier de travail était modifié, jamais commité.
+
+**Aucun redéploiement n'est nécessaire.** L'adresse reste privée.
+Valeurs déplacées dans `.env.local` (ignoré), modèle remis à vide,
+et `tools/verrou-env.mjs` refuse désormais tout modèle non vide.
+
+### Le trou du verrou était une liste blanche d'extensions
+
+`verrou-env.mjs` filtrait sur `js|mjs|html|css|json|md|gs|txt|yml|
+yaml`. `.env.local.example` n'a aucune de ces extensions : le fichier
+dont le **sujet** est de porter des clés était le seul que le verrou
+n'ouvrait jamais, et il annonçait « ✓ 2509 fichiers relus ».
+
+C'est la forme générale du piège 30/40/62 : **un filtre qui écarte
+silencieusement ce qu'il est censé trouver.** Corrigé en inversant —
+on lit tout sauf le binaire. À retenir pour tout futur filtre.
+
+### Le vrai service rend HTTP 404 par intermittence
+
+**Mesuré le 2026-08-06 contre le déploiement réel :** 2 réponses sur
+36 en HTTP 404, avec une page HTML de 7,8 Ko au lieu du JSON. Ce
+n'est pas `Code.gs` — c'est le renvoi de `/exec` vers
+`googleusercontent.com`, l'étage devant lui.
+
+Le site réessaie maintenant deux fois (D-734), et le service est
+devenu idempotent pour que ce soit sûr (D-730).
+
+**CE QUI N'EST PAS MESURÉ :** le taux réel sur une journée entière,
+et s'il monte aux heures de pointe. 36 appels sur une heure ne font
+pas une statistique. **Deux réessais peuvent ne pas suffire** si
+Google a une mauvaise minute.
+
+### Les temps de réponse du vrai service
+
+| Porte | min | médiane | p90 | max |
+|---|---:|---:|---:|---:|
+| témoin de vie (30 appels) | 560 ms | 826 ms | 1 290 ms | 4 324 ms |
+| créneaux (25 appels) | 1 401 ms | 1 716 ms | 3 100 ms | **29 893 ms** |
+
+**Le pic à 29,9 s n'est pas expliqué.** Il est arrivé une fois sur
+vingt-cinq. Le préchargement au survol (D-735) masque la médiane,
+pas ce pic-là : un visiteur qui tombe dessus voit « Lecture de
+l'agenda… » pendant une demi-minute, puis le filet. Aucun temps
+limite n'est posé sur la requête — à faire si ça se reproduit.
+
+### Six envois simultanés : 18,4 s pour le dernier
+
+`LockService` sérialise les écritures, et c'est ce qui empêche deux
+personnes de réserver la même plage. Le prix : six soumissions
+lancées ensemble ont mis 18,4 s au total, la plus lente 18,4 s, la
+plus rapide 4,4 s.
+
+Six visiteurs à la même seconde n'arrivera pas au trafic actuel.
+Mais **le chiffre est là et il n'a pas été amélioré** : le verrou
+est pris pendant TOUT le traitement, courriels compris. Le déplacer
+pour ne couvrir que le calendrier et l'écriture réduirait l'attente
+— non fait, non mesuré.
+
+### L'injection de formule est corrigée SANS preuve côté Google
+
+`ecrireLigne` pose le format `@` sur les colonnes du visiteur avant
+`setValues`. `idempotence-check` prouve que l'appel est fait, dans
+le bon ordre, sur les bonnes colonnes.
+
+**Il ne prouve PAS que Google Sheets respecte ce format.** Le bouchon
+enregistre l'appel, il ne simule pas le moteur de calcul. À vérifier
+à la main, une fois : envoyer `=1+1` dans un champ de message, ouvrir
+le classeur, et voir si la cellule affiche `=1+1` (correct) ou `2`
+(le format n'a pas mordu).
+
+**Les cinq essais du 2026-08-06 sont partis vers le VRAI classeur
+avant la correction** : les lignes `ZZTEST` portent donc peut-être
+des formules actives. `nettoyerAutotest` les retire.
+
+### Le Sheet et le calendrier d'APED n'ont pas été regardés
+
+Les connecteurs Google de cette session sont branchés sur le compte
+PERSONNEL du propriétaire, pas sur celui de l’agence. Aucun accès
+en lecture au classeur ni au calendrier d’APED.
+
+**Tout ce qui concerne l'APPARENCE du classeur est donc non
+vérifié** : la couleur des lignes non lues, la position réelle de
+« Statut », les largeurs, le gel de la ligne 1, le rendu des
+formules. Ce sont des appels d'API dont on a prouvé qu'ils partent,
+avec les bons arguments — pas des pixels qu'on a vus.
+
+**Pour lever cette réserve :** partager le classeur en LECTURE avec
+le compte personnel du propriétaire — celui auquel les connecteurs
+sont branchés. Dix secondes, et tout ce paragraphe devient
+vérifiable.
+
+### Les cibles tactiles ne passent pas partout
+
+`node tools/_pouce.mjs`, après correction :
+
+| largeur | case de jour | plage |
+|---|---|---|
+| 390 px | **45 × 44** ✓ | 158 × 44 ✓ |
+| 360 px | 41 × 44 | 143 × 44 ✓ |
+| 320 px | **35 × 44** | 123 × 44 ✓ |
+
+La hauteur est à 44 px partout. **La largeur reste sous le seuil à
+360 et 320 px** : sept colonnes dans un panneau de 328 ou 288 px,
+on ne fabrique pas de pixels. On passe le seuil AA de WCAG 2.5.8
+(24 px), pas le AAA de 2.5.5 (44 px).
+
+Ce qui reste possible et n'a pas été fait : supprimer le `gap: 1px`
+de la grille (+6 px répartis) — mais ce filet EST le langage visuel
+du site, et 1 px par case ne vaut pas de le casser.
+
+### Le changement de Code.gs n'est pas déployé
+
+`google/Code.gs` a été modifié en profondeur — dédoublonnage,
+formats, colonnes, courriels, nettoyage. **Le déploiement en
+production porte encore la version d'AVANT.** Tant que la
+« Nouvelle version » n'a pas été faite, aucune de ces corrections
+n'existe pour un visiteur.
+
+### Le préchargement n'a jamais été mesuré contre le vrai service
+
+Il est prouvé fonctionnel contre le banc (`creneaux-vue`, 17/17) et
+le gain théorique est le temps du geste. **Le gain réel — combien de
+millisecondes un visiteur récupère vraiment — n'a pas été relevé.**
+
+### Et celle qui gouverne tout le reste
+
+> **AUCUNE mesure de ce chantier non plus n'a été prise sur un
+> appareil réel.** Les relevés « 320 px » et « 390 px » viennent de
+> `isMobile: true, hasTouch: true` sous Playwright, sur un poste de
+> bureau Windows. **Le panneau de réservation n'a jamais été touché
+> par un vrai pouce.**

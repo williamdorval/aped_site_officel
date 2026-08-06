@@ -147,16 +147,29 @@ Vous ne construisez rien à la main : une fonction s'en charge.
    sont réglées, et les **cinq dernières colonnes** sont celles du
    travail à trois :
 
-   | Colonne | Ce que c'est |
-   |---|---|
-   | **Renvois** | combien de fois la même demande est revenue (double-clic, renvoi après coupure). `0` sur une demande neuve |
-   | **Lu par** | liste déroulante : *William · Alan · Elie* |
-   | **Rappelé par** | liste déroulante : *William · Alan · Elie* |
-   | **Statut** | liste déroulante : *Nouveau · Contacté · En discussion · Client · Fermé* |
-   | **Notes internes** | champ **libre**, sans liste. C'est le seul endroit où écrire une phrase |
+   | Colonne | Où | Ce que c'est |
+   |---|---|---|
+   | **Statut** | **B**, juste après la date | liste : *Nouveau · Contacté · En discussion · Client · Fermé*. **En deuxième position exprès** : c'est la seule chose qu'on relit à chaque coup d'œil, et elle était dix-neuvième |
+   | **Renvois** | à la fin | combien de fois la même demande est revenue (double-clic, renvoi après coupure réseau). `0` sur une demande neuve |
+   | **Lu par** | à la fin | liste : *William · Alan · Elie* |
+   | **Rappelé par** | à la fin | liste : *William · Alan · Elie* |
+   | **Notes internes** | à la fin | champ **libre**, sans liste. Le seul endroit où écrire une phrase |
 
    Cliquez une cellule de « Statut » pour vérifier que la liste
    déroulante est bien là.
+
+> **Les demandes non lues sont surlignées en jaune pâle.** La règle
+> est simple : « Lu par » vide → toute la ligne se colore. Mettez
+> votre nom, la couleur disparaît. C'est le seul tri à faire un lundi
+> matin : ce qui est jaune n'a été vu par personne.
+
+> **Relancer `initialiser()` après un changement de colonnes ne
+> décale plus rien.** La fonction relit les anciens en-têtes et
+> **redispose** chaque ligne existante dans le nouvel ordre avant de
+> réécrire la ligne 1. Le journal d'exécution dit exactement ce
+> qu'elle a déplacé. (Avant, elle réécrivait les en-têtes en laissant
+> les données en place : le courriel d'un client se retrouvait sous
+> « Ville », et rien ne le signalait.)
 
    Une sixième colonne, **Signature**, est **masquée** : elle sert au
    dédoublonnage et n'a rien à dire à un humain. Ne la démasquez pas.
@@ -572,15 +585,22 @@ courriel fait mentir la page.
 
 ### 8.5 · Nettoyer
 
-Les lignes d'essai portant `essai@exemple.ca` se retirent d'un coup :
-dans l'éditeur, fonction **`nettoyerAutotest`** → `Exécuter`. Les
-autres lignes d'essai se suppriment à la main dans le classeur, et
-les événements de test dans l'agenda.
+**Deux fonctions, à lancer depuis l'éditeur**, dans cet ordre :
 
-> **Supprimez aussi les rendez-vous d'essai du calendrier.** Tant
-> qu'ils y sont, ils bloquent leurs créneaux sur le site — ce qui est
-> exactement le comportement voulu, et exactement ce dont vous ne
-> voulez pas pour de faux rendez-vous.
+| Fonction | Ce qu'elle retire |
+|---|---|
+| **`nettoyerAutotest`** | toute ligne portant `essai@exemple.ca`, `zztest@exemple.ca`, `ZZTEST` ou `exemple.ca` — dans les sept onglets. Elle journalise chaque onglet et chaque compte |
+| **`nettoyerRendezVousEssai`** | les événements du calendrier dont le titre commence par `Appel APED` **et** qui portent un marqueur d'essai |
+
+> **Les deux, pas une.** Tant qu'un faux rendez-vous est dans
+> l'agenda, il **bloque son créneau** sur le site — c'est exactement
+> le comportement voulu, et exactement ce dont vous ne voulez pas
+> pour un essai. Un classeur nettoyé avec un agenda qui ne l'est pas
+> donne un calendrier public plein de trous inexplicables.
+
+`nettoyerRendezVousEssai` ne touche **jamais** un événement
+personnel : il exige que le titre commence par `Appel APED`, ce que
+seul le site écrit.
 
 ---
 
