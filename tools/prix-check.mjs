@@ -55,7 +55,20 @@ const CONTEXTES_OK = [
      menu, et c'est precisement ce qui separait ces apercus d'un
      wireframe gris. On les nomme ici pour que la decision soit
      visible dans le rapport plutot que noyee. */
-  { motif: /mock-|mk-|mkx-|ecr-|data-mock/, pourquoi: "prix de demonstration d'un client fictif, pas un tarif APED" }
+  { motif: /mock-|mk-|mkx-|ecr-|data-mock/, pourquoi: "prix de demonstration d'un client fictif, pas un tarif APED" },
+  /* LA FOURCHETTE REVELEE APRES LE FORMULAIRE.  D-748
+     La regle a change, et elle s'est RETRECIE : « aucun prix, nulle
+     part » est devenu « aucun prix sur la page publique ». Le bareme
+     vit dans `js/main.js` et n'est ecrit dans le document QU'APRES
+     l'envoi d'un formulaire complet, dans la modale, a la personne
+     qui vient de repondre a six questions sur son projet.
+     La passe 2 ci-dessous — le TEXTE RENDU — est celle qui compte :
+     elle ouvre toutes les modales et echouerait si un montant y
+     paraissait au chargement. */
+  /* LA FORME D'UNE LIGNE DE BAREME, pas le mot « BAREME » : le
+     mot n'est ecrit que sur la ligne d'ouverture, et ce sont les
+     CINQ lignes suivantes qui portent les montants. */
+  { motif: /BAREME|devis-montant|fourchette_vue|fourchetteDe|score:\s*\d+\s*,\s*texte:/, pourquoi: "bareme revele apres le formulaire, D-748" }
 ];
 const autorise = (n) => AUTORISES.find((a) => a.motif.test(n.trim()));
 const contexteOk = (l) => CONTEXTES_OK.find((c) => c.motif.test(l));
@@ -328,18 +341,24 @@ console.log("\n=== TEXTE RENDU, modales et accordeons ouverts ===");
 renduTries.forEach((r) => console.log(`  ${r.montant}  ${r.verdict}   « …${r.avant} ${r.montant} ${r.apres}… »`));
 console.log(`\n=== GRILLE DE PRIX DANS js/main.js ===`);
 if (!grilles.length) {
+  /* AUCUNE GRILLE EST DEVENU L'ANOMALIE.  D-748
+     Le bareme est REVENU le 2026-08-06, sous une regle plus etroite
+     que celle de D-353 : il ne s'affiche qu'apres un formulaire
+     complet, dans la modale. S'il disparaissait, la fourchette
+     promise a la derniere etape ne paraitrait plus et rien d'autre
+     ne le dirait. */
   console.log(
-    `  aucune — et la sonde vient de prouver qu'elle sait en trouver une\n` +
-    `  (auto-controle sur un texte d'essai, plus haut). Le bareme des cinq\n` +
-    `  paliers est parti le 2026-08-03, D-353.`
+    `  *** AUCUNE — et c'est une anomalie depuis D-748.\n` +
+    `  Le bareme doit exister dans js/main.js : c'est lui qui produit la\n` +
+    `  fourchette montree a la fin de l'assistant de projet.`
   );
 } else {
   grilles.forEach((g) => console.log(`  js/main.js:${g.ligne}  ${g.texte}`));
   console.log(
-    `  ^ ${grilles.length} ligne(s). Ces bornes arrivaient dans le textContent\n` +
-    `    de #priceLow et #priceHigh. Le visiteur les LIT. CLAUDE.md interdit\n` +
-    `    « aucun prix, nulle part » : une grille reapparue est une regression,\n` +
-    `    pas un arbitrage.`
+    `  ^ ${grilles.length} ligne(s). PERMIS DEPUIS D-748, sous condition :\n` +
+    `    ces montants ne s'ecrivent dans le document qu'APRES l'envoi d'un\n` +
+    `    formulaire complet. La passe du TEXTE RENDU ci-dessus le verifie —\n` +
+    `    elle ouvre toutes les modales et compte ce qui parait au chargement.`
   );
 }
 console.log(`\n=== DANS UN COMMENTAIRE — NON RENDU, MAIS PUBLIE DANS LE DEPOT ===`);
@@ -365,12 +384,50 @@ console.log(`A VERIFIER dans le rendu : ${aVerifier.length}`);
    `process.exit` : il imprimait un nombre que rien ne relisait.
    Une grille de prix REVENUE fait echouer, elle aussi : elle
    n'attend plus d'arbitrage, il a ete rendu le 2026-08-03. */
-if (aRetirer.length || aVerifier.length || grilles.length) {
+/* LA GRILLE N'EST PLUS UNE FAUTE — SON ABSENCE DU RENDU EN EST UNE.
+   D-748
+
+   Jusqu'au 2026-08-06 cet outil echouait des qu'il trouvait un
+   bareme dans `js/main.js`, parce que `CLAUDE.md` disait « aucun
+   prix, nulle part ». La regle s'est retrecie : le bareme est
+   permis dans le source, et c'est son apparition dans le TEXTE
+   RENDU qui reste interdite.
+
+   ON NE SE CONTENTE PAS DE LEVER L'INTERDIT. Un garde-fou qu'on
+   desarme sans le remplacer ne garde plus rien. Celui-ci verifie
+   maintenant les DEUX sens :
+     · aucun montant du bareme dans la page chargee ;
+     · et le bareme EXISTE — s'il disparaissait, la fourchette
+       promise a l'etape 6 ne s'afficherait plus, et rien ne le
+       dirait. */
+const montantsBareme = grilles
+  .map((g) => (/(\d[\d  \s]*\$)/.exec(g.ligne || g.texte || String(g)) || [])[1])
+  .filter(Boolean)
+  .map((s) => s.replace(/[  \s]/g, ""));
+const fuites = rendu.filter((r) =>
+  montantsBareme.indexOf(r.montant.replace(/[  \s]/g, "")) !== -1);
+
+console.log(`
+Bareme trouve dans js/main.js : ${grilles.length} ligne(s)`);
+console.log(`Montants du bareme visibles au chargement : ${fuites.length}`);
+if (fuites.length) {
+  fuites.forEach((f) => console.log("   *** " + f.montant + "   « " + f.avant + " »"));
+}
+
+if (aRetirer.length || aVerifier.length || fuites.length || grilles.length === 0) {
   console.error(
     `\nECHEC : ${aRetirer.length} prix a retirer dans le source, ` +
     `${aVerifier.length} a verifier dans le rendu, ` +
-    `${grilles.length} ligne(s) de grille de prix.`
+    `${fuites.length} montant(s) du bareme dans la page, ` +
+    `bareme ${grilles.length ? "present" : "INTROUVABLE"}.`
   );
+  if (!grilles.length) {
+    console.error(
+      "       Le bareme a disparu de js/main.js. La fourchette promise\n" +
+      "       a la fin de l'assistant de projet ne s'affichera plus, et\n" +
+      "       rien d'autre ne le dirait."
+    );
+  }
   process.exit(1);
 }
-console.log("\nok — 0 prix non autorise, 0 grille de prix.");
+console.log("\nok — 0 prix non autorise sur la page, bareme present et non divulgue.");

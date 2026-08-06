@@ -88,9 +88,15 @@ Une animation qu'on ne remarque pas n'existe pas.
 - **aucun dégradé** — sauf les trames `repeating-linear-gradient`, qui
   sont des grains, pas un fondu ;
 - **aucun flou** — ni `blur`, ni `backdrop-filter` ;
-- **aucun prix, nulle part** — `node tools/prix-check.mjs`, `A RETIRER
-  dans le source` doit rester à **0**. Le chiffre du calculateur est un
-  montant d'**économies estimées** ;
+- **aucun prix sur la page publique** — `node tools/prix-check.mjs`,
+  `A RETIRER dans le source` et `Montants du bareme visibles au
+  chargement` doivent rester à **0**. Le chiffre du calculateur est un
+  montant d'**économies estimées**.
+  **L'interdit s'est rétréci le 2026-08-06** (D-748, il disait « nulle
+  part ») : une **fourchette** peut paraître **après** un formulaire
+  complété, dans la modale, étiquetée « ordre de grandeur, pas un
+  devis ». Le barème vit dans `js/main.js` ; l'outil échoue s'il
+  **disparaît** autant que si un de ses montants **fuit** dans la page ;
 - **aucune requête tierce** ;
 - **rien qui ne se réclame pas d'un des quatre verbes** ;
 - **`prefers-reduced-motion` respecté sans jamais faire perdre ni

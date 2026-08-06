@@ -79,13 +79,151 @@
     cadeau: "Documents demandes - site APED"
   };
 
-  /* LE BAREME N'EXISTE PLUS.  D-353
-     Cinq paliers, de 2 500 $ a 40 000 $ et plus, affiches a l'etape 8
-     de l'estimateur : c'etait la grille tarifaire d'APED, publiee.
-     Les seuls prix du site sont maintenant 75 $ l'heure, 40 % au
-     demarrage, et le plafond de 5 000 $ du programme de reference.
-     `POIDS` reste : il sert encore a ordonner les reponses, plus a
-     choisir une fourchette. */
+  /* LE BAREME REVIENT, SOUS UNE REGLE PLUS ETROITE.  D-748
+
+     D-353 l'avait retire parce qu'il etait affiche : cinq paliers
+     de 2 500 $ a 40 000 $ visibles a l'etape 8 de l'estimateur,
+     c'est-a-dire la grille tarifaire d'APED, publiee. `CLAUDE.md`
+     disait « aucun prix, nulle part ».
+
+     LA REGLE DEVIENT : aucun prix sur la page publique. Une
+     fourchette apparait UNIQUEMENT apres un formulaire complete,
+     dans la modale, a la personne qui vient de repondre a six
+     questions sur SON projet.
+
+     POURQUOI CE CHANGEMENT TIENT. Un prix affiche sur la page est
+     une grille tarifaire : on la compare a celle d'a cote, hors
+     contexte, et elle ne veut rien dire. Une fourchette rendue en
+     echange d'un formulaire est une REPONSE : elle porte les
+     reponses qui l'ont produite, et elle est la seule raison pour
+     laquelle quelqu'un accepte de remplir six ecrans.
+
+     ELLE N'EST JAMAIS UN DEVIS, et le texte de la modale le dit
+     mot pour mot. Les paliers sont larges a dessein : plusieurs
+     combinaisons tombent dans le meme, donc aucune ne se remonte.
+
+     `tools/prix-check.mjs` garde la nouvelle regle : il refuse
+     toujours un prix dans le HTML rendu de la page. */
+  var BAREME = [
+    { score: 1,  texte: "2 500 $ à 5 000 $" },
+    { score: 3,  texte: "5 000 $ à 10 000 $" },
+    { score: 5,  texte: "10 000 $ à 20 000 $" },
+    { score: 8,  texte: "20 000 $ à 40 000 $" },
+    { score: 99, texte: "40 000 $ et plus" }
+  ];
+
+  /* CE QUI FAIT MONTER LE SCORE. Les cles sont celles des deux
+     formulaires : l'estimateur repond par `answers`, l'assistant de
+     projet par des champs. On lit ce qui est la et on ignore le
+     reste — un formulaire qui ne pose pas la question ne doit pas
+     etre penalise pour ne pas y avoir repondu. */
+  var POINTS = {
+    type_de_projet: { "Site vitrine": 0, "E-commerce": 2, "Application ou logiciel": 4,
+                      "Automatisation": 1 },
+    envergure:      { "Petit": 0, "Moyen": 1, "Grand": 3 },
+    niveau_design:  { "Essentiel": 0, "Premium": 1, "Signature": 2 },
+    echeancier:     { "Flexible": 0, "Normal": 0, "Urgent": 1, "Le plus vite possible": 1 }
+  };
+
+  /* La fourchette, et les reponses qui l'ont produite. Rend `null`
+     quand il n'y a rien sur quoi se fonder — mieux vaut ne rien
+     montrer qu'un chiffre tire d'aucune reponse. */
+  function fourchetteDe(data) {
+    var score = 0;
+    var vus = 0;
+    var pris = [];
+    Object.keys(POINTS).forEach(function (cle) {
+      var v = String(data[cle] == null ? "" : data[cle]).trim();
+      if (!v) return;
+      var table = POINTS[cle];
+      if (!Object.prototype.hasOwnProperty.call(table, v)) return;
+      score += table[v];
+      vus++;
+      pris.push(v);
+    });
+
+    /* L'assistant de projet ne pose pas ces quatre questions-la. Il
+       pose « ce dont vous avez besoin », en cases a cocher : chaque
+       case cochee au-dela de la premiere pese un point. */
+    var besoins = String(data.besoins || "").split(",")
+      .map(function (s) { return s.trim(); }).filter(Boolean);
+    if (besoins.length) {
+      score += Math.max(0, besoins.length - 1);
+      vus++;
+      pris.push(besoins.length + " besoin" + (besoins.length > 1 ? "s" : ""));
+    }
+
+    if (!vus) return null;
+
+    for (var i = 0; i < BAREME.length; i++) {
+      if (score <= BAREME[i].score) {
+        return { texte: BAREME[i].texte, score: score, sur: pris };
+      }
+    }
+    return { texte: BAREME[BAREME.length - 1].texte, score: score, sur: pris };
+  }
+
+  /* CE QU'ON MONTRE APRES L'ENVOI, ET LA QUESTION QUI SUIT.  D-748
+
+     LE MOMENT COMPTE PLUS QUE LE CHIFFRE. La demande est DEJA
+     partie quand cet ecran parait : on ne retient pas le lead en
+     otage du prix. S'il trouve ca trop cher, on l'a quand meme — et
+     on sait pourquoi, ce qui vaut plus cher que le lead.
+
+     `data` sert au second envoi, celui qui porte la reaction. On le
+     garde de cote plutot que de relire le formulaire : le visiteur
+     peut fermer la modale entre les deux. */
+  var devisEnCours = null;
+
+  function montrerFourchette(vue, data) {
+    var boite = $("#prDevis");
+    var suite = $("#prSuiteTexte");
+    if (!boite) return;
+    if (!vue) { boite.hidden = true; return; }
+
+    /* LE `_sid` SE CAPTURE AVANT L'OUBLI, pas apres. `oublierSession`
+       est appele des la demande partie ; sans cette copie, la
+       reaction au prix ouvrirait une DEUXIEME ligne pour la meme
+       personne — exactement ce que tout le mecanisme evite. */
+    devisEnCours = { data: data, vue: vue, sid: data._sidGarde || null };
+    boite.hidden = false;
+    if (suite) suite.hidden = true;
+
+    var montant = $("#prFourchette");
+    if (montant) montant.textContent = vue.texte;
+
+    /* CE QUI A PRODUIT LE CHIFFRE, en clair. Un montant sans ses
+       raisons se lit comme un tarif ; avec ses raisons, il se lit
+       comme une reponse — et il se discute. */
+    var sur = $("#prFourchetteSur");
+    if (sur) {
+      sur.textContent = vue.sur.length
+        ? "D’après : " + vue.sur.join(" · ")
+        : "";
+    }
+    $("#prDevisQuestion").hidden = false;
+    $("#prDevisOui").hidden = true;
+    $("#prDevisNon").hidden = true;
+  }
+
+  /* La reaction part comme une MISE A JOUR de la meme ligne : le
+     `_sid` a ete oublie a l'envoi final, on le redonne. */
+  function envoyerReaction(reaction, raison) {
+    if (!devisEnCours) return Promise.resolve(null);
+    var charge = Object.assign({}, devisEnCours.data, {
+      fourchette_vue: devisEnCours.vue.texte,
+      prix_reaction: reaction
+    });
+    if (raison) charge.prix_raison = raison;
+    /* Pas de `_final` : la confirmation au visiteur est deja
+       partie, il ne faut pas la lui renvoyer. */
+    return sendJson("project", Object.assign({}, charge, {
+      _sid: devisEnCours.sid,
+      _etape: 6, _etapes: 6
+    }));
+  }
+
+  /* `POIDS` reste : il sert a ordonner les reponses de l'estimateur. */
 
   /* Le score est GROSSIER a dessein : plusieurs combinaisons tombent
      dans la meme fourchette, donc aucune ne peut etre isolee. */
@@ -1731,6 +1869,100 @@
     }));
   }
 
+  /* ============================================================
+     LA SAUVEGARDE PROGRESSIVE  D-747
+
+     CE QU'ELLE REPARE. Quelqu'un remplit la moitie d'un formulaire
+     et ferme l'onglet : jusqu'ici il ne restait rien. Pas une
+     adresse, pas un nom, rien a rappeler. C'est un client perdu
+     qu'on ne sait meme pas avoir eu.
+
+     COMMENT. Des la premiere etape validee, on envoie ce qu'on a.
+     Le serveur ouvre une ligne. Chaque etape suivante renvoie la
+     meme chose, un peu plus remplie, avec le MEME `_sid` — et le
+     serveur MET A JOUR cette ligne-la (D-744). Une ligne par
+     personne, jamais une par etape.
+
+     L'IDENTIFIANT VIT DANS `localStorage`, PAS EN MEMOIRE. C'est
+     tout l'interet : il survit a la fermeture de l'onglet. Quelqu'un
+     qui revient le lendemain reprend SA ligne au lieu d'en ouvrir
+     une seconde.
+
+     L'ENVOI NE BLOQUE JAMAIS LE VISITEUR. Il part en arriere-plan,
+     et son echec ne fait rien apparaitre : ce n'est pas SA demande
+     qui a echoue, c'est notre filet. Il continue, et la derniere
+     etape — celle qui compte — a son propre traitement d'erreur.
+     ============================================================ */
+
+  var CLE_SESSION = "aped-sid-";
+
+  /* `crypto.randomUUID` n'existe pas partout ; le repli n'a pas
+     besoin d'etre cryptographique, seulement unique par visiteur.
+     Le serveur exige 8 a 40 signes de `[A-Za-z0-9_-]`. */
+  function fabriquerSid() {
+    try {
+      if (window.crypto && window.crypto.randomUUID) {
+        return window.crypto.randomUUID().replace(/-/g, "").slice(0, 32);
+      }
+    } catch (e) {}
+    var s = "";
+    var abc = "abcdefghijklmnopqrstuvwxyz0123456789";
+    for (var i = 0; i < 24; i++) s += abc.charAt(Math.floor(Math.random() * abc.length));
+    return s + String(Date.now()).slice(-8);
+  }
+
+  function sessionDe(kind) {
+    var cle = CLE_SESSION + kind;
+    var v = null;
+    try { v = localStorage.getItem(cle); } catch (e) {}
+    if (!v || !/^[A-Za-z0-9_-]{8,40}$/.test(v)) {
+      v = fabriquerSid();
+      try { localStorage.setItem(cle, v); } catch (e) {}
+    }
+    return v;
+  }
+
+  /* On oublie la session UNE FOIS LA DEMANDE COMPLETE. Sans ca, le
+     visiteur suivant sur le meme appareil — ou la meme personne qui
+     revient pour un second projet — ecraserait la ligne precedente. */
+  function oublierSession(kind) {
+    try { localStorage.removeItem(CLE_SESSION + kind); } catch (e) {}
+  }
+
+  /* L'etat de ce qui a deja ete envoye, par formulaire. Sert a ne
+     pas renvoyer six fois la meme chose quand rien n'a change. */
+  var envoyeParForm = {};
+
+  function enregistrerEtape(kind, data, etape, total, final) {
+    if (!FORM_ENDPOINT) return Promise.resolve(null);
+
+    var charge = Object.assign({}, data, {
+      _sid: sessionDe(kind),
+      _etape: etape,
+      _etapes: total
+    });
+    if (final) charge._final = true;
+
+    /* RIEN DE NOUVEAU, RIEN A ENVOYER. Un aller-retour de plus coute
+       du temps d'execution Apps Script, plafonne a 90 min par jour
+       sur un compte gratuit. */
+    var empreinte = JSON.stringify(charge);
+    if (!final && envoyeParForm[kind] === empreinte) return Promise.resolve(null);
+    envoyeParForm[kind] = empreinte;
+
+    return sendJson(kind, charge);
+  }
+
+  /* L'ENREGISTREMENT D'UNE ETAPE INTERMEDIAIRE EST SILENCIEUX.
+     Il ne montre rien, ne bloque rien, et son echec ne dit rien :
+     le visiteur n'a rien demande. Il refera surface a l'etape
+     suivante, ou a la fin. */
+  function enregistrerDiscret(kind, data, etape, total) {
+    try {
+      enregistrerEtape(kind, data, etape, total, false).catch(function () {});
+    } catch (e) {}
+  }
+
   /* LES PIECES JOINTES VOYAGENT EN BASE64, PAS EN MULTIPART.  D-722
      `doPost` d'Apps Script recoit `e.postData.contents` comme une
      CHAINE : il ne sait pas reconstruire les parties binaires d'un
@@ -2601,7 +2833,15 @@
     var advance = function () {
       var current = $('.step[data-pstep="' + pStep + '"]', projectWizard);
       if (!validate(current)) return;
-      if (pStep < P_TOTAL - 1) { goPStep(pStep + 1); return; }
+      if (pStep < P_TOTAL - 1) {
+        /* CHAQUE ETAPE FRANCHIE LAISSE UNE TRACE.  D-747
+           Silencieux : le visiteur n'a rien demande, il a juste
+           clique « Continuer ». S'il ferme l'onglet maintenant, sa
+           ligne existe deja et on peut le rappeler. */
+        enregistrerDiscret("project", serialize(projectWizard), pStep, P_TOTAL);
+        goPStep(pStep + 1);
+        return;
+      }
 
       var status = $(".form-status", projectWizard);
       setLoading(projectNext, true);
@@ -2609,22 +2849,77 @@
       retirerRepli(status);
 
       var data = serialize(projectWizard);
+      /* LA FOURCHETTE PART AVEC LA DEMANDE, pas apres : c'est ce
+         que le visiteur va VOIR a l'ecran suivant, et le classeur
+         doit porter le meme chiffre que lui. */
+      var vue = fourchetteDe(data);
+      if (vue) data.fourchette_vue = vue.texte;
 
-      var done = function () { setLoading(projectNext, false); goPStep(P_TOTAL); };
+      /* La session est la MEME depuis l'etape 1 : la demande finale
+         complete sa ligne, elle n'en ouvre pas une seconde. */
+      var sid = sessionDe("project");
+      data._sidGarde = sid;
+      var charge = Object.assign({}, data, {
+        _sid: sid, _etape: P_TOTAL - 1, _etapes: P_TOTAL, _final: true
+      });
+      delete charge._sidGarde;
+
+      var done = function () {
+        setLoading(projectNext, false);
+        oublierSession("project");
+        montrerFourchette(vue, data);
+        goPStep(P_TOTAL);
+      };
       var attempt = pickedFiles.length
-        ? sendAvecFichiers("project", data, pickedFiles)
-        : sendJson("project", data);
+        ? sendAvecFichiers("project", charge, pickedFiles)
+        : sendJson("project", charge);
 
       attempt.then(done).catch(function () {
         // Deuxieme essai sans piece jointe : mieux vaut la demande sans
         // fichiers que pas de demande du tout.
-        sendJson("project", data).then(done).catch(function (err) {
+        sendJson("project", charge).then(done).catch(function (err) {
           setLoading(projectNext, false);
           say(status, messageEchec(err), "err");
-          poserRepli(status, "project", data, pickedFiles.length > 0);
+          poserRepli(status, "project", charge, pickedFiles.length > 0);
         });
       });
     };
+
+    /* LES DEUX BOUTONS DE LA FOURCHETTE. Le « Oui » enchaine vers la
+       reservation ; le « Non » ouvre une seule question. Les deux
+       partent au classeur : un refus renseigne autant qu'un accord,
+       et il est plus rare. */
+    var choixPrix = $('#prDevisQuestion .choices[data-choice="prix_reaction"]');
+    if (choixPrix) {
+      $$("button", choixPrix).forEach(function (b) {
+        b.addEventListener("click", function () {
+          var oui = b.dataset.value === "Oui";
+          $("#prDevisOui").hidden = !oui;
+          $("#prDevisNon").hidden = oui;
+          $("#prDevisQuestion").hidden = true;
+          envoyerReaction(b.dataset.value, "").catch(function () {});
+        });
+      });
+    }
+
+    var envoiRaison = $("#prPrixEnvoi");
+    if (envoiRaison) {
+      envoiRaison.addEventListener("click", function () {
+        var champ = $("#prPrixRaison");
+        var statut = $("#prPrixStatut");
+        setLoading(envoiRaison, true);
+        envoyerReaction("Non", champ ? champ.value : "")
+          .then(function () {
+            setLoading(envoiRaison, false);
+            say(statut, "Noté. Merci — ça nous sert vraiment.", "ok");
+            $("#prDevisNon").hidden = true;
+          })
+          .catch(function (err) {
+            setLoading(envoiRaison, false);
+            say(statut, messageEchec(err), "err");
+          });
+      });
+    }
 
     projectNext.addEventListener("click", advance);
     projectWizard.addEventListener("submit", function (e) { e.preventDefault(); advance(); });

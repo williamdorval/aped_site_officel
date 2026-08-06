@@ -4340,6 +4340,59 @@ html:not(.js) .ba-trait { display: none; }
   font-size: var(--fs-8);
   color: var(--ink-muted);
 }
+/* == 23bis. LA FOURCHETTE, APRES LE FORMULAIRE ==  D-748
+
+   Elle ne parait qu'une fois la demande partie. Ce n'est pas un
+   encadre de prix : c'est la reponse a six ecrans de questions, et
+   elle se lit comme telle — le montant grand, ce qui l'a produit
+   juste dessous, la mise en garde ensuite.
+
+   Rayon 0, aucune ombre. La profondeur est un filet de 1 px. */
+.devis {
+  margin-top: var(--s-4);
+  padding-top: var(--s-5);
+  border-top: var(--rule-w) solid var(--rule-strong);
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+.devis-quoi { color: var(--ink-muted); font-size: var(--fs-6); max-width: 46ch; }
+/* LE SEUL MONTANT EN MINIUM DU SITE APRES LE CALCULATEUR. Il est ici
+   parce que c'est ici que le visiteur peut AGIR : dire oui, ou dire
+   non. Le minium ne decore pas, il montre ou est la poignee. */
+.devis-montant {
+  font-size: var(--fs-2);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--accent-text);
+}
+.devis-sur {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+}
+.devis-mise {
+  max-width: 52ch;
+  font-size: var(--fs-7);
+  line-height: 1.6;
+  color: var(--ink-muted);
+  border-left: var(--rule-w) solid var(--rule);
+  padding-left: var(--s-4);
+}
+.devis-mise b { color: var(--ink); font-weight: 600; }
+.devis-question,
+.devis-suite {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+  width: 100%;
+  margin-top: var(--s-3);
+  padding-top: var(--s-4);
+  border-top: var(--rule-w) solid var(--rule);
+}
+.devis-demande { font-size: var(--fs-5); max-width: 40ch; }
+.devis-suite .field { width: 100%; }
 /* == 24bis. LA MENTION SOUS UN FORMULAIRE ==  D-739
 
    Elle dit ce qu'on fait des coordonnees, a l'endroit exact ou on

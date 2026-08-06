@@ -3445,10 +3445,67 @@
         <p class="form-legal">Vos réponses et vos fichiers servent à préparer votre proposition. Ils sont enregistrés dans les outils Google de l’agence, hors Québec. Retrait sur demande. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
       </div>
 
+      <!-- LA FOURCHETTE EST LA RECOMPENSE DU FORMULAIRE.  D-748
+           Elle ne parait qu'ICI, apres six ecrans, a quelqu'un qui
+           a decrit son projet. Ce n'est pas une grille tarifaire :
+           c'est une reponse, et le texte dit ce qu'elle vaut. -->
       <div class="step success" data-pstep="6" hidden>
         <span class="num">01 / 01</span>
-        <h4>Reçu cinq sur cinq.</h4>
-        <p class="modal-sub" style="margin-top:0">On regarde votre projet et on revient en moins de 12 h ouvrables avec la suite.</p>
+        <h4>Reçu. Voici où ça se situe.</h4>
+
+        <div class="devis" id="prDevis" hidden>
+          <p class="devis-quoi">Pour ce que vous décrivez, un projet comme
+            le vôtre se situe généralement entre&nbsp;:</p>
+          <p class="devis-montant num" id="prFourchette">—</p>
+          <p class="devis-sur" id="prFourchetteSur"></p>
+          <p class="devis-mise">
+            C’est un <b>ordre de grandeur</b>, pas un devis. Le vrai chiffre
+            sort de l’appel, quand on a vu votre site, vos outils et ce qui
+            presse vraiment. Il peut descendre&nbsp;: la moitié de nos mandats
+            commencent plus petit que prévu.
+          </p>
+
+          <div class="devis-question" id="prDevisQuestion">
+            <p class="devis-demande">Est-ce que cet ordre de grandeur vous convient&nbsp;?</p>
+            <div class="choices" data-choice="prix_reaction">
+              <button class="btn btn--ghost" type="button" data-value="Oui">Oui, on en parle</button>
+              <button class="btn btn--ghost" type="button" data-value="Non">Non, c’est trop</button>
+            </div>
+            <input type="hidden" name="prix_reaction" />
+          </div>
+
+          <!-- LA SUITE SI C'EST OUI : on enchaine, on ne fait pas
+               attendre quelqu'un qui vient de dire oui. -->
+          <div class="devis-suite" id="prDevisOui" hidden>
+            <p class="devis-mise">Parfait. Trente minutes suffisent pour vous dire
+              quoi faire en premier — et vous repartez avec la réponse même si
+              on ne travaille pas ensemble.</p>
+            <button class="btn btn--primary" type="button" data-modal-switch="modal-booking">
+              Choisir un moment
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+            </button>
+          </div>
+
+          <!-- LA SUITE SI C'EST NON : une question, sans jugement.
+               On ne discute pas le refus, on apprend pourquoi. -->
+          <div class="devis-suite" id="prDevisNon" hidden>
+            <p class="devis-mise">Merci de le dire — c’est plus utile qu’un
+              silence. En deux mots, qu’est-ce qui accroche&nbsp;?</p>
+            <div class="field">
+              <label for="prPrixRaison">Ce qui accroche</label>
+              <textarea id="prPrixRaison" name="prix_raison" rows="2"
+                placeholder="Au-dessus de mon budget · je voulais juste une idée · je compare…"></textarea>
+            </div>
+            <button class="btn btn--primary" type="button" id="prPrixEnvoi" data-submit>
+              <span data-label>Envoyer</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-send" /></svg>
+            </button>
+            <p class="form-status" id="prPrixStatut" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <p class="modal-sub" id="prSuiteTexte">On regarde votre projet et on revient
+          en moins de 12&nbsp;h ouvrables avec la suite.</p>
         <button class="btn btn--ghost" type="button" data-modal-close>
           Fermer
           <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
