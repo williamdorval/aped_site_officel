@@ -105,55 +105,120 @@
      `tools/prix-check.mjs` garde la nouvelle regle : il refuse
      toujours un prix dans le HTML rendu de la page. */
   var BAREME = [
-    { score: 1,  texte: "2 500 $ à 5 000 $" },
-    { score: 3,  texte: "5 000 $ à 10 000 $" },
-    { score: 5,  texte: "10 000 $ à 20 000 $" },
-    { score: 8,  texte: "20 000 $ à 40 000 $" },
+    { score: 2,  texte: "2 500 $ à 5 000 $" },
+    { score: 5,  texte: "5 000 $ à 10 000 $" },
+    { score: 9,  texte: "10 000 $ à 20 000 $" },
+    { score: 14, texte: "20 000 $ à 40 000 $" },
     { score: 99, texte: "40 000 $ et plus" }
   ];
 
-  /* CE QUI FAIT MONTER LE SCORE. Les cles sont celles des deux
-     formulaires : l'estimateur repond par `answers`, l'assistant de
-     projet par des champs. On lit ce qui est la et on ignore le
-     reste — un formulaire qui ne pose pas la question ne doit pas
-     etre penalise pour ne pas y avoir repondu. */
+  /* CE QUI FAIT MONTER LE SCORE, ET POURQUOI CES SIX-LA.  D-749
+
+     LA PREMIERE VERSION COMPTAIT LES CASES COCHEES. C'etait un
+     signal si faible que le chiffre pouvait engager l'agence trop
+     bas ou faire fuir un client pour rien — la reserve etait ecrite
+     noir sur blanc le 2026-08-06, et la voici traitee.
+
+     Ce qu'un vrai devis regarde :
+       · le TYPE — une application ne se compare pas a une vitrine ;
+       · l'AMPLEUR — le nombre d'ecrans est le multiplicateur le
+         plus direct qui existe ;
+       · le DESIGN — l'ecart entre « propre » et « sur mesure » est
+         du temps de direction artistique, pas du code ;
+       · les FONCTIONS — comptes, paiements, tableaux de bord : ce
+         qui separe un site d'un logiciel ;
+       · le CONTENU — ecrire les textes et faire les photos est un
+         mandat en soi, souvent oublie du budget ;
+       · l'URGENCE — comprimer un calendrier coute, toujours.
+
+     Les cles couvrent les DEUX formulaires : l'estimateur repond
+     par des libelles courts, l'assistant de projet par des libelles
+     longs. On accepte les deux plutot que de normaliser ailleurs :
+     une correspondance ratee rendrait zero en silence.
+
+     Le score maximum est 23. Les paliers sont larges a dessein :
+     plusieurs combinaisons tombent dans le meme, donc aucune ne se
+     remonte a partir du montant affiche. */
   var POINTS = {
-    type_de_projet: { "Site vitrine": 0, "E-commerce": 2, "Application ou logiciel": 4,
-                      "Automatisation": 1 },
-    envergure:      { "Petit": 0, "Moyen": 1, "Grand": 3 },
-    niveau_design:  { "Essentiel": 0, "Premium": 1, "Signature": 2 },
-    echeancier:     { "Flexible": 0, "Normal": 0, "Urgent": 1, "Le plus vite possible": 1 }
+    type_de_projet: {
+      "Site vitrine": 0, "Automatisation": 2, "Automatisation et IA": 2,
+      "E-commerce": 3, "Boutique en ligne": 3, "Application ou logiciel": 5
+    },
+    ampleur: {
+      "1 à 5 — l’essentiel": 0, "6 à 15 — un vrai site": 2,
+      "Plus de 15 — une plateforme": 4, "Aucune idée, à voir ensemble": 1,
+      "1 à 5 pages": 0, "6 à 15 pages": 2, "Plus de 15 pages": 4
+    },
+    niveau_design: {
+      "Essentiel — propre, rapide, efficace": 0, "Essentiel": 0,
+      "Premium — identité forte, animations": 2, "Premium": 2,
+      "Signature — direction visuelle sur mesure": 4, "Signature": 4
+    },
+    fonctions: {
+      "Aucune — un site qui présente": 0, "Aucune": 0,
+      "Une ou deux — réservation, paiement, formulaire": 2, "Une ou deux": 2,
+      "Plusieurs — comptes, tableau de bord, connexions": 4, "Plusieurs": 4
+    },
+    contenu: {
+      "Prêts — j’ai tout sous la main": 0, "Prêts": 0,
+      "En partie — il manque des bouts": 1, "En partie": 1,
+      "Tout est à créer": 3
+    },
+    echeancier: {
+      "Flexible": 0, "Pas pressé, j’explore": 0, "D’ici 3 à 6 mois": 0,
+      "Normal": 0, "D’ici 1 à 2 mois": 0,
+      "Urgent": 2, "Le plus vite possible": 2
+    },
+    site_existant: { "Oui": 0, "Non": 1 }
   };
+
+  /* CE QU'ON MONTRE COMME RAISON. Le libelle complet d'un menu
+     deroulant est trop long pour une ligne de justification : on
+     n'en garde que la tete, avant le tiret cadratin. */
+  function tete(v) { return String(v).split(" — ")[0].trim(); }
 
   /* La fourchette, et les reponses qui l'ont produite. Rend `null`
      quand il n'y a rien sur quoi se fonder — mieux vaut ne rien
-     montrer qu'un chiffre tire d'aucune reponse. */
+     montrer qu'un chiffre tire d'aucune reponse.
+
+     LE SEUIL DE TROIS REPONSES EST DELIBERE. Deux reponses sur six
+     donnent un score qui ressemble a un chiffre et n'en est pas un.
+     Sous ce seuil on se tait, et le visiteur voit le texte de
+     confirmation ordinaire. */
   function fourchetteDe(data) {
     var score = 0;
     var vus = 0;
     var pris = [];
+
+    /* L'assistant de projet ne demande pas « quel type » : il
+       demande « de quoi avez-vous besoin », en cases a cocher. On en
+       tire le type le plus lourd — c'est lui qui gouverne. */
+    var besoins = String(data.besoins || "").split(",")
+      .map(function (s) { return s.trim(); }).filter(Boolean);
+    var typeDit = String(data.type_de_projet || "").trim();
+    if (!typeDit && besoins.length) {
+      var pire = "", poids = -1;
+      besoins.forEach(function (b) {
+        var p = POINTS.type_de_projet[b];
+        if (p !== undefined && p > poids) { poids = p; pire = b; }
+      });
+      if (pire) typeDit = pire;
+    }
+    var lu = Object.assign({}, data, { type_de_projet: typeDit });
+
     Object.keys(POINTS).forEach(function (cle) {
-      var v = String(data[cle] == null ? "" : data[cle]).trim();
+      var v = String(lu[cle] == null ? "" : lu[cle]).trim();
       if (!v) return;
       var table = POINTS[cle];
       if (!Object.prototype.hasOwnProperty.call(table, v)) return;
       score += table[v];
       vus++;
-      pris.push(v);
+      /* L'echeancier et « a deja un site » ne se montrent pas : ils
+         pesent peu et allongent la ligne sans rien expliquer. */
+      if (cle !== "echeancier" && cle !== "site_existant") pris.push(tete(v));
     });
 
-    /* L'assistant de projet ne pose pas ces quatre questions-la. Il
-       pose « ce dont vous avez besoin », en cases a cocher : chaque
-       case cochee au-dela de la premiere pese un point. */
-    var besoins = String(data.besoins || "").split(",")
-      .map(function (s) { return s.trim(); }).filter(Boolean);
-    if (besoins.length) {
-      score += Math.max(0, besoins.length - 1);
-      vus++;
-      pris.push(besoins.length + " besoin" + (besoins.length > 1 ? "s" : ""));
-    }
-
-    if (!vus) return null;
+    if (vus < 3) return null;
 
     for (var i = 0; i < BAREME.length; i++) {
       if (score <= BAREME[i].score) {
@@ -173,11 +238,29 @@
      `data` sert au second envoi, celui qui porte la reaction. On le
      garde de cote plutot que de relire le formulaire : le visiteur
      peut fermer la modale entre les deux. */
+  /* UN SEUL MECANISME POUR LES DEUX FORMULAIRES. L'assistant de
+     projet et l'estimateur montrent la meme boite, posent la meme
+     question et enregistrent au meme endroit : deux copies
+     finiraient par diverger, et la divergence s'appellerait « le
+     classeur ne dit pas la meme chose que l'ecran ». */
   var devisEnCours = null;
 
-  function montrerFourchette(vue, data) {
-    var boite = $("#prDevis");
-    var suite = $("#prSuiteTexte");
+  /* Les identifiants des deux boites, par formulaire. */
+  var DEVIS = {
+    project:  { boite: "#prDevis", montant: "#prFourchette", sur: "#prFourchetteSur",
+                question: "#prDevisQuestion", oui: "#prDevisOui", non: "#prDevisNon",
+                suite: "#prSuiteTexte", raison: "#prPrixRaison",
+                envoi: "#prPrixEnvoi", statut: "#prPrixStatut" },
+    estimate: { boite: "#esDevis", montant: "#esFourchette", sur: "#esFourchetteSur",
+                question: "#esDevisQuestion", oui: "#esDevisOui", non: "#esDevisNon",
+                suite: "#esSuiteTexte", raison: "#esPrixRaison",
+                envoi: "#esPrixEnvoi", statut: "#esPrixStatut" }
+  };
+
+  function montrerFourchette(kind, vue, data, sid) {
+    var ids = DEVIS[kind];
+    if (!ids) return;
+    var boite = $(ids.boite);
     if (!boite) return;
     if (!vue) { boite.hidden = true; return; }
 
@@ -185,42 +268,96 @@
        est appele des la demande partie ; sans cette copie, la
        reaction au prix ouvrirait une DEUXIEME ligne pour la meme
        personne — exactement ce que tout le mecanisme evite. */
-    devisEnCours = { data: data, vue: vue, sid: data._sidGarde || null };
+    devisEnCours = { kind: kind, data: data, vue: vue, sid: sid || null };
     boite.hidden = false;
+    var suite = $(ids.suite);
     if (suite) suite.hidden = true;
 
-    var montant = $("#prFourchette");
+    var montant = $(ids.montant);
     if (montant) montant.textContent = vue.texte;
 
     /* CE QUI A PRODUIT LE CHIFFRE, en clair. Un montant sans ses
        raisons se lit comme un tarif ; avec ses raisons, il se lit
        comme une reponse — et il se discute. */
-    var sur = $("#prFourchetteSur");
-    if (sur) {
-      sur.textContent = vue.sur.length
-        ? "D’après : " + vue.sur.join(" · ")
-        : "";
-    }
-    $("#prDevisQuestion").hidden = false;
-    $("#prDevisOui").hidden = true;
-    $("#prDevisNon").hidden = true;
+    var sur = $(ids.sur);
+    if (sur) sur.textContent = vue.sur.length ? "D’après : " + vue.sur.join(" · ") : "";
+
+    $(ids.question).hidden = false;
+    $(ids.oui).hidden = true;
+    $(ids.non).hidden = true;
   }
 
-  /* La reaction part comme une MISE A JOUR de la meme ligne : le
-     `_sid` a ete oublie a l'envoi final, on le redonne. */
-  function envoyerReaction(reaction, raison) {
-    if (!devisEnCours) return Promise.resolve(null);
-    var charge = Object.assign({}, devisEnCours.data, {
+  /* La charge d'une reaction au prix. Extraite parce que trois
+     chemins l'utilisent : le clic « Oui / Non », la sauvegarde en
+     cours de frappe, et le filet de `pagehide`. */
+  function chargeReaction(reaction, raison) {
+    if (!devisEnCours) return null;
+    var d = Object.assign({}, devisEnCours.data, {
       fourchette_vue: devisEnCours.vue.texte,
-      prix_reaction: reaction
-    });
-    if (raison) charge.prix_raison = raison;
-    /* Pas de `_final` : la confirmation au visiteur est deja
-       partie, il ne faut pas la lui renvoyer. */
-    return sendJson("project", Object.assign({}, charge, {
+      prix_reaction: reaction,
+      /* Pas de `_final` : la confirmation au visiteur est deja
+         partie, il ne faut pas la lui renvoyer. */
       _sid: devisEnCours.sid,
-      _etape: 6, _etapes: 6
-    }));
+      _etape: 99, _etapes: 99
+    });
+    if (raison) d.prix_raison = raison;
+    delete d._sidGarde;
+    return { kind: devisEnCours.kind, data: d };
+  }
+
+  function envoyerReaction(reaction, raison) {
+    var c = chargeReaction(reaction, raison);
+    if (!c) return Promise.resolve(null);
+    return sendJson(c.kind, c.data);
+  }
+
+  /* LES DEUX BOUTONS, POUR LES DEUX FORMULAIRES. Le « Oui » enchaine
+     vers la reservation ; le « Non » ouvre une seule question. Les
+     deux partent au classeur : un refus renseigne autant qu'un
+     accord, et il est plus rare. */
+  function brancherDevis(kind) {
+    var ids = DEVIS[kind];
+    var choix = $(ids.question + ' .choices[data-choice="prix_reaction"]');
+    if (choix) {
+      $$("button", choix).forEach(function (b) {
+        b.addEventListener("click", function () {
+          var oui = b.dataset.value === "Oui";
+          $(ids.oui).hidden = !oui;
+          $(ids.non).hidden = oui;
+          $(ids.question).hidden = true;
+          envoyerReaction(b.dataset.value, "").catch(function () {});
+        });
+      });
+    }
+
+    /* LA RAISON NE SE PERD PLUS SI LA MODALE SE FERME.  D-750
+       Elle etait envoyee au clic sur « Envoyer », et seulement la :
+       quelqu'un qui tapait deux mots puis fermait laissait un
+       « Non » sans POURQUOI — la seule chose que ce refus nous
+       apprenne. Elle se sauve maintenant en ecrivant, a la sortie
+       du champ, et au dernier moment par `sendBeacon`. */
+    sauverEnEcrivant($(ids.raison), function (v) {
+      return chargeReaction("Non", v);
+    });
+
+    var envoi = $(ids.envoi);
+    if (envoi) {
+      envoi.addEventListener("click", function () {
+        var champ = $(ids.raison);
+        var statut = $(ids.statut);
+        setLoading(envoi, true);
+        envoyerReaction("Non", champ ? champ.value : "")
+          .then(function () {
+            setLoading(envoi, false);
+            say(statut, "Noté. Merci — ça nous sert vraiment.", "ok");
+            $(ids.non).hidden = true;
+          })
+          .catch(function (err) {
+            setLoading(envoi, false);
+            say(statut, messageEchec(err), "err");
+          });
+      });
+    }
   }
 
   /* `POIDS` reste : il sert a ordonner les reponses de l'estimateur. */
@@ -1963,6 +2100,84 @@
     } catch (e) {}
   }
 
+  /* LE DERNIER ENVOI POSSIBLE, QUAND LA PAGE S'EN VA.  D-750
+
+     `fetch` est abandonne des que le document se decharge : une
+     requete partie sur `pagehide` n'arrive jamais. `sendBeacon` est
+     fait pour ca — le navigateur la prend en charge et la livre
+     apres la fermeture de l'onglet.
+
+     LE TYPE COMPTE. On envoie un `Blob` en `text/plain`, exactement
+     comme `poster()`, parce que c'est ce qui evite la requete
+     prealable CORS qu'une Web App Apps Script ne sait pas traiter.
+     Un `sendBeacon` en `application/json` declencherait un
+     preflight et serait rejete en silence.
+
+     Il ne rend rien qu'un booleen : « mis en file », pas « recu ».
+     C'est un filet, jamais le chemin principal. */
+  function baliser(kind, data) {
+    if (!FORM_ENDPOINT) return false;
+    if (!navigator || typeof navigator.sendBeacon !== "function") return false;
+    try {
+      var charge = Object.assign({}, data, {
+        _form: kind,
+        _subject: SUBJECTS[kind] || "Message - site APED"
+      });
+      var blob = new Blob([JSON.stringify(charge)], { type: "text/plain;charset=utf-8" });
+      return navigator.sendBeacon(FORM_ENDPOINT, blob);
+    } catch (e) { return false; }
+  }
+
+  /* CE QU'IL RESTE A SAUVER SI LA PAGE PART MAINTENANT. Chaque
+     formulaire y depose une fonction qui rend sa charge, ou `null`
+     s'il n'a rien de neuf. */
+  var aSauverAuDepart = [];
+  function sauverAvantDeQuitter() {
+    aSauverAuDepart.forEach(function (f) {
+      try {
+        var c = f();
+        if (c && c.kind && c.data) baliser(c.kind, c.data);
+      } catch (e) {}
+    });
+  }
+  /* `pagehide` PLUTOT QUE `beforeunload` : le second est ignore par
+     Safari mobile et bloque la mise en cache de la page. */
+  window.addEventListener("pagehide", sauverAvantDeQuitter);
+  doc.addEventListener("visibilitychange", function () {
+    if (doc.visibilityState === "hidden") sauverAvantDeQuitter();
+  });
+
+  /* Un champ libre qui se sauve tout seul pendant qu'on ecrit.
+     800 ms apres la derniere frappe, et tout de suite a la sortie
+     du champ. Sert a la raison d'un refus de prix : sans ca, fermer
+     la modale apres avoir clique « Non » perdait le POURQUOI, qui
+     est la seule chose que ce refus nous apprenne. */
+  function sauverEnEcrivant(champ, produire) {
+    if (!champ) return;
+    var minuterie = null;
+    var dernier = "";
+    var pousser = function () {
+      var v = champ.value;
+      if (v === dernier) return;
+      dernier = v;
+      var c = produire(v);
+      if (c) { try { sendJson(c.kind, c.data).catch(function () {}); } catch (e) {} }
+    };
+    champ.addEventListener("input", function () {
+      window.clearTimeout(minuterie);
+      minuterie = window.setTimeout(pousser, 800);
+    });
+    champ.addEventListener("blur", function () {
+      window.clearTimeout(minuterie);
+      pousser();
+    });
+    aSauverAuDepart.push(function () {
+      if (champ.value === dernier || !champ.value.trim()) return null;
+      dernier = champ.value;
+      return produire(champ.value);
+    });
+  }
+
   /* LES PIECES JOINTES VOYAGENT EN BASE64, PAS EN MULTIPART.  D-722
      `doPost` d'Apps Script recoit `e.postData.contents` comme une
      CHAINE : il ne sait pas reconstruire les parties binaires d'un
@@ -2681,7 +2896,7 @@
   var projectNext = $("#projectNext");
   var projectNav = $("#projectNav");
   /* Six, depuis que les fichiers ont rejoint la description.  D-703 */
-  var P_TOTAL = 6;
+  var P_TOTAL = 8;   /* Huit depuis D-749 : deux ecrans de plus pour l ampleur, le design, les fonctions et le contenu — les quatre reponses qui font varier un prix. */
   var pStep = 1;
   var pickedFiles = [];
   var MAX_BYTES = 10 * 1024 * 1024;
@@ -2867,7 +3082,7 @@
       var done = function () {
         setLoading(projectNext, false);
         oublierSession("project");
-        montrerFourchette(vue, data);
+        montrerFourchette("project", vue, data, sid);
         goPStep(P_TOTAL);
       };
       var attempt = pickedFiles.length
@@ -2885,41 +3100,7 @@
       });
     };
 
-    /* LES DEUX BOUTONS DE LA FOURCHETTE. Le « Oui » enchaine vers la
-       reservation ; le « Non » ouvre une seule question. Les deux
-       partent au classeur : un refus renseigne autant qu'un accord,
-       et il est plus rare. */
-    var choixPrix = $('#prDevisQuestion .choices[data-choice="prix_reaction"]');
-    if (choixPrix) {
-      $$("button", choixPrix).forEach(function (b) {
-        b.addEventListener("click", function () {
-          var oui = b.dataset.value === "Oui";
-          $("#prDevisOui").hidden = !oui;
-          $("#prDevisNon").hidden = oui;
-          $("#prDevisQuestion").hidden = true;
-          envoyerReaction(b.dataset.value, "").catch(function () {});
-        });
-      });
-    }
-
-    var envoiRaison = $("#prPrixEnvoi");
-    if (envoiRaison) {
-      envoiRaison.addEventListener("click", function () {
-        var champ = $("#prPrixRaison");
-        var statut = $("#prPrixStatut");
-        setLoading(envoiRaison, true);
-        envoyerReaction("Non", champ ? champ.value : "")
-          .then(function () {
-            setLoading(envoiRaison, false);
-            say(statut, "Noté. Merci — ça nous sert vraiment.", "ok");
-            $("#prDevisNon").hidden = true;
-          })
-          .catch(function (err) {
-            setLoading(envoiRaison, false);
-            say(statut, messageEchec(err), "err");
-          });
-      });
-    }
+    brancherDevis("project");
 
     projectNext.addEventListener("click", advance);
     projectWizard.addEventListener("submit", function (e) { e.preventDefault(); advance(); });
@@ -2929,7 +3110,10 @@
   var wizard = $("#wizard");
   var wizardBar = $("#wizardBar");
   var answers = {};
-  var E_TOTAL = 8;
+  /* Onze depuis D-749 : huit questions, les coordonnees, le resultat.
+     Trois de plus qu avant — ampleur, fonctions, contenu — parce que la
+     fourchette se calculait sur le NOMBRE de cases cochees. */
+  var E_TOTAL = 11;
 
   /* CE QU'ON A COMPRIS, PAS UN PRIX.  D-353
      `computeEstimate` rendait une fourchette en dollars tiree du
@@ -2976,6 +3160,39 @@
       if (btn) setLoading(btn, false);
       $$(".field.is-invalid", form).forEach(function (f) { markField(f, true); });
     }
+    /* La boite de la fourchette se referme aussi : rouvrir la modale
+       ne doit pas remontrer le chiffre du visiteur precedent. */
+    var boite = $("#esDevis");
+    if (boite) boite.hidden = true;
+    var suite = $("#esSuiteTexte");
+    if (suite) suite.hidden = false;
+  }
+
+  /* LES PARAMETRES QUI ONT MENE AU CHIFFRE, tous, sous leur libelle
+     lisible.  D-749
+
+     Les trois questions ajoutees rendent DEJA leur libelle en
+     `data-value` : `ANSWER_LABELS` ne les connait pas et rendrait
+     `undefined`. On retombe donc sur la valeur brute plutot que sur
+     une chaine vide — un parametre perdu, c'est une fourchette
+     qu'on ne peut plus expliquer trois semaines plus tard. */
+  function reponsesEstimateur() {
+    var lis = function (cle) {
+      var v = answers[cle];
+      if (v == null || v === "") return "";
+      return ANSWER_LABELS[v] || String(v);
+    };
+    return {
+      type_de_projet: lis("type"),
+      domaine:        lis("industrie"),
+      envergure:      lis("envergure"),
+      ampleur:        lis("ampleur"),
+      fonctions:      lis("fonctions"),
+      contenu:        lis("contenu"),
+      niveau_design:  lis("design"),
+      echeancier:     lis("delai"),
+      site_existant:  lis("site_existant")
+    };
   }
 
   if (wizard) {
@@ -2984,7 +3201,15 @@
       $$("button", group).forEach(function (btn) {
         btn.addEventListener("click", function () {
           answers[key] = btn.dataset.value;
-          goEStep(Number(group.closest(".step").dataset.step) + 1);
+          var n = Number(group.closest(".step").dataset.step);
+          /* CHAQUE REPONSE LAISSE UNE TRACE, meme sans courriel.
+             Le serveur exige le minimum vital en cours de route :
+             tant qu'on n'a pas d'adresse il refusera, et c'est bien
+             — une ligne sans moyen de rappeler ne sert a rien. On
+             tente quand meme : des que le courriel arrive a
+             l'etape 10, la ligne s'ouvre avec TOUT le contexte. */
+          enregistrerDiscret("estimate", reponsesEstimateur(), n, E_TOTAL);
+          goEStep(n + 1);
         });
       });
     });
@@ -3000,33 +3225,43 @@
         say(status, "");
 
         var resume = resumeProjet();
-        var payload = Object.assign({}, serialize(estimateForm), {
-          type_de_projet: ANSWER_LABELS[answers.type] || "",
-          domaine: ANSWER_LABELS[answers.industrie] || "",
-          envergure: ANSWER_LABELS[answers.envergure] || "",
-          niveau_design: ANSWER_LABELS[answers.design] || "",
-          echeancier: ANSWER_LABELS[answers.delai] || "",
-          site_existant: ANSWER_LABELS[answers.site_existant] || ""
+        var payload = Object.assign({}, serialize(estimateForm), reponsesEstimateur());
+
+        /* LA FOURCHETTE SE CALCULE AVANT L'ENVOI et voyage avec lui :
+           le classeur doit porter le MEME chiffre que celui que le
+           visiteur va lire. Le recalculer plus tard donnerait un
+           autre resultat le jour ou le bareme bouge. */
+        var vue = fourchetteDe(payload);
+        if (vue) payload.fourchette_vue = vue.texte;
+
+        var sid = sessionDe("estimate");
+        var charge = Object.assign({}, payload, {
+          _sid: sid, _etape: E_TOTAL - 1, _etapes: E_TOTAL, _final: true
         });
 
         var reveal = function () {
           setLoading(btn, false);
-          goEStep(8);
+          goEStep(E_TOTAL);
           var res = $("#estimateResume");
           if (res) res.textContent = resume;
+          montrerFourchette("estimate", vue, payload, sid);
         };
 
-        /* L'ETAT DE SORTIE EST CELUI DE L'ETAPE 8, PAS CELUI DU  D-425 */
+        /* L'ETAT DE SORTIE EST CELUI DE LA DERNIERE ETAPE, PAS DU  D-425 */
         var sortie = $("#estimateStatus") || status;
         retirerRepli(sortie);
         say(sortie, "");
-        sendJson("estimate", payload).then(reveal).catch(function (err) {
+        sendJson("estimate", charge).then(function () {
+          oublierSession("estimate");
+          reveal();
+        }).catch(function (err) {
           /* L'ORDRE COMPTE. On revele d'abord le resume — c'est ce  D-426 */
           reveal();
           say(sortie, messageEchec(err), "err");
-          poserRepli(sortie, "estimate", payload);
+          poserRepli(sortie, "estimate", charge);
         });
       });
+      brancherDevis("estimate");
     }
   }
 

@@ -4340,6 +4340,61 @@ html:not(.js) .ba-trait { display: none; }
   font-size: var(--fs-8);
   color: var(--ink-muted);
 }
+/* == 23ter. LES DEUX PORTES DE L'URGENCE ==  D-751
+
+   Une vraie urgence n'ecrit pas, elle appelle. Le numero passe
+   devant, en gros, et c'est un vrai lien `tel:`.
+
+   LE MINIUM EST ICI A SA PLACE : c'est l'endroit du site ou le
+   visiteur peut agir le plus vite. Il n'y est qu'une fois — sur le
+   numero, pas sur la boite. */
+.deux-portes {
+  display: grid;
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
+  padding-bottom: var(--s-5);
+  border-bottom: var(--rule-w) solid var(--rule-strong);
+}
+@media (min-width: 40rem) {
+.deux-portes { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+.porte {
+  display: grid;
+  gap: var(--s-2);
+  align-content: start;
+  padding: var(--s-4);
+  border: var(--rule-w) solid var(--rule);
+}
+.porte--forte { border-color: var(--rule-strong); }
+.porte-quand {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.porte-tel {
+  display: block;
+  font-size: var(--fs-3);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--accent-text);
+  text-decoration: none;
+  /* CIBLE TACTILE : le numero EST le bouton. 44 px de haut au
+     minimum, et toute la largeur de la boite. */
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+}
+.porte-tel:hover,
+.porte-tel:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+.porte-note,
+.porte-texte {
+  font-size: var(--fs-7);
+  line-height: 1.55;
+  color: var(--ink-muted);
+  max-width: 40ch;
+}
 /* == 23bis. LA FOURCHETTE, APRES LE FORMULAIRE ==  D-748
 
    Elle ne parait qu'une fois la demande partie. Ce n'est pas un

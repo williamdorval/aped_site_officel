@@ -774,7 +774,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 3,
+    version: 4,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,

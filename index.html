@@ -3375,7 +3375,71 @@
         </div>
       </div>
 
+      <!-- LES TROIS QUESTIONS QUI FONT VRAIMENT VARIER UN PRIX.  D-749
+           La fourchette se calculait sur le NOMBRE de cases cochees a
+           l'etape 3 — un signal si faible qu'il pouvait engager
+           l'agence trop bas ou faire fuir un client pour rien. Ce
+           qu'un devis regarde reellement : combien d'ecrans, quel
+           niveau de finition, combien de fonctions sur mesure, et si
+           le contenu existe. Deux questions par ecran, jamais plus. -->
       <div class="step" data-pstep="4" hidden>
+        <p class="step-q">Quelle taille, à peu près ?</p>
+        <div class="form-row">
+          <div class="field">
+            <label for="prAmpleur">Combien de pages ou d’écrans</label>
+            <select id="prAmpleur" name="ampleur" required>
+              <option value="">Choisir…</option>
+              <option>1 à 5 — l’essentiel</option>
+              <option>6 à 15 — un vrai site</option>
+              <option>Plus de 15 — une plateforme</option>
+              <option>Aucune idée, à voir ensemble</option>
+            </select>
+            <span class="field-error">Une estimation suffit.</span>
+          </div>
+          <div class="field">
+            <label for="prDesign">Jusqu’où pousser le design</label>
+            <select id="prDesign" name="niveau_design" required>
+              <option value="">Choisir…</option>
+              <option>Essentiel — propre, rapide, efficace</option>
+              <option>Premium — identité forte, animations</option>
+              <option>Signature — direction visuelle sur mesure</option>
+            </select>
+            <span class="field-error">Choisissez un niveau.</span>
+          </div>
+        </div>
+        <p class="form-legal">Rien n’est coulé dans le béton. Ça sert à situer
+          l’ordre de grandeur, pas à vous engager.</p>
+      </div>
+
+      <div class="step" data-pstep="5" hidden>
+        <p class="step-q">Le contenu et les fonctions.</p>
+        <div class="form-row">
+          <div class="field">
+            <label for="prContenu">Vos textes et vos photos</label>
+            <select id="prContenu" name="contenu" required>
+              <option value="">Choisir…</option>
+              <option>Prêts — j’ai tout sous la main</option>
+              <option>En partie — il manque des bouts</option>
+              <option>Tout est à créer</option>
+            </select>
+            <span class="field-error">Choisissez une réponse.</span>
+          </div>
+          <div class="field">
+            <label for="prFonctions">Des fonctions particulières&nbsp;?</label>
+            <select id="prFonctions" name="fonctions" required>
+              <option value="">Choisir…</option>
+              <option>Aucune — un site qui présente</option>
+              <option>Une ou deux — réservation, paiement, formulaire</option>
+              <option>Plusieurs — comptes, tableau de bord, connexions</option>
+            </select>
+            <span class="field-error">Choisissez une réponse.</span>
+          </div>
+        </div>
+        <p class="form-legal">« Aucune » est une bonne réponse. La moitié des
+          projets qu’on livre n’en ont pas besoin.</p>
+      </div>
+
+      <div class="step" data-pstep="6" hidden>
         <p class="step-q">Budget et échéancier.</p>
         <div class="form-row">
           <!-- LES FOURCHETTES CHIFFREES ONT SAUTE, et ce n'etait pas  D-085 -->
@@ -3417,7 +3481,7 @@
         <p class="empty" id="prFileEmpty">Aucun fichier pour l’instant. Ça se saute sans problème.</p>
       </div>
 
-      <div class="step" data-pstep="5" hidden>
+      <div class="step" data-pstep="7" hidden>
         <p class="step-q">Où peut-on vous joindre ?</p>
         <div class="form-row">
           <div class="field">
@@ -3449,7 +3513,7 @@
            Elle ne parait qu'ICI, apres six ecrans, a quelqu'un qui
            a decrit son projet. Ce n'est pas une grille tarifaire :
            c'est une reponse, et le texte dit ce qu'elle vaut. -->
-      <div class="step success" data-pstep="6" hidden>
+      <div class="step success" data-pstep="8" hidden>
         <span class="num">01 / 01</span>
         <h4>Reçu. Voici où ça se situe.</h4>
 
@@ -3539,6 +3603,35 @@
         <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
       </button>
     </div>
+
+    <!-- DEUX PORTES, ET LE VISITEUR DOIT SAVOIR LAQUELLE EN UNE
+         SECONDE.  D-751
+
+         Une vraie urgence n'ecrit pas : elle appelle. Un formulaire
+         seul obligeait quelqu'un dont le site est mort a taper cinq
+         champs et a attendre — c'est le pire moment pour lui
+         demander de la patience. Le numero passe donc DEVANT, en
+         gros, et il est un vrai lien `tel:` : une tape sur telephone
+         et l'appel part.
+
+         Le formulaire reste, et il est presente pour ce qu'il est :
+         la voie de ce qui peut attendre un peu. -->
+    <div class="deux-portes">
+      <div class="porte porte--forte">
+        <p class="porte-quand">Ça ne peut pas attendre</p>
+        <a class="porte-tel num" href="tel:+18195230871">819&nbsp;523-0871</a>
+        <p class="porte-note">On répond ou on rappelle dans l’heure, du lundi au
+          dimanche, de 9&nbsp;h à 20&nbsp;h. En dehors, laissez un message&nbsp;:
+          il est écouté.</p>
+      </div>
+      <div class="porte">
+        <p class="porte-quand">Ça peut attendre quelques heures</p>
+        <p class="porte-texte">Remplissez ce qui suit. Plus c’est précis, moins on
+          perd de temps à comprendre — et on arrive avec une piste au lieu d’une
+          question.</p>
+      </div>
+    </div>
+
     <form class="form" data-form="urgent" novalidate>
         <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
              un robot un peu serieux saute ce qui porte `hidden`.
@@ -3570,10 +3663,57 @@
         <input id="urEmail" name="email" type="email" autocapitalize="none" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
         <span class="field-error">Entrez un courriel valide.</span>
       </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="urCompany">Votre entreprise</label>
+          <input id="urCompany" name="entreprise" type="text" autocomplete="organization" />
+        </div>
+        <div class="field">
+          <label for="urSystem">Qu’est-ce qui est touché&nbsp;?</label>
+          <input id="urSystem" name="systeme" type="text" required
+            placeholder="monsite.ca · la boutique · le formulaire · les courriels…" />
+          <span class="field-error">Dites-nous quoi exactement.</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <!-- LES DEUX QUESTIONS QUI CHANGENT L'ORDRE DE PASSAGE. On
+             les pose en menus plutot qu'en texte libre : quelqu'un
+             en panique ecrit « ça marche plus », et on rappelle pour
+             demander depuis quand. -->
+        <div class="field">
+          <label for="urGravite">C’est à quel point cassé&nbsp;?</label>
+          <select id="urGravite" name="gravite" required>
+            <option value="">Choisir…</option>
+            <option>Panne complète — plus rien ne répond</option>
+            <option>Dégradé — ça marche, mal</option>
+            <option>Une seule fonction est morte</option>
+            <option>Rien n’est cassé, mais ça presse</option>
+          </select>
+          <span class="field-error">Choisissez une réponse.</span>
+        </div>
+        <div class="field">
+          <label for="urDepuis">Depuis quand&nbsp;?</label>
+          <select id="urDepuis" name="depuis_quand" required>
+            <option value="">Choisir…</option>
+            <option>Là, maintenant</option>
+            <option>Depuis quelques heures</option>
+            <option>Depuis hier</option>
+            <option>Depuis plusieurs jours</option>
+            <option>Je viens de m’en apercevoir</option>
+          </select>
+          <span class="field-error">Choisissez une réponse.</span>
+        </div>
+      </div>
       <div class="field">
-        <label for="urMsg">Décrivez l’urgence</label>
-        <textarea id="urMsg" name="message" rows="3" required placeholder="Ce qui ne fonctionne plus, depuis quand, ce que ça bloque…"></textarea>
+        <label for="urMsg">Qu’est-ce qui se passe exactement&nbsp;?</label>
+        <textarea id="urMsg" name="message" rows="3" required
+          placeholder="Ce que vous voyez à l’écran, le message d’erreur s’il y en a un, ce que vous avez déjà essayé…"></textarea>
         <span class="field-error">Décrivez la situation.</span>
+      </div>
+      <div class="field">
+        <label for="urImpact">Qu’est-ce que ça vous bloque&nbsp;? <span class="opt">(optionnel)</span></label>
+        <textarea id="urImpact" name="impact" rows="2"
+          placeholder="Les commandes sont arrêtées · je lance une promo demain · personne ne peut me joindre…"></textarea>
       </div>
       <button class="btn btn--primary" type="submit" data-submit>
         <span data-label>Envoyer en priorité</span>
@@ -3713,7 +3853,7 @@
   <div class="modal-scrim" data-modal-close></div>
   <div class="modal-panel modal-panel--wide">
     <div class="modal-head">
-      <h3 id="estimateTitle">Estimation en six questions</h3>
+      <h3 id="estimateTitle">Estimation en huit questions</h3>
       <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
         <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
       </button>
@@ -3754,6 +3894,34 @@
       </div>
 
       <div class="step" data-step="4" hidden>
+        <p class="step-q">Combien de pages ou d’écrans ?</p>
+        <div class="options" data-key="ampleur">
+          <button type="button" data-value="1 à 5 pages"><span class="o-num">01</span><span><strong>1 à 5</strong><small>L’essentiel, bien fait</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="6 à 15 pages"><span class="o-num">02</span><span><strong>6 à 15</strong><small>Un vrai site</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Plus de 15 pages"><span class="o-num">03</span><span><strong>Plus de 15</strong><small>Une plateforme</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Aucune idée, à voir ensemble"><span class="o-num">04</span><span><strong>Aucune idée</strong><small>On regardera ensemble</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="5" hidden>
+        <p class="step-q">Des fonctions particulières ?</p>
+        <div class="options" data-key="fonctions">
+          <button type="button" data-value="Aucune"><span class="o-num">01</span><span><strong>Aucune</strong><small>Un site qui présente, et c’est très bien</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Une ou deux"><span class="o-num">02</span><span><strong>Une ou deux</strong><small>Réservation, paiement, formulaire</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Plusieurs"><span class="o-num">03</span><span><strong>Plusieurs</strong><small>Comptes, tableau de bord, connexions</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="6" hidden>
+        <p class="step-q">Vos textes et vos photos ?</p>
+        <div class="options" data-key="contenu">
+          <button type="button" data-value="Prêts"><span class="o-num">01</span><span><strong>Prêts</strong><small>J’ai tout sous la main</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="En partie"><span class="o-num">02</span><span><strong>En partie</strong><small>Il manque des bouts</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Tout est à créer"><span class="o-num">03</span><span><strong>Tout est à créer</strong><small>On s’en occupe</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="7" hidden>
         <p class="step-q">Quel niveau de design ?</p>
         <div class="options" data-key="design">
           <button type="button" data-value="essentiel"><span class="o-num">01</span><span><strong>Essentiel</strong><small>Propre et efficace</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -3762,7 +3930,7 @@
         </div>
       </div>
 
-      <div class="step" data-step="5" hidden>
+      <div class="step" data-step="8" hidden>
         <p class="step-q">Quel échéancier ?</p>
         <div class="options" data-key="delai">
           <button type="button" data-value="urgent"><span class="o-num">01</span><span><strong>Urgent</strong><small>Moins d’un mois</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -3771,7 +3939,7 @@
         </div>
       </div>
 
-      <div class="step" data-step="6" hidden>
+      <div class="step" data-step="9" hidden>
         <p class="step-q">Avez-vous déjà un site web ?</p>
         <div class="options" data-key="site_existant">
           <button type="button" data-value="oui"><span class="o-num">01</span><span><strong>Oui</strong><small>À refaire ou améliorer</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -3779,7 +3947,7 @@
         </div>
       </div>
 
-      <div class="step" data-step="7" hidden>
+      <div class="step" data-step="10" hidden>
         <p class="step-q">Où envoyer votre estimation ?</p>
         <form class="form" data-form="estimate" novalidate>
         <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
@@ -3825,10 +3993,60 @@
            L'etape 8 rend maintenant CE QU'ON A COMPRIS du projet —
            ce qui est utile au visiteur, verifiable par lui, et ce qui
            justifie l'appel. -->
-      <div class="step" data-step="8" hidden>
+      <div class="step" data-step="11" hidden>
         <p class="label">Ce qu’on a compris de votre projet</p>
         <p class="num" id="estimateResume" style="font-size: var(--fs-4); letter-spacing: -0.02em; line-height: 1.35;">—</p>
-        <p class="roi-note">Le prix ferme est dit au premier appel, et c’est celui de la facture. On ne publie pas de fourchette&nbsp;: aucun projet ne ressemble au précédent, et un chiffre sorti de son contexte finit toujours par mentir dans un sens ou dans l’autre.</p>
+
+        <!-- LA FOURCHETTE REVIENT ICI, sous la regle de D-748 :
+             apres huit questions, jamais en acces libre. -->
+        <div class="devis" id="esDevis" hidden>
+          <p class="devis-quoi">Pour ce que vous décrivez, un projet comme le vôtre
+            se situe généralement entre&nbsp;:</p>
+          <p class="devis-montant num" id="esFourchette">—</p>
+          <p class="devis-sur" id="esFourchetteSur"></p>
+          <p class="devis-mise">
+            C’est un <b>ordre de grandeur</b>, pas un devis. Le prix ferme est dit
+            au premier appel, et c’est celui de la facture. Il peut descendre&nbsp;:
+            la moitié de nos mandats commencent plus petit que prévu.
+          </p>
+
+          <div class="devis-question" id="esDevisQuestion">
+            <p class="devis-demande">Est-ce que cet ordre de grandeur vous convient&nbsp;?</p>
+            <div class="choices" data-choice="prix_reaction">
+              <button class="btn btn--ghost" type="button" data-value="Oui">Oui, on en parle</button>
+              <button class="btn btn--ghost" type="button" data-value="Non">Non, c’est trop</button>
+            </div>
+            <input type="hidden" name="prix_reaction" />
+          </div>
+
+          <div class="devis-suite" id="esDevisOui" hidden>
+            <p class="devis-mise">Parfait. Trente minutes suffisent pour vous dire quoi
+              faire en premier — et vous repartez avec la réponse même si on ne
+              travaille pas ensemble.</p>
+            <button class="btn btn--primary" type="button" data-modal-switch="modal-booking">
+              Choisir un moment
+              <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+            </button>
+          </div>
+
+          <div class="devis-suite" id="esDevisNon" hidden>
+            <p class="devis-mise">Merci de le dire — c’est plus utile qu’un silence.
+              En deux mots, qu’est-ce qui accroche&nbsp;?</p>
+            <div class="field">
+              <label for="esPrixRaison">Ce qui accroche</label>
+              <textarea id="esPrixRaison" name="prix_raison" rows="2"
+                placeholder="Au-dessus de mon budget · je voulais juste une idée · je compare…"></textarea>
+            </div>
+            <button class="btn btn--primary" type="button" id="esPrixEnvoi" data-submit>
+              <span data-label>Envoyer</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-send" /></svg>
+            </button>
+            <p class="form-status" id="esPrixStatut" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <p class="roi-note" id="esSuiteTexte">Le prix ferme est dit au premier appel,
+          et c’est celui de la facture.</p>
         <!-- L'ETAT DE L'ENVOI VIT ICI, ET C'EST UN DEFAUT CORRIGE.  D-087 -->
         <p class="form-status" id="estimateStatus" role="status" aria-live="polite"></p>
         <button class="btn btn--primary" type="button" data-modal-switch="modal-booking" style="justify-self:start">
