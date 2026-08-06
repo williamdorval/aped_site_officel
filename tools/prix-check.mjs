@@ -88,13 +88,85 @@ function zonesDemo(texte) {
   return bornes.filter(([a, b]) => a >= 0 && b > a).map(([a, b]) => [ligneDe(a), ligneDe(b)]);
 }
 
+/* LES COMMENTAIRES, ET POURQUOI ILS COMPTENT A PART.  D-728
+
+   Les dix montants que cet outil signalait apres sa reparation
+   etaient TOUS dans des commentaires — et tous dans des
+   commentaires qui expliquent le RETRAIT d'une grille : « elle
+   publiait cinq paliers, de 2 500 $ a 40 000 $ ». Le raisonnement
+   qui a fait disparaitre un prix ne peut pas s'ecrire sans citer le
+   prix disparu.
+
+   Un commentaire n'est ni rendu, ni lu par un visiteur — ni le
+   bloc de JavaScript, ni celui de HTML. (On ne peut PAS ecrire ici
+   la forme litterale du commentaire HTML : Node refuse un module
+   qui la contient, « HTML comments are not allowed in modules ».)
+   La passe du TEXTE RENDU, plus bas, reste le controle dur : elle
+   ouvre les
+   modales et les accordeons et relit `innerText`. Si un prix
+   arrivait a l'ecran, c'est la qu'il se ferait prendre, et elle
+   ne pardonne pas.
+
+   ON LES COMPTE QUAND MEME, SEPAREMENT. Un commentaire qui cite un
+   ancien tarif reste une trace du bareme dans un depot public : ce
+   n'est pas une faute, c'est une chose a savoir.
+
+   LA DETECTION EST STRUCTURELLE, PAS PAR MOT-CLE. On suit l'etat
+   « dans un commentaire » ligne par ligne — sinon un montant place
+   apres la fermeture d'un bloc passerait pour du commentaire. */
+function lignesCommentees(texte, html) {
+  const out = new Set();
+  let bloc = false;
+  texte.split("\n").forEach((l, i) => {
+    const debutBloc = bloc;
+    let reste = l;
+    let commentee = bloc;
+
+    if (html) {
+      while (reste.length) {
+        if (!bloc) {
+          const o = reste.indexOf("<!--");
+          if (o < 0) break;
+          bloc = true; commentee = true; reste = reste.slice(o + 4);
+        } else {
+          const c = reste.indexOf("-->");
+          if (c < 0) { reste = ""; break; }
+          bloc = false; reste = reste.slice(c + 3);
+        }
+      }
+    } else {
+      while (reste.length) {
+        if (!bloc) {
+          const deuxBarres = reste.indexOf("//");
+          const o = reste.indexOf("/*");
+          if (deuxBarres >= 0 && (o < 0 || deuxBarres < o)) { commentee = true; break; }
+          if (o < 0) break;
+          bloc = true; commentee = true; reste = reste.slice(o + 2);
+        } else {
+          const c = reste.indexOf("*/");
+          if (c < 0) { reste = ""; break; }
+          bloc = false; reste = reste.slice(c + 2);
+        }
+      }
+    }
+
+    /* Une ligne compte comme commentee si elle l'etait en entrant OU
+       si un commentaire s'y ouvre. Le cas « code, puis commentaire
+       en fin de ligne » reste donc signale — c'est du code. */
+    if (debutBloc || commentee) out.add(i);
+  });
+  return out;
+}
+
 const source = [];
+const enCommentaire = [];
 for (const f of FICHIERS) {
   const p = path.join(RACINE, f);
   if (!fs.existsSync(p)) continue;
   const brut = fs.readFileSync(p, "utf8");
   const demo = f.endsWith(".html") ? zonesDemo(brut) : [];
   const dansDemo = (i) => demo.some(([a, b]) => i >= a && i <= b);
+  const commentees = lignesCommentees(brut, f.endsWith(".html"));
   const lignes = brut.split("\n");
   lignes.forEach((l, i) => {
     let m;
@@ -103,6 +175,18 @@ for (const f of FICHIERS) {
       const n = m[1];
       const a = autorise(n) || contexteOk(l) ||
         (dansDemo(i) ? { pourquoi: "prix de demonstration d'un client fictif, pas un tarif APED" } : null);
+
+      /* Un montant dans un commentaire sort du decompte dur et entre
+         dans le sien : il n'atteint aucun visiteur, mais il reste
+         une trace du bareme dans un depot public. */
+      if (!a && commentees.has(i)) {
+        enCommentaire.push({
+          fichier: f, ligne: i + 1, montant: m[0].trim(),
+          contexte: l.trim().slice(0, 96)
+        });
+        continue;
+      }
+
       source.push({
         fichier: f, ligne: i + 1, montant: m[0].trim(),
         verdict: a ? "autorise (" + a.pourquoi + ")" : "A RETIRER",
@@ -112,39 +196,71 @@ for (const f of FICHIERS) {
   });
 }
 
-/* LA GRILLE EST AFFICHEE, ET LA SONDE NE LA VOYAIT PAS.  D-716
-   Cette sonde cherchait `PRICING` et `base: { vitrine`. La variable
-   s'appelle `BAREME` (js/main.js:29) : elle ne matchait rien, et le
-   titre imprime plus bas jurait que la grille « ne s'affiche jamais
-   telle quelle ». Elle s'affiche : `main.js` pose ses bornes dans le
-   textContent de #priceLow et #priceHigh a l'etape 8 de l'estimateur.
-   On la releve, on la NOMME, et on refuse de rendre zero. */
-const grilles = [];
-{
-  const p = path.join(RACINE, "js/main.js");
-  const lignes = fs.readFileSync(p, "utf8").split("\n");
-  let dansBareme = false;
-  lignes.forEach((l, i) => {
+/* LA GRILLE A DISPARU POUR DE BON, ET LA SONDE NE LE SAVAIT PAS.
+   D-716 · D-728
+
+   HISTOIRE COURTE, PARCE QU'ELLE SE REPETE. Premiere version : la
+   sonde cherchait `PRICING`, la variable s'appelait `BAREME`, elle
+   ne matchait rien et jurait qu'il n'y avait pas de grille. On a
+   corrige en cherchant `BAREME` ET en ARRETANT sur zero — « zero
+   ici veut dire que la sonde a derive ».
+
+   Puis `BAREME` a ete retire pour de vrai le 2026-08-03 (D-353).
+   Le garde-fou est alors devenu le defaut : la sonde ARRETE a
+   chaque lancement, `process.exit(2)`, et TOUT LE RESTE DU
+   CONTROLE — les montants du source, le texte rendu — ne s'execute
+   plus. La garantie « aucun prix publie » n'etait plus verifiee
+   depuis, sans que rien ne le dise autrement qu'en criant.
+
+   C'est le piege 46 dans sa forme la plus pure : un contournement
+   qui survit a son motif.
+
+   CE QUI REMPLACE L'ARRET. Zero grille est desormais le resultat
+   ATTENDU — mais un zero ne se croit toujours pas sur parole. On
+   passe donc a la sonde un texte d'essai qui CONTIENT une grille :
+   si elle ne la trouve pas, c'est la sonde qui est cassee, et c'est
+   la qu'on arrete. Le zero du vrai fichier ne compte que si le
+   faux, lui, rend autre chose que zero. */
+function chercherGrille(source) {
+  const trouve = [];
+  let dedans = false;
+  source.split("\n").forEach((l, i) => {
     if (/\bvar\s+BAREME\s*=|PRICING|base:\s*\{\s*vitrine/.test(l)) {
-      dansBareme = true;
-      grilles.push({ ligne: i + 1, texte: l.trim().slice(0, 110) });
+      dedans = true;
+      trouve.push({ ligne: i + 1, texte: l.trim().slice(0, 110) });
       return;
     }
-    if (dansBareme) {
-      if (/^\s*\]/.test(l)) { dansBareme = false; return; }
-      if (/\d/.test(l)) grilles.push({ ligne: i + 1, texte: l.trim().slice(0, 110) });
+    if (dedans) {
+      if (/^\s*\]/.test(l)) { dedans = false; return; }
+      if (/\d/.test(l)) trouve.push({ ligne: i + 1, texte: l.trim().slice(0, 110) });
     }
   });
-  if (!grilles.length) {
+  return trouve;
+}
+
+{
+  /* L'AUTO-CONTROLE, D'ABORD. Une sonde qui ne sait plus trouver ce
+     qu'elle cherche rend zero, et zero se lit « rien a signaler ». */
+  const faux = [
+    "var BAREME = [",
+    "  { max: 1, bas: 2500, haut: 5000 },",
+    "  { max: 3, bas: 5000, haut: 12000 }",
+    "];"
+  ].join("\n");
+  const essai = chercherGrille(faux);
+  if (essai.length < 3) {
     console.error(
-      "ARRET  js/main.js — aucune grille trouvee.\n" +
-      "       Il y en avait une (var BAREME, cinq paliers). Zero ici\n" +
-      "       veut dire que la sonde a derive, pas que la grille a\n" +
-      "       disparu : va le verifier a la main avant de me croire."
+      "ARRET  la sonde ne reconnait plus une grille de prix.\n" +
+      "       Sur un texte d'essai qui en contient une, elle en a\n" +
+      "       trouve " + essai.length + " ligne(s) au lieu de 3 au moins.\n" +
+      "       Ce n'est pas le site qui a change, c'est l'instrument.\n" +
+      "       Repare `chercherGrille` avant de croire le verdict."
     );
     process.exit(2);
   }
 }
+
+const grilles = chercherGrille(fs.readFileSync(path.join(RACINE, "js/main.js"), "utf8"));
 
 /* ---- passe 2 : le texte reellement rendu ---- */
 const nav = await chromium.launch();
@@ -204,35 +320,57 @@ const aRetirer = source.filter((s) => s.verdict === "A RETIRER");
 const aVerifier = renduTries.filter((r) => r.verdict === "A VERIFIER");
 
 fs.writeFileSync(path.join(RACINE, "refonte-captures", "prix.json"),
-  JSON.stringify({ source, rendu: renduTries, grilles }, null, 2), "utf8");
+  JSON.stringify({ source, rendu: renduTries, grilles, enCommentaire }, null, 2), "utf8");
 
 console.log("=== SOURCE ===");
 source.forEach((s) => console.log(`  ${s.fichier}:${s.ligne}  ${s.montant}  ${s.verdict}`));
 console.log("\n=== TEXTE RENDU, modales et accordeons ouverts ===");
 renduTries.forEach((r) => console.log(`  ${r.montant}  ${r.verdict}   « …${r.avant} ${r.montant} ${r.apres}… »`));
-console.log(`\n=== GRILLE PUBLIEE — AFFICHEE AU VISITEUR, ETAPE 8 DE L'ESTIMATEUR ===`);
-grilles.forEach((g) => console.log(`  js/main.js:${g.ligne}  ${g.texte}`));
-console.log(
-  `  ^ ${grilles.length} ligne(s). Ces bornes arrivent dans le textContent de\n` +
-  `    #priceLow et #priceHigh (js/main.js:2088-2101). Le visiteur les LIT.\n` +
-  `    CLAUDE.md interdit « aucun prix, nulle part » ; D-353 documente ce\n` +
-  `    bareme comme une decision assumee. Les deux ne peuvent pas etre\n` +
-  `    vrais. ARBITRAGE DU PROPRIETAIRE — cet outil ne tranche pas, il\n` +
-  `    refuse seulement de rendre zero en silence.`
-);
-console.log(`\nA RETIRER dans le source : ${aRetirer.length}`);
+console.log(`\n=== GRILLE DE PRIX DANS js/main.js ===`);
+if (!grilles.length) {
+  console.log(
+    `  aucune — et la sonde vient de prouver qu'elle sait en trouver une\n` +
+    `  (auto-controle sur un texte d'essai, plus haut). Le bareme des cinq\n` +
+    `  paliers est parti le 2026-08-03, D-353.`
+  );
+} else {
+  grilles.forEach((g) => console.log(`  js/main.js:${g.ligne}  ${g.texte}`));
+  console.log(
+    `  ^ ${grilles.length} ligne(s). Ces bornes arrivaient dans le textContent\n` +
+    `    de #priceLow et #priceHigh. Le visiteur les LIT. CLAUDE.md interdit\n` +
+    `    « aucun prix, nulle part » : une grille reapparue est une regression,\n` +
+    `    pas un arbitrage.`
+  );
+}
+console.log(`\n=== DANS UN COMMENTAIRE — NON RENDU, MAIS PUBLIE DANS LE DEPOT ===`);
+if (!enCommentaire.length) {
+  console.log("  aucun");
+} else {
+  enCommentaire.forEach((c) => console.log(`  ${c.fichier}:${c.ligne}  ${c.montant}   « ${c.contexte} »`));
+  console.log(
+    `  ^ ${enCommentaire.length} montant(s). Aucun n'atteint un visiteur : ni un\n` +
+    `    « /* */ » ni un « <!-- --> » n'est rendu, et la passe du TEXTE RENDU\n` +
+    `    ci-dessus le confirme. Ce sont des commentaires qui expliquent le\n` +
+    `    RETRAIT d'une grille, et le raisonnement ne s'ecrit pas sans citer\n` +
+    `    ce qui a ete retire. Ils restent lisibles dans un depot public :\n` +
+    `    a arbitrer, pas a corriger en douce.`
+  );
+}
+console.log(`
+A RETIRER dans le source : ${aRetirer.length}`);
 console.log(`A VERIFIER dans le rendu : ${aVerifier.length}`);
 
-/* UN INTERDIT ABSOLU DOIT POUVOIR ECHOUER.  D-716
+/* UN INTERDIT ABSOLU DOIT POUVOIR ECHOUER.  D-716 · D-728
    `CLAUDE.md` ecrit « doit rester a 0 » et cet outil n'avait aucun
-   `process.exit` : il imprimait un nombre que rien ne relisait. La
-   grille publiee, elle, est signalee sans faire echouer — elle
-   attend un arbitrage, elle n'est pas une derive. */
-if (aRetirer.length || aVerifier.length) {
+   `process.exit` : il imprimait un nombre que rien ne relisait.
+   Une grille de prix REVENUE fait echouer, elle aussi : elle
+   n'attend plus d'arbitrage, il a ete rendu le 2026-08-03. */
+if (aRetirer.length || aVerifier.length || grilles.length) {
   console.error(
     `\nECHEC : ${aRetirer.length} prix a retirer dans le source, ` +
-    `${aVerifier.length} a verifier dans le rendu.`
+    `${aVerifier.length} a verifier dans le rendu, ` +
+    `${grilles.length} ligne(s) de grille de prix.`
   );
   process.exit(1);
 }
-console.log("\nok — 0 prix non autorise. La grille publiee reste en attente d'arbitrage.");
+console.log("\nok — 0 prix non autorise, 0 grille de prix.");

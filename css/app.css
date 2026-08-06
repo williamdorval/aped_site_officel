@@ -1105,6 +1105,41 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
 }
 .slot:hover { border-color: var(--accent-text); background: var(--accent-wash); }
 
+/* LES PLAGES VIENNENT DE L'AGENDA, ET IL FAUT LE DIRE.  D-726
+   Une liste d'heures sans provenance ne se croit pas : le visiteur
+   ne sait pas s'il regarde une grille imprimee ou ce qui est
+   reellement libre, et dans le doute il n'ose pas. La note repond,
+   en une phrase, dans les trois cas.
+
+   `--ink-muted` par defaut : c'est une precision, pas un message.
+   `--danger` seulement quand l'agenda n'a pas repondu, parce que la
+   phrase change alors de nature — elle retire une garantie. */
+.slots-note {
+  padding-top: var(--s-3);
+  border-top: var(--rule-w) solid var(--rule);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+.slots-note.is-filet {
+  border-top-color: var(--danger);
+  color: var(--danger);
+}
+
+/* PENDANT LA LECTURE DE L'AGENDA, LES PLAGES SE RETIRENT D'UN CRAN.
+   C'est V4, pas un fondu : le filet passe de `rule-strong` a `rule`
+   et l'encre de `ink` a `ink-muted`, en un temps, sans etat
+   intermediaire. Elles restent LISIBLES — on ne cache pas une
+   information pendant qu'on la verifie — mais elles ne se cliquent
+   plus, parce qu'une plage qu'on est en train de reverifier n'est
+   pas une plage qu'on peut prendre. */
+.slots-list.is-attente .slot {
+  border-color: var(--rule);
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+
 .recap {
   display: flex;
   align-items: center;

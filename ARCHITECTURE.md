@@ -20,7 +20,7 @@ ni **quelle ligne** (`SECTIONS.md`).
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
 | **Table** | 24 | 303 |
-| **1 · OÙ VAIS-JE ?** | 20 | 939 |
+| **1 · OÙ VAIS-JE ?** | 24 | 1 402 |
 | **2 · LES DEUX VAGUES DE SCRIPTS** | 36 | 622 |
 | **3 · index.html** | 12 | 150 |
 | &nbsp;&nbsp;↳ L'ordre du document, par sélecteur | 18 | 512 |
@@ -110,7 +110,11 @@ ni **quelle ligne** (`SECTIONS.md`).
 | **Le thème clair / sombre** | `css/tokens.css` (les jetons) · `js/main.js` bloc `Theme.` · le script en ligne du `<head>` (pose du thème avant le 1ᵉʳ rendu) | La bascule passe par `APED_TRAME`, plus par `startViewTransition` (qui était un fondu). Vérifier avec `node tools/theme-check.mjs`. |
 | **Une modale** | les six `#modal-*` de `index.html` · `js/main.js` bloc `Modales` · `css/app.css` bloc `10. MODALES` | Le popup cadeau est à part : `<dialog>` natif, logique dans le bloc `LE CADEAU` de `main.js`, style dans `11c. LE CADEAU`. |
 | **Une mesure / une preuve** | `tools/*.mjs`, catalogués dans `MESURES.md` | `node tools/serve.mjs 8099` d'abord, **et vérifier que le port est libre**. Poser `sessionStorage aped-sans-popup=1` dans tout outil qui clique. |
-| **La logique métier** (prix, formulaires, calendrier, calculateur) | `js/main.js` | Zéro dépendance. Si GSAP ne charge jamais, tout ça fonctionne quand même. |
+| **La logique métier** (prix, formulaires, calculateur) | `js/main.js` | Zéro dépendance. Si GSAP ne charge jamais, tout ça fonctionne quand même. |
+| **Ce que devient une soumission** (classeur, courriels, rendez-vous) | `google/Code.gs` — la **seule** pièce serveur du site | Elle ne s'exécute pas depuis le dépôt : elle vit dans un projet Apps Script du compte `apedagence`. On la modifie ici, on la recolle là-bas, puis **« Gérer les déploiements → crayon → Nouvelle version »**. « Nouveau déploiement » change l'adresse et le site parle dans le vide, sans que rien ne le signale. Guide : `docs/CONFIGURATION-GOOGLE-APED.md`. |
+| **Les disponibilités de réservation** (jours, heures, durée, tampon, préavis, horizon) | `google/Code.gs`, bloc `DISPONIBILITES` **tout en haut** | Deux couches : la **grille** est là ; les **exceptions** sont dans Google Agenda et nulle part ailleurs. `BOOKING` dans `js/main.js` n'est **plus** une source — c'est le filet quand la porte ne répond pas, et ses valeurs doivent suivre celles de `Code.gs`. Prouver avec `node tools/creneaux-check.mjs` puis `node tools/creneaux-vue.mjs`. |
+| **Le branchement d'un formulaire** | `js/main.js` — un seul point de sortie, `poster()` · le `<form data-form="…">` dans `index.html` · le `SCHEMA` de `Code.gs` | Le `name` d'un champ est le **contrat** entre le site et le classeur : le renommer d'un côté vide la colonne de l'autre, en silence. Le honeypot `_gotcha` est obligatoire sur chaque formulaire. |
+| **Une mesure du service** (sans toucher à Google) | `tools/faux-google.mjs` — il **exécute** le vrai `Code.gs` sous Node | Les bouchons disent toujours oui : ils prouvent l'aiguillage, la validation, le dédoublonnage, le calcul des créneaux et le fuseau. Ils ne prouvent ni un vrai Sheet, ni un vrai Meet, ni un courriel reçu. `RESERVES.md`. |
 
 ---
 

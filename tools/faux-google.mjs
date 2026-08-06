@@ -128,6 +128,99 @@ const classeurFactice = {
   deleteSheet: (s) => etat.feuilles.delete(s.getName())
 };
 
+/* ---------- le calendrier en memoire ----------
+
+   UN EVENEMENT DU BANC porte au plus :
+     { titre, debut, fin }                        — une plage horaire
+     { titre, jour: "2026-08-11" }                — toute la journee
+     { titre, jour, jours: 3 }                    — plusieurs journees
+     { …, disponible: true }                      — « Disponible »
+     { …, refuse: true }                          — invitation declinee
+     { …, annule: true }                          — occurrence supprimee
+   `tools/creneaux-check.mjs` s'en sert pour poser les trois cas que
+   le guide promet, et VOIR le creneau disparaitre. */
+
+const FUSEAU_BANC = "America/Toronto";
+
+function partsFuseau(d, tz) {
+  const f = new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+  });
+  const o = {};
+  for (const p of f.formatToParts(d)) if (p.type !== "literal") o[p.type] = p.value;
+  return o;
+}
+
+function decalageFuseau(d, tz) {
+  const p = partsFuseau(d, tz);
+  const commeUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
+  return Math.round((commeUTC - d.getTime()) / 60000);
+}
+
+/* Minuit, heure de Toronto, du jour « 2026-08-11 ». */
+function minuitBanc(cle) {
+  const [a, m, j] = String(cle).split("-").map(Number);
+  const suppose = Date.UTC(a, m - 1, j, 0, 0, 0);
+  const d1 = decalageFuseau(new Date(suppose), FUSEAU_BANC);
+  let out = new Date(suppose - d1 * 60000);
+  const d2 = decalageFuseau(out, FUSEAU_BANC);
+  if (d2 !== d1) out = new Date(suppose - d2 * 60000);
+  return out;
+}
+
+function bornes(e) {
+  if (e.jour) {
+    const d0 = minuitBanc(e.jour);
+    const n = e.jours || 1;
+    /* +26 h puis retour a minuit : un jour de changement d'heure
+       dure 23 h ou 25 h. */
+    let fin = d0;
+    for (let i = 0; i < n; i++) {
+      const p = partsFuseau(new Date(fin.getTime() + 26 * 3600000), FUSEAU_BANC);
+      fin = minuitBanc(`${p.year}-${p.month}-${p.day}`);
+    }
+    return { debut: d0, fin };
+  }
+  return { debut: new Date(e.debut), fin: new Date(e.fin) };
+}
+
+function versApiAvancee(e) {
+  const out = { summary: e.titre, status: e.annule ? "cancelled" : "confirmed" };
+  if (e.disponible) out.transparency = "transparent";
+  if (e.refuse) out.attendees = [{ self: true, responseStatus: "declined" }];
+  else if (e.invites && e.invites.length) out.attendees = e.invites.map((a) => ({ email: a }));
+  if (e.jour) {
+    const b = bornes(e);
+    const f = partsFuseau(b.fin, FUSEAU_BANC);
+    out.start = { date: e.jour };
+    out.end = { date: `${f.year}-${f.month}-${f.day}` };
+  } else {
+    out.start = { dateTime: new Date(e.debut).toISOString() };
+    out.end = { dateTime: new Date(e.fin).toISOString() };
+  }
+  return out;
+}
+
+const calendrierFactice = {
+  getEvents: (debut, fin) => etat.evenements
+    .filter((e) => bornes(e).debut < fin && bornes(e).fin > debut)
+    .map((e) => ({
+      getMyStatus: () => (e.refuse ? "NO" : "YES"),
+      isAllDayEvent: () => Boolean(e.jour),
+      getAllDayStartDate: () => bornes(e).debut,
+      getAllDayEndDate: () => bornes(e).fin,
+      getStartTime: () => bornes(e).debut,
+      getEndTime: () => bornes(e).fin,
+      titre: e.titre
+    })),
+  createEvent: (titre, debut, fin, opts) => {
+    const ev = { titre, debut, fin, description: (opts || {}).description, invites: [], meet: "" };
+    etat.evenements.push(ev);
+    return { addGuest: (a) => ev.invites.push(a), getId: () => "EV" + etat.evenements.length };
+  }
+};
+
 /* ---------- les services ---------- */
 const services = {
   PropertiesService: {
@@ -164,23 +257,31 @@ const services = {
 
   CalendarApp: {
     GuestStatus: { NO: "NO", YES: "YES", MAYBE: "MAYBE" },
-    getDefaultCalendar: () => ({
-      getEvents: (debut, fin) => etat.evenements
-        .filter((e) => e.debut < fin && e.fin > debut)
-        .map((e) => ({ getMyStatus: () => "YES", titre: e.titre })),
-      createEvent: (titre, debut, fin, opts) => {
-        const ev = { titre, debut, fin, description: (opts || {}).description, invites: [], meet: "" };
-        etat.evenements.push(ev);
-        return { addGuest: (a) => ev.invites.push(a), getId: () => "EV" + etat.evenements.length };
-      }
-    })
+    getDefaultCalendar: () => calendrierFactice,
+    getCalendarById: () => calendrierFactice
   },
 
   /* Le service avance. C'est LUI qui fabrique le lien Meet en
      production ; ici il rend un lien de forme plausible pour que la
-     suite de la chaine — colonne, avis, confirmation — se prouve. */
+     suite de la chaine — colonne, avis, confirmation — se prouve.
+
+     `list` compte AUTANT que `insert` depuis que les creneaux
+     existent : c'est par lui que `Code.gs` apprend ce qui occupe
+     l'agenda, et donc lui qui decide de ce que le site affiche. Il
+     rend la forme EXACTE du service avance — `start.date` sans
+     heure pour une journee entiere, `transparency`, `status`,
+     `attendees[].self` — parce que c'est justement cette forme-la
+     que `intervalleEvenement` doit savoir lire. */
   Calendar: {
     Events: {
+      list: (calId, params) => {
+        const t0 = new Date(params.timeMin);
+        const t1 = new Date(params.timeMax);
+        const items = etat.evenements
+          .filter((e) => bornes(e).debut < t1 && bornes(e).fin > t0)
+          .map((e) => versApiAvancee(e));
+        return { items, nextPageToken: null };
+      },
       insert: (ev, calId, opts) => {
         if (!opts || opts.conferenceDataVersion !== 1) {
           throw new Error("conferenceDataVersion doit valoir 1 pour creer un Meet");
@@ -228,7 +329,31 @@ const services = {
       return out.slice(0, 32);
     },
     getUuid: () => "uuid-" + Math.random().toString(36).slice(2, 12),
-    formatDate: (d, tz, fmt) => new Date(d).toISOString(),
+
+    /* IL RENDAIT DE L'ISO, ET C'ETAIT UN BOUCHON QUI MENTAIT.
+       `Code.gs` lit le decalage du fuseau en demandant `"Z"` a
+       `formatDate` : la reponse « 2026-08-10T13:00:00.000Z » aurait
+       ete lue comme un decalage de +20 h 26. Le banc aurait rendu
+       des creneaux, tous faux, et personne n'aurait vu passer une
+       erreur. `Intl` connait America/Toronto et son changement
+       d'heure ; on s'en sert. */
+    formatDate: (d, tz, fmt) => {
+      const p = partsFuseau(new Date(d), tz);
+      const off = decalageFuseau(new Date(d), tz);
+      const signe = off < 0 ? "-" : "+";
+      const abs = Math.abs(off);
+      const zz = signe
+        + String(Math.floor(abs / 60)).padStart(2, "0")
+        + String(abs % 60).padStart(2, "0");
+      return String(fmt)
+        .replace(/yyyy/g, p.year)
+        .replace(/MM/g, p.month)
+        .replace(/dd/g, p.day)
+        .replace(/HH/g, p.hour)
+        .replace(/mm/g, p.minute)
+        .replace(/ss/g, p.second)
+        .replace(/Z/g, zz);
+    },
     newBlob: (octets, type, nom) => ({ octets, type, nom }),
     base64Decode: (b64) => Buffer.from(b64, "base64")
   },
@@ -256,7 +381,10 @@ const source = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
 const noms = Object.keys(services);
 const fabrique = new Function(...noms, source + `
   return { doPost, doGet, initialiser, autotest, valider, signature,
-           ecrireLigne, colonnes, SCHEMA, REGLAGES, MODES, quotaRestant, notifDest };
+           ecrireLigne, colonnes, SCHEMA, REGLAGES, MODES, quotaRestant, notifDest,
+           DISPONIBILITES, creneauxLibres, grilleDuJour, occupations, creneauTient,
+           instantLocal, partsLocal, decalageMin, libelleHeure, libelleComplet,
+           surLaGrille, fenetreReservable };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));
 
@@ -292,8 +420,48 @@ export function servir(port = PORT) {
       }, null, 1));
     }
 
+    /* UNE TRAPPE POUR POSER DES EVENEMENTS AU CALENDRIER.
+       Elle n'existe QUE dans le banc — la vraie Web App n'a pas de
+       porte pour ecrire dans l'agenda depuis le web. Sans elle, on
+       ne pourrait pas prouver qu'une journee bloquee depuis un
+       telephone efface bien ses creneaux : il faudrait ouvrir Google
+       Agenda a la main, et « il faudrait » est exactement ce qui ne
+       se fait jamais. */
+    if (req.url.startsWith("/_evenement") && req.method === "POST") {
+      let brut = "";
+      req.on("data", (c) => { brut += c; });
+      req.on("end", () => {
+        try {
+          const e = JSON.parse(brut);
+          etat.evenements.push(e);
+          res.writeHead(200, { ...cors, "Content-Type": "application/json" });
+          res.end(JSON.stringify({ success: true, total: etat.evenements.length }));
+        } catch (err) {
+          res.writeHead(400, { ...cors, "Content-Type": "application/json" });
+          res.end(JSON.stringify({ success: false, message: String(err) }));
+        }
+      });
+      return;
+    }
+
+    /* Vider le calendrier entre deux cas d'essai. */
+    if (req.url.startsWith("/_vider-calendrier")) {
+      etat.evenements.length = 0;
+      res.writeHead(200, { ...cors, "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ success: true }));
+    }
+
     if (req.method === "GET") {
-      const sortie = gs.doGet({});
+      /* LES PARAMETRES DE REQUETE COMPTENT DEPUIS QUE `doGet` A DEUX
+         PORTES. Les jeter ici aurait fait repondre le temoin de vie
+         a une demande de creneaux, et le site aurait affiche zero
+         plage sans la moindre erreur. */
+      const parametre = {};
+      const q = req.url.indexOf("?");
+      if (q >= 0) {
+        for (const [k, v] of new URLSearchParams(req.url.slice(q + 1))) parametre[k] = v;
+      }
+      const sortie = gs.doGet({ parameter: parametre });
       res.writeHead(200, { ...cors, "Content-Type": "application/json" });
       return res.end(sortie.getContent());
     }
@@ -315,9 +483,12 @@ export function servir(port = PORT) {
 
   serveur.listen(port, () => {
     console.log(`Faux Google sur http://127.0.0.1:${port}`);
-    console.log(`  POST /            → doPost du vrai Code.gs`);
-    console.log(`  GET  /            → doGet`);
-    console.log(`  GET  /_etat       → classeur, courriels, événements`);
+    console.log(`  POST /                    → doPost du vrai Code.gs`);
+    console.log(`  GET  /                    → doGet — témoin de vie`);
+    console.log(`  GET  /?action=creneaux    → doGet — les plages libres`);
+    console.log(`  GET  /_etat               → classeur, courriels, événements`);
+    console.log(`  POST /_evenement          → pose un événement au calendrier`);
+    console.log(`  GET  /_vider-calendrier   → vide le calendrier`);
   });
   return serveur;
 }

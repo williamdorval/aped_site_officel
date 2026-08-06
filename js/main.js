@@ -36,10 +36,35 @@
      honeypot, la validation serveur, et le verrou d'Apps Script. */
   var FORM_ENDPOINT = (window.APED_ENVOI || "");
 
+  /* LES DISPONIBILITES NE SE DECIDENT PLUS ICI.  D-726
+
+     Ce bloc etait la SEULE source des plages offertes : une grille
+     ecrite en dur, identique tous les jours, qui ne savait rien de
+     l'agenda de l'agence. Elle affichait donc des heures deja
+     prises, et le visiteur ne l'apprenait qu'apres avoir rempli tout
+     le formulaire — au moment ou le service refusait.
+
+     Les vraies plages viennent maintenant de la DEUXIEME PORTE du
+     meme Apps Script : `?action=creneaux`. Elle calcule la grille a
+     partir de `DISPONIBILITES` dans `Code.gs`, en retire tout ce que
+     le calendrier d'apedagence occupe, et rend des heures DEJA
+     ECRITES EN FRANCAIS, DEJA CALCULEES A TORONTO.
+
+     CE QUI RESTE ICI N'EST PLUS UNE SOURCE, C'EST UN FILET. Quand la
+     porte ne repond pas — deploiement pas encore fait, reseau coupe,
+     quota Google — le calendrier montre quand meme la grille
+     theorique, avec une phrase qui dit qu'elle n'est pas confirmee.
+     C'est honnete : le serveur revalide de toute facon a la
+     confirmation, et une plage prise entre-temps est refusee avec sa
+     raison. Un calendrier vide, lui, ne dirait rien du tout.
+
+     LES VALEURS DOIVENT SUIVRE CELLES DE `Code.gs`. Elles ne servent
+     qu'au filet, mais un filet qui ment est pire qu'un filet
+     absent. */
   var BOOKING = {
     businessDays: [1, 2, 3, 4, 5],
-    slots: ["9:00", "9:30", "10:00", "10:30", "11:00", "11:30",
-            "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"],
+    slots: ["9:00", "9:45", "10:30", "11:15",
+            "13:30", "14:15", "15:00", "15:45", "16:30"],
     minNoticeHours: 24,
     horizonDays: 42
   };
@@ -1804,22 +1829,87 @@
   var selectedSlotLabel = "";
   var selectedSlotISO = "";
 
+  /* CE QUE LE SERVEUR A REPONDU. `null` tant qu'on n'a rien
+     demande ou que la demande a echoue : c'est ce `null` qui fait
+     basculer tout le calendrier sur le filet. */
+  var creneauxServeur = null;
+  var creneauxEtat = "vierge";   /* vierge · attente · direct · filet */
+  var creneauxPromesse = null;
+  var slotsNote = null;
+
   function startOfDay(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
   function minDate() { return startOfDay(new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000)); }
   function maxDate() { return startOfDay(new Date(Date.now() + BOOKING.horizonDays * 24 * 3600 * 1000)); }
 
-  /* UN JOUR SANS PLAGE NE S'OFFRE PAS.  D-708 */
+  /* LA CLE D'UN JOUR — « 2026-08-10 », telle que le serveur l'ecrit.
+     Construite a partir des chiffres AFFICHES dans la case du
+     calendrier, jamais par `toISOString()` : celui-la convertit en
+     UTC, et le 10 aout a 00 h a Vancouver y devient le 9 aout. */
+  function cleDate(d) {
+    var m = d.getMonth() + 1;
+    var j = d.getDate();
+    return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (j < 10 ? "0" : "") + j;
+  }
+
+  /* LA DEUXIEME PORTE. Meme adresse que l'envoi, un parametre en
+     plus. En GET, donc sans requete prealable CORS, comme le POST
+     en `text/plain` : les Web Apps Apps Script ne repondent pas aux
+     preliminaires.  D-726 */
+  function chargerCreneaux(forcer) {
+    if (creneauxPromesse && !forcer) return creneauxPromesse;
+    if (!FORM_ENDPOINT) {
+      creneauxServeur = null;
+      creneauxEtat = "filet";
+      creneauxPromesse = Promise.resolve(null);
+      return creneauxPromesse;
+    }
+    creneauxEtat = "attente";
+    var url = FORM_ENDPOINT + (FORM_ENDPOINT.indexOf("?") === -1 ? "?" : "&") + "action=creneaux";
+    creneauxPromesse = fetch(url, { method: "GET" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("creneaux " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        /* UN 200 N'EST PAS UNE REPONSE. Meme regle que pour l'envoi :
+           le service peut repondre « success: false ». */
+        if (!data || data.success !== true || !data.jours) throw new Error("creneaux refuses");
+        var carte = {};
+        data.jours.forEach(function (j) { carte[j.date] = j; });
+        creneauxServeur = carte;
+        creneauxEtat = "direct";
+        return carte;
+      })
+      .catch(function (err) {
+        /* ON NE VIDE PAS LE CALENDRIER SUR UN ECHEC. Voir le filet,
+           au bloc `BOOKING`. */
+        creneauxServeur = null;
+        creneauxEtat = "filet";
+        return null;
+      });
+    return creneauxPromesse;
+  }
+
+  /* UN JOUR SANS PLAGE NE S'OFFRE PAS.  D-708
+     Rend toujours la meme forme — `[{ iso, h }]` — que les plages
+     viennent du serveur ou du filet, pour que l'affichage n'ait
+     qu'un seul cas a traiter. */
   function plagesDuJour(date) {
-    var floor = new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000);
-    return BOOKING.slots.filter(function (slot) {
+    if (creneauxServeur) {
+      var jour = creneauxServeur[cleDate(date)];
+      return jour ? jour.creneaux : [];
+    }
+    var plancher = new Date(Date.now() + BOOKING.minNoticeHours * 3600 * 1000);
+    return BOOKING.slots.map(function (slot) {
       var p = slot.split(":");
-      var when = new Date(date);
-      when.setHours(Number(p[0]), Number(p[1]), 0, 0);
-      return when >= floor;
-    });
+      var quand = new Date(date);
+      quand.setHours(Number(p[0]), Number(p[1]), 0, 0);
+      return { iso: quand.toISOString(), h: p[0] + " h " + p[1], _quand: quand };
+    }).filter(function (c) { return c._quand >= plancher; });
   }
 
   function jourOuvert(date) {
+    if (creneauxServeur) return Boolean(creneauxServeur[cleDate(date)]);
     return BOOKING.businessDays.indexOf(date.getDay()) !== -1 &&
       date >= minDate() && date <= maxDate() &&
       plagesDuJour(date).length > 0;
@@ -1837,7 +1927,6 @@
   }
 
   var calView = premierJourOuvrable();
-  function slotLabel(slot) { var p = slot.split(":"); return p[0] + " h " + p[1]; }
 
   function goBStep(n) {
     if (!bookingModal) return;
@@ -1903,40 +1992,94 @@
     calNext.disabled = new Date(y, m + 1, 1) > hi;
   }
 
+  /* LA NOTE SOUS LES PLAGES. Elle dit d'ou viennent les heures.
+     Trois etats, trois phrases, et jamais de silence : un visiteur
+     qui ne sait pas si les plages sont a jour n'ose pas reserver.
+     Le noeud est cree une seule fois, apres la liste.  D-726 */
+  function noteCreneaux() {
+    if (!slotsList || !slotsList.parentNode) return null;
+    if (!slotsNote) {
+      slotsNote = doc.createElement("p");
+      slotsNote.className = "slots-note";
+      slotsNote.setAttribute("data-creneaux-note", "");
+      slotsList.parentNode.insertBefore(slotsNote, slotsList.nextSibling);
+    }
+    return slotsNote;
+  }
+
+  function direLaSource() {
+    var n = noteCreneaux();
+    if (!n) return;
+    if (creneauxEtat === "direct" && creneauxServeur && !Object.keys(creneauxServeur).length) {
+      /* L'AGENDA A REPONDU, ET IL EST PLEIN. Ce n'est pas une panne,
+         et le dire comme une panne enverrait le visiteur recharger
+         la page pour rien. */
+      n.textContent = "L’agenda est complet pour les prochaines semaines. "
+        + "Écrivez-nous : on trouve un moment à la main.";
+      n.className = "slots-note is-filet";
+    } else if (creneauxEtat === "direct") {
+      n.textContent = "Heure de l’Est (Québec). Ces plages sont libres à l’instant : "
+        + "ce qui est pris n’apparaît pas.";
+      n.className = "slots-note";
+    } else if (creneauxEtat === "attente") {
+      n.textContent = "Lecture de l’agenda…";
+      n.className = "slots-note is-attente";
+    } else {
+      n.textContent = "Heure de l’Est (Québec). L’agenda ne répond pas à l’instant : "
+        + "ces plages sont nos heures habituelles, pas une confirmation. "
+        + "On vérifie au moment où vous confirmez.";
+      n.className = "slots-note is-filet";
+    }
+  }
+
   function renderSlots() {
     if (!slotsList) return;
     slotsList.innerHTML = "";
+    /* LE CRAN DE L'ATTENTE. Les plages restent lisibles, elles ne se
+       cliquent plus. Voir `.slots-list.is-attente` dans app.css. */
+    slotsList.classList.toggle("is-attente", creneauxEtat === "attente");
+    direLaSource();
     if (!selectedDate) {
-      slotsTitle.textContent = "Sélectionnez une date";
+      slotsTitle.textContent = creneauxEtat === "attente"
+        ? "Lecture de l’agenda…"
+        : "Sélectionnez une date";
       slotsEmpty.hidden = true;
       return;
     }
-    slotsTitle.textContent = selectedDate.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" });
+
+    var cle = cleDate(selectedDate);
+    var jour = creneauxServeur ? creneauxServeur[cle] : null;
+    slotsTitle.textContent = jour
+      ? jour.libelle
+      : selectedDate.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" });
+
     /* MEME SOURCE que le calendrier : deux bornes calculees a deux
        endroits, c'etait exactement le defaut.  D-708 */
-    plagesDuJour(selectedDate).forEach(function (slot) {
+    plagesDuJour(selectedDate).forEach(function (creneau) {
       var btn = doc.createElement("button");
       btn.type = "button";
       btn.className = "slot";
-      btn.textContent = slotLabel(slot);
+      /* L'HEURE VIENT DU SERVEUR, ECRITE.  D-727
+         Elle a ete calculee a America/Toronto puis mise en francais
+         la-bas. Le navigateur ne la reformate pas : `toLocaleTime`
+         l'aurait rendue dans le fuseau du VISITEUR, et une personne
+         a Vancouver aurait lu « 6 h 00 » pour un appel de 9 h. */
+      btn.textContent = creneau.h;
       btn.addEventListener("click", function () {
-        selectedSlotLabel = selectedDate.toLocaleDateString("fr-CA", {
-          weekday: "long", day: "numeric", month: "long", year: "numeric"
-        }) + " à " + slotLabel(slot);
+        var jourLong = jour
+          ? jour.libelleLong
+          : selectedDate.toLocaleDateString("fr-CA", {
+              weekday: "long", day: "numeric", month: "long", year: "numeric"
+            });
+        selectedSlotLabel = jourLong + " à " + creneau.h;
         /* LA PLAGE LISIBLE PAR UNE MACHINE.  D-723
-           `selectedSlotLabel` est une phrase francaise — « lundi 5
-           aout 2026 a 9 h 00 ». Elle est parfaite pour un humain et
-           inutilisable pour poser un evenement au calendrier. On
-           garde la phrase telle quelle (elle est deja la colonne
-           « Plage demandee » et rien ne la renomme) et on AJOUTE
-           l'instant exact a cote.
-           `toISOString()` porte le decalage : une reservation prise
-           depuis un autre fuseau tombe a la bonne heure de Quebec
-           sans qu'on ait a deviner d'ou vient le visiteur. */
-        var p = slot.split(":");
-        var t = new Date(selectedDate);
-        t.setHours(Number(p[0]), Number(p[1]), 0, 0);
-        selectedSlotISO = t.toISOString();
+           `selectedSlotLabel` est une phrase francaise. Elle est
+           parfaite pour un humain et inutilisable pour poser un
+           evenement : on envoie l'instant exact a cote. Le serveur
+           REECRIT la phrase a partir de cet instant-la avant de
+           l'ecrire au classeur, donc les deux ne peuvent pas se
+           contredire. */
+        selectedSlotISO = creneau.iso;
         $("#bookingRecap").textContent = selectedSlotLabel;
         goBStep(2);
         var firstField = $('.step[data-bstep="2"] input', bookingModal);
@@ -1945,6 +2088,25 @@
       slotsList.appendChild(btn);
     });
     slotsEmpty.hidden = slotsList.children.length > 0;
+  }
+
+  /* Redemander les plages, puis repeindre. Appelee a l'ouverture de
+     la modale et apres un refus pour plage prise. */
+  function rafraichirCreneaux(forcer) {
+    /* L'APPEL D'ABORD, LA PEINTURE ENSUITE. `chargerCreneaux` pose
+       `creneauxEtat = "attente"` de facon SYNCHRONE avant de partir
+       sur le reseau : peindre avant, c'est peindre l'etat
+       precedent, et le cran de l'attente ne paraitrait jamais. */
+    var promesse = chargerCreneaux(forcer);
+    renderSlots();
+    return promesse.then(function () {
+      /* Le premier jour ouvrable change quand l'agenda parle : le
+         mois affiche doit suivre, sinon la modale s'ouvre sur une
+         grille entierement grisee. */
+      if (!selectedDate) calView = premierJourOuvrable();
+      renderCalendar();
+      renderSlots();
+    });
   }
 
   function resetBooking() {
@@ -1958,6 +2120,12 @@
     selectedSlotISO = "";
     renderCalendar();
     renderSlots();
+    /* ON REDEMANDE L'AGENDA A CHAQUE OUVERTURE, ET DE FORCE.  D-726
+       Une modale rouverte dix minutes plus tard sur une liste mise
+       en cache offrirait une plage prise entre-temps. Le cout est
+       une requete par ouverture ; le prix de l'economie serait un
+       rendez-vous double. */
+    rafraichirCreneaux(true);
     goBStep(1);
     var form = $('form[data-form="booking"]', bookingModal);
     if (form) {
@@ -2018,13 +2186,23 @@
            Le repli generique n'a rien a faire la : rien n'est en
            panne, et « copier ce que j'ai ecrit » ne repare pas un
            conflit d'horaire. */
-        var conflit = err && err.duService && /prise|24 h/i.test(err.message || "");
+        /* CE QUI EST UN CONFLIT D'HORAIRE, ET CE QUI N'EN EST PAS.
+           Toutes ces phrases viennent de `poserRendezVous` : plage
+           prise, preavis, hors grille, trop lointaine, agenda
+           illisible. Aucune n'est une panne d'envoi, et toutes se
+           reglent en choisissant une autre plage.  D-724 · D-726 */
+        var conflit = err && err.duService &&
+          /prise|d’avance|d'avance|offerte|lointaine|disponibilités|disponibilites/i
+            .test(err.message || "");
         if (conflit) {
           say(status, err.message, "err");
+          /* ON REDEMANDE L'AGENDA AVANT DE LE RENVOYER CHOISIR.
+             Sans ca, il retombe sur la liste qui vient justement de
+             se tromper, reprend la meme plage, et se fait refuser
+             exactement pareil. */
+          rafraichirCreneaux(true);
           window.setTimeout(function () {
             goBStep(1);
-            renderCalendar();
-            renderSlots();
             say(status, "");
           }, 2600);
           return;

@@ -2,10 +2,15 @@
 
 Ce document se suit **à la lettre, dans l'ordre**. Il ne suppose rien
 de connu. À la fin, les sept formulaires du site écrivent dans un
-Google Sheet, un avis part vers la boîte de l'agence, et une
+Google Sheet, un avis part vers la boîte de l'agence, le site affiche
+**vos vraies disponibilités tirées de Google Agenda**, et une
 réservation crée le rendez-vous avec son lien Google Meet.
 
 Compter **25 à 40 minutes** la première fois.
+
+> **Vous cherchez juste à bloquer une journée ?** C'est trois lignes,
+> depuis votre téléphone, et il n'y a rien à installer :
+> [« Bloquer une journée »](#bloquer-une-journée-ou-une-plage-horaire).
 
 > **Une seule chose à ne jamais faire** — au bout de ce guide, à
 > l'étape 7 : quand vous modifierez `Code.gs` plus tard, ne cliquez
@@ -22,9 +27,12 @@ Le site (statique)                Le compte apedagence@gmail.com
 ─────────────────────             ──────────────────────────────
 index.html                        ┌─ Google Sheet « APED — demandes du site »
   └ js/main.js                    │    7 onglets, un par formulaire
-      └ FORM_ENDPOINT ──POST──▶   ├─ Apps Script (Code.gs) en Web App
-          ▲                       ├─ Gmail : l'avis interne + la confirmation
-          │                       ├─ Google Calendar : le rendez-vous + le Meet
+      ├ POST ─────────────────▶   ├─ Apps Script (Code.gs) en Web App
+      │   écrit la demande        │    · doPost  → écrit
+      │                           │    · doGet   → rend les créneaux libres
+      └ GET ?action=creneaux ─▶   ├─ Gmail : l'avis interne + la confirmation
+          ▲   lit les plages      ├─ Google Calendar : LA SOURCE des dispos,
+          │                       │    le rendez-vous, et le lien Meet
    js/config.local.js             └─ Google Drive : les pièces jointes
      (fabriqué, jamais commité)
           ▲
@@ -33,6 +41,15 @@ index.html                        ┌─ Google Sheet « APED — demandes du si
 
 **Une seule pièce est à vous** : l'adresse du déploiement, qui vit
 dans `.env.local`. Tout le reste se fabrique.
+
+**UN SEUL DÉPLOIEMENT, DEUX PORTES.** Le même Apps Script, à la même
+adresse, fait les deux : `POST` écrit une demande, `GET
+?action=creneaux` rend les plages libres. Il n'y a **pas** de second
+déploiement à créer, pas de seconde adresse à tenir à jour.
+
+**AUCUN SERVICE EXTERNE.** Pas de Calendly, pas d'extension, pas de
+clé d'API. Le calendrier de `apedagence@gmail.com` est la seule
+source de vérité de vos disponibilités.
 
 ---
 
@@ -64,21 +81,35 @@ vous êtes.
 
 ## Étape 2 · Activer le service avancé Calendar
 
-**Sans cette étape, les réservations en visioconférence n'auront
-aucun lien Meet.** Le service ordinaire crée des événements mais ne
-sait pas fabriquer de conférence ; seul le service avancé le peut.
+**Cette étape sert DEUX fois, et elle n'est pas optionnelle.**
+
+| Sans elle | Ce qui se passe |
+|---|---|
+| **Le lien Meet** | il n'est **jamais** créé. Le service ordinaire pose des événements mais ne sait pas fabriquer de conférence ; seul le service avancé le peut. |
+| **Les créneaux** | ils sont calculés quand même, mais **sans nuance** : le service ordinaire n'expose pas la marque « Occupé / Disponible » d'un événement, donc **tout** bloque. |
+
+**Où cliquer, exactement :**
 
 1. Dans la colonne de gauche de l'éditeur, repérez **`Services`**
-   (avec un **`+`** à côté)
+   (avec un **`+`** à côté). C'est sous `Fichiers`, pas dans le menu
+   du haut.
 2. Cliquez le **`+`**
-3. Dans la liste, choisissez **`Google Calendar API`**
+3. Une fenêtre « Ajouter un service » s'ouvre. Faites défiler jusqu'à
+   **`Google Calendar API`** — la liste est par ordre alphabétique,
+   c'est vers le milieu.
 4. Laissez la version sur **`v3`** et l'identifiant sur **`Calendar`**
-   — le code appelle `Calendar.Events.insert`, donc cet identifiant
-   doit rester exactement `Calendar`
+   — le code appelle `Calendar.Events.insert` et `Calendar.Events.list`,
+   donc cet identifiant doit rester **exactement** `Calendar`. Le
+   changer casse les deux d'un coup.
 5. Cliquez **`Ajouter`**
 
 `Calendar` apparaît maintenant sous `Services` dans la colonne de
 gauche. C'est la preuve que c'est fait.
+
+> **Vérification en une seconde, plus tard :** ouvrez l'adresse de
+> votre déploiement dans un navigateur. La réponse contient
+> `"calendrier":true`. Si elle dit `false`, cette étape n'a pas été
+> faite — ou elle a été faite sans redéployer (étape 7).
 
 ---
 
@@ -112,11 +143,26 @@ Vous ne construisez rien à la main : une fonction s'en charge.
    | Contact simple | le message ordinaire, en bas de page |
    | Lead magnet | les coordonnées du popup des deux guides |
 
-   Sur chacun : la ligne 1 est **noire, en gras, figée**, et les trois
-   dernières colonnes visibles — **Lu par**, **Rappelé par**,
-   **Statut** — ont une **liste déroulante**. Cliquez une cellule de
-   « Statut » pour le vérifier : *Nouveau · Contacté · En discussion ·
-   Client · Fermé*.
+   Sur chacun : la ligne 1 est **noire, en gras, figée**, les largeurs
+   sont réglées, et les **cinq dernières colonnes** sont celles du
+   travail à trois :
+
+   | Colonne | Ce que c'est |
+   |---|---|
+   | **Renvois** | combien de fois la même demande est revenue (double-clic, renvoi après coupure). `0` sur une demande neuve |
+   | **Lu par** | liste déroulante : *William · Alan · Elie* |
+   | **Rappelé par** | liste déroulante : *William · Alan · Elie* |
+   | **Statut** | liste déroulante : *Nouveau · Contacté · En discussion · Client · Fermé* |
+   | **Notes internes** | champ **libre**, sans liste. C'est le seul endroit où écrire une phrase |
+
+   Cliquez une cellule de « Statut » pour vérifier que la liste
+   déroulante est bien là.
+
+   Une sixième colonne, **Signature**, est **masquée** : elle sert au
+   dédoublonnage et n'a rien à dire à un humain. Ne la démasquez pas.
+
+> **Les demandes arrivent en LIGNE 2**, pas au bas du classeur. La
+> plus récente est toujours en haut, sans avoir à trier.
 
 > **Relancer `initialiser()` ne détruit rien.** Elle ajoute ce qui
 > manque et laisse en place ce qui existe. C'est ce qui permet
@@ -147,10 +193,21 @@ Ce que vous accordez, et pourquoi chacune est nécessaire :
 |---|---|---|
 | Consulter et gérer vos feuilles de calcul | écrire chaque demande dans le classeur | **non** — c'est le cœur |
 | Envoyer un courriel en votre nom | l'avis interne + la confirmation au visiteur | **non** |
-| Consulter et modifier les agendas | créer le rendez-vous, vérifier qu'une plage est libre | **non** pour les réservations |
+| **Consulter et modifier les agendas** | **trois choses à la fois** : LIRE votre agenda pour savoir quelles plages sont libres, RELIRE au moment d'enregistrer pour ne pas donner deux fois la même, et ÉCRIRE le rendez-vous avec son lien Meet | **non** — sans elle, plus de réservation du tout |
 | Consulter et gérer les fichiers Drive | ranger les pièces jointes du formulaire de projet | oui, si vous acceptez de perdre les pièces jointes |
 | Voir votre adresse électronique | savoir où envoyer l'avis, **sans l'écrire dans le dépôt** | **non** |
 | Se connecter à un service externe | réservé, non utilisé aujourd'hui | oui |
+
+> **« Consulter et modifier les agendas » a l'air énorme, et c'est
+> normal de tiquer.** Google ne propose pas d'autorisation plus fine :
+> il n'existe pas de « lire seulement les heures occupées, sans les
+> titres ». Ce que le script en fait, en revanche, est étroit et
+> vérifiable dans `google/Code.gs` : il lit des **intervalles**
+> (`occupations`), il n'envoie au site **aucun titre, aucun invité,
+> aucune description** — seulement des heures libres. La fonction
+> `creneauxLibres` est l'unique chose que la porte publique rend, et
+> `tools/creneaux-check.mjs` vérifie qu'aucun titre d'événement n'y
+> fuit.
 
 > **Pourquoi « voir votre adresse » est important.** Le code
 > n'écrit **nulle part** `apedagence@gmail.com` : il la demande à
@@ -182,6 +239,34 @@ Ce que vous accordez, et pourquoi chacune est nécessaire :
 > propriétaire, donc elle marcherait pour vous et pour personne
 > d'autre. `tools/config-envoi.mjs` refuse les adresses `/dev`
 > justement pour empêcher ce piège.
+
+### Les deux portes du même déploiement
+
+Ce déploiement unique répond à deux choses. Vous n'avez **rien** à
+faire de plus : le site ajoute le paramètre tout seul.
+
+| Ce que le site envoie | Ce que le script fait | Écrit-il ? |
+|---|---|---|
+| `POST` sur l'adresse `/exec` | `doPost` — valide, écrit la ligne, avertit, pose le rendez-vous | **oui** |
+| `GET` sur `…/exec?action=creneaux` | `doGet` — calcule les plages libres à partir de votre agenda | **non**, lecture seule |
+| `GET` sur `…/exec` tout court | `doGet` — témoin de vie, utilisé par `tools/verrou-env.mjs` | **non** |
+
+**Testez la deuxième porte tout de suite** : collez dans votre
+navigateur votre adresse suivie de `?action=creneaux`. Vous devez
+voir du texte commençant par :
+
+```json
+{"success":true,"fuseau":"America/Toronto","duree":30,...
+```
+
+suivi de vos jours et de vos heures. Si vous voyez `"success":false`,
+le message dit pourquoi. Si vous voyez une page HTML de connexion
+Google, c'est que « Qui a accès » n'est pas `Tout le monde`.
+
+> **Ce que cette porte ne dit JAMAIS**, même si vous la partagez :
+> aucun titre d'événement, aucun invité, aucune description, aucune
+> adresse. Elle rend des heures libres, rien d'autre. C'est
+> volontaire — elle est publique.
 
 ---
 
@@ -254,6 +339,124 @@ déploiement (`Gérer les déploiements` → ⋮ → `Archiver`).
 
 ---
 
+## Étape 7bis · Vos disponibilités
+
+**Il y a deux couches, et elles ne se mélangent pas.** C'est la seule
+chose à comprendre de toute cette section.
+
+| | Où ça vit | Ce que ça dit | Quand on y touche |
+|---|---|---|---|
+| **1 · La grille** | `google/Code.gs`, tout en haut, bloc `DISPONIBILITES` | quand vous travaillez **en général** | rarement — un changement d'horaire |
+| **2 · Les exceptions** | **Google Agenda**, rien d'autre | ce qui est pris **cette semaine-là** | tous les jours, depuis le téléphone |
+
+Le site affiche : **la grille, moins l'agenda.**
+
+### La grille — les huit valeurs de `Code.gs`
+
+Ouvrez `google/Code.gs`. Le bloc est le **premier** du fichier, avant
+tout le reste, et chaque ligne porte son explication. Vous n'avez
+jamais besoin de descendre plus bas.
+
+| Variable | Livrée à | Ce qu'elle décide |
+|---|---|---|
+| `JOURS_OUVRABLES` | `[1, 2, 3, 4, 5]` | les jours ouverts. **0 = dimanche**, 1 = lundi … 6 = samedi. Ajouter le samedi : `[1,2,3,4,5,6]` |
+| `HEURE_DEBUT` | `"09:00"` | rien ne commence avant |
+| `HEURE_FIN` | `"17:00"` | rien ne **finit** après — donc rien ne démarre à 16 h 45 pour un appel de 30 min |
+| `PAUSES` | `[{ debut: "12:00", fin: "13:00" }]` | des trous tous les jours ouvrables. `[]` pour n'en avoir aucun |
+| `DUREE_CRENEAU_MIN` | `30` | la longueur d'un appel. **Le site annonce 30 minutes** — si vous changez ça, changez aussi le texte d'`index.html` |
+| `TAMPON_MIN` | `15` | le temps entre deux appels. Il agit deux fois : il espace les créneaux (30 + 15 = un départ toutes les 45 min) **et** il élargit la zone interdite autour de chaque événement de l'agenda |
+| `PREAVIS_HEURES` | `24` | personne ne réserve dans les 24 prochaines heures |
+| `HORIZON_JOURS` | `42` | jusqu'où on peut réserver. 42 = six semaines |
+
+Deux réglages de plus, qu'on touche presque jamais :
+
+| Variable | Livrée à | Ce qu'elle décide |
+|---|---|---|
+| `CALENDRIER_ID` | `""` | vide = le calendrier **principal** du compte, c'est-à-dire celui d'`apedagence`. C'est ce qu'on veut : un seul calendrier, pas de gestion par associé |
+| `DISPONIBLE_BLOQUE` | `true` | voir juste en dessous |
+
+**Après chaque changement : étape 7.** `Gérer les déploiements` →
+crayon → `Nouvelle version`. Sans ça, le site continue de lire
+l'ancienne grille et **rien ne le signale**.
+
+### « Occupé » ou « Disponible » — lequel bloque
+
+Dans Google Agenda, chaque événement porte une visibilité
+d'occupation. On la trouve en ouvrant l'événement → `Plus d'options`
+→ le menu déroulant qui dit `Occupé` ou `Disponible`.
+
+**La règle livrée : les deux bloquent.** `DISPONIBLE_BLOQUE: true`.
+
+C'est un choix, et voici pourquoi c'est celui-là. La règle devient
+*« ce qui est dans mon agenda n'est pas réservable »*, sans exception
+à retenir. C'est la seule règle qu'on puisse appliquer de tête, à
+7 h du matin, sur un téléphone, sans se demander si on a mis le bon
+menu déroulant. L'autre règle — « Disponible n'empêche rien » — est
+plus fine et elle donne un rendez-vous double le jour où on l'oublie.
+
+Pour l'inverser : `DISPONIBLE_BLOQUE: false` dans `Code.gs`, puis
+étape 7. Un événement marqué « Disponible » laissera alors le créneau
+ouvert, ce qui permet de se servir de l'agenda comme d'un carnet de
+notes.
+
+> **Attention :** le repli ne sait pas lire cette marque. Si le
+> service avancé Calendar n'est pas activé (étape 2), le script
+> retombe sur le service ordinaire, qui n'expose pas la visibilité —
+> et **tout bloque**, quel que soit ce réglage.
+
+**Une invitation que vous avez refusée ne bloque pas**, et ça ne se
+règle pas. Un rendez-vous auquel vous avez répondu « non » n'est pas
+un engagement : il reste affiché, barré, dans l'agenda, et le compter
+volerait des heures réellement libres. Même chose pour une occurrence
+supprimée d'un événement récurrent.
+
+### Bloquer une journée ou une plage horaire
+
+**Trois lignes, depuis le téléphone, sans rien installer.**
+
+1. Ouvrez l'application **Google Agenda**, connectée à
+   `apedagence@gmail.com`, et appuyez sur le **`+`**.
+2. **Toute une journée** → activez `Toute la journée`, mettez la date,
+   enregistrez. **Quelques heures** → laissez `Toute la journée`
+   éteint et mettez l'heure de début et de fin.
+3. C'est fini. Le site cesse d'offrir ces heures **dès la requête
+   suivante** — pas de cache, pas de délai, pas de redéploiement.
+
+Le titre n'a aucune importance et **n'est jamais montré au
+visiteur** : le site ne reçoit que des heures.
+
+| Ce que vous créez dans l'agenda | Ce que le visiteur voit |
+|---|---|
+| Événement `Toute la journée` sur le mardi 11 | le 11 est **grisé** dans le calendrier, on ne peut pas cliquer dessus |
+| Événement de 14 h à 16 h le mardi 11 | le 11 reste cliquable ; les créneaux de 13 h 30 à 16 h 30 disparaissent (le tampon de 15 min mord un peu au-delà) |
+| Un rendez-vous pris par un visiteur | son créneau disparaît **tout seul** pour le suivant — c'est devenu un événement comme un autre |
+| Une invitation que vous avez refusée | **rien ne change**, le créneau reste offert |
+
+**Pour rouvrir** : supprimez l'événement. Les créneaux reviennent
+aussitôt.
+
+### Deux personnes qui visent la même plage
+
+C'est le risque réel, et il ne se règle pas à l'affichage. Entre le
+moment où quelqu'un **voit** la liste et celui où il **confirme**, il
+remplit un formulaire — une minute, parfois cinq. Une autre personne
+a pu prendre la place ; vous avez pu bloquer l'après-midi depuis
+votre téléphone.
+
+Le script **revérifie au moment d'enregistrer**, avec exactement les
+mêmes fonctions que celles qui ont produit la liste. Si la plage
+vient d'être prise, le visiteur lit *« Cette plage vient d'être
+prise. Choisissez-en une autre. »*, revient au calendrier — et **tout
+ce qu'il avait déjà rempli est encore là**. Rien n'est écrit au
+classeur, aucun courriel ne part, aucun événement n'est créé.
+
+Et si le calendrier est illisible à cet instant précis, le script
+**refuse** au lieu d'accepter en aveugle : *« Impossible de vérifier
+les disponibilités à l'instant. »* Mieux vaut une réservation à
+reprendre qu'un rendez-vous que vous découvrez en double.
+
+---
+
 ## Étape 8 · Le test de bout en bout
 
 ### 8.1 · Sans toucher à Google
@@ -266,10 +469,28 @@ consommer un seul envoi.
 ```bash
 node tools/serve.mjs 8099          # le site
 node tools/faux-google.mjs 8098    # le vrai Code.gs, services bouchonnés
-node tools/formulaires-prod.mjs 8099 8098
+
+node tools/formulaires-prod.mjs 8099 8098   # les 8 flux d'envoi
+node tools/creneaux-check.mjs               # le calcul des créneaux
+node tools/creneaux-vue.mjs 8099 8098       # ce que l'écran en montre
 ```
 
-Attendu : `FORMULAIRES QUI LIVRENT : 8 / 8` et `erreurs console : 0`.
+| Outil | Attendu |
+|---|---|
+| `formulaires-prod` | `FORMULAIRES QUI LIVRENT : 8 / 8`, `erreurs console : 0` |
+| `creneaux-check` | `LES CRENEAUX TIENNENT : 41 / 41` |
+| `creneaux-vue` | `L'ECRAN DIT LA VERITE DE L'AGENDA : 17 / 17` + quatre images dans `tools/_creneaux/` |
+
+`creneaux-check` pose lui-même les cas que cette page promet — une
+journée entière bloquée, un événement de 14 h à 16 h, un rendez-vous
+fraîchement pris, un « Disponible », une invitation refusée — et
+imprime la liste des heures **avant** et **après** chaque blocage.
+`creneaux-vue` refait les trois premiers **depuis le site**, dans un
+vrai navigateur, et photographie le panneau : `tools/_creneaux/`.
+
+Les deux traversent aussi les **changements d'heure** : 9 h à Toronto
+tombe à 13 h UTC l'été et 14 h UTC l'hiver, et les deux dimanches de
+bascule sont vérifiés nommément.
 
 ### 8.2 · Contre le vrai Google
 
@@ -289,41 +510,77 @@ service est déjà branché par l'étape 6) :
 | **Réservation · Téléphone** | onglet **Réserver un appel** | Mode = « Appel téléphonique », colonne « Lien Meet » **vide** |
 
 **La réservation en Google Meet, en détail** — c'est le seul flux qui
-touche quatre endroits à la fois :
+touche quatre endroits à la fois. **Faites-le en entier au moins une
+fois** : c'est le test qui vaut tous les autres.
 
 1. **Le classeur**, onglet « Réserver un appel » : Mode = `Google
    Meet`, « Début » horodaté, **« Lien Meet » rempli**, « Événement »
-   pointe sur l'agenda
-2. **<https://calendar.google.com>** : l'événement est là, à la bonne
-   heure, intitulé `Appel APED · <nom>`, avec un bouton **Rejoindre
-   avec Google Meet**
-3. **La boîte `apedagence@gmail.com`** : l'avis interne, contenant le
-   lien Meet
+   pointe sur l'agenda, et les quatre colonnes de suivi — « Lu par »,
+   « Rappelé par », « Statut », « Notes internes » — sont à la fin
+2. **<https://calendar.google.com>** : l'événement est là, **à la
+   bonne heure**, intitulé `Appel APED · <nom>`, avec un bouton
+   **Rejoindre avec Google Meet**
+3. **La boîte `apedagence@gmail.com`** : l'avis interne. Son objet
+   porte la **plage du rendez-vous**, pas l'heure de la demande :
+   `[APED] Demande de rendez-vous · Nom · lundi 10 août 2026 à 9 h 00`
 4. **La boîte du visiteur** (mettez la vôtre pour l'essai) : *deux*
    messages — l'invitation envoyée par **Google** (avec le lien) et
-   la confirmation envoyée par **le script**
+   la confirmation envoyée par **le script**, objet `C'est réservé —
+   lundi 10 août 2026 à 9 h 00`, avec le lien Meet **en clair** dans
+   le corps
 
-> **Si le point 1 dit « Lien Meet » vide alors que le mode est Google
-> Meet** : le service avancé Calendar n'est pas activé. Reprenez
-> l'étape 2, puis **étape 7** (Nouvelle version). L'avis interne le
-> dit aussi, en toutes lettres : « ATTENTION : le lien Meet n'a pas
-> pu être créé ».
+**Puis, immédiatement : rouvrez le site et regardez le calendrier.**
+Le créneau que vous venez de prendre ne doit plus être offert. C'est
+la preuve que la boucle est fermée.
+
+> **L'heure doit être la même aux quatre endroits.** Si l'écran dit
+> 9 h et l'agenda 10 h, arrêtez tout et signalez-le : c'est un défaut
+> de fuseau, et un appel manqué à chaque réservation. Le script
+> calcule tout à `America/Toronto` et envoie au site des heures
+> **déjà écrites** — le navigateur n'en reformate aucune.
 
 ### 8.3 · Les refus, qui comptent autant
 
 | Essai | Attendu |
 |---|---|
-| Réserver une plage **déjà prise** | « Cette plage vient d'être prise. Choisissez-en une autre. » puis retour au calendrier |
+| Réserver une plage **déjà prise** | « Cette plage vient d'être prise. Choisissez-en une autre. » puis retour au calendrier, **sans perdre ce qui était rempli** |
 | Réserver à **moins de 24 h** | « Cette plage demande au moins 24 h d'avance. » |
+| Bloquer une journée dans l'agenda, puis rouvrir le site | le jour est **grisé** |
+| Bloquer 14 h–16 h, puis rouvrir | le jour reste ouvert, les créneaux de l'après-midi sont partis |
 | Téléphone = **`12`** | « Le numéro de téléphone est incomplet. » |
 | Courriel = **`pas-une-adresse`** | « L'adresse courriel n'est pas valide. » |
 
-### 8.4 · Nettoyer
+### 8.4 · Les courriels, un par formulaire
+
+Chaque formulaire répond avec son propre texte. Un gabarit unique
+pour sept demandes, c'est six réponses à côté.
+
+| Formulaire | Objet du courriel au visiteur |
+|---|---|
+| Démarrer un projet | On a votre projet |
+| Estimation rapide | Votre estimation est en préparation |
+| Urgence | Votre urgence est reçue — vous passez devant |
+| Référer une entreprise | Merci pour la référence |
+| Contact simple | On a bien reçu votre message |
+| Réserver un appel | C'est réservé — *(la date et l'heure)* |
+| Lead magnet | **aucun** — les guides sont déjà téléchargés, et un envoi de plus est un destinataire de moins au quota |
+
+Les délais annoncés dans ces courriels sont **ceux du site**, au mot
+près : « moins de 12 h ouvrables ». Si vous changez la promesse sur
+la page, changez-la dans `texteVisiteur()` de `Code.gs` — sinon le
+courriel fait mentir la page.
+
+### 8.5 · Nettoyer
 
 Les lignes d'essai portant `essai@exemple.ca` se retirent d'un coup :
 dans l'éditeur, fonction **`nettoyerAutotest`** → `Exécuter`. Les
 autres lignes d'essai se suppriment à la main dans le classeur, et
 les événements de test dans l'agenda.
+
+> **Supprimez aussi les rendez-vous d'essai du calendrier.** Tant
+> qu'ils y sont, ils bloquent leurs créneaux sur le site — ce qui est
+> exactement le comportement voulu, et exactement ce dont vous ne
+> voulez pas pour de faux rendez-vous.
 
 ---
 
@@ -339,12 +596,17 @@ pas à minuit.
 
 | Formulaire | Destinataires |
 |---|---|
-| Contact · Urgence · Projet · Référence | **2** (l'avis interne + la confirmation au visiteur) |
-| Réservation | **2** (l'invitation Google Calendar au visiteur ne compte pas — c'est Google qui l'envoie) |
-| Estimation · Lead magnet | **1** (la réponse est déjà à l'écran ; pas de confirmation) |
+| Contact · Urgence · Projet · Référence · **Estimation** | **2** (l'avis interne + la confirmation au visiteur) |
+| Réservation | **2** (l'invitation Google Calendar au visiteur **ne compte pas** — c'est Google qui l'envoie, pas le script) |
+| Lead magnet | **1** (les guides sont déjà téléchargés ; aucune confirmation à envoyer) |
 
 Soit environ **50 demandes par jour** au pire. Très au-dessus du
 trafic actuel du site.
+
+> **L'estimation est passée de 1 à 2** le 2026-08-06 : elle envoie
+> maintenant sa propre confirmation. Le plafond passe de ~55 à ~50
+> demandes par jour. C'est assumé — une personne qui remplit six
+> questions et ne reçoit rien croit que ça n'a pas marché.
 
 > **Pourquoi une seule adresse d'avis.** Avertir William, Alan et Elie
 > séparément coûterait 3 destinataires par demande au lieu d'un, et
@@ -381,6 +643,13 @@ fonctionner.
 | Réservation Meet sans lien | service avancé Calendar absent (étape 2) puis redéploiement oublié |
 | « Formulaire inconnu » | le champ `_form` n'arrive pas — vérifiez que `js/main.js` n'a pas été modifié |
 | Les avis n'arrivent plus, le classeur se remplit | quota des 100 atteint (étape 9) |
+| **Le calendrier dit « L'agenda ne répond pas »** | la porte des créneaux est injoignable. Ouvrez `…/exec?action=creneaux` dans un navigateur : la réponse dit pourquoi. Souvent « Qui a accès » ≠ `Tout le monde` (étape 5) |
+| **Le site montre des plages que j'ai bloquées** | vous avez modifié `Code.gs` sans faire `Nouvelle version` (étape 7) — ou vous avez bloqué dans un **autre** calendrier que celui d'`apedagence` |
+| **Aucun jour n'est cliquable** | l'agenda est plein sur tout l'horizon, ou `JOURS_OUVRABLES` est vide. La note sous les plages le dit en toutes lettres |
+| **Le premier jour offert est loin** | c'est le préavis de 24 h plus les jours déjà pris. `PREAVIS_HEURES` dans `Code.gs` |
+| **L'heure du site ≠ l'heure de l'agenda** | à signaler tout de suite. Vérifiez d'abord que le fuseau du **projet Apps Script** est `America/Toronto` (⚙ Paramètres du projet) — même si le code ne s'y fie pas |
+| **Un blocage « Disponible » ne bloque rien** | `DISPONIBLE_BLOQUE` est à `false`, ou vous ne l'avez pas redéployé (étape 7bis) |
+| **Une journée entière bloquée ne bloque rien** | l'événement est-il bien sur le calendrier d'`apedagence`, et non sur un agenda partagé ? Seul `CALENDRIER_ID` compte |
 
 Le journal complet de chaque exécution est dans l'éditeur Apps
 Script, colonne de gauche, **`Exécutions`**. Toute erreur y est, avec

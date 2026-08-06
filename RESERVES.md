@@ -97,7 +97,18 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le « après » du déneigement reste un vrai mandat sous une | 1 | 17 |
 | &nbsp;&nbsp;↳ étiquette « entreprises fictives » | 8 | 100 |
 | &nbsp;&nbsp;↳ Les quatre mentions sous les comparaisons ne sont pas accordées | 8 | 102 |
-| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 7 | 73 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 9 | 75 |
+| **OUVERTES PAR LE CHANTIER DE LA RÉSERVATION — 2026-08-06** | 2 | 16 |
+| &nbsp;&nbsp;↳ Rien de tout ceci n'a touché le vrai Google | 26 | 353 |
+| &nbsp;&nbsp;↳ Le fuseau est prouvé par le calcul, pas par un appel réel | 9 | 123 |
+| &nbsp;&nbsp;↳ Le fuseau du projet Apps Script n'est pas sous contrôle | 13 | 176 |
+| &nbsp;&nbsp;↳ Le repli CalendarApp n'a jamais été exercé | 9 | 119 |
+| &nbsp;&nbsp;↳ La deuxième porte est publique, et elle est appelable en boucle | 16 | 214 |
+| &nbsp;&nbsp;↳ js/config.local.js absent = une erreur console, partout | 15 | 184 |
+| &nbsp;&nbsp;↳ palier-check échoue sur trois assertions, avant comme après | 10 | 134 |
+| &nbsp;&nbsp;↳ Dix montants en dollars dorment dans des commentaires | 20 | 261 |
+| &nbsp;&nbsp;↳ Aucune animation n'a été ajoutée au panneau des créneaux | 13 | 179 |
+| &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 9 | 108 |
 
 <!-- INDEX:FIN -->
 
@@ -1105,3 +1116,147 @@ le périmètre de ce chantier.
 > appareil réel.** Chromium sous Playwright, poste de bureau Windows.
 > Les relevés « 390 px » de l'item 5 sont une fenêtre redimensionnée,
 > pas un téléphone.
+
+---
+
+## OUVERTES PAR LE CHANTIER DE LA RÉSERVATION — 2026-08-06
+
+### Rien de tout ceci n'a touché le vrai Google
+
+C'est la réserve mère de ce chantier, et elle vaut pour tout ce qui
+suit. `google/Code.gs` a été **exécuté** — pas relu, exécuté — par
+`tools/faux-google.mjs`, qui l'évalue sous Node avec des services
+Google en mémoire. 41 cas de `creneaux-check` et 17 de `creneaux-vue`
+passent. Mais :
+
+- **aucun vrai Google Agenda n'a été interrogé.** Le bouchon rend la
+  forme **documentée** de `Calendar.Events.list` — `start.date` pour
+  une journée entière, `transparency: "transparent"` pour
+  « Disponible », `attendees[].self` pour une invitation refusée.
+  La forme documentée n'est pas la forme observée ;
+- **aucun lien Meet réel n'a été créé.** `conferenceData` vient d'un
+  bouchon ;
+- **aucun courriel n'est parti** vers une vraie boîte. Les sept
+  gabarits ont été construits et comptés, jamais reçus ;
+- **aucune autorisation OAuth n'a été accordée**, donc rien ne prouve
+  que le compte acceptera les portées demandées ;
+- **le service avancé Calendar n'a jamais été activé** dans un vrai
+  projet Apps Script.
+
+Ces cinq-là se ferment en une seule séance, à la main, en suivant
+`docs/CONFIGURATION-GOOGLE-APED.md` étape 8.2. Tant que ce n'est pas
+fait, **aucune session ne doit écrire que la réservation fonctionne.**
+
+### Le fuseau est prouvé par le calcul, pas par un appel réel
+
+`instantLocal` est vérifié sur six dates, dont les deux dimanches de
+bascule de 2026, et sur la totalité des créneaux rendus. Ce qui
+n'est **pas** vérifié : qu'un événement posé par le script tombe à
+la bonne heure dans l'interface de Google Agenda. Le premier test
+réel doit comparer l'heure affichée sur le site, celle du courriel,
+et celle de l'agenda — les trois, côte à côte.
+
+### Le fuseau du projet Apps Script n'est pas sous contrôle
+
+`google/appsscript.json` déclare `"timeZone": "America/Toronto"`,
+mais ce fichier est une **référence** : le guide dit de coller
+`Code.gs` à la main, pas de remplacer `appsscript.json`. Le fuseau
+réel du projet est celui du menu déroulant de l'éditeur, réglé sur
+le fuseau du navigateur au moment de la création.
+
+Le code ne s'y fie pas — `decalageMin` demande le décalage de
+Toronto à chaque appel — mais **`initialiser()` pose le fuseau du
+CLASSEUR** à `REGLAGES.FUSEAU`, et les horodatages du Sheet en
+dépendent. À vérifier une fois : ⚙ Paramètres du projet → fuseau.
+
+### Le repli `CalendarApp` n'a jamais été exercé
+
+Le chemin sans service avancé — `occupations()` qui retombe sur
+`CalendarApp.getEvents` — n'est atteint que si l'étape 2 n'a pas été
+faite. Le banc l'expose (`calendrierFactice`) mais aucun cas de
+`creneaux-check` ne force ce chemin : les 41 passent tous par le
+service avancé. Si quelqu'un déploie sans activer Calendar, ce code
+s'exécutera pour la première fois en production.
+
+### La deuxième porte est publique, et elle est appelable en boucle
+
+`?action=creneaux` ne demande rien : ni jeton, ni référent, ni
+limite. C'est nécessaire — un visiteur n'est connecté à aucun compte
+Google. Ce qu'elle expose est mince (des heures libres, aucun titre,
+aucune adresse — vérifié par `creneaux-check`), mais elle consomme du
+**temps d'exécution Apps Script**, plafonné à 90 min/jour sur un
+compte gratuit. Une boucle malveillante peut donc éteindre
+l'affichage des créneaux pour la journée.
+
+Ce qui reste debout dans ce cas : le calendrier bascule sur son
+filet, le POST continue de fonctionner, et le serveur revérifie
+quand même à la confirmation. Rien ne se perd, l'affichage ment
+juste un peu. **Non mesuré** : combien d'appels il faut pour y
+arriver.
+
+### `js/config.local.js` absent = une erreur console, partout
+
+Sur un dépôt fraîchement cloné, `index.html` injecte
+`js/config.local.js` qui n'existe pas encore : le navigateur écrit
+`Failed to load resource: 404`. Le seuil « erreurs console : 0 » de
+`CLAUDE.md` est donc **inatteignable tant que `node
+tools/config-envoi.mjs` n'a pas tourné**. `etats-check` et
+`langue-check` échouent là-dessus, et sur rien d'autre.
+
+Mesuré le 2026-08-06 : en servant un `config.local.js` valide,
+**0 requête en 404** dans les quatre états du panneau de réservation,
+deux thèmes compris. Le 404 est bien celui-là, et lui seul.
+
+Antérieur à ce chantier — il arrive avec `D-720`.
+
+### `palier-check` échoue sur trois assertions, avant comme après
+
+Vérifié en A/B dans un worktree sur `HEAD` : `--cran d'un bouton
+secondaire`, `--cran d'un CTA primaire`, et le `--cran` du palier 2
+échouent **à l'identique** sur le dépôt d'avant ce chantier. C'est
+le piège 88 (`::before` d'un `.btn` pris par l'aplat de V4). La
+fréquence relevée sous bridage varie de 20 à 60 i/s d'un lancement à
+l'autre sur cette machine : le déclencheur du palier 2 n'est pas
+reproductible ici.
+
+### Dix montants en dollars dorment dans des commentaires
+
+`tools/prix-check.mjs` ARRÊTAIT depuis le 2026-08-03 : il cherchait
+`var BAREME`, retiré ce jour-là par D-353, et `process.exit(2)`
+empêchait le reste du contrôle de s'exécuter. **L'interdit « aucun
+prix » n'était donc plus vérifié du tout depuis trois jours.**
+
+Réparé le 2026-08-06 (D-728). Le verdict est maintenant : **0 prix
+non autorisé dans le source, 0 dans le texte rendu, 0 grille**. Mais
+l'outil relève aussi **10 montants dans des commentaires** —
+`1 000 $`, `100 000 $`, `2 500 $`, `40 000 $`, `75 $` — tous dans
+des blocs qui expliquent le RETRAIT de la grille, aux lignes
+`index.html:3629-3631`, `index.html:3753-3755`, `js/main.js:83-85`
+et `js/main.js:2413`.
+
+Aucun n'atteint un visiteur. Mais le dépôt est **public** : ces
+commentaires publient en creux les anciens paliers tarifaires
+d'APED. **Arbitrage du propriétaire** — l'outil les nomme et ne
+tranche pas.
+
+### Aucune animation n'a été ajoutée au panneau des créneaux
+
+L'arrivée des vraies plages remplace une liste par une autre. Ça
+aurait pu être V1 — une forme déjà là qui se découvre — mais
+l'animation aurait dépendu de GSAP, qui arrive en vague 2, alors que
+le calendrier est peint par `main.js` en vague 1. Un mouvement qui
+ne s'exécute pas aux paliers 2 et 3 n'est pas un mouvement.
+
+Ce qui a été fait à la place est nommable : le **cran V4** de
+`.slots-list.is-attente` — les plages passent de `rule-strong` à
+`rule` et de `ink` à `ink-muted` pendant la relecture, sans état
+intermédiaire, et cessent d'être cliquables. Elles restent lisibles.
+
+### Et celle qui gouverne tout le reste
+
+> **AUCUNE mesure de ce chantier non plus n'a été prise sur un
+> appareil réel.** Chromium sous Playwright, poste de bureau Windows.
+> Le panneau de réservation n'a jamais été ouvert sur un téléphone,
+> et la phrase du guide « bloquez une journée depuis votre
+> téléphone » décrit un geste dans Google Agenda, pas un geste
+> vérifié sur le site.

@@ -30,7 +30,8 @@ outil en regard n'a pas sa place dans ce fichier.
 | &nbsp;&nbsp;↳ L'accueil et les sections | 12 | 426 |
 | &nbsp;&nbsp;↳ Identité, contraste, débordement | 11 | 223 |
 | &nbsp;&nbsp;↳ Le mouvement | 10 | 161 |
-| &nbsp;&nbsp;↳ Le reste | 21 | 381 |
+| &nbsp;&nbsp;↳ Le reste | 12 | 244 |
+| &nbsp;&nbsp;↳ Le service des formulaires et la réservation | 38 | 667 |
 | **4 · CHIFFRES DE RÉFÉRENCE** | 2 | 8 |
 | &nbsp;&nbsp;↳ Accueil #top, 1440 × 900, thème clair — 2026-07-29 | 18 | 262 |
 | &nbsp;&nbsp;↳ Section 02 · Services, seconde refonte du 2026-07-30 | 14 | 199 |
@@ -171,6 +172,35 @@ complète**, pas un numéro de port.
 | `cadeau-check.mjs` · `cadeau-scene.mjs` · `cadeau-e2e.mjs` | déclenchement et contenu · l'entrée est une arête · le parcours complet |
 | `ab-structure.mjs <avant> <apres> [n]` | A/B **apparié** de LCP, CLS et poids du chemin critique : n passes alternées, médiane des **différences** |
 | `plages.mjs [verifier\|ecrire]` | les plages de lignes des **12** entrées — onze sections plus le pied —, **générées** depuis le code. `verifier` sort 1 si `SECTIONS.md` a dérivé |
+
+### Le service des formulaires et la réservation
+
+Ces cinq-là ne mesurent pas une peinture : ils mesurent ce que
+`google/Code.gs` fait d'une soumission. `faux-google.mjs` **exécute**
+le vrai fichier sous Node avec des services Google en mémoire — ce
+n'est pas une réimplémentation, c'est la même fonction, ligne pour
+ligne, que celle qui répondra en production.
+
+**Ce qu'aucun des cinq ne prouve :** qu'un vrai Sheet accepte les
+appels, qu'un lien Meet se crée, qu'un courriel arrive, que les
+autorisations OAuth passent. `RESERVES.md § chantier de la
+réservation`.
+
+| Outil | Ce qu'il rend | Attendu |
+|---|---|---|
+| `faux-google.mjs [8098]` | le vrai `Code.gs` servi en HTTP, plus `/_etat`, `/_evenement` et `/_vider-calendrier` pour poser des cas | — |
+| `formulaires-prod.mjs 8099 8098` | les huit flux d'envoi, dans un vrai navigateur, jusqu'au classeur et aux courriels | `8 / 8`, `erreurs console : 0` |
+| `creneaux-check.mjs` | le **calcul** des créneaux : journée entière, événement partiel, réservation fraîche, double réservation, plage forgée, « Disponible », invitation refusée, fuseau et ses deux bascules, pauses, les deux portes | `41 / 41` |
+| `creneaux-vue.mjs 8099 8098` | ce que l'**écran** en montre, plus quatre captures dans `tools/_creneaux/` | `17 / 17` |
+| `verrou-env.mjs` | les sept points avant mise en production : `.env.local`, adresse `/exec`, rien de suivi par git, fichier fabriqué à jour, ordre de chargement, service qui répond | `les sept tiennent` |
+
+> **`creneaux-check` a été éprouvé par mutation le 2026-08-06** —
+> trois défauts posés à la main dans `Code.gs`, trois échecs
+> distincts : retirer le traitement des journées entières fait tomber
+> 4 cas, retirer le contrôle de grille en fait tomber 2, écrire le
+> décalage horaire en dur (`-300`) en fait tomber 6. L'outil mord.
+> C'est la seule façon de savoir qu'un `41 / 41` veut dire quelque
+> chose (piège 17).
 
 Quatre outils sont partis dans `archives/outils-perimes/` le 2026-07-30 :
 `services-check.mjs`, `projets-check.mjs`, `plaques-vie.mjs`,
