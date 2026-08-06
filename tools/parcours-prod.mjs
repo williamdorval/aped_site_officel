@@ -40,7 +40,7 @@ const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
 const mm = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
 if (!mm) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = mm[1].trim();
-const VERSION_MINIMALE = 6;
+const VERSION_MINIMALE = 8;
 
 /* ---- le schema, lu dans Code.gs ---- */
 const SRC = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");

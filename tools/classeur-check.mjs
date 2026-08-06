@@ -34,7 +34,7 @@ const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
 if (!m) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = m[1].trim();
 
-const VERSION_MINIMALE = 6;
+const VERSION_MINIMALE = 8;
 
 /* ---- l'ordre des colonnes, lu dans Code.gs, jamais recopie ---- */
 const SRC = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
@@ -50,12 +50,12 @@ const DEFS = new Function("var out = {};"
   + bloc(/var SUIVI = \[[\s\S]*?\n\];/, "SUIVI")
   + bloc(/var TECHNIQUES = \[[\s\S]*?\n\];/, "TECHNIQUES")
   + bloc(/var SCHEMA = \{[\s\S]*?\n\};/, "SCHEMA")
-  + "out.SUIVI = SUIVI; out.TECHNIQUES = TECHNIQUES; out.SCHEMA = SCHEMA;"
+  + "out.SUIVI = SUIVI; out.SUIVI_FIN = SUIVI_FIN; out.TECHNIQUES = TECHNIQUES; out.SCHEMA = SCHEMA;"
   + "out.COL_SIGNATURE = COL_SIGNATURE; return out;")();
 
 function colonnes(kind) {
   return [].concat(DEFS.SUIVI, DEFS.TECHNIQUES, DEFS.SCHEMA[kind].champs,
-    [{ titre: "Renvois" }, { titre: DEFS.COL_SIGNATURE }]);
+    DEFS.SUIVI_FIN, [{ titre: "Renvois" }, { titre: DEFS.COL_SIGNATURE }]);
 }
 
 const KINDS = Object.keys(DEFS.SCHEMA);

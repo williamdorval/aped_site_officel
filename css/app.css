@@ -722,7 +722,10 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 .plate--inverse p { color: color-mix(in srgb, var(--ink-inverse) 66%, transparent); }
 
 /* == 8. CHAMPS ==  D-124 */
-.field { display: grid; gap: var(--s-2); }
+/* `relative` PORTE LE PANNEAU DE SUGGESTIONS.  D-759
+   Rien d'autre ne se positionne dans un `.field` : l'erreur et
+   l'aide restent dans le flux de la grille. */
+.field { display: grid; gap: var(--s-2); position: relative; }
 .field > label,
 .field-legend {
   font-family: var(--font-data);
@@ -797,6 +800,88 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
   background: var(--danger-wash);
 }
 .field.is-invalid .field-error { display: block; }
+
+/* ============================================================
+   LE PANNEAU DE SUGGESTIONS.  D-759
+
+   Il remplace le menu de `<datalist>`, qui est dessine par le
+   navigateur : hors de la page, donc impossible a photographier,
+   et porteur de coins arrondis qu'on n'a nulle part ailleurs.
+
+   TROIS MATIERES, PAS UNE DE PLUS. Plaque claire sur ciment, filet
+   d'encre, et le minium seulement sur la ligne active — un endroit
+   ou le visiteur peut AGIR. Rayon 0, aucune ombre : la profondeur
+   est le filet de 1 px, comme partout.
+
+   44 px DE HAUT PAR LIGNE. C'est le minimum au pouce, et c'est
+   aussi ce qui empeche une liste de huit villes de ressembler a un
+   tableau. Le panneau lui-meme est borne a six lignes et defile :
+   au-dela, il recouvrirait le bouton d'envoi sur un telephone.
+   ============================================================ */
+.sug {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin-top: calc(var(--rule-w) * -1);
+  max-height: 16.5rem;
+  overflow-y: auto;
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--ink);
+  border-radius: var(--radius);
+}
+.sug[hidden] { display: none; }
+
+.sug-o {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.875rem;
+  border: 0;
+  border-radius: var(--radius);
+  border-top: var(--rule-w) solid var(--rule);
+  background: transparent;
+  font: inherit;
+  font-size: var(--fs-7);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  /* PHASE 8 · V4 — UN CRAN, PAS UN FONDU. L'etat actif ne se
+     degrade pas vers l'etat au repos : il roule d'un coup. */
+  transition: background-color var(--t-1) steps(1, end);
+}
+.sug-o:first-child { border-top: 0; }
+
+/* CE QUI A ETE TAPE SE VOIT. Sans ca, on ne sait pas POURQUOI une
+   ligne est proposee — « Sainte-Marie » et « Saint-Georges » se
+   ressemblent trop pour qu'on lise la difference a la volee. */
+.sug-o b {
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: inset 0 -0.45em 0 var(--accent-wash);
+}
+
+.sug-o.is-on,
+.sug-o:hover {
+  background: var(--surface-1);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* LA RAISON D'UNE QUESTION, SOUS LA QUESTION.  D-759
+   Un champ obligatoire de plus fait fermer un formulaire quand il a
+   l'air d'une formalite. Elle dit ce qu'on FERA de la reponse — pas
+   une promesse legale, celle-la est dans `form-legal` en bas. Elle
+   est plus basse que le libelle et plus haute que l'erreur : elle ne
+   doit ni se lire avant la question, ni disparaitre. */
+.field-aide {
+  margin: 0;
+  max-width: 56ch;
+  font-size: var(--fs-8);
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
 
 /* La note qui suit un choix : elle dit ce que le bouton retenu   D-725
    entraine. Sous le mode de la reservation, elle evite de promettre

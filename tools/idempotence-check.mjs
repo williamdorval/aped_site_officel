@@ -275,15 +275,29 @@ console.log("\n--- 8 · REPLY-TO SUR L'AVIS INTERNE");
 console.log("\n--- 9 · L'ORDRE DES COLONNES ET LA MISE EN FORME");
 {
   const cols = gs.colonnes("project").map((c) => c.titre);
-  /* TOUT LE SUIVI PASSE DEVANT.  D-743
+  /* LE SUIVI PASSE DEVANT, SAUF CE QUI EST LARGE.  D-743 puis D-759
      A Vu (case a cocher) · B Lu par · C Rappele par · D Statut ·
-     E Notes internes · F Etape · G Horodatage · H+ le visiteur. */
-  dire("les cinq colonnes de suivi ouvrent le classeur",
-    cols.slice(0, 5).join("|"), "Vu|Lu par|Rappelé par|Statut|Notes internes");
-  dire("puis l'etape et l'horodatage", cols.slice(5, 7).join("|"), "Étape|Horodatage");
-  dire("le visiteur commence en H", cols[7], "Nom");
-  dire("« Renvois » reste au bout, avant la signature",
-    cols.slice(-2).join("|"), "Renvois|Signature");
+     E Etape · F Horodatage · G+ le visiteur.
+
+     « Notes internes » etait en E et pesait 340 px : les six
+     colonnes de tete en mangeaient 1 010 sur les 1 440 d'un ecran,
+     et il ne restait la place que du nom. Elle est passee a la fin,
+     avec « Renvois » et la signature. Ce qui ouvre le classeur
+     tient maintenant en 670 px et repond a « qui, ou il en est,
+     quand » ; le reste de l'ecran est a la demande. */
+  dire("les quatre colonnes de suivi ouvrent le classeur",
+    cols.slice(0, 4).join("|"), "Vu|Lu par|Rappelé par|Statut");
+  dire("puis l'etape et l'horodatage", cols.slice(4, 6).join("|"), "Étape|Horodatage");
+  dire("le visiteur commence en G", cols[6], "Nom");
+  dire("« Notes internes » ferme la demande, avant les deux colonnes de service",
+    cols.slice(-3).join("|"), "Notes internes|Renvois|Signature");
+  /* LA LARGEUR DE TETE SE MESURE, ELLE NE SE SUPPOSE PAS. Un seul
+     elargissement de colonne suffit a repousser la demande hors de
+     l'ecran, et personne ne s'en apercevrait avant un lundi matin. */
+  const tete = gs.colonnes("project").slice(0, 6)
+    .reduce((n, c) => n + (c.largeur || 0), 0);
+  dire("les six colonnes de tete tiennent sous 700 px (" + tete + " px)",
+    tete <= 700, true);
   console.log("         ordre : " + cols.slice(0, 6).join(" | ") + " | … | "
     + cols.slice(-4).join(" | "));
 

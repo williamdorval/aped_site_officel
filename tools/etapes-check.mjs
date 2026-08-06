@@ -328,10 +328,16 @@ titre("10 · CE QU'ON VOIT EN OUVRANT L'ONGLET");
 
   const d = JSON.parse(gs.doGet({ parameter: { action: "diag" } }).getContent());
   const o = d.onglets.find((x) => x.onglet === "Démarrer un projet");
-  verifier("les cinq colonnes de suivi ouvrent l'onglet",
-    o.titres.slice(0, 5).join("|"), "Vu|Lu par|Rappelé par|Statut|Notes internes");
-  verifier("« Étape » est en F", o.titres[5], "Étape");
-  verifier("« Horodatage » en G", o.titres[6], "Horodatage");
+  /* « Notes internes » A QUITTE LA TETE.  D-759
+     Elle etait cinquieme et large de 340 px : les six colonnes de
+     tete en mangeaient 1 010 sur les 1 440 d'un ecran, et il ne
+     restait la place que du nom. Elle ferme maintenant la demande. */
+  verifier("les quatre colonnes de suivi ouvrent l'onglet",
+    o.titres.slice(0, 4).join("|"), "Vu|Lu par|Rappelé par|Statut");
+  verifier("« Étape » est en E", o.titres[4], "Étape");
+  verifier("« Horodatage » en F", o.titres[5], "Horodatage");
+  verifier("« Notes internes » ferme la demande",
+    o.titres.slice(-3).join("|"), "Notes internes|Renvois|Signature");
 
   const l = o.lignesEssai[0];
   const vu = l.cellules[0];
@@ -339,8 +345,16 @@ titre("10 · CE QU'ON VOIT EN OUVRANT L'ONGLET");
     "une case decochee vaut FALSE — c'est pour ca que la regle de couleur ne peut plus tester A");
   verifier("le statut est pose d'office",
     l.cellules.find((c) => c.titre === "Statut").valeur, "Nouveau");
-  verifier("la regle de couleur teste l'horodatage",
-    /\$G2<>""/.test(o.regles[0].formule), true, "formule : " + o.regles[0].formule);
+  /* LA LETTRE SE CALCULE, ELLE NE S'ECRIT PAS.  D-759
+     Elle etait ecrite « G » en dur. Deplacer une colonne de suivi a
+     donc fait tomber ce cas alors que le code, lui, avait raison :
+     `colonneExistence` lit la position d'« Horodatage ». Un test qui
+     connait la reponse par coeur accuse le code a chaque
+     reorganisation, et finit par etre desactive. */
+  const lettreHoro = String.fromCharCode(65 + o.titres.indexOf("Horodatage"));
+  verifier("la regle de couleur teste la colonne de l'horodatage (" + lettreHoro + ")",
+    new RegExp("\\$" + lettreHoro + "2<>\"\"").test(o.regles[0].formule), true,
+    "formule : " + o.regles[0].formule);
 }
 
 /* ============================================================

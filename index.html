@@ -3297,7 +3297,8 @@
         </div>
         <div class="field">
           <label for="prCity">Ville ou région</label>
-          <input id="prCity" name="ville" type="text" autocomplete="address-level2" />
+          <input id="prCity" name="ville" type="text" autocomplete="address-level2"
+                 list="l-villes" placeholder="Lévis, Québec, Saint-Georges…" />
         </div>
       </div>
 
@@ -3306,18 +3307,16 @@
         <div class="form-row">
           <div class="field">
             <label for="prIndustry">Votre domaine</label>
-            <select id="prIndustry" name="domaine" required>
-              <option value="">Choisir…</option>
-              <option>Restauration</option>
-              <option>Garage et mécanique</option>
-              <option>Construction et rénovation</option>
-              <option>Santé et beauté</option>
-              <option>Immobilier</option>
-              <option>Commerce de détail</option>
-              <option>Services professionnels</option>
-              <option>Autre</option>
-            </select>
-            <span class="field-error">Choisissez votre domaine.</span>
+            <!-- LISTE OUVERTE, PAS UN `<select>`.  D-759
+                 Les huit cases se terminaient par « Autre », et
+                 « Autre » ne dit rien : un ebeniste, une clinique
+                 veterinaire et une microbrasserie y tombaient tous
+                 les trois. Le champ suggere maintenant soixante
+                 metiers ET accepte ce qui n'y est pas. -->
+            <input id="prIndustry" name="domaine" type="text" required
+                   list="l-domaines" autocomplete="off"
+                   placeholder="Garage, restaurant, clinique…" />
+            <span class="field-error">Entrez votre domaine.</span>
           </div>
           <div class="field">
             <label for="prSize">Nombre d’employés</label>
@@ -3771,7 +3770,8 @@
         </div>
         <div class="field">
           <label for="rfIndustry">Dans quel domaine&nbsp;? <span class="opt">(optionnel)</span></label>
-          <input id="rfIndustry" name="domaine" type="text" autocomplete="off" placeholder="Restauration, construction…" />
+          <input id="rfIndustry" name="domaine" type="text" autocomplete="off"
+                 list="l-domaines" placeholder="Restauration, construction…" />
         </div>
       </div>
 
@@ -3823,8 +3823,9 @@
         </div>
         <div class="form-row">
           <div class="field">
-            <label for="rfPhone">Votre téléphone <span class="opt">(optionnel)</span></label>
-            <input id="rfPhone" name="votre_telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="418 555 0142…" />
+            <label for="rfPhone">Votre téléphone</label>
+            <input id="rfPhone" name="votre_telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+            <span class="field-error">Entrez un numéro à dix chiffres.</span>
           </div>
           <div class="field">
             <label for="rfRelation">Votre lien avec elle</label>
@@ -3837,6 +3838,12 @@
             </select>
             <span class="field-error">Indiquez votre lien.</span>
           </div>
+        </div>
+        <div class="field">
+          <label for="rfOwnCompany">Votre entreprise <span class="opt">(si vous en avez une)</span></label>
+          <input id="rfOwnCompany" name="votre_entreprise" type="text" autocomplete="organization"
+                 placeholder="Le nom sous lequel vous facturez…" />
+          <p class="field-aide">C’est à vous qu’on verse la commission si ça signe. Ces quatre réponses servent à vous joindre et à vous payer — pas à vous inscrire à quoi que ce soit.</p>
         </div>
       </div>
 
@@ -4036,12 +4043,18 @@
               <span class="field-error">Entrez un courriel valide.</span>
             </div>
           </div>
+          <div class="field">
+            <label for="esPhone">Téléphone</label>
+            <input id="esPhone" name="telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+            <span class="field-error">Entrez un numéro à dix chiffres.</span>
+            <p class="field-aide">Une estimation se discute mieux en deux minutes au téléphone qu’en trois courriels. On appelle, on ne relance pas.</p>
+          </div>
           <button class="btn btn--primary" type="submit" data-submit>
             <span data-label>Voir mon estimation</span>
             <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
           </button>
           <p class="form-status" role="status" aria-live="polite"></p>
-          <p class="form-legal">Nom et courriel servent à vous envoyer l’estimation et à en discuter. Aucune infolettre, aucun partage. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
+          <p class="form-legal">Nom, courriel et téléphone servent à vous envoyer l’estimation et à en discuter. Aucune infolettre, aucun partage. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
         </form>
       </div>
 
@@ -4194,5 +4207,167 @@
     }
   })();
 </script>
+
+<!-- ============================================================
+     LES LISTES QUI SE SUGGERENT — `<datalist>`, rien d'autre.  D-759
+
+     POURQUOI `<datalist>` ET PAS UNE LISTE MAISON. Trois raisons,
+     et la premiere est la seule qui compte :
+
+       · ELLE ACCEPTE UNE REPONSE HORS LISTE. Un `<select>` ne le
+         peut pas. Une entreprise dont le domaine n'est pas dans nos
+         huit cases devait choisir « Autre », et on perdait la seule
+         information qui aurait servi a preparer l'appel ;
+       · elle est NATIVE : aucune requete, aucun script, aucun
+         paquet. Le filtrage a la frappe, le clavier, le lecteur
+         d'ecran et le pouce sont ceux du systeme, deja bons ;
+       · elle survit a `js/` : ce qui s'ecrit et s'envoie ne depend
+         de rien. Une suggestion qui ne s'affiche pas ne coute
+         qu'une suggestion.
+
+     LES LISTES SONT LOCALES, ET C'EST UN ACQUIS DU PROJET. Aucun
+     service d'adresses, aucune API de municipalites : le fichier
+     porte ses listes, le site ne parle a personne.
+
+     LEUR POIDS EST MESURE : `node tools/listes-check.mjs`.
+     ============================================================ -->
+
+<!-- LES MUNICIPALITES. Ce ne sont pas « les villes du Quebec » :
+     c'est celles d'ou viennent les appels. Quebec et la
+     Chaudiere-Appalaches d'abord — l'agence est a Levis —, puis
+     tout ce qui depasse 15 000 habitants, puis les chefs-lieux de
+     region qui n'y sont pas. Une liste exhaustive de 1 100
+     municipalites pesait 22 ko pour servir six fois par an. -->
+<datalist id="l-villes">
+  <option value="Québec"></option><option value="Lévis"></option>
+  <option value="Sainte-Marie"></option><option value="Saint-Georges"></option>
+  <option value="Montmagny"></option><option value="Thetford Mines"></option>
+  <option value="Saint-Joseph-de-Beauce"></option><option value="Beauceville"></option>
+  <option value="Sainte-Croix"></option><option value="Saint-Apollinaire"></option>
+  <option value="Saint-Henri"></option><option value="Sainte-Claire"></option>
+  <option value="Lac-Etchemin"></option><option value="Saint-Pamphile"></option>
+  <option value="La Pocatière"></option><option value="Saint-Anselme"></option>
+  <option value="Charny"></option><option value="Saint-Romuald"></option>
+  <option value="Saint-Nicolas"></option><option value="Saint-Rédempteur"></option>
+  <option value="Beaumont"></option><option value="Pintendre"></option>
+  <option value="L’Ancienne-Lorette"></option><option value="Saint-Augustin-de-Desmaures"></option>
+  <option value="Boischatel"></option><option value="Beaupré"></option>
+  <option value="Sainte-Anne-de-Beaupré"></option><option value="Stoneham-et-Tewkesbury"></option>
+  <option value="Lac-Beauport"></option><option value="Shannon"></option>
+  <option value="Saint-Raymond"></option><option value="Pont-Rouge"></option>
+  <option value="Donnacona"></option><option value="Neuville"></option>
+  <option value="Portneuf"></option><option value="Saint-Marc-des-Carrières"></option>
+  <option value="Baie-Saint-Paul"></option><option value="La Malbaie"></option>
+  <option value="Clermont"></option>
+  <option value="Montréal"></option><option value="Laval"></option>
+  <option value="Longueuil"></option><option value="Gatineau"></option>
+  <option value="Sherbrooke"></option><option value="Saguenay"></option>
+  <option value="Trois-Rivières"></option><option value="Terrebonne"></option>
+  <option value="Saint-Jean-sur-Richelieu"></option><option value="Repentigny"></option>
+  <option value="Brossard"></option><option value="Drummondville"></option>
+  <option value="Saint-Jérôme"></option><option value="Granby"></option>
+  <option value="Blainville"></option><option value="Saint-Hyacinthe"></option>
+  <option value="Shawinigan"></option><option value="Dollard-des-Ormeaux"></option>
+  <option value="Rimouski"></option><option value="Châteauguay"></option>
+  <option value="Victoriaville"></option><option value="Saint-Eustache"></option>
+  <option value="Rouyn-Noranda"></option><option value="Salaberry-de-Valleyfield"></option>
+  <option value="Boucherville"></option><option value="Mascouche"></option>
+  <option value="Mirabel"></option><option value="Sorel-Tracy"></option>
+  <option value="Vaudreuil-Dorion"></option><option value="Côte-Saint-Luc"></option>
+  <option value="Val-d’Or"></option><option value="Alma"></option>
+  <option value="Boisbriand"></option><option value="Sainte-Julie"></option>
+  <option value="Saint-Constant"></option><option value="Sept-Îles"></option>
+  <option value="Baie-Comeau"></option><option value="Magog"></option>
+  <option value="Chambly"></option><option value="Rivière-du-Loup"></option>
+  <option value="Joliette"></option><option value="Saint-Bruno-de-Montarville"></option>
+  <option value="Sainte-Thérèse"></option><option value="Varennes"></option>
+  <option value="Beloeil"></option><option value="L’Assomption"></option>
+  <option value="Candiac"></option><option value="Saint-Lambert"></option>
+  <option value="Amos"></option><option value="Thurso"></option>
+  <option value="Matane"></option><option value="Gaspé"></option>
+  <option value="Chandler"></option><option value="Roberval"></option>
+  <option value="Dolbeau-Mistassini"></option><option value="Saint-Félicien"></option>
+  <option value="Cowansville"></option><option value="Lachute"></option>
+  <option value="Sainte-Adèle"></option><option value="Mont-Tremblant"></option>
+  <option value="Saint-Sauveur"></option><option value="Contrecœur"></option>
+  <option value="Bécancour"></option><option value="Nicolet"></option>
+  <option value="Louiseville"></option><option value="La Tuque"></option>
+  <option value="Coaticook"></option><option value="Windsor"></option>
+  <option value="Asbestos"></option><option value="Plessisville"></option>
+  <option value="Princeville"></option><option value="Warwick"></option>
+  <option value="Kamouraska"></option><option value="Trois-Pistoles"></option>
+  <option value="Amqui"></option><option value="Mont-Joli"></option>
+  <option value="New Richmond"></option><option value="Carleton-sur-Mer"></option>
+  <option value="Maniwaki"></option><option value="Buckingham"></option>
+  <option value="Hawkesbury"></option><option value="Sainte-Agathe-des-Monts"></option>
+</datalist>
+
+<!-- LES DOMAINES. Les douze metiers des ecrans de secteur d'abord,
+     parce que ce sont ceux qu'on sait deja montrer, puis les
+     metiers qui appellent une agence au Quebec. « Autre » n'y est
+     PAS : le champ accepte n'importe quoi, une case « Autre »
+     n'aurait plus rien a fabriquer. -->
+<datalist id="l-domaines">
+  <option value="Restauration"></option>
+  <option value="Garage et mécanique"></option>
+  <option value="Construction et rénovation"></option>
+  <option value="Coiffure et esthétique"></option>
+  <option value="Clinique et santé"></option>
+  <option value="Immobilier"></option>
+  <option value="Commerce de détail"></option>
+  <option value="Boutique en ligne"></option>
+  <option value="Gym et entraînement"></option>
+  <option value="Hôtellerie et hébergement"></option>
+  <option value="Photographie et vidéo"></option>
+  <option value="Services juridiques"></option>
+  <option value="Comptabilité et fiscalité"></option>
+  <option value="Assurances et courtage"></option>
+  <option value="Plomberie"></option>
+  <option value="Électricité"></option>
+  <option value="Toiture"></option>
+  <option value="Excavation et terrassement"></option>
+  <option value="Paysagement"></option>
+  <option value="Déneigement"></option>
+  <option value="Menuiserie et ébénisterie"></option>
+  <option value="Portes et fenêtres"></option>
+  <option value="Chauffage et climatisation"></option>
+  <option value="Nettoyage et entretien"></option>
+  <option value="Transport et camionnage"></option>
+  <option value="Déménagement"></option>
+  <option value="Agriculture et acériculture"></option>
+  <option value="Alimentation et boucherie"></option>
+  <option value="Boulangerie et pâtisserie"></option>
+  <option value="Traiteur et événements"></option>
+  <option value="Microbrasserie et distillerie"></option>
+  <option value="Dentisterie"></option>
+  <option value="Physiothérapie et massothérapie"></option>
+  <option value="Vétérinaire et animalerie"></option>
+  <option value="Optométrie"></option>
+  <option value="Pharmacie"></option>
+  <option value="Garderie et éducation"></option>
+  <option value="Formation et cours"></option>
+  <option value="Tourisme et plein air"></option>
+  <option value="Sport et loisirs"></option>
+  <option value="Arts et culture"></option>
+  <option value="Organisme sans but lucratif"></option>
+  <option value="Municipalité et secteur public"></option>
+  <option value="Manufacturier et industriel"></option>
+  <option value="Métal et soudure"></option>
+  <option value="Bois et scierie"></option>
+  <option value="Informatique et logiciel"></option>
+  <option value="Marketing et communication"></option>
+  <option value="Ressources humaines et recrutement"></option>
+  <option value="Services financiers"></option>
+  <option value="Notaire"></option>
+  <option value="Architecture et design"></option>
+  <option value="Ingénierie"></option>
+  <option value="Arpentage et inspection"></option>
+  <option value="Concessionnaire automobile"></option>
+  <option value="Carrosserie et débosselage"></option>
+  <option value="Location d’équipement"></option>
+  <option value="Sécurité et surveillance"></option>
+  <option value="Funéraire"></option>
+  <option value="Salon de tatouage"></option>
+</datalist>
 </body>
 </html>

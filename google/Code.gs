@@ -344,10 +344,32 @@ var SCHEMA = {
   estimate: {
     onglet: "Estimation rapide",
     sujet: "Demande d'estimation",
-    requis: ["nom", "email"],
+    /* LE TÉLÉPHONE EST OBLIGATOIRE ICI, ET IL NE L'ÉTAIT PAS.  D-759
+       Une estimation se règle en deux minutes d'appel et jamais en
+       trois courriels : la fourchette dépend de choses qu'on ne
+       demande pas au formulaire. Sans numéro, le seul lead qu'on
+       ait déjà chiffré est celui qu'on ne peut pas rappeler. */
+    requis: ["nom", "email", "telephone"],
     requisPartiel: ["email"],
+    /* LE PRIX SE LIT AVANT LES HUIT REPONSES QUI L'ONT PRODUIT.
+       D-759
+
+       Les trois colonnes du prix fermaient l'onglet, derriere onze
+       colonnes de parametres : la seule information qui dit si un
+       lead vaut un rappel etait la seule qu'on ne voyait pas sans
+       faire glisser le classeur. Elles montent juste apres de quoi
+       appeler. Les huit reponses restent, plus loin — elles servent
+       a PREPARER l'appel, pas a decider de le passer. */
     champs: [
       { champ: "nom",             titre: "Nom",                largeur: 150 },
+      { champ: "telephone",       titre: "Téléphone",          largeur: 140 },
+      /* CE QUE LE VISITEUR A VU, PAS CE QU'ON RECALCULE.  D-746
+         Une fourchette recalculée après coup n'est pas la même
+         preuve : le barème peut changer entre-temps, et c'est
+         justement sur le chiffre AFFICHÉ que la personne a réagi. */
+      { champ: "fourchette_vue",  titre: "Fourchette vue",     largeur: 170 },
+      { champ: "prix_reaction",   titre: "Ça convient ?",      largeur: 120 },
+      { champ: "prix_raison",     titre: "Pourquoi pas",       largeur: 300 },
       { champ: "email",           titre: "Courriel",           largeur: 210 },
       { champ: "type_de_projet",  titre: "Type de projet",     largeur: 150 },
       { champ: "domaine",         titre: "Domaine",            largeur: 150 },
@@ -357,14 +379,7 @@ var SCHEMA = {
       { champ: "contenu",         titre: "Contenu",            largeur: 160 },
       { champ: "niveau_design",   titre: "Niveau de design",   largeur: 140 },
       { champ: "echeancier",      titre: "Échéancier",         largeur: 140 },
-      { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 },
-      /* CE QUE LE VISITEUR A VU, PAS CE QU'ON RECALCULE.  D-746
-         Une fourchette recalculée après coup n'est pas la même
-         preuve : le barème peut changer entre-temps, et c'est
-         justement sur le chiffre AFFICHÉ que la personne a réagi. */
-      { champ: "fourchette_vue",  titre: "Fourchette vue",     largeur: 170 },
-      { champ: "prix_reaction",   titre: "Ça convient ?",      largeur: 120 },
-      { champ: "prix_raison",     titre: "Pourquoi pas",       largeur: 300 }
+      { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 }
     ]
   },
 
@@ -392,7 +407,12 @@ var SCHEMA = {
   refer: {
     onglet: "Référer une entreprise",
     sujet: "Nouvelle référence",
-    requis: ["votre_nom", "votre_email", "votre_lien",
+    /* LE NUMERO DU REFERENT EST OBLIGATOIRE.  D-759
+       C'est LUI qu'on rappelle pour lui verser sa commission quand
+       le contrat se signe. Une reference sans moyen de joindre
+       celui qui l'a faite est une reference qu'on ne peut pas
+       honorer, et c'est pire que pas de reference du tout. */
+    requis: ["votre_nom", "votre_email", "votre_telephone", "votre_lien",
              "entreprise_referee", "contact_reference"],
     /* LE NOM DE L'ENTREPRISE SUFFIT À OUVRIR UNE LIGNE. C'est le
        minimum vital d'une référence : avec lui on peut chercher, et
@@ -410,10 +430,20 @@ var SCHEMA = {
       { champ: "besoin",             titre: "Besoin pressenti",   largeur: 180 },
       { champ: "contexte",           titre: "Contexte",           largeur: 320 },
       { champ: "presentation",       titre: "Comment se présenter", largeur: 260 },
-      { champ: "votre_nom",          titre: "Référent",           largeur: 150 },
-      { champ: "votre_email",        titre: "Courriel référent",  largeur: 210 },
-      { champ: "votre_telephone",    titre: "Tél. référent",      largeur: 130 },
-      { champ: "votre_lien",         titre: "Lien avec l'entreprise", largeur: 180 }
+      /* LE SECOND BLOC : CELUI QU'ON PAIE.  D-759
+
+         Les deux jeux se lisaient dans la meme rangee de colonnes
+         sans qu'on sache lequel etait lequel : « Courriel référent »
+         voisinait « Personne à contacter », et « Lien avec
+         l'entreprise » se lisait comme une adresse web alors que
+         c'est un lien de parente. Chaque colonne du referent porte
+         maintenant son nom en tete — le classeur se lit de gauche a
+         droite sans avoir a se souvenir de rien. */
+      { champ: "votre_nom",          titre: "RÉFÉRENT · nom",       largeur: 150 },
+      { champ: "votre_telephone",    titre: "RÉFÉRENT · téléphone", largeur: 140 },
+      { champ: "votre_email",        titre: "RÉFÉRENT · courriel",  largeur: 210 },
+      { champ: "votre_entreprise",   titre: "RÉFÉRENT · entreprise", largeur: 180 },
+      { champ: "votre_lien",         titre: "RÉFÉRENT · lien avec elle", largeur: 190 }
     ]
   },
 
@@ -472,11 +502,27 @@ var SCHEMA = {
    « Notes internes » est un champ libre, sans liste : c'est le seul
    endroit du classeur où trois personnes peuvent écrire une phrase
    sans se marcher dessus, et une liste déroulante le tuerait. */
+/* CE QU'ON VOIT SANS FAIRE GLISSER LE CLASSEUR.  D-759
+
+   « Notes internes » est large de 340 px et se lit une fois sur
+   vingt. En cinquieme colonne, elle poussait TOUTE la demande
+   au-dela du bord de l'ecran : sur 1 440 px, les sept colonnes de
+   tete en mangeaient 1 010, et il ne restait la place que du nom.
+   Le lundi matin, chaque ligne demandait un glissement lateral
+   avant de dire quoi que ce soit.
+
+   Elle passe donc a la FIN, avec les deux colonnes de service. Ce
+   qui reste en tete tient en 670 px et repond a « qui, ou il en
+   est, quand » — le reste de l'ecran est a la demande elle-meme. */
 var SUIVI = [
   { titre: "Vu",             largeur: 50,  case: true },
   { titre: "Lu par",         largeur: 110, liste: ASSOCIES },
   { titre: "Rappelé par",    largeur: 120, liste: ASSOCIES },
-  { titre: "Statut",         largeur: 130, liste: STATUTS },
+  { titre: "Statut",         largeur: 130, liste: STATUTS }
+];
+
+/* Les colonnes de suivi qui se lisent APRES la demande. */
+var SUIVI_FIN = [
   { titre: "Notes internes", largeur: 340 }
 ];
 
@@ -529,6 +575,7 @@ function colonnes(kind) {
   SUIVI.forEach(function (c) { out.push(c); });
   TECHNIQUES.forEach(function (c) { out.push(c); });
   SCHEMA[kind].champs.forEach(function (c) { out.push(c); });
+  SUIVI_FIN.forEach(function (c) { out.push(c); });
   out.push({ titre: "Renvois", largeur: 80 });
   out.push({ titre: COL_SIGNATURE, largeur: 120 });
   return out;
@@ -917,7 +964,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 7,
+    version: 8,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
@@ -1444,7 +1491,7 @@ function chiffres(v) {
 var LONGUEURS = {
   nom: 120, entreprise: 160, ville: 120, email: 254, telephone: 40,
   message: 5000, description: 5000, contexte: 3000, sujet: 2000,
-  votre_nom: 120, votre_email: 254, votre_telephone: 40,
+  votre_nom: 120, votre_email: 254, votre_telephone: 40, votre_entreprise: 160,
   entreprise_referee: 160, contact_reference: 200, domaine: 160,
   site_actuel: 500, besoins: 500, plage_demandee: 200,
   blocage: 2000, connu_par: 160, prix_raison: 2000, fourchette_vue: 120,

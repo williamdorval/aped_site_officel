@@ -288,8 +288,10 @@ titre("4 · LA TROISIEME PORTE — CE QU'ELLE MONTRE ET CE QU'ELLE TAIT");
   const onglet = d.onglets.find((o) => o.onglet === "Contact simple");
 
   verifier("la porte repond", d.success, true);
+  /* « Notes internes » a quitte la tete pour la fin (D-759) : elle
+     pesait 340 px et repoussait toute la demande hors de l'ecran. */
   verifier("« Vu » ouvre le classeur, « Statut » est en D",
-    onglet.titres.slice(0, 5).join("|"), "Vu|Lu par|Rappelé par|Statut|Notes internes",
+    onglet.titres.slice(0, 4).join("|"), "Vu|Lu par|Rappelé par|Statut",
     "en-tetes : " + onglet.titres.join(" | "));
   verifier("la premiere ligne est figee", onglet.figees, 1);
   verifier("elle compte les deux lignes", onglet.lignesTotal, 2);
@@ -309,8 +311,13 @@ titre("4 · LA TROISIEME PORTE — CE QU'ELLE MONTRE ET CE QU'ELLE TAIT");
 
   const regle = onglet.regles[0];
   verifier("une seule regle de couleur", onglet.regles.length, 1);
-  verifier("elle vise la colonne « Lu par » vide, et teste l'existence sur Horodatage",
-    /\$G2<>""/.test(regle.formule) && /\$B2=""/.test(regle.formule), true,
+  /* LA LETTRE SE CALCULE. Ecrite « G » en dur, elle accusait le
+     code des qu'une colonne de suivi bougeait — alors que
+     `colonneExistence` lit la position d'« Horodatage ».  D-759 */
+  const lettreHoro = String.fromCharCode(65 + onglet.titres.indexOf("Horodatage"));
+  verifier("elle vise « Lu par » vide, et teste l'existence sur Horodatage (" + lettreHoro + ")",
+    new RegExp("\\$" + lettreHoro + "2<>\"\"").test(regle.formule)
+      && /\$B2=""/.test(regle.formule), true,
     "formule : " + regle.formule);
   verifier("les largeurs sont rendues",
     onglet.largeurs.length === onglet.titres.length && onglet.largeurs[1] > 0, true,

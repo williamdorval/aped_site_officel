@@ -1826,6 +1826,197 @@
     }
   }
 
+  /* ============================================================
+     LES SUGGESTIONS — une liste qu'on peut PHOTOGRAPHIER.  D-759
+
+     POURQUOI PAS `<datalist>` TOUT SEUL. Le champ le porte quand
+     meme, et c'est le repli : sans JavaScript, les suggestions du
+     navigateur restent. Mais son menu est dessine par le NAVIGATEUR,
+     hors de la page — une capture de page ne le voit pas, et ce
+     projet ne conclut pas sur ce qu'il ne peut pas montrer. Il ne
+     respecte pas non plus le rayon 0 ni les trois matieres.
+
+     CE QUE CELLE-CI FAIT DE PLUS :
+       · elle cherche SANS ACCENTS et n'importe ou dans le mot —
+         « levi » trouve « Lévis », « boul » trouve « Boulangerie
+         et pâtisserie » ;
+       · elle met en evidence ce qui a ete tape, pour qu'on voie
+         POURQUOI une ligne est proposee ;
+       · elle donne 44 px de haut a chaque ligne, au pouce ;
+       · elle accepte tout ce qui n'y est pas : c'est un champ de
+         texte, il le reste.
+
+     LE MOTIF EST V4 · CRAN. La ligne active ne fond pas dans la
+     suivante : elle roule d'un cran, filet de minium a gauche —
+     minium parce que c'est un endroit ou le visiteur peut AGIR.
+     ============================================================ */
+  var SUG_MAX = 8;
+
+  /* « Lévis » et « levis » doivent se rencontrer. `normalize` n'est
+     pas partout : sans lui on compare les chaines telles quelles,
+     et la recherche marche encore, en moins souple. */
+  function sansAccent(s) {
+    var t = String(s == null ? "" : s).toLowerCase();
+    try { return t.normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+    catch (e) { return t; }
+  }
+
+  function brancherSuggestions(champ) {
+    var liste = doc.getElementById(champ.getAttribute("list"));
+    if (!liste) return;
+    var choix = $$("option", liste).map(function (o) {
+      return o.value || o.textContent || "";
+    }).filter(Boolean);
+    if (!choix.length) return;
+
+    /* ON RETIRE `list` : sans ca, le menu du navigateur s'ouvrirait
+       PAR-DESSUS le notre. Le `<datalist>` reste dans la page, il
+       sert de source — et de repli si ce script n'a jamais tourne. */
+    champ.removeAttribute("list");
+
+    var panneau = doc.createElement("div");
+    panneau.className = "sug";
+    panneau.setAttribute("role", "listbox");
+    panneau.id = "sug-" + (champ.id || Math.random().toString(36).slice(2, 8));
+    panneau.hidden = true;
+    champ.parentNode.appendChild(panneau);
+
+    champ.setAttribute("role", "combobox");
+    champ.setAttribute("aria-autocomplete", "list");
+    champ.setAttribute("aria-expanded", "false");
+    champ.setAttribute("aria-controls", panneau.id);
+    champ.setAttribute("autocomplete", "off");
+
+    var visibles = [];
+    var actif = -1;
+
+    function fermer() {
+      panneau.hidden = true;
+      panneau.textContent = "";
+      champ.setAttribute("aria-expanded", "false");
+      champ.removeAttribute("aria-activedescendant");
+      actif = -1;
+      visibles = [];
+    }
+
+    function surligner(texte, cherche) {
+      var frag = doc.createDocumentFragment();
+      var i = sansAccent(texte).indexOf(cherche);
+      if (cherche === "" || i < 0) { frag.appendChild(doc.createTextNode(texte)); return frag; }
+      frag.appendChild(doc.createTextNode(texte.slice(0, i)));
+      var b = doc.createElement("b");
+      b.textContent = texte.slice(i, i + cherche.length);
+      frag.appendChild(b);
+      frag.appendChild(doc.createTextNode(texte.slice(i + cherche.length)));
+      return frag;
+    }
+
+    function marquerActif() {
+      $$(".sug-o", panneau).forEach(function (el, i) {
+        var on = i === actif;
+        el.classList.toggle("is-on", on);
+        el.setAttribute("aria-selected", on ? "true" : "false");
+        if (on) {
+          champ.setAttribute("aria-activedescendant", el.id);
+          if (el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
+        }
+      });
+      if (actif < 0) champ.removeAttribute("aria-activedescendant");
+    }
+
+    function ouvrir() {
+      var brut = String(champ.value).trim();
+      var cherche = sansAccent(brut);
+      visibles = choix.filter(function (c) {
+        return cherche === "" || sansAccent(c).indexOf(cherche) !== -1;
+      });
+      /* CE QUI COMMENCE PAR CE QU'ON TAPE PASSE DEVANT. « Saint »
+         proposait « Boisbriand » avant « Saint-Georges », parce que
+         l'ordre de la liste primait sur ce que la personne cherche. */
+      if (cherche !== "") {
+        visibles.sort(function (a, b) {
+          var pa = sansAccent(a).indexOf(cherche) === 0 ? 0 : 1;
+          var pb = sansAccent(b).indexOf(cherche) === 0 ? 0 : 1;
+          return pa - pb;
+        });
+      }
+      visibles = visibles.slice(0, SUG_MAX);
+
+      /* UNE SEULE PROPOSITION, DEJA ECRITE EN ENTIER, N'APPREND
+         RIEN — et elle recouvre le champ suivant pour rien. */
+      if (!visibles.length || (visibles.length === 1 && sansAccent(visibles[0]) === cherche)) {
+        fermer();
+        return;
+      }
+
+      panneau.textContent = "";
+      visibles.forEach(function (v, i) {
+        var o = doc.createElement("button");
+        o.type = "button";
+        o.className = "sug-o";
+        o.id = panneau.id + "-" + i;
+        o.setAttribute("role", "option");
+        o.setAttribute("aria-selected", "false");
+        o.tabIndex = -1;
+        o.appendChild(surligner(v, cherche));
+        /* `mousedown` ET PAS `click` : le clic arrive APRES le
+           `blur`, qui a deja ferme le panneau — le bouton n'existe
+           plus au moment ou il devrait repondre. */
+        o.addEventListener("mousedown", function (e) {
+          e.preventDefault();
+          retenir(v);
+        });
+        panneau.appendChild(o);
+      });
+      actif = -1;
+      panneau.hidden = false;
+      champ.setAttribute("aria-expanded", "true");
+      marquerActif();
+    }
+
+    function retenir(v) {
+      champ.value = v;
+      fermer();
+      champ.dispatchEvent(new Event("input", { bubbles: true }));
+      champ.dispatchEvent(new Event("change", { bubbles: true }));
+      champ.focus();
+    }
+
+    champ.addEventListener("input", ouvrir);
+    champ.addEventListener("focus", function () {
+      if (String(champ.value).trim() !== "") ouvrir();
+    });
+    champ.addEventListener("blur", function () {
+      /* Le panneau se ferme au tour suivant : un `mousedown` en
+         cours doit avoir le temps d'aboutir. */
+      window.setTimeout(fermer, 120);
+    });
+    champ.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        if (panneau.hidden) { ouvrir(); if (panneau.hidden) return; }
+        e.preventDefault();
+        var n = visibles.length;
+        actif = e.key === "ArrowDown"
+          ? (actif + 1 >= n ? 0 : actif + 1)
+          : (actif - 1 < 0 ? n - 1 : actif - 1);
+        marquerActif();
+        return;
+      }
+      if (e.key === "Enter" && !panneau.hidden && actif >= 0) {
+        /* ON N'ENVOIE PAS LE FORMULAIRE EN CHOISISSANT UNE VILLE. */
+        e.preventDefault();
+        retenir(visibles[actif]);
+        return;
+      }
+      if (e.key === "Escape" && !panneau.hidden) {
+        e.stopPropagation();   /* sinon la modale se ferme aussi */
+        fermer();
+      }
+    });
+  }
+
+  $$("input[list]").forEach(brancherSuggestions);
+
   function validate(scope) {
     var firstBad = null;
     $$(".field", scope).forEach(function (field) {
@@ -1843,6 +2034,15 @@
       var ok = String(input.value).trim().length > 0;
       if (ok && input.type === "email") {
         ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+      }
+      /* DIX CHIFFRES, COMME LE SERVEUR.  D-759
+         `valider()` dans Code.gs refuse deja « 12 » comme numero.
+         Sans ce miroir, le visiteur cliquait, attendait l'aller-
+         retour, et lisait un refus generique loin du champ fautif.
+         On compte les CHIFFRES, pas les signes : « (418) 555-0142 »
+         en a dix, et il est valide. */
+      if (ok && input.type === "tel") {
+        ok = String(input.value).replace(/\D/g, "").length >= 10;
       }
       markField(field, ok);
       if (!ok && !firstBad) firstBad = input;
