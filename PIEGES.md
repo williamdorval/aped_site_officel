@@ -120,7 +120,7 @@ correctif.
 | &nbsp;&nbsp;↳ 90 · Un filtre de réponses sur /exec ne voit que la redirection | 23 | 222 |
 | &nbsp;&nbsp;↳ 91 · Une attente fixe calibrée sur le banc ment contre le vrai service | 19 | 224 |
 | &nbsp;&nbsp;↳ 92 · [ée]s? ne matche pas « supprimées » — une classe prend UN caractère | 31 | 343 |
-| &nbsp;&nbsp;↳ 93 · Une valeur qui commence par =, +, - ou @ devient une FORMULE dans Sheets | 21 | 241 |
+| &nbsp;&nbsp;↳ 93 · Une valeur qui commence par =, +, - ou @ devient une FORMULE dans Sheets | 44 | 541 |
 | &nbsp;&nbsp;↳ 94 · Une validation périmée tronque la ligne, et l'écriture passe pour faite | 47 | 656 |
 
 <!-- INDEX:FIN -->
@@ -1771,9 +1771,32 @@ de texte suffit.
 AFFICHÉE. Le verdict est dans `getFormulas()` : **non vide = Sheets a
 calculé.**
 
-**Le correctif.** `setNumberFormat("@")` sur les colonnes du
-visiteur, **AVANT** `setValues`. Posé après, il ne défait pas la
-formule — il ne fait que l'afficher autrement.
+**Le correctif — et le premier était FAUX.** Le projet a cru pendant
+des mois que `setNumberFormat("@")` posé **avant** `setValues`
+suffisait (D-731). **Il ne suffit pas.** Relevé le 2026-08-06 dans le
+vrai classeur, par `?action=diag` :
+
+```
+« Description »        valeur "2"     formule "=1+1"         format @
+« Ce qui les bloque »  valeur "#N/A"  formule "=IMPORTXML…"  format @
+```
+
+Le format était bien `@`, et Sheets a calculé quand même. Le format
+gouverne ce qu'une **saisie humaine** devient ; `setValues` crée une
+formule dès que la chaîne commence par `=`, quoi que porte la
+cellule.
+
+**Le vrai correctif : l'apostrophe de tête** (D-757). Une chaîne
+préfixée d'une apostrophe est rangée comme texte ; Sheets la retire,
+donc `getValues()` rend la chaîne d'origine. Rien n'est perdu, rien
+ne s'évalue. Le format `@` reste posé — il n'y protège de rien, mais
+il empêche un code postal de s'afficher en nombre.
+
+**Ce qui a caché la faille : le banc modélisait la croyance.**
+`faux-google.mjs` disait « devient une formule SAUF si la cellule
+porte le format texte ». La seconde moitié n'existe pas dans Sheets.
+Le banc rendait donc « aucune formule » sur une faille ouverte, et le
+cas d'essai ne regardait que la valeur — jamais `getFormulas()`.
 
 **Ne PAS refuser les `=`** : une entreprise peut s'appeler
 « +Design », un budget s'écrire « -de 5 k ». On range du texte comme

@@ -838,7 +838,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 5,
+    version: 6,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
@@ -1570,8 +1570,15 @@ function fusionnerLigne(kind, cible, data, extra) {
     if (v == null) return;
     v = String(v);
     if (v.trim() === "") return;
+    /* LA COMPARAISON SE FAIT SUR LE TEXTE NU, L'ÉCRITURE SUR LE
+       TEXTE INERTE.  D-757
+
+       `getValues()` rend « =1+1 » sans l'apostrophe : comparer la
+       forme préfixée à ce qui est relu ferait croire à un changement
+       à chaque envoi, et `champs` compterait une modification qui
+       n'a pas eu lieu. */
     if (String(apres[i]) === v) return;
-    apres[i] = v;
+    apres[i] = texteInerte(v);
     touchees++;
   });
 
@@ -1636,12 +1643,19 @@ function rangEtape(libelle) {
    réponse : une entreprise peut légitimement s'appeler « +Design »
    et un message commencer par un tiret.
 
-   ON FORCE DONC LE FORMAT TEXTE sur les colonnes du visiteur,
-   AVANT d'écrire. Une cellule au format `@` range la chaîne telle
-   quelle : rien ne s'évalue, rien n'est perdu, et le texte
-   s'affiche sans apostrophe parasite. Les colonnes de service —
-   horodatage, renvois, suivi — gardent leur format : elles ne
-   viennent pas du visiteur. */
+   CE QUI SUIT ÉTAIT FAUX, ET L'A ÉTÉ PENDANT DES MOIS. D-731
+   affirmait qu'une cellule au format `@` range la chaîne telle
+   quelle et que « rien ne s'évalue ». **Mesuré le 2026-08-06 dans le
+   vrai classeur : format `@` posé avant, et `=1+1` calculé quand
+   même.** Le format gouverne la SAISIE HUMAINE ; `setValues` crée
+   une formule dès le `=`, quoi que porte la cellule.
+
+   C'est `texteInerte()` qui protège (D-757), pas cette fonction.
+
+   ON GARDE QUAND MÊME LE FORMAT TEXTE, pour une autre raison : un
+   code postal, un numéro à zéro de tête ou « 06 » s'afficheraient en
+   nombre. Les colonnes de service — horodatage, renvois, suivi —
+   gardent le leur : elles ne viennent pas du visiteur. */
 function formaterTexte(feuille, ligne, kind) {
   /* LA POSITION SE DÉDUIT, ELLE NE SE SUPPOSE PAS. Cette fonction
      écrivait « la première colonne du visiteur est la 2 » ; le jour
@@ -1656,6 +1670,44 @@ function formaterTexte(feuille, ligne, kind) {
   var premiere = Math.min.apply(null, indices);
   var derniere = Math.max.apply(null, indices);
   feuille.getRange(ligne, premiere, 1, derniere - premiere + 1).setNumberFormat("@");
+}
+
+/* LE FORMAT TEXTE NE PROTÈGE DE RIEN — MESURÉ, PAS SUPPOSÉ.  D-757
+
+   D-731 posait `setNumberFormat("@")` sur les colonnes du visiteur
+   AVANT `setValues`, et tenait l'injection pour réglée. Elle ne
+   l'était pas. Relevé le 2026-08-06 dans le vrai classeur, par
+   `?action=diag` :
+
+     « Description »        valeur "2"     formule "=1+1"        format @
+     « Ce qui les bloque »  valeur "#N/A"  formule "=IMPORTXML…"  format @
+
+   Le format était bien `@`, et Sheets a calculé quand même. Le
+   format gouverne ce qu'une SAISIE HUMAINE devient ; `setValues`,
+   lui, crée une formule dès que la chaîne commence par `=`, quoi
+   que porte la cellule. Le banc modélisait la croyance, pas Sheets :
+   il rendait « aucune formule » depuis des mois.
+
+   CE QUE ÇA VALAIT COMME FAILLE. `=IMPORTXML("https://…"&B2,"//a")`
+   part sous le compte de l'agence à chaque ouverture du classeur :
+   c'est une sortie de données, pas un affichage cassé. Aucune faille
+   à exploiter — un champ de texte suffit.
+
+   LE CORRECTIF EST L'APOSTROPHE, celle de Sheets. Une chaîne
+   préfixée d'une apostrophe est rangée comme TEXTE ; l'apostrophe ne
+   s'affiche pas et `getValues()` rend la chaîne d'origine. Rien
+   n'est perdu, rien ne s'évalue.
+
+   ON NE REFUSE TOUJOURS RIEN : une entreprise peut s'appeler
+   « +Design », un budget s'écrire « -de 5 k ». On range du texte
+   comme du texte ; on ne rejette pas le client. */
+function texteInerte(v) {
+  if (v == null) return "";
+  /* Une date reste une date : elle ne vient pas du visiteur, et la
+     changer en chaîne casserait le format de sa colonne. */
+  if (v instanceof Date) return v;
+  var s = String(v);
+  return /^[=+\-@]/.test(s) ? "'" + s : s;
 }
 
 /* UNE ÉCRITURE REFUSÉE NE DOIT PAS PASSER POUR UNE ÉCRITURE FAITE.
@@ -1713,9 +1765,10 @@ function ecrireLigne(kind, data, extra, sig) {
     if (c.titre === "Lu par" || c.titre === "Rappelé par") return "";
     var nom = c.champ;
     if (!nom) return "";
-    if (extra && Object.prototype.hasOwnProperty.call(extra, nom)) return extra[nom];
-    var v = data[nom];
-    return v == null ? "" : String(v);
+    /* Inerte AVANT d'entrer dans la cellule : une fois la formule
+       créée, aucun format ne la défait.  D-757 */
+    if (extra && Object.prototype.hasOwnProperty.call(extra, nom)) return texteInerte(extra[nom]);
+    return texteInerte(data[nom]);
   });
 
   feuille.insertRowBefore(2);

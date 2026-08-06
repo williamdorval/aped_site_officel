@@ -117,17 +117,30 @@ function plage(f, ligne, colonne, nLignes, nCols) {
                 + (dv.valeurs || []).join(", ") + ".");
             }
           }
-          /* LA REGLE DE SHEETS, MODELISEE ICI TELLE QUELLE : une
-             chaine qui commence par « = » devient une FORMULE, sauf
-             si la cellule porte deja le format texte. C'est le seul
-             endroit du banc ou l'injection se joue, donc le seul
-             endroit ou le modele doit etre exact — pas approche. */
-          if (/^[=+\-@]/.test(String(v[r][c])) && !f.formatsTexte.includes(cle0)) {
-            f.formules.add(cle0);
-          } else {
-            f.formules.delete(cle0);
+          /* LA REGLE DE SHEETS, ET LE MODELE ETAIT FAUX.  D-757
+
+             Il disait : « une chaine qui commence par = devient une
+             formule, SAUF si la cellule porte deja le format texte ».
+             La deuxieme moitie est une croyance, pas Sheets. Releve
+             le 2026-08-06 dans le vrai classeur : format `@` pose
+             AVANT, et `=1+1` calcule quand meme (valeur « 2 »,
+             formule « =1+1 »). Le banc rendait « aucune formule »
+             depuis des mois sur une faille ouverte.
+
+             La vraie regle : `setValues` cree une formule des que la
+             chaine commence par `=`, `+`, `-` ou `@`, quel que soit
+             le format. SEULE l'apostrophe de tete l'en empeche — et
+             Sheets la retire de la valeur rangee, donc `getValues()`
+             rend la chaine d'origine. */
+          let brut = v[r][c];
+          let estFormule = false;
+          if (typeof brut === "string") {
+            if (brut.charAt(0) === "'") brut = brut.slice(1);
+            else if (/^[=+\-@]/.test(brut)) estFormule = true;
           }
-          cible[colonne - 1 + c] = v[r][c];
+          if (estFormule) f.formules.add(cle0);
+          else f.formules.delete(cle0);
+          cible[colonne - 1 + c] = brut;
           /* ON RETIENT QU'UNE VALEUR A ETE ECRITE ICI. Sert a
              prouver que le format TEXTE est pose AVANT, pas apres :
              un `setNumberFormat("@")` applique a une cellule qui

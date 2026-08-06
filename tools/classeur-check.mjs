@@ -34,7 +34,7 @@ const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
 if (!m) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = m[1].trim();
 
-const VERSION_MINIMALE = 5;
+const VERSION_MINIMALE = 6;
 
 /* ---- l'ordre des colonnes, lu dans Code.gs, jamais recopie ---- */
 const SRC = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
@@ -119,20 +119,36 @@ for (const kind of KINDS) {
 
   /* 2 · les validations : une par colonne de suivi, et rien d'autre */
   controles++;
+  /* LA CASE A COCHER NE SE POSE QUE SUR LES LIGNES QUI EXISTENT.
+     D-743
+
+     `preparerOnglet` la refuse volontairement sur la colonne entiere :
+     mille cases sous les donnees rendraient `A` non vide, et toute
+     regle qui teste « cette ligne existe-t-elle » deviendrait fausse.
+     Un onglet encore vide n'a donc AUCUNE case, et c'est correct.
+
+     La porte de diagnostic lit les validations en LIGNE 2. Exiger la
+     case sur un onglet vide, c'est juger la ligne 2 d'une feuille qui
+     n'en a pas — trois faux verdicts au premier passage. */
+  const aDesLignes = Number(o.lignesTotal) >= 1;
+  /* PERMISE n'est pas EXIGEE. La case est toujours permise en `Vu` ;
+     elle n'est exigee que la ou il y a une ligne pour la porter. */
   const permises = new Map();
+  const exigees = new Map();
   cols.forEach((c, i) => {
-    if (c.liste) permises.set(i + 1, "liste " + c.liste.join("/"));
-    else if (c.case) permises.set(i + 1, "case a cocher");
+    if (c.liste) { permises.set(i + 1, "liste " + c.liste.join("/")); exigees.set(i + 1, "liste"); }
+    else if (c.case) { permises.set(i + 1, "case a cocher"); if (aDesLignes) exigees.set(i + 1, "case a cocher"); }
   });
   if (!permises.size) { console.error("    ARRET · aucune colonne de suivi reconnue."); process.exit(2); }
 
   const perimees = o.validations.filter((v) => !permises.has(v.col));
-  const manquantes = [...permises.keys()].filter(
+  const manquantes = [...exigees.keys()].filter(
     (c) => !o.validations.some((v) => v.col === c));
 
   if (!perimees.length && !manquantes.length) {
     console.log("    OK    · " + o.validations.length + " validations, toutes sur le suivi"
-      + " (largeur reelle " + o.largeurReelle + ")");
+      + " (largeur reelle " + o.largeurReelle + ")"
+      + (aDesLignes ? "" : " — onglet vide, pas de case a cocher : normal"));
   } else {
     defauts++;
     perimees.forEach((v) => {

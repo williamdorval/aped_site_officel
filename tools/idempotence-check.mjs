@@ -185,9 +185,23 @@ console.log("\n--- 5 · INJECTION DE FORMULE");
   dire("les formules sont rangees SANS etre modifiees",
     rangees.filter((v) => poisons.indexOf(v) !== -1).length, poisons.length);
 
-  /* LE FORMAT TEXTE EST POSE AVANT L'ECRITURE. Le bouchon retient
-     l'ordre des appels : c'est ce qui distingue « format pose » de
-     « format pose trop tard ». */
+  /* L'ASSERTION QUI MANQUAIT, ET C'EST LA SEULE QUI COMPTE.  D-757
+
+     Ce cas verifiait que la valeur n'est pas MUTILEE. Il ne
+     verifiait pas qu'elle n'est pas CALCULEE — c'est-a-dire
+     exactement la faille. Le 2026-08-06, le vrai classeur rendait
+     `formule = "=IMPORTXML(…)"` sur une cellule au format `@`
+     pendant que ce cas passait au vert.
+
+     `getFormulas()` non vide = Sheets a calcule. C'est le seul
+     verdict qui vaille : `getValues()` se lit pareil dans les deux
+     cas quand la formule rend son propre texte. */
+  dire("AUCUNE n'a ete prise pour un calcul", f.formules.size, 0,
+    f.formules.size ? "cellules calculees : " + [...f.formules].join(", ") : "");
+
+  /* LE FORMAT TEXTE EST POSE AVANT L'ECRITURE. Il ne protege de
+     rien (D-757) mais il reste juste : une colonne de visiteur au
+     format nombre afficherait « 4189 » pour un code postal. */
   dire("le format « @ » a ete pose sur les colonnes du visiteur",
     f.formatsTexte && f.formatsTexte.length > 0, true);
   dire("il a ete pose AVANT les valeurs, jamais apres",

@@ -227,7 +227,8 @@ de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
     filtre de réponses qui ne voit que le 302 de `/exec`. *(90 · 91)*
 16. **Dans Sheets, une valeur qui commence par `=`, `+`, `-` ou `@`
     devient une FORMULE** — `getValues()` ne le dit pas, seul
-    `getFormulas()` le dit. Format `@` AVANT `setValues`. *(93)*
+    `getFormulas()` le dit. **Le format `@` n'y change RIEN** — seule
+    l'apostrophe de tête range du texte. *(93)*
 17. **`setValues` n'est PAS tout ou rien** — une validation périmée
     refuse une cellule, les colonnes de GAUCHE sont déjà écrites, et
     la ligne reste à moitié posée en silence. Purger les validations
