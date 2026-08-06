@@ -35,6 +35,65 @@ tools/_captures/
 tools/_sondes/
 tools/_sorties/
 
+# Les sondes ponctuelles et leurs sorties — 231 Mo d'images.
+#
+# AVANT D'AJOUTER UNE LIGNE ICI, PROUVER QUE RIEN NE L'IMPORTE :
+#
+#   for f in $(git ls-files 'tools/*.mjs'); do \
+#     grep -oE "from ['\"][^'\"]*_[a-z0-9-]+\.mjs['\"]" "$f"; done | sort -u
+#
+# Le 2026-08-06, cette commande ne rendait que `_png.mjs` et
+# `_adresse.mjs` — les deux SONT suivis, et ils ne sont pas ici.
+# Tout ce qui suit est du jetable : des sondes d'un soir et les
+# captures qu'elles ont produites. Une capture se regenere.
+tools/_ba/
+tools/_cand/
+tools/_candidats/
+tools/_demos/
+tools/_ecrans/
+tools/_etroit/
+tools/_panos/
+tools/_socle/
+tools/_svc/
+tools/_svc-course/
+tools/_svc-defile/
+tools/_svc-fiches/
+tools/_svc-panneaux/
+tools/_voir/
+
+# Les sondes d'un soir laissees a la racine de `tools/` et leurs
+# releves. Le souligne seul ne suffit PAS a decider : `_png.mjs` et
+# `_adresse.mjs` le portent aussi et restent suivis. C'est la forme
+# `_m-*.txt` et les extensions d'image qui decident.
+tools/*.png
+tools/*.jpg
+tools/*.jpeg
+tools/_m-*.txt
+tools/_360-grade.mjs
+tools/_404.mjs
+tools/_ba-gris.mjs
+tools/_ba-vue.mjs
+tools/_candidats.mjs
+tools/_coudre.mjs
+tools/_couverture.mjs
+tools/_ecran.mjs
+tools/_entree-rail.mjs
+tools/_inventaire.mjs
+tools/_invisibles.mjs
+tools/_orientation.mjs
+tools/_outil-dom.mjs
+tools/_outil-seq.mjs
+tools/_outil-sonde.mjs
+tools/_panneau-vue.mjs
+tools/_petit.mjs
+tools/_pire-pixel.mjs
+tools/_planche-finale.mjs
+tools/_sas-1920.mjs
+tools/_sas-sombre.mjs
+tools/_svc-shot.mjs
+tools/_vivant-vue.mjs
+tools/_voir.mjs
+
 # Sorties du MCP Playwright
 .playwright-mcp/
 
