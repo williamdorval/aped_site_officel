@@ -1140,6 +1140,49 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
   pointer-events: none;
 }
 
+/* == LE POUCE ==  D-737
+
+   MESURE DU 2026-08-06, `node tools/_pouce.mjs` :
+
+     largeur    case de jour    plage
+     390 px     41 × 41         92 × 43
+     360 px     37 × 37         82 × 43
+     320 px     31 × 31        107 × 43
+
+   Sous les 44 px du bout du pouce, sur les trois. Une case de
+   calendrier n'est pas un bouton comme un autre : ses voisines sont
+   a 1 px, et se tromper de case ne rate pas un clic — ca RESERVE LE
+   MAUVAIS JOUR. Le visiteur ne s'en apercoit qu'a la confirmation,
+   ou pire, le jour de l'appel.
+
+   LA LARGEUR EST CONTRAINTE : sept colonnes dans un panneau de
+   288 px, on ne fabrique pas de pixels. Ce qu'on peut donner, on le
+   donne — un peu de marge reprise sur le remplissage du panneau —
+   et LA HAUTEUR, elle, passe a 44 px sans discussion. Une cible de
+   38 × 44 se vise infiniment mieux qu'une de 31 × 31 : le pouce
+   arrive par le haut ou par le bas, presque jamais de biais.
+
+   `aspect-ratio` doit sauter pour que `min-height` compte : les
+   deux se disputent la hauteur, et c'est le ratio qui gagne. */
+@media (max-width: 40rem) and (pointer: coarse) {
+  .modal-panel { padding: var(--s-5) var(--s-4); }
+
+  .cal-day {
+    aspect-ratio: auto;
+    min-height: 2.75rem;      /* 44 px */
+  }
+  .slot {
+    min-height: 2.75rem;
+    display: grid;
+    place-items: center;
+  }
+  /* Les plages passent a deux colonnes fixes : `auto-fill` en
+     donnait trois de 82 px sur un ecran de 360, et une quatrieme
+     ligne a moitie vide. Deux colonnes larges se visent mieux et
+     se lisent mieux. */
+  .slots-list { grid-template-columns: repeat(2, 1fr); }
+}
+
 .recap {
   display: flex;
   align-items: center;

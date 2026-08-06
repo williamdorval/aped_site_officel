@@ -50,7 +50,11 @@ export const etat = {
 
 function feuille(nom) {
   if (!etat.feuilles.has(nom)) {
-    etat.feuilles.set(nom, { nom, valeurs: [], figees: 0, largeurs: {}, listes: {}, cachees: [], hauteurs: {} });
+    etat.feuilles.set(nom, {
+      nom, valeurs: [], figees: 0, largeurs: {}, listes: {}, cachees: [], hauteurs: {},
+      /* Pour prouver l'ordre format/valeurs — voir `setNumberFormat`. */
+      ecrites: new Set(), formatsTexte: [], formatApresValeurs: 0, regles: []
+    });
   }
   return etat.feuilles.get(nom);
 }
@@ -68,7 +72,15 @@ function plage(f, ligne, colonne, nLignes, nCols) {
       grandir(ligne + nLignes - 1);
       for (let r = 0; r < nLignes; r++) {
         const cible = f.valeurs[ligne - 1 + r];
-        for (let c = 0; c < nCols; c++) cible[colonne - 1 + c] = v[r][c];
+        for (let c = 0; c < nCols; c++) {
+          cible[colonne - 1 + c] = v[r][c];
+          /* ON RETIENT QU'UNE VALEUR A ETE ECRITE ICI. Sert a
+             prouver que le format TEXTE est pose AVANT, pas apres :
+             un `setNumberFormat("@")` applique a une cellule qui
+             porte deja une formule ne defait pas la formule, il ne
+             fait que l'afficher autrement.  D-731 */
+          f.ecrites.add((ligne - 1 + r) + ":" + (colonne - 1 + c));
+        }
       }
       return this;
     },
@@ -85,7 +97,19 @@ function plage(f, ligne, colonne, nLignes, nCols) {
     },
     getValue() { return this.getValues()[0][0]; },
     setValue(v) { return this.setValues([[v]]); },
-    setNumberFormat() { return this; },
+    setNumberFormat(fmt) {
+      if (fmt === "@") {
+        for (let r = 0; r < nLignes; r++) {
+          for (let c = 0; c < nCols; c++) {
+            const cle = (ligne - 1 + r) + ":" + (colonne - 1 + c);
+            f.formatsTexte.push(cle);
+            /* Pose APRES l'ecriture = pose trop tard. On compte. */
+            if (f.ecrites.has(cle)) f.formatApresValeurs++;
+          }
+        }
+      }
+      return this;
+    },
     setFontWeight() { return this; },
     setBackground() { return this; },
     setFontColor() { return this; },
@@ -93,7 +117,21 @@ function plage(f, ligne, colonne, nLignes, nCols) {
     setDataValidation(regle) {
       f.listes[colonne] = regle ? regle.valeurs : null;
       return this;
-    }
+    },
+    clearContent() {
+      grandir(ligne + nLignes - 1);
+      for (let r = 0; r < nLignes; r++) {
+        const cible = f.valeurs[ligne - 1 + r];
+        for (let c = 0; c < nCols; c++) {
+          cible[colonne - 1 + c] = "";
+          f.ecrites.delete((ligne - 1 + r) + ":" + (colonne - 1 + c));
+        }
+      }
+      return this;
+    },
+    /* Sert a la mise en forme conditionnelle : on retient la plage
+       telle que `Code.gs` la demande, sans rien peindre. */
+    _plage: { ligne, colonne, nLignes, nCols }
   };
 }
 
@@ -108,13 +146,36 @@ function faireFeuille(f) {
       return 0;
     },
     getMaxRows: () => Math.max(f.valeurs.length, 1000),
+    getLastColumn: () => f.valeurs.reduce((m, r) => Math.max(m, (r || []).length), 0),
     getRange: (l, c, nl = 1, nc = 1) => plage(f, l, c, nl, nc),
+    getConditionalFormatRules: () => f.regles.slice(),
+    setConditionalFormatRules: (rs) => { f.regles = rs.slice(); },
     setFrozenRows: (n) => { f.figees = n; },
     setRowHeight: (r, h) => { f.hauteurs[r] = h; },
     setColumnWidth: (c, w) => { f.largeurs[c] = w; },
     hideColumns: (c) => { if (!f.cachees.includes(c)) f.cachees.push(c); },
-    insertRowBefore: (n) => { f.valeurs.splice(n - 1, 0, []); },
-    deleteRow: (n) => { f.valeurs.splice(n - 1, 1); }
+    /* INSERER UNE LIGNE DECALE TOUT CE QUI EST EN DESSOUS — Y
+       COMPRIS MES REPERES. Sans ce remappage, les cles de `ecrites`
+       pointaient sur les mauvaises lignes apres la premiere
+       insertion, et le controle « le format a-t-il ete pose avant
+       les valeurs ? » rendait 40 faux positifs. L'instrument avait
+       tort, pas `Code.gs`. */
+    insertRowBefore: (n) => {
+      f.valeurs.splice(n - 1, 0, []);
+      f.ecrites = new Set([...f.ecrites].map((cle) => {
+        const [r, c] = cle.split(":").map(Number);
+        return (r >= n - 1 ? r + 1 : r) + ":" + c;
+      }));
+    },
+    deleteRow: (n) => {
+      f.valeurs.splice(n - 1, 1);
+      f.ecrites = new Set([...f.ecrites]
+        .filter((cle) => Number(cle.split(":")[0]) !== n - 1)
+        .map((cle) => {
+          const [r, c] = cle.split(":").map(Number);
+          return (r > n - 1 ? r - 1 : r) + ":" + c;
+        }));
+    }
   };
 }
 
@@ -233,6 +294,22 @@ const services = {
   SpreadsheetApp: {
     create: () => { etat.proprietes.CLASSEUR_ID = "CLASSEUR_FACTICE"; return classeurFactice; },
     openById: () => classeurFactice,
+    /* La mise en forme conditionnelle : on retient la formule et
+       la couleur, on ne peint rien. Ce qu'on veut prouver, c'est
+       QUE la regle est posee, sur la bonne colonne, et qu'elle ne
+       s'empile pas a chaque relance d'. */
+    newConditionalFormatRule: () => {
+      const b = { formule: null, fond: null, plages: [] };
+      const api = {
+        whenFormulaSatisfied: (f) => { b.formule = f; return api; },
+        setBackground: (c) => { b.fond = c; return api; },
+        setRanges: (r) => { b.plages = r; return api; },
+        build: () => Object.assign(b, {
+          getBooleanCondition: () => ({ getCriteriaValues: () => [b.formule] })
+        })
+      };
+      return api;
+    },
     newDataValidation: () => {
       const b = { valeurs: null };
       const api = {
@@ -384,7 +461,7 @@ const fabrique = new Function(...noms, source + `
            ecrireLigne, colonnes, SCHEMA, REGLAGES, MODES, quotaRestant, notifDest,
            DISPONIBILITES, creneauxLibres, grilleDuJour, occupations, creneauTient,
            instantLocal, partsLocal, decalageMin, libelleHeure, libelleComplet,
-           surLaGrille, fenetreReservable };
+           surLaGrille, fenetreReservable, colonneLettre, migrerColonnes };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));
 

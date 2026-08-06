@@ -1614,13 +1614,66 @@
      piege : la reponse devient opaque, `res.json()` echoue, et
      TOUS les formulaires afficheraient un echec meme quand
      l'enregistrement a reussi. */
+  /* LE VRAI SERVICE TOMBE PAR INTERMITTENCE, ET C'EST MESURE. D-734
+
+     Releve du 2026-08-06 contre le deploiement REEL : 2 reponses
+     sur 36 en HTTP 404, avec une page HTML au lieu du JSON. Ce
+     n'est pas le script qui echoue — c'est le renvoi de `/exec`
+     vers `googleusercontent.com`, l'etage devant lui.
+
+     Sans reessai, une demande sur vingt affichait « L'envoi n'a
+     pas passe » a quelqu'un qui avait tout rempli correctement.
+     Le repli sauvait sa saisie, mais il lui fallait recommencer,
+     et un patron de PME presse ne recommence pas.
+
+     ON PEUT REESSAYER PARCE QUE LE SERVICE EST DEVENU
+     IDEMPOTENT : `traiter()` cherche la signature de la demande
+     AVANT de poser un rendez-vous ou de televerser un fichier
+     (D-730). Un second envoi de la meme demande incremente
+     « Renvois » et rend le meme resultat, lien Meet compris. Sans
+     cette correction-la, ce reessai-ci creerait des doublons.
+
+     ON NE REESSAIE PAS UN REFUS. `success: false` est une reponse,
+     pas une panne : plage prise, champ manquant, courriel invalide.
+     Reessayer donnerait exactement le meme refus, trois fois plus
+     lentement. */
+  var REESSAIS_MAX = 2;
+  var REESSAI_MS = [700, 1800];
+
+  function transitoire(statut) {
+    if (statut === 404) return true;                 /* le renvoi qui tombe */
+    if (statut === 429) return true;                 /* trop d'appels */
+    return statut >= 500 && statut < 600;            /* surcharge Google */
+  }
+
+  function attendre(ms) {
+    return new Promise(function (r) { window.setTimeout(r, ms); });
+  }
+
   function poster(payload) {
     if (!FORM_ENDPOINT) return sansPoint();
-    return fetch(FORM_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    }).then(lireReponse);
+    var essai = 0;
+
+    function tenter() {
+      return fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (!res.ok && transitoire(res.status) && essai < REESSAIS_MAX) {
+          return attendre(REESSAI_MS[essai++]).then(tenter);
+        }
+        return lireReponse(res);
+      }, function (err) {
+        /* PANNE RESEAU. `fetch` ne rejette que la : coupure, DNS,
+           TLS. Un 404 passe par la branche du dessus. */
+        if (essai < REESSAIS_MAX) {
+          return attendre(REESSAI_MS[essai++]).then(tenter);
+        }
+        throw err;
+      });
+    }
+    return tenter();
   }
 
   /* `_form` est ce qui aiguille vers le bon onglet du classeur.
@@ -1686,6 +1739,32 @@
     if (!status) return;
     status.className = "form-status" + (kind ? " is-" + kind : "");
     status.textContent = message;
+  }
+
+  /* UN MESSAGE D'ECHEC DOIT DIRE QUOI FAIRE, PAS CE QUI RATE. D-736
+
+     « L'envoi n'a pas passe » etait la meme phrase pour trois
+     situations qui n'appellent pas la meme chose :
+       · le visiteur est hors ligne — il doit se reconnecter, et
+         rien d'autre ne marchera d'ici la ;
+       · le service refuse pour une raison qu'il NOMME — il faut
+         lui rendre cette raison, pas la remplacer par une phrase
+         generique ;
+       · le service est en panne — il faut reessayer plus tard.
+
+     Les trois reponses sont differentes. Une seule phrase pour les
+     trois, c'est laisser le visiteur devant un mur sans porte. Et
+     le reessai automatique a deja eu lieu quand on arrive ici :
+     ce n'est pas un pepin, c'est une panne installee.  D-734 */
+  function messageEchec(err, quoi) {
+    var perdu = "Rien de ce que vous avez écrit n’est perdu.";
+    if (navigator && navigator.onLine === false) {
+      return "Vous semblez hors ligne. " + perdu
+        + " Reconnectez-vous et renvoyez.";
+    }
+    if (err && err.duService && err.message) return err.message;
+    return "Le service ne répond pas — on a réessayé deux fois. "
+      + perdu + " Réessayez dans un moment, ou réservez un appel.";
   }
 
   /* == LE REPLI QUI LIVRE VRAIMENT — corrige le risque de veracite le ==  D-422 */
@@ -1807,9 +1886,9 @@
         say(status, "Reçu. On vous répond très vite.", "ok");
         form.reset();
         window.setTimeout(function () { closeModal(); say(status, ""); }, 2200);
-      }).catch(function () {
+      }).catch(function (err) {
         setLoading(btn, false);
-        say(status, "L’envoi n’a pas passé. Votre message n’est pas perdu.", "err");
+        say(status, messageEchec(err), "err");
         poserRepli(status, kind, contenu);
       });
     });
@@ -1855,8 +1934,23 @@
      plus. En GET, donc sans requete prealable CORS, comme le POST
      en `text/plain` : les Web Apps Apps Script ne repondent pas aux
      preliminaires.  D-726 */
+  /* LA FRAICHEUR, PARCE QUE LE PRECHARGEMENT NE DOIT PAS ETRE
+     JETE.  D-735
+     `resetBooking` redemandait de FORCE a chaque ouverture. Avec le
+     prechargement au survol, la reponse arrivait puis se faisait
+     immediatement remplacer par un second appel — le visiteur
+     attendait quand meme ses 1,7 s, et le service travaillait deux
+     fois. Une reponse de moins de 45 s est encore vraie : le
+     preavis est de 24 h, personne ne prend une plage dans cet
+     intervalle sans que la revalidation du serveur l'attrape. */
+  var CRENEAUX_FRAIS_MS = 45000;
+  var creneauxHorodatage = 0;
+
   function chargerCreneaux(forcer) {
-    if (creneauxPromesse && !forcer) return creneauxPromesse;
+    var frais = creneauxPromesse
+      && (Date.now() - creneauxHorodatage) < CRENEAUX_FRAIS_MS
+      && creneauxEtat !== "filet";
+    if (creneauxPromesse && (!forcer || frais)) return creneauxPromesse;
     if (!FORM_ENDPOINT) {
       creneauxServeur = null;
       creneauxEtat = "filet";
@@ -1865,11 +1959,27 @@
     }
     creneauxEtat = "attente";
     var url = FORM_ENDPOINT + (FORM_ENDPOINT.indexOf("?") === -1 ? "?" : "&") + "action=creneaux";
-    creneauxPromesse = fetch(url, { method: "GET" })
-      .then(function (res) {
-        if (!res.ok) throw new Error("creneaux " + res.status);
+    /* MEME REESSAI QUE POUR L'ENVOI, ET ICI IL EST GRATUIT : c'est
+       une lecture, elle n'ecrit rien, la rejouer n'a aucun cout.
+       Sans lui, un 404 transitoire fait basculer tout le calendrier
+       sur son filet — des plages qui ne sont pas confirmees — alors
+       qu'un second appel aurait repondu.  D-734 */
+    var essai = 0;
+    var lire = function () {
+      return fetch(url, { method: "GET" }).then(function (res) {
+        if (!res.ok) {
+          if (transitoire(res.status) && essai < REESSAIS_MAX) {
+            return attendre(REESSAI_MS[essai++]).then(lire);
+          }
+          throw new Error("creneaux " + res.status);
+        }
         return res.json();
-      })
+      }, function (err) {
+        if (essai < REESSAIS_MAX) return attendre(REESSAI_MS[essai++]).then(lire);
+        throw err;
+      });
+    };
+    creneauxPromesse = lire()
       .then(function (data) {
         /* UN 200 N'EST PAS UNE REPONSE. Meme regle que pour l'envoi :
            le service peut repondre « success: false ». */
@@ -1878,6 +1988,7 @@
         data.jours.forEach(function (j) { carte[j.date] = j; });
         creneauxServeur = carte;
         creneauxEtat = "direct";
+        creneauxHorodatage = Date.now();
         return carte;
       })
       .catch(function (err) {
@@ -2159,6 +2270,47 @@
   var bookingChange = $("#bookingChange");
   if (bookingChange) bookingChange.addEventListener("click", function () { goBStep(1); });
 
+  /* == PRECHARGER LES CRENEAUX AU MOMENT DE L'INTENTION ==  D-735
+
+     MESURE DU 2026-08-06, CONTRE LE VRAI SERVICE : la porte des
+     creneaux repond en 1,7 s de mediane, 3,1 s au neuvieme decile,
+     et une fois sur vingt-cinq elle a mis 29,9 s. Tout ce temps
+     s'ecoulait APRES le clic, avec « Lecture de l'agenda… » a
+     l'ecran et rien a faire. C'est la seconde la plus chere du
+     site : elle est entre un visiteur qui a decide de reserver et
+     le calendrier qui doit le lui permettre.
+
+     ON DEMANDE DES QUE LA MAIN S'APPROCHE. Survol ou tabulation
+     sur un bouton qui ouvre la reservation : la requete part, et
+     le temps du geste — deplacer le curseur, cliquer — est du
+     temps rendu au visiteur.
+
+     ON NE PRECHARGE PAS AU CHARGEMENT DE LA PAGE, et c'est
+     delibere : ce serait une execution Apps Script par visiteur,
+     dont l'immense majorite ne reservera jamais. Le compte gratuit
+     plafonne a 90 minutes d'execution par jour ; les depenser pour
+     des gens qui ne cliqueront pas, c'est fermer la porte a ceux
+     qui cliquent.
+
+     `chargerCreneaux()` sans argument rend la promesse en cours :
+     survoler trois boutons ne fait qu'UN appel. */
+  (function precharger() {
+    if (!FORM_ENDPOINT) return;
+    var amorce = function (e) {
+      var cible = e.target.closest
+        ? e.target.closest('[data-modal-open="modal-booking"], [data-modal-switch="modal-booking"]')
+        : null;
+      if (!cible) return;
+      chargerCreneaux();
+    };
+    doc.addEventListener("pointerenter", amorce, true);
+    doc.addEventListener("focusin", amorce);
+    /* Le pouce n'a pas de survol. `pointerdown` part quand le doigt
+       touche, donc avant le `click` : ce n'est pas beaucoup, mais
+       c'est ce qu'il y a. */
+    doc.addEventListener("pointerdown", amorce, true);
+  })();
+
   var bookingForm = $('form[data-form="booking"]');
   if (bookingForm) {
     bookingForm.addEventListener("submit", function (e) {
@@ -2207,7 +2359,7 @@
           }, 2600);
           return;
         }
-        say(status, "L’envoi n’a pas passé. Votre demande de plage n’est pas perdue.", "err");
+        say(status, messageEchec(err), "err");
         poserRepli(status, "booking", data);
       });
     });
@@ -2389,9 +2541,9 @@
       attempt.then(done).catch(function () {
         // Deuxieme essai sans piece jointe : mieux vaut la demande sans
         // fichiers que pas de demande du tout.
-        sendJson("project", data).then(done).catch(function () {
+        sendJson("project", data).then(done).catch(function (err) {
           setLoading(projectNext, false);
-          say(status, "L’envoi n’a pas passé. Vos réponses ne sont pas perdues.", "err");
+          say(status, messageEchec(err), "err");
           poserRepli(status, "project", data, pickedFiles.length > 0);
         });
       });
@@ -2496,10 +2648,10 @@
         var sortie = $("#estimateStatus") || status;
         retirerRepli(sortie);
         say(sortie, "");
-        sendJson("estimate", payload).then(reveal).catch(function () {
+        sendJson("estimate", payload).then(reveal).catch(function (err) {
           /* L'ORDRE COMPTE. On revele d'abord le resume — c'est ce  D-426 */
           reveal();
-          say(sortie, "L’envoi n’a pas passé. Vos réponses ne sont pas perdues.", "err");
+          say(sortie, messageEchec(err), "err");
           poserRepli(sortie, "estimate", payload);
         });
       });

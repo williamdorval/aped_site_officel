@@ -556,6 +556,23 @@
   color: var(--ink-muted);
   pointer-events: none;
 }
+@media (max-width: 40rem) and (pointer: coarse) {
+.modal-panel { padding: var(--s-5) var(--s-4); }
+.cal-day {
+    aspect-ratio: auto;
+    min-height: 2.75rem;      /* 44 px */
+  }
+.slot {
+    min-height: 2.75rem;
+    display: grid;
+    place-items: center;
+  }
+/* Les plages passent a deux colonnes fixes : `auto-fill` en
+     donnait trois de 82 px sur un ecran de 360, et une quatrieme
+     ligne a moitie vide. Deux colonnes larges se visent mieux et
+     se lisent mieux. */
+.slots-list { grid-template-columns: repeat(2, 1fr); }
+}
 .recap {
   display: flex;
   align-items: center;

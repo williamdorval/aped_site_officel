@@ -339,11 +339,24 @@ var SUIVI = [
    script, elle n'a rien à dire à un humain. */
 var COL_SIGNATURE = "Signature";
 
-/* L'ordre complet des colonnes d'un onglet. */
+/* L'ordre complet des colonnes d'un onglet.
+
+   LE STATUT EST EN COLONNE B, PAS AU BOUT.  D-738
+
+   Il était la dix-neuvième colonne de « Démarrer un projet ». Pour
+   savoir si une demande avait été traitée, il fallait faire défiler
+   l'écran horizontalement — vingt fois par matinée, sur la seule
+   information qu'on lit à CHAQUE fois. Le reste des colonnes de
+   suivi peut rester à droite : on ne les remplit qu'une fois,
+   quand on prend le dossier. Le statut, on le LIT tout le temps.
+
+   Ordre : Horodatage · Statut · les réponses du visiteur · le reste
+   du suivi · la signature (masquée). */
 function colonnes(kind) {
   var out = [{ titre: "Horodatage", largeur: 150 }];
+  SUIVI.forEach(function (c) { if (c.titre === "Statut") out.push(c); });
   SCHEMA[kind].champs.forEach(function (c) { out.push(c); });
-  SUIVI.forEach(function (c) { out.push(c); });
+  SUIVI.forEach(function (c) { if (c.titre !== "Statut") out.push(c); });
   out.push({ titre: COL_SIGNATURE, largeur: 120 });
   return out;
 }
@@ -411,9 +424,27 @@ function preparerOnglet(classeur, kind) {
 
   var titres = cols.map(function (c) { return c.titre; });
 
-  /* On réécrit la ligne d'en-tête à chaque passage : c'est ce qui
-     fait qu'ajouter une colonne au schéma suffit. Les données
-     déjà écrites ne bougent pas — elles sont sous la ligne 1. */
+  /* RÉÉCRIRE LES EN-TÊTES SANS DÉPLACER LES DONNÉES LES DÉCALE.
+     D-739
+
+     La version précédente écrivait la ligne 1 et affirmait « les
+     données déjà écrites ne bougent pas — elles sont sous la ligne
+     1 ». C'est vrai, et c'est précisément le défaut : si l'ordre
+     des colonnes CHANGE, les en-têtes bougent et les données non.
+     Le courriel d'un client se retrouve sous « Ville », son
+     téléphone sous « Courriel », et rien ne le signale — le
+     classeur a l'air parfaitement normal.
+
+     Le déplacement de « Statut » en colonne B (D-738) aurait fait
+     exactement ça sur un classeur déjà rempli.
+
+     ON MIGRE DONC : on relit les anciens en-têtes, et si l'ordre a
+     changé, on redispose chaque ligne existante dans le nouvel
+     ordre AVANT de réécrire la ligne 1. Une colonne disparue perd
+     sa valeur — c'est le seul cas où quelque chose se perd, et il
+     est annoncé dans le journal. */
+  migrerColonnes(feuille, titres);
+
   feuille.getRange(1, 1, 1, titres.length).setValues([titres]);
   feuille.getRange(1, 1, 1, titres.length)
     .setFontWeight("bold")
@@ -453,7 +484,101 @@ function preparerOnglet(classeur, kind) {
   feuille.getRange(1, 1, feuille.getMaxRows(), titres.length)
     .setVerticalAlignment("top");
 
+  marquerNonLues(feuille, titres);
+
   return feuille;
+}
+
+/* REDISPOSER LES LIGNES EXISTANTES DANS LE NOUVEL ORDRE.  D-739
+   Ne fait rien si l'ordre n'a pas changé — c'est le cas courant. */
+function migrerColonnes(feuille, titresVoulus) {
+  var dernierC = feuille.getLastColumn();
+  var dernierL = feuille.getLastRow();
+  if (dernierC < 1 || dernierL < 1) return;
+
+  var anciens = feuille.getRange(1, 1, 1, dernierC).getValues()[0]
+    .map(function (t) { return String(t || ""); });
+  if (!anciens.join("")) return;                       /* onglet neuf */
+
+  var identique = anciens.length === titresVoulus.length
+    && anciens.every(function (t, i) { return t === titresVoulus[i]; });
+  if (identique) return;
+
+  Logger.log("Migration de « " + feuille.getName() + " » : l'ordre des colonnes a changé.");
+  Logger.log("  avant : " + anciens.join(" | "));
+  Logger.log("  après : " + titresVoulus.join(" | "));
+
+  var perdues = anciens.filter(function (t) {
+    return t && titresVoulus.indexOf(t) === -1;
+  });
+  if (perdues.length) Logger.log("  COLONNES SUPPRIMÉES (valeurs perdues) : " + perdues.join(", "));
+
+  if (dernierL < 2) return;                            /* en-têtes seuls */
+
+  var donnees = feuille.getRange(2, 1, dernierL - 1, dernierC).getValues();
+  var neuves = donnees.map(function (ligne) {
+    return titresVoulus.map(function (t) {
+      var i = anciens.indexOf(t);
+      return i === -1 ? "" : ligne[i];
+    });
+  });
+
+  /* On efface la zone avant d'écrire : si le nouvel ordre a moins
+     de colonnes, les anciennes valeurs de droite resteraient
+     affichées sous aucun en-tête. */
+  feuille.getRange(2, 1, dernierL - 1, Math.max(dernierC, titresVoulus.length)).clearContent();
+  feuille.getRange(2, 1, neuves.length, titresVoulus.length).setValues(neuves);
+  Logger.log("  " + neuves.length + " ligne(s) redisposée(s).");
+}
+
+/* UNE DEMANDE NON LUE DOIT SE VOIR SANS ÊTRE CHERCHÉE.  D-740
+
+   « Lu par » vide veut dire que personne ne l'a encore ouverte.
+   C'est l'information la plus urgente du classeur, et elle était
+   invisible : une colonne vide au milieu de vingt colonnes pleines
+   ne saute pas aux yeux un lundi matin.
+
+   Une mise en forme conditionnelle sur la LIGNE ENTIÈRE la rend
+   évidente. Le minium du site n'a rien à faire ici — le classeur
+   est un outil interne, pas une page. On prend un jaune pâle, qui
+   se distingue sur blanc sans fatiguer, et qui disparaît dès que
+   quelqu'un met son nom. */
+function marquerNonLues(feuille, titres) {
+  var iLu = titres.indexOf("Lu par");
+  if (iLu < 0) return;
+  var colLu = colonneLettre(iLu + 1);
+
+  var plage = feuille.getRange(2, 1, Math.max(feuille.getMaxRows() - 1, 1), titres.length);
+  var regle = SpreadsheetApp.newConditionalFormatRule()
+    /* `$` sur la colonne : la règle juge « Lu par » et colore
+       toute la ligne. Sans lui, chaque cellule regarderait sa
+       propre colonne et seule celle de « Lu par » se colorerait. */
+    .whenFormulaSatisfied('=AND($A2<>"", $' + colLu + '2="")')
+    .setBackground("#fff3d6")
+    .setRanges([plage])
+    .build();
+
+  /* On remplace la nôtre au lieu d'empiler : `initialiser()` est
+     relançable, et dix règles identiques ralentiraient le classeur
+     sans rien ajouter. */
+  var regles = feuille.getConditionalFormatRules().filter(function (r) {
+    try { return r.getBooleanCondition() === null
+      || String(r.getBooleanCondition().getCriteriaValues()).indexOf('$' + colLu + '2=""') === -1; }
+    catch (e) { return true; }
+  });
+  regles.push(regle);
+  feuille.setConditionalFormatRules(regles);
+}
+
+/* 1 → A, 27 → AA. */
+function colonneLettre(n) {
+  var s = "";
+  while (n > 0) {
+    var r = (n - 1) % 26;
+    s = String.fromCharCode(65 + r) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
 }
 
 /* Ouvre le classeur. Lève si `initialiser()` n'a jamais tourné —
@@ -573,10 +698,58 @@ function lireCorps(e) {
   throw new Error("Corps absent.");
 }
 
-/* L'aiguillage. Une réservation passe d'abord par le calendrier,
-   parce qu'un refus pour plage déjà prise ne doit RIEN écrire. */
+/* L'aiguillage.
+
+   LE DÉDOUBLONNAGE PASSE EN PREMIER, ET C'EST UNE CORRECTION.
+   D-730
+
+   Il venait APRÈS les effets de bord — le rendez-vous était posé au
+   calendrier, les pièces jointes téléversées sur Drive, PUIS on
+   regardait si c'était un renvoi. Trois conséquences, toutes
+   observées :
+
+   1. LE VRAI SERVICE REND PARFOIS HTTP 404. Mesuré le 2026-08-06
+      contre le déploiement réel : 2 échecs sur 36 appels, avec une
+      page HTML au lieu du JSON. C'est le renvoi de `/exec` vers
+      `googleusercontent.com` qui tombe, par intermittence. Le site
+      RÉESSAIE donc maintenant (`js/main.js`) — et un réessai
+      reposait le rendez-vous.
+
+   2. UN RÉESSAI DE RÉSERVATION SE REFUSAIT LUI-MÊME. La première
+      tentative créait l'événement ; la seconde voyait cet
+      événement, concluait « cette plage vient d'être prise », et
+      annonçait au visiteur l'échec de sa PROPRE réservation.
+
+   3. UN RÉESSAI DE PROJET TÉLÉVERSAIT LES FICHIERS DEUX FOIS. La
+      ligne était dédoublonnée, les fichiers restaient orphelins
+      dans Drive.
+
+   Maintenant : on cherche la signature d'abord. Si la demande est
+   déjà là, on incrémente « Renvois » et on rend le MÊME résultat
+   qu'à la première fois — lien Meet compris — sans rien recréer.
+   Un réessai devient inoffensif, et c'est ce qui autorise le site
+   à en faire un. */
 function traiter(kind, data) {
   var extra = {};
+
+  /* LA SIGNATURE SE CALCULE ICI, UNE SEULE FOIS, SUR LA DEMANDE
+     TELLE QU'ELLE EST ARRIVÉE. Plus bas, une réservation voit sa
+     `plage_demandee` réécrite par le serveur : la calculer après
+     donnerait une signature différente de celle du premier envoi,
+     et le renvoi ne se reconnaîtrait jamais. */
+  var sig = signature(kind, data);
+
+  /* LE RENVOI SE RECONNAÎT AVANT TOUT EFFET DE BORD. */
+  var jumelle = chercherJumelle(kind, sig);
+  if (jumelle) {
+    return json({
+      success: true,
+      ligne: jumelle.ligne,
+      renvoi: true,
+      renvois: jumelle.renvois,
+      meet: jumelle.meet || ""
+    });
+  }
 
   if (kind === "booking") {
     var rdv = poserRendezVous(data);
@@ -599,13 +772,19 @@ function traiter(kind, data) {
     extra._pieces = rangerPieces(data);
   }
 
-  var ecrit = ecrireLigne(kind, data, extra);
+  var ecrit = ecrireLigne(kind, data, extra, sig);
 
   /* Un renvoi n'avertit pas une seconde fois : c'est tout
      l'intérêt de le détecter. */
   if (!ecrit.doublon) {
+    /* LE QUOTA SE LIT AVANT D'ESSAYER, PAS APRÈS.  D-733
+       `envoyer()` refuse en silence quand la réserve est vide ; sans
+       ce relevé, la demande arriverait au classeur sans que rien
+       n'indique que personne n'a été prévenu. */
+    var avantEnvois = quotaRestant();
     avertirAgence(kind, data, extra, ecrit);
     confirmerAuVisiteur(kind, data, extra);
+    if (avantEnvois < 1) noterQuotaEpuise(kind, ecrit.ligne);
   }
 
   return json({
@@ -731,43 +910,106 @@ function signature(kind, data) {
   }).join("").slice(0, 32);
 }
 
-/* Écrit la demande EN LIGNE 2 : la plus récente est toujours en
-   haut, sans avoir à trier. Si la même signature apparaît dans la
-   fenêtre, on incrémente « Renvois » sur la ligne existante. */
-function ecrireLigne(kind, data, extra) {
+/* CHERCHER UNE DEMANDE IDENTIQUE DÉJÀ REÇUE.  D-730
+
+   Rend la ligne trouvée et incrémente son compteur de renvois, ou
+   `null`. Appelée par `traiter()` AVANT tout effet de bord : c'est
+   ce qui rend un réessai inoffensif.
+
+   ON NE RELIT QUE LES LIGNES RÉCENTES — le classeur peut grossir
+   sans que `doPost` ralentisse. Et on ne fusionne QUE dans la
+   fenêtre : deux demandes identiques à trois jours d'écart sont
+   deux demandes.
+
+   LA COLONNE « Lien Meet » EST RELUE, ELLE AUSSI. Un réessai de
+   réservation doit rendre au visiteur le lien de SA réservation,
+   pas une chaîne vide : il en a besoin pour se connecter. */
+function chercherJumelle(kind, sig) {
   var def = SCHEMA[kind];
   var feuille = classeur().getSheetByName(def.onglet);
-  if (!feuille) feuille = preparerOnglet(classeur(), kind);
+  if (!feuille) return null;
+
+  var dernier = feuille.getLastRow();
+  if (dernier < 2) return null;
 
   var cols = colonnes(kind);
   var titres = cols.map(function (c) { return c.titre; });
   var iSig = titres.indexOf(COL_SIGNATURE) + 1;
   var iRenvois = titres.indexOf("Renvois") + 1;
-  var sig = signature(kind, data);
-  var maintenant = new Date();
+  var iMeet = titres.indexOf("Lien Meet") + 1;
 
-  /* --- le doublon --- */
-  var dernier = feuille.getLastRow();
-  if (dernier >= 2) {
-    var combien = Math.min(REGLAGES.LIGNES_RELUES, dernier - 1);
-    var sigs = feuille.getRange(2, iSig, combien, 1).getValues();
-    var dates = feuille.getRange(2, 1, combien, 1).getValues();
-    var limite = REGLAGES.FENETRE_DOUBLON_MIN * 60 * 1000;
+  var combien = Math.min(REGLAGES.LIGNES_RELUES, dernier - 1);
+  var sigs = feuille.getRange(2, iSig, combien, 1).getValues();
+  var dates = feuille.getRange(2, 1, combien, 1).getValues();
+  var limite = REGLAGES.FENETRE_DOUBLON_MIN * 60 * 1000;
+  var maintenant = Date.now();
 
-    for (var r = 0; r < sigs.length; r++) {
-      if (String(sigs[r][0]) !== sig) continue;
-      var quand = dates[r][0];
-      if (!(quand instanceof Date)) continue;
-      if (maintenant.getTime() - quand.getTime() > limite) continue;
+  for (var r = 0; r < sigs.length; r++) {
+    if (String(sigs[r][0]) !== sig) continue;
+    var quand = dates[r][0];
+    if (!(quand instanceof Date)) continue;
+    if (maintenant - quand.getTime() > limite) continue;
 
-      var cellule = feuille.getRange(r + 2, iRenvois);
-      var n = Number(cellule.getValue()) || 0;
-      cellule.setValue(n + 1);
-      return { ligne: r + 2, doublon: true, renvois: n + 1 };
-    }
+    var cellule = feuille.getRange(r + 2, iRenvois);
+    var n = Number(cellule.getValue()) || 0;
+    cellule.setValue(n + 1);
+    return {
+      ligne: r + 2,
+      renvois: n + 1,
+      meet: iMeet > 0 ? String(feuille.getRange(r + 2, iMeet).getValue() || "") : ""
+    };
   }
+  return null;
+}
 
-  /* --- la nouvelle ligne --- */
+/* UNE VALEUR DU VISITEUR N'EST JAMAIS UNE FORMULE.  D-731
+
+   `setValues` avec la chaîne « =IMPORTXML("http://…","//a") » ne
+   range pas du texte : Sheets en fait une FORMULE, et elle
+   s'exécute à l'ouverture du classeur, sous le compte de l'agence.
+   `=HYPERLINK`, `=IMAGE`, `=IMPORTDATA` en font autant. C'est la
+   voie classique de l'injection par formule, et elle n'a besoin
+   d'aucune faille : il suffit d'un champ de texte.
+
+   Le service a accepté les cinq essais du 2026-08-06 sans broncher
+   — c'est normal, il n'a rien à refuser. Le refus n'est pas la
+   réponse : une entreprise peut légitimement s'appeler « +Design »
+   et un message commencer par un tiret.
+
+   ON FORCE DONC LE FORMAT TEXTE sur les colonnes du visiteur,
+   AVANT d'écrire. Une cellule au format `@` range la chaîne telle
+   quelle : rien ne s'évalue, rien n'est perdu, et le texte
+   s'affiche sans apostrophe parasite. Les colonnes de service —
+   horodatage, renvois, suivi — gardent leur format : elles ne
+   viennent pas du visiteur. */
+function formaterTexte(feuille, ligne, kind) {
+  /* LA POSITION SE DÉDUIT, ELLE NE SE SUPPOSE PAS. Cette fonction
+     écrivait « la première colonne du visiteur est la 2 » ; le jour
+     où « Statut » est passé en colonne B (D-738), elle a formaté
+     une colonne de service et laissé le premier champ du visiteur
+     sans protection. On demande donc à `colonnes()`, la seule qui
+     sache. */
+  var cols = colonnes(kind);
+  var indices = [];
+  cols.forEach(function (c, i) { if (c.champ) indices.push(i + 1); });
+  if (!indices.length) return;
+  var premiere = Math.min.apply(null, indices);
+  var derniere = Math.max.apply(null, indices);
+  feuille.getRange(ligne, premiere, 1, derniere - premiere + 1).setNumberFormat("@");
+}
+
+/* Écrit la demande EN LIGNE 2 : la plus récente est toujours en
+   haut, sans avoir à trier. Le dédoublonnage a déjà eu lieu dans
+   `traiter()` — arriver ici veut dire que c'est une demande neuve. */
+function ecrireLigne(kind, data, extra, sig) {
+  var def = SCHEMA[kind];
+  var feuille = classeur().getSheetByName(def.onglet);
+  if (!feuille) feuille = preparerOnglet(classeur(), kind);
+
+  var cols = colonnes(kind);
+  var maintenant = new Date();
+  if (!sig) sig = signature(kind, data);
+
   var valeurs = cols.map(function (c) {
     if (c.titre === "Horodatage") return maintenant;
     if (c.titre === COL_SIGNATURE) return sig;
@@ -782,6 +1024,10 @@ function ecrireLigne(kind, data, extra) {
   });
 
   feuille.insertRowBefore(2);
+  /* LE FORMAT AVANT LES VALEURS. Poser `@` après l'écriture ne
+     défait pas une formule déjà créée : elle est déjà là, et le
+     changement de format ne fait que l'afficher autrement. */
+  formaterTexte(feuille, 2, kind);
   feuille.getRange(2, 1, 1, valeurs.length).setValues([valeurs]);
   feuille.getRange(2, 1).setNumberFormat("yyyy-mm-dd hh:mm:ss");
 
@@ -1417,14 +1663,29 @@ function quotaRestant() {
   try { return MailApp.getRemainingDailyQuota(); } catch (e) { return 0; }
 }
 
-function envoyer(dest, sujet, corps) {
+/* `repondreA` pose l'en-tête `Reply-To`.  D-732
+
+   L'avis interne partait de la boîte de l'agence VERS la boîte de
+   l'agence : « Répondre » répondait donc à soi-même. Pour écrire au
+   client il fallait retourner au classeur, copier son adresse, et
+   ouvrir un nouveau message — trois gestes, vingt fois par semaine.
+
+   Avec `Reply-To` sur l'adresse du visiteur, « Répondre » depuis
+   l'avis écrit AU CLIENT, directement, depuis le téléphone, sans
+   ouvrir le classeur. C'est la seule ligne de ce fichier qui fasse
+   gagner du temps tous les jours. */
+function envoyer(dest, sujet, corps, repondreA) {
   if (!dest) return false;
   if (quotaRestant() < 1) {
     console.warn("Quota d'envoi épuisé : « " + sujet + " » non envoyé à " + dest);
     return false;
   }
   try {
-    MailApp.sendEmail({ to: dest, subject: sujet, body: corps, name: "APED Agence" });
+    var options = { to: dest, subject: sujet, body: corps, name: "APED Agence" };
+    if (repondreA && RE_COURRIEL.test(String(repondreA).trim())) {
+      options.replyTo = String(repondreA).trim();
+    }
+    MailApp.sendEmail(options);
     return true;
   } catch (e) {
     console.error("envoi à " + dest + " : " + e);
@@ -1462,6 +1723,15 @@ function avertirAgence(kind, data, extra, ecrit) {
     if (extra._evenement) lignes.push("Événement : " + extra._evenement);
   }
 
+  /* RÉPONDRE, C'EST ÉCRIRE AU CLIENT. On le dit, parce que
+     personne ne devine qu'un `Reply-To` a été posé. */
+  var duVisiteur = String(data.email || data.votre_email || "").trim();
+  if (duVisiteur && RE_COURRIEL.test(duVisiteur)) {
+    lignes.push("");
+    lignes.push("→ « Répondre » à ce message écrit directement à "
+      + duVisiteur + ".");
+  }
+
   lignes.push("");
   /* LE LIEN VA SUR LA LIGNE, PAS SUR LE CLASSEUR. `lienVersLigne`
      porte le `gid` de l'onglet et `range=A2` : un clic ouvre la
@@ -1477,7 +1747,37 @@ function avertirAgence(kind, data, extra, ecrit) {
       + "le classeur continue de se remplir mais les avis s’arrêtent.");
   }
 
-  envoyer(notifDest(), objetAvis(kind, data, extra), lignes.join("\n"));
+  envoyer(notifDest(), objetAvis(kind, data, extra), lignes.join("\n"), duVisiteur);
+}
+
+/* LE QUOTA QUI SAUTE DOIT SE VOIR DANS LE CLASSEUR.  D-733
+
+   Quand la réserve d'envois est vide, plus aucun avis ne part —
+   donc plus rien ne prévient que plus rien ne prévient. Le classeur
+   continue de se remplir, et personne ne le regarde puisque
+   personne n'a été averti. C'est le silence le plus coûteux du
+   système.
+
+   On écrit donc la mention DANS LA LIGNE, colonne « Notes
+   internes » : le seul endroit qui sera lu de toute façon, le jour
+   où quelqu'un finit par ouvrir le classeur. */
+function noterQuotaEpuise(kind, ligne) {
+  try {
+    var feuille = classeur().getSheetByName(SCHEMA[kind].onglet);
+    if (!feuille) return;
+    var titres = colonnes(kind).map(function (c) { return c.titre; });
+    var iNotes = titres.indexOf("Notes internes") + 1;
+    if (iNotes < 1) return;
+    var cellule = feuille.getRange(ligne, iNotes);
+    var ancien = String(cellule.getValue() || "");
+    var note = "⚠ QUOTA D’ENVOI ÉPUISÉ le " + quand(new Date())
+      + " — aucun avis n’est parti, ni à nous ni au client. À rappeler à la main.";
+    if (ancien.indexOf("QUOTA D’ENVOI ÉPUISÉ") === -1) {
+      cellule.setValue(ancien ? ancien + "\n" + note : note);
+    }
+  } catch (e) {
+    console.error("note de quota : " + e);
+  }
 }
 
 /* L'OBJET SE LIT DANS UNE LISTE DE MESSAGES, SANS L'OUVRIR.
@@ -1733,10 +2033,15 @@ function autotest() {
     var faute = valider(kind, d);
     if (faute) { rapport.push(kind + " : VALIDATION REFUSE — " + faute); return; }
 
-    var un = ecrireLigne(kind, d, {});
-    var deux = ecrireLigne(kind, d, {});   /* le même, tout de suite : doublon attendu */
+    /* LE DÉDOUBLONNAGE NE VIT PLUS DANS `ecrireLigne`.  D-730
+       Il est passé dans `traiter()`, AVANT les effets de bord.
+       L'autotest doit donc l'appeler là où il est : écrire une
+       ligne, puis chercher sa jumelle avec la même signature. */
+    var sig = signature(kind, d);
+    var un = ecrireLigne(kind, d, {}, sig);
+    var deux = chercherJumelle(kind, sig);
     rapport.push(kind + " : ligne " + un.ligne
-      + " · renvoi détecté : " + (deux.doublon ? "oui" : "NON — DÉFAUT"));
+      + " · renvoi détecté : " + (deux ? "oui (renvois=" + deux.renvois + ")" : "NON — DÉFAUT"));
   });
 
   /* La validation doit mordre là où elle a déjà laissé passer. */

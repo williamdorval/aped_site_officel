@@ -73,6 +73,30 @@ verifier(".env.local n’est pas suivi par git", () => {
   return "aucun";
 });
 
+/* LA LISTE DES FICHIERS SUIVIS, ET COMMENT ON DECIDE DE LES LIRE.
+   D-729
+
+   CE FILTRE ETAIT UNE LISTE BLANCHE D'EXTENSIONS :
+     if (!/\.(js|mjs|html|css|json|md|gs|txt|yml|yaml)$/i.test(rel))
+       continue;
+
+   `.env.local.example` ne finit par AUCUNE de ces extensions. Le
+   fichier LE PLUS SUSCEPTIBLE DE PORTER UN SECRET — c'est
+   litteralement son sujet — etait le seul que le verrou ne lisait
+   jamais. Le 2026-08-06, la vraie adresse de deploiement y a ete
+   collee par erreur et le verrou a rendu « ✓ 2509 fichiers relus ».
+
+   ON INVERSE : on lit TOUT, et on ne saute que ce qui est
+   binaire. Une liste noire de choses illisibles ne peut pas
+   oublier un fichier de configuration ; une liste blanche
+   d'extensions le peut, et l'a fait. */
+const BINAIRE = /\.(png|jpe?g|gif|webp|avif|ico|svgz|pdf|zip|gz|woff2?|ttf|otf|eot|mp4|webm|mp3|wav)$/i;
+
+function fichiersSuivis() {
+  return execFileSync("git", ["ls-files"], { cwd: RACINE, encoding: "utf8" })
+    .split("\n").filter(Boolean);
+}
+
 /* --- 4 · aucune adresse en clair dans les fichiers suivis ---
    LA VERIFICATION QUI COMPTE VRAIMENT. On interroge git, pas le
    disque : un fichier ignore peut porter l'adresse, c'est son
@@ -80,20 +104,21 @@ verifier(".env.local n’est pas suivi par git", () => {
 verifier("aucune adresse de déploiement dans un fichier suivi", () => {
   let liste = [];
   try {
-    liste = execFileSync("git", ["ls-files"], { cwd: RACINE, encoding: "utf8" })
-      .split("\n").filter(Boolean);
+    liste = fichiersSuivis();
   } catch (e) {
     return "(hors dépôt git — vérification sautée)";
   }
   const coupables = [];
+  let lus = 0;
   for (const rel of liste) {
-    if (!/\.(js|mjs|html|css|json|md|gs|txt|yml|yaml)$/i.test(rel)) continue;
+    if (BINAIRE.test(rel)) continue;
     /* Le modele et le guide CITENT la forme de l'adresse pour
        l'expliquer : ce sont des exemples, pas des valeurs. On les
        reconnait a leurs X, pas a leur nom de fichier — sinon il
        suffirait de coller un vrai secret dans le guide. */
     let texte;
     try { texte = fs.readFileSync(path.join(RACINE, rel), "utf8"); } catch (e) { continue; }
+    lus++;
     const trouves = texte.match(new RegExp(MOTIF_URL, "g")) || [];
     for (const t of trouves) {
       if (/X{8,}/.test(t)) continue;                 /* exemple assume */
@@ -105,7 +130,55 @@ verifier("aucune adresse de déploiement dans un fichier suivi", () => {
   if (coupables.length) {
     throw new Error("adresse en clair dans : " + coupables.join(", "));
   }
-  return liste.length + " fichiers relus";
+  return lus + " fichiers relus sur " + liste.length + " suivis";
+});
+
+/* --- 4bis · `.env.local.example` ne porte AUCUNE valeur -----
+   D-729
+
+   LE MODELE EST SUIVI PAR GIT, ET C'EST TOUT SON INTERET : sans
+   lui, personne ne sait quelles cles existent. Mais un modele est
+   a un centimetre du fichier de secrets — meme nom, meme forme,
+   ouvert dans le meme editeur — et le geste « je remplis le
+   fichier que j'ai sous les yeux » est celui qu'on fait
+   naturellement.
+
+   ON NE COMPTE PAS SUR LA VIGILANCE. Toute cle `NOM=` du modele
+   doit etre VIDE. Cette regle ne connait aucun motif de secret,
+   donc elle ne peut pas rater un secret d'une forme qu'on n'avait
+   pas prevue — un jeton, un mot de passe, une adresse d'un autre
+   service. Elle attrape TOUT ce qui est a droite du `=`. */
+verifier(".env.local.example ne porte aucune valeur", () => {
+  const rel = ".env.local.example";
+  const f = path.join(RACINE, rel);
+  if (!fs.existsSync(f)) {
+    throw new Error("absent — c'est lui qui dit quelles clés existent");
+  }
+  let suivi = "";
+  try {
+    suivi = execFileSync("git", ["ls-files", rel], { cwd: RACINE, encoding: "utf8" }).trim();
+  } catch (e) { /* hors dépôt : on vérifie quand même le contenu */ }
+
+  const remplies = [];
+  fs.readFileSync(f, "utf8").split(/\r?\n/).forEach((ligne, i) => {
+    /* Les lignes de commentaire citent des exemples — c'est leur
+       role, et elles commencent par `#`. On ne juge que les
+       AFFECTATIONS reelles, en debut de ligne. */
+    const m = /^([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/.exec(ligne);
+    if (!m) return;
+    if (m[2].trim() !== "") remplies.push(rel + ":" + (i + 1) + "  " + m[1] + "=…");
+  });
+
+  if (remplies.length) {
+    throw new Error(
+      "DES VALEURS RÉELLES SONT DANS LE MODÈLE, QUI EST SUIVI PAR GIT :\n"
+      + remplies.map((r) => "        " + r).join("\n")
+      + "\n        → déplacez-les dans `.env.local` (ignoré), remettez le modèle à vide."
+      + (suivi ? "\n        → si un commit les porte déjà, l'adresse est PUBLIQUE :"
+               + " redéployez pour en obtenir une nouvelle." : "")
+    );
+  }
+  return "toutes les clés sont vides";
 });
 
 /* --- 5 · `js/config.local.js` existe et porte la bonne adresse */
@@ -200,5 +273,9 @@ if (tombees.length) {
   console.log("Le guide : docs/CONFIGURATION-GOOGLE-APED.md");
   process.exit(1);
 }
-console.log("VERDICT : les sept tiennent. Les formulaires livrent.");
+/* LE COMPTE SE LIT, IL NE S'ECRIT PAS. « les sept tiennent » etait
+   ecrit en dur : ajouter une huitieme verification laissait le
+   verrou annoncer sept, et une neuvieme aussi. Un verrou qui ment
+   sur ce qu'il a verifie est un verrou qu'on cesse de lire. D-729 */
+console.log(`VERDICT : les ${resultats.length} tiennent. Les formulaires livrent.`);
 process.exit(0);
