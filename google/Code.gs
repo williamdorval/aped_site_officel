@@ -250,6 +250,14 @@ var SCHEMA = {
       { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 },
       { champ: "site_actuel",     titre: "Site actuel",        largeur: 200 },
       { champ: "besoins",         titre: "Besoins",            largeur: 260 },
+      /* LES QUATRE QUI FONT LA FOURCHETTE.  D-749
+         Sans elles, le chiffre montre au visiteur ne serait plus
+         explicable trois semaines plus tard : on lirait le montant
+         sans les reponses qui l'ont produit. */
+      { champ: "ampleur",         titre: "Ampleur",            largeur: 180 },
+      { champ: "niveau_design",   titre: "Niveau de design",   largeur: 200 },
+      { champ: "fonctions",       titre: "Fonctions",          largeur: 220 },
+      { champ: "contenu",         titre: "Contenu",            largeur: 180 },
       { champ: "blocage",         titre: "Ce qui les bloque",  largeur: 300 },
       { champ: "objectif",        titre: "Objectif",           largeur: 180 },
       { champ: "budget",          titre: "Budget",             largeur: 150 },
@@ -274,6 +282,9 @@ var SCHEMA = {
       { champ: "type_de_projet",  titre: "Type de projet",     largeur: 150 },
       { champ: "domaine",         titre: "Domaine",            largeur: 150 },
       { champ: "envergure",       titre: "Envergure",          largeur: 130 },
+      { champ: "ampleur",         titre: "Ampleur",            largeur: 160 },
+      { champ: "fonctions",       titre: "Fonctions",          largeur: 160 },
+      { champ: "contenu",         titre: "Contenu",            largeur: 160 },
       { champ: "niveau_design",   titre: "Niveau de design",   largeur: 140 },
       { champ: "echeancier",      titre: "Échéancier",         largeur: 140 },
       { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 },
@@ -698,13 +709,27 @@ function marquerNonLues(feuille, titres) {
     .setRanges([plage])
     .build();
 
-  /* On remplace la nôtre au lieu d'empiler : `initialiser()` est
-     relançable, et dix règles identiques ralentiraient le classeur
-     sans rien ajouter. */
+  /* ON REMPLACE LA NÔTRE AU LIEU D'EMPILER, et le filtre ne peut
+     pas dépendre de la POSITION de la colonne.  D-755
+
+     Il cherchait `$<lettre de Lu par>2=""`. Le jour où « Lu par »
+     a changé de colonne (D-743), l'ancienne règle a cessé d'être
+     reconnue : elle est restée, la neuve s'est ajoutée, et le
+     classeur a porté DEUX règles par onglet. Relancer
+     `initialiser()` en aurait ajouté une de plus à chaque fois.
+
+     On reconnaît maintenant nos règles à leur COULEUR, qui ne
+     bouge pas, et à la forme de leur formule. */
   var regles = feuille.getConditionalFormatRules().filter(function (r) {
-    try { return r.getBooleanCondition() === null
-      || String(r.getBooleanCondition().getCriteriaValues()).indexOf('$' + colLu + '2=""') === -1; }
-    catch (e) { return true; }
+    try {
+      var b = r.getBooleanCondition();
+      if (b === null) return true;
+      var f = String(b.getCriteriaValues());
+      /* La signature d'une règle à nous : un ET entre « la ligne
+         existe » et « une colonne de suivi est vide ». */
+      if (/^=AND\(\$[A-Z]+2<>"",\s*\$[A-Z]+2=""\)$/.test(f)) return false;
+      return f.indexOf('$' + colLu + '2=""') === -1;
+    } catch (e) { return true; }
   });
   regles.push(regle);
   feuille.setConditionalFormatRules(regles);
@@ -974,6 +999,31 @@ function doPost(e) {
     /* On garde la trace complète côté script, on ne rend au site
        qu'une phrase qui ne divulgue rien de l'infrastructure. */
     console.error("doPost : " + (err && err.stack ? err.stack : err));
+
+    /* SAUF POUR UNE DEMANDE D'ESSAI, ET ÇA A COÛTÉ UNE JOURNÉE.
+       D-755
+
+       Le 2026-08-06, toutes les demandes sans session ont échoué en
+       production sur « le service a rencontré une erreur ». Depuis
+       ici, impossible de savoir laquelle des trente fonctions avait
+       levé : le journal Apps Script ne se lit que dans l'éditeur, et
+       personne n'y était. Trois passes à deviner.
+
+       Une demande qui porte un marqueur d'essai — `ZZTEST`,
+       `@exemple.ca` — reçoit donc la cause. Ce n'est pas une fuite :
+       un vrai client ne porte jamais ces marqueurs, et les
+       reproduire demande de le vouloir. Le message reste tronqué à
+       300 signes, sans pile d'appels. */
+    var brut = "";
+    try { brut = JSON.stringify(lireCorps(e) || {}); } catch (e2) { brut = ""; }
+    var essai = MARQUEURS_ESSAI.some(function (mq) { return brut.indexOf(mq) !== -1; });
+    if (essai) {
+      return json({
+        success: false,
+        message: "Le service a rencontré une erreur. Réessayez dans un moment.",
+        cause: String(err && err.message ? err.message : err).slice(0, 300)
+      });
+    }
     return json({ success: false, message: "Le service a rencontré une erreur. Réessayez dans un moment." });
   }
 }
@@ -1214,6 +1264,8 @@ var LONGUEURS = {
   site_actuel: 500, besoins: 500, plage_demandee: 200,
   blocage: 2000, connu_par: 160, prix_raison: 2000, fourchette_vue: 120,
   prix_reaction: 40, systeme: 500, depuis_quand: 160, gravite: 80,
+  ampleur: 120, fonctions: 160, contenu: 120, niveau_design: 160,
+  envergure: 120, objectif: 160, moment_contact: 60, taille: 60, besoin: 120,
   impact: 2000, presentation: 1000, budget: 120
 };
 
