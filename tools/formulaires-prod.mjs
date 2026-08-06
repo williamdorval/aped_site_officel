@@ -147,6 +147,31 @@ async function attendreReponse(page, portee, max = 45000) {
   return Date.now() - t0;
 }
 
+/* CLIQUER SANS SE FAIRE PIEGER PAR LE DEFILEMENT DOUX.  D-754
+
+   `css/base.css` pose `html { scroll-behavior: smooth }`. Quand le
+   panneau d'une modale deborde, Playwright fait defiler pour amener
+   le bouton dans le champ — et ce defilement-la est ANIME. Il juge
+   alors l'element « not stable » a chaque image et son clic expire
+   au bout de 30 s, sur un bouton parfaitement fonctionnel, immobile,
+   et non recouvert.
+
+   Le diagnostic a coute trois passes : le rectangle etait identique
+   a 300 ms d'intervalle, rien n'interceptait le point, la retenue
+   etait fermee. C'est `scrollHeight 995 > clientHeight 884` qui a
+   dit la verite.
+
+   On amene donc l'element soi-meme, en defilement INSTANTANE, puis
+   on clique. */
+async function cliquer(page, sel) {
+  await page.evaluate((s) => {
+    const n = document.querySelector(s);
+    if (n) n.scrollIntoView({ block: "center", behavior: "instant" });
+  }, sel);
+  await page.waitForTimeout(120);
+  await page.click(sel);
+}
+
 function verdict(nom, attendu, obtenu, detail) {
   const ok = attendu === obtenu;
   console.log(`\n--- ${nom}`);
@@ -194,16 +219,18 @@ for (const [ouvre, portee, nom, remplir] of [
     await p.fill("#urName", T.nom);
     await p.fill("#urPhone", T.tel);
     await p.fill("#urEmail", T.courriel);
+    /* TROIS CHAMPS OBLIGATOIRES DE PLUS DEPUIS D-751. Sans eux la
+       validation refuse — a raison : « ca marche plus » sans le quoi
+       ni le depuis quand oblige a rappeler pour comprendre. */
+    await p.fill("#urCompany", T.entreprise);
+    await p.fill("#urSystem", "monsite-essai.ca");
+    await p.selectOption("#urGravite", { index: 1 });
+    await p.selectOption("#urDepuis", { index: 1 });
     await p.fill("#urMsg", T.message);
-  }],
-  ["modal-refer", "#modal-refer form", "RÉFÉRENCE", async (p) => {
-    await p.fill("#rfName", T.nom);
-    await p.fill("#rfEmail", T.courriel);
-    await p.fill("#rfPhone", T.tel);
-    await p.selectOption("#rfRelation", { index: 1 });
-    await p.fill("#rfCompany", T.entreprise);
-    await p.fill("#rfContact", "Marie Tremblay 418 555 0177");
+    await p.fill("#urImpact", "Les commandes sont arretees.");
   }]
+  /* LA REFERENCE A QUITTE CE LOT : quatre etapes depuis D-752, elle
+     a son propre bloc plus bas. */
 ]) {
   const page = await ouvrir(nav);
   try {
@@ -302,6 +329,53 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
 }
 
 /* ============================================================
+   4bis · REFERENCE — quatre etapes depuis D-752
+   ============================================================ */
+{
+  const page = await ouvrir(nav);
+  const nom = "RÉFÉRENCE";
+  try {
+    await page.evaluate(() => document.querySelector('[data-modal-open="modal-refer"]').click());
+    /* ON ATTEND QUE `langue.js` AIT FINI DE DECOUPER LES LETTRES.
+       Il enveloppe chaque signe des boutons dans un <span class="l">
+       pour V4 CRAN. Tant que ce decoupage court, Playwright juge le
+       bouton INSTABLE et son clic expire au bout de 30 s — sur un
+       formulaire parfaitement fonctionnel. C'etait l'instrument qui
+       avait tort, pas le site. */
+    await page.waitForFunction(() => {
+      const b = document.querySelector("#referNext [data-label]");
+      return b && b.querySelector(".l");
+    }, null, { timeout: 8000 }).catch(() => {});
+    await page.waitForTimeout(400);
+    await page.fill("#rfCompany", T.entreprise);
+    await page.fill("#rfIndustry", "Construction");
+    await cliquer(page, "#referNext");
+    await page.waitForTimeout(420);
+    await page.fill("#rfContact", "Marie Tremblay 418 555 0177");
+    await cliquer(page, "#referNext");
+    await page.waitForTimeout(420);
+    await page.fill("#rfName", T.nom);
+    await page.fill("#rfEmail", T.courriel);
+    await page.selectOption("#rfRelation", { index: 1 });
+    await cliquer(page, "#referNext");
+    await page.waitForTimeout(420);
+    await page.fill("#rfPresentation", "Dites que ca vient de moi.");
+    await page.fill("#rfMsg", T.message);
+    await cliquer(page, "#referNext");
+    console.log(`    (reponse en ${await attendreReponse(page, "#modal-refer form")} ms)`);
+    const vu = await page.evaluate(() => ({
+      fini: !document.querySelector('#modal-refer .step[data-rstep="5"]').hidden,
+      etat: (document.querySelector("#modal-refer .form-status") || {}).textContent || ""
+    }));
+    verdict(nom, true, vu.fini, { etat: vu.etat, reponse: page._reponses.slice(-1)[0] });
+  } catch (e) {
+    verdict(nom, true, false, { etat: "ERREUR D’OUTIL : " + String(e).slice(0, 200) });
+  }
+  console.log("    erreurs console :", page._erreurs.length ? page._erreurs : 0);
+  await page.close();
+}
+
+/* ============================================================
    5 · PROJET — six etapes
    ============================================================ */
 {
@@ -330,7 +404,7 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
         if (choix && !etape.querySelector('[aria-pressed="true"]')) choix.click();
       }, [pas, T]);
       await page.waitForTimeout(220);
-      await page.click("#projectNext");
+      await cliquer(page, "#projectNext");
       await page.waitForTimeout(450);
     }
     await page.waitForTimeout(2600);
@@ -355,13 +429,21 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
   try {
     await page.evaluate(() => document.querySelector('[data-modal-open="modal-estimate"]').click());
     await page.waitForTimeout(700);
-    for (let q = 1; q <= 6; q++) {
-      await page.evaluate((k) => {
-        const e = document.querySelector(`#modal-estimate .step[data-step="${k}"]`);
+    /* HUIT QUESTIONS DEPUIS D-749 — ampleur, fonctions et contenu se
+       sont ajoutees. On clique la premiere option de CHAQUE groupe
+       present, plutot que de compter jusqu'a un nombre ecrit en
+       dur : ce nombre changera encore, et l'outil rendrait « ne
+       livre pas » sur un formulaire intact. */
+    const groupes = await page.evaluate(() =>
+      [...document.querySelectorAll("#modal-estimate .options[data-key]")]
+        .map((g) => Number(g.closest(".step").dataset.step)));
+    for (const k of groupes) {
+      await page.evaluate((s) => {
+        const e = document.querySelector(`#modal-estimate .step[data-step="${s}"]`);
         const b = e && e.querySelector(".options button");
         if (b) b.click();
-      }, q);
-      await page.waitForTimeout(300);
+      }, k);
+      await page.waitForTimeout(260);
     }
     await page.fill("#esName", T.nom);
     await page.fill("#esEmail", T.courriel);

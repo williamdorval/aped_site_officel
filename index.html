@@ -3753,98 +3753,159 @@
           <input id="hpRefer" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
-      <p class="form-legend">Vous</p>
-      <div class="form-row">
-        <div class="field">
-          <label for="rfName">Votre nom</label>
-          <input id="rfName" name="votre_nom" type="text" required autocomplete="name" />
-          <span class="field-error">Entrez votre nom.</span>
-        </div>
-        <div class="field">
-          <label for="rfEmail">Votre courriel</label>
-          <input id="rfEmail" name="votre_email" type="email" autocapitalize="none" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
-          <span class="field-error">Entrez un courriel valide.</span>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="field">
-          <label for="rfPhone">Votre téléphone <span class="opt">(optionnel)</span></label>
-          <input id="rfPhone" name="votre_telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="418 555 0142…" />
-        </div>
-        <div class="field">
-          <label for="rfRelation">Votre lien avec l’entreprise</label>
-          <select id="rfRelation" name="votre_lien" required>
-            <option value="">Choisir…</option>
-            <option>Ami ou famille</option>
-            <option>Client ou fournisseur</option>
-            <option>Collègue ou partenaire d’affaires</option>
-            <option>Simple connaissance</option>
-          </select>
-          <span class="field-error">Indiquez votre lien.</span>
-        </div>
-      </div>
+      <!-- QUATRE ETAPES, ET LA PREMIERE SUFFIT A OUVRIR UNE LIGNE.
+           D-752
+           C'etait un seul mur de onze champs. Le nom de l'entreprise
+           referee est le minimum vital d'une reference : avec lui on
+           peut chercher, sans lui on n'a rien. Il passe donc SEUL a
+           l'etape 1 — des qu'elle est validee, le lead existe au
+           classeur, meme si la personne s'arrete la. -->
+      <div class="progress" role="progressbar" aria-label="Progression" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25"><i id="referBar"></i></div>
 
-      <p class="form-legend">L’entreprise référée</p>
-      <div class="form-row">
+      <div class="step" data-rstep="1">
+        <p class="step-q">Quelle entreprise voulez-vous nous présenter&nbsp;?</p>
         <div class="field">
-          <label for="rfCompany">Nom de l’entreprise</label>
-          <input id="rfCompany" name="entreprise_referee" type="text" required autocomplete="off" />
+          <label for="rfCompany">Son nom</label>
+          <input id="rfCompany" name="entreprise_referee" type="text" required autocomplete="off" placeholder="Garage Tremblay, Boulangerie du coin…" />
           <span class="field-error">Nommez l’entreprise référée.</span>
         </div>
         <div class="field">
-          <label for="rfIndustry">Domaine</label>
+          <label for="rfIndustry">Dans quel domaine&nbsp;? <span class="opt">(optionnel)</span></label>
           <input id="rfIndustry" name="domaine" type="text" autocomplete="off" placeholder="Restauration, construction…" />
         </div>
       </div>
-      <div class="form-row">
+
+      <div class="step" data-rstep="2" hidden>
+        <p class="step-q">Comment on la joint&nbsp;?</p>
         <div class="field">
-          <label for="rfSizeRef">Taille approximative</label>
-          <select id="rfSizeRef" name="taille">
-            <option>Je ne sais pas</option>
-            <option>Travailleur autonome</option>
-            <option>2 à 10 employés</option>
-            <option>11 à 50 employés</option>
-            <option>Plus de 50 employés</option>
-          </select>
+          <label for="rfContact">Personne à contacter <span class="opt">(nom et courriel ou téléphone)</span></label>
+          <input id="rfContact" name="contact_reference" type="text" required autocomplete="off" placeholder="Marie Lavoie, 418 555 0142…" />
+          <span class="field-error">Indiquez comment joindre cette entreprise.</span>
         </div>
-        <div class="field">
-          <label for="rfNeed">Besoin pressenti</label>
-          <select id="rfNeed" name="besoin">
-            <option>Je ne sais pas</option>
-            <option>Site web</option>
-            <option>Boutique en ligne</option>
-            <option>Application ou logiciel</option>
-            <option>Automatisation et IA</option>
-            <option>Visibilité Google Maps</option>
-          </select>
+        <div class="form-row">
+          <div class="field">
+            <label for="rfSizeRef">Taille approximative</label>
+            <select id="rfSizeRef" name="taille">
+              <option>Je ne sais pas</option>
+              <option>Travailleur autonome</option>
+              <option>2 à 10 employés</option>
+              <option>11 à 50 employés</option>
+              <option>Plus de 50 employés</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rfNeed">Besoin pressenti</label>
+            <select id="rfNeed" name="besoin">
+              <option>Je ne sais pas</option>
+              <option>Site web</option>
+              <option>Boutique en ligne</option>
+              <option>Application ou logiciel</option>
+              <option>Automatisation et IA</option>
+              <option>Visibilité Google Maps</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <label for="rfContact">Personne à contacter <span class="opt">(nom et courriel ou téléphone)</span></label>
-        <input id="rfContact" name="contact_reference" type="text" required autocomplete="off" placeholder="Marie Lavoie, 418 555 0142…" />
-        <span class="field-error">Indiquez comment joindre cette entreprise.</span>
-      </div>
-      <div class="field">
-        <label for="rfMsg">Contexte <span class="opt">(optionnel)</span></label>
-        <textarea id="rfMsg" name="contexte" rows="2" placeholder="Pourquoi cette entreprise aurait besoin de nous, meilleur moment pour l’appeler…"></textarea>
       </div>
 
-      <!-- LA GRILLE CHIFFREE EST RETIREE LE 2026-08-03.  D-086
-           Elle publiait six paliers de commission — donc, en creux,
-           les six paliers de valeur de contrat d'APED, de 1 000 $ a
-           100 000 $. Les seuls prix autorises sur le site sont
-           desormais 75 $ l'heure, 40 % au demarrage et le plafond de
-           5 000 $ ci-dessus. Le detail se donne dans la reponse, une
-           fois la reference recue. -->
-      <p class="fine">La commission dépend de la valeur du contrat signé, et elle est plafonnée à 5&nbsp;000&nbsp;$ par entreprise référée. Le montant exact vous est confirmé quand on vous répond. Aucun plafond sur le nombre de références.</p>
+      <div class="step" data-rstep="3" hidden>
+        <p class="step-q">Et vous, qui êtes-vous&nbsp;?</p>
+        <div class="form-row">
+          <div class="field">
+            <label for="rfName">Votre nom</label>
+            <input id="rfName" name="votre_nom" type="text" required autocomplete="name" />
+            <span class="field-error">Entrez votre nom.</span>
+          </div>
+          <div class="field">
+            <label for="rfEmail">Votre courriel</label>
+            <input id="rfEmail" name="votre_email" type="email" autocapitalize="none" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+            <span class="field-error">Entrez un courriel valide.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="rfPhone">Votre téléphone <span class="opt">(optionnel)</span></label>
+            <input id="rfPhone" name="votre_telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="418 555 0142…" />
+          </div>
+          <div class="field">
+            <label for="rfRelation">Votre lien avec elle</label>
+            <select id="rfRelation" name="votre_lien" required>
+              <option value="">Choisir…</option>
+              <option>Ami ou famille</option>
+              <option>Client ou fournisseur</option>
+              <option>Collègue ou partenaire d’affaires</option>
+              <option>Simple connaissance</option>
+            </select>
+            <span class="field-error">Indiquez votre lien.</span>
+          </div>
+        </div>
+      </div>
 
-      <button class="btn btn--primary" type="submit" data-submit>
-        <span data-label>Envoyer ma référence</span>
-        <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
-      </button>
+      <div class="step" data-rstep="4" hidden>
+        <p class="step-q">Comment doit-on se présenter&nbsp;?</p>
+        <div class="field">
+          <label for="rfPresentation">Ce qu’on dit en appelant <span class="opt">(optionnel)</span></label>
+          <textarea id="rfPresentation" name="presentation" rows="2" placeholder="« C’est Marc qui nous a parlé de vous » · ne dites pas que ça vient de moi · appelez plutôt le matin…"></textarea>
+        </div>
+        <div class="field">
+          <label for="rfMsg">Le contexte <span class="opt">(optionnel)</span></label>
+          <textarea id="rfMsg" name="contexte" rows="2" placeholder="Pourquoi cette entreprise aurait besoin de nous, ce qui la bloque en ce moment…"></textarea>
+        </div>
+        <p class="fine">La commission dépend de la valeur du contrat signé, et elle est plafonnée à 5&nbsp;000&nbsp;$ par entreprise référée. Le montant exact vous est confirmé quand on vous répond. Aucun plafond sur le nombre de références.</p>
+      </div>
+
+      <div class="step success" data-rstep="5" hidden>
+        <span class="num">01 / 01</span>
+        <h4>C’est noté. On s’en occupe.</h4>
+        <p class="modal-sub" style="margin-top:0">On la contacte en moins de 48&nbsp;h ouvrables, avec la présentation que vous avez demandée. Vous recevez un mot dès qu’on lui a parlé.</p>
+        <button class="btn btn--ghost" type="button" data-modal-close>
+          Fermer
+          <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
+        </button>
+      </div>
+
+      <div class="step-nav" id="referNav">
+        <button class="btn btn--ghost" type="button" id="referBack" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-left" /></svg>
+          Retour
+        </button>
+        <button class="btn btn--primary" type="button" id="referNext" data-submit style="margin-left:auto">
+          <span data-label>Continuer</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+        </button>
+      </div>
       <p class="form-status" role="status" aria-live="polite"></p>
       <p class="form-legal">Assurez-vous que la personne référée accepte qu’on la contacte. On la traite ensuite comme n’importe quelle demande. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
     </form>
+  </div>
+</div>
+
+<!-- LA RETENUE.  D-753
+     Elle ne parait qu'une fois, jamais au chargement, et jamais
+     pour quelqu'un qui n'a rien commence. Elle ne bloque rien :
+     Echap la ferme, le fond aussi, et le bouton « Je continue »
+     rend la main au formulaire exactement ou il en etait.
+     Le ton ne culpabilise pas — on ne retient pas quelqu'un en lui
+     faisant honte, on lui rappelle ce qu'il a deja donne. -->
+<div class="retenue" id="retenue" role="dialog" aria-modal="false" aria-labelledby="retenueTitre" hidden>
+  <div class="retenue-in">
+    <p class="retenue-quoi" id="retenueQuoi">Vous étiez presque au bout.</p>
+    <h4 id="retenueTitre">On garde votre place&nbsp;?</h4>
+    <p class="retenue-texte" id="retenueTexte">Ce que vous avez rempli est déjà
+      enregistré. Laissez-nous une adresse et on vous renvoie le lien pour finir
+      quand ça vous adonne — ou continuez, c’est deux minutes.</p>
+
+    <div class="retenue-champ" id="retenueChamp">
+      <label class="sr-only" for="retenueEmail">Votre courriel</label>
+      <input id="retenueEmail" type="email" autocapitalize="none" inputmode="email"
+        spellcheck="false" autocomplete="email" placeholder="prenom@entreprise.ca" />
+      <button class="btn btn--primary" type="button" id="retenueEnvoi">
+        <span data-label>Gardez-moi ça</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+      </button>
+    </div>
+    <p class="form-status" id="retenueStatut" role="status" aria-live="polite"></p>
+
+    <button class="link-btn" type="button" id="retenueSuite">Je continue maintenant</button>
   </div>
 </div>
 

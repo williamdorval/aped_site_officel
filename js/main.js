@@ -1761,6 +1761,16 @@
     }
     window.setTimeout(function () { modal.hidden = true; }, reduced.matches ? 0 : 380);
     restoreFocus();
+
+    /* FERMER UNE MODALE DE FORMULAIRE COMMENCE EST LE SECOND
+       DECLENCHEUR DE LA RETENUE.  D-753
+       Sur telephone il n'y a pas de « souris qui sort par le haut » :
+       sans celui-ci, la retenue n'existerait que sur un ordinateur.
+       Elle attend la fin de l'animation de fermeture — se poser
+       par-dessus un panneau qui glisse encore fait desordre. */
+    window.setTimeout(function () {
+      if (typeof ouvrirRetenue === "function") ouvrirRetenue();
+    }, reduced.matches ? 60 : 460);
   }
 
   function switchModal(id) {
@@ -2096,6 +2106,9 @@
      suivante, ou a la fin. */
   function enregistrerDiscret(kind, data, etape, total) {
     try {
+      /* DES QU'UNE ETAPE EST FRANCHIE, il y a quelque chose a
+         perdre — c'est le moment ou la retenue devient legitime. */
+      retenuePossible(kind);
       enregistrerEtape(kind, data, etape, total, false).catch(function () {});
     } catch (e) {}
   }
@@ -2372,7 +2385,224 @@
      message de succes, message d'echec avec un moyen de nous joindre
      quand meme — vient d'ici. Un quatrieme formulaire s'ajoute en
      ecrivant son nom dans ce selecteur, nulle part ailleurs. */
-  $$('form[data-form="urgent"], form[data-form="refer"], form[data-form="contact"]').forEach(function (form) {
+  /* ============================================================
+     LA RETENUE  D-753
+
+     CE QU'ELLE EST, ET CE QU'ELLE N'EST PAS. Elle parait quand
+     quelqu'un s'appretait a quitter au milieu d'un formulaire. Elle
+     ne bloque rien, ne se repete jamais, et ne culpabilise pas :
+     on ne retient pas quelqu'un en lui faisant honte, on lui
+     rappelle ce qu'il a deja donne.
+
+     QUAND ELLE PARAIT — trois declencheurs, et pas un de plus :
+       · la souris sort par le HAUT de la fenetre (bureau) — le
+         geste de viser l'onglet ou la barre d'adresse ;
+       · le visiteur ferme la modale d'un formulaire commence ;
+       · rien sur `beforeunload` : on ne peut plus y afficher
+         d'interface, et l'essayer bloque la mise en cache.
+
+     UNE SEULE FOIS, ET ELLE S'EN SOUVIENT. `localStorage`, pas
+     `sessionStorage` : quelqu'un qui l'a vue lundi ne doit pas la
+     revoir mardi. Un popup qui insiste fait fuir.
+
+     ELLE NE PARAIT PAS SI RIEN N'EST COMMENCE. Un visiteur qui
+     ouvre puis referme une modale sans rien taper n'a rien a
+     perdre, et lui montrer un rappel serait absurde.
+     ============================================================ */
+  var CLE_RETENUE = "aped-retenue-vue";
+  var retenue = $("#retenue");
+  var retenueEtat = null;   /* { kind, quoi, perte } quand un formulaire est en cours */
+
+  function retenueDejaVue() {
+    try { return localStorage.getItem(CLE_RETENUE) === "1"; } catch (e) { return false; }
+  }
+  function marquerRetenueVue() {
+    try { localStorage.setItem(CLE_RETENUE, "1"); } catch (e) {}
+  }
+
+  /* Ce que le visiteur est en train de perdre, en toutes lettres.
+     « votre estimation » se retient mieux que « votre saisie ». */
+  var PERTES = {
+    project:  "votre projet, à l’étape où vous l’avez laissé",
+    estimate: "votre estimation",
+    refer:    "la référence que vous étiez en train d’écrire",
+    booking:  "le créneau que vous aviez choisi"
+  };
+
+  function ouvrirRetenue() {
+    if (!retenue || !retenueEtat || retenueDejaVue()) return;
+    if (retenue.hidden === false) return;
+    marquerRetenueVue();
+    $("#retenueTexte").textContent =
+      "Ce que vous avez rempli est déjà enregistré. Laissez-nous une adresse et "
+      + "on vous renvoie le lien pour finir quand ça vous adonne — ou continuez, "
+      + "c’est deux minutes.";
+    $("#retenueQuoi").textContent =
+      "Vous alliez partir avec " + (PERTES[retenueEtat.kind] || "votre demande") + ".";
+    retenue.hidden = false;
+    var champ = $("#retenueEmail");
+    if (champ && isDesktop.matches) champ.focus({ preventScroll: true });
+  }
+
+  function fermerRetenue() {
+    if (retenue) retenue.hidden = true;
+  }
+
+  if (retenue) {
+    $("#retenueSuite").addEventListener("click", fermerRetenue);
+    retenue.addEventListener("click", function (e) {
+      if (e.target === retenue) fermerRetenue();
+    });
+    doc.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !retenue.hidden) { fermerRetenue(); e.stopPropagation(); }
+    }, true);
+
+    $("#retenueEnvoi").addEventListener("click", function () {
+      var champ = $("#retenueEmail");
+      var statut = $("#retenueStatut");
+      var v = String(champ.value || "").trim();
+      if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(v)) {
+        say(statut, "Il manque une adresse valide — c’est tout ce qu’on demande.", "err");
+        champ.focus();
+        return;
+      }
+      var btn = $("#retenueEnvoi");
+      setLoading(btn, true);
+      /* ON ECRIT DANS LA MEME LIGNE que le formulaire commence :
+         c'est le meme visiteur, et deux lignes pour une personne
+         est exactement ce que D-744 existe pour empecher. */
+      var kind = retenueEtat ? retenueEtat.kind : "contact";
+      var champCourriel = (kind === "refer") ? "votre_email" : "email";
+      var charge = { _sid: sessionDe(kind), _etape: 1, _etapes: 99 };
+      charge[champCourriel] = v;
+      if (kind === "refer") charge.entreprise_referee = "— laissée en plan —";
+      sendJson(kind, charge).then(function () {
+        setLoading(btn, false);
+        say(statut, "C’est gardé. On vous écrit le lien.", "ok");
+        window.setTimeout(fermerRetenue, 1600);
+      }).catch(function (err) {
+        setLoading(btn, false);
+        say(statut, messageEchec(err), "err");
+      });
+    });
+
+    /* LA SOURIS QUI SORT PAR LE HAUT. `clientY <= 0` avec
+       `relatedTarget` nul : c'est la fenetre qu'on quitte, pas un
+       enfant qu'on survole. Sur telephone il n'y a pas de tel
+       geste — la fermeture de modale s'en charge.
+
+       PAS TANT QU'UNE MODALE EST OUVERTE, ET C'EST UN DEFAUT
+       CORRIGE.  D-753
+
+       La retenue se pose en bas a droite ; le bouton « Continuer »
+       d'un assistant y est aussi, par `margin-left: auto`. Elle le
+       RECOUVRAIT — un visiteur en train de remplir voyait apparaitre
+       « vous alliez partir » et ne pouvait plus avancer. Trouve
+       parce qu'un clic de Playwright expirait au bout de 30 s sur un
+       formulaire intact.
+
+       Et le fond est juste : quelqu'un dont la modale est ouverte
+       n'est PAS en train de partir, il travaille. Le seul depart qui
+       compte alors, c'est la fermeture de la modale — et
+       `closeModal` s'en charge deja. */
+    doc.addEventListener("mouseout", function (e) {
+      if (activeModal) return;
+      if (e.relatedTarget || e.clientY > 0) return;
+      ouvrirRetenue();
+    });
+  }
+
+  /* Les formulaires declarent qu'ils sont commences. Appele au
+     premier enregistrement d'etape : avant ca, il n'y a rien a
+     perdre. */
+  function retenuePossible(kind) {
+    retenueEtat = { kind: kind };
+  }
+  function retenueFinie() {
+    retenueEtat = null;
+  }
+
+  /* ============================================================
+     L'ASSISTANT DE REFERENCE — QUATRE ETAPES  D-752
+
+     C'etait un mur de onze champs. Le nom de l'entreprise referee
+     est le minimum vital d'une reference : avec lui on peut
+     chercher, sans lui on n'a rien. Il passe donc SEUL a l'etape 1,
+     et la ligne s'ouvre des qu'elle est validee.
+
+     Le moteur est le meme que celui de l'assistant de projet, en
+     plus court : ce formulaire n'a ni fichiers, ni fourchette.
+     ============================================================ */
+  var referForm = $('form[data-form="refer"]');
+  if (referForm) {
+    var R_TOTAL = 5;
+    var rStep = 1;
+    var referBar = $("#referBar");
+    var referBack = $("#referBack");
+    var referNext = $("#referNext");
+    var referNav = $("#referNav");
+
+    var goRStep = function (n) {
+      rStep = n;
+      $$(".step[data-rstep]", referForm).forEach(function (s) {
+        s.hidden = Number(s.dataset.rstep) !== n;
+      });
+      var pct = (n / R_TOTAL) * 100;
+      if (referBar) referBar.style.width = pct + "%";
+      var bar = referBar && referBar.closest("[role='progressbar']");
+      if (bar) bar.setAttribute("aria-valuenow", String(Math.round(pct)));
+      referBack.hidden = n === 1 || n === R_TOTAL;
+      referNav.hidden = n === R_TOTAL;
+      var lab = $("[data-label]", referNext);
+      lab.textContent = n === R_TOTAL - 1 ? "Envoyer ma référence" : "Continuer";
+      referNext.dataset.idle = lab.textContent;
+      var visible = $('.step[data-rstep="' + n + '"]', referForm);
+      if (visible && isDesktop.matches) {
+        var t = $("input:not([type=hidden]), select, textarea", visible);
+        if (t) t.focus({ preventScroll: true });
+      }
+    };
+
+    referBack.addEventListener("click", function () { if (rStep > 1) goRStep(rStep - 1); });
+
+    referNext.addEventListener("click", function () {
+      var current = $('.step[data-rstep="' + rStep + '"]', referForm);
+      if (!validate(current)) return;
+
+      if (rStep < R_TOTAL - 1) {
+        enregistrerDiscret("refer", serialize(referForm), rStep, R_TOTAL);
+        goRStep(rStep + 1);
+        return;
+      }
+
+      var statutR = $(".form-status", referForm);
+      setLoading(referNext, true);
+      say(statutR, "");
+      retirerRepli(statutR);
+
+      var contenuR = serialize(referForm);
+      var sidR = sessionDe("refer");
+      var chargeR = Object.assign({}, contenuR, {
+        _sid: sidR, _etape: R_TOTAL - 1, _etapes: R_TOTAL, _final: true
+      });
+
+      sendJson("refer", chargeR).then(function () {
+        setLoading(referNext, false);
+        oublierSession("refer");
+        retenueFinie();
+        goRStep(R_TOTAL);
+      }).catch(function (err) {
+        setLoading(referNext, false);
+        say(statutR, messageEchec(err), "err");
+        poserRepli(statutR, "refer", chargeR);
+      });
+    });
+
+    goRStep(1);
+  }
+
+  /* `refer` a quitte cette liste : il a son propre assistant. */
+  $$('form[data-form="urgent"], form[data-form="contact"]').forEach(function (form) {
     var kind = form.getAttribute("data-form");
     var btn = $("[data-submit]", form);
     var status = $(".form-status", form);
@@ -3082,6 +3312,7 @@
       var done = function () {
         setLoading(projectNext, false);
         oublierSession("project");
+        retenueFinie();
         montrerFourchette("project", vue, data, sid);
         goPStep(P_TOTAL);
       };
@@ -3253,6 +3484,7 @@
         say(sortie, "");
         sendJson("estimate", charge).then(function () {
           oublierSession("estimate");
+          retenueFinie();
           reveal();
         }).catch(function (err) {
           /* L'ORDRE COMPTE. On revele d'abord le resume — c'est ce  D-426 */

@@ -4340,6 +4340,61 @@ html:not(.js) .ba-trait { display: none; }
   font-size: var(--fs-8);
   color: var(--ink-muted);
 }
+/* == 23quater. LA RETENUE ==  D-753
+
+   Elle ne bloque pas la page : pas de `position: fixed; inset: 0`
+   opaque qui prend tout. Un panneau en bas a droite sur grand
+   ecran, une bande en bas sur telephone. Echap la ferme, un clic a
+   cote aussi.
+
+   AUCUN FLOU, AUCUNE OMBRE, RAYON 0 — c'est le seul element du site
+   qui se pose PAR-DESSUS le contenu sans etre une modale, et c'est
+   exactement la ou la tentation de mettre une ombre est la plus
+   forte. La profondeur se fait avec un filet plein et un aplat de
+   surface, comme partout ailleurs. */
+.retenue {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 60;
+  display: grid;
+  justify-items: stretch;
+  padding: var(--s-4);
+  padding-bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+}
+@media (min-width: 48rem) {
+.retenue {
+    inset: auto var(--s-6) var(--s-6) auto;
+    padding: 0;
+    justify-items: end;
+  }
+}
+.retenue[hidden] { display: none; }
+.retenue-in {
+  display: grid;
+  gap: var(--s-3);
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--s-5);
+  background: var(--surface-2);
+  border: var(--rule-w) solid var(--ink);
+}
+.retenue-quoi {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+.retenue-in > h4 { font-size: var(--fs-4); max-width: 22ch; }
+.retenue-texte { font-size: var(--fs-7); line-height: 1.55; color: var(--ink-muted); }
+.retenue-champ { display: grid; gap: var(--s-2); }
+@media (min-width: 26rem) {
+.retenue-champ { grid-template-columns: 1fr auto; align-items: stretch; }
+}
+/* Cible tactile : le champ ET le bouton tiennent les 44 px. */
+.retenue-champ input { min-height: 2.75rem; }
+.retenue-champ .btn { min-height: 2.75rem; }
+.retenue #retenueSuite { justify-self: start; font-size: var(--fs-7); }
 /* == 23ter. LES DEUX PORTES DE L'URGENCE ==  D-751
 
    Une vraie urgence n'ecrit pas, elle appelle. Le numero passe
