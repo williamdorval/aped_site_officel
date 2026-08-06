@@ -63,7 +63,19 @@ function verifier(nom, obtenu, attendu) {
 
 function viderCalendrier() { etat.evenements.length = 0; }
 
+/* LA PORTE REPOND DEPUIS UN CACHE DE 90 s.  D-758
+
+   Chaque cas ci-dessous modifie l'agenda puis relit la porte
+   IMMEDIATEMENT : sans avancer l'horloge, les onze premiers cas
+   liraient tous la reponse du premier, et le fichier rendrait
+   « tout tient » sur un moteur qu'il n'aurait jamais interroge.
+
+   On avance le temps du cache plutot que de vider la cle : c'est
+   la meme chose pour l'agenda, et ca prouve au passage que
+   l'expiration fonctionne. Le cas 12 prouve l'inverse — que le
+   cache SERT vraiment tant qu'il n'a pas expire. */
 function creneaux() {
+  etat.decalageHorloge += 120000;
   const r = gs.doGet({ parameter: { action: "creneaux" } });
   const d = JSON.parse(r.getContent());
   if (d.success !== true) {

@@ -1,0 +1,465 @@
+/* ============================================================
+   CE QUI TIENT LA PORTE — `node tools/securite-check.mjs`
+
+   POURQUOI CET OUTIL EXISTE.
+
+   Le 2026-08-06, l'injection de formule (D-757) a ete trouvee
+   OUVERTE contre le vrai Google, apres des mois passes a croire le
+   contraire. La lecon n'etait pas « il manquait un correctif » :
+   c'est que PERSONNE n'avait jamais ecrit la liste de ce que le
+   service est cense refuser. Chaque protection vivait dans un
+   commentaire, aucune n'avait de temoin.
+
+   Ce fichier est cette liste. Une ligne par chose qu'un inconnu
+   pourrait tenter depuis l'exterieur, et la preuve que le service
+   la refuse — ou, quand il l'accepte, la preuve de ce qu'il en
+   fait exactement.
+
+   IL EXECUTE LE VRAI `google/Code.gs`. Les fonctions appelees sont
+   celles qui repondront en production, ligne pour ligne.
+
+   CE QU'IL NE PROUVE PAS, ET C'EST ECRIT ICI POUR QU'ON NE
+   L'OUBLIE PAS : que le vrai Google se comporte comme le bouchon.
+   Le banc a deja menti une fois, exactement la-dessus. Les points
+   qui touchent au moteur de Sheets se prouvent contre le vrai
+   service, par `tools/parcours-prod.mjs`.
+   ============================================================ */
+import { pathToFileURL } from "node:url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ICI = path.dirname(fileURLToPath(import.meta.url));
+const { gs, etat } = await import(pathToFileURL(path.join(ICI, "faux-google.mjs")).href);
+
+gs.initialiser();
+
+let n = 0, ko = 0;
+function dire(nom, obtenu, attendu, note) {
+  n++;
+  const ok = String(obtenu) === String(attendu);
+  if (!ok) ko++;
+  console.log("  " + (ok ? "OK   " : "ECHEC") + " " + nom
+    + "\n         obtenu  : " + obtenu
+    + "\n         attendu : " + attendu
+    + (note ? "\n         " + note : ""));
+}
+function titre(t) { console.log(""); console.log("--- " + t); }
+
+const poster = (c) => JSON.parse(
+  gs.doPost({ postData: { contents: JSON.stringify(c) }, parameter: {} }).getContent());
+const porte = (p) => JSON.parse(gs.doGet({ parameter: p }).getContent());
+
+/* Avancer le temps du cache, sans toucher aux dates du banc. */
+const avancer = (s) => { etat.decalageHorloge += s * 1000; };
+
+const lignes = (onglet) => {
+  const f = etat.feuilles.get(onglet);
+  return f ? f.valeurs.slice(1).filter((r) => r.some((c) => c !== "" && c != null)) : [];
+};
+const colonne = (kind, titreCol) =>
+  gs.colonnes(kind).map((c) => c.titre).indexOf(titreCol);
+
+/* LA REMISE A ZERO NE TOUCHE PAS AU CACHE, ET C'EST VOULU : les
+   compteurs de debit doivent pouvoir traverser un cas. Chaque cas
+   qui en a besoin vide la cle qui le concerne, et le dit. */
+function remise() {
+  etat.courriels.length = 0;
+  etat.evenements.length = 0;
+  etat.fichiersDrive.length = 0;
+  etat.quota = 100;
+  for (const f of etat.feuilles.values()) {
+    f.valeurs.length = Math.min(f.valeurs.length, 1);
+    f.formules.clear();
+  }
+}
+function viderDebit() {
+  etat.cache = {};
+  etat.decalageHorloge = 0;
+}
+
+console.log("============================================================");
+console.log("CE QUI TIENT LA PORTE");
+console.log("============================================================");
+
+
+/* ============================================================
+   1 · LA PORTE DES CRENEAUX NE DIT QUE DES HEURES
+   ============================================================ */
+titre("1 · LA PORTE PUBLIQUE DES CRENEAUX NE FUIT RIEN");
+{
+  remise(); viderDebit();
+
+  /* On remplit l'agenda de choses qu'un inconnu aimerait lire. */
+  const dans3j = new Date(Date.now() + 3 * 86400000);
+  etat.evenements.push({
+    titre: "Rachat de la boulangerie Lantagne — 240 000 $",
+    description: "offre a 210, plancher 195, ne pas mentionner Alan",
+    lieu: "3 rue des Erables, Levis",
+    invites: ["notaire@exemple.ca", "banquier@exemple.ca"],
+    debut: dans3j, fin: new Date(dans3j.getTime() + 3600000)
+  });
+
+  avancer(200);
+  const brut = JSON.stringify(porte({ action: "creneaux" }));
+
+  dire("aucun titre d'evenement dans la reponse", /Lantagne|boulangerie/i.test(brut), false);
+  dire("aucune description", /plancher|ne pas mentionner/i.test(brut), false);
+  dire("aucun lieu", /Erables|Levis/i.test(brut), false);
+  dire("aucun invite", /notaire|banquier/i.test(brut), false);
+  dire("aucune adresse courriel, d'aucune sorte", /@/.test(brut), false);
+
+  /* CE QU'ELLE REND, ET RIEN D'AUTRE. Une porte qui ne rendrait
+     rien serait « sure » et inutile : on verifie donc AUSSI qu'elle
+     rend bien ce dont le site a besoin. */
+  const rep = porte({ action: "creneaux" });
+  const clesJour = Object.keys(rep.jours[0]).sort().join(",");
+  const clesCreneau = Object.keys(rep.jours[0].creneaux[0]).sort().join(",");
+  dire("un jour ne porte que date/libelle/libelleLong/creneaux",
+    clesJour, "creneaux,date,libelle,libelleLong");
+  dire("un creneau ne porte que l'instant et l'heure lisible", clesCreneau, "h,iso");
+}
+
+
+/* ============================================================
+   2 · LA PORTE DES CRENEAUX NE PEUT PLUS ETRE MARTELEE
+   ============================================================ */
+titre("2 · LE CACHE DES CRENEAUX (D-758)");
+{
+  remise(); viderDebit();
+
+  const a = porte({ action: "creneaux" });
+  const jour = a.jours.slice().sort((x, y) => y.creneaux.length - x.creneaux.length)[0];
+
+  /* ON BLOQUE LA JOURNEE, PUIS ON REDEMANDE TOUT DE SUITE. Si la
+     reponse change, c'est que rien n'a ete garde : l'agenda est
+     relu a chaque appel, et 1 600 appels tuent le script pour la
+     journee — formulaires compris. */
+  etat.evenements.push({ titre: "bloque", jour: jour.date });
+  const b = porte({ action: "creneaux" });
+  dire("deux appels de suite : le second sort du cache",
+    JSON.stringify(b) === JSON.stringify(a), true,
+    "l'agenda a change entre les deux, la reponse non");
+
+  /* ET IL EXPIRE. Un cache eternel afficherait indefiniment un
+     creneau bloque la veille. */
+  avancer(120);
+  const c = porte({ action: "creneaux" });
+  dire("apres 120 s, la porte relit l'agenda",
+    (c.jours.find((x) => x.date === jour.date) || { creneaux: [] }).creneaux.length, 0);
+
+  /* ET UNE RESERVATION LE VIDE TOUT DE SUITE. Sans ca, la plage
+     prise resterait offerte jusqu'a 90 s, et le visiteur suivant
+     remplirait tout le formulaire pour se faire dire non. */
+  etat.evenements.length = 0;
+  avancer(120);
+  const d = porte({ action: "creneaux" });
+  const j2 = d.jours.slice().sort((x, y) => y.creneaux.length - x.creneaux.length)[0];
+  const iso = j2.creneaux[3].iso;
+  const heure = j2.creneaux[3].h;
+
+  const rdv = poster({
+    _form: "booking", nom: "ZZTEST Cache", email: "zztest@exemple.ca",
+    telephone: "418 555 0188", mode: "Appel téléphonique",
+    plage_iso: iso, sujet: "vider le cache"
+  });
+  dire("la reservation passe", rdv.success, true);
+
+  const e = porte({ action: "creneaux" });
+  const restant = (e.jours.find((x) => x.date === j2.date) || { creneaux: [] })
+    .creneaux.map((x) => x.h);
+  dire("le creneau reserve a disparu SANS attendre l'expiration",
+    restant.includes(heure), false,
+    "cache vide par oublierCreneaux(), pas par le temps");
+}
+
+
+/* ============================================================
+   3 · LE DEBIT D'UNE SESSION
+   ============================================================ */
+titre("3 · UN _sid NE PEUT PLUS MARTELER (D-758)");
+{
+  remise(); viderDebit();
+
+  const sid = "ZZTESTdebitsession01";
+  const base = {
+    _form: "contact", _sid: sid, nom: "ZZTEST Debit",
+    email: "zztest@exemple.ca", message: "envoi numero "
+  };
+
+  let refuseA = 0;
+  for (let i = 1; i <= gs.REGLAGES.DEBIT_SESSION_MAX + 3; i++) {
+    const r = poster(Object.assign({}, base, { message: "envoi numero " + i }));
+    if (r.success === false && /Trop d’envois/.test(r.message || "")) { refuseA = i; break; }
+  }
+  dire("le plafond tombe au " + (gs.REGLAGES.DEBIT_SESSION_MAX + 1) + "e envoi",
+    refuseA, gs.REGLAGES.DEBIT_SESSION_MAX + 1);
+
+  /* ET IL NE PUNIT QUE CETTE SESSION-LA. Un plafond partage
+     laisserait un robot fermer le formulaire a tout le monde. */
+  const autre = poster({
+    _form: "contact", _sid: "ZZTESTautresession02", nom: "ZZTEST Voisin",
+    email: "zztest@exemple.ca", message: "je passe encore"
+  });
+  dire("une autre session passe toujours", autre.success, true);
+}
+
+
+/* ============================================================
+   4 · LE PLAFOND D'AVIS N'EFFACE PAS LA DEMANDE
+   ============================================================ */
+titre("4 · AU PLAFOND D'AVIS, LA LIGNE S'ECRIT QUAND MEME (D-758)");
+{
+  remise(); viderDebit();
+
+  /* On amene le compteur d'avis a son plafond avec des demandes
+     completes, chacune neuve. */
+  for (let i = 0; i < gs.REGLAGES.DEBIT_AVIS_MAX; i++) {
+    poster({ _form: "contact", nom: "ZZTEST Foule " + i,
+      email: "zztest@exemple.ca", message: "demande numero " + i });
+  }
+  const avant = lignes("Contact simple").length;
+  const courrielsAvant = etat.courriels.length;
+
+  const debordee = poster({ _form: "contact", nom: "ZZTEST Vraie cliente",
+    email: "zztest@exemple.ca", message: "je suis une vraie demande" });
+
+  dire("la demande de trop n'est PAS refusee", debordee.success, true,
+    "refuser, c'est offrir a un robot le moyen de fermer le formulaire");
+  dire("sa ligne est bel et bien ecrite", lignes("Contact simple").length, avant + 1);
+  dire("aucun courriel n'est parti", etat.courriels.length, courrielsAvant);
+
+  const iNotes = colonne("contact", "Notes internes");
+  const derniere = lignes("Contact simple")[0];
+  dire("le classeur DIT que personne n'a ete prevenu",
+    /AUCUN AVIS ENVOYÉ/.test(String(derniere[iNotes] || "")), true,
+    "sinon la demande a l'air d'un oubli de rappel");
+
+  /* LE PLAFOND DUR, LUI, REFUSE — mais il est sept fois plus haut. */
+  dire("le plafond dur est bien au-dessus du plafond d'avis",
+    gs.REGLAGES.DEBIT_LIGNES_MAX > gs.REGLAGES.DEBIT_AVIS_MAX * 3, true,
+    gs.REGLAGES.DEBIT_LIGNES_MAX + " contre " + gs.REGLAGES.DEBIT_AVIS_MAX);
+}
+
+
+/* ============================================================
+   5 · LES PIECES JOINTES
+   ============================================================ */
+titre("5 · CE QUI ENTRE DANS LE DRIVE DE L'AGENCE (D-758)");
+{
+  remise(); viderDebit();
+
+  const projet = (pieces, sid) => poster({
+    _form: "project", _sid: sid, _final: true,
+    nom: "ZZTEST Pieces", email: "zztest@exemple.ca", telephone: "418 555 0177",
+    entreprise: "ZZTEST inc", ville: "Levis", budget: "10 000 $ et plus",
+    description: "des fichiers",
+    _fichiers: pieces
+  });
+
+  const b64 = "QUJD";
+
+  projet([{ nom: "devis.pdf", base64: b64, type: "application/pdf" }], "ZZTESTpieces0001");
+  dire("un PDF passe", etat.fichiersDrive.length, 1);
+
+  const av = etat.fichiersDrive.length;
+  projet([{ nom: "facture.pdf.exe", base64: b64, type: "application/pdf" }], "ZZTESTpieces0002");
+  dire("un .exe deguise en PDF est REFUSE", etat.fichiersDrive.length, av,
+    "le type annonce par l'appelant ne decide de rien, l'extension du nom si");
+
+  projet([{ nom: "porte.jsp", base64: b64, type: "text/plain" }], "ZZTESTpieces0003");
+  dire("un fichier de script est refuse", etat.fichiersDrive.length, av);
+
+  projet([{ nom: "sans-extension", base64: b64, type: "text/plain" }], "ZZTESTpieces0004");
+  dire("un fichier sans extension est refuse", etat.fichiersDrive.length, av);
+
+  /* LE NOMBRE. Quatre cents fichiers d'un kilo tenaient sous les
+     huit megaoctets et faisaient quatre cents creations Drive. */
+  const beaucoup = [];
+  for (let i = 0; i < gs.REGLAGES.PIECES_MAX_NOMBRE + 1; i++) {
+    beaucoup.push({ nom: "p" + i + ".png", base64: b64, type: "image/png" });
+  }
+  const avN = etat.fichiersDrive.length;
+  projet(beaucoup, "ZZTESTpieces0005");
+  dire("au-dela de " + gs.REGLAGES.PIECES_MAX_NOMBRE + " pieces, aucune n'est televersee",
+    etat.fichiersDrive.length, avN);
+
+  /* LE NOM. Il finit dans un courriel et dans une cellule. */
+  const avNom = etat.fichiersDrive.length;
+  projet([{ nom: "logo\n\nBcc: espion@exemple.ca.png", base64: b64, type: "image/png" }],
+    "ZZTESTpieces0006");
+  dire("un nom a retours de ligne est televerse assaini",
+    etat.fichiersDrive.length, avNom + 1);
+  const dernier = etat.fichiersDrive[etat.fichiersDrive.length - 1];
+  dire("et il ne contient plus aucun retour de ligne",
+    /[\r\n]/.test(String(dernier && dernier.nom || "")), false,
+    "nom retenu : " + (dernier && dernier.nom));
+}
+
+
+/* ============================================================
+   6 · UNE RESERVATION FORGEE
+   ============================================================ */
+titre("6 · CE QU'UNE REQUETE FORGEE NE PEUT PAS RESERVER");
+{
+  remise(); viderDebit();
+  avancer(200);
+
+  /* SANS `_sid`, ET C'EST LE POINT. Une reservation en cours de
+     session ne pose son evenement qu'a la confirmation : envoyer un
+     `_sid` sans `_final` ferait ecrire une ligne sans jamais
+     toucher au calendrier, et les quatre cas ci-dessous
+     passeraient tous en ne prouvant rien. */
+  const rdv = (iso, quoi) => poster({
+    _form: "booking", nom: "ZZTEST Forge " + quoi, email: "zztest@exemple.ca",
+    telephone: "418 555 0199", mode: "Appel téléphonique",
+    plage_iso: iso, sujet: "forge " + quoi
+  });
+
+  const hier = new Date(Date.now() - 86400000).toISOString();
+  dire("une plage dans le PASSE est refusee", rdv(hier, "passe").success, false);
+
+  const dansDixAns = new Date(Date.now() + 3650 * 86400000).toISOString();
+  dire("une plage dans dix ans est refusee", rdv(dansDixAns, "loin").success, false);
+
+  /* HORS GRILLE : dans la fenetre, mais a une heure jamais offerte. */
+  const rep = porte({ action: "creneaux" });
+  const jour = rep.jours.slice().sort((x, y) => y.creneaux.length - x.creneaux.length)[0];
+  const bon = new Date(jour.creneaux[2].iso);
+  const decale = new Date(bon.getTime() + 7 * 60000).toISOString();
+  dire("une plage a 9 h 07 est refusee", rdv(decale, "decale").success, false,
+    "le calendrier est libre a cette minute-la : seule la grille l'interdit");
+
+  const nuit = new Date(bon.getTime() - 8 * 3600000).toISOString();
+  dire("une plage en pleine nuit est refusee", rdv(nuit, "nuit").success, false);
+
+  /* LE MEME CRENEAU DEUX FOIS : le second doit tomber. */
+  const iso = jour.creneaux[5].iso;
+  dire("le creneau se prend une premiere fois", rdv(iso, "premier").success, true);
+  dire("le MEME creneau, autre session, est refuse", rdv(iso, "second").success, false);
+}
+
+
+/* ============================================================
+   7 · CE QU'UN _sid PERMET, ET CE QU'IL NE PERMET PAS
+   ============================================================ */
+titre("7 · L'IDENTIFIANT DE SESSION");
+{
+  remise(); viderDebit();
+
+  const sid = "ZZTESTsessionvictime";
+  poster({ _form: "contact", _sid: sid, nom: "ZZTEST Victime",
+    email: "zztest@exemple.ca", message: "ma demande a moi" });
+
+  /* LE MEME _sid SUR UN AUTRE FORMULAIRE. La recherche se fait dans
+     l'onglet du `kind` : on ne peut pas toucher a la ligne d'un
+     autre onglet, meme en connaissant l'identifiant. */
+  const avantContact = lignes("Contact simple").length;
+  const r = poster({ _form: "urgent", _sid: sid, nom: "ZZTEST Intrus",
+    email: "zztest@exemple.ca", telephone: "418 555 0111",
+    message: "tout est arrete depuis ce matin" });
+  dire("le meme _sid sur un autre formulaire ecrit dans SON onglet", r.success, true);
+  dire("il n'a pas touche a la ligne de l'autre onglet",
+    lignes("Contact simple").length, avantContact);
+
+  /* LA REPONSE NE REND JAMAIS LE CONTENU DE LA LIGNE. Meme avec le
+     bon `_sid`, on n'apprend rien de ce qu'elle contient. */
+  const suite = poster({ _form: "contact", _sid: sid, nom: "ZZTEST Victime",
+    email: "zztest@exemple.ca", message: "ma demande a moi, suite" });
+  const cles = Object.keys(suite).sort().join(",");
+  dire("la reponse ne rend que des metadonnees", cles, "champs,etape,ligne,session,success",
+    "aucun champ du visiteur ne revient par la porte");
+
+  /* UN _sid MAL FORME EST REFUSE AVANT TOUT LE RESTE. */
+  const sale = poster({ _form: "contact", _sid: "'; DROP TABLE --",
+    nom: "ZZTEST Sale", email: "zztest@exemple.ca", message: "x" });
+  dire("un _sid hors [A-Za-z0-9_-]{8,40} est refuse", sale.success, false);
+}
+
+
+/* ============================================================
+   8 · L'OBJET DE L'AVIS INTERNE
+   ============================================================ */
+titre("8 · L'AVIS INTERNE NE SE CASSE PAS SUR UN CHAMP TORDU");
+{
+  remise(); viderDebit();
+
+  poster({ _form: "contact",
+    nom: "ZZTEST Ligne\r\nBcc: espion@exemple.ca\r\nSubject: autre chose",
+    email: "zztest@exemple.ca", message: "message ordinaire" });
+
+  const av = etat.courriels.find((c) => /APED/.test(c.subject || c.sujet || ""));
+  const objet = String(av ? (av.subject || av.sujet) : "");
+  dire("un avis est parti", !!av, true);
+  dire("l'objet ne porte aucun retour de ligne", /[\r\n]/.test(objet), false,
+    "objet : " + objet);
+  dire("l'objet dit quand meme de qui il s'agit", /ZZTEST Ligne/.test(objet), true);
+
+  /* LE CORPS EST DU TEXTE BRUT, PAS DU HTML. Rien a echapper, donc
+     rien a casser — et on le PROUVE plutot que de le supposer. */
+  const corps = String(av ? (av.body || av.corps || "") : "");
+  dire("le courriel n'est pas envoye en HTML",
+    !!(av && (av.htmlBody || av.corpsHtml)), false,
+    "un corps texte ne peut porter ni balise ni lien deguise");
+  dire("le corps contient bien la demande", /message ordinaire/.test(corps), true);
+}
+
+
+/* ============================================================
+   9 · LE FORMULAIRE INCONNU, LE HONEYPOT, LE CORPS ILLISIBLE
+   ============================================================ */
+titre("9 · LES TROIS REFUS D'ENTREE");
+{
+  remise(); viderDebit();
+
+  const inconnu = poster({ _form: "adminPanel", nom: "ZZTEST", email: "zztest@exemple.ca" });
+  dire("un formulaire inconnu est refuse", inconnu.message, "Formulaire inconnu.");
+
+  const av = etat.courriels.length;
+  const robot = poster({ _form: "contact", _gotcha: "http://spam",
+    nom: "ZZTEST Robot", email: "zztest@exemple.ca", message: "achetez" });
+  dire("le honeypot rend un faux succes", robot.success, true);
+  dire("le honeypot n'ecrit rien", robot.ligne, undefined);
+  dire("le honeypot n'envoie rien", etat.courriels.length, av);
+
+  const vide = JSON.parse(gs.doPost({ parameter: {} }).getContent());
+  dire("un corps absent ne fait pas tomber le service", vide.success, false);
+}
+
+
+/* ============================================================
+   10 · LA LONGUEUR ET LES CHAMPS INCONNUS
+   ============================================================ */
+titre("10 · CE QU'ON REFUSE D'ECRIRE");
+{
+  remise(); viderDebit();
+
+  const enorme = poster({ _form: "contact", nom: "ZZTEST Long",
+    email: "zztest@exemple.ca", message: "x".repeat(6000) });
+  dire("un message de 6 000 signes est refuse", enorme.success, false);
+
+  /* UN CHAMP QUI N'EST PAS AU SCHEMA N'ATTEINT AUCUNE COLONNE. */
+  const avant = lignes("Contact simple").length;
+  const parasite = poster({ _form: "contact", nom: "ZZTEST Parasite",
+    email: "zztest@exemple.ca", message: "ordinaire",
+    Statut: "Client", "Notes internes": "deja rappele", "Rappelé par": "William" });
+  dire("une requete qui vise les colonnes de suivi passe", parasite.success, true);
+  const ligne = lignes("Contact simple")[0];
+  /* « Statut » PORTE SA VALEUR SYSTEME, pas celle de la requete.
+     Attendre une cellule VIDE etait faux : `ecrireLigne` y pose
+     « Nouveau ». Ce qu'on prouve, c'est que la requete n'a pas
+     reussi a y ecrire « Client ». */
+  dire("« Statut » garde sa valeur systeme, pas celle de la requete",
+    String(ligne[colonne("contact", "Statut")] || ""), "Nouveau",
+    "ecrireLigne ne lit que les champs du SCHEMA");
+  dire("ni dans « Notes internes »",
+    String(ligne[colonne("contact", "Notes internes")] || ""), "");
+  dire("la ligne est quand meme la", lignes("Contact simple").length, avant + 1);
+}
+
+
+console.log("");
+console.log("============================================================");
+console.log(ko ? ("LA PORTE NE TIENT PAS : " + ko + " echec(s) sur " + n)
+              : ("CE QUI TIENT LA PORTE : " + n + " / " + n));
+console.log("============================================================");
+process.exit(ko ? 1 : 0);

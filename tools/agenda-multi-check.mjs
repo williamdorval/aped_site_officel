@@ -81,9 +81,23 @@ function remise() {
   }
 }
 
-/* La porte des creneaux, telle que le site l'appelle. */
+/* LA PORTE DES CRENEAUX, TELLE QUE LE SITE L'APPELLE.
+
+   ON AVANCE L'HORLOGE DU CACHE AVANT CHAQUE LECTURE.  D-758
+   La porte garde sa reponse 90 s. Ici, chaque cas modifie l'agenda
+   puis relit tout de suite : sans ce saut, tous les cas liraient la
+   reponse du premier. Pire, `gs` et `gsSansAvance` partagent le
+   meme `etat`, donc la meme cle de cache — un moteur repondrait
+   pour l'autre. Le cache lui-meme est prouve dans `creneaux-check`. */
+function horlogeSuivante() { etat.decalageHorloge += 120000; }
+
+function porte(moteur, p) {
+  horlogeSuivante();
+  return JSON.parse(moteur.doGet({ parameter: p }).getContent());
+}
+
 function creneaux() {
-  return JSON.parse(gs.doGet({ parameter: { action: "creneaux" } }).getContent());
+  return porte(gs, { action: "creneaux" });
 }
 function heuresDu(rep, cle) {
   const j = (rep.jours || []).find((x) => x.date === cle);
@@ -396,7 +410,7 @@ titre("6 · CE QUE LA GRILLE REGLEE DONNE PAR JOUR");
 titre("7 · LE REPLI CalendarApp, SANS SERVICE AVANCE");
 {
   remise();
-  const sansAvance = (p) => JSON.parse(gsSansAvance.doGet({ parameter: p }).getContent());
+  const sansAvance = (p) => porte(gsSansAvance, p);
 
   const r = sansAvance({ action: "creneaux" });
   verifier("le repli rend quand meme des creneaux", r.success, true);
@@ -429,7 +443,7 @@ titre("7 · LE REPLI CalendarApp, SANS SERVICE AVANCE");
 {
   remise();
   /* LA RESERVATION PAR LE REPLI : l'evenement se cree, sans Meet. */
-  const r0 = JSON.parse(gsSansAvance.doGet({ parameter: { action: "creneaux" } }).getContent());
+  const r0 = porte(gsSansAvance, { action: "creneaux" });
   const j = jourPlein(r0);
   const iso = j.creneaux[2].iso;
   const rep = JSON.parse(gsSansAvance.doPost({
@@ -447,7 +461,7 @@ titre("7 · LE REPLI CalendarApp, SANS SERVICE AVANCE");
     rep.meet || "", "",
     "c'est pour ca que le guide fait activer le service avance");
   verifier("et le creneau disparait de l'affichage",
-    heuresDu(JSON.parse(gsSansAvance.doGet({ parameter: { action: "creneaux" } }).getContent()),
+    heuresDu(porte(gsSansAvance, { action: "creneaux" }),
              j.date).includes(j.creneaux[2].h), false);
 }
 

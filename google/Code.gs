@@ -196,6 +196,76 @@ var REGLAGES = {
      site sait déjà réessayer sans eux. En octets, APRÈS base64. */
   PIECES_MAX_OCTETS: 8 * 1024 * 1024,
 
+  /* COMBIEN DE PIÈCES, ET DE QUELLE NATURE.  D-758
+
+     Le poids total était contrôlé, le NOMBRE et le TYPE ne
+     l'étaient pas : quatre cents fichiers d'un kilo passaient sous
+     les huit mégaoctets et faisaient quatre cents créations Drive
+     dans une requête, et un `.exe` renommé atterrissait dans le
+     dossier de l'agence sans que rien ne le dise.
+
+     La liste est celle de ce qu'un client envoie VRAIMENT pour un
+     site : des images, un PDF, un logo, un document. Tout le reste
+     se redemande par courriel, ce qui est plus lent pour nous et
+     beaucoup moins grave. */
+  PIECES_MAX_NOMBRE: 12,
+  PIECES_EXTENSIONS: [
+    "pdf", "png", "jpg", "jpeg", "gif", "webp", "avif", "svg", "heic",
+    "doc", "docx", "odt", "rtf", "txt", "csv", "xls", "xlsx", "ods",
+    "ppt", "pptx", "ai", "eps", "psd", "zip"
+  ],
+
+  /* LE DÉBIT.  D-758
+
+     `doPost` n'avait AUCUNE limite. Un robot qui trouve l'adresse
+     du service — elle est en clair dans `js/main.js`, elle ne peut
+     pas ne pas l'être — remplissait le classeur aussi vite que
+     Google acceptait, et chaque ligne NÉE consomme un courriel de
+     la réserve quotidienne de cent. Le honeypot n'attrape que les
+     robots qui remplissent tous les champs.
+
+     UN PLAFOND UNIQUE SE RETOURNE CONTRE NOUS, et c'est le piège
+     de tout ce mécanisme. Refuser les demandes au-delà de N par
+     heure, c'est offrir au premier robot venu le moyen de fermer le
+     formulaire à tous les vrais clients pour le reste de l'heure.
+     Il n'aurait même pas à insister.
+
+     Trois compteurs, donc, et ils ne coupent pas la même chose :
+
+       · par SESSION — un visiteur honnête envoie une fois par
+         étape, jamais quarante fois en une heure ;
+       · les AVIS — au-delà, la ligne S'ÉCRIT QUAND MÊME, mais on
+         n'écrit plus de courriel. Une ligne ne coûte rien et se
+         supprime en dix secondes ; un envoi brûlé bloque les
+         VRAIES demandes pendant vingt-quatre heures. Le classeur
+         le dit dans la colonne « Étape », pour qu'un silence ne
+         passe pas pour une absence de demande ;
+       · les LIGNES — le plafond dur, très haut, qui n'existe que
+         pour empêcher un classeur de cent mille lignes.
+
+     Les fusions ne comptent dans aucun des deux derniers : un
+     visiteur qui remplit dix étapes ne pèse qu'un. */
+  DEBIT_SESSION_MAX: 40,
+  DEBIT_SESSION_FENETRE_S: 3600,
+  DEBIT_AVIS_MAX: 40,
+  DEBIT_AVIS_FENETRE_S: 3600,
+  DEBIT_LIGNES_MAX: 300,
+  DEBIT_LIGNES_FENETRE_S: 3600,
+
+  /* LA PORTE DES CRÉNEAUX SE MET EN CACHE.  D-758
+
+     Elle lit six semaines d'agenda à chaque appel — 3,4 s mesurées
+     contre le vrai service le 2026-08-06 — et elle est publique et
+     sans limite. Le quota d'exécution d'un compte gratuit est de
+     90 minutes par jour : environ 1 600 appels suffisaient à
+     l'épuiser, et le script mort emporte AUSSI les formulaires.
+
+     Le cache est court, et il est VIDÉ à chaque réservation : un
+     créneau qui vient d'être pris disparaît tout de suite. Le seul
+     décalage qui reste est celui d'un blocage posé à la main dans
+     l'agenda, et il ne dépasse pas cette durée. */
+  CRENEAUX_CACHE_S: 90,
+
   /* Nom du dossier Drive où atterrissent les pièces jointes. */
   DOSSIER_PIECES: "APED — pièces jointes des formulaires",
 
@@ -819,7 +889,16 @@ function doGet(e) {
 
   if (action === "creneaux") {
     try {
-      return json(creneauxLibres());
+      /* LA RÉPONSE SORT DU CACHE QUAND ELLE Y EST.  D-758
+         On garde le TEXTE déjà sérialisé : la reconstruire coûterait
+         la lecture d'agenda qu'on cherche justement à éviter. */
+      var cache = CacheService.getScriptCache();
+      var pret = cache.get(CLE_CACHE_CRENEAUX);
+      if (pret) return texteJson(pret);
+
+      var frais = JSON.stringify(creneauxLibres());
+      cache.put(CLE_CACHE_CRENEAUX, frais, REGLAGES.CRENEAUX_CACHE_S);
+      return texteJson(frais);
     } catch (err) {
       console.error("creneaux : " + (err && err.stack ? err.stack : err));
       return json({ success: false, message: "Les disponibilités sont momentanément illisibles." });
@@ -838,7 +917,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 6,
+    version: 7,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
@@ -1021,6 +1100,16 @@ function doPost(e) {
 
     var faute = valider(kind, data);
     if (faute) return json({ success: false, message: faute });
+
+    /* LE DÉBIT D'UNE SESSION.  D-758
+       `valider` vient de garantir que `_sid` a la bonne forme, donc
+       la clé de cache ne peut pas être fabriquée. Le message reste
+       vrai et sans reproche : rien n'accuse le visiteur. */
+    if (data._sid && tropVite("sid:" + data._sid,
+        REGLAGES.DEBIT_SESSION_MAX, REGLAGES.DEBIT_SESSION_FENETRE_S)) {
+      return json({ success: false,
+        message: "Trop d’envois coup sur coup. Attendez un moment, vos réponses sont gardées." });
+    }
 
     /* UN SEUL À LA FOIS. Deux soumissions simultanées liraient le
        même « dernier état » du classeur : l'une écraserait la
@@ -1228,6 +1317,9 @@ function traiter(kind, data) {
   if (kind === "booking" && (!enSession || data._final)) {
     var rdv = poserRendezVous(data);
     if (!rdv.ok) return { envois: null, reponse: { success: false, message: rdv.message } };
+    /* La plage vient d'être prise : la liste en cache la donne encore
+       comme libre, et le prochain visiteur remplirait tout pour rien. */
+    oublierCreneaux();
     extra._debut = rdv.debut;
     extra._meet = rdv.meet || "";
     extra._evenement = rdv.lien || "";
@@ -1240,6 +1332,24 @@ function traiter(kind, data) {
        donc la phrase à partir de l'instant retenu. */
     extra.plage_demandee = libelleComplet(rdv.debut);
     data = Object.assign({}, data, { plage_demandee: extra.plage_demandee });
+  }
+
+  /* LES DEUX PLAFONDS DE NAISSANCE, ET ILS SONT ICI EXPRÈS.  D-758
+
+     Plus haut, une session retrouvée est déjà repartie avec sa
+     fusion ; un renvoi est déjà reparti avec sa jumelle. Tout ce
+     qui arrive à cette ligne va donc créer une LIGNE NEUVE, et
+     c'est le seul endroit où compter ne punit pas un visiteur qui
+     avance dans son formulaire. */
+  var muet = false;
+  if (!cible) {
+    if (tropVite("lignes", REGLAGES.DEBIT_LIGNES_MAX, REGLAGES.DEBIT_LIGNES_FENETRE_S)) {
+      console.error("plafond DUR de lignes atteint — demande « " + kind + " » refusée");
+      return { envois: null, reponse: { success: false,
+        message: "Le service reçoit beaucoup de demandes à l’instant. Réessayez dans quelques minutes, ou appelez-nous au 819 523-0871." } };
+    }
+    muet = tropVite("avis", REGLAGES.DEBIT_AVIS_MAX, REGLAGES.DEBIT_AVIS_FENETRE_S);
+    if (muet) console.error("plafond d'avis atteint — la ligne s'écrit, aucun courriel ne part");
   }
 
   if (kind === "project") {
@@ -1269,7 +1379,11 @@ function traiter(kind, data) {
      écrire « c'est reçu » alors qu'il est au tiers du formulaire
      serait faux, et le ferait s'arrêter là. */
   var envois = null;
-  if (!ecrit.doublon) {
+  if (muet) {
+    /* La ligne est écrite, la note dit pourquoi personne n'a été
+       prévenu, et `envois` reste nul : rien ne part.  D-758 */
+    noterAvisMuet(kind, ecrit.ligne);
+  } else if (!ecrit.doublon) {
     var donnees = data;
     var partiel = enSession && !data._final;
     envois = function () {
@@ -1815,6 +1929,16 @@ function rangerPieces(data) {
   if (!pieces || !pieces.length) return "";
 
   try {
+    /* LE NOMBRE AVANT LE POIDS.  D-758
+       Quatre cents fichiers d'un kilo tenaient sous les huit
+       mégaoctets et faisaient quatre cents créations Drive dans une
+       seule requête : le script mourait sur le temps d'exécution et
+       la ligne n'était jamais écrite. */
+    if (pieces.length > REGLAGES.PIECES_MAX_NOMBRE) {
+      return pieces.length + " fichier(s) — plus que les "
+        + REGLAGES.PIECES_MAX_NOMBRE + " acceptés, à redemander au visiteur";
+    }
+
     var total = 0;
     pieces.forEach(function (p) { total += (p.base64 || "").length; });
     if (total > REGLAGES.PIECES_MAX_OCTETS) {
@@ -1823,20 +1947,57 @@ function rangerPieces(data) {
 
     var dossier = dossierPieces();
     var liens = [];
+    var refuses = [];
     pieces.forEach(function (p) {
       if (!p || !p.base64) return;
+      /* LE TYPE SE JUGE SUR LE NOM, PAS SUR CE QUE LE NAVIGATEUR
+         ANNONCE. `p.type` est fourni par l'appelant : une requête
+         forgée écrit « image/png » sur ce qu'elle veut. L'extension
+         du nom est fournie par l'appelant elle aussi, mais c'est
+         elle qui décidera de ce que Windows fait du fichier quand
+         un associé le téléchargera — c'est donc celle-là qu'il faut
+         juger. */
+      var nom = nomDePiece(p.nom);
+      var ext = (nom.split(".").pop() || "").toLowerCase();
+      if (nom.indexOf(".") === -1 || REGLAGES.PIECES_EXTENSIONS.indexOf(ext) === -1) {
+        refuses.push(nom);
+        return;
+      }
       var blob = Utilities.newBlob(
         Utilities.base64Decode(p.base64),
         p.type || "application/octet-stream",
-        p.nom || "piece-jointe");
+        nom);
       var f = dossier.createFile(blob);
       liens.push(f.getName() + " : " + f.getUrl());
     });
+    if (refuses.length) {
+      liens.push("REFUSÉ, type non accepté — à redemander au visiteur : " + refuses.join(", "));
+      console.warn("pièces refusées : " + refuses.join(", "));
+    }
     return liens.join("\n");
   } catch (e) {
     console.error("pièces jointes : " + e);
     return pieces.length + " fichier(s) non enregistrés — à redemander au visiteur";
   }
+}
+
+/* UN NOM DE FICHIER QUI NE PEUT PLUS RIEN FAIRE D'AUTRE.  D-758
+
+   Drive n'a pas d'arborescence de chemins, donc pas de « ../ » à
+   craindre — mais le nom se retrouve dans un courriel et dans une
+   colonne du classeur. Un retour à la ligne y casse la mise en
+   page, et un nom de 900 signes rend la cellule illisible. */
+function nomDePiece(brut) {
+  var nom = String(brut == null ? "" : brut)
+    .replace(/[\r\n\t]+/g, " ")
+    .replace(/[\/\\]/g, "-")
+    .trim();
+  if (nom.length > 120) {
+    var pt = nom.lastIndexOf(".");
+    var ext = pt > 0 ? nom.slice(pt) : "";
+    nom = nom.slice(0, 120 - ext.length) + ext;
+  }
+  return nom || "piece-jointe";
 }
 
 function dossierPieces() {
@@ -2611,6 +2772,25 @@ function avertirAgence(kind, data, extra, ecrit, partiel) {
    internes » : le seul endroit qui sera lu de toute façon, le jour
    où quelqu'un finit par ouvrir le classeur. */
 function noterQuotaEpuise(kind, ligne) {
+  noterDansLaLigne(kind, ligne, "QUOTA D’ENVOI ÉPUISÉ",
+    "⚠ QUOTA D’ENVOI ÉPUISÉ le " + quand(new Date())
+    + " — aucun avis n’est parti, ni à nous ni au client. À rappeler à la main.");
+}
+
+/* UN SILENCE DOIT SE VOIR DANS LE CLASSEUR.  D-758
+
+   Au-delà du plafond d'avis, la ligne s'écrit et aucun courriel ne
+   part. Sans cette note, la demande aurait exactement l'air d'une
+   demande normale qu'on aurait oublié de rappeler. */
+function noterAvisMuet(kind, ligne) {
+  noterDansLaLigne(kind, ligne, "AUCUN AVIS ENVOYÉ",
+    "⚠ AUCUN AVIS ENVOYÉ le " + quand(new Date())
+    + " — trop de demandes neuves en une heure, la réserve de courriels a été"
+    + " protégée. La demande est vraie : à rappeler à la main.");
+}
+
+/* Ajoute une note à la ligne, une seule fois par marqueur. */
+function noterDansLaLigne(kind, ligne, marqueur, note) {
   try {
     var feuille = classeur().getSheetByName(SCHEMA[kind].onglet);
     if (!feuille) return;
@@ -2619,13 +2799,11 @@ function noterQuotaEpuise(kind, ligne) {
     if (iNotes < 1) return;
     var cellule = feuille.getRange(ligne, iNotes);
     var ancien = String(cellule.getValue() || "");
-    var note = "⚠ QUOTA D’ENVOI ÉPUISÉ le " + quand(new Date())
-      + " — aucun avis n’est parti, ni à nous ni au client. À rappeler à la main.";
-    if (ancien.indexOf("QUOTA D’ENVOI ÉPUISÉ") === -1) {
+    if (ancien.indexOf(marqueur) === -1) {
       cellule.setValue(ancien ? ancien + "\n" + note : note);
     }
   } catch (e) {
-    console.error("note de quota : " + e);
+    console.error("note « " + marqueur + " » : " + e);
   }
 }
 
@@ -2638,7 +2816,15 @@ function noterQuotaEpuise(kind, ligne) {
    qui compte, c'est quand a lieu l'appel, pas quand il a été pris. */
 function objetAvis(kind, data, extra) {
   var def = SCHEMA[kind];
-  var qui = String(data.nom || data.votre_nom || data.email || "").trim();
+  /* L'OBJET NE PORTE PAS DE RETOUR À LA LIGNE.  D-758
+     Un nom qui en contient — collé depuis un courriel, ou envoyé par
+     une requête forgée — coupe l'objet en deux dans la liste de
+     Gmail : l'avis n'y dit plus de qui il s'agit, ce qui est
+     précisément la seule chose qu'il doit dire au premier coup
+     d'œil. On tronque aussi, un objet long est illisible au
+     téléphone. */
+  var qui = String(data.nom || data.votre_nom || data.email || "")
+    .replace(/\s+/g, " ").trim().slice(0, 80);
   var tete = kind === "urgent" ? "URGENCE" : def.sujet;
 
   var repere;
@@ -2834,9 +3020,68 @@ function confirmerAuVisiteur(kind, data, extra) {
    ============================================================ */
 
 function json(objet) {
+  return texteJson(JSON.stringify(objet));
+}
+
+/* Le même en-tête, sur du JSON DÉJÀ écrit. Sert au cache des
+   créneaux, qui garde le texte et non l'objet.  D-758 */
+function texteJson(texte) {
   return ContentService
-    .createTextOutput(JSON.stringify(objet))
+    .createTextOutput(texte)
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+var CLE_CACHE_CRENEAUX = "creneaux-v1";
+
+/* LE CACHE DES CRÉNEAUX SE VIDE DÈS QU'UNE PLAGE EST PRISE.  D-758
+
+   Sans ça, la plage réservée resterait offerte jusqu'à 90 s au
+   visiteur suivant. Elle ne serait pas RÉSERVÉE deux fois — la
+   revérification sous verrou de `poserRendezVous` l'interdit — mais
+   la deuxième personne remplirait tout le formulaire pour se faire
+   dire non à la dernière seconde, ce qui est pire qu'une attente. */
+function oublierCreneaux() {
+  try { CacheService.getScriptCache().remove(CLE_CACHE_CRENEAUX); }
+  catch (e) { console.warn("cache créneaux : " + e); }
+}
+
+/* ============================================================
+   LE DÉBIT — CE QUI EMPÊCHE UN ROBOT DE VIDER LA RÉSERVE.  D-758
+
+   Apps Script ne donne PAS l'adresse IP de l'appelant : `doPost`
+   ne reçoit que le corps. On ne peut donc pas compter par visiteur
+   au sens réseau. Les deux compteurs ci-dessous comptent ce qu'on
+   peut vraiment compter, et c'est suffisant pour ce qu'on protège.
+
+   LE VRAI ENJEU N'EST PAS LE CLASSEUR, C'EST LE COURRIEL. Mille
+   lignes de robot se suppriment en dix secondes ; cent envois
+   brûlés bloquent les VRAIES demandes pendant vingt-quatre heures.
+   Le plafond des naissances est donc calé sous le quota d'envois.
+
+   `CacheService` est le bon outil et `PropertiesService` ne l'est
+   pas : le cache expire tout seul, la propriété resterait à vie et
+   il faudrait la nettoyer.
+   ============================================================ */
+
+/* Rend `true` si ce compteur vient de dépasser son plafond. */
+function tropVite(cle, plafond, fenetreS) {
+  try {
+    var cache = CacheService.getScriptCache();
+    var n = Number(cache.get(cle)) || 0;
+    if (n >= plafond) return true;
+    /* La fenêtre ne glisse pas : elle repart du premier appel. Une
+       fenêtre glissante demanderait de garder la liste des instants,
+       et le cache ne garantit pas de la rendre. */
+    cache.put(cle, String(n + 1), fenetreS);
+    return false;
+  } catch (e) {
+    /* UN COMPTEUR ILLISIBLE NE BLOQUE PERSONNE. Le cache d'Apps
+       Script peut être vidé sans prévenir ; refuser les demandes
+       parce qu'on n'a pas su compter coûterait des clients réels
+       pour empêcher un abus hypothétique. */
+    console.warn("débit « " + cle + " » : " + e);
+    return false;
+  }
 }
 
 /* UNE DATE EN TOUTES LETTRES, EN FRANÇAIS, HEURE DE QUÉBEC.

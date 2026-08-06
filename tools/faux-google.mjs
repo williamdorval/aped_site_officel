@@ -49,7 +49,15 @@ export const etat = {
   /* Les agendas que le compte de l'agence sait lire. Tout ce qui
      n'est pas la-dedans se comporte comme un agenda jamais partage. */
   agendasConnus: ["primary"],
-  fuseauClasseur: "America/Toronto"
+  fuseauClasseur: "America/Toronto",
+
+  /* Le cache de script : cle -> { valeur, jusqua }. Voir
+     `CacheService` plus bas. `decalageHorloge` avance le temps du
+     cache SANS toucher aux dates du reste du banc — un essai peut
+     ainsi prouver qu'une entree expire, sans attendre 90 s. */
+  cache: {},
+  decalageHorloge: 0,
+  horloge() { return Date.now() + this.decalageHorloge; }
 };
 
 function feuille(nom) {
@@ -673,6 +681,34 @@ const services = {
 
   LockService: {
     getScriptLock: () => ({ tryLock: () => true, releaseLock: () => {} })
+  },
+
+  /* LE CACHE DE SCRIPT.  D-758
+
+     Il porte deux choses de nature opposee, et le banc doit les
+     modeliser toutes les deux : la reponse des creneaux, qu'on
+     veut voir REVENIR sans relire l'agenda, et les compteurs de
+     debit, qu'on veut voir MONTER jusqu'au plafond.
+
+     L'EXPIRATION EST REELLE. Un banc qui ignore le delai ferait
+     passer un cache eternel pour un cache de 90 s : c'est
+     exactement le genre de modele complaisant qui a laisse vivre
+     D-757 pendant des mois. `etat.horloge` permet a un essai
+     d'avancer le temps sans attendre. */
+  CacheService: {
+    getScriptCache: () => ({
+      get: (k) => {
+        const e = etat.cache[k];
+        if (!e) return null;
+        if (etat.horloge() >= e.jusqua) { delete etat.cache[k]; return null; }
+        return e.valeur;
+      },
+      put: (k, v, secondes) => {
+        etat.cache[k] = { valeur: String(v), jusqua: etat.horloge() + (secondes || 600) * 1000 };
+      },
+      remove: (k) => { delete etat.cache[k]; },
+      removeAll: (ks) => { (ks || []).forEach((k) => delete etat.cache[k]); }
+    })
   },
 
   Logger: { log: (m) => etat.journal.push(String(m)) },
