@@ -59,7 +59,7 @@ function feuille(nom) {
       /* Pour prouver l'ordre format/valeurs — voir `setNumberFormat`. */
       ecrites: new Set(), formatsTexte: [], formatApresValeurs: 0, regles: [],
       /* Les cellules que Sheets a retenues comme CALCUL. */
-      formules: new Set()
+      formules: new Set(), cases: new Set()
     });
   }
   return etat.feuilles.get(nom);
@@ -159,6 +159,22 @@ function plage(f, ligne, colonne, nLignes, nCols) {
     setVerticalAlignment() { return this; },
     setDataValidation(regle) {
       f.listes[colonne] = regle ? regle.valeurs : null;
+      return this;
+    },
+    /* LA CASE A COCHER, telle que Sheets la pose : la cellule prend
+       la valeur FALSE — pas la chaine vide — et recoit une
+       validation « case ». C'est cette valeur FALSE qui a casse la
+       regle de couleur, dont le test « cette ligne existe » etait
+       `$A2<>""`.  D-743 */
+    insertCheckboxes() {
+      grandir(ligne + nLignes - 1);
+      for (let r = 0; r < nLignes; r++) {
+        const cible = f.valeurs[ligne - 1 + r];
+        for (let c = 0; c < nCols; c++) {
+          if (cible[colonne - 1 + c] !== true) cible[colonne - 1 + c] = false;
+          f.cases.add((ligne - 1 + r) + ":" + (colonne - 1 + c));
+        }
+      }
       return this;
     },
     clearContent() {
@@ -338,6 +354,16 @@ const calendrierFactice = (calId) => ({
       getAllDayEndDate: () => bornes(e).fin,
       getStartTime: () => bornes(e).debut,
       getEndTime: () => bornes(e).fin,
+      /* Ce que `nettoyerRendezVousEssai` appelle. Ils manquaient, et
+         aucun test ne s'en apercevait puisque aucun test n'appelait
+         cette fonction — c'est ce qui a laisse passer le changement
+         de prefixe de titre.  D-745 */
+      getTitle: () => String(e.titre || ""),
+      getDescription: () => String(e.description || ""),
+      deleteEvent: () => {
+        const i = etat.evenements.indexOf(e);
+        if (i !== -1) etat.evenements.splice(i, 1);
+      },
       titre: e.titre
     })),
   createEvent: (titre, debut, fin, opts) => {
@@ -443,21 +469,40 @@ const services = {
         return { items, nextPageToken: null };
       },
       insert: (ev, calId, opts) => {
-        if (!opts || opts.conferenceDataVersion !== 1) {
-          throw new Error("conferenceDataVersion doit valoir 1 pour creer un Meet");
-        }
-        if (!ev.conferenceData?.createRequest?.requestId) {
-          throw new Error("requestId manquant");
+        /* `conferenceDataVersion` NE COMPTE QUE S'IL Y A UNE
+           CONFERENCE. Le bouchon l'exigeait toujours : il encodait
+           « insert ne sert qu'au Meet », qui etait vrai jusqu'a
+           D-745. Depuis, un appel TELEPHONIQUE passe par le meme
+           chemin — sans conference — et le bouchon le refusait, ce
+           qui renvoyait silencieusement Code.gs sur son repli.
+           L'evenement existait, sans lien d'agenda. */
+        const avecMeet = !!(ev.conferenceData && ev.conferenceData.createRequest);
+        if (avecMeet) {
+          if (!opts || opts.conferenceDataVersion !== 1) {
+            throw new Error("conferenceDataVersion doit valoir 1 pour creer un Meet");
+          }
+          if (!ev.conferenceData.createRequest.requestId) {
+            throw new Error("requestId manquant");
+          }
         }
         const n = etat.evenements.length + 1;
-        const lien = "https://meet.google.com/fac-tice-" + String(n).padStart(3, "0");
+        const lien = avecMeet
+          ? "https://meet.google.com/fac-tice-" + String(n).padStart(3, "0")
+          : "";
         etat.evenements.push({
           titre: ev.summary, debut: new Date(ev.start.dateTime), fin: new Date(ev.end.dateTime),
           description: ev.description, invites: (ev.attendees || []).map((a) => a.email),
           meet: lien, sendUpdates: opts.sendUpdates, agenda: calId || "primary"
         });
-        return { hangoutLink: lien, htmlLink: "https://calendar.google.com/event?eid=FACTICE" + n,
-                 conferenceData: { entryPoints: [{ entryPointType: "video", uri: lien }] } };
+        /* Un evenement SANS conference n'a ni `hangoutLink` ni
+           `conferenceData` — il a quand meme son `htmlLink`, et
+           c'est lui qui remplit la colonne « Événement ». */
+        const rep = { htmlLink: "https://calendar.google.com/event?eid=FACTICE" + n };
+        if (avecMeet) {
+          rep.hangoutLink = lien;
+          rep.conferenceData = { entryPoints: [{ entryPointType: "video", uri: lien }] };
+        }
+        return rep;
       }
     }
   },
@@ -544,7 +589,9 @@ const fabrique = new Function(...noms, source + `
            ecrireLigne, colonnes, SCHEMA, REGLAGES, MODES, quotaRestant, notifDest,
            DISPONIBILITES, creneauxLibres, grilleDuJour, occupations, creneauTient,
            instantLocal, partsLocal, decalageMin, libelleHeure, libelleComplet,
-           surLaGrille, fenetreReservable, colonneLettre, migrerColonnes };
+           surLaGrille, fenetreReservable, colonneLettre, migrerColonnes,
+           nettoyerAutotest, nettoyerRendezVousEssai, titreDuSite,
+           libelleEtape, repererLigne, diagnostic };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));
 

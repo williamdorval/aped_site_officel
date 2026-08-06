@@ -230,7 +230,14 @@ var SCHEMA = {
   project: {
     onglet: "Démarrer un projet",
     sujet: "Nouveau projet",
-    requis: ["nom", "entreprise", "email"],
+    /* `requis` NE VAUT QU'À LA DERNIÈRE ÉTAPE.  D-744
+       Une étape intermédiaire n'a par définition pas tout rempli :
+       exiger le courriel à l'étape 2 ferait échouer la sauvegarde
+       progressive, donc perdre l'abandon qu'on cherche à capter.
+       `valider()` ne l'applique que si `_final` est vrai. */
+    requis: ["nom", "entreprise", "email", "budget"],
+    /* Le minimum sans lequel on ne garde même pas une trace. */
+    requisPartiel: ["email"],
     champs: [
       { champ: "nom",             titre: "Nom",                largeur: 150 },
       { champ: "entreprise",      titre: "Entreprise",         largeur: 170 },
@@ -243,10 +250,15 @@ var SCHEMA = {
       { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 },
       { champ: "site_actuel",     titre: "Site actuel",        largeur: 200 },
       { champ: "besoins",         titre: "Besoins",            largeur: 260 },
+      { champ: "blocage",         titre: "Ce qui les bloque",  largeur: 300 },
       { champ: "objectif",        titre: "Objectif",           largeur: 180 },
       { champ: "budget",          titre: "Budget",             largeur: 150 },
       { champ: "echeancier",      titre: "Échéancier",         largeur: 140 },
       { champ: "description",     titre: "Description",        largeur: 340 },
+      { champ: "connu_par",       titre: "Nous a connus par",  largeur: 160 },
+      { champ: "fourchette_vue",  titre: "Fourchette vue",     largeur: 170 },
+      { champ: "prix_reaction",   titre: "Ça convient ?",      largeur: 120 },
+      { champ: "prix_raison",     titre: "Pourquoi pas",       largeur: 300 },
       { champ: "_pieces",         titre: "Pièces jointes",     largeur: 260 }
     ]
   },
@@ -255,6 +267,7 @@ var SCHEMA = {
     onglet: "Estimation rapide",
     sujet: "Demande d'estimation",
     requis: ["nom", "email"],
+    requisPartiel: ["email"],
     champs: [
       { champ: "nom",             titre: "Nom",                largeur: 150 },
       { champ: "email",           titre: "Courriel",           largeur: 210 },
@@ -263,7 +276,14 @@ var SCHEMA = {
       { champ: "envergure",       titre: "Envergure",          largeur: 130 },
       { champ: "niveau_design",   titre: "Niveau de design",   largeur: 140 },
       { champ: "echeancier",      titre: "Échéancier",         largeur: 140 },
-      { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 }
+      { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 },
+      /* CE QUE LE VISITEUR A VU, PAS CE QU'ON RECALCULE.  D-746
+         Une fourchette recalculée après coup n'est pas la même
+         preuve : le barème peut changer entre-temps, et c'est
+         justement sur le chiffre AFFICHÉ que la personne a réagi. */
+      { champ: "fourchette_vue",  titre: "Fourchette vue",     largeur: 170 },
+      { champ: "prix_reaction",   titre: "Ça convient ?",      largeur: 120 },
+      { champ: "prix_raison",     titre: "Pourquoi pas",       largeur: 300 }
     ]
   },
 
@@ -271,11 +291,20 @@ var SCHEMA = {
     onglet: "Urgence",
     sujet: "URGENCE",
     requis: ["nom", "telephone", "email", "message"],
+    requisPartiel: ["telephone"],
     champs: [
+      /* L'ORDRE EST CELUI DE LA LECTURE EN PANIQUE. Ce qu'on veut
+         savoir en trois secondes : c'est grave comment, depuis
+         quand, sur quoi, et qui j'appelle. Le reste après. */
+      { champ: "gravite",         titre: "Gravité",            largeur: 150 },
+      { champ: "depuis_quand",    titre: "Depuis quand",       largeur: 140 },
+      { champ: "systeme",         titre: "Quoi est touché",    largeur: 240 },
       { champ: "nom",             titre: "Nom",                largeur: 150 },
+      { champ: "entreprise",      titre: "Entreprise",         largeur: 170 },
       { champ: "telephone",       titre: "Téléphone",          largeur: 130 },
       { champ: "email",           titre: "Courriel",           largeur: 210 },
-      { champ: "message",         titre: "L'urgence",          largeur: 420 }
+      { champ: "message",         titre: "L'urgence",          largeur: 420 },
+      { champ: "impact",          titre: "Ce que ça bloque",   largeur: 300 }
     ]
   },
 
@@ -284,17 +313,26 @@ var SCHEMA = {
     sujet: "Nouvelle référence",
     requis: ["votre_nom", "votre_email", "votre_lien",
              "entreprise_referee", "contact_reference"],
+    /* LE NOM DE L'ENTREPRISE SUFFIT À OUVRIR UNE LIGNE. C'est le
+       minimum vital d'une référence : avec lui on peut chercher, et
+       sans lui on n'a rien du tout. */
+    requisPartiel: ["entreprise_referee"],
     champs: [
-      { champ: "votre_nom",          titre: "Référent",           largeur: 150 },
-      { champ: "votre_email",        titre: "Courriel référent",  largeur: 210 },
-      { champ: "votre_telephone",    titre: "Tél. référent",      largeur: 130 },
-      { champ: "votre_lien",         titre: "Lien avec l'entreprise", largeur: 180 },
+      /* L'ENTREPRISE RÉFÉRÉE D'ABORD. C'est elle le sujet de la
+         ligne ; le référent vient après. L'ordre suivait l'ordre du
+         formulaire, qui demandait le référent en premier — mais on
+         relit ce classeur pour savoir QUI CONTACTER. */
       { champ: "entreprise_referee", titre: "Entreprise référée", largeur: 190 },
+      { champ: "contact_reference",  titre: "Personne à contacter", largeur: 180 },
       { champ: "domaine",            titre: "Domaine",            largeur: 150 },
       { champ: "taille",             titre: "Taille",             largeur: 130 },
       { champ: "besoin",             titre: "Besoin pressenti",   largeur: 180 },
-      { champ: "contact_reference",  titre: "Personne à contacter", largeur: 180 },
-      { champ: "contexte",           titre: "Contexte",           largeur: 320 }
+      { champ: "contexte",           titre: "Contexte",           largeur: 320 },
+      { champ: "presentation",       titre: "Comment se présenter", largeur: 260 },
+      { champ: "votre_nom",          titre: "Référent",           largeur: 150 },
+      { champ: "votre_email",        titre: "Courriel référent",  largeur: 210 },
+      { champ: "votre_telephone",    titre: "Tél. référent",      largeur: 130 },
+      { champ: "votre_lien",         titre: "Lien avec l'entreprise", largeur: 180 }
     ]
   },
 
@@ -302,6 +340,10 @@ var SCHEMA = {
     onglet: "Réserver un appel",
     sujet: "Demande de rendez-vous",
     requis: ["nom", "email", "telephone"],
+    /* Le site n'ouvre la session qu'une fois le courriel saisi :
+       avant, il n'y a qu'une case de calendrier cliquée, et une
+       ligne sans moyen de rappeler ne sert à rien. */
+    requisPartiel: ["email"],
     champs: [
       { champ: "nom",            titre: "Nom",              largeur: 150 },
       { champ: "entreprise",     titre: "Entreprise",       largeur: 170 },
@@ -350,11 +392,27 @@ var SCHEMA = {
    endroit du classeur où trois personnes peuvent écrire une phrase
    sans se marcher dessus, et une liste déroulante le tuerait. */
 var SUIVI = [
-  { titre: "Renvois",        largeur: 80 },
+  { titre: "Vu",             largeur: 50,  case: true },
   { titre: "Lu par",         largeur: 110, liste: ASSOCIES },
   { titre: "Rappelé par",    largeur: 120, liste: ASSOCIES },
   { titre: "Statut",         largeur: 130, liste: STATUTS },
   { titre: "Notes internes", largeur: 340 }
+];
+
+/* DEUX COLONNES QUI NE SONT NI DU SUIVI NI DU VISITEUR.  D-743
+
+   Elles se glissent entre les deux, en F et G, et pas au bout. La
+   raison est la même que pour « Statut » : ce sont des colonnes
+   qu'on LIT à chaque coup d'œil.
+
+   « Étape » est la seule qui dise si une demande est finie. Avec la
+   sauvegarde progressive, une ligne peut exister alors que le
+   visiteur est parti au tiers du formulaire — c'est même tout
+   l'intérêt. La ranger à droite reviendrait à cacher la seule
+   information nouvelle du classeur. */
+var TECHNIQUES = [
+  { titre: "Étape",      largeur: 110 },
+  { titre: "Horodatage", largeur: 150 }
 ];
 
 /* La signature du dédoublonnage. Colonne masquée : elle sert au
@@ -363,24 +421,48 @@ var COL_SIGNATURE = "Signature";
 
 /* L'ordre complet des colonnes d'un onglet.
 
-   LE STATUT EST EN COLONNE B, PAS AU BOUT.  D-738
+   TOUT LE SUIVI PASSE DEVANT.  D-743
 
-   Il était la dix-neuvième colonne de « Démarrer un projet ». Pour
-   savoir si une demande avait été traitée, il fallait faire défiler
-   l'écran horizontalement — vingt fois par matinée, sur la seule
-   information qu'on lit à CHAQUE fois. Le reste des colonnes de
-   suivi peut rester à droite : on ne les remplit qu'une fois,
-   quand on prend le dossier. Le statut, on le LIT tout le temps.
+   D-738 avait déjà tiré « Statut » de la dix-neuvième colonne vers
+   la B, pour la même raison : c'est ce qu'on lit à chaque coup
+   d'œil, et le chercher coûtait un défilement horizontal vingt fois
+   par matinée. Le reste du suivi le rejoint maintenant, parce qu'il
+   se remplit dans le même geste : on coche « Vu », on met son nom,
+   on choisit le statut, on écrit une note. Quatre colonnes voisines,
+   pas quatre allers-retours.
 
-   Ordre : Horodatage · Statut · les réponses du visiteur · le reste
-   du suivi · la signature (masquée). */
+     A · Vu              une case à cocher, pas une liste
+     B · Lu par
+     C · Rappelé par
+     D · Statut
+     E · Notes internes
+     F · Étape           où le visiteur s'est arrêté
+     G · Horodatage
+     H… les réponses du visiteur
+     puis Renvois, puis la signature (masquée)
+
+   « Renvois » reste au bout : c'est un compteur de réessais réseau,
+   on ne le lit que quand quelque chose cloche. */
 function colonnes(kind) {
-  var out = [{ titre: "Horodatage", largeur: 150 }];
-  SUIVI.forEach(function (c) { if (c.titre === "Statut") out.push(c); });
+  var out = [];
+  SUIVI.forEach(function (c) { out.push(c); });
+  TECHNIQUES.forEach(function (c) { out.push(c); });
   SCHEMA[kind].champs.forEach(function (c) { out.push(c); });
-  SUIVI.forEach(function (c) { if (c.titre !== "Statut") out.push(c); });
+  out.push({ titre: "Renvois", largeur: 80 });
   out.push({ titre: COL_SIGNATURE, largeur: 120 });
   return out;
+}
+
+/* LA COLONNE QUI DIT « CETTE LIGNE EXISTE ».
+
+   C'était `A`, du temps où `A` portait l'horodatage. `A` porte
+   maintenant une case à cocher, et une case décochée vaut `FALSE`,
+   pas `""` : `$A2<>""` serait vrai sur les mille lignes vides du
+   bas de l'onglet, qui deviendraient toutes jaunes. On demande donc
+   sa position à `colonnes()`, comme partout ailleurs. */
+function colonneExistence(titres) {
+  var i = titres.indexOf("Horodatage");
+  return colonneLettre((i < 0 ? 0 : i) + 1);
 }
 
 
@@ -498,9 +580,13 @@ function preparerOnglet(classeur, kind) {
     feuille.setColumnWidth(i + 1, c.largeur || 150);
   });
 
-  /* L'horodatage se lit, il ne se déchiffre pas. */
-  feuille.getRange(2, 1, Math.max(feuille.getMaxRows() - 1, 1), 1)
-    .setNumberFormat("yyyy-mm-dd hh:mm:ss");
+  /* L'horodatage se lit, il ne se déchiffre pas. Sa colonne n'est
+     plus la première : on la demande. */
+  var iDate = titres.indexOf("Horodatage");
+  if (iDate >= 0) {
+    feuille.getRange(2, iDate + 1, Math.max(feuille.getMaxRows() - 1, 1), 1)
+      .setNumberFormat("yyyy-mm-dd hh:mm:ss");
+  }
 
   /* Les listes déroulantes du suivi. Posées large, pour que les
      lignes futures les portent déjà. */
@@ -513,6 +599,19 @@ function preparerOnglet(classeur, kind) {
     feuille.getRange(2, i + 1, Math.max(feuille.getMaxRows() - 1, 1), 1)
       .setDataValidation(regle);
   });
+
+  /* LA CASE À COCHER SE POSE SUR LES LIGNES QUI EXISTENT, PAS SUR
+     LA COLONNE ENTIÈRE.  D-743
+
+     Posée sur les mille lignes de l'onglet, elle donnerait mille
+     cases vides sous les données — et surtout `A` cesserait d'être
+     vide, ce qui casse toute règle qui teste « cette ligne
+     existe-t-elle ». `ecrireLigne` en pose une sur chaque nouvelle
+     ligne ; ici on rattrape celles qui étaient déjà là. */
+  var iVu = titres.indexOf("Vu");
+  if (iVu >= 0 && feuille.getLastRow() >= 2) {
+    feuille.getRange(2, iVu + 1, feuille.getLastRow() - 1, 1).insertCheckboxes();
+  }
 
   /* La signature ne regarde personne. */
   var iSig = titres.indexOf(COL_SIGNATURE);
@@ -587,13 +686,14 @@ function marquerNonLues(feuille, titres) {
   var iLu = titres.indexOf("Lu par");
   if (iLu < 0) return;
   var colLu = colonneLettre(iLu + 1);
+  var colVie = colonneExistence(titres);
 
   var plage = feuille.getRange(2, 1, Math.max(feuille.getMaxRows() - 1, 1), titres.length);
   var regle = SpreadsheetApp.newConditionalFormatRule()
     /* `$` sur la colonne : la règle juge « Lu par » et colore
        toute la ligne. Sans lui, chaque cellule regarderait sa
        propre colonne et seule celle de « Lu par » se colorerait. */
-    .whenFormulaSatisfied('=AND($A2<>"", $' + colLu + '2="")')
+    .whenFormulaSatisfied('=AND($' + colVie + '2<>"", $' + colLu + '2="")')
     .setBackground("#fff3d6")
     .setRanges([plage])
     .build();
@@ -937,20 +1037,74 @@ function traiter(kind, data) {
      donnerait une signature différente de celle du premier envoi,
      et le renvoi ne se reconnaîtrait jamais. */
   var sig = signature(kind, data);
+  var enSession = !!(data && data._sid);
 
-  /* LE RENVOI SE RECONNAÎT AVANT TOUT EFFET DE BORD. */
-  var jumelle = chercherJumelle(kind, sig);
-  if (jumelle) {
-    return { envois: null, reponse: {
-      success: true,
-      ligne: jumelle.ligne,
-      renvoi: true,
-      renvois: jumelle.renvois,
-      meet: jumelle.meet || ""
-    } };
+  /* UNE SESSION EN COURS SE MET À JOUR, ELLE NE SE DÉDOUBLONNE PAS.
+     D-744
+
+     Les deux mécanismes se ressemblent — retrouver une ligne par sa
+     signature — et font l'inverse l'un de l'autre. Le
+     dédoublonnage REFUSE de réécrire : c'est un réessai réseau, la
+     demande est déjà traitée. La session, elle, DOIT réécrire :
+     c'est le même visiteur, une étape plus loin.
+
+     Le tri se fait sur la présence de `_sid`, pas sur le contenu. */
+  var cible = null;
+  if (enSession) {
+    cible = repererLigne(kind, sig);
+    /* UNE RÉSERVATION DE FIN DE PARCOURS DOIT ENCORE POSER SON
+       RENDEZ-VOUS. La ligne existe déjà, l'événement non : on laisse
+       la demande traverser vers le bloc `booking` plus bas, et c'est
+       `cible` qui garantira qu'on FUSIONNE au lieu d'insérer une
+       seconde ligne. Sans ce garde-fou, une réservation créait deux
+       lignes pour un seul visiteur — précisément ce que tout ce
+       mécanisme existe pour empêcher. */
+    var traverse = kind === "booking" && data._final && cible && !dejaReserve(cible);
+    if (cible && !traverse) {
+      var fus = fusionnerLigne(kind, cible, data, {});
+      var envoisF = null;
+      if (data._final) {
+        var dF = data, kF = kind, ligneF = fus;
+        envoisF = function () {
+          var reste = quotaRestant();
+          avertirAgence(kF, dF, {}, ligneF, false);
+          confirmerAuVisiteur(kF, dF, {});
+          if (reste < 1) noterQuotaEpuise(kF, ligneF.ligne);
+        };
+      }
+      return { envois: envoisF, reponse: {
+        success: true,
+        ligne: fus.ligne,
+        session: true,
+        etape: libelleEtape(data),
+        champs: fus.touchees
+      } };
+    }
+  } else {
+    /* LE RENVOI SE RECONNAÎT AVANT TOUT EFFET DE BORD. */
+    var jumelle = chercherJumelle(kind, sig);
+    if (jumelle) {
+      return { envois: null, reponse: {
+        success: true,
+        ligne: jumelle.ligne,
+        renvoi: true,
+        renvois: jumelle.renvois,
+        meet: jumelle.meet || ""
+      } };
+    }
   }
 
-  if (kind === "booking") {
+  /* ON NE POSE UN RENDEZ-VOUS QU'À LA CONFIRMATION.  D-744
+
+     À l'étape 1 d'une réservation, le visiteur n'a pas encore
+     choisi sa plage : `poserRendezVous` recevait `plage_iso`
+     indéfini, échouait, et la demande entière était refusée — donc
+     aucune ligne, donc aucun abandon capté sur le seul formulaire
+     où l'abandon coûte le plus cher.
+
+     Et il ne FAUT pas bloquer la plage plus tôt : quelqu'un qui
+     hésite trois minutes tiendrait un créneau en otage. */
+  if (kind === "booking" && (!enSession || data._final)) {
     var rdv = poserRendezVous(data);
     if (!rdv.ok) return { envois: null, reponse: { success: false, message: rdv.message } };
     extra._debut = rdv.debut;
@@ -971,21 +1125,40 @@ function traiter(kind, data) {
     extra._pieces = rangerPieces(data);
   }
 
-  var ecrit = ecrireLigne(kind, data, extra, sig);
+  /* FUSION SI LA LIGNE EXISTE DÉJÀ, INSERTION SINON. Le seul chemin
+     qui arrive ici avec une `cible` est la réservation confirmée en
+     fin de session : sa ligne a été créée à l'étape 1, et c'est
+     maintenant qu'elle reçoit son lien Meet. */
+  var ecrit = cible
+    ? fusionnerLigne(kind, cible, data, extra)
+    : ecrireLigne(kind, data, extra, sig);
 
-  /* Un renvoi n'avertit pas une seconde fois : c'est tout
-     l'intérêt de le détecter. */
+  /* LA RÈGLE DES COURRIELS, ET ELLE TIENT EN TROIS LIGNES.  D-744
+
+     Le compte Gmail plafonne à CENT destinataires par jour, toutes
+     boîtes confondues. Un formulaire en six étapes qui préviendrait
+     à chaque étape brûlerait la réserve en huit visiteurs.
+
+       · un avis interne quand la ligne NAÎT — « quelqu'un a
+         commencé », c'est ce qui permet de rappeler un abandon ;
+       · un avis interne + la confirmation au visiteur à la FIN ;
+       · rien du tout entre les deux.
+
+     La confirmation au visiteur ne part JAMAIS avant la fin : lui
+     écrire « c'est reçu » alors qu'il est au tiers du formulaire
+     serait faux, et le ferait s'arrêter là. */
   var envois = null;
   if (!ecrit.doublon) {
     var donnees = data;
+    var partiel = enSession && !data._final;
     envois = function () {
       /* LE QUOTA SE LIT AVANT D'ESSAYER, PAS APRÈS.  D-733
          `envoyer()` refuse en silence quand la réserve est vide ; sans
          ce relevé, la demande arriverait au classeur sans que rien
          n'indique que personne n'a été prévenu. */
       var avantEnvois = quotaRestant();
-      avertirAgence(kind, donnees, extra, ecrit);
-      confirmerAuVisiteur(kind, donnees, extra);
+      avertirAgence(kind, donnees, extra, ecrit, partiel);
+      if (!partiel) confirmerAuVisiteur(kind, donnees, extra);
       if (avantEnvois < 1) noterQuotaEpuise(kind, ecrit.ligne);
     };
   }
@@ -994,8 +1167,20 @@ function traiter(kind, data) {
     success: true,
     ligne: ecrit.ligne,
     renvoi: ecrit.doublon || false,
+    session: enSession,
+    etape: libelleEtape(data),
     meet: extra._meet || ""
   } };
+}
+
+/* Cette ligne de réservation porte-t-elle déjà son événement ?
+   Sert à laisser une session `booking` traverser vers la pose du
+   rendez-vous une seule fois, à la confirmation finale. */
+function dejaReserve(cible) {
+  if (cible.iMeet <= 0) return false;
+  var iEv = cible.titres.indexOf("Événement") + 1;
+  if (iEv <= 0) return false;
+  return String(cible.feuille.getRange(cible.ligne, iEv).getValue() || "") !== "";
 }
 
 
@@ -1026,17 +1211,34 @@ var LONGUEURS = {
   message: 5000, description: 5000, contexte: 3000, sujet: 2000,
   votre_nom: 120, votre_email: 254, votre_telephone: 40,
   entreprise_referee: 160, contact_reference: 200, domaine: 160,
-  site_actuel: 500, besoins: 500, plage_demandee: 200
+  site_actuel: 500, besoins: 500, plage_demandee: 200,
+  blocage: 2000, connu_par: 160, prix_raison: 2000, fourchette_vue: 120,
+  prix_reaction: 40, systeme: 500, depuis_quand: 160, gravite: 80,
+  impact: 2000, presentation: 1000, budget: 120
 };
 
 function valider(kind, data) {
   var def = SCHEMA[kind];
 
-  /* 1 · Les champs requis sont présents et non vides. */
-  for (var i = 0; i < def.requis.length; i++) {
-    var champ = def.requis[i];
+  /* 1 · Les champs requis sont présents et non vides.
+
+     UNE ÉTAPE INTERMÉDIAIRE N'A PAS À TOUT AVOIR.  D-744
+     C'est le point d'équilibre de toute la sauvegarde progressive :
+     exiger le jeu complet à l'étape 2 ferait refuser l'écriture,
+     donc perdre exactement l'abandon qu'on cherche à capter. Mais
+     n'exiger RIEN ouvrirait la porte à des lignes vides fabriquées
+     en boucle par un robot.
+
+     On exige donc le MINIMUM VITAL en cours de route
+     (`requisPartiel`), et le jeu complet à la confirmation. */
+  var enCours = !!(data && data._sid && !data._final);
+  var exiges = enCours ? (def.requisPartiel || def.requis) : def.requis;
+  for (var i = 0; i < exiges.length; i++) {
+    var champ = exiges[i];
     if (String(data[champ] == null ? "" : data[champ]).trim() === "") {
-      return "Il manque une réponse obligatoire.";
+      return enCours
+        ? "Il manque ce qui permettrait de vous rappeler."
+        : "Il manque une réponse obligatoire.";
     }
   }
 
@@ -1073,13 +1275,26 @@ function valider(kind, data) {
     }
   }
 
-  /* 5 · Une réservation doit porter une plage lisible par machine. */
-  if (kind === "booking") {
+  /* 5 · Une réservation doit porter une plage lisible par machine.
+     Sauf en cours de route : à l'étape 1 le visiteur n'a pas encore
+     choisi son mode. */
+  if (kind === "booking" && !enCours) {
     if (!data.plage_iso || isNaN(new Date(data.plage_iso).getTime())) {
       return "La plage choisie n’a pas été transmise. Choisissez-la de nouveau.";
     }
     if (data.mode !== MODES.TEL && data.mode !== MODES.MEET) {
       return "Choisissez le mode de l’appel.";
+    }
+  }
+
+  /* 6 · L'identifiant de session est fabriqué par le navigateur, donc
+     il n'est pas de confiance. On ne s'en sert que comme clé de
+     recherche, mais une clé de 40 000 signes ferait grossir la
+     colonne masquée sans rien apporter. */
+  if (data && data._sid) {
+    var sid = String(data._sid);
+    if (!/^[A-Za-z0-9_-]{8,40}$/.test(sid)) {
+      return "La session n’est pas reconnue. Rechargez la page.";
     }
   }
 
@@ -1099,6 +1314,19 @@ function valider(kind, data) {
    Les clés de service (`_form`, `_gotcha`, `_subject`…) sont hors
    signature : elles ne viennent pas du visiteur. */
 function signature(kind, data) {
+  /* UNE SESSION A SA PROPRE IDENTITÉ, ET ELLE PRIME.  D-744
+
+     Avec la sauvegarde progressive, la même personne envoie la même
+     demande plusieurs fois de suite, un peu plus remplie à chaque
+     fois. Une signature calculée sur le CONTENU changerait à chaque
+     étape : on écrirait six lignes pour un seul visiteur, ce qui
+     est exactement ce qu'il ne faut pas faire.
+
+     `_sid` est fabriqué par le navigateur à la première étape
+     validée et ne bouge plus. Il devient l'identité de la ligne.
+     Le préfixe « S: » empêche toute collision avec un condensé. */
+  if (data && data._sid) return "S:" + String(data._sid).slice(0, 40);
+
   var cles = Object.keys(data)
     .filter(function (k) { return k.charAt(0) !== "_"; })
     .sort();
@@ -1128,6 +1356,28 @@ function signature(kind, data) {
    réservation doit rendre au visiteur le lien de SA réservation,
    pas une chaîne vide : il en a besoin pour se connecter. */
 function chercherJumelle(kind, sig) {
+  var t = repererLigne(kind, sig);
+  if (!t) return null;
+
+  var cellule = t.feuille.getRange(t.ligne, t.iRenvois);
+  var n = Number(cellule.getValue()) || 0;
+  cellule.setValue(n + 1);
+  return {
+    ligne: t.ligne,
+    renvois: n + 1,
+    meet: t.iMeet > 0 ? String(t.feuille.getRange(t.ligne, t.iMeet).getValue() || "") : ""
+  };
+}
+
+/* OÙ EST LA LIGNE QUI PORTE CETTE SIGNATURE, si elle existe.
+
+   LA FENÊTRE DE TEMPS NE S'APPLIQUE QU'AUX CONDENSÉS.  D-744
+   Deux demandes identiques à trois jours d'écart sont deux
+   demandes : la fenêtre est là pour ça. Mais une SESSION peut
+   dormir — quelqu'un remplit deux étapes le mardi, ferme son
+   portable, revient le jeudi. Sa ligne doit se retrouver, sinon on
+   en crée une seconde et on a perdu le seul but de l'exercice. */
+function repererLigne(kind, sig) {
   var def = SCHEMA[kind];
   var feuille = classeur().getSheetByName(def.onglet);
   if (!feuille) return null;
@@ -1138,31 +1388,115 @@ function chercherJumelle(kind, sig) {
   var cols = colonnes(kind);
   var titres = cols.map(function (c) { return c.titre; });
   var iSig = titres.indexOf(COL_SIGNATURE) + 1;
-  var iRenvois = titres.indexOf("Renvois") + 1;
-  var iMeet = titres.indexOf("Lien Meet") + 1;
+  var iDate = titres.indexOf("Horodatage") + 1;
 
+  var session = String(sig).indexOf("S:") === 0;
   var combien = Math.min(REGLAGES.LIGNES_RELUES, dernier - 1);
   var sigs = feuille.getRange(2, iSig, combien, 1).getValues();
-  var dates = feuille.getRange(2, 1, combien, 1).getValues();
+  var dates = iDate > 0 ? feuille.getRange(2, iDate, combien, 1).getValues() : null;
   var limite = REGLAGES.FENETRE_DOUBLON_MIN * 60 * 1000;
   var maintenant = Date.now();
 
   for (var r = 0; r < sigs.length; r++) {
     if (String(sigs[r][0]) !== sig) continue;
-    var quand = dates[r][0];
-    if (!(quand instanceof Date)) continue;
-    if (maintenant - quand.getTime() > limite) continue;
-
-    var cellule = feuille.getRange(r + 2, iRenvois);
-    var n = Number(cellule.getValue()) || 0;
-    cellule.setValue(n + 1);
+    if (!session) {
+      var quand = dates ? dates[r][0] : null;
+      if (!(quand instanceof Date)) continue;
+      if (maintenant - quand.getTime() > limite) continue;
+    }
     return {
+      feuille: feuille,
       ligne: r + 2,
-      renvois: n + 1,
-      meet: iMeet > 0 ? String(feuille.getRange(r + 2, iMeet).getValue() || "") : ""
+      titres: titres,
+      cols: cols,
+      iRenvois: titres.indexOf("Renvois") + 1,
+      iMeet: titres.indexOf("Lien Meet") + 1,
+      iEtape: titres.indexOf("Étape") + 1
     };
   }
   return null;
+}
+
+/* METTRE À JOUR LA LIGNE D'UNE SESSION EN COURS.  D-744
+
+   Ce qui arrive à l'étape 4 ne contient pas ce qui a été répondu à
+   l'étape 1 : le navigateur n'envoie que ce que le visiteur vient
+   de remplir, plus ce qu'il a déjà. La règle est donc :
+
+     UNE VALEUR NON VIDE ÉCRASE. UNE VALEUR VIDE NE TOUCHE À RIEN.
+
+   Sans ça, revenir en arrière et renvoyer effacerait des réponses
+   déjà données, et le classeur se viderait à mesure que le visiteur
+   avance. C'est le défaut le plus probable de tout ce mécanisme,
+   et il ne se verrait qu'en relisant une ligne d'il y a deux jours. */
+function fusionnerLigne(kind, cible, data, extra) {
+  var feuille = cible.feuille;
+  var ligne = cible.ligne;
+  var cols = cible.cols;
+
+  var avant = feuille.getRange(ligne, 1, 1, cols.length).getValues()[0];
+  var apres = avant.slice();
+  var touchees = 0;
+
+  cols.forEach(function (c, i) {
+    var nom = c.champ;
+    if (!nom) return;
+    var v = null;
+    if (extra && Object.prototype.hasOwnProperty.call(extra, nom)) v = extra[nom];
+    else if (Object.prototype.hasOwnProperty.call(data, nom)) v = data[nom];
+    if (v == null) return;
+    v = String(v);
+    if (v.trim() === "") return;
+    if (String(apres[i]) === v) return;
+    apres[i] = v;
+    touchees++;
+  });
+
+  /* L'étape avance, elle ne recule pas : un visiteur qui revient en
+     arrière pour corriger l'étape 2 n'a pas « désappris » l'étape 4. */
+  if (cible.iEtape > 0) {
+    var libelle = libelleEtape(data);
+    var actuel = String(apres[cible.iEtape - 1] || "");
+    /* `!==` AVANT `>=` : renvoyer deux fois la MÊME étape — un
+       réessai réseau — ne doit compter pour aucun changement,
+       sinon `champs` rend 1 sur une opération qui n'a rien fait et
+       le site croit avoir avancé. */
+    if (libelle && libelle !== actuel && rangEtape(libelle) >= rangEtape(actuel)) {
+      apres[cible.iEtape - 1] = libelle;
+      touchees++;
+    }
+  }
+
+  if (touchees) {
+    /* Le format AVANT les valeurs, ici comme à l'écriture. D-731 */
+    formaterTexte(feuille, ligne, kind);
+    feuille.getRange(ligne, 1, 1, apres.length).setValues([apres]);
+  }
+  return {
+    ligne: ligne,
+    doublon: false,
+    fusion: true,
+    touchees: touchees,
+    url: lienVersLigne(feuille, ligne)
+  };
+}
+
+/* « 3 / 6 », ou « ✓ complète ». Une seule façon de l'écrire. */
+function libelleEtape(data) {
+  if (data && data._final) return "✓ complète";
+  var e = Number(data && data._etape);
+  var t = Number(data && data._etapes);
+  if (!e) return "";
+  return t ? (e + " / " + t) : String(e);
+}
+
+/* Pour comparer deux libellés d'étape sans les analyser deux fois.
+   « ✓ complète » bat tout le reste. */
+function rangEtape(libelle) {
+  if (!libelle) return -1;
+  if (String(libelle).indexOf("✓") === 0) return 9999;
+  var m = /^(\d+)/.exec(String(libelle));
+  return m ? Number(m[1]) : 0;
 }
 
 /* UNE VALEUR DU VISITEUR N'EST JAMAIS UNE FORMULE.  D-731
@@ -1213,11 +1547,16 @@ function ecrireLigne(kind, data, extra, sig) {
   var maintenant = new Date();
   if (!sig) sig = signature(kind, data);
 
+  var titres = cols.map(function (c) { return c.titre; });
   var valeurs = cols.map(function (c) {
     if (c.titre === "Horodatage") return maintenant;
     if (c.titre === COL_SIGNATURE) return sig;
     if (c.titre === "Renvois") return 0;
     if (c.titre === "Statut") return STATUTS[0];
+    if (c.titre === "Étape") return libelleEtape(data);
+    /* Une case à cocher se range comme un booléen, pas comme une
+       chaîne vide : `""` la rendrait invalide. */
+    if (c.case) return false;
     if (c.titre === "Lu par" || c.titre === "Rappelé par") return "";
     var nom = c.champ;
     if (!nom) return "";
@@ -1232,7 +1571,9 @@ function ecrireLigne(kind, data, extra, sig) {
      changement de format ne fait que l'afficher autrement. */
   formaterTexte(feuille, 2, kind);
   feuille.getRange(2, 1, 1, valeurs.length).setValues([valeurs]);
-  feuille.getRange(2, 1).setNumberFormat("yyyy-mm-dd hh:mm:ss");
+
+  var iDate = titres.indexOf("Horodatage");
+  if (iDate >= 0) feuille.getRange(2, iDate + 1).setNumberFormat("yyyy-mm-dd hh:mm:ss");
 
   /* `insertRowBefore` hérite du format de la ligne 1 — l'en-tête
      noir sur blanc. On le défait, sinon chaque demande arrive
@@ -1243,11 +1584,17 @@ function ecrireLigne(kind, data, extra, sig) {
     .setFontColor(null)
     .setVerticalAlignment("top");
 
-  return { ligne: 2, doublon: false, url: lienVersLigne(feuille) };
+  /* La case à cocher se pose APRÈS les valeurs : `setValues` sur une
+     cellule qui en porte une la laisserait sans validation. */
+  var iVu = titres.indexOf("Vu");
+  if (iVu >= 0) feuille.getRange(2, iVu + 1).insertCheckboxes();
+
+  return { ligne: 2, doublon: false, url: lienVersLigne(feuille, 2) };
 }
 
-function lienVersLigne(feuille) {
-  return classeur().getUrl() + "#gid=" + feuille.getSheetId() + "&range=A2";
+function lienVersLigne(feuille, ligne) {
+  return classeur().getUrl() + "#gid=" + feuille.getSheetId()
+    + "&range=A" + (ligne || 2);
 }
 
 /* Les pièces jointes du formulaire de projet. Elles arrivent en
@@ -1781,29 +2128,59 @@ function poserRendezVous(data) {
 
   var meet = data.mode === MODES.MEET;
   var nom = String(data.nom || "").trim();
-  var titre = (meet ? "Appel APED · " : "Appel APED (téléphone) · ") + nom;
+  var tel = String(data.telephone || "").trim();
+  var entreprise = String(data.entreprise || "").trim();
 
-  var lignes = [
-    "Demande reçue par le site APED.",
-    "",
-    "Nom : " + nom,
-    "Entreprise : " + (data.entreprise || "—"),
-    "Courriel : " + (data.email || "—"),
-    "Téléphone : " + (data.telephone || "—"),
-    "Mode : " + data.mode,
-    "",
-    "Sujet : " + (data.sujet || "—")
-  ];
+  /* LE TITRE DIT CE QU'ON DOIT FAIRE, PAS CE QUI S'EST PASSÉ.
+     D-745
+
+     On lit un titre d'agenda dans une liste, en diagonale, souvent
+     depuis un téléphone où il est coupé à trente signes. « Appel
+     APED (téléphone) · Marie Tremblay » commence par quatre mots
+     qui ne servent à rien : tous les événements de cet agenda sont
+     des appels APED. Ce qui manque, c'est QUI et QUOI FAIRE.
+
+     Version téléphone :  « ☎ Appeler Marie Tremblay — Garage X »
+     Version Meet :       « ▸ Meet · Marie Tremblay — Garage X »
+
+     Le verbe d'abord : c'est la seule différence qui change le
+     geste, et elle doit survivre à la troncature. */
+  var qui = nom + (entreprise ? " — " + entreprise : "");
+  var titre = (meet ? PREFIXE_MEET : PREFIXE_TEL) + qui;
+
+  /* LE NUMÉRO VA DANS `location`, ET C'EST TOUT L'INTÉRÊT.
+     Google Agenda rend ce champ CLIQUABLE sur téléphone : une
+     tape et l'appel part. Enfoui dans la description, il faut le
+     sélectionner à la main. */
+  var lieu = meet ? "" : tel;
+
+  var lignes = [];
   if (!meet) {
-    lignes.splice(1, 0, "", "À APPELER au " + (data.telephone || "—") + ".");
+    lignes.push("À COMPOSER : " + (tel || "— aucun numéro —"));
+    lignes.push("C’est NOUS qui appelons.");
+    lignes.push("");
   }
+  lignes.push("Nom : " + (nom || "—"));
+  lignes.push("Entreprise : " + (entreprise || "—"));
+  lignes.push("Courriel : " + (data.email || "—"));
+  if (meet) lignes.push("Téléphone : " + (tel || "—"));
+  lignes.push("");
+  lignes.push("Ce dont la personne veut parler :");
+  lignes.push(String(data.sujet || "").trim() || "— rien de précisé —");
+  lignes.push("");
+  lignes.push("Demande reçue par le site APED · 30 minutes.");
   var description = lignes.join("\n");
 
-  /* On passe par le service avancé quand il est là — c'est le seul
-     chemin qui crée un lien Meet. Sinon on retombe sur le service
-     ordinaire : l'événement existe, sans Meet, et l'avis interne
-     le dit clairement. */
-  if (meet && typeof Calendar !== "undefined" && Calendar.Events) {
+  /* LE SERVICE AVANCÉ SERT AUX DEUX MODES, PLUS SEULEMENT AU MEET.
+     D-745
+
+     La condition était `if (meet && …)` : une réservation
+     téléphonique tombait toujours sur `CalendarApp`, qui ne sait
+     poser ni `location`, ni invité proprement, ni statut de
+     visibilité. L'événement existait et il était nu. Les deux modes
+     passent maintenant par le même chemin ; seule la conférence
+     Meet est conditionnelle. */
+  if (typeof Calendar !== "undefined" && Calendar.Events) {
     try {
       var evenement = {
         summary: titre,
@@ -1812,27 +2189,32 @@ function poserRendezVous(data) {
         end:   { dateTime: fin.toISOString(),   timeZone: REGLAGES.FUSEAU },
         attendees: [{ email: String(data.email).trim(), displayName: nom }],
         guestsCanModify: false,
-        guestsCanInviteOthers: false,
-        conferenceData: {
+        guestsCanInviteOthers: false
+      };
+      if (lieu) evenement.location = lieu;
+      if (meet) {
+        evenement.conferenceData = {
           createRequest: {
             /* Doit être unique par requête, sinon Google renvoie la
                conférence déjà créée pour cet identifiant. */
             requestId: Utilities.getUuid(),
             conferenceSolutionKey: { type: "hangoutsMeet" }
           }
-        }
-      };
+        };
+      }
       var cree = Calendar.Events.insert(evenement, DISPONIBILITES.CALENDRIER_ID || "primary", {
-        conferenceDataVersion: 1,
+        conferenceDataVersion: meet ? 1 : 0,
         /* C'est Google qui envoie l'invitation au visiteur — elle
-           ne compte pas dans le quota d'envoi du script. */
+           ne compte pas dans le quota d'envoi du script. Un appel
+           téléphonique en profite autant qu'un Meet : la personne
+           reçoit un rappel, donc elle décroche. */
         sendUpdates: "all"
       });
 
       return {
         ok: true,
         debut: debut,
-        meet: cree.hangoutLink || lienMeet(cree),
+        meet: meet ? (cree.hangoutLink || lienMeet(cree)) : "",
         lien: cree.htmlLink || ""
       };
     } catch (e) {
@@ -1846,10 +2228,10 @@ function poserRendezVous(data) {
   var cal = DISPONIBILITES.CALENDRIER_ID
     ? CalendarApp.getCalendarById(DISPONIBILITES.CALENDRIER_ID)
     : CalendarApp.getDefaultCalendar();
-  var ev = cal.createEvent(titre, debut, fin, { description: description });
-  if (meet) {
-    try { ev.addGuest(String(data.email).trim()); } catch (e) { console.error(e); }
-  }
+  var options = { description: description };
+  if (lieu) options.location = lieu;
+  var ev = cal.createEvent(titre, debut, fin, options);
+  try { ev.addGuest(String(data.email).trim()); } catch (e) { console.error(e); }
   return { ok: true, debut: debut, meet: "", lien: "" };
 }
 
@@ -1929,13 +2311,31 @@ function envoyer(dest, sujet, corps, repondreA) {
   }
 }
 
-function avertirAgence(kind, data, extra, ecrit) {
+function avertirAgence(kind, data, extra, ecrit, partiel) {
   var def = SCHEMA[kind];
   var lignes = [];
 
-  lignes.push(def.sujet.toUpperCase());
+  lignes.push(partiel ? ("COMMENCÉ — " + def.sujet.toUpperCase()) : def.sujet.toUpperCase());
   lignes.push(quand(new Date()));
   lignes.push("");
+
+  /* UN DÉBUT DE FORMULAIRE N'EST PAS UNE DEMANDE, et l'avis doit le
+     dire dès la deuxième ligne.  D-744
+
+     Sans ça, un avis « Nouveau projet » qui ne contient qu'un nom et
+     un courriel se lit comme un formulaire cassé, pas comme un
+     visiteur en train de remplir. La différence change ce qu'on en
+     fait : un abandon se rappelle, un bogue se corrige. */
+  if (partiel) {
+    lignes.push("Cette personne a commencé le formulaire et n’a pas encore fini.");
+    lignes.push("Étape atteinte : " + (libelleEtape(data) || "1"));
+    lignes.push("Ce qui suit est ce qu’elle a rempli JUSQU’ICI. La même");
+    lignes.push("ligne du classeur se complétera toute seule si elle continue.");
+    lignes.push("");
+    lignes.push("Si rien ne bouge d’ici demain, c’est un abandon : on a de");
+    lignes.push("quoi la rappeler.");
+    lignes.push("");
+  }
 
   def.champs.forEach(function (c) {
     var v = Object.prototype.hasOwnProperty.call(extra, c.champ)
@@ -1975,6 +2375,13 @@ function avertirAgence(kind, data, extra, ecrit) {
      lien vers le classeur nu ouvrirait le premier onglet, et il
      faudrait chercher. */
   lignes.push("La ligne : " + (ecrit.url || classeur().getUrl()));
+
+  if (partiel) {
+    lignes.push("");
+    lignes.push("Vous ne recevrez plus rien sur cette personne tant qu’elle");
+    lignes.push("n’aura pas terminé. C’est voulu : le compte Gmail ne peut");
+    lignes.push("envoyer que cent messages par jour.");
+  }
 
   var reste = quotaRestant();
   if (reste < 15) {
@@ -2308,6 +2715,31 @@ function autotest() {
 var MARQUEURS_ESSAI = ["essai@exemple.ca", "zztest@exemple.ca", "ZZTEST",
                        "exemple.ca", "@exemple.com"];
 
+/* LES DEUX PRÉFIXES DE TITRE D'ÉVÉNEMENT, EN UN SEUL ENDROIT.  D-745
+
+   Ils sont ce qui distingue un rendez-vous posé par le site d'un
+   événement personnel, et c'est `nettoyerRendezVousEssai()` qui s'en
+   sert pour savoir ce qu'elle a le droit de supprimer.
+
+   ILS ÉTAIENT ÉCRITS EN DUR À DEUX ENDROITS. Le jour où les titres
+   ont changé — « Appel APED · Nom » devenu « ☎ Appeler Nom » —
+   la fonction de nettoyage a cessé de reconnaître quoi que ce soit
+   et n'a plus rien supprimé, sans une erreur. Une fonction de
+   suppression qui rend « 0 » est indiscernable d'une qui n'a rien
+   trouvé (piège 30). */
+var PREFIXE_TEL  = "☎ Appeler ";
+var PREFIXE_MEET = "▸ Meet · ";
+
+/* Ce titre a-t-il été écrit par le site ? On garde l'ancien préfixe :
+   les rendez-vous posés avant le 2026-08-06 le portent encore, et
+   ils doivent rester nettoyables. */
+function titreDuSite(titre) {
+  var t = String(titre || "");
+  return t.indexOf(PREFIXE_TEL) === 0
+      || t.indexOf(PREFIXE_MEET) === 0
+      || t.indexOf("Appel APED") === 0;
+}
+
 /* Efface les lignes d'essai. Sans argument, cherche tous les
    marqueurs ci-dessus ; on peut en passer un seul.
 
@@ -2370,9 +2802,10 @@ function nettoyerRendezVousEssai() {
     var touche = MARQUEURS_ESSAI.some(function (m) {
       return titre.indexOf(m) !== -1 || desc.indexOf(m) !== -1;
     });
-    /* Un rendez-vous posé par le site porte toujours ce préfixe :
-       on ne touche donc jamais à un événement personnel. */
-    if (!touche || titre.indexOf("Appel APED") !== 0) return;
+    /* Un rendez-vous posé par le site porte toujours l'un des
+       préfixes connus : on ne touche donc jamais à un événement
+       personnel. Les deux conditions sont exigées ensemble. */
+    if (!touche || !titreDuSite(titre)) return;
     retires.push(titre + " — " + quand(ev.getStartTime()));
     ev.deleteEvent();
   });

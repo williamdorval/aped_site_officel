@@ -121,6 +121,10 @@ console.log("\n--- 3 · PROJET AVEC PIECE JOINTE, DEUX FOIS");
     _form: "project", nom: "Ida Projet", entreprise: "Ida inc",
     email: "ida.projet@exemple.ca", telephone: "418 555 0142",
     description: "Un projet.",
+    /* OBLIGATOIRE DEPUIS D-746. Sans lui la demande est refusee, et
+       c'est le comportement voulu : « budget vide » etait la colonne
+       la plus souvent vide du classeur. */
+    budget: "10 000 $ à 20 000 $",
     _fichiers: [{ nom: "plan.pdf", type: "application/pdf",
                   base64: Buffer.from("un faux pdf").toString("base64") }]
   };
@@ -257,9 +261,15 @@ console.log("\n--- 8 · REPLY-TO SUR L'AVIS INTERNE");
 console.log("\n--- 9 · L'ORDRE DES COLONNES ET LA MISE EN FORME");
 {
   const cols = gs.colonnes("project").map((c) => c.titre);
-  dire("colonne A = Horodatage", cols[0], "Horodatage");
-  dire("colonne B = Statut (pas au bout)", cols[1], "Statut");
-  dire("le nom vient juste apres", cols[2], "Nom");
+  /* TOUT LE SUIVI PASSE DEVANT.  D-743
+     A Vu (case a cocher) · B Lu par · C Rappele par · D Statut ·
+     E Notes internes · F Etape · G Horodatage · H+ le visiteur. */
+  dire("les cinq colonnes de suivi ouvrent le classeur",
+    cols.slice(0, 5).join("|"), "Vu|Lu par|Rappelé par|Statut|Notes internes");
+  dire("puis l'etape et l'horodatage", cols.slice(5, 7).join("|"), "Étape|Horodatage");
+  dire("le visiteur commence en H", cols[7], "Nom");
+  dire("« Renvois » reste au bout, avant la signature",
+    cols.slice(-2).join("|"), "Renvois|Signature");
   console.log("         ordre : " + cols.slice(0, 6).join(" | ") + " | … | "
     + cols.slice(-4).join(" | "));
 
@@ -270,8 +280,16 @@ console.log("\n--- 9 · L'ORDRE DES COLONNES ET LA MISE EN FORME");
   const lettre = gs.colonneLettre(iLu);
   dire("elle juge bien la colonne « Lu par »",
     r.formule.indexOf("$" + lettre + '2=""') !== -1, true);
+  /* LE TEST « CETTE LIGNE EXISTE » NE PEUT PLUS VISER A.  D-743
+     A porte une case a cocher, et une case decochee vaut FALSE, pas
+     "" : `$A2<>""` serait vrai sur les mille lignes vides du bas
+     et les peindrait toutes en jaune. Il vise l'horodatage. */
+  const iDate = f.valeurs[0].indexOf("Horodatage") + 1;
+  const lettreDate = gs.colonneLettre(iDate);
   dire("elle ne colore que les lignes qui EXISTENT",
-    r.formule.indexOf('$A2<>""') !== -1, true);
+    r.formule.indexOf("$" + lettreDate + '2<>""') !== -1, true);
+  dire("et elle ne teste PAS la case a cocher",
+    r.formule.indexOf('$A2<>""') === -1, true);
   console.log("         formule : " + r.formule);
 
   /* RELANCER `initialiser()` NE DOIT PAS EMPILER LES REGLES. */
@@ -292,11 +310,16 @@ console.log("\n--- 10 · MIGRATION D'UN CLASSEUR DEJA REMPLI");
   const nom = "Contact simple";
   const f = etat.feuilles.get(nom);
   const voulus = gs.colonnes("contact").map((c) => c.titre);
-  /* L'ancien ordre : Statut a sa place d'avant, juste avant la
-     signature. */
-  const anciens = ["Horodatage"].concat(
-    voulus.filter((t) => t !== "Horodatage" && t !== "Statut" && t !== "Signature"),
-    ["Statut", "Signature"]);
+  /* L'ANCIEN ORDRE, celui d'avant D-743 : Horodatage en A, Statut
+     en B, le reste du suivi rejete au bout. « Vu » et « Etape »
+     n'existaient pas — elles arriveront vides, c'est normal, et le
+     controle ci-dessous les exclut explicitement plutot que de les
+     laisser passer en silence. */
+  const neuves = ["Vu", "Étape"];
+  const anciens = ["Horodatage", "Statut"].concat(
+    voulus.filter((t) => ["Horodatage", "Statut", "Signature"].indexOf(t) === -1
+                      && neuves.indexOf(t) === -1),
+    ["Signature"]);
 
   f.valeurs.length = 0;
   f.valeurs.push(anciens.slice());
@@ -308,10 +331,19 @@ console.log("\n--- 10 · MIGRATION D'UN CLASSEUR DEJA REMPLI");
   const apres = f.valeurs[0];
   const donnees = f.valeurs[1];
   dire("les en-tetes sont dans le nouvel ordre", apres.join("|"), voulus.join("|"));
-  const decalees = voulus.filter((t, i) => donnees[i] !== "val:" + t);
+  /* Les colonnes qui n'existaient PAS avant ne peuvent pas porter
+     de valeur : on ne les compte pas comme decalees, on verifie
+     seulement qu'elles sont vides. */
+  const decalees = voulus.filter((t, i) =>
+    neuves.indexOf(t) === -1 && donnees[i] !== "val:" + t);
   dire("chaque valeur a suivi son en-tete",
     decalees.length ? decalees.join(", ") : "aucune decalee", "aucune decalee");
-  console.log("         ex. : « " + voulus[1] + " » porte « " + donnees[1] + " »");
+  const pleines = neuves.filter((t) => String(donnees[voulus.indexOf(t)] || "") !== "");
+  dire("les colonnes neuves arrivent vides, pas remplies au hasard",
+    pleines.length ? pleines.join(", ") : "aucune", "aucune");
+  const iStatut = voulus.indexOf("Statut");
+  console.log("         ex. : « Statut » (col " + gs.colonneLettre(iStatut + 1)
+    + ") porte « " + donnees[iStatut] + " »");
 }
 
 console.log("\n============================================================");

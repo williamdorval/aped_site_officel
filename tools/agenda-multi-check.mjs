@@ -40,6 +40,10 @@ function agendasEnPlus(liste) {
   D2.CALENDRIERS_EN_PLUS = liste.slice();
 }
 const PERSO = "moi@exemple.ca";
+/* Les titres poses par le site. Doivent suivre `PREFIXE_TEL` et
+   `PREFIXE_MEET` de Code.gs — c'est ce couple qui autorise
+   `nettoyerRendezVousEssai` a supprimer. */
+const estDuSite = (t) => /^(☎ Appeler |▸ Meet · |Appel APED)/.test(String(t));
 let echecs = 0;
 let cas = 0;
 
@@ -200,7 +204,7 @@ titre("2 · LA RESERVATION REFUSE CE QUE L'AUTRE AGENDA OCCUPE");
     /vient d’être prise|vient d'être prise/.test(String(r.message)), true,
     "message : « " + r.message + " »");
   verifier("aucun evenement n'a ete cree",
-    etat.evenements.filter((e) => String(e.titre).indexOf("Appel APED") === 0).length, 0);
+    etat.evenements.filter((e) => estDuSite(e.titre)).length, 0);
 }
 
 /* ============================================================
@@ -270,8 +274,8 @@ titre("4 · LA TROISIEME PORTE — CE QU'ELLE MONTRE ET CE QU'ELLE TAIT");
   const onglet = d.onglets.find((o) => o.onglet === "Contact simple");
 
   verifier("la porte repond", d.success, true);
-  verifier("« Statut » est bien la deuxieme colonne",
-    onglet.titres[1], "Statut",
+  verifier("« Vu » ouvre le classeur, « Statut » est en D",
+    onglet.titres.slice(0, 5).join("|"), "Vu|Lu par|Rappelé par|Statut|Notes internes",
     "en-tetes : " + onglet.titres.join(" | "));
   verifier("la premiere ligne est figee", onglet.figees, 1);
   verifier("elle compte les deux lignes", onglet.lignesTotal, 2);
@@ -291,8 +295,8 @@ titre("4 · LA TROISIEME PORTE — CE QU'ELLE MONTRE ET CE QU'ELLE TAIT");
 
   const regle = onglet.regles[0];
   verifier("une seule regle de couleur", onglet.regles.length, 1);
-  verifier("elle vise la colonne « Lu par » vide",
-    /\$A2<>""/.test(regle.formule) && /2=""/.test(regle.formule), true,
+  verifier("elle vise la colonne « Lu par » vide, et teste l'existence sur Horodatage",
+    /\$G2<>""/.test(regle.formule) && /\$B2=""/.test(regle.formule), true,
     "formule : " + regle.formule);
   verifier("les largeurs sont rendues",
     onglet.largeurs.length === onglet.titres.length && onglet.largeurs[1] > 0, true,
@@ -437,7 +441,7 @@ titre("7 · LE REPLI CalendarApp, SANS SERVICE AVANCE");
   }).getContent());
 
   verifier("la reservation passe par le repli", rep.success, true);
-  const pose = etat.evenements.filter((e) => String(e.titre).indexOf("Appel APED") === 0);
+  const pose = etat.evenements.filter((e) => estDuSite(e.titre));
   verifier("l'evenement est bien cree", pose.length, 1, pose[0] && pose[0].titre);
   verifier("mais SANS lien Meet — le repli ne sait pas en faire",
     rep.meet || "", "",
