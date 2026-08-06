@@ -62,24 +62,25 @@
 var DISPONIBILITES = {
 
   /* LES JOURS OUVRABLES. 0 = dimanche, 1 = lundi … 6 = samedi.
-     [1,2,3,4,5] = du lundi au vendredi.
-     Pour ouvrir le samedi : [1,2,3,4,5,6]. */
-  JOURS_OUVRABLES: [1, 2, 3, 4, 5],
+     [0,1,2,3,4,5,6] = sept jours sur sept.
+     Pour revenir du lundi au vendredi : [1,2,3,4,5]. */
+  JOURS_OUVRABLES: [0, 1, 2, 3, 4, 5, 6],
 
   /* LA PLAGE DE LA JOURNÉE, en heure de Toronto, format « HH:MM ».
      Le dernier créneau COMMENCE assez tôt pour FINIR avant
-     HEURE_FIN : avec une fin à 17:00 et des appels de 30 min,
-     rien ne démarre après 16:30. */
+     HEURE_FIN : avec une fin à 20:00 et des appels de 30 min,
+     rien ne démarre après 19:30. */
   HEURE_DEBUT: "09:00",
-  HEURE_FIN:   "17:00",
+  HEURE_FIN:   "20:00",
 
   /* LES PAUSES. Un créneau qui chevauche l'une d'elles n'existe
-     pas. Laisser `[]` pour n'en avoir aucune.
+     pas. `[]` = aucune pause récurrente, la journée est pleine de
+     HEURE_DEBUT à HEURE_FIN.
      Ce sont des pauses RÉCURRENTES, tous les jours ouvrables ;
-     une pause d'un seul jour se met dans Google Agenda. */
-  PAUSES: [
-    { debut: "12:00", fin: "13:00" }
-  ],
+     une pause d'un seul jour se met dans Google Agenda.
+     Pour reprendre l'heure du midi :
+       PAUSES: [{ debut: "12:00", fin: "13:00" }] */
+  PAUSES: [],
 
   /* LA DURÉE D'UN APPEL, en minutes. Le site l'annonce : si vous
      la changez ici, changez aussi le texte de `index.html`. */
@@ -108,6 +109,27 @@ var DISPONIBILITES = {
      Pour en viser un autre, coller ici son identifiant (Agenda →
      Paramètres du calendrier → « Intégrer l'agenda » → ID). */
   CALENDRIER_ID: "",
+
+  /* LES AUTRES AGENDAS QUI BLOQUENT AUSSI.  D-736
+
+     CE QUE ÇA RÉPARE. Le compte qui exécute ce script est celui de
+     l'agence. Un blocage créé depuis un agenda PERSONNEL est donc
+     invisible d'ici : il ne bloque rien, et rien ne le dit — le
+     créneau reste offert au visiteur, qui réserve par-dessus le
+     rendez-vous. Constaté le 2026-08-06 : un « pas dispo » posé sur
+     le 12 août dans l'agenda personnel laissait les neuf créneaux
+     du 12 août ouverts sur le site.
+
+     Chaque identifiant listé ici est lu EN PLUS du principal, et
+     tout ce qui s'y trouve bloque exactement comme dans celui de
+     l'agence. Un seul geste à faire avant : dans l'agenda
+     personnel, « Paramètres → Partager avec des personnes
+     précises → apedagence@gmail.com → Afficher tous les détails ».
+     Sans ce partage le script ne peut pas le lire, et il REFUSE de
+     rendre des créneaux plutôt que d'en inventer.
+
+     Exemple :  CALENDRIERS_EN_PLUS: ["prenom.nom@gmail.com"] */
+  CALENDRIERS_EN_PLUS: [],
 
   /* UN ÉVÉNEMENT MARQUÉ « DISPONIBLE » BLOQUE-T-IL ?
      Dans Google Agenda, chaque événement porte une visibilité
@@ -407,6 +429,24 @@ function initialiser() {
     classeur.deleteSheet(vide);
   }
 
+  /* CHAQUE AGENDA EST LU ICI, UNE FOIS, POUR DE VRAI.  D-736
+     Un agenda mal orthographié ou jamais partagé ne se signale
+     autrement qu'en production, sous la forme d'un site qui
+     n'affiche plus aucune plage. On le découvre à l'installation,
+     dans le journal, avec le nom du fautif. */
+  var t0 = new Date();
+  var t1 = new Date(t0.getTime() + 86400000);
+  listeCalendriers().forEach(function (calId) {
+    try {
+      occupationsDe(calId, t0, t1);
+      Logger.log("Agenda lisible : " + calId);
+    } catch (e) {
+      Logger.log("*** AGENDA ILLISIBLE : " + calId + " — " + e
+        + "\n    Tant qu'il l'est, le site n'affichera AUCUNE plage."
+        + "\n    Partagez-le avec le compte de l'agence, ou retirez-le de CALENDRIERS_EN_PLUS.");
+    }
+  });
+
   var url = classeur.getUrl();
   Logger.log("Classeur prêt : " + url);
   Logger.log("Identifiant retenu : " + classeur.getId());
@@ -622,14 +662,144 @@ function doGet(e) {
     }
   }
 
+  if (action === "diag") {
+    try {
+      return json(diagnostic());
+    } catch (err) {
+      console.error("diag : " + (err && err.stack ? err.stack : err));
+      return json({ success: false, message: String(err) });
+    }
+  }
+
   return json({
     success: true,
     service: "APED formulaires",
-    version: 2,
+    version: 3,
     calendrier: typeof Calendar !== "undefined",
+    calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
-    creneaux: true
+    creneaux: true,
+    diag: true
   });
+}
+
+/* ============================================================
+   LA TROISIÈME PORTE — CE QUE LE CLASSEUR A VRAIMENT L'AIR.  D-737
+
+   POURQUOI ELLE EXISTE. La forme du classeur — l'ordre des
+   colonnes, la couleur des non-lues, le format des cellules — ne
+   se prouve pas depuis le dépôt. Elle vit chez Google. Une session
+   qui n'a pas accès au compte de l'agence ne peut qu'affirmer
+   « c'est écrit dans le code, donc c'est bon », et c'est
+   exactement le genre de preuve que ce projet refuse.
+
+   POURQUOI ELLE NE FUIT RIEN. La porte est publique comme les deux
+   autres. Elle ne rend donc AUCUNE donnée de client :
+
+     · la STRUCTURE (en-têtes, largeurs, lignes figées, règles de
+       mise en forme) ne dit rien qu'un formulaire du site ne dise
+       déjà — les titres de colonnes sont les libellés des champs ;
+     · le CONTENU n'est rendu que pour les lignes qui portent un
+       marqueur de `MARQUEURS_ESSAI`. Aucun paramètre ne choisit ce
+       qui est cherché : la liste est en dur. Une ligne de vrai
+       client ne peut donc pas sortir d'ici, même en la demandant.
+
+   Elle est sans effet de bord, et se retire en supprimant ce bloc
+   plus les six lignes de `doGet`.
+   ============================================================ */
+function diagnostic() {
+  var cl = classeur();
+  var onglets = [];
+
+  Object.keys(SCHEMA).forEach(function (kind) {
+    var def = SCHEMA[kind];
+    var feuille = cl.getSheetByName(def.onglet);
+    if (!feuille) { onglets.push({ onglet: def.onglet, absent: true }); return; }
+
+    var cols = colonnes(kind);
+    var nbCol = cols.length;
+    var titres = feuille.getRange(1, 1, 1, nbCol).getValues()[0];
+    var largeurs = [], formats = [];
+    for (var c = 1; c <= nbCol; c++) {
+      largeurs.push(feuille.getColumnWidth(c));
+      formats.push(feuille.getRange(2, c).getNumberFormat());
+    }
+
+    /* LES RÈGLES, PAS LEUR NOMBRE SEULEMENT. Deux règles identiques
+       empilées et une seule règle rendent le même classeur à l'œil ;
+       elles ne rendent pas le même classeur à la relance. */
+    var regles = feuille.getConditionalFormatRules().map(function (r) {
+      var d = r.getBooleanCondition();
+      return {
+        formule: d ? (d.getCriteriaValues()[0] || "") : "",
+        fond: d && d.getBackgroundObject ? String(d.getBackgroundObject().asRgbColor().asHexString()) : "",
+        plages: r.getRanges().map(function (p) { return p.getA1Notation(); })
+      };
+    });
+
+    /* LES LIGNES D'ESSAI, ET ELLES SEULES. */
+    var lignes = [];
+    var derniere = feuille.getLastRow();
+    if (derniere >= 2) {
+      /* PAS DE `getBackgrounds()` ICI, ET C'EST VOLONTAIRE. La
+         couleur des non-lues vient d'une mise en forme
+         CONDITIONNELLE : elle se peint à l'affichage et ne se range
+         nulle part. `getBackgrounds()` rendrait « #ffffff » sur une
+         ligne parfaitement jaune à l'écran. La preuve de la couleur,
+         c'est la RÈGLE — formule, teinte, plage — rendue plus haut. */
+      var plage = feuille.getRange(2, 1, derniere - 1, nbCol);
+      var valeurs = plage.getValues();
+      var formules = plage.getFormulas();
+      var nfs = plage.getNumberFormats();
+      for (var r = 0; r < valeurs.length && lignes.length < 40; r++) {
+        var texte = valeurs[r].join("|");
+        var essai = MARQUEURS_ESSAI.some(function (m) { return texte.indexOf(m) !== -1; });
+        if (!essai) continue;
+        var cellules = [];
+        for (var k = 0; k < nbCol; k++) {
+          /* `formule` NON VIDE = Sheets a interprété la saisie comme
+             un calcul. C'est le verdict de l'injection, et le seul
+             qui vaille : la valeur affichée, elle, se lit pareil
+             dans les deux cas quand la formule rend son propre
+             texte. */
+          cellules.push({
+            titre: String(titres[k] || ""),
+            valeur: String(valeurs[r][k]),
+            formule: String(formules[r][k] || ""),
+            format: String(nfs[r][k] || "")
+          });
+        }
+        lignes.push({ ligne: r + 2, cellules: cellules });
+      }
+    }
+
+    onglets.push({
+      onglet: def.onglet,
+      titres: titres.map(String),
+      largeurs: largeurs,
+      formatsLigne2: formats,
+      figees: feuille.getFrozenRows(),
+      lignesTotal: Math.max(0, derniere - 1),
+      regles: regles,
+      lignesEssai: lignes
+    });
+  });
+
+  return {
+    success: true,
+    fuseau: cl.getSpreadsheetTimeZone(),
+    calendriers: listeCalendriers(),
+    disponibilites: {
+      jours: DISPONIBILITES.JOURS_OUVRABLES,
+      debut: DISPONIBILITES.HEURE_DEBUT,
+      fin: DISPONIBILITES.HEURE_FIN,
+      pauses: DISPONIBILITES.PAUSES,
+      duree: DISPONIBILITES.DUREE_CRENEAU_MIN,
+      tampon: DISPONIBILITES.TAMPON_MIN
+    },
+    quota: quotaRestant(),
+    onglets: onglets
+  };
 }
 
 function doPost(e) {
@@ -666,11 +836,40 @@ function doPost(e) {
       return json({ success: false, message: "Le service est occupé. Réessayez dans un instant." });
     }
 
+    /* LE VERROU NE TIENT PLUS PENDANT LES COURRIELS.  D-738
+
+       CE QU'IL PROTÈGE, ET RIEN D'AUTRE : le numéro de ligne, qui
+       se lit puis s'écrit, et la plage du calendrier, qui se
+       vérifie puis se réserve. Deux courses, deux sections
+       critiques, toutes deux dans `traiter()`.
+
+       CE QU'IL PROTÉGEAIT POUR RIEN : les deux `MailApp.sendEmail`,
+       qui coûtent une à deux secondes chacun. Mesuré le 2026-08-06
+       contre le vrai service : six envois simultanés, 18,4 s pour
+       le dernier servi. Les courriels tenaient la file à eux seuls,
+       alors que rien de ce qu'ils font ne peut entrer en course.
+
+       ET IL RÉPARE UNE SECONDE CHOSE. Un envoi qui lève — quota
+       atteint, adresse refusée — faisait échouer TOUTE la requête,
+       alors que la ligne était déjà écrite. Le visiteur lisait
+       « le service a rencontré une erreur » sur une demande bel et
+       bien reçue, et la renvoyait. Maintenant l'échec d'un courriel
+       est journalisé et ne touche plus à la réponse. */
+    var suite;
     try {
-      return traiter(kind, data);
+      suite = traiter(kind, data);
     } finally {
       verrou.releaseLock();
     }
+
+    if (suite.envois) {
+      try {
+        suite.envois();
+      } catch (e) {
+        console.error("envois (hors verrou) : " + (e && e.stack ? e.stack : e));
+      }
+    }
+    return json(suite.reponse);
   } catch (err) {
     /* On garde la trace complète côté script, on ne rend au site
        qu'une phrase qui ne divulgue rien de l'infrastructure. */
@@ -742,18 +941,18 @@ function traiter(kind, data) {
   /* LE RENVOI SE RECONNAÎT AVANT TOUT EFFET DE BORD. */
   var jumelle = chercherJumelle(kind, sig);
   if (jumelle) {
-    return json({
+    return { envois: null, reponse: {
       success: true,
       ligne: jumelle.ligne,
       renvoi: true,
       renvois: jumelle.renvois,
       meet: jumelle.meet || ""
-    });
+    } };
   }
 
   if (kind === "booking") {
     var rdv = poserRendezVous(data);
-    if (!rdv.ok) return json({ success: false, message: rdv.message });
+    if (!rdv.ok) return { envois: null, reponse: { success: false, message: rdv.message } };
     extra._debut = rdv.debut;
     extra._meet = rdv.meet || "";
     extra._evenement = rdv.lien || "";
@@ -776,23 +975,27 @@ function traiter(kind, data) {
 
   /* Un renvoi n'avertit pas une seconde fois : c'est tout
      l'intérêt de le détecter. */
+  var envois = null;
   if (!ecrit.doublon) {
-    /* LE QUOTA SE LIT AVANT D'ESSAYER, PAS APRÈS.  D-733
-       `envoyer()` refuse en silence quand la réserve est vide ; sans
-       ce relevé, la demande arriverait au classeur sans que rien
-       n'indique que personne n'a été prévenu. */
-    var avantEnvois = quotaRestant();
-    avertirAgence(kind, data, extra, ecrit);
-    confirmerAuVisiteur(kind, data, extra);
-    if (avantEnvois < 1) noterQuotaEpuise(kind, ecrit.ligne);
+    var donnees = data;
+    envois = function () {
+      /* LE QUOTA SE LIT AVANT D'ESSAYER, PAS APRÈS.  D-733
+         `envoyer()` refuse en silence quand la réserve est vide ; sans
+         ce relevé, la demande arriverait au classeur sans que rien
+         n'indique que personne n'a été prévenu. */
+      var avantEnvois = quotaRestant();
+      avertirAgence(kind, donnees, extra, ecrit);
+      confirmerAuVisiteur(kind, donnees, extra);
+      if (avantEnvois < 1) noterQuotaEpuise(kind, ecrit.ligne);
+    };
   }
 
-  return json({
+  return { envois: envois, reponse: {
     success: true,
     ligne: ecrit.ligne,
     renvoi: ecrit.doublon || false,
     meet: extra._meet || ""
-  });
+  } };
 }
 
 
@@ -1241,7 +1444,36 @@ function chevauche(aDebut, aFin, bDebut, bFin) {
    avancé n'a pas été activé : il bloque alors TOUT, sans nuance.
    Trop prudent vaut mieux qu'un double-emploi. */
 function occupations(depuis, jusqua) {
-  var calId = DISPONIBILITES.CALENDRIER_ID || "primary";
+  var out = [];
+  listeCalendriers().forEach(function (calId) {
+    occupationsDe(calId, depuis, jusqua).forEach(function (i) { out.push(i); });
+  });
+  return out;
+}
+
+/* LES AGENDAS À LIRE, dans l'ordre : le principal, puis ceux de
+   `CALENDRIERS_EN_PLUS`. Les doublons sautent — lister deux fois le
+   même agenda doublerait chaque événement sans rien changer au
+   résultat, mais ferait deux appels réseau pour rien. */
+function listeCalendriers() {
+  var out = [DISPONIBILITES.CALENDRIER_ID || "primary"];
+  (DISPONIBILITES.CALENDRIERS_EN_PLUS || []).forEach(function (id) {
+    var v = String(id || "").trim();
+    if (v && out.indexOf(v) === -1) out.push(v);
+  });
+  return out;
+}
+
+/* UN agenda, entre deux instants.
+
+   IL LÈVE PLUTÔT QUE DE RENDRE UNE LISTE VIDE. Un agenda qu'on ne
+   sait pas lire — mal orthographié, jamais partagé, partagé en
+   « libre/occupé seulement » — rendrait zéro occupation, donc une
+   journée entièrement libre. C'est le pire des mensonges possibles
+   ici : il ouvre à la réservation des heures déjà prises. On laisse
+   donc l'erreur remonter ; `creneauxLibres()` retombe alors sur le
+   filet et `poserRendezVous()` refuse. */
+function occupationsDe(calId, depuis, jusqua) {
   var out = [];
 
   if (typeof Calendar !== "undefined" && Calendar.Events && Calendar.Events.list) {
@@ -1269,9 +1501,13 @@ function occupations(depuis, jusqua) {
     return out;
   }
 
-  var cal = DISPONIBILITES.CALENDRIER_ID
-    ? CalendarApp.getCalendarById(DISPONIBILITES.CALENDRIER_ID)
+  var cal = (calId && calId !== "primary")
+    ? CalendarApp.getCalendarById(calId)
     : CalendarApp.getDefaultCalendar();
+  /* `getCalendarById` rend `null` sur un agenda inconnu ; l'appeler
+     lèverait « cannot read getEvents of null », un message qui
+     n'apprend rien. On dit lequel. */
+  if (!cal) throw new Error("Agenda illisible : « " + calId + " ». Vérifiez l'identifiant et le partage.");
   cal.getEvents(depuis, jusqua).forEach(function (ev) {
     try {
       if (ev.getMyStatus() === CalendarApp.GuestStatus.NO) return;

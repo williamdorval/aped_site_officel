@@ -45,7 +45,11 @@ export const etat = {
   evenements: [],
   fichiersDrive: [],
   journal: [],
-  quota: 100
+  quota: 100,
+  /* Les agendas que le compte de l'agence sait lire. Tout ce qui
+     n'est pas la-dedans se comporte comme un agenda jamais partage. */
+  agendasConnus: ["primary"],
+  fuseauClasseur: "America/Toronto"
 };
 
 function feuille(nom) {
@@ -53,7 +57,9 @@ function feuille(nom) {
     etat.feuilles.set(nom, {
       nom, valeurs: [], figees: 0, largeurs: {}, listes: {}, cachees: [], hauteurs: {},
       /* Pour prouver l'ordre format/valeurs — voir `setNumberFormat`. */
-      ecrites: new Set(), formatsTexte: [], formatApresValeurs: 0, regles: []
+      ecrites: new Set(), formatsTexte: [], formatApresValeurs: 0, regles: [],
+      /* Les cellules que Sheets a retenues comme CALCUL. */
+      formules: new Set()
     });
   }
   return etat.feuilles.get(nom);
@@ -73,6 +79,17 @@ function plage(f, ligne, colonne, nLignes, nCols) {
       for (let r = 0; r < nLignes; r++) {
         const cible = f.valeurs[ligne - 1 + r];
         for (let c = 0; c < nCols; c++) {
+          const cle0 = (ligne - 1 + r) + ":" + (colonne - 1 + c);
+          /* LA REGLE DE SHEETS, MODELISEE ICI TELLE QUELLE : une
+             chaine qui commence par « = » devient une FORMULE, sauf
+             si la cellule porte deja le format texte. C'est le seul
+             endroit du banc ou l'injection se joue, donc le seul
+             endroit ou le modele doit etre exact — pas approche. */
+          if (/^[=+\-@]/.test(String(v[r][c])) && !f.formatsTexte.includes(cle0)) {
+            f.formules.add(cle0);
+          } else {
+            f.formules.delete(cle0);
+          }
           cible[colonne - 1 + c] = v[r][c];
           /* ON RETIENT QU'UNE VALEUR A ETE ECRITE ICI. Sert a
              prouver que le format TEXTE est pose AVANT, pas apres :
@@ -97,6 +114,32 @@ function plage(f, ligne, colonne, nLignes, nCols) {
     },
     getValue() { return this.getValues()[0][0]; },
     setValue(v) { return this.setValues([[v]]); },
+    /* Ce que Sheets a retenu comme CALCUL. Vide = du texte. C'est le
+       verdict de l'injection, et il ne se lit pas dans `getValues`. */
+    getFormulas() {
+      const out = [];
+      for (let r = 0; r < nLignes; r++) {
+        const row = [];
+        for (let c = 0; c < nCols; c++) {
+          const cle = (ligne - 1 + r) + ":" + (colonne - 1 + c);
+          row.push(f.formules.has(cle) ? String((f.valeurs[ligne - 1 + r] || [])[colonne - 1 + c] ?? "") : "");
+        }
+        out.push(row);
+      }
+      return out;
+    },
+    getNumberFormats() {
+      const out = [];
+      for (let r = 0; r < nLignes; r++) {
+        const row = [];
+        for (let c = 0; c < nCols; c++) {
+          row.push(f.formatsTexte.includes((ligne - 1 + r) + ":" + (colonne - 1 + c)) ? "@" : "0.###############");
+        }
+        out.push(row);
+      }
+      return out;
+    },
+    getNumberFormat() { return this.getNumberFormats()[0][0]; },
     setNumberFormat(fmt) {
       if (fmt === "@") {
         for (let r = 0; r < nLignes; r++) {
@@ -128,6 +171,14 @@ function plage(f, ligne, colonne, nLignes, nCols) {
         }
       }
       return this;
+    },
+    getA1Notation() {
+      const lettre = (n) => {
+        let s = "";
+        while (n > 0) { const r = (n - 1) % 26; s = String.fromCharCode(65 + r) + s; n = (n - r - 1) / 26; }
+        return s;
+      };
+      return lettre(colonne) + ligne + ":" + lettre(colonne + nCols - 1) + (ligne + nLignes - 1);
     },
     /* Sert a la mise en forme conditionnelle : on retient la plage
        telle que `Code.gs` la demande, sans rien peindre. */
@@ -162,27 +213,35 @@ function faireFeuille(f) {
        tort, pas `Code.gs`. */
     insertRowBefore: (n) => {
       f.valeurs.splice(n - 1, 0, []);
-      f.ecrites = new Set([...f.ecrites].map((cle) => {
+      const monter = (cle) => {
         const [r, c] = cle.split(":").map(Number);
         return (r >= n - 1 ? r + 1 : r) + ":" + c;
-      }));
+      };
+      f.ecrites = new Set([...f.ecrites].map(monter));
+      f.formules = new Set([...f.formules].map(monter));
+      f.formatsTexte = f.formatsTexte.map(monter);
     },
     deleteRow: (n) => {
       f.valeurs.splice(n - 1, 1);
-      f.ecrites = new Set([...f.ecrites]
-        .filter((cle) => Number(cle.split(":")[0]) !== n - 1)
-        .map((cle) => {
-          const [r, c] = cle.split(":").map(Number);
-          return (r > n - 1 ? r - 1 : r) + ":" + c;
-        }));
-    }
+      const garder = (cle) => Number(cle.split(":")[0]) !== n - 1;
+      const descendre = (cle) => {
+        const [r, c] = cle.split(":").map(Number);
+        return (r > n - 1 ? r - 1 : r) + ":" + c;
+      };
+      f.ecrites = new Set([...f.ecrites].filter(garder).map(descendre));
+      f.formules = new Set([...f.formules].filter(garder).map(descendre));
+      f.formatsTexte = f.formatsTexte.filter(garder).map(descendre);
+    },
+    getColumnWidth: (c) => f.largeurs[c] ?? 100,
+    getFrozenRows: () => f.figees
   };
 }
 
 const classeurFactice = {
   getId: () => "CLASSEUR_FACTICE",
   getUrl: () => "https://docs.google.com/spreadsheets/d/CLASSEUR_FACTICE/edit",
-  setSpreadsheetTimeZone: () => {},
+  setSpreadsheetTimeZone: (tz) => { etat.fuseauClasseur = tz; },
+  getSpreadsheetTimeZone: () => etat.fuseauClasseur || "America/Toronto",
   getSheetByName: (n) => (etat.feuilles.has(n) ? faireFeuille(etat.feuilles.get(n)) : null),
   insertSheet: (n) => faireFeuille(feuille(n)),
   getSheets: () => [...etat.feuilles.keys()].map((n) => faireFeuille(etat.feuilles.get(n))),
@@ -263,9 +322,15 @@ function versApiAvancee(e) {
   return out;
 }
 
-const calendrierFactice = {
+/* DE QUEL AGENDA VIENT CET EVENEMENT. Sans champ, c'est celui de
+   l'agence. `tools/agenda-multi-check.mjs` s'en sert pour poser un
+   blocage dans un agenda PERSONNEL et verifier qu'il compte —
+   c'etait exactement le trou du 2026-08-06. */
+function agendaDe(e) { return e.agenda || "primary"; }
+
+const calendrierFactice = (calId) => ({
   getEvents: (debut, fin) => etat.evenements
-    .filter((e) => bornes(e).debut < fin && bornes(e).fin > debut)
+    .filter((e) => agendaDe(e) === calId && bornes(e).debut < fin && bornes(e).fin > debut)
     .map((e) => ({
       getMyStatus: () => (e.refuse ? "NO" : "YES"),
       isAllDayEvent: () => Boolean(e.jour),
@@ -276,11 +341,12 @@ const calendrierFactice = {
       titre: e.titre
     })),
   createEvent: (titre, debut, fin, opts) => {
-    const ev = { titre, debut, fin, description: (opts || {}).description, invites: [], meet: "" };
+    const ev = { titre, debut, fin, description: (opts || {}).description,
+                 invites: [], meet: "", agenda: calId };
     etat.evenements.push(ev);
     return { addGuest: (a) => ev.invites.push(a), getId: () => "EV" + etat.evenements.length };
   }
-};
+});
 
 /* ---------- les services ---------- */
 const services = {
@@ -305,7 +371,13 @@ const services = {
         setBackground: (c) => { b.fond = c; return api; },
         setRanges: (r) => { b.plages = r; return api; },
         build: () => Object.assign(b, {
-          getBooleanCondition: () => ({ getCriteriaValues: () => [b.formule] })
+          getRanges: () => b.plages,
+          getBooleanCondition: () => ({
+            getCriteriaValues: () => [b.formule],
+            getBackgroundObject: () => ({
+              asRgbColor: () => ({ asHexString: () => b.fond })
+            })
+          })
         })
       };
       return api;
@@ -334,8 +406,12 @@ const services = {
 
   CalendarApp: {
     GuestStatus: { NO: "NO", YES: "YES", MAYBE: "MAYBE" },
-    getDefaultCalendar: () => calendrierFactice,
-    getCalendarById: () => calendrierFactice
+    getDefaultCalendar: () => calendrierFactice("primary"),
+    /* GOOGLE REND `null` SUR UN AGENDA INCONNU — il ne leve pas.
+       Le bouchon rendait toujours un calendrier, donc le chemin
+       « agenda mal orthographie » n'etait jamais exerce et le seul
+       code qui compte, celui qui REFUSE, n'etait pas teste. */
+    getCalendarById: (id) => (etat.agendasConnus.includes(id) ? calendrierFactice(id) : null)
   },
 
   /* Le service avance. C'est LUI qui fabrique le lien Meet en
@@ -352,10 +428,17 @@ const services = {
   Calendar: {
     Events: {
       list: (calId, params) => {
+        /* UN AGENDA INCONNU LEVE, il ne rend pas une liste vide.
+           C'est ce que fait le vrai service (404 Not Found), et
+           c'est la seule reponse acceptable : « zero occupation »
+           voudrait dire « journee entierement libre ». */
+        if (!etat.agendasConnus.includes(calId)) {
+          throw new Error("Not Found: " + calId);
+        }
         const t0 = new Date(params.timeMin);
         const t1 = new Date(params.timeMax);
         const items = etat.evenements
-          .filter((e) => bornes(e).debut < t1 && bornes(e).fin > t0)
+          .filter((e) => agendaDe(e) === calId && bornes(e).debut < t1 && bornes(e).fin > t0)
           .map((e) => versApiAvancee(e));
         return { items, nextPageToken: null };
       },
@@ -371,7 +454,7 @@ const services = {
         etat.evenements.push({
           titre: ev.summary, debut: new Date(ev.start.dateTime), fin: new Date(ev.end.dateTime),
           description: ev.description, invites: (ev.attendees || []).map((a) => a.email),
-          meet: lien, sendUpdates: opts.sendUpdates
+          meet: lien, sendUpdates: opts.sendUpdates, agenda: calId || "primary"
         });
         return { hangoutLink: lien, htmlLink: "https://calendar.google.com/event?eid=FACTICE" + n,
                  conferenceData: { entryPoints: [{ entryPointType: "video", uri: lien }] } };
@@ -464,6 +547,23 @@ const fabrique = new Function(...noms, source + `
            surLaGrille, fenetreReservable, colonneLettre, migrerColonnes };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));
+
+/* LE MEME `Code.gs`, SANS LE SERVICE AVANCE CALENDAR.  D-736
+
+   POURQUOI IL FAUT UNE SECONDE INSTANCE. Le repli sur `CalendarApp`
+   est le chemin qu'emprunte le script quand le service avance n'a
+   pas ete active dans le compte — c'est-a-dire l'etat par defaut de
+   toute nouvelle installation. Il n'avait jamais ete exerce : le
+   banc fournissait toujours `Calendar`, donc les 41 cas des
+   creneaux passaient tous par la branche d'a cote.
+
+   `typeof Calendar` rend « undefined » quand le parametre vaut
+   `undefined` : la branche se choisit donc exactement comme en
+   production. Les deux instances partagent `etat` — memes
+   evenements, meme classeur, seul le chemin de lecture change. */
+export const gsSansAvance = fabrique(
+  ...noms.map((n) => (n === "Calendar" ? undefined : services[n]))
+);
 
 /* ---------- le serveur ---------- */
 export function servir(port = PORT) {
