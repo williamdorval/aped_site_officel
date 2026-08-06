@@ -114,3 +114,4 @@ tools/_voir.mjs
 .env.*.local
 !.env.local.example
 js/config.local.js
+tools/_pouce/

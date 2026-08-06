@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Politique de confidentialité | APED Agence</title>
+  <meta name="description" content="Ce qu’APED Agence recueille par ses formulaires, pourquoi, où c’est gardé, et comment en demander le retrait. Aucun témoin, aucun traceur, aucune requête tierce." />
+
+  <!-- Une seule balise, sans `media` : elle doit suivre la bascule manuelle,
+       pas la preference systeme. -->
+  <meta name="theme-color" id="metaThemeColor" content="#dcdedb" />
+
+  <link rel="icon" href="images/logo-mark.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+
+  <link rel="preload" href="fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/chivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/martian-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/app.css" />
+
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      var saved = null;
+      try { saved = localStorage.getItem("aped-theme"); } catch (e) {}
+      var sys = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      var theme = saved || sys;
+      d.setAttribute("data-theme", theme);
+      var m = document.getElementById("metaThemeColor");
+      if (m) m.setAttribute("content", theme === "dark" ? "#101211" : "#dcdedb");
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        d.classList.add("reduced-motion");
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008" /></symbol></svg>
+
+<header class="nav">
+  <a class="wordmark" href="index.html" translate="no">APED<span>Agence</span></a>
+  <span></span>
+  <div class="nav-right">
+    <button class="btn-icon theme-toggle" id="themeToggle" type="button" aria-label="Basculer en thème sombre">
+      <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun" /></svg>
+      <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon" /></svg>
+    </button>
+    <a class="btn btn--primary" href="index.html">
+      Retour à l’accueil
+      <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+    </a>
+  </div>
+</header>
+
+<main class="wrap legal" id="contenu">
+  <h1>Ce qu’on fait de vos renseignements.</h1>
+  <p class="legal-lead">
+    Écrit pour être lu, pas pour être coché. Si quelque chose ici n’est pas
+    clair, écrivez-nous et on le récrira.
+  </p>
+  <p class="legal-maj">Dernière mise à jour&nbsp;: 6 août 2026</p>
+
+  <section class="legal-sec">
+    <h2>Ce site ne pose aucun témoin.</h2>
+    <p>
+      Pas de témoin publicitaire, pas de témoin de mesure d’audience, pas de
+      pixel, pas de bouton de réseau social. <strong>Aucun</strong> — le mot est
+      employé au sens strict&nbsp;: le site ne fait aucune requête vers un autre
+      serveur que le sien. Aucune police, aucune image, aucun script ne vient
+      d’ailleurs.
+    </p>
+    <p>
+      C’est aussi pour ça qu’il n’y a pas de bandeau à accepter en arrivant.
+      Un bandeau annoncerait un suivi qui n’existe pas.
+    </p>
+    <p>
+      Votre navigateur garde quand même deux choses, <strong>chez vous</strong>,
+      et elles ne nous sont jamais transmises&nbsp;:
+    </p>
+    <ul>
+      <li>le thème que vous avez choisi, clair ou sombre&nbsp;;</li>
+      <li>le fait que la fenêtre des deux guides vous a déjà été présentée,
+        pour qu’elle ne revienne pas à chaque visite.</li>
+    </ul>
+    <p>
+      Ni l’une ni l’autre ne vous identifie. Vider les données du site dans
+      votre navigateur les efface.
+    </p>
+  </section>
+
+  <section class="legal-sec">
+    <h2>Ce qu’on vous demande, et seulement quand vous l’écrivez.</h2>
+    <p>
+      Rien n’est recueilli en naviguant. Tout vient d’un formulaire que vous
+      remplissez vous-même.
+    </p>
+    <div class="legal-table-wrap">
+      <table class="legal-table">
+        <thead>
+          <tr><th scope="col">Formulaire</th><th scope="col">Ce qu’il demande</th><th scope="col">Pourquoi</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Contact</td>
+            <td>Nom, courriel, téléphone, votre message</td>
+            <td>Vous répondre</td>
+          </tr>
+          <tr>
+            <td>Urgence</td>
+            <td>Nom, courriel, téléphone, la nature de l’urgence</td>
+            <td>Vous rappeler vite</td>
+          </tr>
+          <tr>
+            <td>Estimation rapide</td>
+            <td>Nom, courriel, vos réponses aux six questions</td>
+            <td>Chiffrer votre projet</td>
+          </tr>
+          <tr>
+            <td>Démarrer un projet</td>
+            <td>Nom, entreprise, ville, courriel, téléphone, le détail du projet,
+              et les fichiers que vous joignez</td>
+            <td>Préparer une proposition écrite</td>
+          </tr>
+          <tr>
+            <td>Réserver un appel</td>
+            <td>Nom, entreprise, courriel, téléphone, l’heure choisie</td>
+            <td>Créer le rendez-vous et vous envoyer l’invitation</td>
+          </tr>
+          <tr>
+            <td>Référer une entreprise</td>
+            <td>Vos coordonnées, celles de l’entreprise référée, et de la
+              personne à contacter</td>
+            <td>Joindre l’entreprise que vous nous signalez</td>
+          </tr>
+          <tr>
+            <td>Les deux guides</td>
+            <td>Courriel, téléphone</td>
+            <td>Vous envoyer les guides et pouvoir en reparler</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      <strong>Si vous référez une entreprise</strong>, vous nous donnez les
+      coordonnées de quelqu’un d’autre. Assurez-vous que cette personne est
+      d’accord pour qu’on la contacte&nbsp;: on la traite ensuite exactement
+      comme n’importe quelle demande décrite ici.
+    </p>
+  </section>
+
+  <section class="legal-sec">
+    <h2>Ce qu’on n’en fait pas.</h2>
+    <ul>
+      <li>On ne vend rien, à personne.</li>
+      <li>On n’échange, ne loue ni ne cède vos coordonnées à un partenaire.</li>
+      <li>On ne vous inscrit à aucune infolettre automatique&nbsp;: si on vous
+        écrit, c’est au sujet de votre demande.</li>
+      <li>On ne fait aucun profilage, aucune décision automatisée, aucune
+        publicité ciblée.</li>
+    </ul>
+  </section>
+
+  <section class="legal-sec">
+    <h2>Où c’est gardé — et oui, c’est hors Québec.</h2>
+    <p>
+      Votre demande est enregistrée dans les outils Google de l’agence&nbsp;:
+      un classeur Google&nbsp;Sheets pour la demande elle-même, Gmail pour les
+      courriels, Google&nbsp;Agenda et Google&nbsp;Meet pour un rendez-vous,
+      Google&nbsp;Drive pour les fichiers que vous joignez.
+    </p>
+    <p>
+      <strong>Ces services stockent et traitent l’information sur des serveurs
+      situés à l’extérieur du Québec</strong>, notamment aux États-Unis. En
+      envoyant un formulaire, vous acceptez cette communication hors Québec.
+      C’est une information qu’on vous doit&nbsp;; la voici sans détour.
+    </p>
+    <p>
+      L’accès à ces outils est réservé à l’agence et protégé par une
+      authentification en deux étapes.
+    </p>
+  </section>
+
+  <section class="legal-sec">
+    <h2>Combien de temps.</h2>
+    <p>
+      On garde votre demande aussi longtemps qu’elle peut servir à vous
+      répondre, à assurer le suivi, ou à tenir les registres qu’un contrat
+      exige.
+    </p>
+    <p>
+      <strong>On ne s’engage pas ici sur une durée fixe</strong> — l’écrire
+      sans avoir de quoi la faire respecter serait une promesse en l’air.
+      Ce sur quoi on s’engage&nbsp;: <strong>si vous demandez le retrait de vos
+      renseignements, on les retire dans les 30&nbsp;jours et on vous le
+      confirme.</strong>
+    </p>
+  </section>
+
+  <section class="legal-sec">
+    <h2>Vos droits.</h2>
+    <p>
+      La loi québécoise sur la protection des renseignements personnels dans le
+      secteur privé vous donne le droit de&nbsp;:
+    </p>
+    <ul>
+      <li>savoir quels renseignements on détient sur vous, et en obtenir copie&nbsp;;</li>
+      <li>faire corriger ce qui est inexact ou incomplet&nbsp;;</li>
+      <li>demander qu’on les supprime&nbsp;;</li>
+      <li>retirer votre consentement, à tout moment&nbsp;;</li>
+      <li>porter plainte à la Commission d’accès à l’information du Québec.</li>
+    </ul>
+    <p>
+      On répond à une demande d’accès ou de rectification dans les
+      30&nbsp;jours.
+    </p>
+  </section>
+
+  <section class="legal-sec">
+    <h2>À qui s’adresser.</h2>
+    <p>
+      La responsabilité de la protection des renseignements personnels chez
+      APED&nbsp;Agence revient à la personne exerçant la plus haute autorité
+      dans l’entreprise.
+    </p>
+    <p>
+      Pour toute question, tout accès, toute correction ou tout retrait&nbsp;:
+      <a href="index.html#contact">écrivez-nous par le formulaire de contact</a>
+      en indiquant «&nbsp;vie privée&nbsp;» dans votre message. On répond en
+      moins de 12&nbsp;heures ouvrables, et c’est une vraie personne qui lit.
+    </p>
+    <p>
+      Si notre réponse ne vous satisfait pas, vous pouvez vous adresser à la
+      Commission d’accès à l’information du Québec&nbsp;:
+      <a href="https://www.cai.gouv.qc.ca" rel="noopener">cai.gouv.qc.ca</a>.
+    </p>
+  </section>
+
+  <section class="legal-sec">
+    <h2>Si cette politique change.</h2>
+    <p>
+      La date en haut de cette page dit quand elle a été modifiée pour la
+      dernière fois. Un changement qui toucherait ce qu’on recueille ou ce
+      qu’on en fait sera annoncé ici avant d’être appliqué.
+    </p>
+  </section>
+</main>
+
+<footer class="footer" style="padding-top: var(--s-8); margin-top: var(--s-8);">
+  <div class="wrap footer-legal">
+    <span>© 2026 APED Agence. Tous droits réservés.</span>
+    <span>Québec, Canada</span>
+  </div>
+</footer>
+
+<script>
+  /* Page utilitaire : la bascule de theme en ligne plutot que les  D-095
+     38 Ko de main.js. Meme code que `404.html`, meme raison. */
+  (function () {
+    "use strict";
+    var d = document;
+    var root = d.documentElement;
+    var toggle = d.getElementById("themeToggle");
+    var meta = d.getElementById("metaThemeColor");
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function label(next) {
+      toggle.setAttribute("aria-label", next === "dark" ? "Basculer en thème clair" : "Basculer en thème sombre");
+    }
+    if (toggle) {
+      label(root.getAttribute("data-theme"));
+      toggle.addEventListener("click", function () {
+        var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        var apply = function () {
+          root.setAttribute("data-theme", next);
+          label(next);
+          if (meta) meta.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
+          try { localStorage.setItem("aped-theme", next); } catch (e) {}
+        };
+        if (d.startViewTransition && !reduced.matches) d.startViewTransition(apply);
+        else apply();
+      });
+    }
+  })();
+</script>
+</body>
+</html>

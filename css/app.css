@@ -1092,6 +1092,11 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
 .cal-day.is-today { border-color: var(--rule-strong); }
 .cal-day.is-on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .cal-day.is-blank { visibility: hidden; }
+/* LA LONGUE ETIQUETTE EST MASQUEE PAR DEFAUT, pas seulement sous
+   pointeur grossier : une fenetre de bureau retrecie a 340 px a un
+   pointeur FIN, et « ven. 7 août » dans une case de 40 px casserait
+   la grille sans qu'aucune requete de media ne le rattrape.  D-740 */
+.cal-long { display: none; }
 
 .slots { display: grid; gap: var(--s-3); align-content: start; }
 .slots-title { font-family: var(--font-data); font-size: var(--fs-8); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-muted); }
@@ -1181,6 +1186,64 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
      ligne a moitie vide. Deux colonnes larges se visent mieux et
      se lisent mieux. */
   .slots-list { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* LE CALENDRIER DEVIENT UNE LISTE SOUS 26 rem.  D-740
+
+   MESURE, ecran de 320 px : panneau de 288 px, sept colonnes,
+   six gouttieres de 1 px — 40 px par case. La hauteur, on la
+   force a 44 ; la LARGEUR, on ne peut pas : il n'y a pas
+   307 px a distribuer. Une case de 40 x 44 passe le seuil AA de
+   WCAG (2.5.8, 24 px) et rate le AAA (2.5.5, 44 px). Se tromper
+   de case, ici, ne rate pas un clic : ca reserve le mauvais jour.
+
+   POURQUOI 24 rem, ET LE CHIFFRE EST MESURE, PAS CALCULE. Le
+   calcul de tete donnait 348 px : il oubliait le remplissage
+   PROPRE du panneau, qui vient s'ajouter a la marge de la page.
+   `tools/pouce-check.mjs` a rendu le vrai chiffre —
+       360 px de fenetre  ->  panneau 328  ->  grille 294  ->  41,1 px
+       390 px de fenetre  ->  panneau 358  ->  grille 324  ->  45,4 px
+   La grille ne tient donc le seuil qu'a partir de 378 px, pas 348.
+   Le seuil est pose a 24 rem (384 px) : un telephone de 360 passe
+   en liste, un de 390 garde sa grille. Au-dela, echanger une
+   grille qui passe contre trente lignes a defiler ne gagne rien.
+
+   On enleve donc la contrainte a sa racine — les sept colonnes.
+   Une ligne pleine largeur par jour OFFERT : 288 x 48, on ne peut
+   pas la manquer, et elle dit « sam 8 août » au lieu de « 8 ».
+   Les jours indisponibles ne sont plus grises, ils ne sont plus
+   la : une liste de trente lignes dont vingt sont mortes se
+   parcourt moins bien qu'une liste de dix vivantes.
+
+   LA HAUTEUR EST BORNEE ET LA LISTE DEFILE. Sans ca, trente jours
+   ouverts poussent le bouton « suivant » hors de l'ecran, et le
+   visiteur croit l'etape cassee. */
+@media (max-width: 24rem) {
+  .cal-week { display: none; }
+  .cal-days {
+    grid-template-columns: 1fr;
+    gap: 0;
+    max-height: 17rem;
+    overflow-y: auto;
+    border-top: var(--rule-w) solid var(--rule);
+  }
+  .cal-day.is-blank,
+  .cal-day[disabled] { display: none; }
+  .cal-day {
+    aspect-ratio: auto;
+    min-height: 3rem;                 /* 48 px */
+    justify-items: start;
+    padding: 0 var(--s-3);
+    border: 0;
+    border-bottom: var(--rule-w) solid var(--rule);
+    font-size: var(--fs-6);
+    text-align: left;
+  }
+  .cal-num { display: none; }
+  .cal-long { display: block; }
+  /* Le jour retenu garde l'aplat de minium : c'est la seule
+     couleur du site qui dise « c'est vous qui avez agi ». */
+  .cal-day.is-on { border-color: var(--accent); }
 }
 
 .recap {
@@ -5675,6 +5738,125 @@ html:not(.js) .ba-trait { display: none; }
   font-size: var(--fs-8);
   color: var(--ink-muted);
 }
+
+/* == 24bis. LA MENTION SOUS UN FORMULAIRE ==  D-739
+
+   Elle dit ce qu'on fait des coordonnees, a l'endroit exact ou on
+   les demande — c'est ce que la Loi 25 appelle informer AU MOMENT
+   de la collecte. Elle se lit apres le bouton, pas avant : ce n'est
+   pas une condition a franchir, c'est une precision a portee de
+   main. Meme graisse que `form-status`, un ton plus bas. */
+.form-legal {
+  margin-top: var(--s-3);
+  max-width: 62ch;
+  font-size: var(--fs-8);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.form-legal a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--rule-strong);
+}
+.form-legal a:hover { color: var(--ink); text-decoration-color: currentColor; }
+
+/* == 24ter. LA PAGE DE CONFIDENTIALITE ==  D-739
+
+   Une PAGE, pas une modale. Une politique doit se citer par son
+   adresse — depuis un courriel, depuis un formulaire, depuis une
+   demande de la Commission d'acces a l'information. Une modale
+   n'existe qu'a l'interieur d'`index.html`.
+
+   Aucune matiere nouvelle : ciment, encre, minium. Les filets sont
+   ceux du reste du site, rayon 0, sans ombre. */
+.legal {
+  padding-top: calc(var(--nav-h) + var(--s-7));
+  padding-bottom: var(--s-9);
+}
+.legal > h1 { max-width: 22ch; }
+.legal-lead {
+  margin-top: var(--s-4);
+  max-width: 58ch;
+  font-size: var(--fs-4);
+  color: var(--ink-muted);
+}
+.legal-maj {
+  margin-top: var(--s-4);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.legal-sec {
+  margin-top: var(--s-7);
+  padding-top: var(--s-5);
+  border-top: var(--rule-w) solid var(--rule-strong);
+}
+.legal-sec > h2 {
+  font-size: var(--fs-4);
+  max-width: 34ch;
+}
+.legal-sec p,
+.legal-sec li {
+  margin-top: var(--s-3);
+  max-width: 68ch;
+  font-size: var(--fs-6);
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+.legal-sec strong { color: var(--ink); font-weight: 600; }
+.legal-sec ul { margin-top: var(--s-3); padding-left: 0; list-style: none; }
+.legal-sec ul > li {
+  position: relative;
+  padding-left: var(--s-5);
+}
+/* Le tiret cadratin plutot qu'une puce : le site n'a pas de disque
+   nulle part, et un disque est un rayon. */
+.legal-sec ul > li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--ink-muted);
+}
+.legal-sec a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* LE TABLEAU DE CE QU'ON DEMANDE. Il deborde sur telephone si on ne
+   le laisse pas defiler dans SA boite — la page, elle, ne defile
+   jamais lateralement. */
+.legal-table-wrap {
+  margin-top: var(--s-4);
+  overflow-x: auto;
+  border-top: var(--rule-w) solid var(--rule);
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+.legal-table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: var(--fs-7);
+}
+.legal-table th,
+.legal-table td {
+  padding: var(--s-3) var(--s-4) var(--s-3) 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: var(--rule-w) solid var(--rule);
+  color: var(--ink-muted);
+}
+.legal-table th {
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.legal-table tr:last-child td { border-bottom: 0; }
 
 /* == 25. PAGE 404 - index deraille ==  D-245 */
 .derail {

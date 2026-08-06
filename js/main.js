@@ -1650,16 +1650,62 @@
     return new Promise(function (r) { window.setTimeout(r, ms); });
   }
 
+  /* AUCUNE REQUETE N'ATTEND INDEFINIMENT.  D-741
+
+     MESURE, contre le vrai deploiement, le 2026-08-06 : la porte des
+     creneaux repond en 1,7 s de mediane et 3,1 s au p90 — mais une
+     fois sur vingt-cinq elle a mis 29,9 s. Trente secondes de roue
+     qui tourne, sans un mot, ce n'est pas de la lenteur : le
+     visiteur conclut que c'est casse et il ferme.
+
+     `fetch` n'a pas de delai maximum. Sans `AbortController`, la
+     promesse reste ouverte aussi longtemps que le navigateur veut
+     bien — et le reessai, lui, n'est jamais declenche puisque rien
+     n'a echoue.
+
+     DEUX BUDGETS, PARCE QUE LES DEUX ENJEUX SONT OPPOSES :
+     · l'AFFICHAGE des creneaux est jetable — on a un filet, on
+       coupe tot (8 s) et on montre autre chose ;
+     · l'ENVOI d'une demande ne l'est pas — abandonner trop tot
+       ferait renvoyer une demande peut-etre deja recue. On laisse
+       25 s, soit plus que le pire releve, et le service est
+       idempotent (D-730) : un renvoi ne cree pas de doublon. */
+  var DELAI_ENVOI_MS = 25000;
+  var DELAI_CRENEAUX_MS = 8000;
+
+  function avecDelai(url, options, ms) {
+    /* Un navigateur sans `AbortController` garde l'ancien
+       comportement plutot que de perdre la requete. */
+    if (typeof window.AbortController !== "function") return fetch(url, options);
+    var ctrl = new window.AbortController();
+    var minuterie = window.setTimeout(function () { ctrl.abort(); }, ms);
+    var o = Object.assign({}, options, { signal: ctrl.signal });
+    return fetch(url, o).then(function (res) {
+      window.clearTimeout(minuterie);
+      return res;
+    }, function (err) {
+      window.clearTimeout(minuterie);
+      /* On renomme l'abandon : `AbortError` remonterait tel quel
+         jusqu'au message du visiteur, qui n'en ferait rien. */
+      if (err && err.name === "AbortError") {
+        var e = new Error("delai depasse");
+        e.delaiDepasse = true;
+        throw e;
+      }
+      throw err;
+    });
+  }
+
   function poster(payload) {
     if (!FORM_ENDPOINT) return sansPoint();
     var essai = 0;
 
     function tenter() {
-      return fetch(FORM_ENDPOINT, {
+      return avecDelai(FORM_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
-      }).then(function (res) {
+      }, DELAI_ENVOI_MS).then(function (res) {
         if (!res.ok && transitoire(res.status) && essai < REESSAIS_MAX) {
           return attendre(REESSAI_MS[essai++]).then(tenter);
         }
@@ -1763,6 +1809,16 @@
         + " Reconnectez-vous et renvoyez.";
     }
     if (err && err.duService && err.message) return err.message;
+    /* LE DELAI DEPASSE N'EST PAS UNE PANNE, et le dire autrement  D-741
+       serait faux : le service a peut-etre recu la demande. On
+       invite donc a renvoyer — c'est sans danger, `traiter()`
+       reconnait un renvoi et n'ecrit pas deux fois (D-730) — et on
+       le dit, sinon personne n'ose. */
+    if (err && err.delaiDepasse) {
+      return "Google met plus de temps que d’habitude. " + perdu
+        + " Renvoyez dans une minute : si la demande est déjà passée,"
+        + " elle ne comptera pas en double.";
+    }
     return "Le service ne répond pas — on a réessayé deux fois. "
       + perdu + " Réessayez dans un moment, ou réservez un appel.";
   }
@@ -1966,7 +2022,11 @@
        qu'un second appel aurait repondu.  D-734 */
     var essai = 0;
     var lire = function () {
-      return fetch(url, { method: "GET" }).then(function (res) {
+      /* HUIT SECONDES, PAS PLUS. L'affichage des creneaux est la  D-741
+         seule requete du site qui ait un remplacant : le filet.
+         Attendre trente secondes une reponse qu'on sait remplacer
+         est le pire des deux mondes. */
+      return avecDelai(url, { method: "GET" }, DELAI_CRENEAUX_MS).then(function (res) {
         if (!res.ok) {
           if (transitoire(res.status) && essai < REESSAIS_MAX) {
             return attendre(REESSAI_MS[essai++]).then(lire);
@@ -2070,7 +2130,24 @@
         var btn = doc.createElement("button");
         btn.type = "button";
         btn.className = "cal-day";
-        btn.textContent = day;
+        /* DEUX ETIQUETTES DANS LA MEME CASE, UNE SEULE VISIBLE.  D-740
+           En grille c'est le quantieme, seul lisible dans 40 px de
+           large. Sur un telephone tenu d'une main la grille laisse
+           tomber : sept colonnes dans un panneau de 288 px donnent
+           des cases de 40 px, sous le seuil de 44, et se tromper de
+           case ne rate pas un clic — ca reserve le mauvais jour.
+           La feuille de style bascule alors en LISTE, une ligne
+           pleine largeur par jour offert, et c'est la longue
+           etiquette qui parait. Aucune des deux n'est fabriquee au
+           moment de l'affichage : elles voyagent ensemble. */
+        var court = doc.createElement("span");
+        court.className = "cal-num";
+        court.textContent = day;
+        var longue = doc.createElement("span");
+        longue.className = "cal-long";
+        longue.textContent = date.toLocaleDateString("fr-CA", { weekday: "short", day: "numeric", month: "short" });
+        btn.appendChild(court);
+        btn.appendChild(longue);
         btn.setAttribute("aria-label", date.toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" }));
         var open = jourOuvert(date);
         if (date.getTime() === today.getTime()) btn.classList.add("is-today");
