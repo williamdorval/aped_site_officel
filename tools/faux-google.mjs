@@ -328,6 +328,17 @@ function faireFeuille(f) {
     setRowHeight: (r, h) => { f.hauteurs[r] = h; },
     setColumnWidth: (c, w) => { f.largeurs[c] = w; },
     hideColumns: (c) => { if (!f.cachees.includes(c)) f.cachees.push(c); },
+    /* `appendRow` ECRIT SOUS LA DERNIERE LIGNE NON VIDE, pas au
+       bout du tableau : une feuille dont la ligne 3 est vide et la
+       ligne 2 pleine recoit sa nouvelle ligne en 3.  D-760 */
+    appendRow: (valeurs) => {
+      let derniere = 0;
+      for (let i = f.valeurs.length - 1; i >= 0; i--) {
+        if ((f.valeurs[i] || []).some((c) => c !== "" && c != null)) { derniere = i + 1; break; }
+      }
+      f.valeurs[derniere] = valeurs.slice();
+      return faireFeuille(f);
+    },
     /* INSERER UNE LIGNE DECALE TOUT CE QUI EST EN DESSOUS — Y
        COMPRIS MES REPERES. Sans ce remappage, les cles de `ecrites`
        pointaient sur les mauvaises lignes apres la premiere

@@ -869,6 +869,53 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
   box-shadow: inset 3px 0 0 var(--accent);
 }
 
+/* ============================================================
+   LE NUMERO SOUS CHAQUE FORMULAIRE.  D-760
+
+   IL NE DOIT PAS ECRASER LE FORMULAIRE, ET IL NE DOIT PAS SE
+   CACHER. Deux echecs symetriques : un numero en gros au-dessus du
+   bouton d'envoi fait hesiter quelqu'un qui allait envoyer ; un
+   numero en gris clair sous la mention legale n'est jamais lu.
+
+   Il se pose donc ENTRE les deux, au-dessus de la mention, filet
+   plein au-dessus pour dire « autre chose commence ici ». Le texte
+   est de la taille du corps — c'est une phrase qu'on lit —, le
+   numero est en chiffres tabulaires et souligne : sur un telephone
+   il est un lien `tel:`, une tape et l'appel part.
+
+   PAS DE MINIUM ICI. Le minium marque UN endroit ou agir par
+   ecran ; dans un formulaire, c'est le bouton d'envoi. Deux rouges
+   se disputeraient l'oeil, et celui qui gagne n'est pas celui qu'on
+   veut.
+   ============================================================ */
+.form-appel {
+  margin: var(--s-4) 0 0;
+  padding-top: var(--s-3);
+  border-top: var(--rule-w) solid var(--rule);
+  max-width: 62ch;
+  font-size: var(--fs-7);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.appel-num {
+  display: inline-block;
+  /* 44 px AU POUCE, sans faire un bouton : le remplissage vertical
+     porte la cible, la ligne de base ne bouge pas. */
+  padding: 0.5rem 0;
+  min-height: 2.75rem;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: var(--rule-w);
+  text-decoration-color: var(--rule-strong);
+  transition: text-decoration-color var(--t-1) var(--e-snap);
+}
+.appel-num:hover,
+.appel-num:focus-visible { text-decoration-color: currentColor; }
+
 /* LA RAISON D'UNE QUESTION, SOUS LA QUESTION.  D-759
    Un champ obligatoire de plus fait fermer un formulaire quand il a
    l'air d'une formalite. Elle dit ce qu'on FERA de la reponse — pas

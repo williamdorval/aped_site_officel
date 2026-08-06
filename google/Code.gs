@@ -1133,6 +1133,30 @@ function doPost(e) {
     var data = lireCorps(e);
     var kind = String(data._form || "").trim();
 
+    /* CELUI QUI APPELLE N'APPARAIT NULLE PART, ET C'EST LE TROU.
+       D-760
+
+       Le numero est un vrai lien `tel:` : une tape et l'appel part.
+       La personne ne remplit donc rien, n'ecrit pas une ligne au
+       classeur, et on ne sait jamais que le formulaire a MARCHE —
+       il a marche autrement. Sans ce compte, la seule mesure qu'on
+       ait de la page favorise mecaniquement les formulaires contre
+       le telephone, qui est pourtant ce qu'on prefere.
+
+       CE QUE CA N'EST PAS. Aucun temoin, aucun service tiers,
+       aucun identifiant : c'est notre propre service, celui qui
+       recoit deja les formulaires, et il ecrit UNE ligne de trois
+       colonnes — quand, depuis quel formulaire, sur quel appareil.
+       Rien qui designe une personne. Rien qui la suive d'une page
+       a l'autre. Aucun courriel n'est envoye : un clic n'est pas
+       une demande, et cent clics ne doivent pas vider la reserve. */
+    if (kind === "appel") {
+      try { compterAppel(data); } catch (err2) {
+        console.error("compte d'appel : " + err2);
+      }
+      return json({ success: true, compte: true });
+    }
+
     if (!SCHEMA[kind]) {
       return json({ success: false, message: "Formulaire inconnu." });
     }
@@ -1957,6 +1981,54 @@ function ecrireLigne(kind, data, extra, sig) {
   if (iVu >= 0) feuille.getRange(2, iVu + 1).insertCheckboxes();
 
   return { ligne: 2, doublon: false, url: lienVersLigne(feuille, 2) };
+}
+
+/* ============================================================
+   COMBIEN DE GENS ONT PREFERE APPELER.  D-760
+
+   TROIS COLONNES, ET PAS UNE DE PLUS. « Quand », « D'où » et
+   « Appareil ». Ajouter la page, la langue, la taille de l'ecran ou
+   quoi que ce soit d'autre ferait de ce compte un traceur, et un
+   traceur est interdit ici — pas par prudence juridique, parce que
+   le site promet zero requete tierce et zero temoin, et que cette
+   promesse ne se negocie pas colonne par colonne.
+
+   L'ONGLET SE CREE TOUT SEUL. `initialiser()` ne le connait pas :
+   il n'a pas de schema, pas de validation, pas de couleur. Une
+   fonction qui echoue ici ne doit RIEN casser — `doPost` l'appelle
+   dans un `try`, et un compte perdu ne vaut pas une demande
+   perdue.
+   ============================================================ */
+var ONGLET_APPELS = "Appels au numéro";
+
+function compterAppel(data) {
+  /* UN PLAFOND A PART. Le compteur des lignes de DEMANDE ne doit
+     pas se remplir de clics : un robot qui martele le numero
+     fermerait le formulaire de projet. */
+  if (tropVite("appels", 200, 3600)) return;
+
+  var cl = classeur();
+  var feuille = cl.getSheetByName(ONGLET_APPELS);
+  if (!feuille) {
+    feuille = cl.insertSheet(ONGLET_APPELS);
+    feuille.getRange(1, 1, 1, 3).setValues([["Quand", "D’où", "Appareil"]]);
+    feuille.setFrozenRows(1);
+    feuille.setColumnWidth(1, 170);
+    feuille.setColumnWidth(2, 200);
+    feuille.setColumnWidth(3, 120);
+    feuille.getRange(1, 1, 1, 3).setFontWeight("bold");
+  }
+
+  /* LA PROVENANCE EST BORNEE PAR NOUS, pas par l'appelant. Une
+     requete forgee ne peut donc pas ecrire ce qu'elle veut dans une
+     colonne — au pire elle ecrit « ailleurs ». */
+  var connus = ["contact", "booking", "urgent", "refer", "estimate", "project", "page"];
+  var ou = String(data.origine || "").trim();
+  if (connus.indexOf(ou) === -1) ou = "ailleurs";
+
+  var appareil = String(data.appareil || "") === "mobile" ? "téléphone" : "ordinateur";
+
+  feuille.appendRow([quand(new Date()), ou, appareil]);
 }
 
 function lienVersLigne(feuille, ligne) {

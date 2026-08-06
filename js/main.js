@@ -2341,6 +2341,48 @@
     } catch (e) { return false; }
   }
 
+  /* ============================================================
+     COMPTER CEUX QUI PREFERENT APPELER.  D-760
+
+     LE TROU QU'ON BOUCHE. Le numero est un vrai lien `tel:` : une
+     tape et l'appel part. La personne ne remplit rien, n'ecrit
+     aucune ligne au classeur, et le formulaire passe pour un echec
+     alors qu'il a marche autrement. Sans ce compte, la seule mesure
+     qu'on ait de la page favorise mecaniquement l'ecrit contre le
+     telephone, qui est pourtant ce qu'on prefere.
+
+     CE QUE CA N'EST PAS. Aucun temoin, aucun stockage local, aucun
+     identifiant, aucun service tiers : `sendBeacon` vers NOTRE
+     service, celui qui recoit deja les formulaires, avec deux mots
+     — d'ou vient le clic, et si l'ecran est tactile. Rien qui
+     designe une personne, rien qui la suive d'une page a l'autre.
+     Une deuxieme tape depuis la meme page compte deux fois, et
+     c'est correct : on compte des CLICS, pas des visiteurs.
+
+     `sendBeacon` ET PAS `fetch`, parce que le clic fait partir
+     l'application telephone : le document se decharge, et un
+     `fetch` en vol est abandonne. Le navigateur, lui, livre une
+     balise apres le depart.
+
+     RIEN N'EST BLOQUE. Le lien fait ce qu'il fait, tout de suite,
+     que la balise parte ou non. Un compte perdu ne vaut pas un
+     appel perdu. */
+  doc.addEventListener("click", function (e) {
+    var lien = e.target && e.target.closest ? e.target.closest("a[data-appel]") : null;
+    if (!lien) return;
+    if (!FORM_ENDPOINT) return;
+    if (!navigator || typeof navigator.sendBeacon !== "function") return;
+    try {
+      var charge = {
+        _form: "appel",
+        origine: lien.getAttribute("data-appel") || "page",
+        appareil: window.matchMedia("(pointer: coarse)").matches ? "mobile" : "bureau"
+      };
+      navigator.sendBeacon(FORM_ENDPOINT,
+        new Blob([JSON.stringify(charge)], { type: "text/plain;charset=utf-8" }));
+    } catch (err) { /* le lien part quand meme */ }
+  }, true);
+
   /* CE QU'IL RESTE A SAUVER SI LA PAGE PART MAINTENANT. Chaque
      formulaire y depose une fonction qui rend sa charge, ou `null`
      s'il n'a rien de neuf. */

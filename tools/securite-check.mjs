@@ -457,6 +457,68 @@ titre("10 · CE QU'ON REFUSE D'ECRIRE");
 }
 
 
+/* ============================================================
+   11 · LE COMPTE DES APPELS — UNE PORTE PUBLIQUE DE PLUS
+   ============================================================ */
+titre("11 · LE COMPTE DES APPELS N'OUVRE RIEN D'AUTRE (D-760)");
+{
+  remise(); viderDebit();
+
+  const av = etat.courriels.length;
+  const r = poster({ _form: "appel", origine: "estimate", appareil: "mobile" });
+  dire("le clic est compte", r.success && r.compte === true, true);
+  dire("aucun courriel ne part", etat.courriels.length, av,
+    "un clic n'est pas une demande, et cent clics ne doivent pas vider la reserve");
+
+  const f = etat.feuilles.get("Appels au numéro");
+  dire("l'onglet s'est cree tout seul", !!f, true);
+  const ligne = f.valeurs[1] || [];
+  dire("il ecrit trois colonnes, pas quatre", ligne.filter((c) => c !== "" && c != null).length, 3);
+  dire("la provenance est retenue", ligne[1], "estimate");
+  dire("l'appareil est retenu", ligne[2], "téléphone");
+
+  /* AUCUNE LIGNE DE DEMANDE. Un clic ne doit pas ressembler a un
+     lead : il polluerait le classeur et fausserait le compte. */
+  dire("aucune ligne dans les sept onglets de demande",
+    Object.keys(gs.SCHEMA).reduce((s2, k) => s2 + lignes(gs.SCHEMA[k].onglet).length, 0), 0);
+
+  /* LA PROVENANCE EST BORNEE PAR NOUS. Une requete forgee ne peut
+     pas ecrire ce qu'elle veut dans une colonne. */
+  poster({ _form: "appel", origine: "=IMPORTXML(\"http://x\",\"//a\")", appareil: "mobile" });
+  dire("une provenance inventee retombe sur « ailleurs »",
+    (f.valeurs[2] || [])[1], "ailleurs");
+
+  poster({ _form: "appel", origine: "contact", appareil: "n'importe quoi" });
+  dire("un appareil inconnu retombe sur « ordinateur »",
+    (f.valeurs[3] || [])[2], "ordinateur");
+
+  /* ET IL A SON PROPRE PLAFOND, QUI DOIT VRAIMENT ARRETER.
+
+     UNE PREMIERE VERSION DE CE CAS NE PROUVAIT RIEN, et la mutation
+     l'a montre : elle verifiait que 260 clics ne fermaient pas le
+     formulaire de contact. Ils ne l'auraient jamais ferme, plafond
+     ou pas — `compterAppel` ne passe pas par `traiter()`, donc il
+     ne touche jamais au compteur des lignes de demande. Le cas
+     passait dans les deux sens.
+
+     Ce qu'il faut mesurer, c'est l'onglet des appels lui-meme : au
+     plafond, il cesse de grossir. */
+  const avantRafale = f.valeurs.filter((r) => (r || []).some((c) => c !== "" && c != null)).length;
+  for (let i = 0; i < 260; i++) poster({ _form: "appel", origine: "page" });
+  const apresRafale = f.valeurs.filter((r) => (r || []).some((c) => c !== "" && c != null)).length;
+  dire("260 clics n'ecrivent pas 260 lignes", apresRafale - avantRafale < 260, true,
+    (apresRafale - avantRafale) + " lignes ecrites, plafond 200/h");
+
+  /* ET LE FORMULAIRE RESTE OUVERT — les deux compteurs sont bien
+     separes, un robot sur le numero ne ferme pas le contact. */
+  const avantDemande = lignes("Contact simple").length;
+  const quandMeme = poster({ _form: "contact", nom: "ZZTEST Apres la rafale",
+    email: "zztest@exemple.ca", message: "je passe encore" });
+  dire("le formulaire de contact reste ouvert", quandMeme.success, true);
+  dire("et la demande s'ecrit", lignes("Contact simple").length, avantDemande + 1);
+}
+
+
 console.log("");
 console.log("============================================================");
 console.log(ko ? ("LA PORTE NE TIENT PAS : " + ko + " echec(s) sur " + n)
