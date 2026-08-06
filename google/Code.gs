@@ -576,6 +576,45 @@ function preparerOnglet(classeur, kind) {
      ordre AVANT de réécrire la ligne 1. Une colonne disparue perd
      sa valeur — c'est le seul cas où quelque chose se perd, et il
      est annoncé dans le journal. */
+  /* ON EFFACE TOUTES LES VALIDATIONS AVANT D'EN POSER UNE.  D-756
+
+     C'est le frère jumeau de la règle de couleur empilée (D-755), et
+     il coûtait beaucoup plus cher.
+
+     Une liste déroulante se pose sur une COLONNE. Quand l'ordre des
+     colonnes change — D-738 a tiré « Statut » en B, D-743 a amené
+     tout le suivi en A–E — `migrerColonnes` redispose les VALEURS,
+     et personne ne touche aux validations : elles restent sur les
+     anciennes positions, qui portent maintenant des réponses de
+     visiteur.
+
+     CE QUE ÇA FAIT, ET CE N'EST PAS COSMÉTIQUE. Une validation
+     `requireValueInList(["William","Alan","Elie"])` en
+     `setAllowInvalid(false)` REFUSE toute autre valeur. `setValues`
+     sur la ligne entière lève alors — après avoir écrit les
+     colonnes qui précèdent la fautive. La ligne est écrite À MOITIÉ,
+     en silence : « Étape » disait « ✓ complète » pendant que le
+     budget, l'échéancier et la description n'arrivaient jamais.
+
+     Mesuré le 2026-08-06 contre le vrai service : « Démarrer un
+     projet » s'arrêtait net à la colonne 19, « Réserver un appel » à
+     la 13 — d'où des réservations sans plage, sans lien Meet et sans
+     signature.
+
+     `clearDataValidations` sur TOUTE la largeur de la feuille, pas
+     seulement sur les colonnes connues : une validation périmée peut
+     très bien se trouver au-delà du dernier en-tête.
+
+     ET AVANT `migrerColonnes`, PAS APRÈS — L'ORDRE PORTE LA
+     CORRECTION. La migration réécrit toutes les lignes existantes
+     dans le nouvel ordre : c'est le premier `setValues` que les
+     validations périmées rencontrent, donc le premier qu'elles font
+     lever. Purger ensuite laissait `initialiser()` échouer sur le
+     seul classeur qui en avait besoin — celui qui était déjà
+     abîmé. Le banc l'a attrapé au cas 10. */
+  feuille.getRange(2, 1, Math.max(feuille.getMaxRows() - 1, 1),
+                   feuille.getMaxColumns()).clearDataValidations();
+
   migrerColonnes(feuille, titres);
 
   feuille.getRange(1, 1, 1, titres.length).setValues([titres]);
@@ -799,7 +838,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 4,
+    version: 5,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
@@ -848,6 +887,36 @@ function diagnostic() {
     for (var c = 1; c <= nbCol; c++) {
       largeurs.push(feuille.getColumnWidth(c));
       formats.push(feuille.getRange(2, c).getNumberFormat());
+    }
+
+    /* LES VALIDATIONS, COLONNE PAR COLONNE.  D-756
+
+       CETTE PORTE NE LES REGARDAIT PAS, ET C'EST POUR ÇA QUE LE
+       DÉFAUT A TENU. Elle rendait les en-têtes, les largeurs, les
+       formats et les règles de couleur — tout sauf la seule chose
+       qui pouvait REFUSER une écriture. Le classeur avait l'air
+       parfaitement sain sous l'instrument pendant qu'il perdait la
+       moitié droite de chaque ligne.
+
+       On lit toute la largeur RÉELLE de la feuille, pas seulement
+       les colonnes connues : une validation périmée survit à la
+       colonne qui l'a posée. */
+    var largeurReelle = feuille.getMaxColumns();
+    var brutes = feuille.getRange(2, 1, 1, largeurReelle).getDataValidations()[0];
+    var validations = [];
+    for (var w = 0; w < largeurReelle; w++) {
+      var dv = brutes[w];
+      if (!dv) continue;
+      var quoi = "";
+      try { quoi = String(dv.getCriteriaType()); } catch (e) { quoi = "?"; }
+      var vals = "";
+      try { vals = String(dv.getCriteriaValues()[0] || ""); } catch (e) { vals = ""; }
+      validations.push({
+        col: w + 1,
+        titre: String(titres[w] || ""),
+        type: quoi,
+        valeurs: vals.slice(0, 120)
+      });
     }
 
     /* LES RÈGLES, PAS LEUR NOMBRE SEULEMENT. Deux règles identiques
@@ -905,7 +974,9 @@ function diagnostic() {
       formatsLigne2: formats,
       figees: feuille.getFrozenRows(),
       lignesTotal: Math.max(0, derniere - 1),
+      largeurReelle: largeurReelle,
       regles: regles,
+      validations: validations,
       lignesEssai: lignes
     });
   });
@@ -1522,7 +1593,7 @@ function fusionnerLigne(kind, cible, data, extra) {
   if (touchees) {
     /* Le format AVANT les valeurs, ici comme à l'écriture. D-731 */
     formaterTexte(feuille, ligne, kind);
-    feuille.getRange(ligne, 1, 1, apres.length).setValues([apres]);
+    poserLigne(feuille, ligne, apres, cible.titres);
   }
   return {
     ligne: ligne,
@@ -1587,6 +1658,36 @@ function formaterTexte(feuille, ligne, kind) {
   feuille.getRange(ligne, premiere, 1, derniere - premiere + 1).setNumberFormat("@");
 }
 
+/* UNE ÉCRITURE REFUSÉE NE DOIT PAS PASSER POUR UNE ÉCRITURE FAITE.
+   D-756
+
+   `setValues` sur une ligne entière n'est pas tout ou rien : quand
+   une cellule refuse la valeur — une validation périmée, D-756 —
+   Sheets a DÉJÀ écrit les colonnes qui la précèdent, puis lève. La
+   ligne reste écrite à moitié, et rien ne le dit.
+
+   On ne peut pas rendre l'opération atomique. On peut refuser de la
+   laisser silencieuse : on nomme les colonnes qui portent une
+   validation, dans le journal ET dans le message d'erreur, que
+   D-755 fait remonter jusqu'à la sonde. */
+function poserLigne(feuille, ligne, valeurs, titres) {
+  try {
+    feuille.getRange(ligne, 1, 1, valeurs.length).setValues([valeurs]);
+  } catch (err) {
+    var dvs = feuille.getRange(ligne, 1, 1, valeurs.length).getDataValidations()[0];
+    var coupables = [];
+    for (var i = 0; i < dvs.length; i++) {
+      if (dvs[i]) coupables.push(colonneLettre(i + 1) + " « " + (titres[i] || "?") + " »");
+    }
+    var ou = coupables.length ? coupables.join(", ") : "aucune colonne ne porte de validation";
+    console.error("ÉCRITURE REFUSÉE — ligne " + ligne + " de « " + feuille.getName()
+      + " » : " + err
+      + "\n    Colonnes sous validation : " + ou
+      + "\n    La ligne est écrite À MOITIÉ. Relancez initialiser() : D-756 purge les périmées.");
+    throw new Error("Le classeur a refusé la ligne — validation sur " + ou + ".");
+  }
+}
+
 /* Écrit la demande EN LIGNE 2 : la plus récente est toujours en
    haut, sans avoir à trier. Le dédoublonnage a déjà eu lieu dans
    `traiter()` — arriver ici veut dire que c'est une demande neuve. */
@@ -1622,7 +1723,7 @@ function ecrireLigne(kind, data, extra, sig) {
      défait pas une formule déjà créée : elle est déjà là, et le
      changement de format ne fait que l'afficher autrement. */
   formaterTexte(feuille, 2, kind);
-  feuille.getRange(2, 1, 1, valeurs.length).setValues([valeurs]);
+  poserLigne(feuille, 2, valeurs, titres);
 
   var iDate = titres.indexOf("Horodatage");
   if (iDate >= 0) feuille.getRange(2, iDate + 1).setNumberFormat("yyyy-mm-dd hh:mm:ss");

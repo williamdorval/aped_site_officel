@@ -121,6 +121,7 @@ correctif.
 | &nbsp;&nbsp;↳ 91 · Une attente fixe calibrée sur le banc ment contre le vrai service | 19 | 224 |
 | &nbsp;&nbsp;↳ 92 · [ée]s? ne matche pas « supprimées » — une classe prend UN caractère | 31 | 343 |
 | &nbsp;&nbsp;↳ 93 · Une valeur qui commence par =, +, - ou @ devient une FORMULE dans Sheets | 21 | 241 |
+| &nbsp;&nbsp;↳ 94 · Une validation périmée tronque la ligne, et l'écriture passe pour faite | 47 | 656 |
 
 <!-- INDEX:FIN -->
 
@@ -1778,3 +1779,50 @@ formule — il ne fait que l'afficher autrement.
 « +Design », un budget s'écrire « -de 5 k ». On range du texte comme
 du texte ; on ne rejette pas le client.
 
+
+### 94 · Une validation périmée tronque la ligne, et l'écriture passe pour faite
+
+**Le faux verdict.** Le classeur affichait « ✓ complète » sur une
+ligne dont le budget, l'échéancier, la description et la fourchette
+étaient **vides**. Tout disait que la sauvegarde progressive
+fonctionnait : 63/63 au banc, une seule ligne par visiteur, l'étape
+qui avance. Elle perdait la moitié droite de chaque ligne depuis que
+D-743 avait déplacé le suivi en A–E.
+
+**La cause.** Une liste déroulante se pose sur une **colonne**.
+Quand l'ordre des colonnes change, `migrerColonnes` redispose les
+VALEURS — et personne ne touche aux validations. Elles restent où
+elles étaient, sur des colonnes qui portent maintenant des réponses
+de visiteur. `requireValueInList(["William","Alan","Elie"])` en
+`setAllowInvalid(false)` refuse tout le reste.
+
+**Ce qui rend le piège vicieux : `setValues` n'est pas tout ou
+rien.** Sheets pose les cellules de gauche à droite et lève à la
+première refusée. **Les colonnes précédentes sont déjà écrites.**
+« Étape » (colonne 6) avançait donc pendant que « Budget »
+(colonne 21) n'arrivait jamais. Mesuré contre le vrai service le
+2026-08-06 : « Démarrer un projet » s'arrêtait net à la colonne 19,
+« Réserver un appel » à la 13 — d'où des réservations sans plage,
+sans lien Meet et sans signature.
+
+**Pourquoi aucun outil ne l'a vu.** Deux aveuglements qui se
+couvraient l'un l'autre :
+
+- le **banc** posait les validations et n'en tirait aucune
+  conséquence — `setAllowInvalid` était avalé. Une validation qui n'a
+  jamais refusé personne ne modélise pas Sheets, elle le décore ;
+- la porte **`?action=diag`** rendait les en-têtes, les largeurs, les
+  formats et les règles de couleur — **tout sauf la seule chose
+  capable de refuser une écriture**.
+
+**Le correctif.** `clearDataValidations()` sur toute la largeur
+RÉELLE de la feuille, **avant `migrerColonnes`** — c'est la migration
+elle-même qui est le premier `setValues` à se faire refuser, donc
+purger après laissait `initialiser()` échouer sur le seul classeur
+qui en avait besoin.
+
+**Le signe qui doit alerter.** Une réponse HTML au lieu du JSON, avec
+« Les données que vous avez saisies dans la cellule **X2** ne
+respectent pas les règles de validation ». Un outil qui ne lit que
+`r.success` ne verra jamais cette phrase : elle n'est pas dans du
+JSON, elle est dans une page d'erreur.

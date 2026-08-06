@@ -59,7 +59,15 @@ function feuille(nom) {
       /* Pour prouver l'ordre format/valeurs — voir `setNumberFormat`. */
       ecrites: new Set(), formatsTexte: [], formatApresValeurs: 0, regles: [],
       /* Les cellules que Sheets a retenues comme CALCUL. */
-      formules: new Set(), cases: new Set()
+      formules: new Set(), cases: new Set(),
+      /* LES VALIDATIONS, PAR COLONNE, AVEC LEUR POUVOIR DE REFUS.
+         `listes` ne retenait que les valeurs permises : le banc
+         posait des listes deroulantes et n'en tirait aucune
+         consequence. Une validation qui n'a jamais refuse personne
+         ne modelise pas Sheets, elle le decore — et c'est pour ca
+         que le banc a rendu 63/63 sur un classeur qui perdait la
+         moitie droite de chaque ligne.  D-756 */
+      validations: {}
     });
   }
   return etat.feuilles.get(nom);
@@ -80,6 +88,35 @@ function plage(f, ligne, colonne, nLignes, nCols) {
         const cible = f.valeurs[ligne - 1 + r];
         for (let c = 0; c < nCols; c++) {
           const cle0 = (ligne - 1 + r) + ":" + (colonne - 1 + c);
+          /* LE REFUS, ET IL ARRIVE AU MILIEU DE L'ECRITURE.  D-756
+
+             Sheets n'ecrit pas une ligne en tout ou rien : il pose
+             les cellules de gauche a droite et LEVE a la premiere
+             que sa validation refuse. Les colonnes deja posees
+             restent. C'est exactement ce qui a fait qu'une ligne
+             disait « ✓ complète » sans budget ni description.
+
+             On leve donc ICI, apres les cellules precedentes, avec
+             le message que Google rend mot pour mot. */
+          const dv = f.validations[colonne + c];
+          /* La validation ne couvre PAS la ligne d'en-tete : elle est
+             posee sur `getRange(2, …)`. Un modele qui l'etend a la
+             ligne 1 refuserait de poser les titres eux-memes. */
+          const dansLaPlage = dv && (ligne + r) >= dv.depuis && (ligne + r) <= dv.jusqua;
+          if (dv && dansLaPlage && dv.autoriseInvalide === false) {
+            const brut = v[r][c];
+            const txt = brut == null ? "" : String(brut);
+            const permise = txt === ""
+              || (dv.valeurs || []).map(String).includes(txt);
+            if (!permise) {
+              const lettre = (n) => { let s = ""; while (n > 0) { const q = (n - 1) % 26; s = String.fromCharCode(65 + q) + s; n = (n - q - 1) / 26; } return s; };
+              throw new Error("Les données que vous avez saisies dans la cellule "
+                + lettre(colonne + c) + (ligne + r)
+                + " ne respectent pas les règles de validation des données définies sur cette cellule."
+                + " Veuillez saisir l'une des valeurs suivantes : "
+                + (dv.valeurs || []).join(", ") + ".");
+            }
+          }
           /* LA REGLE DE SHEETS, MODELISEE ICI TELLE QUELLE : une
              chaine qui commence par « = » devient une FORMULE, sauf
              si la cellule porte deja le format texte. C'est le seul
@@ -158,9 +195,53 @@ function plage(f, ligne, colonne, nLignes, nCols) {
     setFontColor() { return this; },
     setVerticalAlignment() { return this; },
     setDataValidation(regle) {
-      f.listes[colonne] = regle ? regle.valeurs : null;
+      for (let c = 0; c < nCols; c++) {
+        f.listes[colonne + c] = regle ? regle.valeurs : null;
+        if (regle) f.validations[colonne + c] = {
+          valeurs: regle.valeurs, autoriseInvalide: regle.autoriseInvalide,
+          type: "VALUE_IN_LIST", depuis: ligne, jusqua: ligne + nLignes - 1
+        };
+        else delete f.validations[colonne + c];
+      }
       return this;
     },
+    /* CE QUE `Code.gs` APPELLE POUR PURGER LES PERIMEES.  D-756
+       Sheets retire aussi la validation « case a cocher ». */
+    clearDataValidations() {
+      for (let c = 0; c < nCols; c++) {
+        const dv = f.validations[colonne + c];
+        /* On ne retire que ce que la plage recouvre vraiment. */
+        if (dv && ligne <= dv.depuis && (ligne + nLignes - 1) >= dv.jusqua) {
+          delete f.validations[colonne + c];
+          f.listes[colonne + c] = null;
+        }
+      }
+      for (let r = 0; r < nLignes; r++) {
+        for (let c = 0; c < nCols; c++) f.cases.delete((ligne - 1 + r) + ":" + (colonne - 1 + c));
+      }
+      return this;
+    },
+    getDataValidations() {
+      const objet = (dv) => dv && ({
+        getCriteriaType: () => dv.type,
+        getCriteriaValues: () => (dv.type === "CHECKBOX" ? [] : [dv.valeurs, true])
+      });
+      const out = [];
+      for (let r = 0; r < nLignes; r++) {
+        const row = [];
+        for (let c = 0; c < nCols; c++) {
+          const col = colonne + c;
+          const cle = (ligne - 1 + r) + ":" + (colonne - 1 + c);
+          const dv = f.validations[col];
+          const couvre = dv && (ligne + r) >= dv.depuis && (ligne + r) <= dv.jusqua;
+          row.push(objet((couvre ? dv : null)
+            || (f.cases.has(cle) ? { type: "CHECKBOX" } : null)) || null);
+        }
+        out.push(row);
+      }
+      return out;
+    },
+    getDataValidation() { return this.getDataValidations()[0][0]; },
     /* LA CASE A COCHER, telle que Sheets la pose : la cellule prend
        la valeur FALSE — pas la chaine vide — et recoit une
        validation « case ». C'est cette valeur FALSE qui a casse la
@@ -213,6 +294,11 @@ function faireFeuille(f) {
       return 0;
     },
     getMaxRows: () => Math.max(f.valeurs.length, 1000),
+    /* La largeur REELLE de la feuille, pas celle des en-tetes : une
+       validation perimee survit a la colonne qui l'a posee.  D-756 */
+    getMaxColumns: () => Math.max(
+      f.valeurs.reduce((m, r) => Math.max(m, (r || []).length), 0),
+      ...Object.keys(f.validations).map(Number), 26),
     getLastColumn: () => f.valeurs.reduce((m, r) => Math.max(m, (r || []).length), 0),
     getRange: (l, c, nl = 1, nc = 1) => plage(f, l, c, nl, nc),
     getConditionalFormatRules: () => f.regles.slice(),
@@ -408,11 +494,15 @@ const services = {
       };
       return api;
     },
+    /* `setAllowInvalid` SE RETIENT MAINTENANT. Il etait avale : le
+       banc savait quelles valeurs une liste permettait, et se
+       fichait de savoir si elle REFUSAIT les autres — la seule
+       chose qui pouvait casser une ecriture.  D-756 */
     newDataValidation: () => {
-      const b = { valeurs: null };
+      const b = { valeurs: null, autoriseInvalide: true };
       const api = {
         requireValueInList: (v) => { b.valeurs = v; return api; },
-        setAllowInvalid: () => api,
+        setAllowInvalid: (ok) => { b.autoriseInvalide = ok; return api; },
         build: () => b
       };
       return api;

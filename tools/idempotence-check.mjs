@@ -346,6 +346,92 @@ console.log("\n--- 10 · MIGRATION D'UN CLASSEUR DEJA REMPLI");
     + ") porte « " + donnees[iStatut] + " »");
 }
 
+/* ============================================================
+   11 · UNE VALIDATION PERIMEE NE DOIT PLUS TRONQUER LA LIGNE
+   ============================================================
+   LE DEFAUT QUE CE CAS REJOUE, ET CE QU'IL A COUTE.  D-756
+
+   Le 2026-08-06, « Démarrer un projet » affichait « ✓ complète »
+   sur une ligne dont le budget, l'echeancier, la description et la
+   fourchette n'etaient JAMAIS arrives. Une liste deroulante
+   « William, Alan, Elie » etait restee sur la colonne 19 — la ou
+   « Lu par » vivait avant D-743. Sheets refusait la valeur,
+   `setValues` levait APRES avoir pose les colonnes de gauche, et la
+   ligne restait ecrite a moitie sans que rien ne le dise.
+
+   AUCUN OUTIL NE POUVAIT LE VOIR. Le banc posait des validations et
+   n'en tirait aucune consequence ; la porte `?action=diag` ne les
+   rendait pas. 63/63 sur un classeur qui perdait la moitie droite
+   de chaque ligne.
+
+   Ce cas prouve les trois temps : ca casse, on purge, ca tient. */
+console.log("\n--- 11 · UNE VALIDATION PERIMEE NE TRONQUE PLUS LA LIGNE  (D-756)");
+{
+  const nom = "Démarrer un projet";
+  const f = etat.feuilles.get(nom);
+  const titres = gs.colonnes("project").map((c) => c.titre);
+  /* LA COLONNE SE CALCULE, ELLE NE SE CODE PAS EN DUR. En production
+     c'etait la 19 ; le jour ou D-749 a ajoute quatre colonnes, la 19
+     est devenue « Ampleur » et le cas ne prouvait plus rien en
+     silence. On vise la premiere colonne que la charge d'essai
+     remplit vraiment. */
+  const PERIMEE = titres.indexOf("Ce qui les bloque") + 1;
+  if (PERIMEE < 2) { console.error("colonne repere introuvable"); process.exit(2); }
+
+  const pose = () => {
+    f.validations[PERIMEE] = {
+      valeurs: ["William", "Alan", "Elie"], autoriseInvalide: false,
+      type: "VALUE_IN_LIST", depuis: 2, jusqua: 1000
+    };
+  };
+  const iSig = titres.indexOf("Signature");
+  const APRES = ["Ce qui les bloque", "Objectif", "Budget", "Échéancier",
+                 "Description", "Fourchette vue"];
+  const CHAMPS = { "Ce qui les bloque": "blocage", "Objectif": "objectif",
+                   "Budget": "budget", "Échéancier": "echeancier",
+                   "Description": "description", "Fourchette vue": "fourchette_vue" };
+  const finale = (S) => ({ _form: "project", _sid: S, _etape: 3, _etapes: 3, _final: true,
+    email: "zztest@exemple.ca", nom: "ZZTEST D756", entreprise: "ZZTEST Inc",
+    blocage: "ZZ-blocage", objectif: "ZZ-objectif", budget: "ZZ-budget",
+    echeancier: "ZZ-echeancier", description: "ZZ-description",
+    fourchette_vue: "ZZ-fourchette_vue" });
+  const trouver = (S) => f.valeurs.find((r) => String((r || [])[iSig] || "") === "S:" + S);
+  const lire1 = (ligne, t) => String((ligne || [])[titres.indexOf(t)] || "");
+
+  /* --- a · AVEC la perimee : le parcours reel se coupe en deux --- */
+  pose();
+  const S1 = "sondeD756avant";
+  poster({ _form: "project", _sid: S1, _etape: 1, _etapes: 3,
+    email: "zztest@exemple.ca", nom: "ZZTEST D756" });
+  const rA = poster(finale(S1));
+  const ligneA = trouver(S1);
+  dire("la demande finale est REFUSEE au lieu de mentir", rA.success, false,
+    String(rA.cause || rA.message || "").slice(0, 100));
+  dire("« Étape » a quand meme avance — la ligne est ecrite a moitie",
+    lire1(ligneA, "Étape"), "✓ complète");
+  const perdues = APRES.filter((t) => lire1(ligneA, t) === "");
+  dire("et les " + APRES.length + " colonnes d'apres la " + PERIMEE + " sont PERDUES",
+    perdues.length, APRES.length, "c'est exactement ce que le classeur montrait");
+
+  /* --- b · initialiser() purge la perimee --- */
+  gs.initialiser();
+  dire("initialiser() a retire la validation perimee",
+    f.validations[PERIMEE] ? "encore la" : "partie", "partie");
+
+  /* --- c · le meme parcours arrive maintenant entier --- */
+  const S = "sondeD756apres";
+  poster({ _form: "project", _sid: S, _etape: 1, _etapes: 3,
+    email: "zztest@exemple.ca", nom: "ZZTEST D756" });
+  const rC = poster(finale(S));
+  dire("la demande finale passe", rC.success, true);
+  const ligne = trouver(S);
+  const val = (t) => lire1(ligne, t);
+  dire("la ligne du parcours se retrouve", ligne ? "oui" : "non", "oui");
+  APRES.forEach((t) => dire("« " + t + " » est arrivee",
+    val(t) === "" ? "-- VIDE --" : val(t), "ZZ-" + CHAMPS[t]));
+  dire("et l'etape dit bien que c'est complet", val("Étape"), "✓ complète");
+}
+
 console.log("\n============================================================");
 console.log(ko === 0 ? "TOUT TIENT : " + n + " / " + n : "DEFAUTS : " + ko + " sur " + n);
 console.log("============================================================");

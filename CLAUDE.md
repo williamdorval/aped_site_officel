@@ -183,7 +183,7 @@ l'identifiant `D-xxx`. Le POURQUOI vit dans `decisions/`.**
 
 ## LES PIÈGES QUI MORDENT LE PLUS SOUVENT
 
-Les 93 sont dans `PIEGES.md` avec cause et correctif — **lis son index
+Les 94 sont dans `PIEGES.md` avec cause et correctif — **lis son index
 de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
 
 1. **Une sonde du DOM ne peut pas voir un défaut de peinture.** Ni un
@@ -228,6 +228,10 @@ de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
 16. **Dans Sheets, une valeur qui commence par `=`, `+`, `-` ou `@`
     devient une FORMULE** — `getValues()` ne le dit pas, seul
     `getFormulas()` le dit. Format `@` AVANT `setValues`. *(93)*
+17. **`setValues` n'est PAS tout ou rien** — une validation périmée
+    refuse une cellule, les colonnes de GAUCHE sont déjà écrites, et
+    la ligne reste à moitié posée en silence. Purger les validations
+    AVANT `migrerColonnes`. *(94)*
 
 ## RÉSERVE — à ne jamais oublier
 
