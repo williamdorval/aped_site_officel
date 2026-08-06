@@ -177,7 +177,7 @@ l'identifiant `D-xxx`. Le POURQUOI vit dans `decisions/`.**
 
 ## LES PIÈGES QUI MORDENT LE PLUS SOUVENT
 
-Les 86 sont dans `PIEGES.md` avec cause et correctif — **lis son index
+Les 93 sont dans `PIEGES.md` avec cause et correctif — **lis son index
 de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
 
 1. **Une sonde du DOM ne peut pas voir un défaut de peinture.** Ni un
@@ -216,6 +216,12 @@ de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
 14. **Sur un `.btn`, `::before` est pris par l'aplat de V4**, et
     `.btn .l` bat toute règle à une classe — une requête de média
     n'ajoute aucune spécificité. *(88)*
+15. **Un outil calibré sur le banc ment contre le vrai Google** —
+    attente fixe de 2,5 s contre un service qui met 2 à 8 s, et
+    filtre de réponses qui ne voit que le 302 de `/exec`. *(90 · 91)*
+16. **Dans Sheets, une valeur qui commence par `=`, `+`, `-` ou `@`
+    devient une FORMULE** — `getValues()` ne le dit pas, seul
+    `getFormulas()` le dit. Format `@` AVANT `setValues`. *(93)*
 
 ## RÉSERVE — à ne jamais oublier
 

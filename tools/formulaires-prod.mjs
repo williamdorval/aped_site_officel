@@ -30,11 +30,39 @@ import { port as portDe } from "./_adresse.mjs";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 const PORT = portDe(process.argv[2]);
-const SERVICE_PORT = Number(process.argv[3] || 8098);
-const BASE = `http://127.0.0.1:${PORT}`;
-const SERVICE = `http://127.0.0.1:${SERVICE_PORT}`;
 
-const T = {
+/* `--reel` VISE LE VRAI DEPLOIEMENT.  D-742
+   L'en-tete promettait ce drapeau depuis le debut ; il n'existait
+   pas. Un commentaire qui decrit une option absente est pire qu'un
+   commentaire absent : il fait croire que la chose a ete faite.
+
+   L'adresse vient de `.env.local`, jamais du depot. Aucun secret
+   n'est imprime : on n'affiche que les douze premiers caracteres. */
+const REEL = process.argv.includes("--reel");
+let SERVICE;
+if (REEL) {
+  const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
+  const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
+  if (!m) {
+    console.error("APED_WEB_APP_URL absent de .env.local — rien a viser.");
+    process.exit(1);
+  }
+  SERVICE = m[1].trim();
+} else {
+  SERVICE = `http://127.0.0.1:${Number(process.argv[3] || 8098)}`;
+}
+const BASE = `http://127.0.0.1:${PORT}`;
+
+/* UN MARQUEUR RECONNAISSABLE, et il doit etre dans
+   `MARQUEURS_ESSAI` de `Code.gs` pour que `nettoyerAutotest()`
+   sache le retrouver. « ZZTEST » y est. */
+const T = REEL ? {
+  nom: "ZZTEST Chaine",
+  courriel: "zztest@exemple.ca",
+  tel: "418 555 0142",
+  entreprise: "ZZTEST Garage inc",
+  message: "ZZTEST — verification de la chaine contre le vrai service."
+} : {
   nom: "Chaine Essai",
   courriel: "chaine.essai@exemple.ca",
   tel: "418 555 0142",
@@ -65,8 +93,19 @@ async function ouvrir(nav) {
   page._reponses = [];
   page.on("pageerror", (e) => page._erreurs.push(String(e)));
   page.on("console", (m) => { if (m.type() === "error") page._erreurs.push(m.text()); });
+  /* LE FILTRE NE PEUT PAS ETRE « l'url commence par SERVICE ».  D-742
+     `/exec` repond par un 302 vers `*.googleusercontent.com`, et
+     c'est CETTE reponse-la qui porte le JSON. Filtrer sur l'adresse
+     de depart ne retenait que la redirection, corps illisible : les
+     huit formulaires rendaient « ne livre pas » avec zero erreur de
+     console. On garde les deux, et on jette les redirections. */
+  const nôtre = (u) => u.startsWith(SERVICE)
+    || u.indexOf("script.google.com") !== -1
+    || u.indexOf("googleusercontent.com") !== -1
+    || u.startsWith(SERVICE.replace(/\/exec.*$/, ""));
   page.on("response", async (r) => {
-    if (!r.url().startsWith(SERVICE)) return;
+    if (!nôtre(r.url())) return;
+    if (r.status() >= 300 && r.status() < 400) return;
     let corps = "";
     try { corps = (await r.text()).slice(0, 200); } catch (e) { corps = "(illisible)"; }
     page._reponses.push({ statut: r.status(), corps });
@@ -87,6 +126,27 @@ async function ouvrir(nav) {
   return page;
 }
 
+/* ON ATTEND LA REPONSE, ON NE COMPTE PAS JUSQU'A DEUX.  D-742
+   2 500 ms suffisaient contre le banc, qui repond en 5 ms. Le vrai
+   service met 2 a 8 s, et jusqu'a 30 s une fois sur vingt-cinq :
+   l'outil relevait un ecran encore vide et concluait « ne livre
+   pas ». Il attend maintenant qu'il se passe QUELQUE CHOSE, et il
+   dit combien de temps ca a pris — la mesure vaut le verdict. */
+async function attendreReponse(page, portee, max = 45000) {
+  const t0 = Date.now();
+  try {
+    await page.waitForFunction(([s]) => {
+      const f = s ? document.querySelector(s) : document;
+      if (!f) return false;
+      const st = f.querySelector(".form-status");
+      if (st && st.textContent.trim()) return true;
+      /* Certains formulaires ne parlent pas : ils changent d'etape. */
+      return !!document.querySelector(".step.success:not([hidden])");
+    }, [portee], { timeout: max, polling: 200 });
+  } catch (e) { /* on rendra le temps ecoule et l'ecran tel quel */ }
+  return Date.now() - t0;
+}
+
 function verdict(nom, attendu, obtenu, detail) {
   const ok = attendu === obtenu;
   console.log(`\n--- ${nom}`);
@@ -104,6 +164,7 @@ const nav = await chromium.launch();
    ============================================================ */
 {
   console.log("=== 0 · LE SERVICE ===");
+  console.log("  vise :", REEL ? SERVICE.slice(0, 46) + "…(tronque)" : SERVICE);
   try {
     const res = await fetch(SERVICE, { redirect: "follow" });
     const corps = await res.text();
@@ -360,6 +421,51 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
    ============================================================ */
 {
   console.log("\n=== 8 · CE QUI EST ARRIVÉ DANS LE CLASSEUR ===");
+  if (REEL) {
+    /* CONTRE LE VRAI GOOGLE, `/_etat` N'EXISTE PAS — c'est une
+       trappe du banc. La porte `action=diag` la remplace : elle rend
+       la structure du classeur et le contenu des SEULES lignes
+       d'essai. Elle n'existe qu'a partir de la version deployee le
+       2026-08-06 ; sur une version anterieure on le dit, on ne
+       fabrique pas un verdict. */
+    try {
+      const d = await (await fetch(SERVICE + "?action=diag", { redirect: "follow" })).json();
+      if (d && d.success && Array.isArray(d.onglets)) {
+        for (const o of d.onglets) {
+          const n = (o.lignesEssai || []).length;
+          console.log(`  ${n ? "✓" : "·"} ${String(o.onglet).padEnd(26)} ${o.lignesTotal} ligne(s) · ${n} d'essai`);
+          if (n) {
+            const l = o.lignesEssai[o.lignesEssai.length - 1];
+            console.log(`      ligne ${l.ligne} · colonne B = « ${o.titres[1]} »`);
+            const formules = l.cellules.filter((c) => c.formule);
+            console.log(`      cellules prises pour un calcul : ${formules.length}`
+              + (formules.length ? " *** " + JSON.stringify(formules.map((c) => c.titre)) : ""));
+          }
+        }
+        console.log(`\n  quota d’envoi restant : ${d.quota} / 100`);
+        console.log(`  agendas lus : ${JSON.stringify(d.calendriers)}`);
+        console.log(`  grille : ${JSON.stringify(d.disponibilites)}`);
+        rapport.diag = d;
+      } else {
+        console.log("  PORTE DE DIAGNOSTIC ABSENTE de ce deploiement.");
+        console.log("  Rien n'est conclu sur le classeur — c'est un ecart, pas un verdict.");
+        console.log("  reponse :", JSON.stringify(d).slice(0, 160));
+      }
+    } catch (e) {
+      console.log("  PORTE DE DIAGNOSTIC ABSENTE — le deploiement porte");
+      console.log("  une version anterieure. Rien n'est conclu sur le classeur.");
+      console.log("  (" + String(e).slice(0, 90) + ")");
+    }
+    await nav.close();
+    fs.mkdirSync(path.join(RACINE, "refonte-captures"), { recursive: true });
+    fs.writeFileSync(path.join(RACINE, "refonte-captures", "formulaires-prod.json"),
+      JSON.stringify(rapport, null, 2), "utf8");
+    const l2 = rapport.formulaires.filter((f) => f.ok).length;
+    console.log("\n============================================================");
+    console.log(`FORMULAIRES QUI LIVRENT : ${l2} / ${rapport.formulaires.length}`);
+    console.log("============================================================");
+    process.exit(l2 === rapport.formulaires.length ? 0 : 1);
+  }
   try {
     const etat = await (await fetch(SERVICE + "/_etat")).json();
     rapport.classeur = etat.onglets.map((o) => ({ nom: o.nom, lignes: o.lignes.length }));

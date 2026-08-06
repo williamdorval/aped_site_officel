@@ -67,6 +67,10 @@ ni **quelle ligne** (`SECTIONS.md`).
 | &nbsp;&nbsp;↳ Les ressources partagées, et elles sont les seules | 8 | 148 |
 | &nbsp;&nbsp;↳ Les outils de ce dossier | 14 | 357 |
 | &nbsp;&nbsp;↳ Ce que la section 04 d'index.html en fait | 11 | 146 |
+| **AJOUTÉ LE 2026-08-06 — LA PAGE DE CONFIDENTIALITÉ ET LA TROISIÈME PORTE** | 2 | 21 |
+| &nbsp;&nbsp;↳ confidentialite.html — la troisième page du site | 27 | 324 |
+| &nbsp;&nbsp;↳ google/Code.gs — la troisième porte | 15 | 162 |
+| &nbsp;&nbsp;↳ Les outils ajoutés | 16 | 227 |
 
 <!-- INDEX:FIN -->
 
@@ -851,3 +855,63 @@ lecture n'en dépend. Un `<iframe class="sec-live">` se pose
 **par-dessus** la planche quand le palier le permet (D-672) : la
 planche reste le poster, elle porte le texte de remplacement et tient
 la géométrie.
+
+## AJOUTÉ LE 2026-08-06 — LA PAGE DE CONFIDENTIALITÉ ET LA TROISIÈME PORTE
+
+### `confidentialite.html` — la troisième page du site
+
+Le site avait deux documents HTML servis : `index.html` et
+`404.html`. Il y en a trois.
+
+C'est une **page**, pas une modale, et c'est la seule raison qui
+comptait : une politique de confidentialité doit se citer par son
+adresse — depuis un courriel, depuis un formulaire, depuis une
+demande de la Commission d'accès à l'information. Une modale n'existe
+qu'à l'intérieur d'`index.html`.
+
+Elle est bâtie sur le même squelette que `404.html` : `tokens.css`,
+`base.css`, `app.css`, la bascule de thème en ligne — **pas**
+`main.js`, dont elle n'a besoin d'aucune ligne (D-095).
+
+| Où | Quoi |
+|---|---|
+| `css/app.css` § 24bis | `.form-legal` — la mention sous un formulaire |
+| `css/app.css` § 24ter | `.legal-*` — la page elle-même |
+| `index.html` | 7 mentions, une par formulaire, + le lien du pied |
+| `404.html` | le lien du pied + la 12ᵉ ligne de l'index |
+
+**Les sept mentions se vérifient par rattachement**, pas par
+comptage : `confidentialite-check` remonte de chaque `.form-legal`
+jusqu'au `<form>` ou `<dialog>` qui l'ouvre. Un comptage global
+rendait 7 alors que deux étaient dans le même formulaire.
+
+### `google/Code.gs` — la troisième porte
+
+| Requête | Fonction | Écrit ? |
+|---|---|---|
+| `POST /exec` | `doPost` | oui |
+| `GET /exec?action=creneaux` | `creneauxLibres()` | non |
+| `GET /exec?action=diag` | `diagnostic()` | non |
+| `GET /exec` | témoin de vie, `version: 3` | non |
+
+`diagnostic()` rend la **structure** du classeur et le contenu des
+**seules** lignes portant un marqueur de `MARQUEURS_ESSAI` — liste en
+dur, aucun paramètre. Elle existe parce que la forme du classeur ne
+se prouve pas depuis le dépôt et que le partage Drive n'a pas atteint
+la session (D-737).
+
+### Les outils ajoutés
+
+| Outil | Ce qu'il prouve | Cas |
+|---|---|---|
+| `tools/agenda-multi-check.mjs` | plusieurs agendas, la porte `diag`, le verrou resserré, **et le repli `CalendarApp`** | 51 |
+| `tools/pouce-check.mjs` | les cibles tactiles à 320 / 360 / 390 px, avec captures | 18 |
+| `tools/confidentialite-check.mjs` | ce que la politique dit **et ne promet pas** | 30 |
+| `tools/prod-sonde.mjs` | le vrai service : injection, double réservation, délai, fuseau | variable |
+
+`tools/faux-google.mjs` évalue maintenant `Code.gs` **deux fois** :
+`gs` avec le service avancé Calendar, `gsSansAvance` sans. Les deux
+partagent `etat` — mêmes événements, même classeur — mais **pas**
+leurs variables : régler `DISPONIBILITES` sur l'une n'agit pas sur
+l'autre, et c'est un piège qui a déjà coûté un faux verdict.
+

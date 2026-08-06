@@ -102,7 +102,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Rien de tout ceci n'a touché le vrai Google | 26 | 353 |
 | &nbsp;&nbsp;↳ Le fuseau est prouvé par le calcul, pas par un appel réel | 9 | 123 |
 | &nbsp;&nbsp;↳ Le fuseau du projet Apps Script n'est pas sous contrôle | 13 | 176 |
-| &nbsp;&nbsp;↳ Le repli CalendarApp n'a jamais été exercé | 9 | 119 |
+| &nbsp;&nbsp;↳ FERMÉE le 2026-08-06 — le repli CalendarApp | 14 | 183 |
 | &nbsp;&nbsp;↳ La deuxième porte est publique, et elle est appelable en boucle | 16 | 214 |
 | &nbsp;&nbsp;↳ js/config.local.js absent = une erreur console, partout | 15 | 184 |
 | &nbsp;&nbsp;↳ palier-check échoue sur trois assertions, avant comme après | 10 | 134 |
@@ -112,13 +112,14 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | **OUVERTES PAR LE CHANTIER DE STRESS — 2026-08-06** | 2 | 14 |
 | &nbsp;&nbsp;↳ FERMÉE · le secret n'a jamais été poussé | 13 | 161 |
 | &nbsp;&nbsp;↳ Le trou du verrou était une liste blanche d'extensions | 11 | 146 |
-| &nbsp;&nbsp;↳ Le vrai service rend HTTP 404 par intermittence | 15 | 176 |
-| &nbsp;&nbsp;↳ Les temps de réponse du vrai service | 13 | 159 |
-| &nbsp;&nbsp;↳ Six envois simultanés : 18,4 s pour le dernier | 13 | 156 |
-| &nbsp;&nbsp;↳ L'injection de formule est corrigée SANS preuve côté Google | 16 | 203 |
-| &nbsp;&nbsp;↳ Le Sheet et le calendrier d'APED n'ont pas été regardés | 17 | 211 |
-| &nbsp;&nbsp;↳ Les cibles tactiles ne passent pas partout | 19 | 189 |
-| &nbsp;&nbsp;↳ Le changement de Code.gs n'est pas déployé | 8 | 89 |
+| &nbsp;&nbsp;↳ Le vrai service rend HTTP 404 — deux relevés qui ne s'accordent pas | 19 | 221 |
+| &nbsp;&nbsp;↳ Les temps de réponse du vrai service | 16 | 216 |
+| &nbsp;&nbsp;↳ Six envois simultanés : le verrou est resserré, PAS re-mesuré | 21 | 266 |
+| &nbsp;&nbsp;↳ L'injection de formule — les charges sont posées, le verdict attend le redéploiement | 23 | 314 |
+| &nbsp;&nbsp;↳ Le Sheet et le calendrier d'APED n'ont TOUJOURS pas été regardés | 27 | 325 |
+| &nbsp;&nbsp;↳ FERMÉE le 2026-08-06 — les cibles tactiles | 25 | 282 |
+| &nbsp;&nbsp;↳ OUVERTES PAR LE CHANTIER DE VALIDATION — 2026-08-06 (soir) | 46 | 602 |
+| &nbsp;&nbsp;↳ Le changement de Code.gs n'est pas déployé | 20 | 241 |
 | &nbsp;&nbsp;↳ Le préchargement n'a jamais été mesuré contre le vrai service | 6 | 76 |
 | &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 8 | 92 |
 
@@ -1181,14 +1182,19 @@ Toronto à chaque appel — mais **`initialiser()` pose le fuseau du
 CLASSEUR** à `REGLAGES.FUSEAU`, et les horodatages du Sheet en
 dépendent. À vérifier une fois : ⚙ Paramètres du projet → fuseau.
 
-### Le repli `CalendarApp` n'a jamais été exercé
+### FERMÉE le 2026-08-06 — le repli `CalendarApp`
 
-Le chemin sans service avancé — `occupations()` qui retombe sur
-`CalendarApp.getEvents` — n'est atteint que si l'étape 2 n'a pas été
-faite. Le banc l'expose (`calendrierFactice`) mais aucun cas de
-`creneaux-check` ne force ce chemin : les 41 passent tous par le
-service avancé. Si quelqu'un déploie sans activer Calendar, ce code
-s'exécutera pour la première fois en production.
+Il n'était pas seulement non testé : **une mutation a prouvé qu'on
+pouvait le casser sans faire tomber un seul cas.** Le banc fournissait
+toujours `Calendar`, donc les 41 de `creneaux-check` passaient tous
+par la branche d'à côté.
+
+`tools/faux-google.mjs` évalue désormais `Code.gs` **une seconde
+fois** sans le service avancé (`gsSansAvance`), et
+`agenda-multi-check` l'exerce sur dix cas : la grille identique, une
+journée bloquée qui disparaît, « Disponible » qui bloque quand même
+faute de savoir lire la marque, un agenda illisible qui ferme la
+porte, et une réservation qui se pose **sans lien Meet**.
 
 ### La deuxième porte est publique, et elle est appelable en boucle
 
@@ -1301,106 +1307,202 @@ C'est la forme générale du piège 30/40/62 : **un filtre qui écarte
 silencieusement ce qu'il est censé trouver.** Corrigé en inversant —
 on lit tout sauf le binaire. À retenir pour tout futur filtre.
 
-### Le vrai service rend HTTP 404 par intermittence
+### Le vrai service rend HTTP 404 — deux relevés qui ne s'accordent pas
 
-**Mesuré le 2026-08-06 contre le déploiement réel :** 2 réponses sur
-36 en HTTP 404, avec une page HTML de 7,8 Ko au lieu du JSON. Ce
-n'est pas `Code.gs` — c'est le renvoi de `/exec` vers
-`googleusercontent.com`, l'étage devant lui.
+| Jour | Appels | HTTP 404 | Taux |
+|---|---:|---:|---:|
+| 2026-08-05 | 36 | **2** | 5,6 % |
+| 2026-08-06 | 60 | **0** | 0 % |
 
-Le site réessaie maintenant deux fois (D-734), et le service est
-devenu idempotent pour que ce soit sûr (D-730).
+Ce n'est pas `Code.gs` — c'est le renvoi de `/exec` vers
+`googleusercontent.com`, l'étage devant lui. Le site réessaie deux
+fois (D-734), et le service est idempotent pour que ce soit sûr
+(D-730).
 
-**CE QUI N'EST PAS MESURÉ :** le taux réel sur une journée entière,
-et s'il monte aux heures de pointe. 36 appels sur une heure ne font
-pas une statistique. **Deux réessais peuvent ne pas suffire** si
-Google a une mauvaise minute.
+**Les deux relevés ne s'accordent pas, et c'est le résultat.** Le
+défaut est intermittent : une journée sans aucun échec ne prouve pas
+qu'il a disparu. Sur les 96 appels cumulés, p ≈ 2,1 % ; avec deux
+réessais, p³ ≈ 0,001 %, soit une demande perdue sur ~110 000. C'est
+suffisant **si p reste là**. Ce qui n'est toujours pas mesuré : le
+taux aux heures de pointe, et sur plus d'une heure d'affilée.
 
 ### Les temps de réponse du vrai service
 
-| Porte | min | médiane | p90 | max |
+| Porte | Appels | médiane | p90 | max |
 |---|---:|---:|---:|---:|
-| témoin de vie (30 appels) | 560 ms | 826 ms | 1 290 ms | 4 324 ms |
-| créneaux (25 appels) | 1 401 ms | 1 716 ms | 3 100 ms | **29 893 ms** |
+| témoin de vie · 2026-08-05 | 30 | 826 ms | 1 290 ms | 4 324 ms |
+| témoin de vie · 2026-08-06 | 60 | **773 ms** | 1 132 ms | 1 666 ms |
+| créneaux · 2026-08-05 | 25 | 1 716 ms | 3 100 ms | **29 893 ms** |
+| créneaux · 2026-08-06 | ~15 | ~1 800 ms | ~2 100 ms | 2 086 ms |
+| écriture d'une réservation | 4 | ~5 100 ms | — | 6 011 ms |
 
-**Le pic à 29,9 s n'est pas expliqué.** Il est arrivé une fois sur
-vingt-cinq. Le préchargement au survol (D-735) masque la médiane,
-pas ce pic-là : un visiteur qui tombe dessus voit « Lecture de
-l'agenda… » pendant une demi-minute, puis le filet. Aucun temps
-limite n'est posé sur la requête — à faire si ça se reproduit.
+**Le pic à 29,9 s n'est toujours pas expliqué**, et il ne s'est pas
+reproduit le 2026-08-06. Il n'est donc ni compris ni éliminé — il
+est seulement **borné** : depuis D-741, la requête des créneaux
+abandonne à 8 s et montre le filet, un envoi abandonne à 25 s et le
+dit. Le visiteur ne regarde plus une roue tourner une demi-minute.
 
-### Six envois simultanés : 18,4 s pour le dernier
+### Six envois simultanés : le verrou est resserré, PAS re-mesuré
 
 `LockService` sérialise les écritures, et c'est ce qui empêche deux
-personnes de réserver la même plage. Le prix : six soumissions
-lancées ensemble ont mis 18,4 s au total, la plus lente 18,4 s, la
-plus rapide 4,4 s.
+personnes de réserver la même plage. Le prix relevé le 2026-08-05 :
+six soumissions lancées ensemble, **18,4 s** pour la dernière servie.
 
-Six visiteurs à la même seconde n'arrivera pas au trafic actuel.
-Mais **le chiffre est là et il n'a pas été amélioré** : le verrou
-est pris pendant TOUT le traitement, courriels compris. Le déplacer
-pour ne couvrir que le calendrier et l'écriture réduirait l'attente
-— non fait, non mesuré.
+**Corrigé (D-738)** : le verrou ne tient plus pendant les deux
+`MailApp.sendEmail`. Il ne couvre que le numéro de ligne et la plage
+du calendrier — les deux seules courses. Les courriels partent après
+sa libération.
 
-### L'injection de formule est corrigée SANS preuve côté Google
+**LA NOUVELLE MESURE N'A PAS ÉTÉ PRISE.** Six envois simultanés
+consomment douze destinataires du quota de 100/jour, et il en restait
+trop peu le 2026-08-06 pour rejouer l'essai honnêtement. Le gain est
+donc **attendu, pas prouvé** : deux envois à ~1,5 s chacun sortent
+d'une section critique qui en durait ~3.
+
+Ce que la correction prouve, elle : un courriel qui lève ne fait plus
+échouer une demande **déjà écrite au classeur**
+(`agenda-multi-check`, section 5).
+
+### L'injection de formule — les charges sont posées, le verdict attend le redéploiement
 
 `ecrireLigne` pose le format `@` sur les colonnes du visiteur avant
-`setValues`. `idempotence-check` prouve que l'appel est fait, dans
-le bon ordre, sur les bonnes colonnes.
+`setValues`. `idempotence-check` prouve que l'appel part, dans le bon
+ordre, sur les bonnes colonnes. `faux-google` modélise désormais la
+règle de Sheets elle-même — une chaîne commençant par `=`, `+`, `-`
+ou `@` devient une formule **sauf** si la cellule porte déjà le
+format texte — et `agenda-multi-check` lit le verdict par
+`getFormulas()`.
 
-**Il ne prouve PAS que Google Sheets respecte ce format.** Le bouchon
-enregistre l'appel, il ne simule pas le moteur de calcul. À vérifier
-à la main, une fois : envoyer `=1+1` dans un champ de message, ouvrir
-le classeur, et voir si la cellule affiche `=1+1` (correct) ou `2`
-(le format n'a pas mordu).
+**Ce n'est toujours pas Google.** Le 2026-08-06, trois charges ont
+été envoyées au VRAI classeur : `=1+1`, `+41855501@42`, et
+`=IMPORTXML("https://exemple.ca/x","//a")`. Les trois lignes y sont.
 
-**Les cinq essais du 2026-08-06 sont partis vers le VRAI classeur
-avant la correction** : les lignes `ZZTEST` portent donc peut-être
-des formules actives. `nettoyerAutotest` les retire.
+**Le verdict ne peut pas être lu tant que le redéploiement n'est pas
+fait** : il se lit par `?action=diag`, qui n'existe qu'à partir de la
+version 3. Après le redéploiement :
+`node tools/formulaires-prod.mjs 8099 --reel` l'imprime.
 
-### Le Sheet et le calendrier d'APED n'ont pas été regardés
+**Rappel du chantier précédent :** cinq essais du 2026-08-05 sont
+partis vers le vrai classeur AVANT la correction. Ces lignes portent
+peut-être des formules actives. `nettoyerAutotest` les retire.
 
-Les connecteurs Google de cette session sont branchés sur le compte
-PERSONNEL du propriétaire, pas sur celui de l’agence. Aucun accès
-en lecture au classeur ni au calendrier d’APED.
+### Le Sheet et le calendrier d'APED n'ont TOUJOURS pas été regardés
 
-**Tout ce qui concerne l'APPARENCE du classeur est donc non
-vérifié** : la couleur des lignes non lues, la position réelle de
-« Statut », les largeurs, le gel de la ligne 1, le rendu des
-formules. Ce sont des appels d'API dont on a prouvé qu'ils partent,
-avec les bons arguments — pas des pixels qu'on a vus.
+Le propriétaire a partagé le classeur en lecture avec son compte
+personnel le 2026-08-06. **Il reste invisible depuis cette session.**
+Quatre recherches, à quarante minutes d'intervalle :
 
-**Pour lever cette réserve :** partager le classeur en LECTURE avec
-le compte personnel du propriétaire — celui auquel les connecteurs
-sont branchés. Dix secondes, et tout ce paragraphe devient
-vérifiable.
+| Requête Drive | Résultat |
+|---|---|
+| `sharedWithMe = true` | 14 fichiers, aucun d'`apedagence` |
+| `title contains 'APED'` | vide |
+| `title contains 'demandes du site'` | vide |
+| `owner = 'apedagence@gmail.com'` | vide |
 
-### Les cibles tactiles ne passent pas partout
+De même, `list_calendars` ne rend que l'agenda personnel et les
+jours fériés — **le calendrier d'APED n'est pas partagé du tout.**
 
-`node tools/_pouce.mjs`, après correction :
+Deux causes possibles, non départagées : un partage **par lien**
+plutôt que par adresse (un fichier partagé ainsi n'entre dans
+« Partagés avec moi » qu'une fois ouvert), ou un délai d'indexation
+Drive qui dépasse quarante minutes.
 
-| largeur | case de jour | plage |
-|---|---|---|
-| 390 px | **45 × 44** ✓ | 158 × 44 ✓ |
-| 360 px | 41 × 44 | 143 × 44 ✓ |
-| 320 px | **35 × 44** | 123 × 44 ✓ |
+**La porte `?action=diag` (D-737) rend ce partage inutile.** Elle
+rend la structure du classeur et le contenu des seules lignes
+d'essai, sans aucun accès Drive. Elle n'existe qu'à partir de la
+version 3 : **tant que le redéploiement n'est pas fait, l'apparence
+du classeur reste non vérifiée**, exactement comme avant.
 
-La hauteur est à 44 px partout. **La largeur reste sous le seuil à
-360 et 320 px** : sept colonnes dans un panneau de 328 ou 288 px,
-on ne fabrique pas de pixels. On passe le seuil AA de WCAG 2.5.8
-(24 px), pas le AAA de 2.5.5 (44 px).
+### FERMÉE le 2026-08-06 — les cibles tactiles
 
-Ce qui reste possible et n'a pas été fait : supprimer le `gap: 1px`
-de la grille (+6 px répartis) — mais ce filet EST le langage visuel
-du site, et 1 px par case ne vaut pas de le casser.
+`node tools/pouce-check.mjs 8099` — **18 cas sur 18**, aux trois
+largeurs, seuil AAA de WCAG 2.5.5 (44 px) compris.
+
+| largeur | case de jour | plage | forme |
+|---|---|---|---|
+| 320 px | **254 × 48** ✓ | 123 × 44 ✓ | liste |
+| 360 px | **294 × 48** ✓ | 143 × 44 ✓ | liste |
+| 390 px | 45 × 44 ✓ | 158 × 44 ✓ | grille |
+
+Sous 24 rem, la grille de sept colonnes devient une **liste pleine
+largeur**, une ligne par jour offert (D-740). La contrainte n'était
+pas la hauteur, c'était les sept colonnes : on les a retirées au lieu
+de gratter des pixels.
+
+**Le seuil de 24 rem est mesuré, pas calculé.** L'arithmétique de
+tête donnait 348 px et elle avait tort — elle oubliait le
+remplissage propre du panneau. `pouce-check` a rendu le vrai chiffre :
+la grille ne tient les 44 px qu'à partir de **378 px** de fenêtre.
+
+Reste vrai, et c'est la réserve mère : **aucun vrai pouce n'a touché
+cet écran.** `isMobile: true, hasTouch: true` sous Playwright, sur un
+poste Windows.
+
+### OUVERTES PAR LE CHANTIER DE VALIDATION — 2026-08-06 (soir)
+
+#### Les courriels n'ont été vus par personne
+
+Aucun des sept formulaires n'a permis de **lire** un courriel. Le
+connecteur Gmail de cette session n'est pas authentifié, et il vise
+de toute façon le compte personnel ; les avis partent à
+`apedagence`. Ce qui est prouvé : que `MailApp.sendEmail` est
+appelé, avec le bon destinataire, le bon objet, le bon `replyTo`, et
+un corps différent par formulaire (`agenda-multi-check` section 5,
+`idempotence-check` section 8).
+
+**Ce qui ne l'est pas** : qu'ils arrivent, qu'ils ne tombent pas en
+indésirable, et que « Répondre » vise bien le client dans le client
+de messagerie. Les trois se vérifient en trente secondes — par le
+propriétaire, dans sa boîte.
+
+#### La grille de 9 h à 20 h, sept jours sur sept, n'est pas un choix neutre
+
+Elle offre **105 créneaux par semaine**. Le préavis de 24 h et
+l'agenda en retirent une partie, mais un dimanche à 19 h reste
+réservable, et rien dans le code ne s'y oppose.
+
+Ce que ça veut dire concrètement : **toute soirée et toute fin de
+semaine non bloquée dans l'agenda est vendue.** Le montage à deux
+agendas (D-736) existe justement pour que la vie personnelle compte
+sans avoir à la recopier ailleurs — mais il faut l'activer, et il
+n'est pas activé par défaut.
+
+#### Le pic de 29,9 s est borné, pas expliqué
+
+D-741 pose 8 s sur les créneaux et 25 s sur un envoi. Le visiteur ne
+regarde plus une roue tourner. **La cause reste inconnue**, et un
+envoi qui dépasse 25 s laisse une ambiguïté réelle : la demande est
+peut-être passée. Le message le dit et invite à renvoyer, ce qui est
+sans danger (D-730) — mais c'est une gêne, pas une réparation.
+
+#### Le nombre exact de lignes d'essai dans le vrai classeur n'est pas connu
+
+Il est **estimé** à une vingtaine, sur les sept onglets, plus deux
+événements d'agenda du 7 août et deux de septembre. L'estimation
+vient des réponses du service (`ligne`, `renvoi`) et de ce qui a
+disparu de la porte des créneaux — **pas d'une lecture du classeur**,
+qui reste inaccessible. Le compte exact sortira de `nettoyerAutotest`,
+qui journalise chaque onglet et chaque ligne retirée.
 
 ### Le changement de Code.gs n'est pas déployé
 
-`google/Code.gs` a été modifié en profondeur — dédoublonnage,
-formats, colonnes, courriels, nettoyage. **Le déploiement en
-production porte encore la version d'AVANT.** Tant que la
-« Nouvelle version » n'a pas été faite, aucune de ces corrections
-n'existe pour un visiteur.
+**Vérifié le 2026-08-06 au soir** : le témoin de vie rend
+`"version": 2`. La version du dépôt est la **3**. Le déploiement
+porte donc encore le code d'avant ce chantier-ci — le précédent, lui,
+a bien été déployé (dédoublonnage, formats, colonnes, courriels).
+
+Ce qui n'existe pas encore pour un visiteur :
+
+| | Ce qui manque en production |
+|---|---|
+| **D-736** | les agendas supplémentaires — un blocage personnel ne bloque rien |
+| **D-737** | la porte `?action=diag` — d'où l'impossibilité de lire le classeur |
+| **D-738** | le verrou resserré, et le courriel qui ne perd plus la demande |
+| **grille** | 9 h–20 h, sept jours sur sept, sans pause |
+
+**Ce qui est déjà en ligne**, lui, est du côté du site et n'attend
+rien : la politique de confidentialité, les sept mentions, la liste
+au pouce, les délais maximum.
 
 ### Le préchargement n'a jamais été mesuré contre le vrai service
 

@@ -53,18 +53,18 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 | № | Section | Ancre | `index.html` | l. | `css/app.css` | JS | autres |
 |---|---|---|---|---:|---|---|---|
-| 01 | **Accueil** | `#top` | 223-281 | 59 | 1715-1978 · 1199-1474 | `main.js` 167-272 | — |
-| 02 | **Services** | `#services` | 282-900 | 619 | 1979-2627 | `main.js` 273-672 | — |
-| 03 | **Réalisations** | `#realisations` | 901-1789 | 889 | 2628-4449 | `main.js` 673-919 | — |
-| 04 | **Secteurs** | `#demos` | 1790-2002 | 213 | 4450-4603 | `main.js` 2828-3022 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 01 | **Accueil** | `#top` | 223-281 | 59 | 1778-2041 · 1262-1537 | `main.js` 167-272 | — |
+| 02 | **Services** | `#services` | 282-900 | 619 | 2042-2690 | `main.js` 273-672 | — |
+| 03 | **Réalisations** | `#realisations` | 901-1789 | 889 | 2691-4512 | `main.js` 673-919 | — |
+| 04 | **Secteurs** | `#demos` | 1790-2002 | 213 | 4513-4666 | `main.js` 2905-3099 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
 | 05 | **Visite 360** | `#visite` | 2003-2082 | 80 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2083-2224 | 142 | 4604-4770 | `main.js` 2661-2827 | — |
-| 07 | **Comparatif** | `#comparatif` | 2225-2341 | 117 | 4771-4897 | — | — |
-| 08 | **Processus** | `#processus` | 2342-2570 | 229 | 4898-5240 | `main.js` 920-960 | — |
-| 09 | **Référence** | `#reference` | 2571-2644 | 74 | 5241-5349 | — | — |
-| 10 | **Questions** | `#faq` | 2645-2729 | 85 | 5350-5399 | `langue.js` 613-641 | — |
-| 11 | **Contact** | `#contact` | 2730-2932 | 203 | 5400-5617 | `main.js` 1523-1568 · `main.js` 1569-1769 · `main.js` 1770-1896 | — |
-| — | **Pied de page** | `#footer` | 2933-2983 | 51 | 5618-5678 | `main.js` 3310-3330 | — |
+| 06 | **Calculateur** | `#calculateur` | 2083-2224 | 142 | 4667-4833 | `main.js` 2738-2904 | — |
+| 07 | **Comparatif** | `#comparatif` | 2225-2341 | 117 | 4834-4960 | — | — |
+| 08 | **Processus** | `#processus` | 2342-2570 | 229 | 4961-5303 | `main.js` 920-960 | — |
+| 09 | **Référence** | `#reference` | 2571-2644 | 74 | 5304-5412 | — | — |
+| 10 | **Questions** | `#faq` | 2645-2729 | 85 | 5413-5462 | `langue.js` 613-641 | — |
+| 11 | **Contact** | `#contact` | 2730-2933 | 204 | 5463-5680 | `main.js` 1523-1568 · `main.js` 1569-1825 · `main.js` 1826-1952 | — |
+| — | **Pied de page** | `#footer` | 2934-2987 | 54 | 5681-5741 | `main.js` 3387-3407 | — |
 
 <!-- PLAGES:FIN -->
 

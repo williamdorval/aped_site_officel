@@ -253,16 +253,35 @@ Ce que vous accordez, et pourquoi chacune est nécessaire :
 > d'autre. `tools/config-envoi.mjs` refuse les adresses `/dev`
 > justement pour empêcher ce piège.
 
-### Les deux portes du même déploiement
+### Les portes du même déploiement
 
-Ce déploiement unique répond à deux choses. Vous n'avez **rien** à
-faire de plus : le site ajoute le paramètre tout seul.
+Ce déploiement unique répond à plusieurs choses. Vous n'avez **rien**
+à faire de plus : le site ajoute le paramètre tout seul.
 
 | Ce que le site envoie | Ce que le script fait | Écrit-il ? |
 |---|---|---|
 | `POST` sur l'adresse `/exec` | `doPost` — valide, écrit la ligne, avertit, pose le rendez-vous | **oui** |
 | `GET` sur `…/exec?action=creneaux` | `doGet` — calcule les plages libres à partir de votre agenda | **non**, lecture seule |
+| `GET` sur `…/exec?action=diag` | `doGet` — décrit la **forme** du classeur, pour vérifier une installation | **non**, lecture seule |
 | `GET` sur `…/exec` tout court | `doGet` — témoin de vie, utilisé par `tools/verrou-env.mjs` | **non** |
+
+**La porte `diag` sert à une seule chose** : prouver que le classeur
+a bien la forme attendue — « Statut » en colonne B, la première ligne
+figée, une seule règle de couleur, le format texte sur les cellules
+du visiteur — sans avoir à ouvrir le classeur ni à le partager.
+
+Elle est publique comme les autres, et elle **ne peut pas** faire
+sortir une demande de client :
+
+- elle rend la **structure** — en-têtes, largeurs, règles — qui ne
+  dit rien qu'un formulaire du site ne dise déjà ;
+- elle ne rend le **contenu** que des lignes portant un marqueur
+  d'essai (`ZZTEST`, `@exemple.ca`…). Cette liste est **écrite en
+  dur** : aucun paramètre ne la choisit, donc on ne peut pas lui
+  demander autre chose.
+
+Pour la retirer, supprimez le bloc `diagnostic()` de `Code.gs` et les
+six lignes correspondantes de `doGet`.
 
 **Testez la deuxième porte tout de suite** : collez dans votre
 navigateur votre adresse suivie de `?action=creneaux`. Vous devez
@@ -372,10 +391,10 @@ jamais besoin de descendre plus bas.
 
 | Variable | Livrée à | Ce qu'elle décide |
 |---|---|---|
-| `JOURS_OUVRABLES` | `[1, 2, 3, 4, 5]` | les jours ouverts. **0 = dimanche**, 1 = lundi … 6 = samedi. Ajouter le samedi : `[1,2,3,4,5,6]` |
+| `JOURS_OUVRABLES` | `[0, 1, 2, 3, 4, 5, 6]` | les jours ouverts. **0 = dimanche**, 1 = lundi … 6 = samedi. Livré **sept jours sur sept**. Revenir à la semaine : `[1,2,3,4,5]` |
 | `HEURE_DEBUT` | `"09:00"` | rien ne commence avant |
-| `HEURE_FIN` | `"17:00"` | rien ne **finit** après — donc rien ne démarre à 16 h 45 pour un appel de 30 min |
-| `PAUSES` | `[{ debut: "12:00", fin: "13:00" }]` | des trous tous les jours ouvrables. `[]` pour n'en avoir aucun |
+| `HEURE_FIN` | `"20:00"` | rien ne **finit** après — donc rien ne démarre après 19 h 30 pour un appel de 30 min |
+| `PAUSES` | `[]` | des trous tous les jours ouvrables. **Livré vide** : la journée est pleine de 9 h à 20 h. Reprendre l'heure du midi : `[{ debut: "12:00", fin: "13:00" }]` |
 | `DUREE_CRENEAU_MIN` | `30` | la longueur d'un appel. **Le site annonce 30 minutes** — si vous changez ça, changez aussi le texte d'`index.html` |
 | `TAMPON_MIN` | `15` | le temps entre deux appels. Il agit deux fois : il espace les créneaux (30 + 15 = un départ toutes les 45 min) **et** il élargit la zone interdite autour de chaque événement de l'agenda |
 | `PREAVIS_HEURES` | `24` | personne ne réserve dans les 24 prochaines heures |
@@ -386,7 +405,70 @@ Deux réglages de plus, qu'on touche presque jamais :
 | Variable | Livrée à | Ce qu'elle décide |
 |---|---|---|
 | `CALENDRIER_ID` | `""` | vide = le calendrier **principal** du compte, c'est-à-dire celui d'`apedagence`. C'est ce qu'on veut : un seul calendrier, pas de gestion par associé |
+| `CALENDRIERS_EN_PLUS` | `[]` | **les autres agendas qui bloquent aussi.** Voir « Bloquer depuis un autre agenda » plus bas |
 | `DISPONIBLE_BLOQUE` | `true` | voir juste en dessous |
+
+### Combien de créneaux la grille livrée donne
+
+De 9 h à 20 h, 30 minutes d'appel plus 15 de tampon, ça fait un
+départ toutes les **45 minutes**. Le dernier part à 19 h 30 pour
+finir pile à 20 h.
+
+> **9 h 00 · 9 h 45 · 10 h 30 · 11 h 15 · 12 h 00 · 12 h 45 ·
+> 13 h 30 · 14 h 15 · 15 h 00 · 15 h 45 · 16 h 30 · 17 h 15 ·
+> 18 h 00 · 18 h 45 · 19 h 30**
+
+**Quinze par jour, sept jours sur sept — 105 par semaine.** L'agenda
+en retire ensuite tout ce qui est déjà pris.
+
+Deux journées ne sont jamais pleines, et c'est normal :
+
+- **aujourd'hui et demain**, rognés par le préavis de 24 h ;
+- **le dernier jour de l'horizon**, coupé au milieu par les 42 jours.
+
+Si quinze par jour paraît trop, la façon la moins coûteuse de
+resserrer est `TAMPON_MIN: 30` — un départ toutes les heures, dix par
+jour — ou de rendre `HEURE_FIN` à `"17:00"`.
+
+### Bloquer depuis un autre agenda que celui de l'agence
+
+**Le piège, et il a mordu le 2026-08-06.** Ce script s'exécute sous
+le compte de l'agence. Un blocage créé dans votre agenda
+**personnel** lui est donc invisible : il ne bloque rien, et rien ne
+le dit — le créneau reste offert, et quelqu'un réserve par-dessus
+votre rendez-vous.
+
+Deux façons de s'en sortir. Choisissez-en **une**.
+
+**A · Tout bloquer dans l'agenda de l'agence.** Rien à changer dans
+le code. Il faut être connecté à `apedagence` dans l'application
+Agenda quand on crée le blocage. C'est le plus simple, et c'est ce
+qui est livré.
+
+**B · Faire compter votre agenda personnel aussi.** Deux gestes, une
+fois pour toutes :
+
+1. Dans **votre** agenda personnel : `Paramètres` → votre agenda →
+   `Partager avec des personnes précises` → ajoutez
+   `apedagence@gmail.com` → autorisation **`Afficher tous les
+   détails`**. « Afficher uniquement libre/occupé » ne suffit pas.
+2. Dans `Code.gs` :
+   `CALENDRIERS_EN_PLUS: ["votre.adresse@gmail.com"]`, puis
+   étape 7 — `Nouvelle version`.
+
+Tout ce qui est dans **l'un ou l'autre** agenda bloque alors, avec
+les mêmes règles. Vous pouvez en lister autant que vous voulez.
+
+> **Un agenda qu'on ne sait pas lire ferme la porte.** Adresse mal
+> tapée, partage oublié, partage en « libre/occupé seulement » : le
+> site n'affiche **plus aucune plage** et la réservation refuse. Ce
+> n'est pas un bogue — rendre « zéro occupation » voudrait dire
+> « tout est libre », et c'est comme ça qu'on donne deux fois le même
+> rendez-vous.
+>
+> **Pour savoir lequel :** lancez `initialiser` dans l'éditeur Apps
+> Script et lisez le journal (`Exécutions`). Il écrit
+> `Agenda lisible : …` pour chacun, et nomme le fautif.
 
 **Après chaque changement : étape 7.** `Gérer les déploiements` →
 crayon → `Nouvelle version`. Sans ça, le site continue de lire
@@ -427,13 +509,27 @@ supprimée d'un événement récurrent.
 
 **Trois lignes, depuis le téléphone, sans rien installer.**
 
-1. Ouvrez l'application **Google Agenda**, connectée à
-   `apedagence@gmail.com`, et appuyez sur le **`+`**.
+1. Ouvrez l'application **Google Agenda**, sur le compte dont
+   l'agenda compte — `apedagence@gmail.com`, ou le vôtre si vous
+   avez fait le montage **B** ci-dessus — et appuyez sur le **`+`**.
 2. **Toute une journée** → activez `Toute la journée`, mettez la date,
    enregistrez. **Quelques heures** → laissez `Toute la journée`
    éteint et mettez l'heure de début et de fin.
 3. C'est fini. Le site cesse d'offrir ces heures **dès la requête
    suivante** — pas de cache, pas de délai, pas de redéploiement.
+
+**Le geste 1 est celui qui se rate.** Créer le blocage dans le
+mauvais agenda ne donne aucune erreur : ça a l'air d'avoir marché, et
+le créneau reste offert. Si un blocage ne fait rien, c'est presque
+toujours ça — pas un bogue.
+
+**Mesuré le 2026-08-06 contre le vrai service :** une plage prise a
+disparu de la porte des créneaux **dès l'appel suivant**, 1,8 s après
+— et ces 1,8 s sont le temps de la requête elle-même, pas un délai
+d'attente. `creneauxLibres()` relit l'agenda à chaque appel : il n'y
+a aucun cache côté serveur. Côté site, une réponse déjà chargée vaut
+45 secondes, et elle est jetée immédiatement dès qu'une réservation
+est refusée.
 
 Le titre n'a aucune importance et **n'est jamais montré au
 visiteur** : le site ne reçoit que des heures.
@@ -544,7 +640,38 @@ fois** : c'est le test qui vaut tous les autres.
 
 **Puis, immédiatement : rouvrez le site et regardez le calendrier.**
 Le créneau que vous venez de prendre ne doit plus être offert. C'est
-la preuve que la boucle est fermée.
+la preuve que la boucle est fermée. *(Mesuré le 2026-08-06 : parti
+dès l'appel suivant.)*
+
+### 8.2bis · Le test d'injection — trois minutes, et il compte
+
+Sheets ne range pas toujours ce qu'on lui donne : une valeur qui
+commence par `=`, `+`, `-` ou `@` devient une **formule**, et elle
+s'exécute à l'ouverture du classeur, **sous le compte de l'agence**.
+Il n'y a aucune faille à exploiter — il suffit d'un champ de texte.
+
+Le script pose le format **texte** sur les colonnes du visiteur
+*avant* d'écrire. Voici comment vérifier que ça tient :
+
+1. Envoyez un message de contact dont le texte est exactement `=1+1`.
+2. Recommencez avec `=IMPORTXML("https://exemple.ca/x","//a")`.
+3. Ouvrez le classeur, onglet **Contact simple**, colonne
+   « Message ».
+
+| Ce que vous voyez | Verdict |
+|---|---|
+| `=1+1` **écrit tel quel** | ✅ le format tient |
+| `2` | ❌ la faille est ouverte — Sheets a calculé |
+| `#N/A`, `Chargement…`, ou une valeur qui apparaît | ❌ `IMPORTXML` s'exécute |
+
+**Sans ouvrir le classeur**, la porte `diag` rend le même verdict :
+`…/exec?action=diag`, puis cherchez l'onglet « Contact simple » et
+la ligne d'essai. Le champ `formule` de la cellule « Message » doit
+être **vide** — s'il porte quelque chose, Sheets a calculé.
+
+> **Refuser les `=` aurait été le mauvais correctif.** Une entreprise
+> peut s'appeler « +Design », un budget s'écrire « -de 5 k ». On
+> range du texte comme du texte ; on ne rejette pas le client.
 
 > **L'heure doit être la même aux quatre endroits.** Si l'écran dit
 > 9 h et l'agenda 10 h, arrêtez tout et signalez-le : c'est un défaut

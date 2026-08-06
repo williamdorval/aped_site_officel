@@ -52,6 +52,13 @@ outil en regard n'a pas sa place dans ce fichier.
 | &nbsp;&nbsp;↳ Les outils de cette chaîne | 11 | 394 |
 | &nbsp;&nbsp;↳ La géométrie du panneau, relevée | 27 | 269 |
 | &nbsp;&nbsp;↳ Les trois faux verdicts de ce chantier | 13 | 152 |
+| **RELEVÉS DU 2026-08-06 · VALIDATION AVANT PRODUCTION** | 5 | 59 |
+| &nbsp;&nbsp;↳ La grille livrée | 13 | 105 |
+| &nbsp;&nbsp;↳ Le temps de réaction de l'agenda | 13 | 136 |
+| &nbsp;&nbsp;↳ Double réservation, contre le vrai Google | 13 | 113 |
+| &nbsp;&nbsp;↳ Le fuseau | 8 | 80 |
+| &nbsp;&nbsp;↳ Latence et taux d'échec | 11 | 114 |
+| &nbsp;&nbsp;↳ Les cibles tactiles | 16 | 149 |
 
 <!-- INDEX:FIN -->
 
@@ -500,3 +507,82 @@ Détail : `PIEGES.md § 53, 54, 55`.
    pas un premier écran.
 3. **Un dépôt voisin peut être en chantier pendant qu'on le
    photographie** — un `Module not found` sur un fichier qui existe.
+
+## RELEVÉS DU 2026-08-06 · VALIDATION AVANT PRODUCTION
+
+Tout ce qui suit vient du **vrai déploiement Apps Script**, pas du
+banc. Reproduire : `node tools/prod-sonde.mjs [etat|injection|double|delai|fuseau|tout]`.
+
+### La grille livrée
+
+| | Avant | Après |
+|---|---|---|
+| jours ouverts | lundi → vendredi | **sept jours sur sept** |
+| plage | 9 h → 17 h | **9 h → 20 h** |
+| pause du midi | 12 h → 13 h | **aucune** |
+| créneaux par jour plein | 9 | **15** |
+| par semaine | 45 | **105** |
+
+Un départ toutes les 45 min (30 d'appel + 15 de tampon), le dernier
+à 19 h 30 pour finir pile à 20 h.
+
+### Le temps de réaction de l'agenda
+
+| Mesure | Valeur |
+|---|---|
+| écriture d'une réservation | **5 877 ms** |
+| avant que la plage quitte la porte des créneaux | **dès le 1er appel, 1 797 ms** |
+
+Les 1 797 ms **sont le temps de la requête**, pas un délai d'attente :
+le premier appel post-écriture voyait déjà la plage partie.
+`creneauxLibres()` relit l'agenda à chaque appel — aucun cache côté
+serveur. Côté site, une réponse vaut 45 s et est jetée dès qu'une
+réservation est refusée.
+
+### Double réservation, contre le vrai Google
+
+Deux `POST` lancés par le même `Promise.all` sur la **même plage**,
+deux demandeurs différents :
+
+| | Réponse | Temps |
+|---|---|---|
+| A | `success: false` · « Cette plage vient d'être prise. » | 6 011 ms |
+| B | `success: true` · ligne 2 | 5 184 ms |
+
+Une seule passe. La plage a disparu de l'affichage (9 → 8).
+`LockService` tient contre le vrai service.
+
+### Le fuseau
+
+**48 plages relues, 0 écart** entre l'instant ISO et l'heure
+affichée, recalculés indépendamment à `America/Toronto`. Le
+changement d'heure du 1er novembre est **hors** de l'horizon de
+42 jours : il n'est pas contrôlé ici. `creneaux-check` le couvre sur
+six dates nommées.
+
+### Latence et taux d'échec
+
+| Porte | Appels | médiane | p90 | max | HTTP 404 |
+|---|---:|---:|---:|---:|---:|
+| témoin de vie | 60 | 773 ms | 1 132 ms | 1 666 ms | **0** |
+| créneaux | ~15 | ~1 800 ms | ~2 100 ms | 2 086 ms | 0 |
+
+À comparer au 2026-08-05 : 2 HTTP 404 sur 36, et un pic à 29 893 ms
+sur la porte des créneaux. **Le défaut est intermittent** — une
+journée propre ne prouve pas qu'il a disparu.
+
+### Les cibles tactiles
+
+`node tools/pouce-check.mjs 8099` — 18 / 18.
+
+| largeur | panneau | case de jour | plage | forme |
+|---|---|---|---|---|
+| 320 px | 288 px | **254 × 48** | 123 × 44 | liste |
+| 360 px | 328 px | **294 × 48** | 143 × 44 | liste |
+| 390 px | 358 px | 45 × 44 | 158 × 44 | grille |
+
+**Le seuil de bascule est mesuré, pas calculé.** L'arithmétique
+donnait 348 px ; elle oubliait le remplissage propre du panneau. La
+grille ne tient les 44 px qu'à partir de **378 px** de fenêtre — d'où
+la bascule à 24 rem (384 px).
+

@@ -116,6 +116,11 @@ correctif.
 | &nbsp;&nbsp;↳ 86 · . ne matche pas \r en JavaScript, et un fichier CRLF fait échouer /^…$/ en silence | 43 | 632 |
 | &nbsp;&nbsp;↳ 87 · Une sonde lue trop tôt ne voit pas l'état réel : data-palier et data-lettres arrivent après | 27 | 379 |
 | &nbsp;&nbsp;↳ 88 · Sur un .btn, ::before est déjà pris, et .btn .l bat toute règle à une classe | 34 | 470 |
+| &nbsp;&nbsp;↳ 89 · Deux instances du même code évalué ne partagent PAS leurs variables | 25 | 263 |
+| &nbsp;&nbsp;↳ 90 · Un filtre de réponses sur /exec ne voit que la redirection | 23 | 222 |
+| &nbsp;&nbsp;↳ 91 · Une attente fixe calibrée sur le banc ment contre le vrai service | 19 | 224 |
+| &nbsp;&nbsp;↳ 92 · [ée]s? ne matche pas « supprimées » — une classe prend UN caractère | 31 | 343 |
+| &nbsp;&nbsp;↳ 93 · Une valeur qui commence par =, +, - ou @ devient une FORMULE dans Sheets | 21 | 241 |
 
 <!-- INDEX:FIN -->
 
@@ -1653,4 +1658,123 @@ d'affichage à la spécificité du contexte
 dump des feuilles de style — qui a d'ailleurs rendu **zéro règle** sans
 le signaler (piège 30). L'arbitre a été
 `page.locator(".nav-refer").screenshot()` à densité 3, agrandie.
+
+
+### 89 · Deux instances du même code évalué ne partagent PAS leurs variables
+
+**Le faux verdict.** `tools/faux-google.mjs` évalue `google/Code.gs`
+deux fois — une avec le service avancé Calendar, une sans — pour
+exercer le repli. Les deux instances partagent `etat`, parce que les
+bouchons le referment. Elles ne partagent **rien d'autre**.
+
+Un cas posait `gs.DISPONIBILITES.CALENDRIERS_EN_PLUS` puis
+interrogeait `gsSansAvance` : celle-ci lisait SA propre copie, restée
+vide, et rendait 42 jours entièrement libres sur un agenda illisible.
+
+**Ce qui rend ce piège méchant** : le faux verdict ressemblait trait
+pour trait au vrai défaut qu'on cherchait. « L'agenda est illisible
+et le site offre tout » est exactement le symptôme testé.
+
+**Le correctif.** Une fonction qui écrit dans les DEUX, jamais
+d'accès direct :
+
+```js
+function agendasEnPlus(liste) {
+  D.CALENDRIERS_EN_PLUS = liste.slice();
+  D2.CALENDRIERS_EN_PLUS = liste.slice();
+}
+```
+
+### 90 · Un filtre de réponses sur `/exec` ne voit que la redirection
+
+**Le faux verdict.** `formulaires-prod.mjs --reel` a rendu **0 sur 8**
+contre le vrai service, avec **zéro erreur de console** et un service
+qui répondait 200 au témoin de vie.
+
+**La cause.** Le filtre était `r.url().startsWith(SERVICE)`. Une Web
+App Apps Script répond à `/exec` par un **302 vers
+`*.googleusercontent.com`**, et c'est CETTE réponse-là qui porte le
+JSON. L'outil ne retenait que la redirection, corps illisible.
+
+**Le correctif.** Retenir les deux domaines, et **jeter les 3xx** :
+
+```js
+const nôtre = (u) => u.startsWith(SERVICE)
+  || u.indexOf("googleusercontent.com") !== -1;
+page.on("response", async (r) => {
+  if (!nôtre(r.url())) return;
+  if (r.status() >= 300 && r.status() < 400) return;
+  …
+});
+```
+
+### 91 · Une attente fixe calibrée sur le banc ment contre le vrai service
+
+**Le faux verdict.** Même passe que le piège 90, seconde cause :
+`await page.waitForTimeout(2500)` après le clic. 2 500 ms suffisent
+contre `faux-google`, qui répond en **5 ms**. Le vrai service met
+**2 à 8 s**, et jusqu'à 30 s une fois sur vingt-cinq. L'outil relevait
+un écran encore vide et concluait « ne livre pas ».
+
+**Le correctif.** Attendre l'ÉVÉNEMENT, jamais l'horloge — et
+imprimer le temps écoulé, parce que la mesure vaut le verdict :
+
+```js
+await page.waitForFunction(([s]) => {
+  const st = document.querySelector(s)?.querySelector(".form-status");
+  if (st && st.textContent.trim()) return true;
+  return !!document.querySelector(".step.success:not([hidden])");
+}, [portee], { timeout: 45000, polling: 200 });
+```
+
+### 92 · `[ée]s?` ne matche pas « supprimées » — une classe prend UN caractère
+
+**Le faux verdict.** `confidentialite-check` cherche les promesses
+qu'on ne tient pas. Quatre mutations posées exprès dans la page :
+deux ont été attrapées, **deux sont passées**.
+
+| Motif | Texte | Résultat |
+|---|---|---|
+| `/supprim[ée]s? automatiquement/` | « supprim**ées** automatiquement » | **rate** |
+| `/serveurs? (situ[ée]s? )?au Québec/` | « serveurs **sont situés** au Québec » | **rate** |
+
+Dans le premier, `[ée]` consomme le `é`, puis `s?` attend un `s` et
+trouve un `e`. Dans le second, le motif exigeait deux mots collés.
+
+**Ce qui rend ce piège méchant** : un contrôle qui ne mord pas est
+indiscernable d'un contrôle qui passe. `30 / 30` s'affichait pendant
+que deux des six interdits n'existaient pas.
+
+**Le correctif.** Une classe répétée pour l'accord, et de l'espace
+pour les mots intercalés — puis **remuter pour vérifier que ça mord
+maintenant** :
+
+```js
+/(supprim|effac|détruit)[a-zéèê]*\s+automatiquement/i
+/(serveurs?|hébergé[a-z]*)[^.]{0,40}\bau Québec\b/i
+```
+
+**La leçon générale, et c'est la même que le piège 17 :** un motif
+qu'on RESSERRE après un faux positif doit être remuté, sinon on a
+seulement éteint le contrôle.
+
+### 93 · Une valeur qui commence par `=`, `+`, `-` ou `@` devient une FORMULE dans Sheets
+
+**Le faux verdict.** `setValues([["=1+1"]])` ne range pas la chaîne
+`=1+1` : Sheets en fait un calcul, et la cellule affiche `2`. Avec
+`=IMPORTXML(...)`, la requête part **sous le compte propriétaire du
+classeur**, à chaque ouverture. Aucune faille à exploiter : un champ
+de texte suffit.
+
+**Ce que `getValues()` ne peut pas dire.** Il rend la valeur
+AFFICHÉE. Le verdict est dans `getFormulas()` : **non vide = Sheets a
+calculé.**
+
+**Le correctif.** `setNumberFormat("@")` sur les colonnes du
+visiteur, **AVANT** `setValues`. Posé après, il ne défait pas la
+formule — il ne fait que l'afficher autrement.
+
+**Ne PAS refuser les `=`** : une entreprise peut s'appeler
+« +Design », un budget s'écrire « -de 5 k ». On range du texte comme
+du texte ; on ne rejette pas le client.
 
