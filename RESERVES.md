@@ -140,6 +140,8 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le classeur attend onze colonnes de plus | 10 | 130 |
 | &nbsp;&nbsp;↳ Deux échecs d'outil qui EXISTAIENT AVANT ce chantier | 6 | 69 |
 | &nbsp;&nbsp;↳ Ce que le rôle attaquant n'a pas couvert | 8 | 88 |
+| &nbsp;&nbsp;↳ OUVERTE PAR LE RENOMMAGE DES ASSOCIÉS — 2026-08-07 (D-778) | 2 | 18 |
+| &nbsp;&nbsp;↳ Aucune ligne du VRAI classeur n'a été relue après le renommage | 27 | 380 |
 
 <!-- INDEX:FIN -->
 
@@ -1811,8 +1813,9 @@ dire, ou retirer le facteur.**
 `SCHEMA.estimate` est passé de 15 à 16 champs, et trois d'entre eux
 sont neufs (`complexite`, `usagers`, `besoin_detail`), plus le
 renommage de `domaine`/`envergure`/`site_existant` qui disparaissent.
-`VERSION_MINIMALE` est à **13** dans `classeur-check`, `sept-parcours`
-et `verite-prod` ; le déploiement est à 12. **Redéploie et relance
+`VERSION_MINIMALE` est à **14** dans `classeur-check` (D-778) et à
+**13** dans `sept-parcours` et `verite-prod` ; le déploiement est à
+12. **Redéploie et relance
 `initialiser()`** — jusque-là ces trois outils refusent de juger, et
 c'est voulu.
 
@@ -1829,3 +1832,32 @@ doublons et les cibles tactiles. Il ne teste PAS : un vrai navigateur
 mobile, un lecteur d'écran réel, une connexion lente, ni le
 comportement du vrai service Google — tout passe par
 `faux-google.mjs`.
+
+### OUVERTE PAR LE RENOMMAGE DES ASSOCIÉS — 2026-08-07 (D-778)
+
+### Aucune ligne du VRAI classeur n'a été relue après le renommage
+
+« Alan » est devenu « Allen » et « Elie » est devenu « Eli ». Les
+lignes déjà écrites qui portent l'ancienne graphie dans « Lu par » ou
+« Rappelé par » **n'ont pas été inspectées** : la porte
+`?action=diag` ne rend le contenu que des lignes marquées
+`MARQUEURS_ESSAI`, par construction — une ligne de vrai client ne
+peut pas en sortir, et c'est voulu. Le déploiement est par ailleurs
+resté en version **12**.
+
+Ce qui est prouvé : `reparerValeursListes` (D-778) réécrit les
+graphies connues et vide le reste, au banc, avec la fusion qui coupe
+avant et qui passe après. Ce qui ne l'est pas : **combien de cellules
+du vrai classeur sont concernées, ni si l'une d'elles porte une
+valeur qu'`ALIAS_ASSOCIES` ne rattrape pas** — celle-là sera vidée.
+
+**Ce qu'il faut faire, et dans cet ordre.** Redéployer (Gérer les
+déploiements → crayon → **Nouvelle version**, jamais « Nouveau
+déploiement »), relancer `initialiser()`, puis **lire le journal
+d'exécution Apps Script** : chaque cellule touchée y est nommée avec
+sa valeur exacte. Tant que ce journal n'a pas été lu, personne ne
+peut écrire que le renommage est fait — seulement qu'il est posé.
+
+`VERSION_MINIMALE` de `classeur-check` est passée à **14** : un
+déploiement 13 n'a pas la réparation, et le juger « sain » serait le
+faux verdict du piège 95.
