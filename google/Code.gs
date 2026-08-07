@@ -355,7 +355,7 @@ var MODES = { TEL: "Appel téléphonique", MEET: "Google Meet" };
    LA PLUS RÉCENTE EN TÊTE. C'est celle que le site affiche, et
    l'outil vérifie que les deux s'accordent.
    ============================================================ */
-var CONDITIONS_VERSIONS = ["2026-08-07"];
+var CONDITIONS_VERSIONS = ["2026-08-07-b", "2026-08-07"];
 
 /* CE QU'UNE ÉTAPE SUIVANTE N'A PAS LE DROIT DE RÉÉCRIRE.  D-773
 
@@ -1705,7 +1705,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 14,
+    version: 15,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),

@@ -43,10 +43,22 @@ const DOSSIER = path.join(RACINE, "conditions");
    fois : celle du titre serait une seconde source, donc une source
    de plus a maintenir fausse.
    ------------------------------------------------------------ */
+/* LA LETTRE DE FIN SERT AUX SECONDES VERSIONS D'UN MEME JOUR.  D-779
+
+   Sans elle, deux revisions du 7 aout se disputeraient le meme nom,
+   et la seule issue serait soit d'ECRASER une version deja acceptee
+   — une preuve perdue —, soit de dater du lendemain une condition
+   affichee aujourd'hui, ce que la regle A interdit. `-b` dit la
+   verite : meme jour, deuxieme redaction.
+
+   L'ORDRE LEXICOGRAPHIQUE SUFFIT et c'est pour ca que la lettre est
+   en QUEUE : « 2026-08-07 » < « 2026-08-07-b » < « 2026-08-09 ». */
+const NOM_VERSION = /^reference-(\d{4}-\d{2}-\d{2}(?:-[a-z])?)\.md$/;
+
 function versionEnVigueur() {
   if (!fs.existsSync(DOSSIER)) return null;
   const noms = fs.readdirSync(DOSSIER)
-    .map((f) => /^reference-(\d{4}-\d{2}-\d{2})\.md$/.exec(f))
+    .map((f) => NOM_VERSION.exec(f))
     .filter(Boolean)
     .map((m) => m[1])
     .sort();
@@ -305,7 +317,7 @@ if (mv) {
    une reference acceptee sous l'ancienne se reenverrait — reessai
    reseau — et se ferait refuser sur une version qui etait vraie. */
 const archives = fs.readdirSync(DOSSIER)
-  .map((n) => /^reference-(\d{4}-\d{2}-\d{2})\.md$/.exec(n)).filter(Boolean).map((m) => m[1]);
+  .map((n) => NOM_VERSION.exec(n)).filter(Boolean).map((m) => m[1]);
 if (mv) {
   const listees = mv[1].split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
   const orphelines = archives.filter((v) => listees.indexOf(v) === -1);

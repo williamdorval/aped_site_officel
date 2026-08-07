@@ -137,7 +137,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le prix des trois catégories sans prix n'a pas été arbitré | 7 | 79 |
 | &nbsp;&nbsp;↳ Les modules du questionnaire n'ont jamais été confrontés à un vrai devis | 9 | 128 |
 | &nbsp;&nbsp;↳ La taille de l'entreprise fait monter le prix, et on ne le dit pas | 10 | 140 |
-| &nbsp;&nbsp;↳ Le classeur attend onze colonnes de plus | 10 | 130 |
+| &nbsp;&nbsp;↳ Le classeur attend onze colonnes de plus | 11 | 136 |
 | &nbsp;&nbsp;↳ Deux échecs d'outil qui EXISTAIENT AVANT ce chantier | 6 | 69 |
 | &nbsp;&nbsp;↳ Ce que le rôle attaquant n'a pas couvert | 8 | 88 |
 | &nbsp;&nbsp;↳ OUVERTE PAR LE RENOMMAGE DES ASSOCIÉS — 2026-08-07 (D-778) | 2 | 18 |

@@ -369,6 +369,78 @@ Si vous avez créé un nouveau déploiement par erreur : reprenez
 l'étape 6 avec la nouvelle adresse, et supprimez l'ancien
 déploiement (`Gérer les déploiements` → ⋮ → `Archiver`).
 
+### Le geste, en cinq temps
+
+1. Ouvrez l'éditeur Apps Script du compte de l'agence.
+2. **`Déployer`** → **`Gérer les déploiements`**.
+3. Le **crayon** (modifier) sur le déploiement existant.
+4. Version : **`Nouvelle version`**. Puis **`Déployer`**.
+5. Refermez. **L'adresse n'a pas changé** — c'est le but.
+
+### Quand redéployer, et quoi lancer ensuite
+
+Redéployer met le nouveau code en ligne. Ça ne touche pas au
+classeur : les colonnes, les listes déroulantes et les formats ne
+bougent que si vous lancez `initialiser()` **après**.
+
+| Ce qui a changé | Redéployer | Lancer ensuite, depuis l'éditeur | Comment vérifier |
+|---|---|---|---|
+| une ligne quelconque de `Code.gs` | ✅ | rien | `version` a monté (voir plus bas) |
+| les colonnes d'un onglet — `SCHEMA`, `SUIVI`, `SUIVI_FIN`, `TECHNIQUES` | ✅ | **`initialiser()`** | `node tools/classeur-check.mjs` |
+| le contenu d'une liste déroulante — `ASSOCIES`, `STATUTS` | ✅ | **`initialiser()`**, puis **lire le journal d'exécution** | `classeur-check`, **et** aucun « VIDÉE » au journal |
+| les disponibilités — `DISPONIBILITES` | ✅ | rien | la porte des créneaux affiche les nouvelles heures |
+| une version des conditions — `CONDITIONS_VERSIONS` | ✅ | rien | `?action=diag` : le champ `conditions` |
+| les textes d'un courriel | ✅ | rien | `autotest()` si vous voulez en voir un |
+| un fichier du **site** — `.html`, `.css`, `.js` | ❌ | rien | rechargez la page |
+
+> **Le seul cas qui demande de LIRE quelque chose est celui des
+> listes déroulantes.** Changer le contenu d'une liste ne réécrit
+> aucune cellule déjà remplie : Sheets garde l'ancienne valeur et la
+> marque invalide, et la ligne ne casse qu'à la prochaine fusion,
+> des semaines plus tard. `initialiser()` répare ces cellules et
+> **écrit au journal chaque cellule touchée**. Tant que ce journal
+> n'a pas été lu, le changement est posé, pas fait. (Décision D-778.)
+
+### Lire le journal d'exécution
+
+Dans l'éditeur : **`Exécutions`** dans la colonne de gauche, puis la
+ligne `initialiser` la plus récente. Le détail s'ouvre dessous.
+
+- Une ligne `« Onglet » B7 (Lu par) : « Alan » → « Allen »` dit
+  qu'une cellule a été **corrigée** — rien à faire.
+- Une ligne qui finit par **`VIDÉE`** dit qu'une valeur ne figurait
+  dans aucune liste et qu'elle a été **effacée**. La cellule est
+  nommée : allez la remettre à la main.
+
+### Comment savoir que le déploiement a vraiment pris
+
+Le service annonce son propre numéro de version. Depuis le dépôt :
+
+```
+node tools/classeur-check.mjs
+```
+
+La première ligne dit `VERSION DEPLOYEE : n (minimum exige : m)`. Si
+`n` est plus petit que `m`, **l'outil s'arrête au lieu de rendre un
+verdict** : un classeur jugé « sain » par un code trop vieux est
+exactement le mensonge qu'on cherche à rendre impossible.
+
+Le numéro vit dans `Code.gs`, dans la réponse de `doGet`. Il est levé
+à la main à chaque changement qui doit être vu de l'extérieur. Si vous
+redéployez et que le numéro ne monte pas, ce n'est pas le déploiement
+qui a raté : c'est que personne ne l'a levé.
+
+### Les deux fonctions d'essai
+
+| Fonction | Ce qu'elle fait | Ce qu'elle coûte |
+|---|---|---|
+| `autotest()` | écrit une demande d'essai dans les sept onglets, sans réseau | rien — **aucun courriel, aucun rendez-vous** |
+| `nettoyerAutotest()` | efface les lignes d'essai qu'elle a écrites | rien |
+
+Lancez la première après un changement de colonnes, la seconde tout de
+suite après. Les lignes d'essai portent `essai@exemple.ca` : elles se
+reconnaissent à l'œil dans le classeur.
+
 ---
 
 ## Étape 7bis · Vos disponibilités

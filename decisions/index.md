@@ -2438,3 +2438,83 @@ relue — le déploiement `/exec` n'est pas joignable depuis cette
 session. La réparation est écrite et prouvée au banc ; elle
 s'exécutera au prochain `initialiser()`, et le journal Apps Script
 dira ce qu'elle a touché. `RESERVES.md`.
+
+## D-779 · Une prime par entreprise référée, et elle se lit avant de référer
+
+La règle existait : « La prime porte sur le **premier** contrat. Les
+mandats suivants avec la même entreprise n'en génèrent pas de
+nouvelle. » Elle était la **dernière phrase de l'article 3**, sous deux
+paragraphes qui parlaient du délai de paiement, dans un article
+intitulé « Quand la prime est due ». Quelqu'un qui cherche « combien »
+lit l'article 1 et s'arrête. Quelqu'un qui cherche « quand » lit
+l'article 3 et trouve une phrase sur « combien de fois ».
+
+**C'EST LA DÉFINITION D'UNE RÈGLE EN PETITS CARACTÈRES**, même sans
+petits caractères : une limite rangée là où personne ne la cherche. Le
+jour où elle mord — le référent réclame une deuxième prime six mois
+plus tard —, il a raison de se sentir trompé, et il a raison devant
+n'importe qui. Une règle qui surprend coûte plus cher que la règle
+elle-même.
+
+Elle est maintenant l'**article 2**, avec son propre titre, la
+situation nommée (« trois mois, six mois, un an ou cinq ans plus
+tard ») et le mot qui compte en gras. L'article se termine par ce qui
+n'est PAS limité — le nombre d'entreprises différentes — parce qu'une
+limite lue seule se lit plus grosse qu'elle n'est, et que celle-là est
+vraiment sans plafond.
+
+L'article 4 dit maintenant que **deux choses** doivent être arrivées :
+le contrat signé **et** l'argent encaissé. L'ancien texte disait
+« trente jours après le paiement final », ce qui suppose la signature
+sans la dire ; un référent pressé y lisait « après le paiement », et un
+paiement peut arriver sur un devis accepté verbalement.
+
+**AUCUN MONTANT, AUCUN DÉLAI, AUCUNE RÈGLE DE FOND N'A BOUGÉ.** C'est
+une réécriture de lisibilité, et c'est pour ça qu'elle peut se faire
+sans rien demander à personne.
+
+**POURQUOI `-b` ET PAS LE LENDEMAIN.** Le nom de fichier est la
+version, et la version du 7 août existait déjà. Trois issues :
+écraser — une preuve perdue, et `conditions/` existe pour l'empêcher ;
+dater du 8 — afficher aujourd'hui une condition datée de demain, ce que
+la règle A interdit, et un client au téléphone aurait raison de le
+relever ; ou une lettre de fin. `reference-2026-08-07-b.md` dit la
+vérité : même jour, deuxième rédaction. L'ordre lexicographique tient
+sans rien changer d'autre, la lettre étant en queue :
+`2026-08-07` < `2026-08-07-b` < `2026-08-09`.
+
+**LES DEUX VERSIONS RESTENT ACCEPTÉES** par `CONDITIONS_VERSIONS`. Une
+référence acceptée sous `2026-08-07` peut se réenvoyer — un réessai
+réseau en fait un — et se ferait refuser sur une version qui était
+vraie au moment où elle a été lue.
+
+**LA VERSION PARAÎT À QUATRE ENDROITS**, et deux ne sont pas générés :
+le champ caché `conditions_version` et le libellé de la case à cocher,
+celui que la personne LIT en cochant. `conditions.mjs verifier` les
+compare depuis D-773 ; ils ont été repris à la main et l'outil le
+confirme. Si le champ caché disait une version et le libellé une autre,
+le classeur garderait la preuve d'une acceptation qui n'a pas eu lieu.
+
+**PROUVÉ AU ROUGE.** Champ caché remis à `2026-08-07` et
+`2026-08-07` retirée de `CONDITIONS_VERSIONS` : deux `ECHEC`, sortie 1
+— « le champ envoye porte la version en vigueur » et « toutes les
+versions archivees sont encore acceptees ». Restauré : huit `OK`.
+
+**ET `prime-check` ÉTAIT MORT DEPUIS LE MATIN.** Il lisait `var BAREME`
+dans `js/main.js` ; D-774 l'en avait sorti quelques heures plus tôt.
+L'outil s'arrêtait proprement sur `exit 2` — le bon comportement, il ne
+rendait pas « 0 » — mais **ses cinq contrôles étaient éteints**, pas
+seulement le quatrième : la grille des primes affichée sur la page
+n'était plus vérifiée du tout, et le seul signe en était un code de
+sortie que personne ne lisait. Il compare désormais les primes aux
+crans d'`ESTIM_ECHELLE` dans `google/Code.gs` — ce que le visiteur peut
+réellement voir comme un prix depuis D-774. 37 contrôles, taux maximal
+6,7 %. Deux primes coïncident avec un cran (2 500 $ et 5 000 $) : la
+note existait déjà et reste vraie, la grille nomme le TYPE à côté du
+montant et chaque prime est loin sous le plancher de sa propre ligne.
+Prouvé au rouge en renommant `ESTIM_ECHELLE`.
+
+> **UN OUTIL ARRÊTÉ EST UN OUTIL MORT.** Il compte comme une absence de
+> test, jamais comme un test qui passe. Une suite qui contient un
+> `exit 2` permanent ment exactement autant qu'un test vert sur du
+> vide — et se voit encore moins.

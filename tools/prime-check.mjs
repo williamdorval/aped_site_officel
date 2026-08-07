@@ -124,18 +124,33 @@ console.log("LA GRILLE DES PRIMES DE REFERENCE");
 console.log("============================================================");
 
 /* ------------------------------------------------------------
-   4 · LES MONTANTS DU BAREME, LUS DANS `js/main.js`
+   4 · LES MONTANTS DU BAREME, LUS DANS `google/Code.gs`
+
+   IL LES CHERCHAIT DANS `js/main.js` JUSQU'AU 2026-08-07.  D-779
+
+   D-774 a sorti le bareme du navigateur : `var BAREME` n'existe
+   plus nulle part, et cet outil s'ARRETAIT sur exit 2 — donc ses
+   CINQ controles etaient eteints, pas seulement le quatrieme. La
+   grille des primes affichee sur la page n'etait plus verifiee du
+   tout, et le seul signe en etait un code de sortie que personne
+   ne lisait. Un outil arrete est un outil mort ; il compte comme
+   une absence de test, jamais comme un test qui passe.
+
+   Ce que voit le visiteur n'est plus un bareme mais une
+   FOURCHETTE, dont les deux bornes sont des crans
+   d'`ESTIM_ECHELLE`. Ce sont donc ces montants-la, et eux seuls,
+   qu'une prime pourrait pointer : meme question, posee a la source
+   qui existe encore.
    ------------------------------------------------------------ */
-const mainJs = fs.readFileSync(path.join(RACINE, "js", "main.js"), "utf8");
-const bloc = /var BAREME = \[([\s\S]*?)\n\s*\];/.exec(mainJs);
+const codeGs = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
+const bloc = /var ESTIM_ECHELLE = \[([\s\S]*?)\];/.exec(codeGs);
 if (!bloc) {
-  console.error("ARRET  `BAREME` introuvable dans js/main.js — la comparaison\n"
-    + "       « aucune prime n'est un prix » ne pourrait pas se faire,\n"
-    + "       et la conclure quand meme serait une invention.");
+  console.error("ARRET  `ESTIM_ECHELLE` introuvable dans google/Code.gs — la\n"
+    + "       comparaison « aucune prime n'est un prix » ne pourrait pas se\n"
+    + "       faire, et la conclure quand meme serait une invention.");
   process.exit(2);
 }
-const montantsBareme = (bloc[1].match(/\d[\d  \s]*(?=\s*\$)/g) || [])
-  .map((s) => Number(sous(s))).filter(Boolean);
+const montantsBareme = (bloc[1].match(/\d+/g) || []).map(Number).filter(Boolean);
 if (montantsBareme.length < 5) {
   console.error("ARRET  le bareme rend " + montantsBareme.length + " montant(s), au moins 5 attendus.");
   process.exit(2);
@@ -376,7 +391,7 @@ GRILLE.forEach((l) => {
    MORD est la suivante — aucun montant du panneau hors la colonne
    des primes. */
 const collisions = GRILLE.filter((l) => montantsBareme.indexOf(l.prime) !== -1);
-console.log("      bareme lu dans js/main.js : "
+console.log("      crans lus dans google/Code.gs (ESTIM_ECHELLE) : "
   + [...new Set(montantsBareme)].join(" · ") + " $");
 console.log("      NOTE  " + collisions.length + " prime(s) coincide(nt) avec un palier du bareme"
   + (collisions.length ? " : " + collisions.map((l) => l.prime + " $").join(" · ") : "")
@@ -403,7 +418,10 @@ const haut = GRILLE[GRILLE.length - 1].prime;
 dire(sous(vu.plafond) === haut + "$",
   "la section annonce " + haut + " $, et la grille le paie",
   "annonce : « " + vu.plafond + " »  ·  derniere ligne : " + haut + " $");
-dire(/^\d{4}-\d{2}-\d{2}$/.test(vu.version.trim()),
+/* LA LETTRE DE FIN EST ADMISE DEPUIS D-779 : deux redactions d'un
+   meme jour ne peuvent pas partager un nom de fichier, et dater du
+   lendemain une condition affichee aujourd'hui serait une faussete. */
+dire(/^\d{4}-\d{2}-\d{2}(-[a-z])?$/.test(vu.version.trim()),
   "le panneau porte une version datee", "lu : « " + vu.version + " »");
 
 console.log("");
