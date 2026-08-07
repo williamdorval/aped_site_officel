@@ -3872,7 +3872,7 @@
           <input id="hpRefer" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
-      <!-- SIX ECRANS, ET LE PREMIER NE PORTE QU'UN CHAMP.  D-773
+      <!-- SEPT ECRANS, ET LE PREMIER NE PORTE QU'UN CHAMP.  D-773
            C'etait quatre ecrans dont le troisieme demandait cinq
            champs d'un coup — le referent payait le plus cher au
            moment ou il ne parlait plus de son ami mais de lui-meme.
@@ -3882,7 +3882,7 @@
            lead existe au classeur, meme si la personne s'arrete la.
            Le referent, lui, vient APRES : quelqu'un qui donne un nom
            sans finir reste un lead exploitable. -->
-      <div class="progress" role="progressbar" aria-label="Progression" aria-valuemin="0" aria-valuemax="100" aria-valuenow="14"><i id="referBar"></i></div>
+      <div class="progress" role="progressbar" aria-label="Progression" aria-valuemin="0" aria-valuemax="100" aria-valuenow="13"><i id="referBar"></i></div>
 
       <div class="step" data-rstep="1">
         <p class="step-q">Quelle entreprise voulez-vous nous présenter&nbsp;?</p>
@@ -3983,8 +3983,16 @@
         <p class="field-aide">C’est à vous qu’on verse la prime si ça signe. Ces réponses servent à vous joindre et à vous payer — pas à vous inscrire à quoi que ce soit.</p>
       </div>
 
+      <!-- CET ECRAN EN PORTAIT QUATRE, ET C'ETAIT UN DE TROP.  D-773
+           Mesure du 2026-08-07 en 1280x900 : quatre champs dont deux
+           zones de texte font 1 132 px de contenu dans un panneau
+           haut de 836. Le panneau se met a defiler, le bouton finit
+           a cheval sur son bord, et sa boite oscille de 0,04 px
+           d'une image a l'autre — assez pour qu'un clic automatise
+           n'aboutisse jamais. Deux ecrans courts plutot qu'un long :
+           c'est aussi ce que la consigne demandait. -->
       <div class="step" data-rstep="5" hidden>
-        <p class="step-q">Comment on vous paie, et comment on se présente&nbsp;?</p>
+        <p class="step-q">Où on vous envoie votre prime&nbsp;?</p>
         <div class="form-row">
           <div class="field">
             <label for="rfOwnCompany">Votre entreprise <span class="opt">(si vous en avez une)</span></label>
@@ -4006,6 +4014,11 @@
             </select>
           </div>
         </div>
+        <p class="field-aide">Aucune coordonnée bancaire ici, et jamais&nbsp;: on vous écrit avant de verser pour confirmer le montant et la façon.</p>
+      </div>
+
+      <div class="step" data-rstep="6" hidden>
+        <p class="step-q">Ce qu’on doit savoir avant d’appeler</p>
         <div class="field">
           <label for="rfPresentation">Ce qu’on dit en appelant <span class="opt">(optionnel)</span></label>
           <textarea id="rfPresentation" name="presentation" rows="2" placeholder="« C’est Marc qui nous a parlé de vous » · ne dites pas que ça vient de moi · appelez plutôt le matin…"></textarea>
@@ -4032,7 +4045,7 @@
 
            LA CASE N'EST JAMAIS PRE-COCHEE. Une acceptation par
            defaut n'est pas une acceptation. -->
-      <div class="step" data-rstep="6" hidden>
+      <div class="step" data-rstep="7" hidden>
         <p class="step-q">Les conditions du programme</p>
 
         <ul class="cond-puces">
@@ -4114,7 +4127,7 @@
         <input type="hidden" name="conditions_version" value="2026-08-07" />
       </div>
 
-      <div class="step success" data-rstep="7" hidden>
+      <div class="step success" data-rstep="8" hidden>
         <span class="num">01 / 01</span>
         <h4>C’est noté. On s’en occupe.</h4>
         <p class="modal-sub" style="margin-top:0">On la contacte en moins de 48&nbsp;h ouvrables, avec la présentation que vous avez demandée. Vous recevez un mot dès qu’on lui a parlé.</p>

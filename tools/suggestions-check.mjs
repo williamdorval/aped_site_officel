@@ -63,7 +63,9 @@ const CAS = [
     dit: "Votre domaine · c'etait un <select> ferme a huit cases"
   },
   {
-    cle: "domaine-reference", modale: "modal-refer", etapes: 0,
+    /* UN ECRAN PLUS LOIN DEPUIS D-773 : l'etape 1 ne porte plus que
+       le nom de l'entreprise referee. Le domaine est passe a la 2. */
+    cle: "domaine-reference", modale: "modal-refer", etapes: 1,
     champ: "#rfIndustry", frappe: "toit",
     attendu: "Toiture",
     dit: "Domaine · formulaire « Référer une entreprise »"

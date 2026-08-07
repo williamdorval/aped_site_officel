@@ -163,13 +163,70 @@ async function attendreReponse(page, portee, max = 45000) {
 
    On amene donc l'element soi-meme, en defilement INSTANTANE, puis
    on clique. */
+/* LE DEFILEMENT DOUX SURVIT AU CONTOURNEMENT DE D-754.  D-773
+
+   D-754 amenait l'element soi-meme en defilement INSTANTANE. Ca ne
+   suffit pas : Playwright refait SON propre defilement avant de
+   cliquer, et celui-la suit `scroll-behavior: smooth`. Mesure du
+   2026-08-07 sur l'ecran des textes du formulaire de reference : le
+   bouton oscille entre y = 537,57 et 537,61 — QUATRE CENTIEMES de
+   pixel — pendant les quarante images observees. Playwright ne
+   demande pas « presque immobile », il demande deux images
+   identiques : il attend donc pour toujours.
+
+   Un doigt s'en moque : le bouton n'est ni masque, ni desactive, ni
+   recouvert. C'est l'instrument qu'on repare.
+
+   TROIS TENTATIVES, PUIS UN CLIC FORCE QUI SE DECLARE. Forcer en
+   silence cacherait un vrai recouvrement — on verifie donc
+   soi-meme, avec `elementsFromPoint`, que le bouton est bien le
+   premier au point de clic, et on ne force que dans ce cas. */
+async function stable(page, sel) {
+  await page.waitForFunction((s) => {
+    const n = document.querySelector(s);
+    if (!n) return false;
+    const r = n.getBoundingClientRect();
+    const cle = [r.x, r.y, r.width, r.height].map(Math.round).join(",");
+    const memoire = window.__apedStable || (window.__apedStable = {});
+    const pareil = memoire[s] === cle;
+    memoire[s] = cle;
+    return pareil;
+  }, sel, { timeout: 6000 }).catch(() => {});
+}
+
 async function cliquer(page, sel) {
   await page.evaluate((s) => {
     const n = document.querySelector(s);
     if (n) n.scrollIntoView({ block: "center", behavior: "instant" });
   }, sel);
   await page.waitForTimeout(120);
-  await page.click(sel);
+  for (let essai = 1; ; essai++) {
+    try { await page.click(sel, { timeout: 6000 }); return; }
+    catch (e) {
+      if (essai < 3) { await stable(page, sel); await page.waitForTimeout(250); continue; }
+
+      /* DERNIER RECOURS, ET IL DIT CE QU'IL FAIT. Playwright refuse
+         de cliquer un element dont la boite oscille, meme de quatre
+         centiemes de pixel — un doigt, lui, s'en moque. On regarde
+         donc NOUS-MEMES si le bouton est bien le premier element au
+         point de clic. S'il l'est, on force et on l'ECRIT ; s'il ne
+         l'est pas, c'est un vrai recouvrement et on leve. */
+      const vu = await page.evaluate((s) => {
+        const n = document.querySelector(s);
+        if (!n) return { absent: true };
+        const r = n.getBoundingClientRect();
+        const pile = document.elementsFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+        return {
+          dessus: pile[0] === n || n.contains(pile[0]),
+          quoi: pile[0] ? (pile[0].id || String(pile[0].className || pile[0].tagName)) : "rien"
+        };
+      }, sel);
+      if (!vu.dessus) throw new Error("le bouton " + sel + " est RECOUVERT par « " + vu.quoi + " » — " + String(e).split("\n")[0]);
+      console.log("    (clic force sur " + sel + " : boite instable, mais le bouton est bien dessus)");
+      await page.click(sel, { force: true, timeout: 4000 });
+      return;
+    }
+  }
 }
 
 function verdict(nom, attendu, obtenu, detail) {
@@ -329,7 +386,9 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
 }
 
 /* ============================================================
-   4bis · REFERENCE — quatre etapes depuis D-752
+   4bis · REFERENCE — sept etapes depuis D-773, la sixieme etant
+   l'ACCEPTATION des conditions. Sans la case, le serveur refuse :
+   le parcours ne prouverait rien s'il s'arretait avant.
    ============================================================ */
 {
   const page = await ouvrir(nav);
@@ -347,27 +406,56 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
       return b && b.querySelector(".l");
     }, null, { timeout: 8000 }).catch(() => {});
     await page.waitForTimeout(400);
+    /* 1 · l'entreprise referee, SEULE : la ligne nait ici */
     await page.fill("#rfCompany", T.entreprise);
+    await cliquer(page, "#referNext");
+    await page.waitForTimeout(420);
+    /* 2 · ce qu'elle fait */
     await page.fill("#rfIndustry", "Construction");
+    await page.selectOption("#rfNeed", { index: 2 });
     await cliquer(page, "#referNext");
     await page.waitForTimeout(420);
+    /* 3 · comment on la joint */
     await page.fill("#rfContact", "Marie Tremblay 418 555 0177");
+    await page.selectOption("#rfSizeRef", { index: 2 });
     await cliquer(page, "#referNext");
     await page.waitForTimeout(420);
+    /* 4 · le referent */
     await page.fill("#rfName", T.nom);
     await page.fill("#rfEmail", T.courriel);
     await page.selectOption("#rfRelation", { index: 1 });
     await cliquer(page, "#referNext");
     await page.waitForTimeout(420);
+    /* 5 · ou on lui envoie sa prime */
+    await page.selectOption("#rfPay", { index: 1 });
+    await cliquer(page, "#referNext");
+    await page.waitForTimeout(420);
+    /* 6 · ce qu'on doit savoir avant d'appeler */
     await page.fill("#rfPresentation", "Dites que ca vient de moi.");
     await page.fill("#rfMsg", T.message);
     await cliquer(page, "#referNext");
+    await page.waitForTimeout(420);
+
+    /* 7 · L'ACCEPTATION. On tente D'ABORD sans cocher : le parcours
+       ne prouve rien s'il ne montre pas que la porte est fermee. */
+    await cliquer(page, "#referNext");
+    await page.waitForTimeout(500);
+    const bloque = await page.evaluate(() =>
+      !document.querySelector('#modal-refer .step[data-rstep="7"]').hidden
+      && !!document.querySelector('#modal-refer .step[data-rstep="7"] .field.is-invalid'));
+    console.log("    sans la case cochee, l'envoi est bloque :", bloque ? "oui" : "NON");
+
+    /* Le tiroir des conditions s'ouvre en place, puis on coche. */
+    await page.evaluate(() => document.getElementById("rfCondVoir").click());
+    await page.waitForTimeout(200);
+    await page.evaluate(() => document.getElementById("rfAccept").click());
+    await cliquer(page, "#referNext");
     console.log(`    (reponse en ${await attendreReponse(page, "#modal-refer form")} ms)`);
     const vu = await page.evaluate(() => ({
-      fini: !document.querySelector('#modal-refer .step[data-rstep="5"]').hidden,
+      fini: !document.querySelector('#modal-refer .step[data-rstep="8"]').hidden,
       etat: (document.querySelector("#modal-refer .form-status") || {}).textContent || ""
     }));
-    verdict(nom, true, vu.fini, { etat: vu.etat, reponse: page._reponses.slice(-1)[0] });
+    verdict(nom, true, vu.fini && bloque, { etat: vu.etat, reponse: page._reponses.slice(-1)[0] });
   } catch (e) {
     verdict(nom, true, false, { etat: "ERREUR D’OUTIL : " + String(e).slice(0, 200) });
   }

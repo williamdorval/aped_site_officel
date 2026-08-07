@@ -26,7 +26,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 |---|---:|---:|
 | **Services et Réalisations, 2026-07-31** | 32 | 506 |
 | **1 · LE PLUS GROS TROU DE PREUVE** | 44 | 599 |
-| **2 · DÉFAUTS OUVERTS** | 47 | 634 |
+| **2 · DÉFAUTS OUVERTS** | 110 | 1 601 |
 | **3 · OUTILS PÉRIMÉS OU FAUX** | 25 | 338 |
 | **4 · CONTENU ET LICENCES** | 41 | 556 |
 | **5 · CE QUI N'A JAMAIS ÉTÉ TOUCHÉ DU DOIGT** | 14 | 189 |

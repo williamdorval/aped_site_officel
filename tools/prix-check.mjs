@@ -8,13 +8,27 @@
    2. dans le TEXTE RENDU de la page, ce qu'un visiteur — ou un
       concurrent — lit reellement, modales ouvertes comprises.
 
-   Trois familles sont AUTORISEES, et elles sont declarees ici
+   Cinq familles sont AUTORISEES, et elles sont declarees ici
    plutot que devinees :
    · « 5 000 $ » du programme de reference — le plafond attire, la
      grille decourage ;
+   · les sept PRIMES de la grille de reference : des montants qu'on
+     VERSE, fixes par type de projet, dont aucun prix de vente ne se
+     deduit. `tools/prime-check.mjs` verifie la grille elle-meme ;
+   · le TAUX HORAIRE de la FAQ — un taux n'est pas un tarif : il ne
+     dit le prix d'aucun projet, faute de dire combien d'heures ;
    · les sorties vivantes du calculateur et de l'estimateur, qui
      donnent un chiffre au prospect sans publier notre grille ;
    · « 0 $ », qui dit qu'une chose ne coute rien.
+
+   DEUX AVEUGLEMENTS ONT ETE REPARES LE 2026-08-07 (D-773), et les
+   deux rendaient « 0 » sans erreur :
+   · le motif ne voyait pas un montant ecrit en ENTITE
+     (`5&nbsp;000&nbsp;$`) — six signes ASCII entre le chiffre et le
+     dollar, aucun dans sa classe ;
+   · la passe du rendu lisait `innerText`, qui rend une chaine VIDE
+     pour toute section sous `content-visibility: auto` hors ecran.
+     Elle comptait deux montants sur la page entiere.
    ============================================================ */
 import { chromium } from "playwright";
 import fs from "node:fs";
@@ -34,6 +48,31 @@ const FICHIERS = ["index.html", "404.html", "css/app.css", "css/tokens.css", "cs
 /* Un montant : un nombre, espaces insecables compris, suivi de $. */
 const MONTANT = /(\d[\d  \s]*)\$/g;
 
+/* UNE ENTITE EST UN ESPACE, ET L'OUTIL NE LE VOYAIT PAS.  D-773
+
+   CE QUI S'EST PASSE. `5&nbsp;000&nbsp;$` s'ecrit avec six signes
+   ASCII entre le chiffre et le dollar : `&`, `n`, `b`, `s`, `p`,
+   `;`. Aucun n'est dans la classe du motif. Il ne matchait donc
+   PAS, et la passe du source rendait « 0 a retirer » sur un
+   montant parfaitement lisible a l'ecran.
+
+   Ce n'etait pas visible tant que les montants ecrits en entite
+   etaient tous des « 5 000 $ » autorises par ailleurs. Le jour ou
+   la grille des primes est arrivee — sept montants, tous generes
+   avec `&#160;` — l'outil a rendu « ok » sans en avoir vu un seul.
+
+   On decode donc les quatre formes de l'espace insecable AVANT de
+   chercher — vers un espace ORDINAIRE, que le motif accepte deja
+   par son `\s` : rendre l'insecable exact ne changerait rien a la
+   detection et ajouterait un caractere invisible dans ce fichier.
+   Les numeros de ligne restent justes : une entite se remplace par
+   UN caractere, sur la meme ligne. */
+const decoderEspaces = (s) => String(s)
+  .replace(/&nbsp;/g, " ")
+  .replace(/&#160;/g, " ")
+  .replace(/&#xa0;/gi, " ")
+  .replace(/&#8239;/g, " ");
+
 const AUTORISES = [
   { motif: /^5[  \s]*000$/, pourquoi: "plafond du programme de reference" },
   { motif: /^0$/, pourquoi: "gratuite affirmee" }
@@ -47,6 +86,26 @@ const CONTEXTES_OK = [
   { motif: /une minute par semaine|par année, à|par minute hebdo/, pourquoi: "constante de methode du calcul, pas un tarif" },
   { motif: /grille de commissions|Commission versée uniquement/, pourquoi: "bareme de commission, revele apres l'interet — decision du client" },
   { motif: /nav-refer-num|referral-max|Encaissez|Référez/, pourquoi: "plafond du programme de reference" },
+  /* LA GRILLE DES PRIMES.  D-773
+     Ce sont des montants qu'on VERSE, pas des prix qu'on demande, et
+     c'est toute la difference : ils sont fixes par TYPE de projet,
+     donc ils ne laissent rien deduire du prix de vente — une meme
+     ligne couvre une fourchette de deux a trois fois.
+     Le contexte est la CELLULE, pas le bloc : seule la colonne des
+     primes est blanchie, et `tools/prime-check.mjs` verifie que son
+     contenu est exactement la grille declaree, ni plus ni moins. */
+  { motif: /cond-prime/, pourquoi: "prime du programme de reference, versee a un tiers" },
+  /* LE TAUX HORAIRE, PUBLIE DEPUIS D-353, ET QUE CET OUTIL N'AVAIT
+     JAMAIS VU.  D-773
+     Les deux reponses de la FAQ l'ecrivent `75&nbsp;$`, en entite :
+     le motif ne les matchait pas, et personne n'a jamais eu a
+     trancher leur cas. Le decodage des entites les a fait
+     apparaitre du jour au lendemain — ce n'est pas une regression,
+     c'est une decision qui n'avait jamais ete inscrite.
+     UN TAUX N'EST PAS UN TARIF : il ne dit le prix d'aucun projet,
+     faute de dire combien d'heures. On le nomme, on ne l'efface
+     pas. */
+  { motif: /l’heure|l'heure/, pourquoi: "taux horaire publie, decision assumee D-353" },
   /* Les maquettes de secteur et les ecrans de Services montrent des
      interfaces de CLIENTS fictifs : un menu de restaurant, un bon de
      travail de garage, une fiche de propriete. Les montants qu'on y
@@ -180,7 +239,7 @@ for (const f of FICHIERS) {
   const demo = f.endsWith(".html") ? zonesDemo(brut) : [];
   const dansDemo = (i) => demo.some(([a, b]) => i >= a && i <= b);
   const commentees = lignesCommentees(brut, f.endsWith(".html"));
-  const lignes = brut.split("\n");
+  const lignes = brut.split("\n").map(decoderEspaces);
   lignes.forEach((l, i) => {
     let m;
     MONTANT.lastIndex = 0;
@@ -283,50 +342,111 @@ await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut"
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: "load" });
 await page.waitForTimeout(900);
 
-const rendu = await page.evaluate(() => {
-  /* On ouvre TOUT : modales, accordeons, details replies. Un prix
-     cache derriere un `hidden` reste un prix publie. */
+const sonde = await page.evaluate(() => {
+  /* On ouvre TOUT : modales, accordeons, details replies, TIROIRS.
+     Un prix cache derriere un `hidden` reste un prix publie.
+
+     LES TIROIRS ONT MANQUE, ET C'EST LE MEME DEFAUT QUE L'ENTITE.
+     D-773
+     Le panneau des montants et le texte des conditions naissent
+     `hidden` : `innerText` les rendait vides, et l'outil comptait
+     zero montant sur le plus gros bloc de dollars de la page. Un
+     bouton les ouvre en un clic — donc ils sont publies. */
   document.querySelectorAll(".modal").forEach((m) => m.removeAttribute("hidden"));
   document.querySelectorAll("details").forEach((d) => (d.open = true));
-  const t = document.body.innerText;
+  document.querySelectorAll("[data-tiroir]").forEach((b) => {
+    const c = document.getElementById(b.getAttribute("data-tiroir"));
+    if (c) c.hidden = false;
+  });
+
+  /* ON MARCHE DANS LES NOEUDS DE TEXTE, PAS DANS `innerText`.
+     `innerText` rend une chaine plate : impossible d'y dire si un
+     montant vient de la grille des primes ou d'ailleurs, et
+     « ailleurs » est justement ce qu'on cherche. Le noeud, lui,
+     sait ou il vit. */
   const out = [];
-  const re = /([^\n]{0,60}?)(\d[\d  \s]*\$)([^\n]{0,40})/g;
-  let m;
-  while ((m = re.exec(t))) out.push({ montant: m[2].trim(), avant: m[1].trim(), apres: m[3].trim() });
-  return out;
+  let tout = "";
+  const re = /(\d[\d\u00a0\u202f\s]*\$)/g;
+  const marche = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  let nd;
+  while ((nd = marche.nextNode())) {
+    const t = nd.nodeValue || "";
+    tout += " " + t;
+    if (t.indexOf("$") === -1) continue;
+    const el = nd.parentElement;
+    if (!el || el.closest("template")) continue;
+    let m;
+    re.lastIndex = 0;
+    while ((m = re.exec(t))) {
+      out.push({
+        montant: m[1].trim(),
+        avant: t.slice(Math.max(0, m.index - 60), m.index).replace(/\s+/g, " ").trim(),
+        apres: t.slice(m.index + m[1].length, m.index + m[1].length + 40).replace(/\s+/g, " ").trim(),
+        prime: !!el.closest(".cond-prime"),
+        /* L'ANCRE : l'identifiant le plus proche, et la section qui
+           le porte. Un montant se juge par ce qu'il DESIGNE, et le
+           voisinage textuel d'un `<b>` seul dans sa boite est vide —
+           c'est le DOM qui sait, pas la chaine. */
+        ancre: (el.closest("[id]") || {}).id || "",
+        zone: (el.closest("section[id]") || {}).id || ""
+      });
+    }
+  }
+  return { montants: out, texte: tout };
 });
 await nav.close();
+const rendu = sonde.montants;
+const texteRendu = sonde.texte;
+
+/* LE CLASSEMENT DU TEXTE RENDU.
+
+   IL EST DEVENU BEAUCOUP PLUS SEVERE, ET C'EST UNE REPARATION.
+   D-773
+
+   L'ANCIENNE PASSE LISAIT `document.body.innerText`. Or
+   `innerText` ne rend QUE ce qui est mis en page : avec
+   `content-visibility: auto` sur les sections, tout ce qui etait
+   hors ecran rendait la chaine VIDE. L'outil comptait deux montants
+   sur toute la page et concluait « 0 a verifier ». Il ne mentait pas
+   sur ce qu'il voyait — il ne voyait presque rien. Pieges 4 · 34.
+
+   La sonde marche maintenant dans les NOEUDS DE TEXTE, qui existent
+   qu'ils soient peints ou non, et elle ouvre les tiroirs. Elle voit
+   donc tout, y compris deux publications assumees qu'aucune passe
+   n'avait jamais eu a nommer : le taux horaire et les sorties du
+   calculateur. On les nomme ici, une par une. */
+const RENDU_OK = [
+  /* LE TAUX HORAIRE EST PUBLIE, ET C'EST UNE DECISION.  D-353
+     Le site l'ecrit deux fois, dans la FAQ, et il ne dit le prix
+     d'AUCUN projet : c'est ce qui separe un taux d'un tarif. Une
+     personne qui le lit ne peut pas en deduire un devis, faute de
+     savoir combien d'heures. */
+  { quand: (r) => /l’heure|l'heure/.test(r.apres), quoi: "taux horaire publie, decision assumee D-353" },
+  /* LES SORTIES DU CALCULATEUR partent a zero et suivent les
+     curseurs du visiteur. Deux facons de les reconnaitre : le signe
+     « environ » qui les precede, et leur identifiant — un `<b>` seul
+     dans sa boite n'a aucun voisinage textuel. */
+  { quand: (r) => /^≈/.test(r.avant) || r.avant === "≈", quoi: "sortie vivante du calculateur" },
+  { quand: (r) => /^(out|in)[A-Z]/.test(r.ancre), quoi: "sortie vivante du calculateur (" + "identifiant" + ")" },
+  { quand: (r) => /(annuel|impact|vaut par|Heures|estim|fourchette|évitées|rendues|gagnés)/i.test(r.avant + " " + r.apres),
+    quoi: "sortie vivante du calculateur" },
+  /* LA PRIME DE REFERENCE. Le noeud vit dans la colonne des primes
+     de la grille : un engagement envers un TIERS, fixe par TYPE de
+     projet. `tools/prime-check.mjs` verifie que cette colonne porte
+     exactement la grille declaree — ici on ne fait que la nommer. */
+  { quand: (r) => r.prime, quoi: "prime du programme de reference" },
+  /* Les apercus de secteur montrent des interfaces de clients
+     fictifs : un menu de restaurant a des prix, sinon ce n'est pas
+     un menu. */
+  { quand: (r) => /^(sec|demos)/.test(r.zone) || /mock|ecr-|tou-/.test(r.ancre),
+    quoi: "prix de demonstration d'un client fictif" }
+];
 
 const renduTries = rendu.map((r) => {
   const n = r.montant.replace("$", "").trim();
-  const ok = /^5[  \s]*000$/.test(n) || /^0$/.test(n);
-  /* Les sorties vivantes du calculateur partent a zero puis suivent
-     les curseurs : elles sont identifiables par leur voisinage. */
-  const vivant = /(annuel|impact|vaut par|Heures|estim|fourchette|évitées|rendues|gagnés)/i.test(r.avant + " " + r.apres)
-    /* LE SIGNE « ≈ » EST DEVENU LA SIGNATURE DE LA SORTIE VIVANTE.
-       Le montant du calculateur est un `<b>` seul dans sa boite : son
-       voisinage textuel est VIDE, donc aucun mot-cle ne pouvait
-       l'identifier et il ressortait « A VERIFIER » a chaque passe. Il
-       porte depuis le 2026-07-29 un « environ » — B7 de l'audit de
-       veracite, la fausse precision au dollar pres — et ce prefixe ne
-       se trouve nulle part ailleurs dans la page. Un montant precede
-       de « ≈ » est, par construction, une estimation calculee et non
-       un tarif. */
-    || /^≈/.test(r.avant) || r.avant === "≈";
-  /* LE BAREME DE COMMISSION EST UNE LIGNE CONTINUE : le decoupage par
-     montant la fragmente, et les fragments perdent le contexte. On
-     reconnait donc la ligne a l'un de ses reperes, pas chaque
-     morceau. C'est un engagement envers un TIERS, pas notre grille de
-     prix — decision assumee, deja nommee dans les contextes du
-     source. */
-  const bareme = /(Commission versée|contrat est signé|pas de commission|→\s*\d)/i.test(r.avant + " " + r.apres);
-  return {
-    ...r,
-    verdict: ok ? "autorise"
-      : vivant ? "sortie vivante du calculateur"
-      : bareme ? "bareme de commission, engagement envers un tiers"
-      : "A VERIFIER",
-  };
+  if (/^5[  \s]*000$/.test(n) || /^0$/.test(n)) return { ...r, verdict: "autorise" };
+  const trouve = RENDU_OK.find((c) => c.quand(r));
+  return { ...r, verdict: trouve ? trouve.quoi : "A VERIFIER" };
 });
 
 const aRetirer = source.filter((s) => s.verdict === "A RETIRER");
@@ -399,17 +519,67 @@ console.log(`A VERIFIER dans le rendu : ${aVerifier.length}`);
      · aucun montant du bareme dans la page chargee ;
      · et le bareme EXISTE — s'il disparaissait, la fourchette
        promise a l'etape 6 ne s'afficherait plus, et rien ne le
-       dirait. */
-const montantsBareme = grilles
-  .map((g) => (/(\d[\d  \s]*\$)/.exec(g.ligne || g.texte || String(g)) || [])[1])
-  .filter(Boolean)
-  .map((s) => s.replace(/[  \s]/g, ""));
-const fuites = rendu.filter((r) =>
-  montantsBareme.indexOf(r.montant.replace(/[  \s]/g, "")) !== -1);
+/* CE QUE D-748 PROTEGE EXACTEMENT : LA PHRASE, PAS LE NOMBRE.
+   D-773
+
+   DEUX DEFAUTS SE CACHAIENT L'UN L'AUTRE.
+
+   1 · `g.ligne || g.texte` prenait le NUMERO de ligne — toujours
+       verite — et cherchait un montant dans « 108 ». La liste des
+       montants du bareme restait VIDE, donc `fuites` valait zero
+       quoi qu'il arrive. Le seuil que `CLAUDE.md` inscrit noir sur
+       blanc ne gardait rien. Piege 30 dans sa forme exacte.
+
+   2 · Une fois repare, il criait sur « 5 000 $ » — le plafond du
+       programme de reference, affiche depuis toujours, qui est AUSSI
+       la borne d'un palier du bareme. Le nombre nu ne peut pas dire
+       lequel des deux il est.
+
+   CE QUE LE VISITEUR NE DOIT PAS LIRE, c'est « 2 500 $ a 5 000 $ » :
+   la FOURCHETTE, c'est-a-dire la grille tarifaire. Un montant seul,
+   etiquete « jusqu'a, par entreprise referee », n'est pas une
+   grille. On cherche donc les PHRASES du bareme dans le texte rendu,
+   et on garde les coincidences de nombres en note.
+
+   L'ARRET SUR ZERO RESTE : un bareme trouve dont aucune phrase ne se
+   lit veut dire que la lecture a derive, jamais que le bareme a
+   disparu. */
+const phrasesBareme = [...new Set(grilles
+  .map((g) => (/texte:\s*"([^"]+)"/.exec(String(g.texte || "")) || [])[1])
+  .filter(Boolean))];
+if (grilles.length && !phrasesBareme.length) {
+  console.error(
+    "ARRET  le bareme a ete trouve (" + grilles.length + " lignes) mais aucune\n"
+    + "       fourchette ne s'en lit. La verification « aucune fourchette\n"
+    + "       du bareme dans la page » ne porterait alors sur RIEN, et\n"
+    + "       rendrait 0 quoi qu'il arrive.");
+  process.exit(2);
+}
+
+const aplatir = (t) => String(t).replace(/[\u00a0\u202f\s]+/g, " ");
+const platRendu = aplatir(texteRendu);
+const fuites = phrasesBareme
+  .filter((f) => platRendu.indexOf(aplatir(f)) !== -1)
+  .map((f) => ({ montant: f, avant: "fourchette du bareme lue dans la page" }));
+
+/* LES COINCIDENCES DE NOMBRE, EN NOTE. « 5 000 $ » est le plafond du
+   programme ET la borne d'un palier ; 2 500 $ est une prime ET la
+   borne du premier. Aucune ne publie une fourchette — mais le jour
+   ou le bareme bouge, c'est la premiere chose a relire. */
+const montantsBareme = [...new Set(phrasesBareme
+  .flatMap((f) => f.match(/\d[\d\u00a0\u202f\s]*(?=\s*\$)/g) || [])
+  .map((x) => x.replace(/[\u00a0\u202f\s]/g, "")))];
+const coincidences = [...new Set(rendu
+  .map((r) => r.montant.replace(/[\u00a0\u202f\s]/g, "").replace("$", ""))
+  .filter((v) => montantsBareme.indexOf(v) !== -1))];
 
 console.log(`
 Bareme trouve dans js/main.js : ${grilles.length} ligne(s)`);
-console.log(`Montants du bareme visibles au chargement : ${fuites.length}`);
+console.log(`Fourchettes du bareme lues dans la page : ${fuites.length}`);
+console.log(`  note · ${coincidences.length} montant(s) de la page coincident avec une BORNE du bareme`
+  + (coincidences.length ? " : " + coincidences.join(" \u00b7 ") + " $" : "")
+  + "\n         Sans effet : un montant seul n'est pas une fourchette. A relire\n"
+  + "         si le bareme ou la grille des primes bougent.");
 if (fuites.length) {
   fuites.forEach((f) => console.log("   *** " + f.montant + "   « " + f.avant + " »"));
 }

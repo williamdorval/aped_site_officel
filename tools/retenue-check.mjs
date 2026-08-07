@@ -304,7 +304,16 @@ for (const [kind, total, cibles] of [
      raison de se taire. Le premier cas demandait « ouvre-toi »
      alors qu'il n'y avait rien a retenir. */
   ["project", 8, [2, 4, 7]], ["estimate", 11, [2, 5, 9]],
-  ["refer", 5, [2, 3, 4]], ["booking", 3, [2, 2, 2]]
+  /* SEPT ECRANS DEPUIS D-773, ET LA CIBLE N'EST PAS L'ETAPE MESUREE.
+     `menerA(kind, cible)` s'ARRETE sur l'ecran `cible` ; l'etape
+     enregistree est celle qu'on vient de QUITTER, donc `cible - 1`.
+     Les zones se calculent sur `etape / (total - 1)`, soit /7 :
+       cible 2 → etape 1 → 0,14 « tot »
+       cible 4 → etape 3 → 0,43 « milieu »
+       cible 6 → etape 5 → 0,71 « fin »
+     La premiere version demandait [2, 3, 5] et rendait deux fois
+     « tot » : la cible n'est pas l'etape. */
+  ["refer", 8, [2, 4, 6]], ["booking", 3, [2, 2, 2]]
 ]) {
   vus[kind] = [];
   const noms = ["début", "milieu", "fin"];

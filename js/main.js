@@ -3048,7 +3048,7 @@
   });
 
   /* ============================================================
-     L'ASSISTANT DE REFERENCE — SIX ECRANS  D-773
+     L'ASSISTANT DE REFERENCE — SEPT ECRANS  D-773
 
      C'etait un mur de onze champs (D-752 l'a coupe en quatre, et
      le troisieme en portait encore cinq). Un ecran pose maintenant
@@ -3069,7 +3069,7 @@
      ============================================================ */
   var referForm = $('form[data-form="refer"]');
   if (referForm) {
-    var R_TOTAL = 7;
+    var R_TOTAL = 8;
     var rStep = 1;
     var referBar = $("#referBar");
     var referBack = $("#referBack");

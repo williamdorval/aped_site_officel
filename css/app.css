@@ -1305,6 +1305,39 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
 .step-q { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-4); font-variation-settings: "wdth" var(--wdth-wide); }
 .step-nav { display: flex; gap: var(--s-3); justify-content: space-between; margin-top: var(--s-6); padding-top: var(--s-5); border-top: var(--rule-w) solid var(--rule); }
 
+/* LE BOUTON « CONTINUER » DEBORDAIT DU PANNEAU, ET UN CLIC DESSUS
+   FERMAIT LE FORMULAIRE.  D-773
+
+   CE QUI SE PASSAIT, MESURE LE 2026-08-07 EN 1280x900. L'ecran 5 du
+   formulaire de reference porte 1 132 px de contenu dans un panneau
+   haut de 836 : il defile a l'interieur. Le panneau est centre, donc
+   son bas tombe a y = 868 ; le bouton, lui, se peignait de 852 a
+   896. Sa moitie basse etait DEHORS — rognee par l'`overflow` du
+   panneau, mais toujours a sa place pour `getBoundingClientRect`.
+   Un clic vise le centre du bouton, y = 874 : `elementsFromPoint`
+   y rend `.modal-scrim`, pas le bouton. Le voile ferme la modale.
+
+   C'est le piege 1 dans sa forme pure — un rectangle ne dit rien du
+   rognage d'un ancetre — et il ne s'est vu que parce qu'un clic de
+   Playwright expirait.
+
+   LE FILET LE SEPARE DU TEXTE, LE FOND L'EN DETACHE. Sans fond
+   opaque, le texte defilerait DERRIERE le bouton.
+
+   POURQUOI SEULEMENT ICI. Les trois autres assistants ont la meme
+   geometrie et donc le meme risque latent ; aucun ne l'a atteint
+   parce qu'aucun de leurs ecrans n'est aussi haut. Le corriger
+   partout d'un coup changerait quatre formulaires dans un chantier
+   qui n'en vise qu'un — c'est note dans `RESERVES.md`. */
+#modal-refer .step-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: var(--s-6);
+  padding-bottom: var(--s-4);
+  background: var(--surface-0);
+}
+
 .success { display: grid; gap: var(--s-4); justify-items: start; }
 .success .num { font-size: var(--fs-2); color: var(--accent-text); }
 
