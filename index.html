@@ -2236,7 +2236,13 @@
       <div class="head">
         <h2>À la main contre automatisé.</h2>
         <!-- B5 · « OBSERVEES CHEZ DES PME » NE CITAIT RIEN.  D-058 -->
-        <p>Six tâches tirées de notre document sur l’automatisation, où chaque chiffre porte sa source. Les vôtres sortiront de l’appel.</p>
+        <!-- UNE SOURCE QU'ON NE PEUT PAS ATTEINDRE N'EN EST PAS UNE.  D-782
+             La phrase disait « où chaque chiffre porte sa source » et
+             ne disait pas où était le document. Il existe, il est
+             complet, et il s'obtient contre des coordonnées : c'est
+             une condition, pas un secret, et elle s'écrit. -->
+        <p>Six tâches tirées de notre guide sur l’automatisation, où chaque chiffre porte sa source.
+          <button class="link-btn" type="button" data-cadeau-ouvrir>Le guide se télécharge ici</button>, contre vos coordonnées. Les vôtres sortiront de l’appel.</p>
       </div>
 
       <!-- LE TOTAL ET SON DETAIL, COTE A COTE.  D-639 -->
@@ -3116,16 +3122,33 @@
            Maintenant : les coordonnees sont la CONDITION. On l'ecrit
            en clair — un echange annonce se refuse ou s'accepte ; un
            echange deguise en cadeau se decouvre, et c'est pire. -->
-      <p class="label cadeau-eyebrow">2 guides &middot; 91 pages &middot; contre vos coordonn&eacute;es</p>
+      <!-- « 91 PAGES » EST UN COUT, PAS UN ARGUMENT.  D-782
+           Un patron de PME de 55 ans lit « 91 pages » comme « je ne
+           lirai jamais ca ». Le chiffre reste — il est vrai, et il
+           dit le serieux du document — mais il descend au troisieme
+           rang de la fiche, derriere celui qui porte la valeur : ce
+           sont les VINGT-QUATRE TACHES CHIFFREES qu'on vient
+           chercher, pas les pages qu'il faut traverser. Et la ligne
+           qui suit repond a l'objection au lieu de l'ignorer : on ne
+           lit pas ce guide, on y cherche sa tache. -->
+      <!-- L'ARGUMENTAIRE SE RANGE AVEC LE FORMULAIRE.  D-782
+           Seul `#cadeauForm` etait cache apres l'envoi : l'accroche,
+           le titre, les trois chiffres et le paragraphe de vente
+           restaient AU-DESSUS de « C’est telecharge », et on
+           continuait de vendre a quelqu’un qui avait deja achete.
+           Vu sur la capture, pas sur une sonde. -->
+      <div class="cadeau-avant">
+      <p class="label cadeau-eyebrow">2 guides &middot; contre vos coordonn&eacute;es</p>
       <h2 id="cadeauTitre">Ce que vous payez &agrave; la main.</h2>
 
       <p class="cadeau-fiche" translate="no">
+        <span><b>24</b>t&acirc;ches chiffr&eacute;es</span>
         <span><b>2</b>guides</span>
         <span><b>91</b>pages</span>
-        <span><b>24</b>t&acirc;ches chiffr&eacute;es</span>
       </p>
 
-      <p class="cadeau-lead">Ce que vous pouvez arr&ecirc;ter de faire &agrave; la main, ce que &ccedil;a vous co&ucirc;te aujourd&rsquo;hui, et par o&ugrave; commencer. Laissez-nous o&ugrave; vous joindre, et les deux se t&eacute;l&eacute;chargent tout de suite.</p>
+      <p class="cadeau-lead">Ce que vous pouvez arr&ecirc;ter de faire &agrave; la main, ce que &ccedil;a vous co&ucirc;te aujourd&rsquo;hui, et par o&ugrave; commencer. <b>Vingt-quatre t&acirc;ches, chacune avec son chiffre et sa source</b>&nbsp;: vous cherchez la v&ocirc;tre, vous laissez le reste. Laissez-nous o&ugrave; vous joindre, et les deux se t&eacute;l&eacute;chargent tout de suite.</p>
+      </div>
 
       <!-- PRET A BRANCHER : deux champs aux noms STABLES, `email` et
            `telephone`, qui deviendront les colonnes de l'onglet
@@ -3171,10 +3194,21 @@
            telecharger est chaude : c'est le meilleur moment. Ce bloc
            remplace le formulaire une fois les guides remis. -->
       <div class="cadeau-suite" hidden>
+        <!-- LE PLUS PETIT PAS D'ABORD.  D-782
+             Il n'y avait qu'une porte, et c'etait la plus grande :
+             l'assistant de projet, huit ecrans. Quelqu'un qui vient
+             de donner son courriel pour lire un guide n'est pas prêt
+             a decrire son projet — il est prêt a en PARLER. Trente
+             minutes est le pas suivant, et il est deja la promesse du
+             site partout ailleurs. L'assistant reste, en second. -->
         <p class="label cadeau-eyebrow">C&rsquo;est t&eacute;l&eacute;charg&eacute;</p>
-        <p class="cadeau-lead">Les deux guides sont dans vos t&eacute;l&eacute;chargements. La question qu&rsquo;ils posent tous les deux, c&rsquo;est&nbsp;: par o&ugrave; commencer chez vous&nbsp;?</p>
-        <button class="btn btn--primary" type="button" data-cadeau-projet>
-          R&eacute;pondons-y ensemble
+        <p class="cadeau-lead">Les deux guides sont dans vos t&eacute;l&eacute;chargements. La question qu&rsquo;ils posent tous les deux, c&rsquo;est&nbsp;: <b>par o&ugrave; commencer chez vous&nbsp;?</b> Trente minutes au t&eacute;l&eacute;phone suffisent pour y r&eacute;pondre, et vous repartez avec la r&eacute;ponse m&ecirc;me si on ne travaille pas ensemble.</p>
+        <button class="btn btn--primary" type="button" data-cadeau-rdv>
+          Choisir un moment
+          <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+        </button>
+        <button class="btn btn--ghost" type="button" data-cadeau-projet>
+          Ou d&eacute;crire mon projet
           <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
         <p class="cadeau-liens">

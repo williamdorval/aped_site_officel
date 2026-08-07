@@ -230,6 +230,21 @@ if (MODE === "afficher") {
    5 · LES BLOCS DU DOCUMENT
    ------------------------------------------------------------ */
 const doc = fs.readFileSync(CIBLE, "utf8");
+
+/* LA FIN DE LIGNE DU FICHIER SE RELEVE ET SE REMET.  D-782
+
+   `index.html` est en CRLF dans la copie de travail — git le
+   convertit a chaque fois qu'il y touche — et cet outil ecrivait en
+   LF. Resultat : deux blocs identiques AU MOT PRES rendaient
+   « ECHEC le bloc 1 est a jour », et `ecrire` aurait laisse un
+   melange de fins de ligne dans le fichier. C'est le piege 86 par
+   l'autre bout : la comparaison, pas la regex.
+
+   `index-doc.mjs` fait la meme chose depuis toujours ; celui-ci
+   l'avait oublie parce qu'il n'ecrit qu'un seul fichier. */
+const CRLF = (doc.match(/\r\n/g) || []).length > (doc.split("\n").length / 2);
+const EOL = CRLF ? "\r\n" : "\n";
+const nu = (s) => String(s).replace(/\r\n/g, "\n").trim();
 const bornes = [];
 {
   let i = 0;
@@ -257,7 +272,7 @@ if (MODE === "ecrire") {
   let sortie = "";
   let curseur = 0;
   for (const [a, b] of bornes) {
-    sortie += doc.slice(curseur, a) + "\n" + attendu + "\n";
+    sortie += doc.slice(curseur, a) + EOL + attendu.split("\n").join(EOL) + EOL;
     curseur = b;
   }
   sortie += doc.slice(curseur);
@@ -278,12 +293,12 @@ const dire = (ok, quoi, note) => {
 console.log("--- LES CONDITIONS DU PROGRAMME · version " + version);
 
 bornes.forEach(([a, b], i) => {
-  dire(doc.slice(a, b).trim() === attendu.trim(),
+  dire(nu(doc.slice(a, b)) === nu(attendu),
     "le bloc " + (i + 1) + " est a jour",
     "`node tools/conditions.mjs ecrire` le reecrit");
 });
 
-dire(doc.slice(bornes[0][0], bornes[0][1]).trim() === doc.slice(bornes[1][0], bornes[1][1]).trim(),
+dire(nu(doc.slice(bornes[0][0], bornes[0][1])) === nu(doc.slice(bornes[1][0], bornes[1][1])),
   "les deux blocs disent exactement la meme chose",
   "une condition qui dit deux choses sur la meme page ne protege personne");
 

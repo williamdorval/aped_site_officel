@@ -140,6 +140,7 @@
 | **D-779 · Une prime par entreprise référée, et elle se lit avant de référer** | 80 | 1 217 |
 | **D-780 · La retenue après la fourchette, et sur les deux formulaires d'un seul écran** | 98 | 1 448 |
 | **D-781 · Le classeur et les avis, vus un lundi matin avec vingt demandes** | 79 | 1 164 |
+| **D-782 · Le popup des guides : la valeur devant le coût, et le plus petit pas d'abord** | 84 | 1 158 |
 
 <!-- INDEX:FIN -->
 
@@ -2730,3 +2731,87 @@ du fichier — 102 cas, dont la troncature dans les deux sens — mais elle
 s'exécutera sur des lignes que cette session **n'a pas pu lire**.
 `node tools/classeur-check.mjs` dira si l'ordre du classeur correspond
 à celui du code, et il dira lequel ne correspond pas. `RESERVES.md`.
+
+## D-782 · Le popup des guides : la valeur devant le coût, et le plus petit pas d'abord
+
+Le mécanisme ne change pas — courriel et téléphone obligatoires,
+téléchargement direct, mémoire du don, enchaînement. Quatre choses
+autour de lui changent.
+
+**« 91 PAGES » EST UN COÛT, PAS UN ARGUMENT.** L'accroche disait
+« 2 guides · 91 pages · contre vos coordonnées », et la fiche mettait
+les pages en deuxième. Un patron de PME de 55 ans lit « 91 pages »
+comme « je ne lirai jamais ça » — c'est un travail qu'on lui annonce,
+pas un cadeau. Le chiffre reste, il dit le sérieux du document, mais il
+descend au **troisième** rang, derrière celui qui porte la valeur : ce
+sont les **vingt-quatre tâches chiffrées** qu'on vient chercher.
+
+Et le paragraphe **répond** à l'objection au lieu de l'ignorer :
+« vingt-quatre tâches, chacune avec son chiffre et sa source : vous
+cherchez la vôtre, vous laissez le reste ». Ce n'est pas une promesse
+sur le document — c'est une façon de le lire, et elle retire le mur.
+
+**LE PLUS PETIT PAS D'ABORD.** Après le téléchargement, il n'y avait
+qu'une porte, et c'était la plus grande : l'assistant de projet, huit
+écrans. Quelqu'un qui vient de donner son courriel pour lire un guide
+n'est pas prêt à décrire son projet — il est prêt à en **parler**.
+« Choisir un moment » devient le premier bouton et porte le focus ;
+l'assistant reste, en second. Trente minutes est déjà la promesse du
+site partout ailleurs, et la phrase qui l'accompagne est celle de
+l'écran du résultat de l'estimateur, au mot près.
+
+**ON ARRÊTE DE VENDRE À QUELQU'UN QUI A ACHETÉ.** Seul `#cadeauForm`
+était rangé après l'envoi : l'accroche, le titre, les trois chiffres et
+le paragraphe de vente restaient **au-dessus** de « C'est téléchargé ».
+Le bloc `.cadeau-avant` les range avec le formulaire, dans les deux
+états — après l'envoi, et pour qui revient avec la marque du don.
+**Vu sur la capture, jamais par une sonde** : c'est exactement ce que
+la règle B dit de l'arbitre.
+
+**UNE SOURCE QU'ON NE PEUT PAS ATTEINDRE N'EN EST PAS UNE.** La section
+« À la main contre automatisé » disait « six tâches tirées de notre
+document sur l'automatisation, où chaque chiffre porte sa source », et
+ne disait nulle part **où** était ce document — dont les seuls liens
+vivent derrière le formulaire du popup. Q2 en échec. La phrase dit
+maintenant que le guide se télécharge, et par où, **contre des
+coordonnées**. C'est une condition, pas un secret, et elle s'écrit. Le
+bouton ouvre le popup au moment exact où le lecteur veut la source :
+une porte contextuelle vaut mieux qu'un popup minuté.
+
+---
+
+**ET `cadeau-check` RÉCLAMAIT LE RETOUR DU DÉFAUT.** Il est archivé
+sous `archives/outils-perimes/cadeau-check-avant-D083.mjs`. Il exigeait,
+comme des qualités :
+
+```
+lesDeuxGuidesSansRienDonner : remiseOuverteDesLeDepart === true
+                              && courrielRequis === false
+laRemiseVientAvantLeFormulaire : true
+unSeulChamp : nombreDeChamps === 1
+```
+
+C'est la version d'**avant D-083** — et D-083 a retourné exactement ça,
+parce que l'ancienne version ne captait rien. L'outil est donc devenu
+un test qui réclame le retour du défaut qu'on venait de corriger :
+piège 17, à l'envers.
+
+**ET IL NE ROUGISSAIT PAS, IL PLANTAIT.** `.cadeau-recu` n'existe plus,
+`querySelector(...).hidden` lève sur `null`. Un outil qui plante ne se
+lit pas comme un défaut, il se lit comme un outil cassé, et on passe —
+c'est le piège 96 sous une autre forme.
+
+**PIRE : SON FILET RÉSEAU VISAIT `formsubmit.co`.** Le site poste vers
+Apps Script depuis longtemps ; le filet ne couvrait donc rien, et
+**lancer l'outil écrivait dans le vrai classeur et consommait le
+quota**. Le neuf intercepte `script.google.com`, **compte** ses
+interceptions, et **s'arrête** s'il y en a zéro — un filet qui vise le
+mauvais hôte est invisible autrement : la requête part, le test passe,
+et le classeur se remplit.
+
+`cadeau-e2e.mjs` avait la même maladie et est archivé avec lui.
+
+**26 contrôles.** Prouvé au rouge deux fois : les pages remises en tête
+de fiche → `ECHEC la fiche ouvre sur les taches chiffrees` ; `required`
+retiré du téléphone → `ECHEC les DEUX coordonnees sont requises,
+obtenu "email"`.

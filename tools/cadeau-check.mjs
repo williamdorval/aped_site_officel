@@ -1,344 +1,272 @@
 /* ============================================================
-   LE POPUP CADEAU — DECLENCHEMENT, CONTENU, MISE EN SCENE, CLAVIER
-   `node tools/cadeau-check.mjs [port]`
+   LE POPUP DES GUIDES — `node tools/cadeau-check.mjs`
 
-   REECRIT LE 2026-07-26. L'ancienne version prouvait le
-   comportement d'AVANT — « il ne s'ouvre pas avant douze secondes,
-   il ne s'ouvre qu'une fois par personne » — donc elle passait au
-   vert sur le defaut qu'on venait de trouver : un marqueur
-   permanent pose des la premiere ouverture, qui faisait qu'un
-   rechargement ne le remontrait plus JAMAIS. Un test qui verrouille
-   le defaut est pire que pas de test.
+   POURQUOI CELUI-CI EST NEUF, ET POURQUOI L'ANCIEN EST ARCHIVÉ.
+   D-782
 
-   SEPT SCENARIOS, CHACUN UNE PREUVE :
-   1. il parait tout seul, a chaque chargement, autour de 11 s ;
-   2. il parait PLUS TOT sur un engagement fort ;
-   3. il ne parait JAMAIS pendant une saisie — il attend ;
-   4. il REVIENT a chaque chargement — decision du proprietaire du
-      site, 2026-07-26 : « toujours, meme apres le courriel » ;
-   5. adresse donnee -> les deux documents sont remis sur place, et
-      il revient QUAND MEME au chargement suivant ;
-   6. le contenu tient en peu d'objets : un champ, une action, une
-      sortie evidente, un visuel ;
-   7. Echap, tabulation, focus rendu, et mouvement reduit.
+   `archives/outils-perimes/cadeau-check-avant-D083.mjs` exigeait,
+   comme des qualités : « les deux guides SANS RIEN DONNER »,
+   « courriel PAS requis », « un SEUL champ », « la remise vient
+   AVANT le formulaire ». C'était juste avant D-083 — et D-083 a
+   retourné exactement ça : les coordonnées sont devenues la
+   CONDITION, parce que l'ancienne version ne captait rien.
+
+   L'outil est donc devenu un test qui réclame le retour du défaut
+   qu'on venait de corriger. Piège 17, à l'envers, et le pire des
+   deux sens : il ne rougissait pas, il PLANTAIT — `.cadeau-recu`
+   n'existe plus, `querySelector(...).hidden` lève sur `null`. Un
+   outil qui plante ne se lit pas comme un défaut, il se lit comme
+   un outil cassé, et on passe.
+
+   ET SON FILET RÉSEAU VISAIT `formsubmit.co`, mort depuis que le
+   site poste vers Apps Script : le lancer ÉCRIVAIT dans le vrai
+   classeur et consommait le quota. Celui-ci intercepte
+   `script.google.com`, et il le VÉRIFIE avant de conclure.
+
+   CE QU'IL GARDE AUJOURD'HUI :
+     1 · l'échange est annoncé, pas déguisé en cadeau ;
+     2 · les deux coordonnées sont bien la condition ;
+     3 · ce qui porte la valeur passe devant ce qui porte le coût ;
+     4 · après le téléchargement, le plus PETIT pas est le premier ;
+     5 · la mémoire : qui a déjà donné ne redonne rien ;
+     6 · Échap, focus, zéro erreur console.
+
+   Sorties : 0 tout tient · 1 défaut · 2 l'instrument a dérivé.
    ============================================================ */
 import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
+import http from "node:http";
 import { fileURLToPath } from "node:url";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
-const PORT = process.argv[2] || "8099";
-const BASE = `http://127.0.0.1:${PORT}/`;
-const SORTIE = path.join(RACINE, "refonte-captures", "cadeau");
+const SORTIE = path.join(RACINE, "preuves", "cadeau");
 fs.mkdirSync(SORTIE, { recursive: true });
 
-const nav = await chromium.launch();
-const R = { erreurs: [] };
-
-async function neuf(ctx) {
-  const p = await ctx.newPage();
-  p.on("pageerror", (e) => R.erreurs.push("pageerror: " + String(e)));
-  p.on("console", (m) => { if (m.type() === "error") R.erreurs.push("console: " + m.text()); });
-  /* On saute la sequence d'entree : ce script mesure un popup. */
-  await p.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); } catch (e) {} });
-  return p;
+let n = 0, ko = 0;
+function dire(nom, obtenu, attendu, note) {
+  n++;
+  const ok = String(obtenu) === String(attendu);
+  if (!ok) ko++;
+  console.log("  " + (ok ? "OK   " : "ECHEC") + " " + nom
+    + (ok ? "" : "\n         obtenu  : " + JSON.stringify(obtenu)
+             + "\n         attendu : " + JSON.stringify(attendu)
+             + (note ? "\n         " + note : "")));
 }
-const ouvert = (p) => p.evaluate(() => { const d = document.getElementById("cadeau"); return !!(d && d.open); });
-const attendre = (p, ms) => p.waitForFunction(
-  () => { const d = document.getElementById("cadeau"); return d && d.open; }, null, { timeout: ms }
-).catch(() => {});
+function titre(t) { console.log(""); console.log("--- " + t); }
 
-/* ---------- 1. LE DECLENCHEUR PRINCIPAL, ET LE CONTENU ---------- */
-{
-  const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
-  const p = await neuf(ctx);
-  await p.goto(BASE, { waitUntil: "load" });
-  const t0 = Date.now();
-  await p.waitForTimeout(8000);
-  const a8 = await ouvert(p);
-  await attendre(p, 12000);
-  R.principal = { ouvertA8s: a8, ouvert: await ouvert(p), paruApresSecondes: Math.round((Date.now() - t0) / 100) / 10 };
-  /* On laisse la mise en scene FINIR avant de photographier : sans
-     cette attente on capture l'arete a mi-course et on croit que le
-     panneau est coupe. */
-  await p.waitForTimeout(900);
-  await p.screenshot({ path: path.join(SORTIE, "01-principal.png") });
-
-  R.contenu = await p.evaluate(() => {
-    const d = document.getElementById("cadeau");
-    const txt = (s) => { const e = d.querySelector(s); return e ? e.textContent.trim() : null; };
-    const champs = [...d.querySelectorAll("input, textarea, select")].filter((e) => e.type !== "hidden");
-    const actions = [...d.querySelectorAll("button, a")].filter((e) => {
-      const r = e.getBoundingClientRect();
-      return r.width > 0 && r.height > 0 && !e.hasAttribute("data-cadeau-non") && !e.closest("[hidden]");
-    });
-    return {
-      accroche: txt(".cadeau-eyebrow"),
-      titre: txt("#cadeauTitre"),
-      benefice: txt(".cadeau-lead"),
-      caracteresDeBenefice: (txt(".cadeau-lead") || "").length,
-      champs: champs.map((c) => c.name || c.id),
-      nombreDeChamps: champs.length,
-      actionsVisibles: actions.map((a) => a.textContent.trim().replace(/\s+/g, " ").slice(0, 40)),
-      reassurance: txt(".cadeau-fin"),
-      sorties: [...d.querySelectorAll("[data-cadeau-non]")].map((b) => (b.getAttribute("aria-label") || b.textContent.trim())),
-      couvertures: [...d.querySelectorAll(".cadeau-couv")].map((i) => ({
-        src: i.getAttribute("src"), rendue: i.naturalWidth > 0, l: i.naturalWidth, h: i.naturalHeight
-      })),
-      motsALire: (d.querySelector(".cadeau-dire") || d).innerText.trim().split(/\s+/).length,
-      /* ------------------------------------------------------------
-         CE RELEVE S'APPELAIT `remiseCacheeAuDepart`, ET SON NOM ETAIT
-         LE DEFAUT.
-         Il affirmait, comme une qualite, que les deux guides sont
-         VERROUILLES jusqu'a ce qu'on donne une adresse. Or le pied de
-         page, Services et le Calculateur offrent LES MEMES deux
-         documents « gratuits et sans courriel », liens directs vers
-         les PDF. Le popup faisait donc payer d'une adresse ce que la
-         page donne trois ecrans plus bas — constat A3 de l'audit du
-         2026-07-29, et exactement la faute que le proprietaire venait
-         de retirer du hero.
-         Le test passait, et il passait PARCE QUE le defaut etait la.
-         C'est le piege nommé au § 8 de CLAUDE.md : quand on corrige
-         un defaut, il faut relire le test qui le couvrait. On mesure
-         donc maintenant l'inverse, et le nom le dit.
-         ------------------------------------------------------------ */
-      remiseOuverteDesLeDepart: !d.querySelector(".cadeau-recu").hidden,
-      remiseAvantLeFormulaire: (() => {
-        const blocs = [...d.querySelectorAll(".cadeau-recu, .cadeau-form")];
-        return blocs.length === 2 && blocs[0].classList.contains("cadeau-recu");
-      })(),
-      lienDirectsVersLesPdf: [...d.querySelectorAll(".cadeau-recu a")].map((a) => a.getAttribute("href")),
-      courrielRequis: (() => { const c = d.querySelector("#cadeauEmail"); return c ? c.required : null; })()
-    };
-  });
-
-  /* ---------- 7. CLAVIER ---------- */
-  R.clavier = { focusALOuverture: await p.evaluate(() => document.activeElement && document.activeElement.className) };
-
-  /* ============================================================
-     LE NOMBRE DE TABULATIONS NE PEUT PAS ETRE UNE CONSTANTE, ET
-     C'EST UN DEFAUT D'INSTRUMENT QUI A PRODUIT UN FAUX ECHEC.
-
-     Version precedente : six tabulations, puis « le focus est-il
-     encore dans le dialogue ? ». Ca marchait avec quatre elements
-     atteignables. Le correctif A3 en a ajoute deux — les deux liens
-     de telechargement direct — et la sixieme tabulation est tombee
-     pile sur l'etape ou Chromium fait passer le focus par la barre
-     du navigateur avant de revenir dans le dialogue. Verdict rendu :
-     « le focus s'echappe ». A/B en worktree contre le commit
-     precedent : la sequence d'AVANT etait
-     `INPUT → BUTTON → BUTTON.cadeau-non → BODY → BUTTON.cadeau-x →
-     INPUT`. Le BODY y etait DEJA, au milieu. Le piege fonctionnait
-     dans les deux versions ; seul le nombre d'elements avait change.
-
-     CE QU'IL FAUT MESURER N'EST DONC PAS « OU ATTERRIT LA N-IEME
-     TABULATION » mais la propriete reelle du piege : aucun element de
-     la PAGE derriere la modale ne doit jamais recevoir le focus, et
-     le cycle doit revenir dans le dialogue. On compte donc les
-     elements atteignables, on fait un tour complet plus deux, et on
-     regarde la suite entiere.
-     ============================================================ */
-  const combien = await p.evaluate(() => {
-    const d = document.getElementById("cadeau");
-    return [...d.querySelectorAll('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')]
-      .filter((e) => !e.disabled && !e.closest("[hidden]") && e.getBoundingClientRect().width > 0).length;
-  });
-  const ordre = [];
-  for (let i = 0; i < combien + 3; i++) {
-    await p.keyboard.press("Tab");
-    ordre.push(await p.evaluate(() => {
-      const a = document.activeElement;
-      if (!a) return { ou: "?", dedans: false };
-      const dedans = !!document.getElementById("cadeau").contains(a);
-      return {
-        ou: a.tagName + "." + String(a.className || "").split(" ")[0],
-        dedans,
-        /* `body` n'est pas « la page » : c'est l'etape par laquelle
-           Chromium fait transiter le focus vers sa propre barre. Ce
-           qui serait un vrai defaut, c'est un lien ou un bouton de la
-           page derriere la modale. */
-        estUnElementDeLaPage: !dedans && a !== document.body && a !== document.documentElement,
-      };
-    }));
+const MIME = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript",
+  ".svg": "image/svg+xml", ".woff2": "font/woff2", ".png": "image/png",
+  ".jpg": "image/jpeg", ".webp": "image/webp", ".avif": "image/avif",
+  ".pdf": "application/pdf", ".json": "application/json" };
+const serveur = http.createServer((req, res) => {
+  let p = decodeURIComponent(req.url.split("?")[0]);
+  if (p === "/") p = "/index.html";
+  const f = path.join(RACINE, p);
+  if (!f.startsWith(RACINE) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) {
+    res.writeHead(404); res.end("non"); return;
   }
-  R.clavier.elementsAtteignables = combien;
-  R.clavier.ordreDeTabulation = ordre.map((o) => o.ou);
-  R.clavier.aucunElementDeLaPageNAEuLeFocus = ordre.every((o) => !o.estUnElementDeLaPage);
-  R.clavier.leCycleRevientDansLeDialogue = ordre.slice(1).some((o, i) => o.dedans && !ordre[i].dedans)
-    || ordre.every((o) => o.dedans);
-  R.clavier.focusResteDansLeDialogue =
-    R.clavier.aucunElementDeLaPageNAEuLeFocus && R.clavier.leCycleRevientDansLeDialogue;
-  await p.keyboard.press("Escape");
-  await p.waitForTimeout(450);
-  R.clavier.echapFerme = !(await ouvert(p));
-  R.clavier.focusRendu = await p.evaluate(() => document.activeElement.tagName);
-  await p.screenshot({ path: path.join(SORTIE, "02-apres-echap.png") });
+  res.writeHead(200, { "Content-Type": MIME[path.extname(f)] || "application/octet-stream" });
+  fs.createReadStream(f).pipe(res);
+});
+await new Promise((r) => serveur.listen(0, r));
+const BASE = "http://127.0.0.1:" + serveur.address().port;
 
-  /* ---------- 4. IL REVIENT AU RECHARGEMENT ----------
-     CETTE ASSERTION A ETE INVERSEE LE 2026-07-26, ET C'EST DELIBERE.
-     Elle affirmait « pas deux fois dans la meme session ». La regle
-     de frequence a change — « toujours, meme apres le courriel » —
-     donc l'ancienne assertion serait devenue un test qui verrouille
-     l'ancien comportement. Le projet a deja paye ca deux fois : un
-     test vert sur un defaut est pire que pas de test. */
-  await p.reload({ waitUntil: "load" });
-  await attendre(p, 16000);
-  R.revientAuRechargement = await ouvert(p);
-  await p.screenshot({ path: path.join(SORTIE, "08-au-rechargement.png") });
-  await ctx.close();
-}
+const nav = await chromium.launch();
+const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
+const page = await ctx.newPage();
+const erreurs = [];
+page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
+page.on("pageerror", (e) => erreurs.push(String(e)));
 
-/* ---------- 2. DECLENCHEMENT ANTICIPE : la section Projets ---------- */
-{
-  const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
-  const p = await neuf(ctx);
-  await p.goto(BASE, { waitUntil: "load" });
-  const t0 = Date.now();
-  /* IL FAUT Y ARRIVER VITE, sinon on ne mesure rien.
-     La premiere version defilait par pas de 300 px sur
-     `requestAnimationFrame` : la scene epinglee des Services rend
-     ce trajet long de plus de quarante secondes, donc le
-     declencheur principal de 11 s avait deja tout fait et le test
-     concluait « pas d'anticipation » alors qu'il n'avait jamais eu
-     l'occasion de la voir. On y va en gros pas — un visiteur
-     presse, ce qui est justement le cas qu'on veut couvrir. */
-  await p.evaluate(async () => {
-    const c = document.getElementById("realisations");
-    for (let i = 0; i < 40; i++) {
-      const y = c.getBoundingClientRect().top + scrollY + 400;
-      if (window.scrollY >= y) break;
-      window.scrollBy(0, Math.min(1800, y - window.scrollY));
-      await new Promise((r) => requestAnimationFrame(r));
-    }
-  });
-  R.anticipeArriveeALaSection = Math.round((Date.now() - t0) / 100) / 10;
-  await attendre(p, 12000);
-  R.anticipe = {
-    ouvert: await ouvert(p),
-    paruApresSecondes: Math.round((Date.now() - t0) / 100) / 10,
-    avantLes11sPrincipales: (Date.now() - t0) < 10500
+/* LE FILET, ET LA PREUVE QU'IL A SERVI. Un filet qui vise le
+   mauvais hôte ne se voit pas : la requête part pour de vrai, le
+   test passe, et le classeur se remplit de lignes d'essai. On
+   compte donc les interceptions, et on ARRÊTE s'il y en a zéro. */
+let interceptes = 0;
+await page.route("**script.google.com/**", (r) => {
+  interceptes++;
+  r.fulfill({ status: 200, contentType: "application/json", body: '{"success":true}' });
+});
+
+await page.goto(BASE, { waitUntil: "load" });
+
+/* ============================================================
+   1 · IL PARAIT, ET PAS TROP TOT
+   ============================================================ */
+titre("1 · IL PARAIT, ET PAS AVANT LE PLANCHER");
+const ouvert = () => page.evaluate(() => {
+  const d = document.getElementById("cadeau");
+  return !!(d && d.open);
+});
+
+await page.waitForTimeout(3500);
+dire("rien avant 3,5 s", await ouvert(), false, "le plancher est a 4 s");
+
+const t0 = Date.now();
+for (let i = 0; i < 40 && !(await ouvert()); i++) await page.waitForTimeout(700);
+const paruA = Math.round((Date.now() - t0) / 100) / 10 + 3.5;
+dire("il parait", await ouvert(), true, "attendu au plus tard a 20 s");
+console.log("         paru vers " + paruA + " s · data-palier "
+  + (await page.evaluate(() => document.documentElement.dataset.palier)));
+await page.waitForTimeout(900);
+await page.screenshot({ path: path.join(SORTIE, "01-popup.png") });
+
+/* ============================================================
+   2 · L'ECHANGE EST ANNONCE, PAS DEGUISE
+   ============================================================ */
+titre("2 · L'ECHANGE EST ANNONCE  (D-083)");
+const vu = await page.evaluate(() => {
+  const d = document.getElementById("cadeau");
+  const txt = (s) => { const e = d.querySelector(s); return e ? e.textContent.trim().replace(/\s+/g, " ") : null; };
+  const champs = [...d.querySelectorAll("input")].filter((e) => e.type !== "hidden" && !e.closest(".piege"));
+  return {
+    accroche: txt(".cadeau-eyebrow"),
+    titre: txt("#cadeauTitre"),
+    fiche: [...d.querySelectorAll(".cadeau-fiche span")].map((s) => s.textContent.trim().replace(/\s+/g, " ")),
+    lead: txt(".cadeau-lead"),
+    champs: champs.map((c) => ({ nom: c.name, requis: c.required })),
+    couvertures: [...d.querySelectorAll(".cadeau-couv")].map((i) => i.naturalWidth > 0),
+    reassurance: txt(".cadeau-fin"),
+    sorties: [...d.querySelectorAll("[data-cadeau-non]")].length
   };
-  await p.screenshot({ path: path.join(SORTIE, "03-anticipe-projets.png") });
-  await ctx.close();
-}
+});
+dire("l'accroche dit que c'est un echange",
+  /contre vos coordonn/i.test(vu.accroche || ""), true, JSON.stringify(vu.accroche));
+dire("elle ne dit jamais « gratuit » ni « cadeau »",
+  /gratuit|cadeau/i.test([vu.accroche, vu.titre, vu.lead].join(" ")), false);
+dire("les DEUX coordonnees sont requises",
+  vu.champs.filter((c) => c.requis).map((c) => c.nom).sort().join("|"), "email|telephone",
+  JSON.stringify(vu.champs));
+dire("la mention legale dit a quoi elles servent",
+  /vous envoyer les guides/.test(await page.evaluate(() =>
+    (document.querySelector("#cadeauForm .form-legal") || {}).textContent || "")), true);
+dire("les deux couvertures se rendent",
+  vu.couvertures.length === 2 && vu.couvertures.every(Boolean), true);
+dire("il y a plus d'une sortie", vu.sorties >= 2, true);
+dire("la reassurance est la", !!vu.reassurance, true);
 
-/* ---------- 3. IL N'INTERROMPT PAS UNE SAISIE ---------- */
-{
-  const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
-  const p = await neuf(ctx);
-  await p.goto(BASE, { waitUntil: "load" });
-  await p.evaluate(() => {
-    const c = document.querySelector("input[type='email'], input[type='text'], #calculateur input[type='range']");
-    if (c) c.focus();
-  });
-  await p.waitForTimeout(13500);
-  R.nInterromptPasUneSaisie = { ouvertPendantLaSaisie: await ouvert(p) };
-  await p.screenshot({ path: path.join(SORTIE, "04-pendant-saisie.png") });
-  await p.evaluate(() => document.activeElement.blur());
-  await attendre(p, 5000);
-  R.nInterromptPasUneSaisie.paraitUneFoisLaSaisieFinie = await ouvert(p);
-  await p.screenshot({ path: path.join(SORTIE, "05-apres-saisie.png") });
-  await ctx.close();
-}
+/* ============================================================
+   3 · LA VALEUR DEVANT LE COUT
+   ============================================================ */
+titre("3 · CE QUI PORTE LA VALEUR PASSE DEVANT  (D-782)");
+/* « 91 PAGES » EST UN COUT. Un patron de PME le lit « je ne lirai
+   jamais ca ». Le chiffre reste — il dit le serieux du document —
+   mais il ne peut pas etre le premier. */
+dire("la fiche ouvre sur les taches chiffrees",
+  /t[âa]ches chiffr/i.test(vu.fiche[0] || ""), true, JSON.stringify(vu.fiche));
+dire("le nombre de pages n'est plus dans l'accroche",
+  /\d+\s*pages/i.test(vu.accroche || ""), false, JSON.stringify(vu.accroche));
+dire("le nombre de pages est quand meme dit",
+  vu.fiche.some((s) => /\d+\s*pages/i.test(s)), true, "il est vrai, il reste");
+dire("l'objection du volume recoit une reponse",
+  /cherchez la v[ôo]tre/i.test(vu.lead || ""), true,
+  "sans elle, « 91 pages » se lit comme un mur");
 
-/* ---------- 5. ADRESSE DONNEE : plus jamais, et remise sur place ---------- */
-{
-  const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
-  const p = await neuf(ctx);
-  /* On intercepte l'envoi : ce scenario teste la MEMOIRE et la
-     REMISE, pas la livraison. `cadeau-e2e.mjs --envoi-reel` teste
-     la livraison, et c'est un autre outil. */
-  await p.route("**/formsubmit.co/**", (r) =>
-    r.fulfill({ status: 200, contentType: "application/json", body: '{"success":"true"}' }));
-  await p.goto(BASE, { waitUntil: "load" });
-  await attendre(p, 16000);
-  await p.fill("#cadeauEmail", "essai@exemple.ca");
-  await p.click(".cadeau-go");
-  await p.waitForTimeout(1500);
-  R.apresEnvoi = await p.evaluate(() => {
-    const d = document.getElementById("cadeau");
-    return {
-      remiseDevoilee: !d.querySelector(".cadeau-recu").hidden,
-      liens: [...d.querySelectorAll(".cadeau-recu a")].map((a) => a.getAttribute("href")),
-      message: (d.querySelector(".form-status") || {}).textContent,
-      classeMessage: (d.querySelector(".form-status") || {}).className,
-      marqueurPourToujours: localStorage.getItem("aped-cadeau-donne"),
-      focusSurLaRemise: !!d.querySelector(".cadeau-recu").contains(document.activeElement)
-    };
-  });
-  await p.screenshot({ path: path.join(SORTIE, "06-remise.png") });
-  await p.keyboard.press("Escape");
-  await p.waitForTimeout(400);
-  /* Rechargement APRES avoir donne son adresse : il doit revenir.
-     On ne vide RIEN — c'est justement le cas qu'on veut couvrir. */
-  await p.reload({ waitUntil: "load" });
-  await attendre(p, 16000);
-  R.apresEnvoi.revientMemeApresLeCourriel = await ouvert(p);
-  R.apresEnvoi.aucuneCleMorteLaissee = await p.evaluate(() => {
-    try {
-      return localStorage.getItem("aped-cadeau") === null
-        && localStorage.getItem("aped-cadeau-donne") === null;
-    } catch (e) { return false; }
-  });
-  await p.screenshot({ path: path.join(SORTIE, "09-revient-apres-courriel.png") });
-  await ctx.close();
-}
+/* ============================================================
+   4 · APRES LE TELECHARGEMENT, LE PLUS PETIT PAS D'ABORD
+   ============================================================ */
+titre("4 · APRES LE TELECHARGEMENT  (D-782)");
+await page.fill("#cadeauEmail", "essai@exemple.ca");
+await page.fill("#cadeauTel", "8195550142");
+await page.click(".cadeau-go");
+await page.waitForTimeout(1800);
 
-/* ---------- MOUVEMENT REDUIT ---------- */
-{
-  const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
-  const p = await neuf(ctx);
-  await p.goto(BASE, { waitUntil: "load" });
-  await attendre(p, 16000);
-  R.mouvementReduit = {
-    ouvert: await ouvert(p),
-    aucuneAnimation: await p.evaluate(() => {
-      const d = document.getElementById("cadeau");
-      return getComputedStyle(d).animationName === "none"
-        && getComputedStyle(d.querySelector(".cadeau-couv")).animationName === "none";
-    })
+/* L'INTERCEPTION SE VERIFIE AVANT LE VERDICT. Zero requete captee
+   veut dire que l'envoi est parti pour de vrai — vers le classeur
+   du client — et aucune conclusion ne vaut a partir de la. */
+if (interceptes === 0) {
+  console.error("ARRET  aucune requete vers script.google.com n'a ete interceptee.\n"
+    + "       Soit l'envoi ne part pas, soit il part POUR DE VRAI.\n"
+    + "       Dans les deux cas, ce qui suit ne prouverait rien.");
+  await nav.close(); serveur.close(); process.exit(2);
+}
+console.log("         " + interceptes + " requete(s) interceptee(s), aucune n'est partie");
+
+const apres = await page.evaluate(() => {
+  const d = document.getElementById("cadeau");
+  const s = d.querySelector(".cadeau-suite");
+  const boutons = s ? [...s.querySelectorAll("button")] : [];
+  return {
+    suiteOuverte: !!(s && !s.hidden),
+    formulaireRange: !!(d.querySelector("#cadeauForm") || {}).hidden,
+    argumentaireRange: !!(d.querySelector(".cadeau-avant") || {}).hidden,
+    boutons: boutons.map((b) => (b.textContent || "").trim().replace(/\s+/g, " ")),
+    premierEstLeRdv: !!(boutons[0] && boutons[0].hasAttribute("data-cadeau-rdv")),
+    focusSurLePremier: !!(boutons[0] && document.activeElement === boutons[0]),
+    liens: s ? [...s.querySelectorAll("a[href$='.pdf']")].map((a) => a.getAttribute("href")) : []
   };
-  await p.screenshot({ path: path.join(SORTIE, "07-mouvement-reduit.png") });
-  await p.keyboard.press("Escape");
-  await p.waitForTimeout(220);
-  R.mouvementReduit.echapFermeSansAttendre = !(await ouvert(p));
-  await ctx.close();
-}
+});
+dire("le bloc d'apres remplace le formulaire",
+  apres.suiteOuverte && apres.formulaireRange, true, JSON.stringify(apres));
+/* ON ARRETE DE VENDRE A QUELQU’UN QUI A ACHETE. Le formulaire seul
+   etait range : l'accroche, le titre, les trois chiffres et le
+   paragraphe de vente restaient AU-DESSUS de « C’est telecharge ».
+   Vu sur la capture, jamais par une sonde — c’est pour ca que
+   celle-ci existe. */
+dire("l'argumentaire de vente se range aussi", apres.argumentaireRange, true,
+  "continuer de vendre apres l'achat, c'est dire qu'on n'a pas suivi");
+dire("le PREMIER bouton est le rendez-vous", apres.premierEstLeRdv, true,
+  "huit ecrans de projet ne sont pas le plus petit pas suivant : " + JSON.stringify(apres.boutons));
+dire("et il porte le focus", apres.focusSurLePremier, true);
+dire("l'assistant de projet reste, en second",
+  apres.boutons.length >= 2, true, JSON.stringify(apres.boutons));
+dire("les deux guides restent retelechargeables", apres.liens.length, 2,
+  JSON.stringify(apres.liens));
+await page.screenshot({ path: path.join(SORTIE, "02-apres.png") });
 
-R.verdict = {
-  paraitSeulAuBonMoment: R.principal.ouvert === true && R.principal.ouvertA8s === false,
-  paraitPlusTotSurEngagement: R.anticipe.ouvert === true && R.anticipe.avantLes11sPrincipales === true,
-  nInterromptPasUneSaisie: R.nInterromptPasUneSaisie.ouvertPendantLaSaisie === false
-    && R.nInterromptPasUneSaisie.paraitUneFoisLaSaisieFinie === true,
-  unSeulChamp: R.contenu.nombreDeChamps === 1 && R.contenu.champs[0] === "email",
-  /* `uneSeuleAction: actionsVisibles.length === 1` a ete retire le
-     2026-07-29. Il verrouillait le peage : une seule action possible,
-     donc forcement celle qui exige l'adresse. Il y en a maintenant
-     trois, et c'est la correction — deux telechargements directs plus
-     un envoi facultatif. Ce qui compte n'est plus le NOMBRE mais
-     l'ORDRE et la GRATUITE, et c'est ce qu'on mesure. */
-  lesDeuxGuidesSansRienDonner: R.contenu.remiseOuverteDesLeDepart === true
-    && R.contenu.lienDirectsVersLesPdf.length === 2
-    && R.contenu.courrielRequis === false,
-  laRemiseVientAvantLeFormulaire: R.contenu.remiseAvantLeFormulaire === true,
-  /* C5 · un desabonnement suppose un abonnement, et il n'y a pas de
-     liste d'envoi — la section Contact promet meme le contraire. */
-  aucunePromesseDeDesabonnement: !/d[ée]sabonnement/i.test(R.contenu.reassurance || ""),
-  beneficeLeBoutonLeDit: /guide/i.test(R.contenu.actionsVisibles[0] || ""),
-  visuelDesDeuxDocuments: R.contenu.couvertures.length === 2 && R.contenu.couvertures.every((c) => c.rendue),
-  sortieEvidente: R.contenu.sorties.length >= 2,
-  reassurancePresente: !!R.contenu.reassurance,
-  revientAuRechargement: R.revientAuRechargement === true,
-  revientMemeApresLeCourriel: R.apresEnvoi.revientMemeApresLeCourriel === true,
-  aucuneCleMorteLaissee: R.apresEnvoi.aucuneCleMorteLaissee === true,
-  lesDeuxDocumentsSontRemis: R.apresEnvoi.remiseDevoilee === true && R.apresEnvoi.liens.length === 2,
-  echapFerme: R.clavier.echapFerme === true,
-  focusPiege: R.clavier.focusResteDansLeDialogue === true,
-  mouvementReduitSansAnimation: R.mouvementReduit.ouvert === true && R.mouvementReduit.aucuneAnimation === true,
-  aucuneErreurConsole: R.erreurs.length === 0
-};
-console.log(JSON.stringify(R, null, 1));
-fs.writeFileSync(path.join(SORTIE, "rapport.json"), JSON.stringify(R, null, 2));
+/* ============================================================
+   5 · LA MEMOIRE
+   ============================================================ */
+titre("5 · QUI A DEJA DONNE NE REDONNE RIEN");
+await page.goto(BASE, { waitUntil: "load" });
+await page.waitForTimeout(3200);
+const memoire = await page.evaluate(() => {
+  let marque = null;
+  try { marque = localStorage.getItem("aped-guides-donnes"); } catch (e) {}
+  return { marque: !!marque };
+});
+dire("la marque du don est posee", memoire.marque, true,
+  "sans elle, on redemande a quelqu'un qui a deja donne");
+
+/* ON REOUVRE PAR LA PORTE MANUELLE — le popup ne se represente
+   jamais tout seul, et c'est voulu. */
+await page.evaluate(() => {
+  const b = document.querySelector("[data-cadeau-ouvrir]");
+  if (b) b.click();
+});
+await page.waitForTimeout(900);
+const retour = await page.evaluate(() => {
+  const d = document.getElementById("cadeau");
+  return {
+    ouvert: !!(d && d.open),
+    dejaVisible: !!(d && d.querySelector(".cadeau-deja") && !d.querySelector(".cadeau-deja").hidden),
+    formulaireRange: !!(d && (d.querySelector("#cadeauForm") || {}).hidden),
+    liens: d ? [...d.querySelectorAll(".cadeau-deja a[href$='.pdf']")].map((a) => a.getAttribute("href")) : []
+  };
+});
+dire("la porte manuelle rouvre le popup", retour.ouvert, true);
+dire("il ne redemande AUCUNE coordonnee", retour.formulaireRange, true, JSON.stringify(retour));
+dire("il montre le bloc « vous les avez deja »", retour.dejaVisible, true);
+dire("avec les deux liens", retour.liens.length, 2);
+await page.screenshot({ path: path.join(SORTIE, "03-deja.png") });
+
+/* ============================================================
+   6 · CLAVIER ET CONSOLE
+   ============================================================ */
+titre("6 · CLAVIER ET CONSOLE");
+await page.keyboard.press("Escape");
+await page.waitForTimeout(400);
+dire("Echap le ferme", await ouvert(), false);
+dire("aucune erreur console", erreurs.length, 0, erreurs.slice(0, 3).join(" | "));
+
 await nav.close();
+serveur.close();
+console.log("");
+console.log("============================================================");
+console.log(ko ? ("LE POPUP NE TIENT PAS : " + ko + " echec(s) sur " + n)
+              : ("LE POPUP TIENT : " + n + " / " + n));
+console.log("Captures : preuves/cadeau/");
+console.log("============================================================");
+process.exit(ko ? 1 : 0);

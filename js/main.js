@@ -1286,10 +1286,18 @@
     var dejaBloc = $(".cadeau-deja", boite);
     var fin = $(".cadeau-fin", boite);
 
+    /* L'ARGUMENTAIRE DE VENTE, tout ce qui precede l'echange.  D-782
+       Seul `#cadeauForm` etait range apres l'envoi : l'accroche, le
+       titre, les trois chiffres et le paragraphe restaient AU-DESSUS
+       de « C'est telecharge ». On continuait de vendre a quelqu'un
+       qui avait deja achete. Vu sur la capture, pas sur une sonde. */
+    var avant = $(".cadeau-avant", boite);
+
     /* CE QUE VOIT QUELQU'UN QUI A DEJA DONNE : pas le formulaire. */
     function montrerDeja() {
       if (form) form.hidden = true;
       if (fin) fin.hidden = true;
+      if (avant) avant.hidden = true;
       if (suite) suite.hidden = true;
       if (dejaBloc) dejaBloc.hidden = false;
     }
@@ -1322,9 +1330,12 @@
           setLoading(bouton, false);
           form.hidden = true;
           if (fin) fin.hidden = true;
+          if (avant) avant.hidden = true;   /* on arrete de vendre  D-782 */
           if (suite) {
             suite.hidden = false;
-            var b = $("[data-cadeau-projet]", suite);
+            /* LE FOCUS VA AU PREMIER BOUTON, ET CE N'EST PLUS LE
+               MEME DEPUIS D-782 : c'est le rendez-vous. */
+            var b = $("[data-cadeau-rdv]", suite) || $("[data-cadeau-projet]", suite);
             if (b) b.focus();
           }
         };
@@ -1343,6 +1354,20 @@
       versProjet.addEventListener("click", function () {
         fermer();
         window.setTimeout(function () { openModal("modal-project"); }, 260);
+      });
+    }
+
+    /* LE PLUS PETIT PAS, ET C'EST LE PREMIER BOUTON.  D-782
+       Quelqu'un qui vient de donner son courriel pour lire un guide
+       n'est pas prêt a decrire son projet en huit ecrans — il est
+       prêt a en parler trente minutes. Meme mecanique que le
+       precedent : le popup se retire d'abord, la modale s'ouvre
+       apres l'animation. */
+    var versRdv = $("[data-cadeau-rdv]", boite);
+    if (versRdv) {
+      versRdv.addEventListener("click", function () {
+        fermer();
+        window.setTimeout(function () { openModal("modal-booking"); }, 260);
       });
     }
 
