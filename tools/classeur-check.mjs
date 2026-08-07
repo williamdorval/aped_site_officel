@@ -29,12 +29,27 @@ import { fileURLToPath } from "node:url";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 
+/* L'ADRESSE PEUT VENIR DE L'ENVIRONNEMENT, ET C'EST CE QUI REND CET
+   OUTIL PROUVABLE.  D-778
+
+   Sans elle, on ne peut jamais le voir passer au ROUGE : le seul
+   service qu'il sache joindre est le vrai, et casser le vrai
+   classeur pour verifier qu'un controle fonctionne n'est pas une
+   option. `APED_WEB_APP_URL=http://127.0.0.1:8098 node …` le pointe
+   sur `faux-google.mjs`, ou l'on peut poser le defaut a la main.
+   `.env.local` reste la source par defaut. */
 const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
 const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
-if (!m) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
-const SERVICE = m[1].trim();
+if (!m && !process.env.APED_WEB_APP_URL) {
+  console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2);
+}
+const SERVICE = (process.env.APED_WEB_APP_URL || m[1]).trim();
 
-const VERSION_MINIMALE = 13;
+/* 14 DEPUIS D-778 : avant elle, `reparerValeursListes` n'existe pas,
+   donc les cellules qui portent encore « Alan » ou « Elie » sont
+   toujours la et couperont la prochaine fusion. Juger « sain » un
+   deploiement 13 serait exactement le faux verdict du piege 95. */
+const VERSION_MINIMALE = 14;
 
 /* ---- l'ordre des colonnes, lu dans Code.gs, jamais recopie ---- */
 const SRC = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
@@ -56,7 +71,8 @@ const DEFS = new Function("var out = {};"
   + bloc(/var TECHNIQUES = \[[\s\S]*?\n\];/, "TECHNIQUES")
   + bloc(/var SCHEMA = \{[\s\S]*?\n\};/, "SCHEMA")
   + "out.SUIVI = SUIVI; out.SUIVI_FIN = SUIVI_FIN; out.TECHNIQUES = TECHNIQUES; out.SCHEMA = SCHEMA;"
-  + "out.COL_SIGNATURE = COL_SIGNATURE; return out;")();
+  + "out.COL_SIGNATURE = COL_SIGNATURE; out.ASSOCIES = ASSOCIES; out.STATUTS = STATUTS;"
+  + "return out;")();
 
 function colonnes(kind) {
   return [].concat(DEFS.SUIVI, DEFS.TECHNIQUES, DEFS.SCHEMA[kind].champs,
@@ -193,6 +209,43 @@ for (const kind of KINDS) {
         + " » (" + permises.get(c) + ")");
     });
     console.log("            → relancez initialiser() : D-756 purge puis repose.");
+  }
+
+  /* 2b · ET CE QU'ELLES CONTIENNENT.  D-778
+
+     LE CONTROLE CI-DESSUS PASSERAIT AU VERT SUR LE DEFAUT QU'IL EST
+     CENSE VOIR. Il juge la COLONNE — « une liste est bien posee en
+     B » — jamais les VALEURS. Le 2026-08-07, « Alan » est devenu
+     « Allen » et « Elie » est devenu « Eli » : une liste restee sur
+     l'ancienne graphie est toujours « une liste sur la bonne
+     colonne », donc toujours OK, pendant qu'elle refuse le nom que
+     le code pose desormais.
+
+     `getCriteriaValues()[0]` est le TABLEAU des valeurs permises ;
+     `String()` le rend « a,b,c ». On compare a la lettre. */
+  controles++;
+  const mauvaises = [];
+  cols.forEach((c, i) => {
+    if (!c.liste) return;
+    const v = o.validations.find((x) => x.col === i + 1);
+    if (!v) return;                       /* deja compte en « manquantes » */
+    if (String(v.valeurs) !== c.liste.join(",")) {
+      mauvaises.push({ col: i + 1, titre: c.titre, lue: v.valeurs, voulue: c.liste.join(",") });
+    }
+  });
+  if (!mauvaises.length) {
+    console.log("    OK    · chaque liste porte exactement les valeurs du code"
+      + " (associes : " + DEFS.ASSOCIES.join(", ") + ")");
+  } else {
+    defauts++;
+    mauvaises.forEach((m) => {
+      console.log("    ECHEC · la liste de la colonne " + m.col + " « " + m.titre + " » est PERIMEE"
+        + "\n            au classeur : " + m.lue
+        + "\n            au code     : " + m.voulue
+        + "\n            toute valeur neuve y sera REFUSEE, et les cellules deja"
+        + "\n            remplies avec l'ancienne graphie couperont la FUSION.");
+    });
+    console.log("            → relancez initialiser() : D-778 repare les valeurs, puis repose la liste.");
   }
 
   /* 3 · une seule regle de couleur par onglet (D-755) */

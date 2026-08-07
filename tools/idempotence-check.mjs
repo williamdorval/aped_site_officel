@@ -358,9 +358,23 @@ console.log("\n--- 10 · MIGRATION D'UN CLASSEUR DEJA REMPLI");
                       && neuves.indexOf(t) === -1),
     ["Signature"]);
 
+  /* UNE COLONNE A LISTE NE PEUT PAS PORTER UN MARQUEUR INVENTE.
+     D-778
+
+     « val:Lu par » n'est dans aucune liste : `reparerValeursListes`
+     le vide — c'est son travail, et il a raison. Le marqueur d'une
+     colonne a liste est donc une VRAIE valeur de sa liste, prise a
+     un rang different pour chaque colonne : deux colonnes qui
+     s'echangeraient leur contenu se verraient quand meme. */
+  const marqueur = new Map();
+  gs.colonnes("contact").forEach(function (c) {
+    if (c.liste) marqueur.set(c.titre, c.liste[anciens.indexOf(c.titre) % c.liste.length]);
+  });
+  const attendu = (t) => (marqueur.has(t) ? marqueur.get(t) : "val:" + t);
+
   f.valeurs.length = 0;
   f.valeurs.push(anciens.slice());
-  const ligne = anciens.map((t) => "val:" + t);
+  const ligne = anciens.map(attendu);
   f.valeurs.push(ligne);
 
   gs.initialiser();
@@ -372,7 +386,7 @@ console.log("\n--- 10 · MIGRATION D'UN CLASSEUR DEJA REMPLI");
      de valeur : on ne les compte pas comme decalees, on verifie
      seulement qu'elles sont vides. */
   const decalees = voulus.filter((t, i) =>
-    neuves.indexOf(t) === -1 && donnees[i] !== "val:" + t);
+    neuves.indexOf(t) === -1 && donnees[i] !== attendu(t));
   dire("chaque valeur a suivi son en-tete",
     decalees.length ? decalees.join(", ") : "aucune decalee", "aucune decalee");
   const pleines = neuves.filter((t) => String(donnees[voulus.indexOf(t)] || "") !== "");
@@ -391,7 +405,7 @@ console.log("\n--- 10 · MIGRATION D'UN CLASSEUR DEJA REMPLI");
    Le 2026-08-06, « Démarrer un projet » affichait « ✓ complète »
    sur une ligne dont le budget, l'echeancier, la description et la
    fourchette n'etaient JAMAIS arrives. Une liste deroulante
-   « William, Alan, Elie » etait restee sur la colonne 19 — la ou
+   « William, Allen, Eli » etait restee sur la colonne 19 — la ou
    « Lu par » vivait avant D-743. Sheets refusait la valeur,
    `setValues` levait APRES avoir pose les colonnes de gauche, et la
    ligne restait ecrite a moitie sans que rien ne le dise.
@@ -417,7 +431,7 @@ console.log("\n--- 11 · UNE VALIDATION PERIMEE NE TRONQUE PLUS LA LIGNE  (D-756
 
   const pose = () => {
     f.validations[PERIMEE] = {
-      valeurs: ["William", "Alan", "Elie"], autoriseInvalide: false,
+      valeurs: ["William", "Allen", "Eli"], autoriseInvalide: false,
       type: "VALUE_IN_LIST", depuis: 2, jusqua: 1000
     };
   };
@@ -507,6 +521,92 @@ console.log("\n--- 11 · UNE VALIDATION PERIMEE NE TRONQUE PLUS LA LIGNE  (D-756
     vueE.indexOf("ZZ-menteur") === -1 ? "non" : "OUI", "non");
   dire("la reponse la redescend au site",
     rE.fourchette && rE.fourchette.texte === vueE ? "la meme" : "differente", "la meme");
+}
+
+/* ============================================================
+   12 · UN NOM D'ASSOCIE RENOMME NE DOIT PLUS TRONQUER LA LIGNE
+   ============================================================
+   LE DEFAUT QUE CE CAS DEVANCE.  D-778
+
+   Le 2026-08-07, « Alan » est devenu « Allen » et « Elie » est
+   devenu « Eli ». Changer le contenu d'une liste deroulante ne
+   touche PAS les cellules deja remplies : Sheets les garde et les
+   marque invalides. Le jour ou `fusionnerLigne` fait repasser la
+   LIGNE ENTIERE par `setValues` — c'est-a-dire des qu'une sauvegarde
+   progressive devient une demande complete — la cellule refuse, et
+   D-756 se rejoue mot pour mot : la ligne est ecrite a moitie.
+
+   Ce cas prouve les trois temps, comme le 11 : ca casse, on repare,
+   ca tient. Il empoisonne l'etat du banc DIRECTEMENT plutot que par
+   `setValues` — une ligne ecrite avant le renommage n'est pas passee
+   par la validation neuve, et ne le pouvait pas. */
+console.log("\n--- 12 · UN NOM D'ASSOCIE RENOMME NE TRONQUE PLUS LA LIGNE  (D-778)");
+{
+  const f = etat.feuilles.get("Démarrer un projet");
+  const titres = gs.colonnes("project").map((c) => c.titre);
+  const iLu = titres.indexOf("Lu par");
+  const iRap = titres.indexOf("Rappelé par");
+  const iSig = titres.indexOf("Signature");
+  if (iLu < 1 || iRap < 1) { console.error("colonnes de suivi introuvables"); process.exit(2); }
+
+  const trouver = (S) => f.valeurs.find((r) => String((r || [])[iSig] || "") === "S:" + S);
+  const lire = (ligne, t) => String((ligne || [])[titres.indexOf(t)] || "");
+  const commencer = (S) => poster({ _form: "project", _sid: S, _etape: 1, _etapes: 3,
+    email: "zztest@exemple.ca", nom: "ZZTEST D775" });
+  const finir = (S) => poster({ _form: "project", _sid: S, _etape: 3, _etapes: 3, _final: true,
+    email: "zztest@exemple.ca", nom: "ZZTEST D775", entreprise: "ZZTEST Inc",
+    blocage: "ZZ-blocage", objectif: "ZZ-objectif", budget: "ZZ-budget",
+    echeancier: "ZZ-echeancier", description: "ZZ-description" });
+
+  dire("la liste ne porte que les trois bonnes graphies",
+    gs.ASSOCIES.join("|"), "William|Allen|Eli");
+
+  /* --- a · une ligne d'avant le renommage coupe la fusion --- */
+  const SA = "sondeD775avant";
+  commencer(SA);
+  const ligneA = trouver(SA);
+  ligneA[iLu] = "Alan";                    /* graphie d'avant le 2026-08-07 */
+  const rA = finir(SA);
+  dire("la demande finale est REFUSEE au lieu de mentir", rA.success, false,
+    String(rA.cause || rA.message || "").slice(0, 100));
+  dire("et « Description » n'est jamais arrivee",
+    lire(trouver(SA), "Description") === "" ? "-- VIDE --" : lire(trouver(SA), "Description"),
+    "-- VIDE --");
+
+  /* --- b · initialiser() remet les valeurs d'accord avec la liste --- */
+  const SB = "sondeD775inconnu";
+  commencer(SB);
+  const ligneB = trouver(SB);
+  ligneB[iLu] = "Elie";
+  ligneB[iRap] = "Zorglub";                /* aucune graphie connue */
+  const avantJournal = etat.journal.length;
+  gs.initialiser();
+
+  dire("« Alan » est devenu « Allen »", lire(trouver(SA), "Lu par"), "Allen");
+  dire("« Elie » est devenu « Eli »", lire(trouver(SB), "Lu par"), "Eli");
+  dire("un nom qu'aucune graphie ne rattrape est VIDE, pas laisse en place",
+    lire(trouver(SB), "Rappelé par") === "" ? "-- VIDE --" : lire(trouver(SB), "Rappelé par"),
+    "-- VIDE --");
+  /* UN VIDAGE SILENCIEUX SERAIT PIRE QUE LE DEFAUT. La valeur exacte
+     et sa cellule partent au journal, sinon personne ne saura jamais
+     ce qui a ete efface. */
+  const dit = etat.journal.slice(avantJournal).join("\n");
+  dire("le journal nomme la valeur effacee et sa cellule",
+    /Zorglub/.test(dit) && /VIDÉE/.test(dit) ? "oui" : "non", "oui");
+  dire("le journal nomme aussi les deux reecritures",
+    /« Alan » → « Allen »/.test(dit) && /« Elie » → « Eli »/.test(dit) ? "oui" : "non", "oui");
+
+  /* --- c · la meme fusion arrive maintenant entiere --- */
+  const SC = "sondeD775apres";
+  commencer(SC);
+  const ligneC = trouver(SC);
+  ligneC[iLu] = "Alan";
+  gs.initialiser();
+  const rC = finir(SC);
+  dire("la demande finale passe", rC.success, true);
+  dire("« Description » est arrivee", lire(trouver(SC), "Description"), "ZZ-description");
+  dire("et le nom du lecteur a suivi, il n'a pas ete perdu",
+    lire(trouver(SC), "Lu par"), "Allen");
 }
 
 console.log("\n============================================================");

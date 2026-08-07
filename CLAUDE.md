@@ -188,7 +188,7 @@ l'identifiant `D-xxx`. Le POURQUOI vit dans `decisions/`.**
 
 ## LES PIÈGES QUI MORDENT LE PLUS SOUVENT
 
-Les 94 sont dans `PIEGES.md` avec cause et correctif — **lis son index
+Les 95 sont dans `PIEGES.md` avec cause et correctif — **lis son index
 de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
 
 1. **Une sonde du DOM ne peut pas voir un défaut de peinture.** Ni un
@@ -238,6 +238,10 @@ de tête, puis `grep "^### <n>"`**. Ceux-ci reviennent tous les mois :
     refuse une cellule, les colonnes de GAUCHE sont déjà écrites, et
     la ligne reste à moitié posée en silence. Purger les validations
     AVANT `migrerColonnes`. *(94)*
+18. **Changer une valeur de liste ne réécrit AUCUNE cellule déjà
+    remplie** — la ligne d'avant reste minée et ne casse qu'à la
+    FUSION, des semaines plus tard. Réparer les VALEURS pendant que
+    les validations sont purgées. *(95)*
 
 ## RÉSERVE — à ne jamais oublier
 

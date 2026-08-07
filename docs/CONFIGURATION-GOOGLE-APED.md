@@ -151,8 +151,8 @@ Vous ne construisez rien à la main : une fonction s'en charge.
    |---|---|---|
    | **Statut** | **B**, juste après la date | liste : *Nouveau · Contacté · En discussion · Client · Fermé*. **En deuxième position exprès** : c'est la seule chose qu'on relit à chaque coup d'œil, et elle était dix-neuvième |
    | **Renvois** | à la fin | combien de fois la même demande est revenue (double-clic, renvoi après coupure réseau). `0` sur une demande neuve |
-   | **Lu par** | à la fin | liste : *William · Alan · Elie* |
-   | **Rappelé par** | à la fin | liste : *William · Alan · Elie* |
+   | **Lu par** | à la fin | liste : *William · Allen · Eli* |
+   | **Rappelé par** | à la fin | liste : *William · Allen · Eli* |
    | **Notes internes** | à la fin | champ **libre**, sans liste. Le seul endroit où écrire une phrase |
 
    Cliquez une cellule de « Statut » pour vérifier que la liste
@@ -755,7 +755,7 @@ trafic actuel du site.
 > demandes par jour. C'est assumé — une personne qui remplit six
 > questions et ne reçoit rien croit que ça n'a pas marché.
 
-> **Pourquoi une seule adresse d'avis.** Avertir William, Alan et Elie
+> **Pourquoi une seule adresse d'avis.** Avertir William, Allen et Eli
 > séparément coûterait 3 destinataires par demande au lieu d'un, et
 > ramènerait la capacité à ~25 demandes/jour. Les trois consultent
 > `apedagence@gmail.com`.

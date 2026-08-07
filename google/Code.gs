@@ -317,7 +317,14 @@ var REGLAGES = {
 };
 
 /* Les trois associés. Sert aux listes déroulantes de suivi. */
-var ASSOCIES = ["William", "Alan", "Elie"];
+var ASSOCIES = ["William", "Allen", "Eli"];
+
+/* Les orthographes fautives déjà écrites dans le classeur, et leur
+   forme juste. Lues par `reparerValeursListes`.  D-778 */
+var ALIAS_ASSOCIES = {
+  "Alan": "Allen", "Allan": "Allen", "Alain": "Allen",
+  "Elie": "Eli", "Élie": "Eli", "Ellie": "Eli", "Éli": "Eli"
+};
 
 /* Les états d'une demande, du premier coup d'œil à la fermeture. */
 var STATUTS = ["Nouveau", "Contacté", "En discussion", "Client", "Fermé"];
@@ -1381,7 +1388,7 @@ function preparerOnglet(classeur, kind) {
      visiteur.
 
      CE QUE ÇA FAIT, ET CE N'EST PAS COSMÉTIQUE. Une validation
-     `requireValueInList(["William","Alan","Elie"])` en
+     `requireValueInList(["William","Allen","Eli"])` en
      `setAllowInvalid(false)` REFUSE toute autre valeur. `setValues`
      sur la ligne entière lève alors — après avoir écrit les
      colonnes qui précèdent la fautive. La ligne est écrite À MOITIÉ,
@@ -1429,6 +1436,10 @@ function preparerOnglet(classeur, kind) {
     feuille.getRange(2, iDate + 1, Math.max(feuille.getMaxRows() - 1, 1), 1)
       .setNumberFormat("yyyy-mm-dd hh:mm:ss");
   }
+
+  /* Les valeurs déjà écrites se remettent d'accord avec les listes
+     AVANT qu'on repose les listes.  D-778 */
+  reparerValeursListes(feuille, cols, titres);
 
   /* Les listes déroulantes du suivi. Posées large, pour que les
      lignes futures les portent déjà. */
@@ -1510,6 +1521,61 @@ function migrerColonnes(feuille, titresVoulus) {
   feuille.getRange(2, 1, dernierL - 1, Math.max(dernierC, titresVoulus.length)).clearContent();
   feuille.getRange(2, 1, neuves.length, titresVoulus.length).setValues(neuves);
   Logger.log("  " + neuves.length + " ligne(s) redisposée(s).");
+}
+
+/* UNE VALEUR DÉJÀ ÉCRITE QUI SORT DE LA LISTE COUPE LA LIGNE SUIVANTE.
+   D-778
+
+   Changer le contenu d'une liste déroulante ne touche PAS les cellules
+   déjà remplies : Sheets les garde, les marque invalides, et attend.
+   Le jour où `fusionnerLigne` fait repasser la LIGNE ENTIÈRE par
+   `setValues` — c'est-à-dire dès qu'une sauvegarde progressive devient
+   une demande complète — la cellule périmée refuse, et D-756 se rejoue
+   à l'identique : la ligne est écrite à moitié, en silence.
+
+   « Alan » est devenu « Allen » et « Elie » est devenu « Eli » le
+   2026-08-07. Les lignes écrites avant portent l'ancienne graphie.
+
+   CE QUI EST FAIT DE CHAQUE VALEUR HORS LISTE :
+     · une graphie connue de `ALIAS_ASSOCIES` est RÉÉCRITE ;
+     · tout le reste est VIDÉ, et la valeur exacte part au journal
+       avec sa cellule. « Lu par » est un signal, pas une donnée : le
+       perdre coûte un coup d'œil, garder la ligne écrite à moitié
+       coûte la demande.
+
+   S'exécute pendant que les validations sont purgées (D-756) — donc
+   avant que la liste neuve ne soit posée, jamais après. */
+function reparerValeursListes(feuille, cols, titres) {
+  var dernierL = feuille.getLastRow();
+  if (dernierL < 2) return;
+
+  cols.forEach(function (c, i) {
+    if (!c.liste) return;
+    var plage = feuille.getRange(2, i + 1, dernierL - 1, 1);
+    var vals = plage.getValues();
+    var change = false;
+
+    for (var l = 0; l < vals.length; l++) {
+      var v = String(vals[l][0] == null ? "" : vals[l][0]).trim();
+      if (!v || c.liste.indexOf(v) !== -1) continue;
+
+      var juste = ALIAS_ASSOCIES[v];
+      if (juste && c.liste.indexOf(juste) !== -1) {
+        Logger.log("  « " + feuille.getName() + " » "
+          + colonneLettre(i + 1) + (l + 2) + " (" + (titres[i] || c.titre)
+          + ") : « " + v + " » → « " + juste + " »");
+        vals[l][0] = juste;
+      } else {
+        Logger.log("  « " + feuille.getName() + " » "
+          + colonneLettre(i + 1) + (l + 2) + " (" + (titres[i] || c.titre)
+          + ") : « " + v + " » ne figure plus dans la liste — VIDÉE.");
+        vals[l][0] = "";
+      }
+      change = true;
+    }
+
+    if (change) plage.setValues(vals);
+  });
 }
 
 /* UNE DEMANDE NON LUE DOIT SE VOIR SANS ÊTRE CHERCHÉE.  D-740
@@ -1639,7 +1705,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 13,
+    version: 14,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
@@ -4278,7 +4344,7 @@ function lienMeet(ev) {
    minuit.
 
    D'où UNE SEULE adresse d'avis interne, celle de l'agence, que
-   les trois associés consultent. Avertir William, Alan et Elie
+   les trois associés consultent. Avertir William, Allen et Eli
    séparément coûterait trois destinataires par demande et
    ramènerait la capacité à 33 demandes par jour, confirmation au
    visiteur comprise — soit moins que rien.

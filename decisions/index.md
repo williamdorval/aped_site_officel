@@ -2377,3 +2377,64 @@ la ligne correspondante — « Pourquoi pas », « Ca convient ? ». Il ne
 permet ni de la LIRE, ni d'en creer une seconde, ni de toucher
 « Fourchette vue », qui est figee. C'est la reserve deja inscrite dans
 `RESERVES.md` : le `_sid` n'est ni signe ni lie a personne.
+
+## D-778 · Les trois associés s'appellent William, Allen et Eli
+
+Le classeur écrivait « Alan » et « Elie » depuis le premier jour. Les
+deux graphies étaient fausses. `ASSOCIES` porte désormais
+`["William", "Allen", "Eli"]`, et c'est la seule source : les listes
+déroulantes « Lu par » et « Rappelé par » la lisent, la documentation
+la recopie, rien d'autre ne nomme les associés.
+
+**CE QUI REND CE RENOMMAGE DANGEREUX, ET CE N'EST PAS L'ORTHOGRAPHE.**
+Changer le contenu d'une validation **ne réécrit aucune cellule déjà
+remplie**. Sheets garde la valeur, la marque invalide, et attend. Une
+ligne dont « Lu par » portait « Alan » le porte toujours après le
+renommage — et rien à l'écran ne le dit, parce qu'on ne relit pas une
+colonne de suivi qu'on a remplie soi-même il y a trois semaines.
+
+Le piège ne se réveille qu'à la **fusion**. Écrire une demande neuve
+n'échoue jamais : `ecrireLigne` pose `""` dans les deux colonnes de
+suivi. C'est `fusionnerLigne` qui fait repasser la LIGNE ENTIÈRE par
+`setValues` (D-761) — donc le jour où une sauvegarde progressive
+devient une demande complète, la cellule périmée refuse et **D-756 se
+rejoue mot pour mot** : ligne écrite à moitié, « Étape » qui annonce
+« ✓ complète » sans description ni budget. Entre la cause et l'effet,
+plusieurs semaines ; et ça ne frappe que les visiteurs qui reviennent
+finir, c'est-à-dire les meilleurs.
+
+**PURGER LES VALIDATIONS NE SUFFIT PAS.** D-756 efface la validation ;
+la valeur fautive, elle, est dans la CELLULE. La purge la laisse
+passer une fois, puis la liste neuve se repose par-dessus et la
+cellule redevient refusée au coup suivant.
+
+**LE CORRECTIF.** `reparerValeursListes()` passe entre
+`clearDataValidations` et la pose de la liste neuve — jamais après,
+sinon il se ferait refuser lui-même. Pour chaque colonne à liste, il
+relit les valeurs déjà écrites et :
+
+- une graphie connue de `ALIAS_ASSOCIES` (`Alan`, `Allan`, `Alain` →
+  `Allen` ; `Elie`, `Élie`, `Ellie`, `Éli` → `Eli`) est **réécrite** ;
+- tout le reste est **vidé**, et la cellule et la valeur exacte
+  partent au journal.
+
+**POURQUOI VIDER PLUTÔT QUE LAISSER.** Laisser en place, c'est garder
+la ligne minée. « Lu par » est un signal binaire — quelqu'un l'a vue
+ou non — et le remettre coûte un coup d'œil ; une demande écrite à
+moitié coûte le client. Le vidage n'est pas silencieux : le journal
+nomme la cellule et la valeur, c'est ce qui le rend acceptable.
+
+**LA PREUVE.** `idempotence-check.mjs` cas 12, trois temps comme le
+cas 11 : une ligne portant « Alan » **fait couper** la fusion et
+« Description » n'arrive jamais ; `initialiser()` réécrit et vide ;
+la même fusion passe entière et le nom du lecteur a suivi. Le cas
+empoisonne l'état du banc directement plutôt que par `setValues` —
+une ligne écrite avant le renommage n'est pas passée par la
+validation neuve, et ne le pouvait pas. Vérifié au rouge : la
+fonction neutralisée, huit cas tombent, dont la troncature.
+
+**CE QUI N'EST PAS PROUVÉ.** Aucune ligne du VRAI classeur n'a été
+relue — le déploiement `/exec` n'est pas joignable depuis cette
+session. La réparation est écrite et prouvée au banc ; elle
+s'exécutera au prochain `initialiser()`, et le journal Apps Script
+dira ce qu'elle a touché. `RESERVES.md`.

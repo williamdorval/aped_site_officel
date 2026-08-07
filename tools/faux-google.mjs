@@ -826,6 +826,7 @@ const fabrique = new Function(...noms, source + `
            DISPONIBILITES, creneauxLibres, grilleDuJour, occupations, creneauTient,
            instantLocal, partsLocal, decalageMin, libelleHeure, libelleComplet,
            surLaGrille, fenetreReservable, colonneLettre, migrerColonnes,
+           ASSOCIES, ALIAS_ASSOCIES, reparerValeursListes,
            nettoyerAutotest, nettoyerRendezVousEssai, titreDuSite,
            blocagesSansEffet, veilleBlocages, poserVeille, bloqueAuMoinsUnCreneau,
            surChangementAgenda, declencheursPoses, oublierCreneaux,

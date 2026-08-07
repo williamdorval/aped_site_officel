@@ -93,7 +93,7 @@ titre("1 · LA PORTE PUBLIQUE DES CRENEAUX NE FUIT RIEN");
   const dans3j = new Date(Date.now() + 3 * 86400000);
   etat.evenements.push({
     titre: "Rachat de la boulangerie Lantagne — 240 000 $",
-    description: "offre a 210, plancher 195, ne pas mentionner Alan",
+    description: "offre a 210, plancher 195, ne pas mentionner le vendeur",
     lieu: "3 rue des Erables, Levis",
     invites: ["notaire@exemple.ca", "banquier@exemple.ca"],
     debut: dans3j, fin: new Date(dans3j.getTime() + 3600000)

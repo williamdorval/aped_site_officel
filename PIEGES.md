@@ -122,6 +122,7 @@ correctif.
 | &nbsp;&nbsp;↳ 92 · [ée]s? ne matche pas « supprimées » — une classe prend UN caractère | 31 | 343 |
 | &nbsp;&nbsp;↳ 93 · Une valeur qui commence par =, +, - ou @ devient une FORMULE dans Sheets | 44 | 541 |
 | &nbsp;&nbsp;↳ 94 · Une validation périmée tronque la ligne, et l'écriture passe pour faite | 47 | 656 |
+| &nbsp;&nbsp;↳ 95 · Renommer une valeur de liste ne touche pas les cellules déjà remplies | 47 | 671 |
 
 <!-- INDEX:FIN -->
 
@@ -1816,7 +1817,7 @@ D-743 avait déplacé le suivi en A–E.
 Quand l'ordre des colonnes change, `migrerColonnes` redispose les
 VALEURS — et personne ne touche aux validations. Elles restent où
 elles étaient, sur des colonnes qui portent maintenant des réponses
-de visiteur. `requireValueInList(["William","Alan","Elie"])` en
+de visiteur. `requireValueInList(["William","Allen","Eli"])` en
 `setAllowInvalid(false)` refuse tout le reste.
 
 **Ce qui rend le piège vicieux : `setValues` n'est pas tout ou
@@ -1849,3 +1850,50 @@ qui en avait besoin.
 respectent pas les règles de validation ». Un outil qui ne lit que
 `r.success` ne verra jamais cette phrase : elle n'est pas dans du
 JSON, elle est dans une page d'erreur.
+
+### 95 · Renommer une valeur de liste ne touche pas les cellules déjà remplies
+
+**Le faux verdict.** `ASSOCIES` est passé de
+`["William","Alan","Elie"]` à `["William","Allen","Eli"]` le
+2026-08-07. `initialiser()` a repassé, les sept onglets ont rendu
+« à jour », le banc a rendu 88/88, et le classeur montrait bien les
+trois bonnes graphies dans chaque liste déroulante. Tout disait que
+le renommage était fait.
+
+**La cause.** Changer le contenu d'une validation ne réécrit **aucune
+cellule déjà remplie**. Sheets garde la valeur, la marque invalide, et
+attend. Une ligne dont « Lu par » portait « Alan » l'a toujours porté
+— avec un drapeau rouge que personne ne regarde, parce qu'on ne relit
+pas une colonne de suivi qu'on a soi-même remplie il y a trois
+semaines.
+
+**Ce qui rend le piège vicieux : il ne se réveille qu'à la
+FUSION.** Écrire une demande NEUVE n'a jamais échoué — `ecrireLigne`
+pose `""` dans les deux colonnes de suivi. C'est `fusionnerLigne` qui
+fait repasser la **ligne entière** par `setValues` (D-761) : le jour
+où une sauvegarde progressive devient une demande complète, la
+cellule périmée refuse, et le piège **94 se rejoue mot pour mot** —
+ligne écrite à moitié, « Étape » qui dit « ✓ complète » sans
+description. Le délai entre la cause et l'effet peut être de
+plusieurs semaines, et il ne frappe que les visiteurs qui reviennent
+finir.
+
+**Ce qui ne suffit pas comme correctif.** Purger les validations
+(piège 94, D-756) ne répare rien ici : la valeur fautive n'est pas
+dans la validation, elle est dans la **cellule**. La purge la laisse
+passer une fois, puis la liste neuve se repose par-dessus et la
+cellule redevient refusée.
+
+**Le correctif.** `reparerValeursListes()` (D-778) passe pendant que
+les validations sont purgées — donc entre `clearDataValidations` et
+la pose de la liste neuve, jamais après. Toute valeur hors liste est
+soit **réécrite** si `ALIAS_ASSOCIES` connaît sa graphie, soit
+**vidée**, avec sa cellule et sa valeur exacte au journal. Vider est
+le moindre mal : « Lu par » est un signal qui coûte un coup d'œil à
+remettre, une demande écrite à moitié coûte le client.
+
+**Le signe qui doit alerter.** Toute liste dont on change une valeur
+— les associés, mais aussi `STATUTS`. Le test ne peut pas être « la
+liste est bonne » : il doit être « une ligne écrite AVANT le
+changement se fait encore fusionner ». `idempotence-check.mjs` cas 12
+l'écrit dans cet ordre-là.
