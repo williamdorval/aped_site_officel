@@ -139,6 +139,7 @@
 | **D-778 · Les trois associés s'appellent William, Allen et Eli** | 61 | 898 |
 | **D-779 · Une prime par entreprise référée, et elle se lit avant de référer** | 80 | 1 217 |
 | **D-780 · La retenue après la fourchette, et sur les deux formulaires d'un seul écran** | 98 | 1 448 |
+| **D-781 · Le classeur et les avis, vus un lundi matin avec vingt demandes** | 79 | 1 164 |
 
 <!-- INDEX:FIN -->
 
@@ -2650,3 +2651,82 @@ popup par-dessus un popup est exactement ce que « jamais insistant »
 interdit. Et le banc ne peut pas atteindre l'écran du résultat — il
 faudrait un envoi vers le vrai service. Il vérifie la mécanique ; le
 rendu est prouvé en capture.
+
+## D-781 · Le classeur et les avis, vus un lundi matin avec vingt demandes
+
+Deux questions, et le code répondait mal aux deux.
+
+**« LEQUEL DE CES VINGT AVIS EST UNE VRAIE DEMANDE ? »** L'objet
+disait `[APED] Nouveau projet · Jean Tremblay · 14 h 30`, qu'il
+s'agisse d'une demande complète ou d'une sauvegarde en cours. Le corps,
+lui, le disait dès sa première ligne — `COMMENCÉ — ` (D-744). Mais **la
+liste de Gmail ne montre pas le corps** : il fallait ouvrir les vingt
+pour trier. La seule information qui décide de ce qu'on fait ensuite
+était la seule à manquer au premier coup d'œil.
+
+L'objet porte maintenant `COMMENCÉ 3 / 8 · ` en tête quand l'envoi est
+partiel, et rien du tout quand il est complet. **L'étape accompagne la
+mention** : « COMMENCÉ 6/8 » se rappelle tout de suite, « COMMENCÉ 1/8 »
+attend demain. `objetAvis` reçoit `partiel`, qu'`avertirAgence` avait
+déjà.
+
+**ET L'ENTREPRISE PASSE DEVANT LA PERSONNE.** On vend à des PME :
+« Garage Tremblay » se reconnaît dans une liste de vingt, « Jean
+Tremblay » non — et c'est le nom de la maison qu'on cherche quand le
+patron rappelle trois jours plus tard. Les deux tiennent quand les deux
+existent, tronqués à 40 signes chacun.
+
+**« OÙ EST LE NUMÉRO ? »** Le classeur ouvre sur huit colonnes
+d'administration — Vu, Lu par, Rappelé par, Statut, Étape, Parti vers,
+Relance, Horodatage — qui pesaient **950 px**. Sur un portable, Sheets
+en montre environ **1 300** une fois retirées la colonne des numéros de
+ligne et la barre de défilement. Le numéro de téléphone tombait à
+**1 730 px** dans « Démarrer un projet » et à **1 640** dans
+« Urgence » : hors écran, sur un site dont toute la promesse est un
+rappel.
+
+Deux corrections, et aucune n'invente de place :
+
+1. **Les huit colonnes d'administration passent de 950 à 760 px.** Elles
+   portent une case à cocher, deux prénoms, un mot d'état, « 3 / 8 »,
+   un nom de formulaire et deux dates : aucune n'avait besoin de sa
+   largeur. Rien n'est tronqué.
+2. **Le téléphone passe devant le courriel.** Quatre onglets sur sept le
+   faisaient **déjà** ; « Démarrer un projet » et « Réserver un appel »
+   étaient les deux exceptions, et ce sont les deux qu'on ouvre le plus.
+   Dans « Démarrer un projet », « Ville » descend d'un cran par la même
+   occasion — une ville se lit après un numéro.
+
+**ET « URGENCE » A ÉTÉ RETOURNÉE.** Son ordre était « c'est grave
+comment, depuis quand, sur quoi — puis qui j'appelle », et il se
+défendait : c'est l'ordre de la lecture en panique. Sauf que les trois
+premières colonnes pèsent 530 px et poussaient le numéro à 1 640.
+**Sur une urgence on ne lit pas, on APPELLE** : le reste se demande de
+vive voix dans les dix secondes qui suivent, et « Gravité » reste à un
+coup d'œil, juste à droite du numéro.
+
+**LE CALCUL EST DANS LE TEST, PAS DANS UN COMMENTAIRE.**
+`idempotence-check` cas 13 additionne les largeurs déclarées et exige
+que « Téléphone » finisse sous 1 300 px, dans les cinq onglets qui en
+portent un, et qu'il vienne avant « Courriel ». Un ajout de colonne qui
+repousserait le numéro hors de l'écran fait rougir la suite le jour
+même, au lieu de se découvrir un lundi matin six mois plus tard.
+
+**PROUVÉ AU ROUGE, DEUX FOIS.** Courriel remis devant téléphone dans
+« Réserver un appel » : deux `ECHEC`, dont « il finit à 1 420 px ».
+Mention `COMMENCÉ` retirée de l'objet : un `ECHEC`. Restauré :
+**102 / 102**.
+
+**CE QUI MARCHAIT DÉJÀ, ET QUI N'A PAS BOUGÉ.** « Répondre » à un avis
+interne écrit directement au visiteur : `replyTo` est posé depuis
+toujours, le corps l'annonce en toutes lettres, et la confirmation
+envoyée au visiteur n'en porte pas. Les colonnes de suivi tiennent
+(D-756, D-778). « Étape » distingue une demande finie d'un abandon.
+
+**CELLE-CI TOUCHE AUX LIGNES DÉJÀ ÉCRITES.** L'ordre des colonnes
+change : `migrerColonnes` déplacera les valeurs au prochain
+`initialiser()`. C'est la machinerie de D-756 et D-778, la plus testée
+du fichier — 102 cas, dont la troncature dans les deux sens — mais elle
+s'exécutera sur des lignes que cette session **n'a pas pu lire**.
+`node tools/classeur-check.mjs` dira si l'ordre du classeur correspond
+à celui du code, et il dira lequel ne correspond pas. `RESERVES.md`.

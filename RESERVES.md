@@ -142,6 +142,8 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Ce que le rôle attaquant n'a pas couvert | 8 | 88 |
 | &nbsp;&nbsp;↳ OUVERTE PAR LE RENOMMAGE DES ASSOCIÉS — 2026-08-07 (D-778) | 2 | 18 |
 | &nbsp;&nbsp;↳ Aucune ligne du VRAI classeur n'a été relue après le renommage | 27 | 380 |
+| &nbsp;&nbsp;↳ OUVERTE PAR LE CHANTIER DU 2026-08-07 — LE CLASSEUR ATTEND SA MIGRATION (D-781) | 2 | 23 |
+| &nbsp;&nbsp;↳ L'ordre des colonnes du code ne sera pas celui du classeur tant que initialiser() n'aura pas tourné | 26 | 373 |
 
 <!-- INDEX:FIN -->
 
@@ -1861,3 +1863,31 @@ peut écrire que le renommage est fait — seulement qu'il est posé.
 `VERSION_MINIMALE` de `classeur-check` est passée à **14** : un
 déploiement 13 n'a pas la réparation, et le juger « sain » serait le
 faux verdict du piège 95.
+
+### OUVERTE PAR LE CHANTIER DU 2026-08-07 — LE CLASSEUR ATTEND SA MIGRATION (D-781)
+
+### L'ordre des colonnes du code ne sera pas celui du classeur tant que `initialiser()` n'aura pas tourné
+
+D-781 déplace « Téléphone » devant « Courriel » dans « Démarrer un
+projet » et « Réserver un appel », descend « Ville » d'un cran, retourne
+les deux moitiés d'« Urgence », et rétrécit les huit colonnes
+d'administration de 950 à 760 px.
+
+**Rien de tout ça n'existe dans le classeur avant un redéploiement suivi
+d'`initialiser()`.** Jusque-là, `node tools/classeur-check.mjs` dira
+« l'ordre ne correspond pas », et il aura raison : c'est le code qui a
+pris de l'avance, pas le classeur qui s'est cassé.
+
+`migrerColonnes` déplacera les valeurs des lignes existantes. C'est la
+machinerie de D-756 et D-778, la plus testée du fichier — 102 cas au
+banc, dont la troncature dans les deux sens — mais elle s'exécutera sur
+**quinze lignes réelles que cette session n'a pas pu lire** : cinq dans
+« Référer une entreprise », dix dans « Contact simple », et la porte
+`?action=diag` ne rend le contenu que des lignes d'essai, par
+construction.
+
+**Ce qu'il faut faire, dans cet ordre.** Redéployer en `Nouvelle
+version`, lancer `initialiser()`, **lire le journal d'exécution**, puis
+`node tools/classeur-check.mjs` — qui doit rendre « le classeur est
+sain » et annoncer la version 16. Tant que ce verdict n'a pas été lu,
+D-781 est posée, pas faite.

@@ -931,11 +931,17 @@ var SCHEMA = {
     /* Le minimum sans lequel on ne garde même pas une trace. */
     requisPartiel: ["email"],
     champs: [
+      /* LE TÉLÉPHONE AVANT LE COURRIEL, ET LA VILLE APRÈS.  D-781
+         Quatre onglets sur sept le faisaient déjà ; « Démarrer un
+         projet » et « Réserver un appel » étaient les deux
+         exceptions, et ce sont les deux qu'on ouvre le plus. Voir
+         le calcul de largeur dans D-781 : c'est ce qui fait tenir
+         le numéro dans le premier écran. */
       { champ: "nom",             titre: "Nom",                largeur: 150 },
       { champ: "entreprise",      titre: "Entreprise",         largeur: 170 },
-      { champ: "ville",           titre: "Ville",              largeur: 120 },
-      { champ: "email",           titre: "Courriel",           largeur: 210 },
       { champ: "telephone",       titre: "Téléphone",          largeur: 130 },
+      { champ: "email",           titre: "Courriel",           largeur: 210 },
+      { champ: "ville",           titre: "Ville",              largeur: 120 },
       { champ: "moment_contact",  titre: "Moment de contact",  largeur: 140 },
       { champ: "domaine",         titre: "Domaine",            largeur: 150 },
       { champ: "nombre_employes", titre: "Employés",           largeur: 110 },
@@ -1021,15 +1027,21 @@ var SCHEMA = {
     requis: ["nom", "telephone", "email", "message"],
     requisPartiel: ["telephone"],
     champs: [
-      /* L'ORDRE EST CELUI DE LA LECTURE EN PANIQUE. Ce qu'on veut
-         savoir en trois secondes : c'est grave comment, depuis
-         quand, sur quoi, et qui j'appelle. Le reste après. */
-      { champ: "gravite",         titre: "Gravité",            largeur: 150 },
-      { champ: "depuis_quand",    titre: "Depuis quand",       largeur: 140 },
-      { champ: "systeme",         titre: "Quoi est touché",    largeur: 240 },
+      /* L'ORDRE EST CELUI DE LA LECTURE EN PANIQUE, ET ON A INVERSÉ
+         LES DEUX MOITIÉS.  D-781
+
+         Il disait : c'est grave comment, depuis quand, sur quoi —
+         puis qui j'appelle. Les trois premières pèsent 530 px et
+         poussaient le NUMÉRO à 1 640 px, hors du premier écran.
+         Sur une urgence on ne lit pas, on APPELLE : le reste se
+         demande de vive voix dans les dix secondes qui suivent, et
+         « Gravité » reste à un coup d'œil, juste à droite. */
       { champ: "nom",             titre: "Nom",                largeur: 150 },
       { champ: "entreprise",      titre: "Entreprise",         largeur: 170 },
       { champ: "telephone",       titre: "Téléphone",          largeur: 130 },
+      { champ: "gravite",         titre: "Gravité",            largeur: 150 },
+      { champ: "depuis_quand",    titre: "Depuis quand",       largeur: 140 },
+      { champ: "systeme",         titre: "Quoi est touché",    largeur: 240 },
       { champ: "email",           titre: "Courriel",           largeur: 210 },
       { champ: "message",         titre: "L'urgence",          largeur: 420 },
       { champ: "impact",          titre: "Ce que ça bloque",   largeur: 300 }
@@ -1113,10 +1125,11 @@ var SCHEMA = {
        ligne sans moyen de rappeler ne sert à rien. */
     requisPartiel: ["email"],
     champs: [
+      /* Le téléphone avant le courriel, comme les six autres.  D-781 */
       { champ: "nom",            titre: "Nom",              largeur: 150 },
       { champ: "entreprise",     titre: "Entreprise",       largeur: 170 },
-      { champ: "email",          titre: "Courriel",         largeur: 210 },
       { champ: "telephone",      titre: "Téléphone",        largeur: 130 },
+      { champ: "email",          titre: "Courriel",         largeur: 210 },
       { champ: "mode",           titre: "Mode",             largeur: 150 },
       { champ: "plage_demandee", titre: "Plage demandée",   largeur: 250 },
       { champ: "sujet",          titre: "Sujet de l'appel", largeur: 320 },
@@ -1172,10 +1185,10 @@ var SCHEMA = {
    qui reste en tete tient en 670 px et repond a « qui, ou il en
    est, quand » — le reste de l'ecran est a la demande elle-meme. */
 var SUIVI = [
-  { titre: "Vu",             largeur: 50,  case: true },
-  { titre: "Lu par",         largeur: 110, liste: ASSOCIES },
-  { titre: "Rappelé par",    largeur: 120, liste: ASSOCIES },
-  { titre: "Statut",         largeur: 130, liste: STATUTS }
+  { titre: "Vu",             largeur: 44,  case: true },
+  { titre: "Lu par",         largeur: 86,  liste: ASSOCIES },
+  { titre: "Rappelé par",    largeur: 96,  liste: ASSOCIES },
+  { titre: "Statut",         largeur: 108, liste: STATUTS }
 ];
 
 /* Les colonnes de suivi qui se lisent APRES la demande. */
@@ -1195,19 +1208,19 @@ var SUIVI_FIN = [
    l'intérêt. La ranger à droite reviendrait à cacher la seule
    information nouvelle du classeur. */
 var TECHNIQUES = [
-  { titre: "Étape",      largeur: 110 },
+  { titre: "Étape",      largeur: 92 },
   /* OÙ LA PERSONNE EST PARTIE, QUAND ELLE N'EST PAS PARTIE.  D-764
      Un visiteur qui quitte « Démarrer un projet » pour l'estimation
      n'est PAS un abandon : c'est le même client par une autre porte.
      Sans cette colonne les deux se ressemblent dans le classeur, et
      on relance quelqu'un qui est déjà en train de remplir ailleurs. */
-  { titre: "Parti vers", largeur: 130 },
+  { titre: "Parti vers", largeur: 104 },
   /* CE QU'ON LUI A DÉJÀ ENVOYÉ.  D-765
      Elle porte la date de la relance. Vide = jamais relancé. C'est
      elle, et rien d'autre, qui garantit « une seule par personne » :
      un compteur en mémoire ne survit pas à un redéploiement. */
-  { titre: "Relance",    largeur: 150 },
-  { titre: "Horodatage", largeur: 150 }
+  { titre: "Relance",    largeur: 104 },
+  { titre: "Horodatage", largeur: 126 }
 ];
 
 /* La signature du dédoublonnage. Colonne masquée : elle sert au
@@ -1705,7 +1718,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 15,
+    version: 16,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
@@ -4479,7 +4492,7 @@ function avertirAgence(kind, data, extra, ecrit, partiel) {
       + "le classeur continue de se remplir mais les avis s’arrêtent.");
   }
 
-  envoyer(notifDest(), objetAvis(kind, data, extra), lignes.join("\n"), duVisiteur);
+  envoyer(notifDest(), objetAvis(kind, data, extra, partiel), lignes.join("\n"), duVisiteur);
 }
 
 /* LE QUOTA QUI SAUTE DOIT SE VOIR DANS LE CLASSEUR.  D-733
@@ -4536,7 +4549,7 @@ function noterDansLaLigne(kind, ligne, marqueur, note) {
    seul cas où l'ordre de lecture de la boîte doit changer. Une
    réservation porte la plage plutôt que l'heure de la demande : ce
    qui compte, c'est quand a lieu l'appel, pas quand il a été pris. */
-function objetAvis(kind, data, extra) {
+function objetAvis(kind, data, extra, partiel) {
   var def = SCHEMA[kind];
   /* L'OBJET NE PORTE PAS DE RETOUR À LA LIGNE.  D-758
      Un nom qui en contient — collé depuis un courriel, ou envoyé par
@@ -4545,8 +4558,16 @@ function objetAvis(kind, data, extra) {
      précisément la seule chose qu'il doit dire au premier coup
      d'œil. On tronque aussi, un objet long est illisible au
      téléphone. */
-  var qui = String(data.nom || data.votre_nom || data.email || "")
-    .replace(/\s+/g, " ").trim().slice(0, 80);
+  /* L'ENTREPRISE AVANT LA PERSONNE.  D-781
+     On vend à des PME. « Garage Tremblay » se reconnaît d'un coup
+     d'œil dans une liste de vingt avis, « Jean Tremblay » non — et
+     c'est le nom qu'on cherche quand le patron rappelle trois jours
+     plus tard. Les deux tiennent quand les deux existent. */
+  var maison = String(data.entreprise || data.entreprise_referee || "")
+    .replace(/\s+/g, " ").trim().slice(0, 40);
+  var personne = String(data.nom || data.votre_nom || data.email || "")
+    .replace(/\s+/g, " ").trim().slice(0, 40);
+  var qui = maison && personne ? (maison + " · " + personne) : (maison || personne);
   var tete = kind === "urgent" ? "URGENCE" : def.sujet;
 
   var repere;
@@ -4556,7 +4577,24 @@ function objetAvis(kind, data, extra) {
     repere = libelleHeure(new Date());
   }
 
-  return "[APED] " + tete + (qui ? " · " + qui : "") + " · " + repere;
+  /* FINI OU PAS FINI, DANS L'OBJET.  D-781
+
+     Le corps le disait dès sa première ligne — « COMMENCÉ — » — mais
+     la liste de Gmail ne montre pas le corps. Vingt avis un lundi
+     matin se ressemblaient tous : il fallait en ouvrir vingt pour
+     savoir lesquels étaient des demandes et lesquels des abandons en
+     cours. C'est la seule information qui décide de ce qu'on fait
+     ensuite, et c'est la seule qui manquait au premier coup d'œil.
+
+     L'ÉTAPE ACCOMPAGNE LA MENTION. « COMMENCÉ 6/8 » se rappelle tout
+     de suite ; « COMMENCÉ 1/8 » attend demain. */
+  var etat = "";
+  if (partiel) {
+    var ou = libelleEtape(data);
+    etat = "COMMENCÉ" + (ou ? " " + ou : "") + " · ";
+  }
+
+  return "[APED] " + etat + tete + (qui ? " · " + qui : "") + " · " + repere;
 }
 
 /* LA CONFIRMATION AU VISITEUR — UNE PAR FORMULAIRE.

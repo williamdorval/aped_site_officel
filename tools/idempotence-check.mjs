@@ -609,6 +609,76 @@ console.log("\n--- 12 · UN NOM D'ASSOCIE RENOMME NE TRONQUE PLUS LA LIGNE  (D-7
     lire(trouver(SC), "Lu par"), "Allen");
 }
 
+
+/* ============================================================
+   13 · LE LUNDI MATIN — L'OBJET DE L'AVIS ET LA LARGEUR  (D-781)
+
+   Vingt avis dans Gmail se ressemblaient tous : « [APED] Nouveau
+   projet · Jean Tremblay · 14 h 30 ». Le corps disait « COMMENCÉ — »
+   des sa premiere ligne, mais la LISTE de Gmail ne montre pas le
+   corps. Il fallait ouvrir les vingt pour savoir lesquels etaient
+   des demandes et lesquels des abandons en cours.
+
+   Et dans le classeur, le NUMERO DE TELEPHONE tombait hors du
+   premier ecran : c'est la colonne qu'on utilise le plus, sur un
+   site qui promet un rappel.
+   ============================================================ */
+console.log("\n--- 13 · L'OBJET DE L'AVIS ET LA PREMIERE ECRANEE  (D-781)");
+{
+  /* --- a · un envoi PARTIEL le dit dans l'objet --- */
+  etat.courriels.length = 0;
+  poster({ _form: "project", _sid: "sondeLundi", _etape: 3, _etapes: 8,
+           nom: "Jean Tremblay", entreprise: "Garage Tremblay",
+           email: "jean@garagetremblay.ca", telephone: "8195230871" });
+  const partiel = etat.courriels.find((c) => /^\[APED\]/.test(c.subject));
+  /* SANS AVIS, ON S'ARRETE. Rendre « l'objet ne dit pas COMMENCE »
+     sur un courriel qui n'est jamais parti serait un faux verdict
+     sur une mesure qui n'a pas eu lieu. */
+  if (!partiel) { console.error("ARRET  aucun avis interne apres un envoi partiel."); process.exit(2); }
+  dire("un envoi partiel annonce COMMENCE des l'objet",
+    /^\[APED\] COMMENCÉ /.test(partiel.subject), true);
+  dire("et il dit OU la personne s'est arretee",
+    /COMMENCÉ \d+\s*\/\s*\d+/.test(partiel.subject), true);
+  dire("l'entreprise passe devant la personne",
+    partiel.subject.indexOf("Garage Tremblay") < partiel.subject.indexOf("Jean Tremblay")
+      && partiel.subject.indexOf("Garage Tremblay") !== -1, true);
+  console.log("         objet : " + partiel.subject);
+
+  /* --- b · un envoi FINAL ne le dit pas --- */
+  etat.courriels.length = 0;
+  poster({ _form: "project", _sid: "sondeLundi", _final: true, _etape: 8, _etapes: 8,
+           nom: "Jean Tremblay", entreprise: "Garage Tremblay",
+           email: "jean@garagetremblay.ca", telephone: "8195230871",
+           besoins: "ZZ", budget: "ZZ", echeancier: "ZZ", description: "ZZ" });
+  const final = etat.courriels.find((c) => /^\[APED\]/.test(c.subject));
+  if (!final) { console.error("ARRET  aucun avis interne apres l'envoi final."); process.exit(2); }
+  dire("une demande finie ne porte PAS la mention",
+    /COMMENCÉ/.test(final.subject), false, final.subject);
+  console.log("         objet : " + final.subject);
+
+  /* --- c · le telephone tient dans le premier ecran --- */
+  /* 1 300 px : les 1 440 d'un portable moins la colonne des
+     numeros de ligne et la barre de defilement de Sheets. C'est la
+     largeur qu'on VOIT, pas celle de l'ecran. */
+  const ECRAN = 1300;
+  for (const kind of ["project", "booking", "estimate", "urgent", "contact"]) {
+    const cols = gs.colonnes(kind);
+    let x = 0, finTel = null, finCourriel = null;
+    cols.forEach((c) => {
+      x += Number(c.largeur) || 0;
+      if (/Téléphone/.test(c.titre) && finTel === null) finTel = x;
+      if (/Courriel/.test(c.titre) && finCourriel === null) finCourriel = x;
+    });
+    if (finTel === null) continue;
+    dire(kind + " · le numero tient dans les " + ECRAN + " premiers px",
+      finTel <= ECRAN, true, "il finit a " + finTel + " px");
+    if (finCourriel !== null) {
+      dire(kind + " · et il vient AVANT le courriel", finTel < finCourriel, true,
+        "telephone " + finTel + " px, courriel " + finCourriel + " px");
+    }
+  }
+}
+
 console.log("\n============================================================");
 console.log(ko === 0 ? "TOUT TIENT : " + n + " / " + n : "DEFAUTS : " + ko + " sur " + n);
 console.log("============================================================");
