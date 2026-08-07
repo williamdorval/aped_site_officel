@@ -2384,7 +2384,7 @@
     try {
       /* DES QU'UNE ETAPE EST FRANCHIE, il y a quelque chose a
          perdre — c'est le moment ou la retenue devient legitime. */
-      retenuePossible(kind);
+      retenuePossible(kind, etape, total);
       enregistrerEtape(kind, data, etape, total, false).catch(function () {});
     } catch (e) {}
   }
@@ -2740,23 +2740,140 @@
 
   /* Ce que le visiteur est en train de perdre, en toutes lettres.
      « votre estimation » se retient mieux que « votre saisie ». */
-  var PERTES = {
-    project:  "votre projet, à l’étape où vous l’avez laissé",
-    estimate: "votre estimation",
-    refer:    "la référence que vous étiez en train d’écrire",
-    booking:  "le créneau que vous aviez choisi"
+  /* ============================================================
+     CE QU'ON DIT DÉPEND DE L'ENDROIT OÙ LA PERSONNE S'ARRÊTE. D-768
+
+     LE MÊME ARGUMENT NE MARCHE PAS AUX DEUX BOUTS. Quelqu'un à la
+     première étape n'a rien investi : ce qui le retient, c'est que
+     ça ne coûte presque rien. Quelqu'un à la cinquième sur six a
+     tout investi : ce qui le retient, c'est qu'il ne reste presque
+     rien. Un texte unique se trompe forcément sur l'un des deux —
+     et il se trompe le plus cher sur celui qui a le plus donné.
+
+     TROIS ZONES, PAS UNE PAR ÉTAPE. Douze textes par formulaire
+     seraient douze textes à tenir vrais ; trois suffisent à changer
+     l'ARGUMENT, et c'est l'argument qui compte, pas la précision du
+     compteur.
+
+     LA ZONE SE CALCULE SUR LA PROPORTION, pas sur le numéro : les
+     formulaires n'ont pas le même nombre d'étapes, et « étape 4 »
+     ne veut pas dire la même chose sur quatre que sur huit.
+     ============================================================ */
+  var RETENUE_TEXTES = {
+    project: {
+      tot:    { quoi: "Vous partiez avec vos premières réponses.",
+                titre: "On garde ça pour vous ?",
+                texte: "Deux réponses de faites, et elles sont déjà enregistrées. Laissez une adresse : on vous renvoie le lien, ou continuez, il reste quelques écrans.",
+                bouton: "Envoyez-moi le lien" },
+      milieu: { quoi: "Vous partiez au milieu de votre projet.",
+                titre: "La moitié est faite",
+                texte: "Tout ce que vous avez décrit est enregistré. Une adresse et on vous renvoie le lien exactement ici — ou finissez, il reste peu.",
+                bouton: "Gardez-moi ma place" },
+      fin:    { quoi: "Vous partiez tout près de la fin.",
+                titre: "Vous y êtes presque",
+                texte: "Presque tout est rempli, et tout est enregistré. Laissez une adresse si vous devez filer : le lien vous ramène exactement ici.",
+                bouton: "Gardez-moi ça" }
+    },
+    estimate: {
+      tot:    { quoi: "Vous partiez avec vos premières réponses.",
+                titre: "On garde vos réponses ?",
+                texte: "Ce que vous avez répondu est enregistré. Les questions sont courtes, et au bout il y a une fourchette. Une adresse, et on vous renvoie le lien.",
+                bouton: "Envoyez-moi le lien" },
+      milieu: { quoi: "Vous partiez au milieu de vos réponses.",
+                titre: "La moitié du chemin est faite",
+                texte: "Vos réponses sont enregistrées. Encore quelques questions et vous voyez la fourchette — un ordre de grandeur, pas un devis. Une adresse pour garder tout ça ?",
+                bouton: "Gardez-moi mes réponses" },
+      fin:    { quoi: "Vous partiez juste avant la fourchette.",
+                titre: "La fourchette est au bout",
+                texte: "Vos réponses sont enregistrées. Il reste vos coordonnées et le chiffre paraît. Laissez une adresse si vous devez partir : le lien vous ramène ici.",
+                bouton: "Gardez-moi ça" }
+    },
+    refer: {
+      tot:    { quoi: "Vous partiez avec le nom que vous aviez inscrit.",
+                titre: "On garde cette référence ?",
+                texte: "Le nom est déjà enregistré. Il reste quelques champs pour qu’on sache qui contacter. Une adresse, et on vous renvoie le lien quand ça vous adonne.",
+                bouton: "Envoyez-moi le lien" },
+      milieu: { quoi: "Vous partiez au milieu de votre référence.",
+                titre: "Votre référence est à moitié écrite",
+                texte: "Ce que vous avez écrit est enregistré. Il reste peu pour qu’on puisse la contacter comme du monde. Laissez une adresse, on vous renvoie le lien.",
+                bouton: "Gardez-moi ma place" },
+      fin:    { quoi: "Vous partiez tout près de la fin.",
+                titre: "Il reste presque rien",
+                texte: "Votre référence est enregistrée jusqu’ici. Encore un écran et elle nous arrive. Si vous devez filer, laissez une adresse : le lien vous ramène exactement ici.",
+                bouton: "Gardez-moi ça" }
+    },
+    booking: {
+      tot:    { quoi: "Vous partiez sans avoir choisi votre heure.",
+                titre: "On vous met un rappel ?",
+                texte: "Choisir une date et une heure prend une minute. Laissez une adresse et on vous renvoie le lien — ou finissez tout de suite, c’est court.",
+                bouton: "Envoyez-moi le lien" },
+      /* « NOTÉE, PAS ENCORE BLOQUÉE » — et c'est la vérité, pas une
+         précaution. `poserRendezVous` ne tourne qu'à l'envoi final :
+         écrire « on vous garde la plage » avant serait faux, et le
+         visiteur le découvrirait en revenant sur un créneau pris. */
+      milieu: { quoi: "Vous partiez avec la plage que vous aviez choisie.",
+                titre: "Votre choix est noté",
+                texte: "La date et l’heure sont enregistrées. Elles ne sont pas encore bloquées : ça se fait avec vos coordonnées. Une adresse et on vous renvoie le lien.",
+                bouton: "Gardez-moi ce choix" },
+      fin:    { quoi: "Vous partiez à un champ de la confirmation.",
+                titre: "Il reste vos coordonnées",
+                texte: "Votre plage est notée, pas encore confirmée — vos coordonnées font partir la confirmation. Si vous devez filer, laissez une adresse : le lien vous ramène ici.",
+                bouton: "Gardez-moi ça" }
+    }
   };
+
+  /* Le repli, quand un formulaire n'a pas de texte à lui. Il ne
+     PARLE de rien de précis, parce qu'il ne sait rien de précis. */
+  var RETENUE_REPLI = {
+    quoi: "Vous alliez partir avec votre demande.",
+    titre: "On garde votre place ?",
+    texte: "Ce que vous avez rempli est déjà enregistré. Laissez-nous une adresse et on vous renvoie le lien pour finir quand ça vous adonne — ou continuez, c’est deux minutes.",
+    bouton: "Gardez-moi ça"
+  };
+
+  function zoneRetenue(etape, total) {
+    var e = Number(etape), t = Number(total);
+    /* SANS COMPTEUR, ON PREND « tot » — le texte le moins
+       présomptueux. Annoncer « vous y êtes presque » à quelqu'un
+       dont on ignore la position, c'est se tromper une fois sur
+       deux, et se tromper vers le haut est celui qui sonne faux. */
+    if (!e || !t || t < 2) return "tot";
+    /* LE DENOMINATEUR EXCLUT L'ECRAN DE SUCCES.
+
+       `P_TOTAL`, `R_TOTAL` et `E_TOTAL` comptent l'ecran de
+       confirmation, qui ne se remplit pas. En divisant par eux, le
+       texte « fin » de la reference etait INATTEIGNABLE : ses
+       quatre ecrans sur cinq plafonnaient a 3/5 = 0,6, sous le
+       seuil de 0,7. Quelqu'un a un ecran de la fin lisait « la
+       moitie est faite ».
+
+       Et l'etape enregistree est celle qu'on QUITTE : passer de 6 a
+       7 enregistre 6. Le dernier enregistrement possible est donc
+       toujours l'avant-dernier ecran remplissable. */
+    var part = e / (t - 1);
+    if (part <= 0.34) return "tot";
+    if (part >= 0.7) return "fin";
+    return "milieu";
+  }
 
   function ouvrirRetenue() {
     if (!retenue || !retenueEtat || retenueDejaVue()) return;
     if (retenue.hidden === false) return;
     marquerRetenueVue();
-    $("#retenueTexte").textContent =
-      "Ce que vous avez rempli est déjà enregistré. Laissez-nous une adresse et "
-      + "on vous renvoie le lien pour finir quand ça vous adonne — ou continuez, "
-      + "c’est deux minutes.";
-    $("#retenueQuoi").textContent =
-      "Vous alliez partir avec " + (PERTES[retenueEtat.kind] || "votre demande") + ".";
+
+    var jeu = RETENUE_TEXTES[retenueEtat.kind];
+    var t = (jeu && jeu[zoneRetenue(retenueEtat.etape, retenueEtat.total)]) || RETENUE_REPLI;
+
+    $("#retenueQuoi").textContent = t.quoi;
+    $("#retenueTitre").textContent = t.titre;
+    $("#retenueTexte").textContent = t.texte;
+    var libelle = $("#retenueEnvoi [data-label]");
+    if (libelle) libelle.textContent = t.bouton;
+    /* LE BOUTON REPART DE SON LIBELLÉ, sinon `setLoading` le
+       remettrait à celui du formulaire précédent au prochain envoi. */
+    var envoi = $("#retenueEnvoi");
+    if (envoi) envoi.dataset.idle = t.bouton;
+
     retenue.hidden = false;
     var champ = $("#retenueEmail");
     if (champ && isDesktop.matches) champ.focus({ preventScroll: true });
@@ -2833,8 +2950,13 @@
   /* Les formulaires declarent qu'ils sont commences. Appele au
      premier enregistrement d'etape : avant ca, il n'y a rien a
      perdre. */
-  function retenuePossible(kind) {
-    retenueEtat = { kind: kind };
+  function retenuePossible(kind, etape, total) {
+    /* ON GARDE LA POSITION LA PLUS AVANCÉE. Un retour en arrière
+       pour corriger l'étape 2 ne doit pas faire redire « vous
+       commencez à peine » à quelqu'un qui était rendu à la sixième :
+       il a bel et bien tout ce travail à perdre. */
+    var av = retenueEtat && retenueEtat.kind === kind ? Number(retenueEtat.etape) || 0 : 0;
+    retenueEtat = { kind: kind, etape: Math.max(av, Number(etape) || 0), total: Number(total) || 0 };
   }
   function retenueFinie() {
     retenueEtat = null;
@@ -3385,6 +3507,43 @@
 
   var bookingForm = $('form[data-form="booking"]');
   if (bookingForm) {
+    /* ============================================================
+       LA RÉSERVATION N'ENREGISTRAIT RIEN AVANT L'ENVOI.  D-769
+
+       C'était le seul des cinq formulaires suivis à ne laisser
+       AUCUNE trace en chemin. Quelqu'un qui choisissait sa plage,
+       arrivait sur le formulaire et fermait l'onglet disparaissait
+       entièrement : pas de ligne, donc pas de retenue armée, donc
+       pas de relance possible. C'est pourtant le moment où il a le
+       plus décidé — il a choisi une date et une heure.
+
+       ON N'ENREGISTRE PAS AVANT L'ADRESSE, et ce n'est pas un
+       scrupule : `requisPartiel` du service exige `email`. Écrire
+       plus tôt ferait refuser la ligne, et le refus serait muet.
+
+       AUCUNE PLAGE N'EST PRISE ICI. `poserRendezVous` ne tourne
+       qu'à l'envoi final. Ce qu'on garde est une intention, pas un
+       rendez-vous — et c'est exactement ce que dit le texte de
+       retenue de ce formulaire.
+       ============================================================ */
+    var B_TOTAL = 3;
+    var garderBooking = function () {
+      var email = $("#bkEmail");
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email.value).trim())) return;
+      var data = serialize(bookingForm);
+      if (selectedSlotLabel) data.plage_demandee = selectedSlotLabel;
+      if (selectedSlotISO) data.plage_iso = selectedSlotISO;
+      /* `enregistrerEtape` compare une empreinte : reposer la même
+         chose ne coûte aucun aller-retour. On peut donc écouter
+         large sans surveiller ce qui a changé. */
+      enregistrerDiscret("booking", data, 2, B_TOTAL);
+    };
+    /* `change` plutôt que `input` : on écrit quand la personne QUITTE
+       un champ, pas à chaque lettre. Un `input` enverrait une requête
+       par frappe dans l'adresse, et le service est plafonné. */
+    bookingForm.addEventListener("change", garderBooking);
+    bookingForm.addEventListener("focusout", garderBooking);
+
     bookingForm.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!validate(bookingForm)) { say($(".form-status", bookingForm), "Vérifiez les champs signalés.", "err"); return; }
@@ -3396,8 +3555,28 @@
       var data = serialize(bookingForm);
       data.plage_demandee = selectedSlotLabel;
       data.plage_iso = selectedSlotISO;
-      sendJson("booking", data).then(function () {
+      /* LA MÊME SESSION QUE LES ÉTAPES, SINON DEUX LIGNES.  D-769
+
+         L'envoi final n'a jamais porté de `_sid` — et ça ne se
+         voyait pas, parce que rien ne s'écrivait avant lui. Depuis
+         qu'on enregistre en chemin, l'omission crée une SECONDE
+         ligne : celle du parcours, laissée incomplète, et celle de
+         la réservation. Deux lignes pour un client, dont une qu'on
+         relancerait pour un rendez-vous déjà pris.
+
+         `_final` marque la demande complète — c'est lui qui fait
+         partir la confirmation et poser le rendez-vous. */
+      var charge = Object.assign({}, data, {
+        _sid: sessionDe("booking"), _etape: 2, _etapes: B_TOTAL, _final: true
+      });
+      sendJson("booking", charge).then(function () {
         setLoading(btn, false);
+        /* LA RETENUE SE DÉSARME AU SUCCÈS. D-769 l'a armée pour ce
+           formulaire ; sans ce désarmement, elle sauterait sur
+           quelqu'un qui vient de réserver — le pire moment pour lui
+           proposer de garder sa place. */
+        retenueFinie();
+        oublierSession("booking");
         goBStep(3);
       }).catch(function (err) {
         setLoading(btn, false);
@@ -3432,7 +3611,10 @@
           return;
         }
         say(status, messageEchec(err), "err");
-        poserRepli(status, "booking", data);
+        /* LE REPLI REJOUE LA MEME CHARGE, `_sid` compris : sans lui
+           le renvoi differe ouvrirait la seconde ligne que D-769
+           vient justement de fermer. */
+        poserRepli(status, "booking", charge);
       });
     });
   }
