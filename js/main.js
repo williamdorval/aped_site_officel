@@ -3126,6 +3126,10 @@
       });
       var pct = (n / R_TOTAL) * 100;
       if (referBar) referBar.style.width = pct + "%";
+      /* LE COMPTEUR SUIT LA BARRE, et il compte les ecrans qu'on
+         REMPLIT — l'ecran de succes n'en est pas un.  D-773 */
+      var compte = $("#referCompte");
+      if (compte) compte.textContent = String(Math.min(n, R_TOTAL - 1));
       var bar = referBar && referBar.closest("[role='progressbar']");
       if (bar) bar.setAttribute("aria-valuenow", String(Math.round(pct)));
       referBack.hidden = n === 1 || n === R_TOTAL;
@@ -3173,6 +3177,13 @@
         setLoading(referNext, false);
         say(statutR, messageEchec(err), "err");
         poserRepli(statutR, "refer", chargeR);
+        /* LE REFUS SE LIT, IL NE SE DEVINE PAS.  D-773
+           Le statut vit APRES la barre de navigation, qui est
+           collante : sur un ecran plus haut que la fenetre, le
+           message tombait dessous et le visiteur voyait « rien ne
+           s'est passe ». On l'amene a l'ecran. */
+        try { statutR.scrollIntoView({ block: "center", behavior: "smooth" }); }
+        catch (e) { statutR.scrollIntoView(false); }
       });
     });
 

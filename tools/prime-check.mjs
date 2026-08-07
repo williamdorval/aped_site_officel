@@ -180,7 +180,88 @@ const vu = await page.evaluate(() => {
   const plafond = (document.querySelector(".referral-max .num") || {}).textContent || "";
   const version = (panneau && panneau.querySelector(".cond-version b") || {}).textContent || "";
 
-  return { ferme, dit, lignes, tousDuPanneau, plafond, version, longueurAvant: avant.length,
+  /* LA GRILLE DU TIROIR NE DOIT PAS ETRE ROGNEE.
+
+     LE DEFAUT QU'ON GARDE ICI. Le tiroir du formulaire a porte,
+     une journee, un `max-height` avec defilement interne : la
+     grille s'arretait a « une boutique en ligne, 600 $ » pendant
+     que la meme fenetre annoncait « jusqu'a 5 000 $ ». Le tableau
+     dementait l'accroche, et on demandait de cocher « j'ai lu ».
+
+     UN RECTANGLE NE DIT RIEN DU ROGNAGE D'UN ANCETRE (piege 1) :
+     les sept lignes ont toutes une hauteur, rognees ou non. Ce
+     qui le dit, c'est de comparer le bas de la DERNIERE ligne au
+     bas de chaque ancetre qui defile. */
+  /* LA MODALE S'OUVRE AUSSI, ET C'EST CE QUI MANQUAIT.
+     Le tiroir vit dans , qui nait  : tout
+     l'arbre est alors en , et ,
+      et  valent ZERO. La
+     comparaison « le bas depasse-t-il ? » etait donc toujours
+     fausse, et le controle rendait « ok » sur une grille rognee —
+     verifie en remettant le  fautif. Piege 30 dans la
+     sonde elle-meme. */
+  const modale = document.getElementById("modal-refer");
+  const tiroir = document.getElementById("rfCondTexte");
+  let rognage = null;
+  if (tiroir && modale) {
+    /* TOUT CE QUI EST MASQUE ENTRE LE TIROIR ET LA PAGE S'OUVRE.
+
+       Il en manquait deux, et le controle rendait « ok » sur une
+       grille rognee — verifie en remettant le `max-height`
+       fautif. La modale nait `hidden`, ET l'ecran 7 aussi : sous
+       `display: none`, `scrollHeight`, `clientHeight` et
+       `getBoundingClientRect` valent tous ZERO, donc « le bas
+       depasse-t-il ? » etait toujours faux. Piege 30 dans la
+       sonde elle-meme, et il a fallu tracer la chaine des
+       ancetres pour le voir. */
+    const ecran = modale.querySelector('.step[data-rstep="7"]');
+    const modaleCachee = modale.hidden;
+    const ecranCache = ecran ? ecran.hidden : true;
+    modale.hidden = false;
+    if (ecran) ecran.hidden = false;
+    const etaitCache = tiroir.hidden;
+    tiroir.hidden = false;
+    const t = tiroir.querySelector("table.cond-grille");
+    const derniere = t ? t.querySelector("tbody tr:last-child .cond-prime") : null;
+    let coupe = "";
+    if (derniere) {
+      const r = derniere.getBoundingClientRect();
+      /* ON S'ARRETE AU PANNEAU DE LA MODALE, ET C'EST LA REGLE
+         JUSTE. Le panneau a le droit de defiler — c'est une
+         modale, le visiteur le fait sans y penser. Ce qui est
+         interdit, c'est un defilement IMBRIQUE a l'interieur :
+         personne ne devine qu'un bloc au milieu d'un formulaire
+         cache six lignes de plus.
+         La premiere version cherchait « rien ne coupe » et
+         accusait le panneau lui-meme : elle aurait force a
+         retirer un defilement legitime. */
+      let n = derniere.parentElement;
+      while (n && n !== document.body && !coupe) {
+        if (n.classList && n.classList.contains("modal-panel")) break;
+        const cs = getComputedStyle(n);
+        if (cs.overflowY !== "visible" && n.scrollHeight > n.clientHeight + 2) {
+          const b = n.getBoundingClientRect();
+          if (r.bottom > b.bottom + 1) {
+            coupe = (n.id || String(n.className).split(" ")[0] || n.tagName)
+              + " (bas " + Math.round(b.bottom) + " contre " + Math.round(r.bottom) + ")";
+          }
+        }
+        n = n.parentElement;
+      }
+    }
+    const rc = derniere ? derniere.getBoundingClientRect() : null;
+    rognage = {
+      hauteurNulle: !rc || rc.height < 1,
+      lignes: t ? t.querySelectorAll("tbody tr").length : 0,
+      derniereLue: derniere ? derniere.textContent.trim() : "",
+      coupe: coupe
+    };
+    tiroir.hidden = etaitCache;
+    if (ecran) ecran.hidden = ecranCache;
+    modale.hidden = modaleCachee;
+  }
+
+  return { ferme, dit, lignes, tousDuPanneau, plafond, version, rognage,
            avantPorteUnePrime: /\b(150|250|400|600|1[  \s]?200|2[  \s]?500)[  \s]*\$/.test(avant) };
 });
 await nav.close();
@@ -194,6 +275,34 @@ dire(vu.dit === "false", "et le bouton le dit à la voix (`aria-expanded`)", "lu
 dire(vu.avantPorteUnePrime === false,
   "aucun montant de la grille ne se lit sans l'ouvrir",
   "le texte rendu de la page fermee en porte un");
+
+/* ------------------------------------------------------------
+   5bis · ET UNE FOIS OUVERTE, ELLE EST ENTIERE
+   ------------------------------------------------------------ */
+titre("5bis · LA GRILLE DU TIROIR N'EST PAS ROGNEE");
+if (!vu.rognage) {
+  console.error("ARRET  le tiroir `#rfCondTexte` est introuvable : le controle du\n"
+    + "       rognage ne porterait sur rien et rendrait « ok » quand meme.");
+  process.exit(2);
+}
+/* UN RECTANGLE A ZERO NE PROUVE RIEN, IL DIT QUE LA SONDE REGARDE CE
+   QUI N'EST PAS PEINT. Sans cet arret, le controle du rognage a rendu
+   « ok » trois fois de suite sur une grille reellement coupee. */
+if (vu.rognage.hauteurNulle) {
+  console.error("ARRET  la derniere ligne de la grille mesure zero : la sonde\n"
+    + "       regarde un arbre encore en `display: none`. Tout ce qui\n"
+    + "       suit vaudrait « ok » sans rien avoir mesure.");
+  process.exit(2);
+}
+dire(vu.rognage.lignes === GRILLE.length,
+  "le tiroir porte les " + GRILLE.length + " lignes", "lu : " + vu.rognage.lignes);
+dire(sous(vu.rognage.derniereLue) === GRILLE[GRILLE.length - 1].prime + "$",
+  "et la derniere se lit bien " + GRILLE[GRILLE.length - 1].prime + " $",
+  "lu : « " + vu.rognage.derniereLue + " »");
+dire(vu.rognage.coupe === "",
+  "aucun defilement imbrique ne la coupe",
+  "un `max-height` avec defilement interne a deja arrete cette grille a "
+  + "600 $ pendant que la meme fenetre annoncait 5 000 $ · " + vu.rognage.coupe);
 
 /* ------------------------------------------------------------
    1 · LA PAGE DIT EXACTEMENT LA GRILLE DECLAREE

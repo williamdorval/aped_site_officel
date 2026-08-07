@@ -3889,7 +3889,15 @@
            lead existe au classeur, meme si la personne s'arrete la.
            Le referent, lui, vient APRES : quelqu'un qui donne un nom
            sans finir reste un lead exploitable. -->
-      <div class="progress" role="progressbar" aria-label="Progression" aria-valuemin="0" aria-valuemax="100" aria-valuenow="13"><i id="referBar"></i></div>
+      <div class="progress-ligne">
+        <div class="progress" role="progressbar" aria-label="Progression" aria-valuemin="0" aria-valuemax="100" aria-valuenow="13"><i id="referBar"></i></div>
+        <!-- LE COMPTEUR EN TOUTES LETTRES.  D-773
+             Un trait qui avance dit qu'on avance ; il ne dit pas
+             combien il en reste. « 3 sur 7 » repond a la seule
+             question que se pose quelqu'un au troisieme ecran :
+             est-ce que ca vaut la peine de continuer. -->
+        <p class="progress-compte" aria-hidden="true" translate="no"><b id="referCompte">1</b> sur 7</p>
+      </div>
 
       <div class="step" data-rstep="1">
         <p class="step-q">Quelle entreprise voulez-vous nous présenter&nbsp;?</p>
@@ -3955,7 +3963,7 @@
         <div class="form-row">
           <div class="field">
             <label for="rfName">Votre nom</label>
-            <input id="rfName" name="votre_nom" type="text" required autocomplete="name" />
+            <input id="rfName" name="votre_nom" type="text" required autocomplete="name" placeholder="Réjean Bouchard…" />
             <span class="field-error">Entrez votre nom.</span>
           </div>
           <div class="field">

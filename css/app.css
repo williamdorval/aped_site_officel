@@ -1260,7 +1260,10 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
   overscroll-behavior: contain;
   background: var(--surface-2);
   border: var(--rule-w) solid var(--rule-strong);
-  padding: var(--s-6);
+  /* LE REMPLISSAGE EST NOMME, pour qu'une barre collante puisse le
+     compenser sans le recopier — il change a 768 px.  D-773 */
+  --pad-modale: var(--s-6);
+  padding: var(--pad-modale);
   opacity: 0;
   transform: translateY(1.5rem);
   transition: opacity var(--t-3) var(--e-snap), transform var(--t-3) var(--e-snap);
@@ -1344,10 +1347,20 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
    qui n'en vise qu'un — c'est note dans `RESERVES.md`. */
 #modal-refer .step-nav {
   position: sticky;
-  bottom: 0;
+  /* ELLE COLLE AU VRAI BAS DU PANNEAU, PAS AU BORD DE SA MARGE.
+     D-773
+     `bottom: 0` colle a la boite de REMPLISSAGE : la barre
+     s'arretait un cran au-dessus du bord et flottait au milieu du
+     panneau avec du contenu VISIBLE en dessous d'elle — la case a
+     cocher, et le message rouge qui dit pourquoi l'envoi n'est pas
+     parti. On compense donc le remplissage du panneau, et la barre
+     s'etend sur toute sa largeur pour que rien ne passe a cote. */
+  bottom: calc(-1 * var(--pad-modale));
+  margin-inline: calc(-1 * var(--pad-modale));
+  padding-inline: var(--pad-modale);
+  padding-bottom: var(--pad-modale);
   z-index: 2;
   margin-top: var(--s-6);
-  padding-bottom: var(--s-4);
   /* LE FOND EST CELUI DU PANNEAU, PAS `--surface-0`. La premiere
      version posait la surface de la PAGE : sur la modale, en
      `--surface-2`, la barre ressortait comme une bande grise
@@ -5870,16 +5883,43 @@ html:not(.js) .ba-trait { display: none; }
 }
 .cond-puces b { color: var(--ink); }
 
+/* LE COMPTEUR D'ECRANS, A COTE DE LA BARRE.  D-773
+   Chiffres tabulaires : « 1 sur 7 » et « 7 sur 7 » doivent occuper
+   la meme largeur, sinon la barre se decale d'un ecran a l'autre. */
+.progress-ligne { display: flex; align-items: center; gap: var(--s-4); }
+.progress-ligne .progress { flex: 1 1 auto; }
+.progress-compte {
+  flex: none;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.progress-compte b { color: var(--ink); font-weight: 700; }
+
 .cond-tiroir { margin-top: var(--s-5); }
-/* LA HAUTEUR EST BORNEE ET LE TEXTE DEFILE CHEZ LUI. Mille mots
-   pousseraient la case a cocher et le bouton d'envoi hors de
-   l'ecran : celui qui vient de lire ne retrouverait plus ce qu'il
-   etait venu accepter. Le filet dit ou le bloc commence et finit. */
+/* LA HAUTEUR N'EST PLUS BORNEE, ET C'ETAIT UN DEFAUT GRAVE.  D-773
+
+   La premiere version plafonnait ce bloc a 26 rem avec un
+   defilement interne, pour que la case a cocher reste a portee. Ce
+   que ca faisait vraiment : la GRILLE etait coupee. Six lignes
+   visibles sur bureau, QUATRE sur telephone — le tableau s'arretait
+   a « une boutique en ligne, 600 $ » pendant que la meme fenetre
+   annoncait « jusqu'a 5 000 $ » deux pouces plus haut, et on
+   demandait de cocher « j'ai lu ».
+
+   Ce n'est pas un defaut d'ergonomie, c'est un defaut de VERACITE
+   percue : le tableau dementait l'accroche. Trouve en regardant
+   l'image, jamais par un test.
+
+   Ce qui garde la case a portee, c'est la barre collante — elle
+   existe exactement pour ca. Le filet dit ou le bloc commence et
+   finit. */
 .cond-texte {
   margin-top: var(--s-4);
   padding: var(--s-5);
-  max-height: 26rem;
-  overflow-y: auto;
   border: var(--rule-w) solid var(--rule-strong);
   background: var(--surface-1);
 }
@@ -6833,7 +6873,9 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
   .footer-right { grid-column: 8 / span 5; }
 
   .booking { grid-template-columns: 1fr 13rem; gap: var(--s-7); }
-  .modal-panel { padding: var(--s-8); }
+  /* LA VARIABLE SUIT LE REMPLISSAGE, sinon la barre collante
+     compenserait la mauvaise valeur au-dessus de 768 px.  D-773 */
+  .modal-panel { --pad-modale: var(--s-8); padding: var(--pad-modale); }
 }
 
 /* --- 1024 px : la navigation deploie ses liens --- */
