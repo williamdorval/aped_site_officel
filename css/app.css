@@ -6660,6 +6660,31 @@ html:not(.js) .ba-trait { display: none; }
   letter-spacing: 0.03em;
   color: var(--ink-muted);
 }
+/* LA NOTE DE LA FOURCHETTE — ELLE DOIT ETRE LUE.  D-784
+
+   Elle remplace une `devis-mise` de `--fs-7` en `--ink-muted`, qui
+   se lisait comme une note de bas de page — c'est-a-dire pas du
+   tout. Celle-ci porte son propre titre, monte a `--fs-6`, et se
+   cadre entre deux filets. Le filet du haut est le FORT, celui du
+   bas le normal : le regard entre par en haut.
+
+   AUCUN FOND, AUCUN RAYON, AUCUNE OMBRE. La mise en avant se fait
+   par la taille et par deux traits, comme partout ailleurs. */
+.devis-note {
+  max-width: 54ch;
+  display: grid;
+  gap: var(--s-3);
+  margin-block: var(--s-2);
+  padding-block: var(--s-4);
+  border-top: var(--rule-w) solid var(--rule-strong);
+  border-bottom: var(--rule-w) solid var(--rule);
+  font-size: var(--fs-6);
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+.devis-note .label { color: var(--accent-text); }
+.devis-note b { color: var(--ink); font-weight: 600; }
+
 .devis-mise {
   max-width: 52ch;
   font-size: var(--fs-7);
