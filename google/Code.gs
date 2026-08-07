@@ -278,6 +278,37 @@ var REGLAGES = {
   VEILLE_REVEILS_MAX: 120,
   VEILLE_REVEILS_FENETRE_S: 3600,
 
+  /* ============================================================
+     LA RELANCE AUX ABANDONS.  D-770
+
+     UNE SEULE PAR PERSONNE, JAMAIS DEUX. Ce n'est pas une règle de
+     politesse, c'est la seule qui empêche le service de devenir un
+     robot d'envoi. Elle tient parce que la preuve vit dans le
+     CLASSEUR — la colonne « Relance » porte la date — et pas dans
+     une mémoire de script : un redéploiement efface la mémoire, il
+     n'efface pas une colonne.
+
+     LE DÉLAI. Vingt heures : assez pour qu'un abandon soit un vrai
+     abandon et pas une pause-café, assez court pour que la personne
+     se souvienne d'avoir commencé. Écrire à vingt minutes serait
+     du harcèlement ; écrire à trois jours serait parler à quelqu'un
+     qui a déjà choisi quelqu'un d'autre.
+
+     LA FENÊTRE SE FERME. Passé quatorze jours on n'écrit plus. Une
+     relance sur une demande d'il y a trois semaines n'est plus une
+     relance, c'est une sollicitation — et elle arrive à quelqu'un
+     qui ne se rappelle plus nous avoir parlé.
+
+     LE PLAFOND PAR PASSE. Douze. Le quota d'un compte gratuit est
+     de cent courriels par jour, partagés avec les avis internes et
+     les confirmations — c'est-à-dire avec le travail qui RAPPORTE.
+     Une relance ne doit jamais manger la confirmation d'un client
+     qui vient de réserver.
+     ============================================================ */
+  RELANCE_APRES_H: 20,
+  RELANCE_AVANT_J: 14,
+  RELANCE_MAX_PAR_PASSE: 12,
+
   /* Nom du dossier Drive où atterrissent les pièces jointes. */
   DOSSIER_PIECES: "APED — pièces jointes des formulaires",
 
@@ -1011,7 +1042,10 @@ function doGet(e) {
        Sans ça, « le déclencheur est installé » resterait une
        croyance : on ne saurait la distinguer d'un `create()` qui a
        levé pendant `initialiser()` et dont le message a défilé. */
-    declencheurs: declencheursPoses()
+    declencheurs: declencheursPoses(),
+    /* SANS ELLE, LA RELANCE NE PART PAS — et il faut pouvoir le
+       constater du dehors plutôt que de le supposer.  D-770 */
+    siteConnu: !!adresseDuSite()
   });
 }
 
@@ -2828,11 +2862,12 @@ function ecrireBlocages(liste) {
    pas de ce qu'on a essayé de poser.  D-763 */
 function declencheursPoses() {
   try {
-    var out = { changement: 0, quotidien: 0 };
+    var out = { changement: 0, quotidien: 0, relance: 0 };
     ScriptApp.getProjectTriggers().forEach(function (t) {
       var h = t.getHandlerFunction();
       if (h === "surChangementAgenda") out.changement++;
       else if (h === "veilleBlocages") out.quotidien++;
+      else if (h === "relancerAbandons") out.relance++;
     });
     return out;
   } catch (e) {
@@ -2883,12 +2918,13 @@ function surChangementAgenda(e) {
    d'avaler l'erreur. Un déclencheur qu'on croit posé et qui ne
    l'est pas est pire que pas de déclencheur du tout. */
 function poserVeille() {
-  var etat = { changement: false, quotidien: false, agenda: "", pourquoi: "" };
+  var etat = { changement: false, quotidien: false, relance: false, agenda: "", pourquoi: "" };
 
   try {
     ScriptApp.getProjectTriggers().forEach(function (t) {
       var h = t.getHandlerFunction();
-      if (h === "veilleBlocages" || h === "surChangementAgenda") ScriptApp.deleteTrigger(t);
+      if (h === "veilleBlocages" || h === "surChangementAgenda"
+          || h === "relancerAbandons") ScriptApp.deleteTrigger(t);
     });
   } catch (e) {
     etat.pourquoi = "ménage des anciens déclencheurs : " + e;
@@ -2923,6 +2959,23 @@ function poserVeille() {
     etat.pourquoi += (etat.pourquoi ? " · " : "") + "quotidien : " + e;
   }
 
+  /* 3 · LA RELANCE.  D-770
+     Toutes les quatre heures plutôt qu'une fois par jour : le délai
+     est de vingt heures, et un passage quotidien le transformerait
+     en « entre vingt et quarante-quatre heures » selon l'heure à
+     laquelle la personne s'est arrêtée. Six passages coûtent six
+     lectures de classeur, et rien d'autre tant qu'il n'y a rien à
+     envoyer. */
+  try {
+    ScriptApp.getProjectTriggers().forEach(function (t) {
+      if (t.getHandlerFunction() === "relancerAbandons") ScriptApp.deleteTrigger(t);
+    });
+    ScriptApp.newTrigger("relancerAbandons").timeBased().everyHours(4).create();
+    etat.relance = true;
+  } catch (e) {
+    etat.pourquoi += (etat.pourquoi ? " · " : "") + "relance : " + e;
+  }
+
   Logger.log("Déclencheurs — changement d'agenda : "
     + (etat.changement ? "POSÉ sur " + etat.agenda : "*** NON POSÉ ***")
     + " · filet quotidien 7 h : " + (etat.quotidien ? "posé" : "*** NON POSÉ ***")
@@ -2933,6 +2986,219 @@ function poserVeille() {
       + "c'est seulement en retard.");
   }
   return etat;
+}
+
+/* ============================================================
+   LA RELANCE AUX ABANDONS — un courriel, une fois.  D-770
+
+   CE QU'ELLE NE FAIT JAMAIS, ET C'EST CE QUI COMPTE.
+
+   1. Elle n'écrit pas deux fois. La colonne « Relance » est
+      remplie AVANT l'envoi, jamais après : si l'envoi échoue à
+      mi-course, on aura perdu une relance — on n'en aura pas
+      envoyé deux. Entre les deux erreurs possibles, celle-là est
+      la seule acceptable.
+
+   2. Elle n'écrit pas à quelqu'un qui est parti AILLEURS CHEZ
+      NOUS. La colonne « Parti vers » de D-764 dit qu'il remplit
+      l'estimation ou la réservation en ce moment. Le relancer sur
+      le projet, ce serait lui courir après pendant qu'il vient.
+
+   3. Elle n'écrit pas sans adresse, et pas à une demande complète.
+
+   4. ELLE NE PART PAS SANS ADRESSE DE SITE. Le bouton du courriel
+      est toute sa raison d'être : sans lui, on écrit à quelqu'un
+      pour lui dire de revenir, sans lui dire où. On refuse, et on
+      le dit dans le journal — plutôt que d'envoyer une promesse
+      qu'aucun lien ne tient.
+
+   L'ADRESSE DU SITE N'EST PAS DANS CE DÉPÔT. Elle se pose une fois
+   dans l'éditeur : Paramètres du projet > Propriétés du script >
+   `SITE_URL` = https://votre-domaine.ca
+   ============================================================ */
+var ONGLET_RELANCES = "Relances envoyées";
+
+function adresseDuSite() {
+  try {
+    var u = PropertiesService.getScriptProperties().getProperty("SITE_URL");
+    u = String(u || "").trim();
+    if (!/^https?:\/\//.test(u)) return "";
+    return u.replace(/\/+$/, "");
+  } catch (e) { return ""; }
+}
+
+/* Le lien qui ramène à l'écran exact. Le site lit `reprendre`,
+   `s` et `e` au chargement — voir `reprendreParcours` dans
+   `js/main.js`. */
+function lienReprise(kind, sid, etape) {
+  var base = adresseDuSite();
+  if (!base) return "";
+  return base + "/?reprendre=" + encodeURIComponent(kind)
+       + "&s=" + encodeURIComponent(sid)
+       + "&e=" + encodeURIComponent(String(etape || 1));
+}
+
+/* Les textes. Courts, chaleureux, jamais culpabilisants : aucun
+   « vous n'avez pas terminé », aucun compte à rebours, et une
+   sortie réelle en dernière ligne. */
+var RELANCES = {
+  project: {
+    sujet: "Votre projet est gardé au chaud",
+    corps: "Bonjour,\n\n"
+      + "Vous avez commencé à nous décrire votre projet. Tout ce que vous avez écrit est enregistré chez nous — rien n’est perdu.\n\n"
+      + "Le lien ci-dessous vous ramène à l’écran exact où vous vous êtes arrêté. Si remplir vous ennuie, appelez-nous : on prend les notes à votre place.\n\n"
+      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "P.S. C’est le seul courriel de ce genre qu’on envoie. Un mot de retour et on efface tout."
+  },
+  estimate: {
+    sujet: "Vos réponses sont gardées",
+    corps: "Bonjour,\n\n"
+      + "Vous avez répondu à quelques questions pour situer votre projet. Elles sont enregistrées — vous n’avez rien à recommencer.\n\n"
+      + "Au bout, il y a une fourchette : un ordre de grandeur, pas un devis. Le lien vous remet exactement où vous étiez.\n\n"
+      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "P.S. Un seul courriel, c’est celui-là. Répondez « non merci » et on ne vous réécrit pas."
+  },
+  refer: {
+    sujet: "Merci d’avoir pensé à nous",
+    corps: "Bonjour,\n\n"
+      + "Merci d’avoir pensé à nous pour une entreprise de votre entourage. Ce que vous avez inscrit est enregistré.\n\n"
+      + "Il reste quelques champs pour qu’on sache qui contacter, et comment. Le lien vous ramène à l’écran où vous étiez.\n\n"
+      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "P.S. On n’envoie que celui-là. Dites-nous « non merci » et votre adresse disparaît."
+  },
+  booking: {
+    sujet: "L’appel que vous vouliez réserver",
+    corps: "Bonjour,\n\n"
+      + "Vous aviez choisi une date et une heure pour qu’on se parle. C’est noté de notre côté — la plage n’est pas encore bloquée, ça se fait avec vos coordonnées.\n\n"
+      + "Trente minutes, par téléphone ou sur Google Meet. Si la plage n’est plus libre, on vous en propose une autre.\n\n"
+      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "P.S. C’est notre seul courriel. Un mot de votre part et on n’insiste plus jamais."
+  }
+};
+
+/* La colonne qui porte l'adresse du visiteur, lue dans le SCHEMA
+   et jamais devinée : le formulaire de référence range celle du
+   référent sous « votre_email », pas « email ». */
+function champCourriel(kind) {
+  var champs = SCHEMA[kind].champs || [];
+  for (var i = 0; i < champs.length; i++) {
+    if (champs[i].champ === "email" || champs[i].champ === "votre_email") return champs[i].titre;
+  }
+  return "";
+}
+
+function relancerAbandons() {
+  var base = adresseDuSite();
+  if (!base) {
+    console.error("RELANCE ARRÊTÉE — aucune propriété de script `SITE_URL`.\n"
+      + "    Le bouton du courriel ne mènerait nulle part. Posez-la dans\n"
+      + "    Paramètres du projet > Propriétés du script, puis relancez.");
+    return { envoyees: 0, raison: "SITE_URL absente" };
+  }
+
+  var maintenant = new Date().getTime();
+  var plancher = maintenant - REGLAGES.RELANCE_APRES_H * 3600000;
+  var plafond = maintenant - REGLAGES.RELANCE_AVANT_J * 86400000;
+  var envoyees = 0, examinees = 0, journal = [];
+
+  Object.keys(RELANCES).forEach(function (kind) {
+    if (envoyees >= REGLAGES.RELANCE_MAX_PAR_PASSE) return;
+    var def = SCHEMA[kind];
+    var feuille = classeur().getSheetByName(def.onglet);
+    if (!feuille) return;
+    var derniere = feuille.getLastRow();
+    if (derniere < 2) return;
+
+    var titres = feuille.getRange(1, 1, 1, feuille.getLastColumn()).getValues()[0];
+    var iEtape = titres.indexOf("Étape");
+    var iRelance = titres.indexOf("Relance");
+    var iParti = titres.indexOf("Parti vers");
+    var iDate = titres.indexOf("Horodatage");
+    var iSig = titres.indexOf(COL_SIGNATURE);
+    var iMail = titres.indexOf(champCourriel(kind));
+
+    /* UNE COLONNE MANQUANTE ARRÊTE CET ONGLET, elle ne le fait pas
+       passer pour vide. Sans « Relance », on ne peut pas savoir qui
+       a déjà reçu : continuer, ce serait écrire à tout le monde à
+       chaque passage. */
+    if (iRelance < 0 || iEtape < 0 || iDate < 0 || iSig < 0 || iMail < 0) {
+      console.error("relance « " + kind + " » : colonne manquante — "
+        + "Relance:" + iRelance + " Étape:" + iEtape + " Horodatage:" + iDate
+        + " Signature:" + iSig + " courriel:" + iMail
+        + ". Relancez initialiser().");
+      return;
+    }
+
+    var n = derniere - 1;
+    var vals = feuille.getRange(2, 1, n, titres.length).getValues();
+
+    for (var r = 0; r < n && envoyees < REGLAGES.RELANCE_MAX_PAR_PASSE; r++) {
+      var ligne = vals[r];
+      examinees++;
+
+      if (String(ligne[iRelance] || "").trim()) continue;          /* déjà relancé */
+      if (iParti >= 0 && String(ligne[iParti] || "").trim()) continue; /* parti chez nous */
+      var etape = String(ligne[iEtape] || "");
+      if (!etape || etape.indexOf("✓") === 0) continue;            /* complète */
+
+      var mail = String(ligne[iMail] || "").trim();
+      if (!mail || !RE_COURRIEL.test(mail)) continue;
+
+      var t = ligne[iDate] instanceof Date ? ligne[iDate].getTime() : 0;
+      if (!t || t > plancher || t < plafond) continue;             /* hors fenêtre */
+
+      var sig = String(ligne[iSig] || "");
+      if (sig.indexOf("S:") !== 0) continue;   /* pas de session : pas de reprise */
+      var sid = sig.slice(2);
+
+      var m = /^(\d+)/.exec(etape);
+      var lien = lienReprise(kind, sid, m ? Number(m[1]) : 1);
+      var texte = RELANCES[kind];
+
+      /* LA COLONNE D'ABORD, L'ENVOI ENSUITE. Si `envoyer` lève ou
+         si le script meurt entre les deux, on aura perdu UNE
+         relance. L'ordre inverse en enverrait deux au prochain
+         passage, et une deuxième relance est la seule faute que
+         cette fonction n'a pas le droit de commettre. */
+      feuille.getRange(r + 2, iRelance + 1).setValue(quand(new Date()));
+      SpreadsheetApp.flush();
+
+      var parti = envoyer(mail, texte.sujet,
+        texte.corps.replace("%LIEN%", lien), notifDest());
+      if (parti) {
+        envoyees++;
+        journal.push([quand(new Date()), def.onglet, mail, etape, lien]);
+      } else {
+        /* L'envoi a échoué : on le DIT dans la colonne plutôt que
+           de la laisser porter une date qui ferait croire au
+           contraire. On ne réessaie pas — voir ci-dessus. */
+        feuille.getRange(r + 2, iRelance + 1)
+          .setValue("envoi refusé " + quand(new Date()));
+      }
+    }
+  });
+
+  if (journal.length) ecrireRelances(journal);
+  console.log("relance : " + envoyees + " envoyée(s) sur " + examinees + " ligne(s) examinée(s)");
+  return { envoyees: envoyees, examinees: examinees };
+}
+
+function ecrireRelances(lignes) {
+  try {
+    var cl = classeur();
+    var f = cl.getSheetByName(ONGLET_RELANCES);
+    if (!f) {
+      f = cl.insertSheet(ONGLET_RELANCES);
+      f.setFrozenRows(1);
+      f.getRange(1, 1, 1, 5)
+        .setValues([["Quand", "Formulaire", "À qui", "Étape laissée", "Lien envoyé"]])
+        .setFontWeight("bold");
+      [140, 160, 210, 110, 380].forEach(function (w, i) { f.setColumnWidth(i + 1, w); });
+    }
+    f.getRange(f.getLastRow() + 1, 1, lignes.length, 5).setValues(lignes);
+  } catch (e) {
+    console.error("journal des relances : " + e);
+  }
 }
 
 function creneauxLibres() {

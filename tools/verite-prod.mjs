@@ -27,7 +27,7 @@ import { fileURLToPath } from "node:url";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
-const VERSION_MINIMALE = 10;
+const VERSION_MINIMALE = 11;
 
 const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
 const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);

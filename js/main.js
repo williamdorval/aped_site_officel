@@ -2380,8 +2380,65 @@
      Il ne montre rien, ne bloque rien, et son echec ne dit rien :
      le visiteur n'a rien demande. Il refera surface a l'etape
      suivante, ou a la fin. */
+  /* ============================================================
+     LE BROUILLON LOCAL — ce qui permet au lien de reprise de
+     remettre les RÉPONSES, pas seulement l'écran.  D-770
+
+     POURQUOI IL N'EST PAS DANS LE CLASSEUR. Les réponses y sont
+     déjà, mais les relire depuis le site demanderait une porte de
+     LECTURE ouverte sur un `_sid` — et le `_sid` n'est ni signé ni
+     lié à personne (voir RESERVES.md). Aujourd'hui, connaître un
+     `_sid` permet d'écrire dans une ligne ; ça ne permet pas de la
+     LIRE. Ouvrir cette porte transformerait une réserve tolérable
+     en fuite de données.
+
+     CE QUE ÇA COÛTE, ET IL FAUT LE DIRE : la reprise ne remet les
+     réponses que sur le NAVIGATEUR qui les a tapées. Ailleurs, le
+     lien ouvre le bon formulaire à la bonne étape, et les champs
+     sont vides. Le courriel ne promet donc jamais de retrouver les
+     réponses — il promet de ramener au bon endroit, ce qui est vrai
+     partout.
+     ============================================================ */
+  var CLE_BROUILLON = "aped-brouillon-";
+
+  function garderBrouillon(kind, data, etape, total) {
+    try {
+      var propre = {};
+      Object.keys(data || {}).forEach(function (k) {
+        /* Les clés de service ne se rejouent pas : `_sid` est déjà
+           gardé à part, et rejouer `_final` renverrait la demande. */
+        if (k.charAt(0) === "_") return;
+        var v = data[k];
+        if (v == null || String(v) === "") return;
+        propre[k] = v;
+      });
+      localStorage.setItem(CLE_BROUILLON + kind, JSON.stringify({
+        champs: propre, etape: Number(etape) || 1, total: Number(total) || 0,
+        quand: Date.now()
+      }));
+    } catch (e) { /* mode privé, quota plein : la reprise se dégrade, rien ne casse */ }
+  }
+
+  function lireBrouillon(kind) {
+    try {
+      var brut = localStorage.getItem(CLE_BROUILLON + kind);
+      if (!brut) return null;
+      var o = JSON.parse(brut);
+      /* UN BROUILLON PÉRIMÉ NE SE REJOUE PAS. Au-delà de la fenêtre
+         de relance, ce qu'il contient parle d'un projet que la
+         personne a peut-être déjà fait faire ailleurs. */
+      if (!o || !o.champs || (Date.now() - Number(o.quand || 0)) > 21 * 86400000) return null;
+      return o;
+    } catch (e) { return null; }
+  }
+
+  function oublierBrouillon(kind) {
+    try { localStorage.removeItem(CLE_BROUILLON + kind); } catch (e) {}
+  }
+
   function enregistrerDiscret(kind, data, etape, total) {
     try {
+      garderBrouillon(kind, data, etape, total);
       /* DES QU'UNE ETAPE EST FRANCHIE, il y a quelque chose a
          perdre — c'est le moment ou la retenue devient legitime. */
       retenuePossible(kind, etape, total);
@@ -3030,6 +3087,7 @@
         setLoading(referNext, false);
         oublierSession("refer");
         retenueFinie();
+        oublierBrouillon("refer");
         goRStep(R_TOTAL);
       }).catch(function (err) {
         setLoading(referNext, false);
@@ -3577,6 +3635,7 @@
            proposer de garder sa place. */
         retenueFinie();
         oublierSession("booking");
+        oublierBrouillon("booking");
         goBStep(3);
       }).catch(function (err) {
         setLoading(btn, false);
@@ -3813,6 +3872,7 @@
         setLoading(projectNext, false);
         oublierSession("project");
         retenueFinie();
+        oublierBrouillon("project");
         montrerFourchette("project", vue, data, sid);
         goPStep(P_TOTAL);
       };
@@ -4021,6 +4081,7 @@
         sendJson("estimate", charge).then(function () {
           oublierSession("estimate");
           retenueFinie();
+          oublierBrouillon("estimate");
           reveal();
         }).catch(function (err) {
           /* L'ORDRE COMPTE. On revele d'abord le resume — c'est ce  D-426 */
@@ -4680,6 +4741,144 @@
         window.setTimeout(corriger, 750);
       }
     }, true);
+  })();
+
+  /* ============================================================
+     LE LIEN DE REPRISE — revenir exactement où on était.  D-770
+
+     Le courriel de relance porte `?reprendre=<kind>&s=<sid>&e=<n>`.
+     Trois choses se font ici, dans cet ordre :
+
+     1. LA SESSION D'ABORD. On repose le `_sid` du courriel AVANT
+        d'ouvrir quoi que ce soit : sans lui, la suite du parcours
+        ouvrirait une SECONDE ligne, et la personne se retrouverait
+        dédoublée dans le classeur pour avoir cliqué sur notre lien.
+
+     2. LES RÉPONSES, si ce navigateur les a. Voir `garderBrouillon`
+        pour ce que ça ne couvre pas.
+
+     3. L'ÉCRAN. Il vient en dernier parce que remettre les valeurs
+        après avoir sauté à l'étape 6 laisserait les cinq premières
+        vides sous les yeux de quelqu'un qui les a remplies.
+
+     ON NETTOIE L'ADRESSE APRÈS. Un rechargement, un partage de lien
+     ou un retour arrière du navigateur ne doivent pas rejouer la
+     reprise — et surtout, un `_sid` n'a rien à faire dans une barre
+     d'adresse plus longtemps que nécessaire.
+     ============================================================ */
+  (function reprendreParcours() {
+    var q;
+    try { q = new URLSearchParams(location.search); } catch (e) { return; }
+    var kind = String(q.get("reprendre") || "").trim();
+    if (!kind) return;
+
+    var MODALES = {
+      project: "modal-project", estimate: "modal-estimate",
+      refer: "modal-refer", booking: "modal-booking"
+    };
+    if (!MODALES[kind]) return;
+
+    var sid = String(q.get("s") || "").trim().slice(0, 40);
+    var etape = Math.max(1, Math.min(20, Number(q.get("e")) || 1));
+
+    /* 1 · la session */
+    if (sid) { try { localStorage.setItem("aped-sid-" + kind, sid); } catch (e) {} }
+
+    /* L'ADRESSE SE NETTOIE TOUT DE SUITE, avant même d'ouvrir : si
+       ce qui suit lève, on ne veut pas que le rechargement réessaie
+       en boucle sur une page cassée. */
+    try {
+      history.replaceState(null, "", location.pathname + location.hash);
+    } catch (e) {}
+
+    var brouillon = lireBrouillon(kind);
+
+    function remettre(racine) {
+      if (!brouillon || !racine) return 0;
+      var mis = 0;
+      Object.keys(brouillon.champs).forEach(function (nom) {
+        var v = brouillon.champs[nom];
+        var cases = $$('input[type="checkbox"][name="' + nom + '"]', racine);
+        if (cases.length) {
+          var voulus = String(v).split(", ");
+          cases.forEach(function (c) {
+            if (voulus.indexOf(c.value) !== -1) { c.checked = true; mis++; }
+          });
+          return;
+        }
+        var el = $('[name="' + nom + '"]', racine);
+        if (!el) return;
+        el.value = v;
+        mis++;
+        /* UN CHOIX EN BOUTONS TIENT SA VALEUR DANS UN CHAMP CACHÉ :
+           reposer la valeur ne rallume pas le bouton, et l'écran
+           montrerait un choix vide sur une réponse donnée. */
+        if (el.type === "hidden") {
+          var groupe = el.parentElement && el.parentElement.querySelector(".choices");
+          if (groupe) {
+            $$("button", groupe).forEach(function (b) {
+              var actif = b.dataset.value === String(v) ||
+                (b.textContent || "").trim() === String(v);
+              b.classList.toggle("is-on", actif);
+              b.setAttribute("aria-pressed", actif ? "true" : "false");
+            });
+          }
+        }
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+      return mis;
+    }
+
+    /* On attend que les scripts de la vague 2 soient là : la
+       modale ne s'anime pas avant, et `openModal` n'existe pas
+       encore au tout premier tour de boucle. */
+    window.setTimeout(function () {
+      try {
+        openModal(MODALES[kind]);
+
+        if (kind === "project") {
+          remettre(projectWizard);
+          if (brouillon) goPStep(Math.min(etape, P_TOTAL - 1));
+        } else if (kind === "refer") {
+          remettre(referForm);
+          if (brouillon) goRStep(Math.min(etape, R_TOTAL - 1));
+        } else if (kind === "booking") {
+          remettre(bookingForm);
+          /* La plage n'est PAS reprise : elle a pu être prise entre
+             temps. On le laisse rechoisir plutôt que de lui montrer
+             une heure qui échouera à l'envoi.  D-724 */
+          goBStep(1);
+        } else if (kind === "estimate") {
+          /* L'estimateur ne garde pas ses réponses dans des champs
+             mais dans `answers` : on les y remet, sinon la
+             fourchette se recalculerait sur du vide. */
+          if (brouillon) {
+            var CLES = { type_de_projet: "type", domaine: "industrie", envergure: "envergure",
+              ampleur: "ampleur", fonctions: "fonctions", contenu: "contenu",
+              niveau_design: "design", echeancier: "delai", site_existant: "site_existant" };
+            Object.keys(CLES).forEach(function (envoye) {
+              var v = brouillon.champs[envoye];
+              if (v == null || v === "") return;
+              var groupe = $('.options[data-key="' + CLES[envoye] + '"]', wizard);
+              if (!groupe) return;
+              $$("button", groupe).forEach(function (b) {
+                var actif = b.dataset.value === String(v) ||
+                  (b.textContent || "").trim().indexOf(String(v)) === 0;
+                if (actif) { answers[CLES[envoye]] = b.dataset.value; }
+                b.classList.toggle("is-on", actif);
+              });
+            });
+            remettre($('form[data-form="estimate"]', wizard));
+            goEStep(Math.min(etape, E_TOTAL - 1));
+          }
+        }
+      } catch (e) {
+        /* UNE REPRISE QUI RATE NE DOIT PAS LAISSER UNE PAGE MORTE.
+           On a déjà nettoyé l'adresse ; la modale s'ouvre ou non,
+           mais le site reste utilisable. */
+        console.warn("reprise « " + kind + " » : " + e);
+      }
+    }, 1400);
   })();
 
   /* == LA DOUZIEME FRONTIERE — LA CLOTURE. ==  D-442 */

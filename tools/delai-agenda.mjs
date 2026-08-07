@@ -38,7 +38,7 @@ const SERVICE = m[1].trim();
 
 const PAS_MS = Number(process.env.PAS_MS || 2000);
 const PATIENCE_MS = Number(process.env.PATIENCE_MS || 300000);
-const VERSION_MINIMALE = 10;
+const VERSION_MINIMALE = 11;
 
 async function lire(q) {
   const r = await fetch(SERVICE + (q ? "?" + q : ""), { redirect: "follow" });

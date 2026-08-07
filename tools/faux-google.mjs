@@ -59,6 +59,7 @@ export const etat = {
   /* Ce que la veille des blocages a fait : D-762 */
   renommages: [],
   declencheurs: [],
+  flushs: 0,
   decalageHorloge: 0,
   horloge() { return Date.now() + this.decalageHorloge; }
 };
@@ -523,6 +524,14 @@ export const services = {
   SpreadsheetApp: {
     create: () => { etat.proprietes.CLASSEUR_ID = "CLASSEUR_FACTICE"; return classeurFactice; },
     openById: () => classeurFactice,
+    /* `flush` FORCE L'ECRITURE EN ATTENTE. Ici tout est deja pose
+       en memoire au moment de l'appel, donc il n'a rien a vider —
+       mais il doit EXISTER : D-770 s'en sert pour garantir que la
+       colonne « Relance » est ecrite AVANT le courriel, et un
+       bouchon absent faisait mourir la relance au premier envoi.
+       On compte les appels : un test peut ainsi verifier que la
+       marque est bien poussee avant l'envoi, et pas apres. */
+    flush: () => { etat.flushs++; },
     /* La mise en forme conditionnelle : on retient la formule et
        la couleur, on ne peint rien. Ce qu'on veut prouver, c'est
        QUE la regle est posee, sur la bonne colonne, et qu'elle ne
@@ -674,11 +683,12 @@ export const services = {
       if (i >= 0) etat.declencheurs.splice(i, 1);
     },
     newTrigger: (nom) => {
-      const b = { nom, heure: null, jours: null, agenda: null, sur: null };
+      const b = { nom, heure: null, jours: null, heures: null, agenda: null, sur: null };
       const api = {
         timeBased: () => api,
         atHour: (h) => { b.heure = h; return api; },
         everyDays: (d) => { b.jours = d; return api; },
+        everyHours: (h) => { b.heures = h; return api; },
         /* LE BANC REFUSE « primary ».  D-763
            `forUserCalendar` veut une ADRESSE ; le vrai Google leve
            sur « primary ». Un bouchon qui l'accepterait laisserait
@@ -819,6 +829,7 @@ const fabrique = new Function(...noms, source + `
            nettoyerAutotest, nettoyerRendezVousEssai, titreDuSite,
            blocagesSansEffet, veilleBlocages, poserVeille, bloqueAuMoinsUnCreneau,
            surChangementAgenda, declencheursPoses, oublierCreneaux,
+           relancerAbandons, adresseDuSite, lienReprise, RELANCES,
            libelleEtape, repererLigne, diagnostic };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));
