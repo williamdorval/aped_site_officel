@@ -4,41 +4,49 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-495** — APED AGENCE - Mouvement
-- **D-496** — 1. Entree du hero.
-- **D-497** — LE HERO NE S'ANIME PLUS DU TOUT.
-- **D-498** — 2. Compression du titre.
-- **D-499** — La plaque de limaille repond au defilement : quand le hero sort,
-- **D-500** — 3. Filets de section — N1 (orientation) + N2 (signature).
-- **D-501** — LES CINQ FILETS DE LA FICHE TECHNIQUE SONT EXCLUS, et c'est la
-- **D-502** — L'etat de depart n'est plus dans le CSS : il est pose ICI, et
-- **D-503** — G1 · ANNONCER. Un filet de seuil part des qu'il ENTRE dans
-- **D-504** — 4. Montee des blocs.
-- **D-505** — 5. Compteurs de la bande de specification.
-- **D-506** — 8. Ligne du processus.
-- **D-507** — LE FIL SE REMPLIT, station par station, et sa portion pleine
-- **D-508** — 8bis. LES QUATRE COMPOSANTS DU PARCOURS — N2.
-- **D-509** — 9. Piste du comparatif — N2.
-- **D-510** — Les LONGUEURS ne sont plus posees ici : elles sont dans le
-- **D-511** — 9bis. LE SCHEMA DE L'ECART — N2.
-- **D-512** — 10. Titres de section — N2.
-- **D-513** — L'espace est un noeud de texte ENTRE les boites, jamais
-- **D-514** — Les mots sont regroupes par LIGNE reelle, mesuree apres mise en
-- **D-515** — Une espace entre les boites de ligne. Elle ne se voit pas —
-- **D-516** — Le decoupage est PARESSEUX, un titre a la fois, au moment ou il
-- **D-517** — 11. Blocs qui se reprennent — N2.
-- **D-518** — 12. Frise du processus — N2, defilement lateral.
-- **D-519** — La frise horizontale a ete remplacee par le parcours vertical
-- **D-520** — 12bis. LES QUATRE PREUVES DE L'AGENCE — N2.
-- **D-521** — 13. Programme de reference — N2.
-- **D-522** — Les trois PREUVES. Le bareme en regle graduee a ete retire —
-- **D-523** — `immediateRender: false` SUR ONZE TWEENS — CORRECTIF DU
-- **D-524** — 13bis. « Ce qui arrive apres » — N2.
-- **D-525** — 14. Recalcul apres chargement des images.
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-495 — APED AGENCE - Mouvement** | 11 | 116 |
+| **D-496 — 1. Entree du hero.** | 18 | 235 |
+| **D-497 — LE HERO NE S'ANIME PLUS DU TOUT.** | 13 | 177 |
+| **D-498 — 2. Compression du titre.** | 10 | 115 |
+| **D-499 — La plaque de limaille repond au defilement : quand le hero sort,** | 9 | 119 |
+| **D-500 — 3. Filets de section — N1 (orientation) + N2 (signature).** | 12 | 170 |
+| **D-501 — LES CINQ FILETS DE LA FICHE TECHNIQUE SONT EXCLUS, et c'est la** | 10 | 144 |
+| **D-502 — L'etat de depart n'est plus dans le CSS : il est pose ICI, et** | 8 | 101 |
+| **D-503 — G1 · ANNONCER. Un filet de seuil part des qu'il ENTRE dans** | 10 | 132 |
+| **D-504 — 4. Montee des blocs.** | 9 | 100 |
+| **D-505 — 5. Compteurs de la bande de specification.** | 8 | 96 |
+| **D-506 — 8. Ligne du processus.** | 8 | 82 |
+| **D-507 — LE FIL SE REMPLIT, station par station, et sa portion pleine** | 9 | 113 |
+| **D-508 — 8bis. LES QUATRE COMPOSANTS DU PARCOURS — N2.** | 13 | 181 |
+| **D-509 — 9. Piste du comparatif — N2.** | 11 | 149 |
+| **D-510 — Les LONGUEURS ne sont plus posees ici : elles sont dans le** | 9 | 112 |
+| **D-511 — 9bis. LE SCHEMA DE L'ECART — N2.** | 12 | 156 |
+| **D-512 — 10. Titres de section — N2.** | 12 | 164 |
+| **D-513 — L'espace est un noeud de texte ENTRE les boites, jamais** | 7 | 89 |
+| **D-514 — Les mots sont regroupes par LIGNE reelle, mesuree apres mise en** | 13 | 187 |
+| **D-515 — Une espace entre les boites de ligne. Elle ne se voit pas —** | 8 | 103 |
+| **D-516 — Le decoupage est PARESSEUX, un titre a la fois, au moment ou il** | 9 | 129 |
+| **D-517 — 11. Blocs qui se reprennent — N2.** | 10 | 133 |
+| **D-518 — 12. Frise du processus — N2, defilement lateral.** | 11 | 153 |
+| **D-519 — La frise horizontale a ete remplacee par le parcours vertical** | 8 | 104 |
+| **D-520 — 12bis. LES QUATRE PREUVES DE L'AGENCE — N2.** | 12 | 154 |
+| **D-521 — 13. Programme de reference — N2.** | 10 | 127 |
+| **D-522 — Les trois PREUVES. Le bareme en regle graduee a ete retire —** | 7 | 87 |
+| **D-523 — immediateRender: false SUR ONZE TWEENS — CORRECTIF DU** | 41 | 596 |
+| **D-524 — 13bis. « Ce qui arrive apres » — N2.** | 9 | 114 |
+| **D-525 — 14. Recalcul apres chargement des images.** | 8 | 99 |
+| **D-623 · 6.** | 15 | 168 |
+
+<!-- INDEX:FIN -->
 
 ## D-495 — APED AGENCE - Mouvement
 

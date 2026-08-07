@@ -4,103 +4,134 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-352** — APED AGENCE - Logique
-- **D-353** — LE BAREME PUBLIE — et ce qui a disparu d'ici.
-- **D-354** — B7 · LA FAUSSE PRECISION INVITE EXACTEMENT LA CONTESTATION
-- **D-355** — Ressort. Sert a l'odometre du calculateur : le chiffre a une
-- **D-356** — SEQUENCE D'ENTREE — CE QUE LE SCRIPT AJOUTE, ET CE QU'IL
-- **D-357** — LA PLAQUE SE REND A LA PLACE DU HERO.
-- **D-358** — 2. L'ATTENTE
-- **D-359** — LA COMPOSITION DU HERO A SA PROPRE VIE
-- **D-360** — LES PLAQUES SONT POSEES TOUT DE SUITE, MAIS A L'ARRET.
-- **D-361** — Les polices. `document.fonts.ready` se resout quand toutes
-- **D-362** — La limaille du hero. `hero.js` pose `is-live` sur l'hote une
-- **D-363** — LE GARDE-FOU
-- **D-364** — 3. LE SAUT
-- **D-365** — LA FIN, ET LE DEPART DE LA COMPOSITION
-- **D-366** — 3,2 s de budget. Le dernier geste est la soudure du filet
-- **D-367** — Filet de securite : si l'animation ne se declenche pas du
-- **D-368** — SECTION 02 · LA PISTE, LE RAIL ET LE PANNEAU
-- **D-369** — LA FICHE DE SERVICE N'EST PAS UNE `.modal` — c'est un
-- **D-370** — EST-CE QUE LE RAIL EXISTE ? LA REPONSE EST DANS LE CSS.
-- **D-371** — LE PAS SE MESURE, IL NE SE CALCULE PAS. `largeur + gap` est
-- **D-372** — LA PREMIERE IMAGE NE DOIT DEPENDRE DE PERSONNE.
-- **D-373** — L'ARRIVEE PAR ANCRE SE JOUE ICI, ET NULLE PART AILLEURS.
-- **D-374** — LA CARTE DE PROGRESSION — V2 · S'ALIGNER, arretee d'un
-- **D-375** — LE VOILE DES NOMS NAIT AVEC LE PREMIER MARQUAGE, PAS AVANT.
-- **D-376** — `data-vu` NE SE RETIRE JAMAIS. Le degagement du nom est
-- **D-377** — UNE SEULE LECTURE DE MISE EN PAGE PAR IMAGE, ET ELLE VIENT
-- **D-378** — LE FILET DE SECURITE. Une geometrie degeneree — course ou
-- **D-379** — `scrollLeft` ET NON `transform` — voir l'argument en tete du
-- **D-380** — LE PILOTE. Un ecouteur `scroll` passif, une seule image
-- **D-381** — LA MARGE EST GENEREUSE, ET C'EST DELIBERE. A 120 px, une
-- **D-382** — Le redimensionnement change la course, le pas et la hauteur de
-- **D-383** — `differe.css` est injecte APRES le premier rendu : au moment
-- **D-384** — L'ARMEMENT — on ESSAIE jusqu'a ce que la feuille differee soit
-- **D-385** — LA VITRE NE DEFILE QUE SUR L'AXE QU'ON PILOTE.
-- **D-386** — ALLER A UN CHANTIER — on defile la PAGE, et rien d'autre.
-- **D-387** — SANS RAIL, ON NE TOUCHE A RIEN. La pile verticale a de
-- **D-388** — L'ARRIVEE PAR ANCRE.
-- **D-389** — ON VERIFIE L'ATTERRISSAGE, ON NE LE SUPPOSE PAS.
-- **D-390** — LE FOCUS NE DESYNCHRONISE RIEN.
-- **D-391** — LE CLAVIER — par crans, comme le defilement.
-- **D-392** — LE PANNEAU DE DETAIL
-- **D-393** — LE VOILE EST UN PSEUDO-ELEMENT DE `.svc-porte`, pas du
-- **D-394** — SECTION 03 · L'AVANT / APRES
-- **D-395** — Une graine FIXE par carte et par sens : `Math.random()`
-- **D-396** — 520 / 240 et non 420 / 190 : releve du 2026-07-30,
-- **D-397** — 900 ms : le temps que la carte soit franchement dans
-- **D-398** — `checked` par script n'emet AUCUN evenement : le passage
-- **D-399** — PARCOURS — compteur d'etape.
-- **D-400** — LE CADEAU — QUAND IL PARAIT, ET POURQUOI CE N'EST PLUS CE QUE
-- **D-401** — Les deux marqueurs de l'ancienne regle sont effaces a chaque
-- **D-402** — On REPORTE au lieu d'abandonner : c'est la difference entre
-- **D-403** — LA SORTIE EST LA RECIPROQUE DE L'ENTREE. On pose la classe,
-- **D-404** — A3 · LA REMISE N'EST PLUS CACHEE AU DEPART.
-- **D-405** — LE CHAMP N'EST PLUS `required`, DONC `validate()` NE PEUT
-- **D-406** — CE QUI PART VERS LE VISITEUR, ET CE QUI N'EST PAS POSSIBLE.
-- **D-407** — LES DEUX COUVERTURES SONT CHARGEES A L'AVANCE, mais PAS au
-- **D-408** — Tout ce qui peint hors CSS doit etre prevenu. Le canvas du hero
-- **D-409** — Le theme systeme peut changer PENDANT la visite (coucher de
-- **D-410** — PHASE 10 — LA BASCULE PASSE PAR UNE TRAME, PLUS PAR UN FONDU.
-- **D-411** — La fermeture est la RECIPROQUE : l'arete repasse par ou elle
-- **D-412** — PHASE 10 — le menu est un PANNEAU : il se lit de haut en bas,
-- **D-413** — PHASE 10 — LE PANNEAU « AJUSTER EN DETAIL », ET LES AUTRES
-- **D-414** — Verrou de defilement. La largeur de la barre est compensee,
-- **D-415** — Deux calques peuvent capturer le focus : une modale, et le menu plein
-- **D-416** — La fiche de service est un calque au meme titre qu'une
-- **D-417** — PHASE 8 · V1 — le panneau se DEGAGE du haut sous une arete
-- **D-418** — PHASE 8 · V1 — le panneau se referme par ou il s'est ouvert.
-- **D-419** — Validation. Le focus se pose sur le premier champ en erreur,
-- **D-420** — PHASE 8 · V3 — LA SOUDURE NE SE VOIT QUE SUR CE QUI VIENT
-- **D-421** — UN 200 N'EST PAS UN ENVOI. C'est un vrai defaut, trouve le
-- **D-422** — LE REPLI QUI LIVRE VRAIMENT — corrige le risque de veracite le
-- **D-423** — Les navigateurs et les clients de courriel se coupent quelque
-- **D-424** — Pose le repli JUSTE APRES le message d'etat, dans le meme parent,
-- **D-425** — L'ETAT DE SORTIE EST CELUI DE L'ETAPE 8, PAS CELUI DU
-- **D-426** — L'ORDRE COMPTE. On revele d'abord la fourchette — c'est ce
-- **D-427** — Calculateur. Le montant alimente aussi l'index de gauche et
-- **D-428** — LE CURSEUR MAITRE.
-- **D-429** — Le curseur maitre suit toujours la somme des huit taches,
-- **D-430** — B6 · DEUX POSTES RETIRES DU TOTAL LE 2026-07-29, ET LE
-- **D-431** — L'ACCUSE NE CITE PLUS QUE CE QUI EXISTE ENCORE. Il enumerait
-- **D-432** — PHASE 8 — LA RECOMPOSITION. Ce fichier ne connait pas GSAP
-- **D-433** — AU TACTILE IL N'Y A PAS DE SURVOL.
-- **D-434** — LE CRAN — V4 du langage de mouvement, et il vit ICI.
-- **D-435** — Termine un roulement en cours, sur-le-champ.
-- **D-436** — LE SORTANT DEVIENT UN FANTOME, ET C'EST UNE CORRECTION DE
-- **D-437** — Le decalage par rang fait rouler les caracteres de gauche a
-- **D-438** — N1 · LE CURSEUR DU RAIL — PHASE 8.
-- **D-439** — G2 · LE CRAN DE LA FRONTIERE — V4, et il vit ICI, pas dans
-- **D-440** — N1 · progression de lecture, et progression DANS la section
-- **D-441** — Fraction de la section REELLEMENT parcourue.
-- **D-442** — LA DOUZIEME FRONTIERE — LA CLOTURE.
-- **D-578** — Trois seuils vivent dans un sas : reperage par `data-vers`
-- **D-583** — Viser l'ancre — `content-visibility` fait mentir les arrivees
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-352 — APED AGENCE - Logique** | 9 | 93 |
+| **D-353 — LE BAREME PUBLIE — et ce qui a disparu d'ici.** | 40 | 560 |
+| **D-354 — B7 · LA FAUSSE PRECISION INVITE EXACTEMENT LA CONTESTATION** | 11 | 164 |
+| **D-355 — Ressort. Sert a l'odometre du calculateur : le chiffre a une** | 7 | 86 |
+| **D-356 — SEQUENCE D'ENTREE — CE QUE LE SCRIPT AJOUTE, ET CE QU'IL** | 28 | 366 |
+| **D-357 — LA PLAQUE SE REND A LA PLACE DU HERO.** | 17 | 233 |
+| **D-358 — 2. L'ATTENTE** | 9 | 107 |
+| **D-359 — LA COMPOSITION DU HERO A SA PROPRE VIE** | 21 | 302 |
+| **D-360 — LES PLAQUES SONT POSEES TOUT DE SUITE, MAIS A L'ARRET.** | 25 | 359 |
+| **D-361 — Les polices. document.fonts.ready se resout quand toutes** | 7 | 89 |
+| **D-362 — La limaille du hero. hero.js pose is-live sur l'hote une** | 8 | 103 |
+| **D-363 — LE GARDE-FOU** | 8 | 87 |
+| **D-364 — 3. LE SAUT** | 25 | 374 |
+| **D-365 — LA FIN, ET LE DEPART DE LA COMPOSITION** | 32 | 463 |
+| **D-366 — 3,2 s de budget. Le dernier geste est la soudure du filet** | 10 | 144 |
+| **D-367 — Filet de securite : si l'animation ne se declenche pas du** | 8 | 101 |
+| **D-368 — SECTION 02 · LA PISTE, LE RAIL ET LE PANNEAU** | 76 | 1 041 |
+| **D-369 — LA FICHE DE SERVICE N'EST PAS UNE .modal — c'est un** | 16 | 208 |
+| **D-370 — EST-CE QUE LE RAIL EXISTE ? LA REPONSE EST DANS LE CSS.** | 18 | 231 |
+| **D-371 — LE PAS SE MESURE, IL NE SE CALCULE PAS. largeur + gap est** | 8 | 108 |
+| **D-372 — LA PREMIERE IMAGE NE DOIT DEPENDRE DE PERSONNE.** | 20 | 266 |
+| **D-373 — L'ARRIVEE PAR ANCRE SE JOUE ICI, ET NULLE PART AILLEURS.** | 24 | 313 |
+| **D-374 — LA CARTE DE PROGRESSION — V2 · S'ALIGNER, arretee d'un** | 30 | 399 |
+| **D-375 — LE VOILE DES NOMS NAIT AVEC LE PREMIER MARQUAGE, PAS AVANT.** | 18 | 247 |
+| **D-376 — data-vu NE SE RETIRE JAMAIS. Le degagement du nom est** | 7 | 87 |
+| **D-377 — UNE SEULE LECTURE DE MISE EN PAGE PAR IMAGE, ET ELLE VIENT** | 8 | 97 |
+| **D-378 — LE FILET DE SECURITE. Une geometrie degeneree — course ou** | 7 | 88 |
+| **D-379 — scrollLeft ET NON transform — voir l'argument en tete du** | 7 | 86 |
+| **D-380 — LE PILOTE. Un ecouteur scroll passif, une seule image** | 9 | 121 |
+| **D-381 — LA MARGE EST GENEREUSE, ET C'EST DELIBERE. A 120 px, une** | 10 | 131 |
+| **D-382 — Le redimensionnement change la course, le pas et la hauteur de** | 7 | 82 |
+| **D-383 — differe.css est injecte APRES le premier rendu : au moment** | 8 | 110 |
+| **D-384 — L'ARMEMENT — on ESSAIE jusqu'a ce que la feuille differee soit** | 18 | 241 |
+| **D-385 — LA VITRE NE DEFILE QUE SUR L'AXE QU'ON PILOTE.** | 16 | 207 |
+| **D-386 — ALLER A UN CHANTIER — on defile la PAGE, et rien d'autre.** | 16 | 209 |
+| **D-387 — SANS RAIL, ON NE TOUCHE A RIEN. La pile verticale a de** | 7 | 81 |
+| **D-388 — L'ARRIVEE PAR ANCRE.** | 14 | 174 |
+| **D-389 — ON VERIFIE L'ATTERRISSAGE, ON NE LE SUPPOSE PAS.** | 29 | 406 |
+| **D-390 — LE FOCUS NE DESYNCHRONISE RIEN.** | 17 | 210 |
+| **D-391 — LE CLAVIER — par crans, comme le defilement.** | 12 | 146 |
+| **D-392 — LE PANNEAU DE DETAIL** | 18 | 216 |
+| **D-393 — LE VOILE EST UN PSEUDO-ELEMENT DE .svc-porte, pas du** | 8 | 105 |
+| **D-394 — SECTION 03 · L'AVANT / APRES** | 51 | 678 |
+| **D-395 — Une graine FIXE par carte et par sens : Math.random()** | 7 | 78 |
+| **D-396 — 520 / 240 et non 420 / 190 : releve du 2026-07-30,** | 10 | 133 |
+| **D-397 — 900 ms : le temps que la carte soit franchement dans** | 8 | 101 |
+| **D-398 — checked par script n'emet AUCUN evenement : le passage** | 8 | 96 |
+| **D-399 — PARCOURS — compteur d'etape.** | 13 | 153 |
+| **D-400 — LE CADEAU — QUAND IL PARAIT, ET POURQUOI CE N'EST PLUS CE QUE** | 84 | 1 204 |
+| **D-401 — Les deux marqueurs de l'ancienne regle sont effaces a chaque** | 7 | 84 |
+| **D-402 — On REPORTE au lieu d'abandonner : c'est la difference entre** | 7 | 82 |
+| **D-403 — LA SORTIE EST LA RECIPROQUE DE L'ENTREE. On pose la classe,** | 7 | 91 |
+| **D-404 — A3 · LA REMISE N'EST PLUS CACHEE AU DEPART.** | 11 | 161 |
+| **D-405 — LE CHAMP N'EST PLUS required, DONC validate() NE PEUT** | 10 | 135 |
+| **D-406 — CE QUI PART VERS LE VISITEUR, ET CE QUI N'EST PAS POSSIBLE.** | 25 | 358 |
+| **D-407 — LES DEUX COUVERTURES SONT CHARGEES A L'AVANCE, mais PAS au** | 15 | 201 |
+| **D-408 — Tout ce qui peint hors CSS doit etre prevenu. Le canvas du hero** | 8 | 114 |
+| **D-409 — Le theme systeme peut changer PENDANT la visite (coucher de** | 7 | 86 |
+| **D-410 — PHASE 10 — LA BASCULE PASSE PAR UNE TRAME, PLUS PAR UN FONDU.** | 44 | 621 |
+| **D-411 — La fermeture est la RECIPROQUE : l'arete repasse par ou elle** | 7 | 88 |
+| **D-412 — PHASE 10 — le menu est un PANNEAU : il se lit de haut en bas,** | 7 | 92 |
+| **D-413 — PHASE 10 — LE PANNEAU « AJUSTER EN DETAIL », ET LES AUTRES** | 20 | 263 |
+| **D-414 — Verrou de defilement. La largeur de la barre est compensee,** | 7 | 87 |
+| **D-415 — Deux calques peuvent capturer le focus : une modale, et le menu plein** | 7 | 104 |
+| **D-416 — La fiche de service est un calque au meme titre qu'une** | 7 | 86 |
+| **D-417 — PHASE 8 · V1 — le panneau se DEGAGE du haut sous une arete** | 7 | 85 |
+| **D-418 — PHASE 8 · V1 — le panneau se referme par ou il s'est ouvert.** | 9 | 111 |
+| **D-419 — Validation. Le focus se pose sur le premier champ en erreur,** | 7 | 87 |
+| **D-420 — PHASE 8 · V3 — LA SOUDURE NE SE VOIT QUE SUR CE QUI VIENT** | 10 | 131 |
+| **D-421 — UN 200 N'EST PAS UN ENVOI. C'est un vrai defaut, trouve le** | 22 | 280 |
+| **D-422 — LE REPLI QUI LIVRE VRAIMENT — corrige le risque de veracite le** | 43 | 624 |
+| **D-423 — Les navigateurs et les clients de courriel se coupent quelque** | 8 | 113 |
+| **D-424 — Pose le repli JUSTE APRES le message d'etat, dans le meme parent,** | 8 | 101 |
+| **D-425 — L'ETAT DE SORTIE EST CELUI DE L'ETAPE 8, PAS CELUI DU** | 7 | 79 |
+| **D-426 — L'ORDRE COMPTE. On revele d'abord la fourchette — c'est ce** | 9 | 129 |
+| **D-427 — Calculateur. Le montant alimente aussi l'index de gauche et** | 7 | 81 |
+| **D-428 — LE CURSEUR MAITRE.** | 19 | 245 |
+| **D-429 — Le curseur maitre suit toujours la somme des huit taches,** | 7 | 80 |
+| **D-430 — B6 · DEUX POSTES RETIRES DU TOTAL LE 2026-07-29, ET LE** | 33 | 464 |
+| **D-431 — L'ACCUSE NE CITE PLUS QUE CE QUI EXISTE ENCORE. Il enumerait** | 8 | 111 |
+| **D-432 — PHASE 8 — LA RECOMPOSITION. Ce fichier ne connait pas GSAP** | 10 | 136 |
+| **D-433 — AU TACTILE IL N'Y A PAS DE SURVOL.** | 12 | 167 |
+| **D-434 — LE CRAN — V4 du langage de mouvement, et il vit ICI.** | 33 | 441 |
+| **D-435 — Termine un roulement en cours, sur-le-champ.** | 17 | 218 |
+| **D-436 — LE SORTANT DEVIENT UN FANTOME, ET C'EST UNE CORRECTION DE** | 22 | 302 |
+| **D-437 — Le decalage par rang fait rouler les caracteres de gauche a** | 7 | 86 |
+| **D-438 — N1 · LE CURSEUR DU RAIL — PHASE 8.** | 22 | 287 |
+| **D-439 — G2 · LE CRAN DE LA FRONTIERE — V4, et il vit ICI, pas dans** | 27 | 386 |
+| **D-440 — N1 · progression de lecture, et progression DANS la section** | 9 | 126 |
+| **D-441 — Fraction de la section REELLEMENT parcourue.** | 12 | 170 |
+| **D-442 — LA DOUZIEME FRONTIERE — LA CLOTURE.** | 14 | 161 |
+| **D-578 — TROIS SEUILS VIVENT DANS UN SAS** | 8 | 97 |
+| **D-583 — VISER L'ANCRE** | 13 | 184 |
+| **D-598 · LA MARGE DE FIN N'EST PAS CELLE DU TEXTE.** | 14 | 164 |
+| **D-597 · LA ZONE MORTE PASSE DE 18 % A 10 %.** | 15 | 184 |
+| **D-599 · == LE RATTRAPAGE — LE CORRECTIF DE « CA NE GLISSE PAS ».** | 18 | 240 |
+| **D-607 · == OUVRIR LA VISITE DEPUIS LE PANNEAU 03.** | 22 | 267 |
+| **D-593 · --- LE GLISSEMENT, ET IL EST EXPLICITE.** | 23 | 285 |
+| **D-641 · LA MOLETTE POSEE SUR LA PRISE DOIT DESCENDRE DANS LE CADRE, PAS DANS LA PAGE.** | 23 | 294 |
+| **D-645 · --- LE VERROU EN POURCENTAGE --- D-645 Les deux cotes n'ont pas la meme…** | 20 | 257 |
+| **D-648 · 100 cqw = la largeur du cadre.** | 14 | 154 |
+| **D-651 · UNE BANDE SE POSE PAR SA FRACTION, PAS PAR UN INDICE.** | 10 | 111 |
+| **D-654 · ON PEINT DANS L'EVENEMENT, PAS UNE IMAGE PLUS TARD.** | 24 | 303 |
+| **D-594 · AU DOIGT, ON NE PREND PAS LA MAIN TOUT DE SUITE : le D-594 meme geste peut…** | 10 | 112 |
+| **D-628 · --- 2 · L'OEIL QUI ALLUMAIT LA BOUCLE EST RETIRE --- D-628 Il posait…** | 14 | 183 |
+| **D-635 · LA BASCULE EST UN CRAN.** | 11 | 113 |
+| **D-622 · == LE CALENDRIER OUVRE SUR LE PREMIER JOUR RESERVABLE.** | 14 | 177 |
+| **D-636 · LES DEUX PISTES PARTAGENT ORIGINE ET ECHELLE.** | 13 | 153 |
+| **D-687 · UN SEUL CARTOUCHE POUR LES TREIZE.** | 10 | 106 |
+| **D-672 · ================================================================== L'APERCU…** | 47 | 635 |
+| **D-688 · LE CADRE FAIT 1440 x 900 EN PROPRE ET SE REDUIT.** | 12 | 141 |
+| **D-681 · IL N'Y A PLUS RIEN A FAIRE DEFILER.** | 11 | 123 |
+| **D-707 · Le montant se tait tant que le visiteur n'a rien regle** | 29 | 356 |
+| **D-699 · Deux curseurs ne changeaient rien, ils sont partis** | 18 | 222 |
+| **D-708 · Un jour offert a toujours au moins une plage** | 24 | 318 |
+| **D-719 · L'ADRESSE PERSONNELLE EST PARTIE DU CODE.** | 46 | 575 |
+| **D-720 · LE TITRE PASSE A GAUCHE DU FORMULAIRE.** | 41 | 500 |
+
+<!-- INDEX:FIN -->
 
 ## D-352 — APED AGENCE - Logique
 

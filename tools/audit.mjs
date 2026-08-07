@@ -5,6 +5,20 @@ import fs from "node:fs";
 import path from "node:path";
 
 const BASE = process.env.APED_BASE || "http://localhost:8099";
+
+/* IL EST LE SEUL OUTIL DONT LE PREMIER ARGUMENT N'EST PAS UN PORT.  D-779
+
+   Tous les autres passent par `_adresse.mjs` et lisent `argv[2]` comme
+   un numero de port. Ici c'est un dossier de SORTIE — et le 2026-07-26,
+   `node tools/audit.mjs 8099` a donc cree `8099/` a la racine du depot,
+   12 Mo de captures, sans que rien ne le signale. Un chiffre nu n'est
+   jamais un nom de dossier voulu : on ARRETE. */
+if (/^\d{2,5}$/.test(process.argv[2] || "")) {
+  console.error("ARRET  « " + process.argv[2] + " » ressemble a un port, pas a un dossier.\n"
+    + "       Cet outil-ci prend un DOSSIER DE SORTIE en premier argument.\n"
+    + "       L'adresse se change par APED_BASE=http://127.0.0.1:" + process.argv[2] + " .");
+  process.exit(2);
+}
 const OUT = path.resolve(process.argv[2] || "refonte-captures/audit2");
 fs.mkdirSync(OUT, { recursive: true });
 

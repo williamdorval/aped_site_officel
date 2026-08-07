@@ -4,15 +4,24 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-538** — APED AGENCE - Visite virtuelle 360
-- **D-539** — Plan : repere 240 x 140. Les rectangles ci-dessous et les murs du
-- **D-540** — UNE SEULE PROPRIETE — Lythwood Lodge, Lidgetton, KwaZulu-Natal.
-- **D-541** — Derive lente pendant l'inactivite : elle dit « c'est un 360 »
-- **D-542** — PHASE 10 — LE PASSAGE D'UNE PIECE A L'AUTRE.
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-538 — APED AGENCE - Visite virtuelle 360** | 29 | 363 |
+| **D-539 — Plan : repere 240 x 140. Les rectangles ci-dessous et les murs du** | 30 | 425 |
+| **D-540 — UNE SEULE PROPRIETE — Lythwood Lodge, Lidgetton, KwaZulu-Natal.** | 39 | 566 |
+| **D-541 — Derive lente pendant l'inactivite : elle dit « c'est un 360 »** | 7 | 85 |
+| **D-542 — PHASE 10 — LE PASSAGE D'UNE PIECE A L'AUTRE.** | 20 | 247 |
+| **D-607 · LE BOUTON EST CABLE — ET C'EST UN DRAPEAU, PAS UN DETAIL.** | 11 | 127 |
+| **D-718 · LA VISITE S'OUVRE SEULE QUAND ON ARRIVE DESSUS.** | 45 | 555 |
+
+<!-- INDEX:FIN -->
 
 ## D-538 — APED AGENCE - Visite virtuelle 360
 

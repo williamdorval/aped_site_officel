@@ -31,7 +31,18 @@ const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 
 const MODE = process.argv[2] || "verifier";
-const DEFAUT = ["ANIMATIONS.md", "ARCHITECTURE.md", "PIEGES.md", "MESURES.md", "DECISIONS.md", "RESERVES.md", "SECTIONS.md"];
+/* LES SEIZE JOURNAUX DE `decisions/` ONT REJOINT LA LISTE.  D-779
+
+   Leur table etait tenue A LA MAIN, et dix des seize avaient
+   decroche : 121 decisions manquaient au total, dont 25 dans
+   `index.md` et 35 dans `css-app.md`. Exactement le defaut que
+   CLAUDE.md raconte sur `PIEGES.md` — une table manuelle s'arrete
+   sans que personne le voie, et envoie lire le mauvais endroit.
+   Un index perime coute plus cher que pas d'index. */
+const DECISIONS = fs.readdirSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "decisions"))
+  .filter((f) => f.endsWith(".md")).sort().map((f) => "decisions/" + f);
+const DEFAUT = ["ANIMATIONS.md", "ARCHITECTURE.md", "PIEGES.md", "MESURES.md",
+                "DECISIONS.md", "RESERVES.md", "SECTIONS.md"].concat(DECISIONS);
 const CIBLES = process.argv.slice(3).length ? process.argv.slice(3) : DEFAUT;
 
 const DEBUT = "<!-- INDEX:DEBUT -->";
@@ -85,7 +96,13 @@ function batir(texte) {
   out.push("");
   out.push("> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact");
   out.push("> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :");
-  out.push("> `grep -n \"^### <titre>\" <fichier>` puis lis la plage. Le titre est la clé —");
+  /* LE NIVEAU DU `grep` SUIT LE DOCUMENT.  D-779  Les journaux de
+     `decisions/` titrent en `##`, les sept documents de tete en
+     `###` : une consigne fixe envoyait chercher un dièse de trop
+     dans seize fichiers sur vingt-trois, et un `grep` qui rend zero
+     ne dit pas qu'il s'est trompe de motif. */
+  const diese = "#".repeat(titres.length && titres.every((t) => t.niveau === 2) ? 2 : 3);
+  out.push("> `grep -n \"^" + diese + " <titre>\" <fichier>` puis lis la plage. Le titre est la clé —");
   out.push("> il ne périme pas, un numéro de ligne oui.");
   out.push("");
   out.push("| Partie | Lignes | Jetons ~ |");

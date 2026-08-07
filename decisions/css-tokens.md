@@ -4,16 +4,24 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-342** — APED AGENCE - Direction ATELIER
-- **D-343** — Couleur. Deux themes a parite complete de hierarchie.
-- **D-344** — Accent LISIBLE SUR LA SURFACE INVERSE. Il manquait, et
-- **D-345** — Espace. Base 8. Les respirations de bande sont volontairement
-- **D-346** — Respirations resserrees. Mesure a 1440 : la bande normale
-- **D-347** — La barre passe AU-DESSUS du menu plein ecran. Elle etait dessous, donc
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-342 — APED AGENCE - Direction ATELIER** | 15 | 190 |
+| **D-343 — Couleur. Deux themes a parite complete de hierarchie.** | 8 | 107 |
+| **D-344 — Accent LISIBLE SUR LA SURFACE INVERSE. Il manquait, et** | 7 | 88 |
+| **D-345 — Espace. Base 8. Les respirations de bande sont volontairement** | 7 | 86 |
+| **D-346 — Respirations resserrees. Mesure a 1440 : la bande normale** | 8 | 102 |
+| **D-347 — La barre passe AU-DESSUS du menu plein ecran. Elle etait dessous, donc** | 7 | 99 |
+| **D-586 · == LA CHAMBRE NOIRE — hors des deux themes, et c'est le point.** | 16 | 223 |
+
+<!-- INDEX:FIN -->
 
 ## D-342 — APED AGENCE - Direction ATELIER
 

@@ -123,6 +123,7 @@ correctif.
 | &nbsp;&nbsp;↳ 93 · Une valeur qui commence par =, +, - ou @ devient une FORMULE dans Sheets | 44 | 541 |
 | &nbsp;&nbsp;↳ 94 · Une validation périmée tronque la ligne, et l'écriture passe pour faite | 47 | 656 |
 | &nbsp;&nbsp;↳ 95 · Renommer une valeur de liste ne touche pas les cellules déjà remplies | 47 | 671 |
+| &nbsp;&nbsp;↳ 96 · Un outil qui s'ARRÊTE éteint tous ses contrôles, et personne ne le voit | 46 | 603 |
 
 <!-- INDEX:FIN -->
 
@@ -1897,3 +1898,49 @@ remettre, une demande écrite à moitié coûte le client.
 liste est bonne » : il doit être « une ligne écrite AVANT le
 changement se fait encore fusionner ». `idempotence-check.mjs` cas 12
 l'écrit dans cet ordre-là.
+
+### 96 · Un outil qui s'ARRÊTE éteint tous ses contrôles, et personne ne le voit
+
+**Le faux verdict.** La suite passe. Aucun `ECHEC` nulle part. Et
+pourtant une garantie entière n'est plus vérifiée depuis des heures.
+
+**Ce qui s'est passé.** Le 2026-08-07, D-774 a sorti le barème du
+navigateur : `var BAREME` a quitté `js/main.js` pour `google/Code.gs`.
+`tools/prime-check.mjs` allait le lire là. Il a fait ce qu'il fallait
+faire — il a refusé de conclure :
+
+```
+ARRET  `BAREME` introuvable dans js/main.js — la comparaison
+       « aucune prime n'est un prix » ne pourrait pas se faire,
+       et la conclure quand meme serait une invention.
+```
+
+C'est le **bon** comportement (piège 30). Le problème est ailleurs :
+cet `exit 2` était posé AVANT les cinq contrôles, pas seulement avant
+le quatrième. La grille des primes affichée au public — sept montants,
+le plafond annoncé, la fermeture du panneau au chargement, le taux
+effectif maximal — n'était plus vérifiée **du tout**, et le seul signe
+en était un code de sortie que personne ne regarde quand la ligne
+d'après affiche « ok ».
+
+**La cause.** Un arrêt est *silencieux à l'échelle de la suite*. Une
+session qui lance douze outils lit douze verdicts ; celui qui n'en
+rend pas ne laisse pas de trou visible dans la liste, il laisse une
+ligne de moins.
+
+**Le correctif.**
+
+- **Un outil arrêté compte comme une ABSENCE de test**, jamais comme
+  un test qui passe. Il se répare le jour même ou il se retire.
+- **Placer le garde-fou au plus près de ce qu'il protège.** Un `exit 2`
+  qui garde le contrôle 4 se met devant le contrôle 4, pas en tête de
+  fichier : les trois autres n'ont rien à voir avec lui.
+- **Une suite doit compter ses outils, pas seulement ses verdicts.**
+  Douze lancés, douze conclus. Onze conclus sur douze lancés est un
+  échec, même si les onze sont verts.
+
+**Le signe qui doit alerter.** Un outil dont on ne se rappelle pas
+avoir lu la sortie récemment. Et surtout : **tout déplacement d'une
+constante d'un fichier à un autre**. Le code qui la lit se répare
+parce qu'il casse ; l'outil qui la lit, lui, s'arrête poliment.
+`grep -rn "<NOM_DE_LA_CONSTANTE>" tools/` après chaque déménagement.

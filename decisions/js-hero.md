@@ -4,24 +4,31 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-543** — HERO — la plaque de limaille
-- **D-544** — Politique d'accent — tranchee et documentee.
-- **D-545** — MESURE DU 2026-07-25 : a 0,72 le petit mot recevait 28 % de grains
-- **D-546** — HAUTEUR REELLEMENT OCCUPEE, ROTATION COMPRISE.
-- **D-547** — Le grand mot occupe presque toute la largeur, moins la marge
-- **D-548** — ALIGNEMENT DU PETIT MOT — mesure, puis tranche.
-- **D-549** — Sur ecran etroit le petit mot doit remonter en taille
-- **D-550** — Le petit mot etait a 0,215 : sa hauteur de capitale tombait a
-- **D-551** — Composition qui RENTRE, mesuree et non esperee. Deux passes
-- **D-552** — DENSITE PAR LIGNE — c'est le reglage decisif.
-- **D-553** — La decision « premiere visite de la session » est prise UNE
-- **D-554** — Les grains partent des QUINZE filets horizontaux, exactement
-- **D-555** — Filet de securite : onglet ouvert en arriere-plan, rideau
-- **D-556** — RECOLORATION A LA BASCULE DE THEME.
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-543 — HERO — la plaque de limaille** | 16 | 193 |
+| **D-544 — Politique d'accent — tranchee et documentee.** | 24 | 314 |
+| **D-545 — MESURE DU 2026-07-25 : a 0,72 le petit mot recevait 28 % de grains** | 11 | 163 |
+| **D-546 — HAUTEUR REELLEMENT OCCUPEE, ROTATION COMPRISE.** | 20 | 274 |
+| **D-547 — Le grand mot occupe presque toute la largeur, moins la marge** | 9 | 122 |
+| **D-548 — ALIGNEMENT DU PETIT MOT — mesure, puis tranche.** | 11 | 147 |
+| **D-549 — Sur ecran etroit le petit mot doit remonter en taille** | 7 | 77 |
+| **D-550 — Le petit mot etait a 0,215 : sa hauteur de capitale tombait a** | 8 | 105 |
+| **D-551 — Composition qui RENTRE, mesuree et non esperee. Deux passes** | 7 | 90 |
+| **D-552 — DENSITE PAR LIGNE — c'est le reglage decisif.** | 14 | 188 |
+| **D-553 — La decision « premiere visite de la session » est prise UNE** | 8 | 106 |
+| **D-554 — Les grains partent des QUINZE filets horizontaux, exactement** | 16 | 228 |
+| **D-555 — Filet de securite : onglet ouvert en arriere-plan, rideau** | 12 | 169 |
+| **D-556 — RECOLORATION A LA BASCULE DE THEME.** | 20 | 261 |
+
+<!-- INDEX:FIN -->
 
 ## D-543 — HERO — la plaque de limaille
 

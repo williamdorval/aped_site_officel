@@ -3,13 +3,25 @@
 > Le pourquoi du code de `js/sas.js`. Chaque entrée porte un identifiant
 > qui figure aussi dans le fichier source : `grep D-573` trouve les deux.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-573** — SAS — les trois pistes de l'arc de luminance
-- **D-574** — Les portes : toutes fermées = le fichier ne fait rien
-- **D-575** — LA FORGE — pilotée par la progression, jamais par le temps
-- **D-576** — Le G4 du seuil est absorbé par le sas
-- **D-577** — L'escalade de palier fige les sas sans les replier
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
+
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-573 — SAS — LES TROIS PISTES DE L'ARC DE LUMINANCE** | 8 | 89 |
+| **D-574 — LES PORTES** | 7 | 80 |
+| **D-575 — LA FORGE** | 15 | 218 |
+| **D-576 — LE G4 ABSORBÉ** | 7 | 72 |
+| **D-577 — L'ESCALADE FIGE, ELLE NE REPLIE PAS** | 8 | 103 |
+| **D-589 · == LE LISSAGE — le correctif de la saccade.** | 19 | 254 |
+| **D-588 · LES TROIS TEMPS, ET AUCUN NE MORD SUR LE SUIVANT.** | 30 | 387 |
+| **D-630 · LE POINT D'EPINGLAGE SE MESURE, IL NE S'ECRIT PAS.** | 19 | 233 |
+
+<!-- INDEX:FIN -->
 
 ## D-573 — SAS — LES TROIS PISTES DE L'ARC DE LUMINANCE
 

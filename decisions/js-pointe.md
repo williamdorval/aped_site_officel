@@ -4,12 +4,19 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-565** — LA POINTE — declinaison du motif signature au curseur
-- **D-566** — Les cibles AIMANTEES sont les objets qu'on peut saisir : ils se
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-565 — LA POINTE — declinaison du motif signature au curseur** | 26 | 360 |
+| **D-566 — Les cibles AIMANTEES sont les objets qu'on peut saisir : ils se** | 11 | 143 |
+
+<!-- INDEX:FIN -->
 
 ## D-565 — LA POINTE — declinaison du motif signature au curseur
 

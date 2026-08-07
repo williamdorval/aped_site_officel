@@ -4,45 +4,52 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-299** — APED AGENCE — LES TREIZE APERCUS DE SECTEUR
-- **D-300** — LES TREIZE APERCUS — construits dans `tools/proto-secteurs.*`
-- **D-301** — LES TREIZE APERCUS DE SECTEUR — maquettes de vrais sites.
-- **D-302** — Le cadre devient CONTENEUR : toute l'echelle interne se lit en
-- **D-303** — LES PLAQUES. Une image absente doit se lire comme une DECISION,
-- **D-304** — Les porte-plaques sont des GRILLES : un enfant en `height: 100 %`
-- **D-305** — 01 · RESTAURATION — la carte imprimee et l'heure qu'on choisit
-- **D-306** — 02 · BOUTIQUE — la grille de produits et le tiroir de panier
-- **D-307** — 10,8 em et non 9,6 : mesure du prototype, « Passer a la caisse »
-- **D-308** — Le bandeau d'ajout monte sur la vignette. Il se deplace de 100 %
-- **D-309** — 03 · COIFFURE — la journee en creneaux
-- **D-310** — Les six rangees sont EXPLICITES et egales. C'est ce qui permet au
-- **D-311** — 04 · GYM — l'horaire de la semaine et les places qui restent
-- **D-312** — La grille d'horaire prend sa hauteur NATURELLE et les jauges
-- **D-313** — Trois lignes par cellule — heure, cours, entraineur — et elles se
-- **D-314** — 05 · HEBERGEMENT — le calendrier et le total de sejour
-- **D-315** — L'en-tete des jours est SORTI de la grille des dates. Les six
-- **D-316** — 06 · GARAGE — le bon de travail chiffre
-- **D-317** — 07 · CONSTRUCTION — l'echeancier de chantier
-- **D-318** — L'echelle de mois partage EXACTEMENT la geometrie des rangees de
-- **D-319** — Le trait du jour balaye l'echeancier : le temps avance, et les
-- **D-320** — 08 · PAYSAGEMENT — le territoire et la tournee
-- **D-321** — Le fond n'est plus un aplat gris : c'est un parcellaire. Un
-- **D-322** — 09 · CLINIQUE — la prise de rendez-vous en trois etapes
-- **D-323** — 10 · IMMOBILIER — la fiche de propriete
-- **D-324** — Le fond du puits est la valeur de base des plaques, pas un jeton :
-- **D-325** — LES PHOTOGRAPHIES.
-- **D-326** — Le cadrage vertical est REGLE, pas laisse au hasard. Un
-- **D-327** — LA PHOTO EST POSITIONNEE EN ABSOLU, et c'est ce qui fait marcher
-- **D-328** — La bande : une photo large, et a cote une colonne de vignettes.
-- **D-329** — 11 · JURIDIQUE — la convention et son echeancier
-- **D-330** — 12 · PHOTOGRAPHE — l'index et la planche
-- **D-331** — 13 · VOTRE INDUSTRIE ICI — la matiere
-- **D-332** — LE CHAMP COUPE LES GRAINS. Sans lui, un grain disperse a 340 %
-- **D-333** — MOUVEMENT REDUIT.
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-299 — APED AGENCE — LES TREIZE APERCUS DE SECTEUR** | 15 | 204 |
+| **D-300 — LES TREIZE APERCUS — construits dans tools/proto-secteurs.*** | 11 | 153 |
+| **D-301 — LES TREIZE APERCUS DE SECTEUR — maquettes de vrais sites.** | 35 | 471 |
+| **D-302 — Le cadre devient CONTENEUR : toute l'echelle interne se lit en** | 7 | 90 |
+| **D-303 — LES PLAQUES. Une image absente doit se lire comme une DECISION,** | 11 | 162 |
+| **D-304 — Les porte-plaques sont des GRILLES : un enfant en height: 100 %** | 7 | 92 |
+| **D-305 — 01 · RESTAURATION — la carte imprimee et l'heure qu'on choisit** | 10 | 141 |
+| **D-306 — 02 · BOUTIQUE — la grille de produits et le tiroir de panier** | 11 | 150 |
+| **D-307 — 10,8 em et non 9,6 : mesure du prototype, « Passer a la caisse »** | 7 | 94 |
+| **D-308 — Le bandeau d'ajout monte sur la vignette. Il se deplace de 100 %** | 9 | 114 |
+| **D-309 — 03 · COIFFURE — la journee en creneaux** | 10 | 121 |
+| **D-310 — Les six rangees sont EXPLICITES et egales. C'est ce qui permet au** | 7 | 96 |
+| **D-311 — 04 · GYM — l'horaire de la semaine et les places qui restent** | 10 | 138 |
+| **D-312 — La grille d'horaire prend sa hauteur NATURELLE et les jauges** | 9 | 122 |
+| **D-313 — Trois lignes par cellule — heure, cours, entraineur — et elles se** | 7 | 94 |
+| **D-314 — 05 · HEBERGEMENT — le calendrier et le total de sejour** | 11 | 149 |
+| **D-315 — L'en-tete des jours est SORTI de la grille des dates. Les six** | 8 | 100 |
+| **D-316 — 06 · GARAGE — le bon de travail chiffre** | 11 | 134 |
+| **D-317 — 07 · CONSTRUCTION — l'echeancier de chantier** | 10 | 129 |
+| **D-318 — L'echelle de mois partage EXACTEMENT la geometrie des rangees de** | 7 | 88 |
+| **D-319 — Le trait du jour balaye l'echeancier : le temps avance, et les** | 10 | 138 |
+| **D-320 — 08 · PAYSAGEMENT — le territoire et la tournee** | 10 | 134 |
+| **D-321 — Le fond n'est plus un aplat gris : c'est un parcellaire. Un** | 7 | 84 |
+| **D-322 — 09 · CLINIQUE — la prise de rendez-vous en trois etapes** | 10 | 134 |
+| **D-323 — 10 · IMMOBILIER — la fiche de propriete** | 10 | 127 |
+| **D-324 — Le fond du puits est la valeur de base des plaques, pas un jeton :** | 8 | 108 |
+| **D-325 — LES PHOTOGRAPHIES.** | 21 | 266 |
+| **D-326 — Le cadrage vertical est REGLE, pas laisse au hasard. Un** | 8 | 101 |
+| **D-327 — LA PHOTO EST POSITIONNEE EN ABSOLU, et c'est ce qui fait marcher** | 12 | 166 |
+| **D-328 — La bande : une photo large, et a cote une colonne de vignettes.** | 9 | 120 |
+| **D-329 — 11 · JURIDIQUE — la convention et son echeancier** | 11 | 151 |
+| **D-330 — 12 · PHOTOGRAPHE — l'index et la planche** | 11 | 139 |
+| **D-331 — 13 · VOTRE INDUSTRIE ICI — la matiere** | 10 | 128 |
+| **D-332 — LE CHAMP COUPE LES GRAINS. Sans lui, un grain disperse a 340 %** | 8 | 109 |
+| **D-333 — MOUVEMENT REDUIT.** | 10 | 94 |
+
+<!-- INDEX:FIN -->
 
 ## D-299 — APED AGENCE — LES TREIZE APERCUS DE SECTEUR
 

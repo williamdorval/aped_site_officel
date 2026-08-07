@@ -4,18 +4,26 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-557** — TRAME — L'ARETE QUANTIFIEE
-- **D-558** — Amortissement critique. Aucun depassement, jamais : la
-- **D-559** — Un bruit DETERMINISTE. Deux passages sur la meme frontiere
-- **D-560** — La projection le long de l'axe de LECTURE. Elle n'est pas
-- **D-561** — UN PASSAGE. `sens` decide de l'axe, `graine` decide de la
-- **D-562** — L'ECRAN N'EST PAS UN ELEMENT. `documentElement` mesure
-- **D-563** — CHAQUE VOILE DIT DE QUEL PASSAGE IL EST. Sans ce nom, un
-- **D-564** — La cible peut bouger pendant le passage : une frontiere
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-557 — TRAME — L'ARETE QUANTIFIEE** | 59 | 786 |
+| **D-558 — Amortissement critique. Aucun depassement, jamais : la** | 7 | 76 |
+| **D-559 — Un bruit DETERMINISTE. Deux passages sur la meme frontiere** | 8 | 103 |
+| **D-560 — La projection le long de l'axe de LECTURE. Elle n'est pas** | 7 | 85 |
+| **D-561 — UN PASSAGE. sens decide de l'axe, graine decide de la** | 10 | 136 |
+| **D-562 — L'ECRAN N'EST PAS UN ELEMENT. documentElement mesure** | 8 | 105 |
+| **D-563 — CHAQUE VOILE DIT DE QUEL PASSAGE IL EST. Sans ce nom, un** | 8 | 99 |
+| **D-564 — La cible peut bouger pendant le passage : une frontiere** | 8 | 106 |
+| **D-634 · LA MUTATION PART AVANT LE DEMONTAGE.** | 17 | 210 |
+
+<!-- INDEX:FIN -->
 
 ## D-557 — TRAME — L'ARETE QUANTIFIEE
 

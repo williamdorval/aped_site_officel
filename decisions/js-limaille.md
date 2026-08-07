@@ -4,22 +4,29 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-526** — LIMAILLE — moteur de champ de grains
-- **D-527** — LE CONTEXTE EST ALPHA, ET C'EST UNE CORRECTION DE BOGUE.
-- **D-528** — Ressort critiquement amorti. omega est la pulsation propre
-- **D-529** — Dissipation supplementaire appliquee a la vitesse. Forte au
-- **D-530** — Repulsion. ATTENTION A L'ECHELLE : a l'equilibre le
-- **D-531** — Fond TRANSPARENT : c'est la surface de la page qui se voit, donc
-- **D-532** — compose(draw, bands)
-- **D-533** — La COUVERTURE, c'est (grain / pas) au carre. A pas 2 et grain
-- **D-534** — La composition est echantillonnee DROITE, ce qui garde des
-- **D-535** — Position de depart AVANT le deploiement.
-- **D-536** — Calibre sur la hauteur de capitale du PETIT mot. A 0,55 le
-- **D-537** — Integration semi-implicite, ressort critiquement amorti.
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-526 — LIMAILLE — moteur de champ de grains** | 46 | 620 |
+| **D-527 — LE CONTEXTE EST ALPHA, ET C'EST UNE CORRECTION DE BOGUE.** | 15 | 229 |
+| **D-528 — Ressort critiquement amorti. omega est la pulsation propre** | 7 | 86 |
+| **D-529 — Dissipation supplementaire appliquee a la vitesse. Forte au** | 7 | 85 |
+| **D-530 — Repulsion. ATTENTION A L'ECHELLE : a l'equilibre le** | 8 | 101 |
+| **D-531 — Fond TRANSPARENT : c'est la surface de la page qui se voit, donc** | 7 | 96 |
+| **D-532 — compose(draw, bands)** | 17 | 197 |
+| **D-533 — La COUVERTURE, c'est (grain / pas) au carre. A pas 2 et grain** | 8 | 110 |
+| **D-534 — La composition est echantillonnee DROITE, ce qui garde des** | 8 | 102 |
+| **D-535 — Position de depart AVANT le deploiement.** | 8 | 98 |
+| **D-536 — Calibre sur la hauteur de capitale du PETIT mot. A 0,55 le** | 8 | 95 |
+| **D-537 — Integration semi-implicite, ressort critiquement amorti.** | 8 | 90 |
+
+<!-- INDEX:FIN -->
 
 ## D-526 — LIMAILLE — moteur de champ de grains
 

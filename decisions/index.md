@@ -4,109 +4,142 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-001** — Une seule balise, sans `media`. Les deux precedentes etaient
-- **D-002** — TROIS FEUILLES SUR LE CHEMIN CRITIQUE, PAS QUATRE.
-- **D-003** — LE SEUL BLOC `<noscript>` DU SITE, ET IL FERME UN DEFAUT
-- **D-004** — Le prechargement d'image du hero de Services a saute avec les
-- **D-005** — SEQUENCE D'ENTREE — la decision se prend AVANT le premier
-- **D-006** — SEQUENCE D'ENTREE
-- **D-007** — LE RIDEAU EST FAIT DE QUINZE FILETS, et le nombre n'est pas
-- **D-008** — Les bandes s'ouvrent DEPUIS LE CENTRE : `--k` est la distance
-- **D-009** — LA JAUGE. C'est la sequence de chargement, et elle ne compte
-- **D-010** — LE COMPTEUR — V4 · CRAN. Il ne s'interpole pas : il ROULE,
-- **D-011** — LA SORTIE. Elle est ecrite, discrete, et elle ne sert pas
-- **D-012** — Le programme de reference est un levier de revenu : il ne
-- **D-013** — A5 · « JUSQU'A » N'EST PAS UN ORNEMENT, C'EST LA PARTIE VRAIE.
-- **D-014** — LES ONZE PAS DE LA COMPOSITION.
-- **D-015** — LE SUR-TITRE NOMME LES TROIS DOMAINES, PAS LA CATEGORIE.
-- **D-016** — LES ESPACES INSECABLES NE SONT PAS DE LA COQUETTERIE : a
-- **D-017** — LA PLAQUE DE LIMAILLE.
-- **D-018** — LES DEUX LIGNES SONT ECRITES, PAS MESUREES.
-- **D-019** — LA COLONNE DROITE DU HERO.
-- **D-020** — LES QUATRE RANGEES SE COMPOSENT, ELLES N'APPARAISSENT PAS.
-- **D-021** — A1 · A2 · D8 · E1 — LA FICHE EST MAINTENANT LA MEME LISTE
-- **D-022** — LA MENTION EST OBLIGATOIRE, ET SA LONGUEUR AFFAIBLISSAIT CE
-- **D-023** — LE SOCLE — CE QUI RESTE DES HUIT PLAQUES.
-- **D-024** — LES QUATRE CHANTIERS DEFILENT PENDANT QU'ON DESCEND.
-- **D-025** — LA PISTE — c'est elle qui porte la COURSE.
-- **D-026** — LA VITRE rogne le rail. Le rognage est ici et pas sur
-- **D-027** — `.svc-porte` RESERVE LA HAUTEUR DU BOUTON. A
-- **D-028** — « CE QUE VOUS RECEVEZ » — ajoute le
-- **D-029** — « TESTE SUR TELEPHONE AVANT L'ECRAN
-- **D-030** — CONTRADICTION CORRIGEE LE 2026-07-29 :
-- **D-031** — LE LIBELLE EST CELUI DU HERO ET DE LA
-- **D-032** — D1 · « CRM » est un sigle anglais de
-- **D-033** — C1 · LA PROMESSE DE POSITION GOOGLE,
-- **D-034** — « TENUE A JOUR » AVAIT LA FORME EXACTE
-- **D-035** — LE BOUTON « LANCER LA VISITE 360 » EST
-- **D-036** — L'INDEX — N1 · ORIENTATION, ET IL NE TOMBE A AUCUN PALIER.
-- **D-037** — LA RESERVE SUR LES DELAIS EST OBLIGATOIRE ICI. Celle du
-- **D-038** — CE QUI ETAIT ICI, ET POURQUOI C'EST PARTI.
-- **D-039** — LA PHRASE D'HONNETETE EST LE CHAPO, PAS UNE NOTE DE BAS
-- **D-040** — LE CRAN. Deux `<input type="radio">` natifs : les
-- **D-041** — LE TEXTE DEFILANT. `<marquee>` est obsolete
-- **D-042** — LE MARQUEUR EST LA CONTRADICTION, PAS LE
-- **D-043** — L'ARTEFACT D'ENCODAGE EST LE MARQUEUR LE
-- **D-044** — LE TELEPHONE EST LE PREMIER OBJET DE LA PAGE,
-- **D-045** — LES TROIS ECARTS. Chacun se VERIFIE en basculant le cran
-- **D-046** — LE MENU EN PDF EST LE DEFAUT CENTRAL DE
-- **D-047** — LE TERRITOIRE EN LISTE DE RUES : c'est le
-- **D-048** — LA QUESTION QUE LE VISITEUR SE POSE EST LA
-- **D-049** — B2 · LE COMPTE ETAIT FAUX DE UN, ET C'EST LE TREIZIEME QUI
-- **D-050** — LES TREIZE APERÇUS.
-- **D-051** — LES TREIZE MAQUETTES VIVENT DANS UN `<template>`.
-- **D-052** — B1 · TROIS CORRECTIFS DANS TROIS CELLULES.
-- **D-053** — D3 · D4 — LA MENTION LEGALE RESTE, LE JARGON PART DEVANT.
-- **D-054** — LES DEUX CHIFFRES, AVANT TOUTE INTERACTION.
-- **D-055** — LE CURSEUR MAITRE.
-- **D-056** — POINT DE CAPTURE 1, le moins intrusif des trois : le
-- **D-057** — B6 · DEUX LIGNES RETIREES LE 2026-07-29.
-- **D-058** — B5 · « OBSERVEES CHEZ DES PME » NE CITAIT RIEN.
-- **D-059** — LE SCHEMA. Il manquait, et c'est lui qui porte la section.
-- **D-060** — A8 · LE CADRE ETAIT LA FAUSSETE, PAS LE TABLEAU.
-- **D-061** — LE DETAIL, TACHE PAR TACHE.
-- **D-062** — LE PARCOURS D'ATELIER.
-- **D-063** — C6 · LES 12 H SONT LE DELAI DE REPONSE, PAS CELUI
-- **D-064** — La maquette s'assemble en limaille : les blocs
-- **D-065** — D5 · « grille 12 colonnes » est une notion de
-- **D-066** — D6 · « Tests passés — 24 / 24 » cumulait deux
-- **D-067** — « une heure de formation » retire le 2026-07-29 :
-- **D-068** — QUATRE ENGAGEMENTS, ET LA PREUVE DE CHACUN.
-- **D-069** — DEUX CORRECTIONS, ET LA SECONDE EST STRATEGIQUE.
-- **D-070** — Le plafond est un bloc a lui, dans la colonne de droite :
-- **D-071** — La colonne de gauche etait un en-tete collant de 140 px
-- **D-072** — B3 · « LES NEUF QU'ON NOUS POSE LE PLUS » affirmait un
-- **D-073** — « la formation est incluse au lancement » retire le
-- **D-074** — CORRIGE LE 2026-07-29. Cette reponse disait « aucun
-- **D-075** — D2 · V4 — L'ORDRE ETAIT INVERSE, ET LA LISTE ETAIT
-- **D-076** — CE QUI MANQUAIT : LE DECLIC.
-- **D-077** — B4 · E3 — UNE STATISTIQUE INVENTEE SUR NOTRE PROPRE
-- **D-078** — A6 · « LE JOUR MEME » EST INTENABLE ET SE CONTREDIT A
-- **D-079** — FRONTIERE 12 · 12 vers le pied
-- **D-080** — PHASE 8 · V1 — LA DERNIERE PLAQUE. Le monogramme geant du
-- **D-081** — LE CADEAU
-- **D-082** — LE VISUEL. Deux vraies couvertures, decalees comme deux
-- **D-083** — CE QU'ON DIT, ET DANS QUEL ORDRE ON LE DIT.
-- **D-084** — A3 · C4 · C5 — LE COURRIEL N'EST PLUS UN PEAGE, ET L'ORDRE
-- **D-085** — LES FOURCHETTES CHIFFREES ONT SAUTE, et ce n'etait pas
-- **D-086** — B9 · CINQ BORNES AMBIGUES DANS LE SEUL ENGAGEMENT
-- **D-087** — L'ETAT DE L'ENVOI VIT ICI, ET C'EST UN DEFAUT CORRIGE.
-- **D-088** — GSAP auto-heberge : aucune requete tierce sur toute la page, donc
-- **D-089** — DEUX VAGUES, ET L'ORDRE EST L'ARGUMENT.
-- **D-090** — `trame.js` — le moteur de passage de la phase 10 — est en
-- **D-091** — `langue.js` — le langage de mouvement de la phase 8 — arrive
-- **D-092** — LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.
-- **D-093** — LA VAGUE 2 ATTEND QUE LE VISITEUR BOUGE.
-- **D-094** — L'ORDRE EST CELUI DE LA CASCADE : `differe.css` d'abord,
-- **D-567** — SAS 1 · LA DESCENTE — la frontiere recoit une piste
-- **D-568** — SAS 2 · LA REMONTEE — un calque, pas une piste
-- **D-569** — SAS 3 · LA CLOTURE — le fil se soude dans la bande
-- **D-570** — La bande d'encre du seuil 02 est partie : un seul arc
-- **D-581** — `sas-ok` se decide dans le HEAD, avant la mise en page
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-001 — Une seule balise, sans media. Les deux precedentes etaient** | 8 | 105 |
+| **D-002 — TROIS FEUILLES SUR LE CHEMIN CRITIQUE, PAS QUATRE.** | 24 | 318 |
+| **D-003 — LE SEUL BLOC <noscript> DU SITE, ET IL FERME UN DEFAUT** | 31 | 432 |
+| **D-004 — Le prechargement d'image du hero de Services a saute avec les** | 7 | 85 |
+| **D-005 — SEQUENCE D'ENTREE — la decision se prend AVANT le premier** | 44 | 674 |
+| **D-006 — SEQUENCE D'ENTREE** | 16 | 215 |
+| **D-007 — LE RIDEAU EST FAIT DE QUINZE FILETS, et le nombre n'est pas** | 8 | 108 |
+| **D-008 — Les bandes s'ouvrent DEPUIS LE CENTRE : --k est la distance** | 8 | 109 |
+| **D-009 — LA JAUGE. C'est la sequence de chargement, et elle ne compte** | 22 | 316 |
+| **D-010 — LE COMPTEUR — V4 · CRAN. Il ne s'interpole pas : il ROULE,** | 15 | 209 |
+| **D-011 — LA SORTIE. Elle est ecrite, discrete, et elle ne sert pas** | 7 | 78 |
+| **D-012 — Le programme de reference est un levier de revenu : il ne** | 7 | 89 |
+| **D-013 — A5 · « JUSQU'A » N'EST PAS UN ORNEMENT, C'EST LA PARTIE VRAIE.** | 10 | 143 |
+| **D-014 — LES ONZE PAS DE LA COMPOSITION.** | 26 | 343 |
+| **D-015 — LE SUR-TITRE NOMME LES TROIS DOMAINES, PAS LA CATEGORIE.** | 8 | 106 |
+| **D-016 — LES ESPACES INSECABLES NE SONT PAS DE LA COQUETTERIE : a** | 9 | 119 |
+| **D-017 — LA PLAQUE DE LIMAILLE.** | 7 | 67 |
+| **D-018 — LES DEUX LIGNES SONT ECRITES, PAS MESUREES.** | 11 | 157 |
+| **D-019 — LA COLONNE DROITE DU HERO.** | 17 | 241 |
+| **D-020 — LES QUATRE RANGEES SE COMPOSENT, ELLES N'APPARAISSENT PAS.** | 12 | 183 |
+| **D-021 — A1 · A2 · D8 · E1 — LA FICHE EST MAINTENANT LA MEME LISTE** | 41 | 643 |
+| **D-022 — LA MENTION EST OBLIGATOIRE, ET SA LONGUEUR AFFAIBLISSAIT CE** | 18 | 272 |
+| **D-023 — LE SOCLE — CE QUI RESTE DES HUIT PLAQUES.** | 51 | 729 |
+| **D-024 — LES QUATRE CHANTIERS DEFILENT PENDANT QU'ON DESCEND.** | 72 | 1 061 |
+| **D-025 — LA PISTE — c'est elle qui porte la COURSE.** | 14 | 182 |
+| **D-026 — LA VITRE rogne le rail. Le rognage est ici et pas sur** | 9 | 113 |
+| **D-027 — .svc-porte RESERVE LA HAUTEUR DU BOUTON. A** | 10 | 129 |
+| **D-028 — « CE QUE VOUS RECEVEZ » — ajoute le** | 8 | 92 |
+| **D-029 — « TESTE SUR TELEPHONE AVANT L'ECRAN** | 15 | 223 |
+| **D-030 — CONTRADICTION CORRIGEE LE 2026-07-29 :** | 8 | 92 |
+| **D-031 — LE LIBELLE EST CELUI DU HERO ET DE LA** | 11 | 149 |
+| **D-032 — D1 · « CRM » est un sigle anglais de** | 7 | 77 |
+| **D-033 — C1 · LA PROMESSE DE POSITION GOOGLE,** | 7 | 82 |
+| **D-034 — « TENUE A JOUR » AVAIT LA FORME EXACTE** | 9 | 115 |
+| **D-035 — LE BOUTON « LANCER LA VISITE 360 » EST** | 9 | 120 |
+| **D-036 — L'INDEX — N1 · ORIENTATION, ET IL NE TOMBE A AUCUN PALIER.** | 27 | 404 |
+| **D-037 — LA RESERVE SUR LES DELAIS EST OBLIGATOIRE ICI. Celle du** | 10 | 138 |
+| **D-038 — CE QUI ETAIT ICI, ET POURQUOI C'EST PARTI.** | 124 | 1 738 |
+| **D-039 — LA PHRASE D'HONNETETE EST LE CHAPO, PAS UNE NOTE DE BAS** | 9 | 110 |
+| **D-040 — LE CRAN. Deux <input type="radio"> natifs : les** | 7 | 87 |
+| **D-041 — LE TEXTE DEFILANT. <marquee> est obsolete** | 9 | 114 |
+| **D-042 — LE MARQUEUR EST LA CONTRADICTION, PAS LE** | 18 | 278 |
+| **D-043 — L'ARTEFACT D'ENCODAGE EST LE MARQUEUR LE** | 10 | 135 |
+| **D-044 — LE TELEPHONE EST LE PREMIER OBJET DE LA PAGE,** | 7 | 77 |
+| **D-045 — LES TROIS ECARTS. Chacun se VERIFIE en basculant le cran** | 7 | 90 |
+| **D-046 — LE MENU EN PDF EST LE DEFAUT CENTRAL DE** | 7 | 72 |
+| **D-047 — LE TERRITOIRE EN LISTE DE RUES : c'est le** | 7 | 83 |
+| **D-048 — LA QUESTION QUE LE VISITEUR SE POSE EST LA** | 8 | 102 |
+| **D-049 — B2 · LE COMPTE ETAIT FAUX DE UN, ET C'EST LE TREIZIEME QUI** | 8 | 101 |
+| **D-050 — LES TREIZE APERÇUS.** | 22 | 324 |
+| **D-051 — LES TREIZE MAQUETTES VIVENT DANS UN <template>.** | 16 | 242 |
+| **D-052 — B1 · TROIS CORRECTIFS DANS TROIS CELLULES.** | 13 | 173 |
+| **D-053 — D3 · D4 — LA MENTION LEGALE RESTE, LE JARGON PART DEVANT.** | 12 | 181 |
+| **D-054 — LES DEUX CHIFFRES, AVANT TOUTE INTERACTION.** | 9 | 117 |
+| **D-055 — LE CURSEUR MAITRE.** | 10 | 128 |
+| **D-056 — POINT DE CAPTURE 1, le moins intrusif des trois : le** | 7 | 89 |
+| **D-057 — B6 · DEUX LIGNES RETIREES LE 2026-07-29.** | 16 | 239 |
+| **D-058 — B5 · « OBSERVEES CHEZ DES PME » NE CITAIT RIEN.** | 12 | 173 |
+| **D-059 — LE SCHEMA. Il manquait, et c'est lui qui porte la section.** | 19 | 245 |
+| **D-060 — A8 · LE CADRE ETAIT LA FAUSSETE, PAS LE TABLEAU.** | 16 | 249 |
+| **D-061 — LE DETAIL, TACHE PAR TACHE.** | 11 | 131 |
+| **D-062 — LE PARCOURS D'ATELIER.** | 41 | 557 |
+| **D-063 — C6 · LES 12 H SONT LE DELAI DE REPONSE, PAS CELUI** | 13 | 199 |
+| **D-064 — La maquette s'assemble en limaille : les blocs** | 7 | 82 |
+| **D-065 — D5 · « grille 12 colonnes » est une notion de** | 8 | 98 |
+| **D-066 — D6 · « Tests passés — 24 / 24 » cumulait deux** | 9 | 114 |
+| **D-067 — « une heure de formation » retire le 2026-07-29 :** | 7 | 83 |
+| **D-068 — QUATRE ENGAGEMENTS, ET LA PREUVE DE CHACUN.** | 24 | 293 |
+| **D-069 — DEUX CORRECTIONS, ET LA SECONDE EST STRATEGIQUE.** | 26 | 365 |
+| **D-070 — Le plafond est un bloc a lui, dans la colonne de droite :** | 7 | 87 |
+| **D-071 — La colonne de gauche etait un en-tete collant de 140 px** | 7 | 89 |
+| **D-072 — B3 · « LES NEUF QU'ON NOUS POSE LE PLUS » affirmait un** | 9 | 124 |
+| **D-073 — « la formation est incluse au lancement » retire le** | 7 | 89 |
+| **D-074 — CORRIGE LE 2026-07-29. Cette reponse disait « aucun** | 13 | 195 |
+| **D-075 — D2 · V4 — L'ORDRE ETAIT INVERSE, ET LA LISTE ETAIT** | 15 | 220 |
+| **D-076 — CE QUI MANQUAIT : LE DECLIC.** | 31 | 387 |
+| **D-077 — B4 · E3 — UNE STATISTIQUE INVENTEE SUR NOTRE PROPRE** | 12 | 176 |
+| **D-078 — A6 · « LE JOUR MEME » EST INTENABLE ET SE CONTREDIT A** | 10 | 140 |
+| **D-079 — FRONTIERE 12 · 12 vers le pied** | 7 | 69 |
+| **D-080 — PHASE 8 · V1 — LA DERNIERE PLAQUE. Le monogramme geant du** | 8 | 106 |
+| **D-081 — LE CADEAU** | 56 | 743 |
+| **D-082 — LE VISUEL. Deux vraies couvertures, decalees comme deux** | 7 | 82 |
+| **D-083 — CE QU'ON DIT, ET DANS QUEL ORDRE ON LE DIT.** | 23 | 343 |
+| **D-084 — A3 · C4 · C5 — LE COURRIEL N'EST PLUS UN PEAGE, ET L'ORDRE** | 31 | 481 |
+| **D-085 — LES FOURCHETTES CHIFFREES ONT SAUTE, et ce n'etait pas** | 16 | 235 |
+| **D-086 — B9 · CINQ BORNES AMBIGUES DANS LE SEUL ENGAGEMENT** | 15 | 224 |
+| **D-087 — L'ETAT DE L'ENVOI VIT ICI, ET C'EST UN DEFAUT CORRIGE.** | 10 | 151 |
+| **D-088 — GSAP auto-heberge : aucune requete tierce sur toute la page, donc** | 22 | 307 |
+| **D-089 — DEUX VAGUES, ET L'ORDRE EST L'ARGUMENT.** | 25 | 318 |
+| **D-090 — trame.js — le moteur de passage de la phase 10 — est en** | 10 | 141 |
+| **D-091 — langue.js — le langage de mouvement de la phase 8 — arrive** | 9 | 127 |
+| **D-092 — LA FEUILLE DES SECTEURS SUIT LE MEME CHEMIN QUE LES SCRIPTS.** | 11 | 158 |
+| **D-093 — LA VAGUE 2 ATTEND QUE LE VISITEUR BOUGE.** | 17 | 205 |
+| **D-094 — L'ORDRE EST CELUI DE LA CASCADE : differe.css d'abord,** | 8 | 77 |
+| **D-567 — SAS 1 · LA DESCENTE — la frontiere recoit une piste** | 14 | 222 |
+| **D-568 — SAS 2 · LA RECIPROQUE EST UN CALQUE, PAS UNE PISTE** | 10 | 136 |
+| **D-569 — SAS 3 · LA CLOTURE — le fil se soude dans la bande** | 7 | 93 |
+| **D-570 — LA BANDE D'ENCRE DU SEUIL 02 EST PARTIE** | 8 | 101 |
+| **D-581 — sas-ok SE DECIDE DANS LE HEAD, AVANT LA MISE EN PAGE** | 10 | 141 |
+| **2026-07-31 · MISE EN PRODUCTION — D-586 à D-625** | 23 | 442 |
+| **D-602 · LE RENVOI VERS LES DEMONSTRATIONS.** | 10 | 91 |
+| **D-603 · CE SERVICE EST LE PLUS ABSTRAIT DES CINQ, DONC D-603 C'EST CELUI QUI A LE…** | 14 | 151 |
+| **D-605 · ON VOIT CE QU'ON VA OBTENIR AVANT DE CLIQUER.** | 10 | 91 |
+| **D-606 · « ECRAN PAR ECRAN » NE SE LIT PAS, CA SE REGARDE.** | 11 | 111 |
+| **D-687 · UN SEUL CARTOUCHE POUR LES TREIZE.** | 14 | 148 |
+| **D-632 · TROIS PHRASES SONT DEVENUES SEPT MOTS.** | 12 | 130 |
+| **D-620 · LE CONTENANT DU LECTEUR.** | 14 | 164 |
+| **D-624 · L'ETIQUETTE DE LIEU.** | 15 | 149 |
+| **D-622 · L'ETAGE BAS NE SE REPLIE JAMAIS.** | 12 | 121 |
+| **D-629 · LE VOLET NE PEUT PLUS PEINDRE HORS DE SA VOIE.** | 22 | 273 |
+| **D-636 · LA METHODE SORT DU PANNEAU, ELLE NE DISPARAIT PAS.** | 13 | 141 |
+| **D-639 · LE TOTAL ET SON DETAIL, COTE A COTE.** | 15 | 174 |
+| **D-638 · LE RESUME EST LE MEME OBJET, AU CALIBRE D'AFFICHE.** | 14 | 170 |
+| **D-711 · La differenciation vit dans #processus** | 29 | 404 |
+| **D-698 · Le sur-titre nomme A QUI, et pourquoi rien de plus** | 29 | 331 |
+| **D-700 · Deux questions qui n'avaient plus de reponse** | 26 | 355 |
+| **D-701 · « au plus tard », parce que deux delais se lisaient a l'envers** | 12 | 148 |
+| **D-703 · Le chemin dit « le plus direct » etait le plus long** | 34 | 470 |
+| **D-773 · Le programme de reference : une grille par TYPE, et une preuve d'acceptation** | 83 | 1 198 |
+| **D-774 · La grille de prix quitte le navigateur** | 94 | 1 399 |
+| **D-775 · Le « non » n'est pas une sortie** | 42 | 532 |
+| **D-776 · Un questionnaire conditionnel, et ce qu'il compte** | 50 | 682 |
+| **D-777 · Ce que l'estimateur laissait passer** | 95 | 1 521 |
+| **D-778 · Les trois associés s'appellent William, Allen et Eli** | 61 | 898 |
+| **D-779 · Une prime par entreprise référée, et elle se lit avant de référer** | 80 | 1 217 |
+
+<!-- INDEX:FIN -->
 
 ## D-001 — Une seule balise, sans `media`. Les deux precedentes etaient
 

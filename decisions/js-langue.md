@@ -4,62 +4,70 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-443** — APED AGENCE — LA LANGUE DE MOUVEMENT
-- **D-444** — LE BUDGET DE DEGRADATION — trois paliers, et l'ordre de chute
-- **D-445** — LA MESURE. On n'echantillonne QUE pendant un defilement reel :
-- **D-446** — LE TRAVAIL PREPARATOIRE SE FAIT PENDANT LES TEMPS MORTS.
-- **D-447** — 0. FLIP MAISON — la mecanique, pas le code.
-- **D-448** — 0bis. LES DOUZE FRONTIERES.
-- **D-449** — LE FRANCHISSEMENT SE LIT A L'INTERSECTION, PLUS A UNE
-- **D-450** — PHASE 10 — LA TRAME SUR LES FRONTIERES.
-- **D-451** — La maille suit la HAUTEUR de ce qu'on degage : une bande de
-- **D-452** — G3 · DEGAGER — le nom du seuil
-- **D-453** — G3 passe par le meme franchissement que les autres : une
-- **D-454** — G4 · LE GESTE PROPRE A LA FRONTIERE
-- **D-455** — V1 · DEGAGER, a l'echelle de la bande.
-- **D-456** — La bande d'encre est deja peinte au repos. La trame la
-- **D-457** — V1 · DEGAGER, sur ce que la section a de plus concret :
-- **D-458** — V2 · S'ALIGNER. Les blocs arrivent DECALES lateralement,
-- **D-459** — Meme franchissement que les trois autres gestes : la
-- **D-460** — V3 · SOUDER, en long. Le filet de ce seuil se soude plus
-- **D-461** — V4 · CRAN, sur le seul argument de la section : un
-- **D-462** — 1. LES LETTRES — V4 · CRAN, sur tous les boutons du site.
-- **D-463** — UN ELEMENT IMBRIQUE COMPTE COMME UNE LETTRE, et c'est la
-- **D-464** — LES LETTRES VIVENT DANS UNE SEULE BOITE, et c'est une
-- **D-465** — Les blancs restent des NOEUDS DE TEXTE entre les boites,
-- **D-466** — Le nombre de lettres pilote la duree totale de la cascade :
-- **D-467** — LE DECALAGE SUIT LA POSITION, PAS L'INDICE — et c'est la
-- **D-468** — LE DECOUPAGE SE FAIT PENDANT LES TEMPS MORTS, pas au survol.
-- **D-469** — `--p` est une position, donc elle depend de la largeur. Un
-- **D-470** — 2. LES MOTS — V1 · DEGAGER, sur les chapos de section.
-- **D-471** — PALIER 1 — LE PREMIER POSTE QUI TOMBE.
-- **D-472** — Le decoupage part dans la file des temps morts ; le
-- **D-473** — LE DEPART EST POSE SUR TOUS LES MOTS EN MEME TEMPS, et
-- **D-474** — 3. DEGAGER — revelation par masque net.
-- **D-475** — LES SOUS-TITRES — V1 a l'echelle d'un h3.
-- **D-476** — `.svc-texte h3` a ete retire de cette liste le 2026-07-30 : la
-- **D-477** — LE VOILE DE GRAINS A ETE COUPE, ET C'EST UNE DECISION, PAS UN
-- **D-478** — 4. SOUDER — les filets de liaison.
-- **D-479** — JavaScript ne fait que POSER LA CLASSE. La croissance de
-- **D-480** — 5. LES SECTEURS — LE MOMENT DE PREUVE. N2.
-- **D-481** — Les blocs qu'on recompose sont les enfants directs de la
-- **D-482** — Les quinze filets de `seedPositions()`. Un bloc part du filet
-- **D-483** — 5a. LA RECOMPOSITION — UN SEUL CHEMIN DE CODE, ET C'EST UNE
-- **D-484** — 5b. LA PILE — CE QU'ON A PRIS A LA REFERENCE 1, ET CE QU'ON
-- **D-485** — PALIER 2 — la maquette change NET, sans recomposition.
-- **D-486** — La premiere fois que la vitrine entre par le bas, la maquette
-- **D-487** — 5c. LA PARALLAXE A LA POINTE — bornee, pointeur fin seul.
-- **D-488** — 7. LA FAQ — V2, et c'est du FLIP.
-- **D-489** — Le navigateur bascule `open` APRES le clic : on mesure
-- **D-490** — 8. L'ETIQUETTE DE LA POINTE — V4.
-- **D-491** — 9. LES MODALES — V1.
-- **D-492** — PHASE 10 — la trame par-dessus l'arete, pas a la place.
-- **D-493** — La fermeture est la RECIPROQUE de l'ouverture, pas une seconde
-- **D-494** — 11. RECALCUL. Les captures de projet mesurent plusieurs
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-443 — APED AGENCE — LA LANGUE DE MOUVEMENT** | 51 | 635 |
+| **D-444 — LE BUDGET DE DEGRADATION — trois paliers, et l'ordre de chute** | 58 | 731 |
+| **D-445 — LA MESURE. On n'echantillonne QUE pendant un defilement reel :** | 11 | 153 |
+| **D-446 — LE TRAVAIL PREPARATOIRE SE FAIT PENDANT LES TEMPS MORTS.** | 25 | 355 |
+| **D-447 — 0. FLIP MAISON — la mecanique, pas le code.** | 15 | 176 |
+| **D-448 — 0bis. LES DOUZE FRONTIERES.** | 42 | 563 |
+| **D-449 — LE FRANCHISSEMENT SE LIT A L'INTERSECTION, PLUS A UNE** | 37 | 522 |
+| **D-450 — PHASE 10 — LA TRAME SUR LES FRONTIERES.** | 28 | 359 |
+| **D-451 — La maille suit la HAUTEUR de ce qu'on degage : une bande de** | 7 | 89 |
+| **D-452 — G3 · DEGAGER — le nom du seuil** | 7 | 83 |
+| **D-453 — G3 passe par le meme franchissement que les autres : une** | 7 | 82 |
+| **D-454 — G4 · LE GESTE PROPRE A LA FRONTIERE** | 9 | 112 |
+| **D-455 — V1 · DEGAGER, a l'echelle de la bande.** | 12 | 157 |
+| **D-456 — La bande d'encre est deja peinte au repos. La trame la** | 9 | 128 |
+| **D-457 — V1 · DEGAGER, sur ce que la section a de plus concret :** | 7 | 85 |
+| **D-458 — V2 · S'ALIGNER. Les blocs arrivent DECALES lateralement,** | 9 | 112 |
+| **D-459 — Meme franchissement que les trois autres gestes : la** | 8 | 99 |
+| **D-460 — V3 · SOUDER, en long. Le filet de ce seuil se soude plus** | 8 | 100 |
+| **D-461 — V4 · CRAN, sur le seul argument de la section : un** | 16 | 207 |
+| **D-462 — 1. LES LETTRES — V4 · CRAN, sur tous les boutons du site.** | 35 | 499 |
+| **D-463 — UN ELEMENT IMBRIQUE COMPTE COMME UNE LETTRE, et c'est la** | 20 | 272 |
+| **D-464 — LES LETTRES VIVENT DANS UNE SEULE BOITE, et c'est une** | 19 | 251 |
+| **D-465 — Les blancs restent des NOEUDS DE TEXTE entre les boites,** | 13 | 184 |
+| **D-466 — Le nombre de lettres pilote la duree totale de la cascade :** | 7 | 80 |
+| **D-467 — LE DECALAGE SUIT LA POSITION, PAS L'INDICE — et c'est la** | 32 | 451 |
+| **D-468 — LE DECOUPAGE SE FAIT PENDANT LES TEMPS MORTS, pas au survol.** | 15 | 189 |
+| **D-469 — --p est une position, donc elle depend de la largeur. Un** | 8 | 107 |
+| **D-470 — 2. LES MOTS — V1 · DEGAGER, sur les chapos de section.** | 41 | 544 |
+| **D-471 — PALIER 1 — LE PREMIER POSTE QUI TOMBE.** | 8 | 93 |
+| **D-472 — Le decoupage part dans la file des temps morts ; le** | 7 | 81 |
+| **D-473 — LE DEPART EST POSE SUR TOUS LES MOTS EN MEME TEMPS, et** | 21 | 263 |
+| **D-474 — 3. DEGAGER — revelation par masque net.** | 12 | 145 |
+| **D-475 — LES SOUS-TITRES — V1 a l'echelle d'un h3.** | 11 | 146 |
+| **D-476 — .svc-texte h3 a ete retire de cette liste le 2026-07-30 : la** | 8 | 104 |
+| **D-477 — LE VOILE DE GRAINS A ETE COUPE, ET C'EST UNE DECISION, PAS UN** | 38 | 510 |
+| **D-478 — 4. SOUDER — les filets de liaison.** | 12 | 146 |
+| **D-479 — JavaScript ne fait que POSER LA CLASSE. La croissance de** | 12 | 177 |
+| **D-480 — 5. LES SECTEURS — LE MOMENT DE PREUVE. N2.** | 62 | 829 |
+| **D-481 — Les blocs qu'on recompose sont les enfants directs de la** | 7 | 84 |
+| **D-482 — Les quinze filets de seedPositions(). Un bloc part du filet** | 7 | 85 |
+| **D-483 — 5a. LA RECOMPOSITION — UN SEUL CHEMIN DE CODE, ET C'EST UNE** | 29 | 406 |
+| **D-484 — 5b. LA PILE — CE QU'ON A PRIS A LA REFERENCE 1, ET CE QU'ON** | 36 | 479 |
+| **D-485 — PALIER 2 — la maquette change NET, sans recomposition.** | 8 | 102 |
+| **D-486 — La premiere fois que la vitrine entre par le bas, la maquette** | 7 | 86 |
+| **D-487 — 5c. LA PARALLAXE A LA POINTE — bornee, pointeur fin seul.** | 9 | 119 |
+| **D-488 — 7. LA FAQ — V2, et c'est du FLIP.** | 11 | 146 |
+| **D-489 — Le navigateur bascule open APRES le clic : on mesure** | 8 | 92 |
+| **D-490 — 8. L'ETIQUETTE DE LA POINTE — V4.** | 12 | 154 |
+| **D-491 — 9. LES MODALES — V1.** | 10 | 119 |
+| **D-492 — PHASE 10 — la trame par-dessus l'arete, pas a la place.** | 15 | 196 |
+| **D-493 — La fermeture est la RECIPROQUE de l'ouverture, pas une seconde** | 7 | 92 |
+| **D-494 — 11. RECALCUL. Les captures de projet mesurent plusieurs** | 8 | 103 |
+| **D-633 · LA POSITION SE POSE ICI AUSSI.** | 13 | 144 |
+
+<!-- INDEX:FIN -->
 
 ## D-443 — APED AGENCE — LA LANGUE DE MOUVEMENT
 

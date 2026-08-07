@@ -4,219 +4,261 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-096** — APED AGENCE - Direction ATELIER
-- **D-097** — 1. GRILLE
-- **D-098** — La respiration d'une jonction appartient a la section qui ARRIVE, jamais
-- **D-099** — 1bis. LES DOUZE SEUILS — LES FRONTIERES DE SECTION
-- **D-100** — LE NUMERO. Fenetre qui rogne + bande qui defile : deux elements,
-- **D-101** — Le cran : la bande est POSEE sur la cellule du haut — le numero
-- **D-102** — LE SEUIL CLAIR — onze douziemes des frontieres. Il ne peint
-- **D-103** — LE SEUIL D'ENCRE — quatre frontieres. Pleine largeur, donc il
-- **D-104** — G4 · LA SOUDURE LONGUE — une seule frontiere, la neuvieme.
-- **D-105** — Pleine largeur d'ecran depuis une grille centree, sans casser
-- **D-106** — PALIER 2 — le geste propre a chaque frontiere tombe, les trois
-- **D-107** — LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.
-- **D-108** — DÉCLINAISON DE LA SIGNATURE (N1 + N2).
-- **D-109** — 2. EN-TETE DE SECTION
-- **D-110** — Les titres de section imposent sans manger l'ecran. L'enorme est
-- **D-111** — LE DECALAGE LATERAL NE DOIT PAS ETENDRE LA PAGE.
-- **D-112** — 3. NAVIGATION
-- **D-113** — Les liens de section n'apparaissent qu'a 72em, pas 64 : a 1024 px ils
-- **D-114** — LE MONTANT VIVANT NE TIENT PAS DANS LA BARRE SOUS 64em.
-- **D-115** — Reference : deuxieme CTA de la barre. Hierarchie tenue par le
-- **D-116** — Sur telephone, le libelle complet ne rentre pas a cote du bourgeon
-- **D-117** — 4. BOUTONS
-- **D-118** — DÉCLINAISON DE LA SIGNATURE (N2).
-- **D-119** — Sous 26em, « Estimation en 60 secondes » mesure 307 px sur une
-- **D-120** — Bourgeon de menu : deux filets, pas d'icone.
-- **D-121** — 4b. LA POINTE — declinaison de la signature au curseur
-- **D-122** — 5. INDEX COLLANT
-- **D-123** — 7. PLAQUE
-- **D-124** — 8. CHAMPS
-- **D-125** — LE REPLI D'ENVOI. Pose par `js/main.js` quand l'envoi automatique
-- **D-126** — 9. CURSEURS
-- **D-127** — 11b. SEQUENCE D'ENTREE
-- **D-128** — LE SCENARIO, EN QUATRE TEMPS ET 1 420 ms.
-- **D-129** — LA PAUSE. Elle nomme exactement ce qui a le droit d'attendre.
-- **D-130** — LA COMPOSITION DU HERO ATTEND AVEC LE RESTE. Sans cette ligne,
-- **D-131** — LA COMPOSITION EST POSEE TOT ET TENUE A L'ARRET.
-- **D-132** — LES QUINZE BANDES.
-- **D-133** — LA JAUGE. Pleine largeur, en haut, exactement la ou la barre de
-- **D-134** — LE CADRE D'ATELIER. Quatre equerres qui reservent le format avant
-- **D-135** — Le cadre part AVANT que le rideau s'ouvre : c'est le banc qu'on
-- **D-136** — LE COMPTEUR — V4 · CRAN, et il est en bas de l'ecran, sous la
-- **D-137** — LA LIGNE D'ETAT PREND LA LARGEUR DU CADRE, pas celle du texte.
-- **D-138** — ELLE DOIT PARTIR, ET ELLE NE PARTAIT PAS.
-- **D-139** — `line-height` DOIT valoir la hauteur de boite, sinon chaque
-- **D-140** — LE SAUT. N'importe quel clic, n'importe quelle touche. Ce n'est
-- **D-141** — MOUVEMENT REDUIT : LE LOGO, BREF, PUIS LE SITE.
-- **D-142** — 11c. LE CADEAU — un seul popup, en `<dialog>` natif
-- **D-143** — V1 · DEGAGER — l'entree. Une arete franche, de HAUT EN BAS.
-- **D-144** — LA SORTIE DOIT SE VOIR SUR N'IMPORTE QUEL FOND. Elle est en
-- **D-145** — LE VISUEL — les deux VRAIES couvertures.
-- **D-146** — SUR TELEPHONE LE VISUEL NE DISPARAIT PAS, IL CHANGE DE FORME.
-- **D-147** — EN SOMBRE, LE BANC MONTE D'UN TON. Les couvertures sont des
-- **D-148** — LES COUVERTURES SONT LE SUJET, PAS UNE VIGNETTE.
-- **D-149** — LE RECOUVREMENT EST CALCULE SUR CE QU'IL NE DOIT PAS CACHER.
-- **D-150** — V2 · S'ALIGNER — elles arrivent DECALEES lateralement, en
-- **D-151** — CE QU'ON DIT. Sept objets, pas neuf, et chacun a un role :
-- **D-152** — TROIS MOTS, ET ILS PRENNENT LA PLACE DE TROIS MOTS. Le titre
-- **D-153** — LA FICHE — l'idiome du site, applique au cadeau.
-- **D-154** — SPECIFICITE : `.cadeau-vue .cadeau-couv` vaut (0,2,0) et pose
-- **D-155** — LES POINTS DE CAPTURE DISCRETS. Trois, moins insistants que le
-- **D-156** — `.svc-appat` a ete retire le 2026-07-30 avec le bloc appat de la
-- **D-157** — `minmax(0, 1fr)` et non `auto` : une colonne de grille en `auto`
-- **D-158** — LA PLAQUE DE LIMAILLE
-- **D-159** — MESURE DU 2026-07-25 : a 1000/292 le bloc des deux mots occupait
-- **D-160** — Le canvas trace AGENCE en capitales. Le repli textuel doit dire
-- **D-161** — FICHE TECHNIQUE — la colonne droite du hero.
-- **D-162** — 12bis. LE SOCLE DU HERO — ce qui reste des huit plaques.
-- **D-163** — LE MOT FORT PASSE A L'ENCRE PLEINE, ET C'EST LE SEUL SEPARATEUR
-- **D-164** — LE POINT MEDIAN SUIT L'ITEM QU'IL FERME, IL N'OUVRE PAS LE
-- **D-165** — Sur ecran etroit le bloc a besoin de plus de hauteur relative :
-- **D-166** — LA COMPOSITION DU HERO — V1 · DEGAGER et V3 · SOUDER.
-- **D-167** — L'ETAT DE REPOS DU FILET DE FICHE EST LE TRAIT PLEIN.
-- **D-168** — V2 · S'ALIGNER, a l'echelle d'un pas. Le bloc arrive decale sur
-- **D-169** — CE QUI A CHANGE LE 2026-07-29, ET POURQUOI CE N'EST PAS UN
-- **D-170** — L'AMPLITUDE SUIT LA HIERARCHIE. Le titre est ce qu'on doit voir
-- **D-171** — Pas de `backwards` : avant son retard, la plaque est a
-- **D-172** — Le libelle d'une rangee part 90 ms APRES son filet : un cran
-- **D-173** — Le filet du pied est SOUS la plaque de son propre paragraphe :
-- **D-174** — La fiche n'apparait qu'a partir de 64em : sous cette largeur la
-- **D-175** — LE SOCLE PREND LA BANDE ENTIERE, ET IL SE COLLE AU BAS.
-- **D-176** — 14. SERVICES — LA PISTE, LA SCENE ET LE RAIL
-- **D-177** — La planche se cale sous le chapo, pas a une bande de distance :
-- **D-178** — LA MARGE DU RAIL EST CELLE DU TEXTE, calculee comme `.wrap` la
-- **D-179** — LA LARGEUR D'UN CHANTIER — ET POURQUOI ELLE N'EST PAS UN
-- **D-180** — LE NOM PORTE LA SECTION. Il n'y a plus d'image : c'est
-- **D-181** — L'INDEX — N1 · ORIENTATION.
-- **D-182** — `.fine` et `.svc-reserve` ont la meme specificite (0,1,0) : c'est
-- **D-183** — LA PORTE ET LE PANNEAU DE DETAIL.
-- **D-184** — LE PANNEAU. Centre par `inset` + `margin: auto`, JAMAIS par
-- **D-185** — `100dvh` MOINS LES DEUX MARGES, ET PAS `100 %`.
-- **D-186** — LE VOILE — ET IL N'EST PAS PORTE PAR LE PANNEAU, POUR DEUX
-- **D-187** — L'INTERIEUR DU PANNEAU — plus aere qu'avant, et c'est une
-- **D-188** — « CE QUE VOUS RECEVEZ » — une liste NUMEROTEE, et le numero est
-- **D-189** — Numero POSITIONNE et non mis en colonne de grille : chaque ligne
-- **D-190** — L'OUVERTURE — V1 · DEGAGER, sens BAS.
-- **D-191** — LE RAIL — L'EXCEPTION, ET ELLE EST TRIPLEMENT CONDITIONNEE.
-- **D-192** — LE PAS VERTICAL — la distance de defilement qui fait passer
-- **D-193** — LA SCENE MONTE AU-DESSUS DE LA BARRE PENDANT QU'UN PANNEAU EST
-- **D-194** — LA VITRE EST UN CONTENEUR DE DEFILEMENT, ET C'EST ELLE QUI
-- **D-195** — LE RAIL. Une seule transformation par image, ecrite par
-- **D-196** — `width: max-content` — SANS LUI, IL N'Y A RIEN A DEFILER.
-- **D-197** — L'ECHELLE — C'EST ELLE QUI REMPLACE L'IMAGE, ET LE RAPPORT EST
-- **D-198** — V1 · DEGAGER — LE NOM SE DECOUVRE QUAND SON CHANTIER ARRIVE.
-- **D-199** — L'INDEX COLLE DE GAUCHE PREND 296 px A LA SCENE A PARTIR DE 64em.
-- **D-200** — MOUVEMENT REDUIT — le cran reste, le balayage part.
-- **D-201** — PALIER 2 — le degagement du panneau tombe avec les autres
-- **D-202** — 15. AVANT / APRES — trois demonstrations, zero image
-- **D-203** — L'ETIQUETTE D'HONNETETE EST DANS LE TITRE, PAS EN NOTE.
-- **D-204** — LE CRAN — V4. Deux etats, aucun entre-deux.
-- **D-205** — LA PRECISION SUIT LE FOND, ET C'EST UN ECHEC MESURE.
-- **D-206** — `overflow: hidden` et pas `auto` : une zone de defilement
-- **D-207** — LES TROIS ECARTS — ce qui rend la comparaison LISIBLE SANS UN
-- **D-208** — LE NUMERO EST POSITIONNE, PAS MIS EN COLONNE DE GRILLE — ET
-- **D-209** — LE FILET FAIT DE CES TROIS LIGNES UN HOTE DE V3 · SOUDER.
-- **D-210** — LE NUMERO EST EN `::after`, ET CE N'EST PAS UN GOUT.
-- **D-211** — L'APRES — notre langue, et trois compositions differentes.
-- **D-212** — LE CHAMP DU DENEIGEMENT. INERTE, et c'est une decision : une
-- **D-213** — L'AVANT — 2008-2012, RECONSTITUE SUR PIECES.
-- **D-214** — LE `revert` REND AU NAVIGATEUR SES VALEURS PAR DEFAUT, ET C'EST
-- **D-215** — LA LARGEUR FIXE, ET LE DEBORDEMENT EST LE PROPOS.
-- **D-216** — LE TEXTE DEFILANT. Valeurs par defaut de `<marquee>` selon la
-- **D-217** — LE RETARD NEGATIF N'EST PAS UNE COQUETTERIE. Sans lui, le texte
-- **D-218** — LA « PHOTOGRAPHIE ». Aucun fichier : trois aplats et une trame,
-- **D-219** — LES TROIS ARRETS DU TEXTE DEFILANT.
-- **D-220** — L'apercu etait `display: none` sous 64em : sur telephone, la
-- **D-221** — La legende est un ETAGE de la plaque, plus un bandeau pose
-- **D-222** — LES TREIZE MAQUETTES
-- **D-223** — `content-visibility: hidden` et non `visibility: hidden` : un
-- **D-224** — Le corps est une COLONNE FLEX : c'est ce qui permet au pied de
-- **D-225** — Les regles des ANCIENNES maquettes de secteur — `.mock-top`,
-- **D-226** — LE VERDICT — deux chiffres, poses avant toute interaction.
-- **D-227** — LE SCHEMA DE L'ECART.
-- **D-228** — LE PONT. Il part de la fin de la journee automatisee et va
-- **D-229** — Les longueurs sont dans le MARKUP, pas dans le script : sans
-- **D-230** — 19. PROCESSUS - le parcours d'atelier
-- **D-231** — LES QUATRE COMPOSANTS. Chacun montre ce que son etape PRODUIT :
-- **D-232** — Les deux libelles de l'entete se replient plutot que de pousser le
-- **D-233** — La plaque d'atelier. Meme matiere que le hero, a l'echelle d'un
-- **D-234** — LES QUATRE PREUVES. Chacune demontre son engagement au lieu de
-- **D-235** — Au repos la coche est TRACEE. Elle partait de `scaleX(0)` :
-- **D-236** — LE DEFAUT CORRIGE. Le bloc etait en `--surface-inverse`,
-- **D-237** — LES TROIS PREUVES
-- **D-238** — La sortie de secours de la colonne de gauche. Elle n'existe qu'a
-- **D-239** — LE SURVOL FAISAIT BAISSER LE CONTRASTE, ET C'EST L'INVERSE DE CE
-- **D-240** — L'ENTREE PRINCIPALE — EN MINIUM PLEIN.
-- **D-241** — LA CARTE PRINCIPALE EST SUR MINIUM, DONC ELLE NE SUIT PAS LA REGLE
-- **D-242** — CE QUI ARRIVE APRES. L'inconnu d'apres l'envoi est ce qui retient
-- **D-243** — Le filigrane est en FILET, plus en aplat.
-- **D-244** — MESURE : a `line-height: 0.78` la boite faisait 247 px pour une
-- **D-245** — 25. PAGE 404 - index deraille
-- **D-246** — La ligne demandee est EJECTEE hors de la colonne : c'est le
-- **D-247** — 26. POINTS DE RUPTURE
-- **D-248** — 4 colonnes reduisaient une capture de 900 px a 330, soit 2,71x :
-- **D-249** — LES QUATRE CHANTIERS NE SE RANGENT PLUS EN GRILLE : ils
-- **D-250** — LE CHEMIN SERPENTE. Le retrait de la station alterne — nul,
-- **D-251** — ECHELLE REDUITE. Les quatre colonnes tenaient sur 18 rem de
-- **D-252** — Le schema passe en trois colonnes : le libelle, la regle, la
-- **D-253** — AGENCE — composition en deux temps. Le quatuor asymetrique
-- **D-254** — La composition n'a plus de colonne morte : la promesse et le
-- **D-255** — TROIS POIDS, pas cinq tuiles egales :
-- **D-256** — LA HAUTEUR IMPOSEE A DISPARU AVEC LE PIN.
-- **D-257** — Plus aucune surface photographique ni voilee sur la page : la
-- **D-258** — PHASE 8 — LA LANGUE DE MOUVEMENT
-- **D-259** — V4 · LES LETTRES — traduction du composant fourni.
-- **D-260** — L'ENVELOPPE, ET C'EST ELLE QUI TIENT LA MISE EN PAGE.
-- **D-261** — LA LETTRE NE FOND PAS, ELLE BASCULE — 0 s de duree, et c'est le
-- **D-262** — L'APLAT QUI MONTE. `transform: scaleY` depuis le bas, pas une
-- **D-263** — LA DUREE DU BALAYAGE EST UNE VARIABLE, ET ELLE N'EST PAS LA
-- **D-264** — L'APLAT N'EXISTE QUE SUR UN BOUTON DEJA DECOUPE.
-- **D-265** — LA CASCADE. `--i` est pose par `langue.js` au premier survol,
-- **D-266** — Le CADRE suit l'aplat. La couleur du bouton lui-meme ne bascule
-- **D-267** — LE FILET AU REPOS reste ce qu'il etait : la TRACE du
-- **D-268** — LE PRESSE. Le flou du focus de l'original devient une
-- **D-269** — LA FLECHE QUI SORT DU CADRE ET REVIENT — V4.
-- **D-270** — LA FLECHE PART QUAND L'APLAT A FINI SA COURSE, et c'est une
-- **D-271** — LES DEUX BOUTONS DU HERO — V4 · CRAN, et la hierarchie est
-- **D-272** — LES DEUX BOUTONS DU HERO BASCULENT SANS JAVASCRIPT.
-- **D-273** — V4 · L'ODOMETRE — les compteurs d'orientation.
-- **D-274** — LE GLYPHE SORTANT. Il est rendu par un pseudo-element pendant les
-- **D-275** — N1 · LE CURSEUR DU RAIL.
-- **D-276** — L'ancienne marque cede la place. L'entree active garde sa
-- **D-277** — V3 · SOUDER — les separateurs de listes.
-- **D-278** — LA SOUDURE EST UNE TRANSITION CSS, PLUS UNE VARIABLE ANIMEE, ET
-- **D-279** — V3 · LES LIENS — le soulignement se trace, puis se RETRACE.
-- **D-280** — V4 · L'ETIQUETTE DE LA POINTE.
-- **D-281** — V4 · LES PASTILLES DE SECTEUR.
-- **D-282** — L'INVERSION A ETE ECARTEE ICI, APRES MESURE, ET C'EST INSTRUCTIF.
-- **D-283** — V3 · LA VALIDATION DE CHAMP.
-- **D-284** — V4 · LA BASCULE DE THEME.
-- **D-285** — MOUVEMENT REDUIT — ce que le bloc global de `base.css` ne
-- **D-286** — PHASE 8 — SUITE : LES MICRO-ETATS.
-- **D-287** — V4 · LE BOURGEON, EN DEUX CRANS.
-- **D-288** — V1 · LE POPUP DES CADEAUX.
-- **D-289** — V3 · LES TROIS ISSUES D'UN ENVOI.
-- **D-290** — V3 · LA QUESTION FREQUENTE.
-- **D-291** — V2 · LE CADRE D'UN PROJET.
-- **D-292** — MOUVEMENT REDUIT — les deux animations qui DEPLACENT.
-- **D-293** — LE BUDGET DE DEGRADATION — la moitie CSS.
-- **D-294** — PALIER 1 — ALLEGE.
-- **D-295** — 4 · La fleche qui sort du cadre. 300 ms d'animation sur un SVG a
-- **D-296** — PALIER 2 — MINIMAL.
-- **D-297** — 7 · La cascade par lettre. UN SEUL NOMBRE la supprime, et c'est
-- **D-298** — CE QUI NE TOMBE JAMAIS, A AUCUN PALIER, et la liste est courte
-- **D-571** — 1ter. LES TROIS SAS — replies par defaut, actifs sous `sas-ok`
-- **D-572** — LA CHAMBRE NOIRE — la section 05 adopte les jetons du theme oppose
-- **D-579** — La remontee est un calque : le volet couvre et se degage
-- **D-580** — Les `contain-intrinsic-size` recalibres aux hauteurs mesurees
-- **D-584** — Le contrat du voyage : l'assemblage du rail a l'arrivee
-- **D-585** — L'appat se plie a la largeur de sa boite, pas de l'ecran
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-096 — APED AGENCE - Direction ATELIER** | 7 | 67 |
+| **D-097 — 1. GRILLE** | 8 | 76 |
+| **D-098 — La respiration d'une jonction appartient a la section qui ARRIVE, jamais** | 10 | 166 |
+| **D-099 — 1bis. LES DOUZE SEUILS — LES FRONTIERES DE SECTION** | 46 | 663 |
+| **D-100 — LE NUMERO. Fenetre qui rogne + bande qui defile : deux elements,** | 10 | 136 |
+| **D-101 — Le cran : la bande est POSEE sur la cellule du haut — le numero** | 7 | 90 |
+| **D-102 — LE SEUIL CLAIR — onze douziemes des frontieres. Il ne peint** | 8 | 105 |
+| **D-103 — LE SEUIL D'ENCRE — quatre frontieres. Pleine largeur, donc il** | 11 | 162 |
+| **D-104 — G4 · LA SOUDURE LONGUE — une seule frontiere, la neuvieme.** | 11 | 148 |
+| **D-105 — Pleine largeur d'ecran depuis une grille centree, sans casser** | 7 | 90 |
+| **D-106 — PALIER 2 — le geste propre a chaque frontiere tombe, les trois** | 10 | 128 |
+| **D-107 — LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.** | 27 | 364 |
+| **D-108 — DÉCLINAISON DE LA SIGNATURE (N1 + N2).** | 10 | 123 |
+| **D-109 — 2. EN-TETE DE SECTION** | 7 | 70 |
+| **D-110 — Les titres de section imposent sans manger l'ecran. L'enorme est** | 7 | 88 |
+| **D-111 — LE DECALAGE LATERAL NE DOIT PAS ETENDRE LA PAGE.** | 11 | 149 |
+| **D-112 — 3. NAVIGATION** | 7 | 63 |
+| **D-113 — Les liens de section n'apparaissent qu'a 72em, pas 64 : a 1024 px ils** | 7 | 84 |
+| **D-114 — LE MONTANT VIVANT NE TIENT PAS DANS LA BARRE SOUS 64em.** | 10 | 145 |
+| **D-115 — Reference : deuxieme CTA de la barre. Hierarchie tenue par le** | 7 | 80 |
+| **D-116 — Sur telephone, le libelle complet ne rentre pas a cote du bourgeon** | 8 | 109 |
+| **D-117 — 4. BOUTONS** | 8 | 76 |
+| **D-118 — DÉCLINAISON DE LA SIGNATURE (N2).** | 10 | 126 |
+| **D-119 — Sous 26em, « Estimation en 60 secondes » mesure 307 px sur une** | 9 | 119 |
+| **D-120 — Bourgeon de menu : deux filets, pas d'icone.** | 7 | 87 |
+| **D-121 — 4b. LA POINTE — declinaison de la signature au curseur** | 9 | 119 |
+| **D-122 — 5. INDEX COLLANT** | 8 | 74 |
+| **D-123 — 7. PLAQUE** | 8 | 79 |
+| **D-124 — 8. CHAMPS** | 8 | 67 |
+| **D-125 — LE REPLI D'ENVOI. Pose par js/main.js quand l'envoi automatique** | 16 | 228 |
+| **D-126 — 9. CURSEURS** | 7 | 61 |
+| **D-127 — 11b. SEQUENCE D'ENTREE** | 14 | 171 |
+| **D-128 — LE SCENARIO, EN QUATRE TEMPS ET 1 420 ms.** | 51 | 777 |
+| **D-129 — LA PAUSE. Elle nomme exactement ce qui a le droit d'attendre.** | 27 | 389 |
+| **D-130 — LA COMPOSITION DU HERO ATTEND AVEC LE RESTE. Sans cette ligne,** | 10 | 137 |
+| **D-131 — LA COMPOSITION EST POSEE TOT ET TENUE A L'ARRET.** | 22 | 273 |
+| **D-132 — LES QUINZE BANDES.** | 11 | 138 |
+| **D-133 — LA JAUGE. Pleine largeur, en haut, exactement la ou la barre de** | 10 | 136 |
+| **D-134 — LE CADRE D'ATELIER. Quatre equerres qui reservent le format avant** | 7 | 83 |
+| **D-135 — Le cadre part AVANT que le rideau s'ouvre : c'est le banc qu'on** | 7 | 86 |
+| **D-136 — LE COMPTEUR — V4 · CRAN, et il est en bas de l'ecran, sous la** | 14 | 189 |
+| **D-137 — LA LIGNE D'ETAT PREND LA LARGEUR DU CADRE, pas celle du texte.** | 9 | 116 |
+| **D-138 — ELLE DOIT PARTIR, ET ELLE NE PARTAIT PAS.** | 14 | 191 |
+| **D-139 — line-height DOIT valoir la hauteur de boite, sinon chaque** | 7 | 84 |
+| **D-140 — LE SAUT. N'importe quel clic, n'importe quelle touche. Ce n'est** | 10 | 143 |
+| **D-141 — MOUVEMENT REDUIT : LE LOGO, BREF, PUIS LE SITE.** | 13 | 183 |
+| **D-142 — 11c. LE CADEAU — un seul popup, en <dialog> natif** | 18 | 234 |
+| **D-143 — V1 · DEGAGER — l'entree. Une arete franche, de HAUT EN BAS.** | 10 | 134 |
+| **D-144 — LA SORTIE DOIT SE VOIR SUR N'IMPORTE QUEL FOND. Elle est en** | 9 | 115 |
+| **D-145 — LE VISUEL — les deux VRAIES couvertures.** | 10 | 127 |
+| **D-146 — SUR TELEPHONE LE VISUEL NE DISPARAIT PAS, IL CHANGE DE FORME.** | 10 | 133 |
+| **D-147 — EN SOMBRE, LE BANC MONTE D'UN TON. Les couvertures sont des** | 9 | 115 |
+| **D-148 — LES COUVERTURES SONT LE SUJET, PAS UNE VIGNETTE.** | 7 | 83 |
+| **D-149 — LE RECOUVREMENT EST CALCULE SUR CE QU'IL NE DOIT PAS CACHER.** | 8 | 99 |
+| **D-150 — V2 · S'ALIGNER — elles arrivent DECALEES lateralement, en** | 7 | 76 |
+| **D-151 — CE QU'ON DIT. Sept objets, pas neuf, et chacun a un role :** | 15 | 178 |
+| **D-152 — TROIS MOTS, ET ILS PRENNENT LA PLACE DE TROIS MOTS. Le titre** | 7 | 79 |
+| **D-153 — LA FICHE — l'idiome du site, applique au cadeau.** | 9 | 113 |
+| **D-154 — SPECIFICITE : .cadeau-vue .cadeau-couv vaut (0,2,0) et pose** | 8 | 112 |
+| **D-155 — LES POINTS DE CAPTURE DISCRETS. Trois, moins insistants que le** | 9 | 116 |
+| **D-156 — .svc-appat a ete retire le 2026-07-30 avec le bloc appat de la** | 7 | 79 |
+| **D-157 — minmax(0, 1fr) et non auto : une colonne de grille en auto** | 9 | 128 |
+| **D-158 — LA PLAQUE DE LIMAILLE** | 8 | 83 |
+| **D-159 — MESURE DU 2026-07-25 : a 1000/292 le bloc des deux mots occupait** | 10 | 134 |
+| **D-160 — Le canvas trace AGENCE en capitales. Le repli textuel doit dire** | 7 | 90 |
+| **D-161 — FICHE TECHNIQUE — la colonne droite du hero.** | 11 | 146 |
+| **D-162 — 12bis. LE SOCLE DU HERO — ce qui reste des huit plaques.** | 29 | 379 |
+| **D-163 — LE MOT FORT PASSE A L'ENCRE PLEINE, ET C'EST LE SEUL SEPARATEUR** | 18 | 227 |
+| **D-164 — LE POINT MEDIAN SUIT L'ITEM QU'IL FERME, IL N'OUVRE PAS LE** | 10 | 143 |
+| **D-165 — Sur ecran etroit le bloc a besoin de plus de hauteur relative :** | 7 | 78 |
+| **D-166 — LA COMPOSITION DU HERO — V1 · DEGAGER et V3 · SOUDER.** | 51 | 744 |
+| **D-167 — L'ETAT DE REPOS DU FILET DE FICHE EST LE TRAIT PLEIN.** | 18 | 261 |
+| **D-168 — V2 · S'ALIGNER, a l'echelle d'un pas. Le bloc arrive decale sur** | 7 | 94 |
+| **D-169 — CE QUI A CHANGE LE 2026-07-29, ET POURQUOI CE N'EST PAS UN** | 42 | 601 |
+| **D-170 — L'AMPLITUDE SUIT LA HIERARCHIE. Le titre est ce qu'on doit voir** | 8 | 104 |
+| **D-171 — Pas de backwards : avant son retard, la plaque est a** | 7 | 84 |
+| **D-172 — Le libelle d'une rangee part 90 ms APRES son filet : un cran** | 7 | 81 |
+| **D-173 — Le filet du pied est SOUS la plaque de son propre paragraphe :** | 7 | 84 |
+| **D-174 — La fiche n'apparait qu'a partir de 64em : sous cette largeur la** | 7 | 78 |
+| **D-175 — LE SOCLE PREND LA BANDE ENTIERE, ET IL SE COLLE AU BAS.** | 17 | 222 |
+| **D-176 — 14. SERVICES — LA PISTE, LA SCENE ET LE RAIL** | 82 | 1 088 |
+| **D-177 — La planche se cale sous le chapo, pas a une bande de distance :** | 7 | 80 |
+| **D-178 — LA MARGE DU RAIL EST CELLE DU TEXTE, calculee comme .wrap la** | 8 | 100 |
+| **D-179 — LA LARGEUR D'UN CHANTIER — ET POURQUOI ELLE N'EST PAS UN** | 26 | 351 |
+| **D-180 — LE NOM PORTE LA SECTION. Il n'y a plus d'image : c'est** | 9 | 123 |
+| **D-181 — L'INDEX — N1 · ORIENTATION.** | 15 | 166 |
+| **D-182 — .fine et .svc-reserve ont la meme specificite (0,1,0) : c'est** | 7 | 87 |
+| **D-183 — LA PORTE ET LE PANNEAU DE DETAIL.** | 21 | 263 |
+| **D-184 — LE PANNEAU. Centre par inset + margin: auto, JAMAIS par** | 9 | 111 |
+| **D-185 — 100dvh MOINS LES DEUX MARGES, ET PAS 100 %.** | 11 | 145 |
+| **D-186 — LE VOILE — ET IL N'EST PAS PORTE PAR LE PANNEAU, POUR DEUX** | 24 | 308 |
+| **D-187 — L'INTERIEUR DU PANNEAU — plus aere qu'avant, et c'est une** | 21 | 286 |
+| **D-188 — « CE QUE VOUS RECEVEZ » — une liste NUMEROTEE, et le numero est** | 7 | 78 |
+| **D-189 — Numero POSITIONNE et non mis en colonne de grille : chaque ligne** | 8 | 98 |
+| **D-190 — L'OUVERTURE — V1 · DEGAGER, sens BAS.** | 9 | 111 |
+| **D-191 — LE RAIL — L'EXCEPTION, ET ELLE EST TRIPLEMENT CONDITIONNEE.** | 15 | 184 |
+| **D-192 — LE PAS VERTICAL — la distance de defilement qui fait passer** | 19 | 251 |
+| **D-193 — LA SCENE MONTE AU-DESSUS DE LA BARRE PENDANT QU'UN PANNEAU EST** | 19 | 254 |
+| **D-194 — LA VITRE EST UN CONTENEUR DE DEFILEMENT, ET C'EST ELLE QUI** | 39 | 522 |
+| **D-195 — LE RAIL. Une seule transformation par image, ecrite par** | 12 | 149 |
+| **D-196 — width: max-content — SANS LUI, IL N'Y A RIEN A DEFILER.** | 46 | 664 |
+| **D-197 — L'ECHELLE — C'EST ELLE QUI REMPLACE L'IMAGE, ET LE RAPPORT EST** | 35 | 463 |
+| **D-198 — V1 · DEGAGER — LE NOM SE DECOUVRE QUAND SON CHANTIER ARRIVE.** | 40 | 551 |
+| **D-199 — L'INDEX COLLE DE GAUCHE PREND 296 px A LA SCENE A PARTIR DE 64em.** | 8 | 101 |
+| **D-200 — MOUVEMENT REDUIT — le cran reste, le balayage part.** | 10 | 128 |
+| **D-201 — PALIER 2 — le degagement du panneau tombe avec les autres** | 10 | 136 |
+| **D-202 — 15. AVANT / APRES — trois demonstrations, zero image** | 33 | 433 |
+| **D-203 — L'ETIQUETTE D'HONNETETE EST DANS LE TITRE, PAS EN NOTE.** | 8 | 90 |
+| **D-204 — LE CRAN — V4. Deux etats, aucun entre-deux.** | 15 | 178 |
+| **D-205 — LA PRECISION SUIT LE FOND, ET C'EST UN ECHEC MESURE.** | 11 | 147 |
+| **D-206 — overflow: hidden et pas auto : une zone de defilement** | 8 | 103 |
+| **D-207 — LES TROIS ECARTS — ce qui rend la comparaison LISIBLE SANS UN** | 13 | 154 |
+| **D-208 — LE NUMERO EST POSITIONNE, PAS MIS EN COLONNE DE GRILLE — ET** | 19 | 244 |
+| **D-209 — LE FILET FAIT DE CES TROIS LIGNES UN HOTE DE V3 · SOUDER.** | 7 | 84 |
+| **D-210 — LE NUMERO EST EN ::after, ET CE N'EST PAS UN GOUT.** | 9 | 115 |
+| **D-211 — L'APRES — notre langue, et trois compositions differentes.** | 20 | 245 |
+| **D-212 — LE CHAMP DU DENEIGEMENT. INERTE, et c'est une decision : une** | 9 | 116 |
+| **D-213 — L'AVANT — 2008-2012, RECONSTITUE SUR PIECES.** | 48 | 673 |
+| **D-214 — LE revert REND AU NAVIGATEUR SES VALEURS PAR DEFAUT, ET C'EST** | 33 | 446 |
+| **D-215 — LA LARGEUR FIXE, ET LE DEBORDEMENT EST LE PROPOS.** | 8 | 100 |
+| **D-216 — LE TEXTE DEFILANT. Valeurs par defaut de <marquee> selon la** | 13 | 171 |
+| **D-217 — LE RETARD NEGATIF N'EST PAS UNE COQUETTERIE. Sans lui, le texte** | 10 | 143 |
+| **D-218 — LA « PHOTOGRAPHIE ». Aucun fichier : trois aplats et une trame,** | 8 | 105 |
+| **D-219 — LES TROIS ARRETS DU TEXTE DEFILANT.** | 11 | 139 |
+| **D-220 — L'apercu etait display: none sous 64em : sur telephone, la** | 7 | 89 |
+| **D-221 — La legende est un ETAGE de la plaque, plus un bandeau pose** | 8 | 96 |
+| **D-222 — LES TREIZE MAQUETTES** | 10 | 120 |
+| **D-223 — content-visibility: hidden et non visibility: hidden : un** | 10 | 136 |
+| **D-224 — Le corps est une COLONNE FLEX : c'est ce qui permet au pied de** | 8 | 102 |
+| **D-225 — Les regles des ANCIENNES maquettes de secteur — .mock-top,** | 10 | 131 |
+| **D-226 — LE VERDICT — deux chiffres, poses avant toute interaction.** | 9 | 123 |
+| **D-227 — LE SCHEMA DE L'ECART.** | 10 | 123 |
+| **D-228 — LE PONT. Il part de la fin de la journee automatisee et va** | 7 | 74 |
+| **D-229 — Les longueurs sont dans le MARKUP, pas dans le script : sans** | 8 | 93 |
+| **D-230 — 19. PROCESSUS - le parcours d'atelier** | 11 | 135 |
+| **D-231 — LES QUATRE COMPOSANTS. Chacun montre ce que son etape PRODUIT :** | 10 | 138 |
+| **D-232 — Les deux libelles de l'entete se replient plutot que de pousser le** | 7 | 93 |
+| **D-233 — La plaque d'atelier. Meme matiere que le hero, a l'echelle d'un** | 7 | 88 |
+| **D-234 — LES QUATRE PREUVES. Chacune demontre son engagement au lieu de** | 9 | 126 |
+| **D-235 — Au repos la coche est TRACEE. Elle partait de scaleX(0) :** | 7 | 89 |
+| **D-236 — LE DEFAUT CORRIGE. Le bloc etait en --surface-inverse,** | 16 | 211 |
+| **D-237 — LES TROIS PREUVES** | 8 | 75 |
+| **D-238 — La sortie de secours de la colonne de gauche. Elle n'existe qu'a** | 8 | 108 |
+| **D-239 — LE SURVOL FAISAIT BAISSER LE CONTRASTE, ET C'EST L'INVERSE DE CE** | 29 | 425 |
+| **D-240 — L'ENTREE PRINCIPALE — EN MINIUM PLEIN.** | 18 | 215 |
+| **D-241 — LA CARTE PRINCIPALE EST SUR MINIUM, DONC ELLE NE SUIT PAS LA REGLE** | 16 | 236 |
+| **D-242 — CE QUI ARRIVE APRES. L'inconnu d'apres l'envoi est ce qui retient** | 8 | 98 |
+| **D-243 — Le filigrane est en FILET, plus en aplat.** | 14 | 200 |
+| **D-244 — MESURE : a line-height: 0.78 la boite faisait 247 px pour une** | 8 | 106 |
+| **D-245 — 25. PAGE 404 - index deraille** | 12 | 150 |
+| **D-246 — La ligne demandee est EJECTEE hors de la colonne : c'est le** | 9 | 120 |
+| **D-247 — 26. POINTS DE RUPTURE** | 8 | 78 |
+| **D-248 — 4 colonnes reduisaient une capture de 900 px a 330, soit 2,71x :** | 8 | 105 |
+| **D-249 — LES QUATRE CHANTIERS NE SE RANGENT PLUS EN GRILLE : ils** | 9 | 120 |
+| **D-250 — LE CHEMIN SERPENTE. Le retrait de la station alterne — nul,** | 8 | 108 |
+| **D-251 — ECHELLE REDUITE. Les quatre colonnes tenaient sur 18 rem de** | 7 | 88 |
+| **D-252 — Le schema passe en trois colonnes : le libelle, la regle, la** | 7 | 78 |
+| **D-253 — AGENCE — composition en deux temps. Le quatuor asymetrique** | 8 | 106 |
+| **D-254 — La composition n'a plus de colonne morte : la promesse et le** | 7 | 92 |
+| **D-255 — TROIS POIDS, pas cinq tuiles egales :** | 7 | 70 |
+| **D-256 — LA HAUTEUR IMPOSEE A DISPARU AVEC LE PIN.** | 11 | 146 |
+| **D-257 — Plus aucune surface photographique ni voilee sur la page : la** | 8 | 110 |
+| **D-258 — PHASE 8 — LA LANGUE DE MOUVEMENT** | 32 | 376 |
+| **D-259 — V4 · LES LETTRES — traduction du composant fourni.** | 16 | 196 |
+| **D-260 — L'ENVELOPPE, ET C'EST ELLE QUI TIENT LA MISE EN PAGE.** | 12 | 171 |
+| **D-261 — LA LETTRE NE FOND PAS, ELLE BASCULE — 0 s de duree, et c'est le** | 35 | 483 |
+| **D-262 — L'APLAT QUI MONTE. transform: scaleY depuis le bas, pas une** | 8 | 100 |
+| **D-263 — LA DUREE DU BALAYAGE EST UNE VARIABLE, ET ELLE N'EST PAS LA** | 34 | 456 |
+| **D-264 — L'APLAT N'EXISTE QUE SUR UN BOUTON DEJA DECOUPE.** | 12 | 163 |
+| **D-265 — LA CASCADE. --i est pose par langue.js au premier survol,** | 8 | 111 |
+| **D-266 — Le CADRE suit l'aplat. La couleur du bouton lui-meme ne bascule** | 7 | 86 |
+| **D-267 — LE FILET AU REPOS reste ce qu'il etait : la TRACE du** | 7 | 83 |
+| **D-268 — LE PRESSE. Le flou du focus de l'original devient une** | 8 | 94 |
+| **D-269 — LA FLECHE QUI SORT DU CADRE ET REVIENT — V4.** | 7 | 76 |
+| **D-270 — LA FLECHE PART QUAND L'APLAT A FINI SA COURSE, et c'est une** | 11 | 146 |
+| **D-271 — LES DEUX BOUTONS DU HERO — V4 · CRAN, et la hierarchie est** | 41 | 589 |
+| **D-272 — LES DEUX BOUTONS DU HERO BASCULENT SANS JAVASCRIPT.** | 33 | 474 |
+| **D-273 — V4 · L'ODOMETRE — les compteurs d'orientation.** | 11 | 151 |
+| **D-274 — LE GLYPHE SORTANT. Il est rendu par un pseudo-element pendant les** | 10 | 141 |
+| **D-275 — N1 · LE CURSEUR DU RAIL.** | 13 | 163 |
+| **D-276 — L'ancienne marque cede la place. L'entree active garde sa** | 7 | 83 |
+| **D-277 — V3 · SOUDER — les separateurs de listes.** | 9 | 112 |
+| **D-278 — LA SOUDURE EST UNE TRANSITION CSS, PLUS UNE VARIABLE ANIMEE, ET** | 23 | 298 |
+| **D-279 — V3 · LES LIENS — le soulignement se trace, puis se RETRACE.** | 10 | 136 |
+| **D-280 — V4 · L'ETIQUETTE DE LA POINTE.** | 12 | 156 |
+| **D-281 — V4 · LES PASTILLES DE SECTEUR.** | 9 | 108 |
+| **D-282 — L'INVERSION A ETE ECARTEE ICI, APRES MESURE, ET C'EST INSTRUCTIF.** | 17 | 216 |
+| **D-283 — V3 · LA VALIDATION DE CHAMP.** | 9 | 101 |
+| **D-284 — V4 · LA BASCULE DE THEME.** | 8 | 83 |
+| **D-285 — MOUVEMENT REDUIT — ce que le bloc global de base.css ne** | 14 | 194 |
+| **D-286 — PHASE 8 — SUITE : LES MICRO-ETATS.** | 10 | 101 |
+| **D-287 — V4 · LE BOURGEON, EN DEUX CRANS.** | 11 | 144 |
+| **D-288 — V1 · LE POPUP DES CADEAUX.** | 12 | 148 |
+| **D-289 — V3 · LES TROIS ISSUES D'UN ENVOI.** | 11 | 142 |
+| **D-290 — V3 · LA QUESTION FREQUENTE.** | 11 | 128 |
+| **D-291 — V2 · LE CADRE D'UN PROJET.** | 10 | 106 |
+| **D-292 — MOUVEMENT REDUIT — les deux animations qui DEPLACENT.** | 9 | 119 |
+| **D-293 — LE BUDGET DE DEGRADATION — la moitie CSS.** | 18 | 228 |
+| **D-294 — PALIER 1 — ALLEGE.** | 8 | 76 |
+| **D-295 — 4 · La fleche qui sort du cadre. 300 ms d'animation sur un SVG a** | 7 | 90 |
+| **D-296 — PALIER 2 — MINIMAL.** | 8 | 77 |
+| **D-297 — 7 · La cascade par lettre. UN SEUL NOMBRE la supprime, et c'est** | 10 | 140 |
+| **D-298 — CE QUI NE TOMBE JAMAIS, A AUCUN PALIER, et la liste est courte** | 11 | 138 |
+| **D-571 — 1ter. LES TROIS SAS — replies par defaut** | 8 | 107 |
+| **D-572 — LA CHAMBRE NOIRE — les jetons du theme OPPOSE** | 8 | 102 |
+| **D-579 — LA REMONTEE EST UN CALQUE** | 7 | 86 |
+| **D-580 — LES contain-intrinsic-size RECALIBRES** | 9 | 126 |
+| **D-584 — LE CONTRAT DU VOYAGE** | 9 | 122 |
+| **D-585 — L'APPAT SE PLIE A SA BOITE** | 7 | 74 |
+| **D-591 · PAS DE ROGNAGE SUR LA SCENE DE LA DESCENTE.** | 10 | 106 |
+| **D-592 · L'ARETE EST EN HAUT, ET C'EST LA CORRECTION DU 2026-07-31.** | 20 | 281 |
+| **D-590 · LA SCENE EST DEJA LA COLONNE.** | 11 | 109 |
+| **D-631 · LE REPOS EST LA FORME FINALE — regle 3 du projet.** | 13 | 164 |
+| **D-630 · 150vh, et le chiffre est un ARBITRAGE, pas un calcul.** | 17 | 228 |
+| **D-629 · LA VOIE DU CALQUE — le rognage qui manquait, et il coutait la D-629 section…** | 20 | 286 |
+| **D-609 · LE VOCABULAIRE DU DESSIN NE VIT PLUS SOUS UNE SEULE BOITE.** | 13 | 164 |
+| **D-602 · == LE RENVOI VERS LES DEMONSTRATIONS — panneau 01.** | 11 | 126 |
+| **D-603 · == L'AUTOMATISATION QUI TOURNE TOUTE SEULE — panneau 02.** | 15 | 201 |
+| **D-605 · == LA VISITE, MONTREE AVANT D'ETRE OUVERTE — panneau 03.** | 10 | 113 |
+| **D-595 · LA PLANCHE NE REMPLIT PLUS LA VITRE — ET C'EST LE CORRECTIF D-595 DU TROU.** | 17 | 233 |
+| **D-596 · LE PANNEAU DE CLOTURE S'INSCRIT DANS LA MEME GRILLE.** | 16 | 198 |
+| **D-628 · == LE CADRE DEVIENT UN PETIT ECRAN, ET ON DEFILE DEDANS.** | 18 | 236 |
+| **D-636 · AU DOIGT, C'EST L'INVERSE — ET C'EST UN PIEGE EVITE.** | 15 | 179 |
+| **D-645 · == LES DEUX COTES DEFILENT EN POURCENTAGE, PAS EN PIXELS.** | 27 | 396 |
+| **D-617 · L'APRES EST UNE CAPTURE DU VRAI SITE, PLUS UNE MAQUETTE.** | 16 | 213 |
+| **D-644 · == LES SCENES EPINGLEES SE REJOUENT, ELLES NE S'EMPILENT PLUS.** | 25 | 371 |
+| **D-651 · == UNE BANDE CONTINUE : LE FOND, ET LA PISTE QUI GLISSE.** | 19 | 268 |
+| **D-619 · UNE IMAGE EST GLISSABLE PAR DEFAUT, ET CA TUE LA POIGNEE.** | 13 | 168 |
+| **D-693 · == LA BARRE D'ADRESSE — c'est elle qui dit « c'est un ecran ».** | 16 | 194 |
+| **D-650 · LA LOUPE EST RETIREE.** | 13 | 157 |
+| **D-508 · LES DEUX ETIQUETTES SONT PERMANENTES.** | 15 | 186 |
+| **D-640 · LE BOUTON DE LA POIGNEE PREND LE DOIGT, ET LUI SEUL.** | 22 | 308 |
+| **D-641 · LA PRISE S'ALLUME DES QU'UN DOIGT EXISTE SUR LA MACHINE.** | 19 | 275 |
+| **D-637 · LA MENTION PASSE TOUJOURS A LA LIGNE, ET CE N'EST PAS UN DETAIL.** | 13 | 177 |
+| **D-634 · LES BLOCS PHOTO DES RECONSTITUTIONS SONT DE VRAIES PHOTOS.** | 15 | 202 |
+| **D-625 · ET CE QUI TOMBE AU PALIER 1 RESTE TOMBE AU PALIER 2.** | 12 | 153 |
+| **D-684 · PLUS DE aspect-ratio: 4/3.** | 12 | 142 |
+| **D-638 · LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.** | 15 | 206 |
+| **D-705 · Les neuf ecrans de secteur s'ouvrent** | 32 | 461 |
+| **D-706 · --ink-muted ne tient pas sur --surface-1** | 11 | 131 |
+| **D-709 · Le plus gros chiffre du site n'avait aucune suite** | 13 | 149 |
+| **D-710 · Sous 384 px, c'est le montant qui part, pas le mot** | 19 | 229 |
+| **D-702 · La reassurance manquait au seul endroit ou on decide** | 17 | 195 |
+| **D-704 · Le libelle quitte le ::before, et la sonde change d'heure** | 43 | 631 |
+
+<!-- INDEX:FIN -->
 
 ## D-096 — APED AGENCE - Direction ATELIER
 

@@ -22,7 +22,7 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 > **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
 > de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
-> `grep -n "^### <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
 > il ne périme pas, un numéro de ligne oui.
 
 | Partie | Lignes | Jetons ~ |

@@ -4,18 +4,28 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-334** — APED AGENCE - Visite virtuelle 360
-- **D-335** — Affiche plate. C'est la seule chose que la section pese avant
-- **D-336** — LA PLAQUE D'ENTREE — aplat franc, jamais un degrade.
-- **D-337** — Pannellum impose `box-sizing: content-box` a tous ses descendants, et
-- **D-338** — Points de passage
-- **D-339** — Plan
-- **D-340** — Le lien de licence, sous la visite.
-- **D-341** — Mouvement reduit. La derive automatique ne demarre jamais (c'est
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-334 — APED AGENCE - Visite virtuelle 360** | 17 | 225 |
+| **D-335 — Affiche plate. C'est la seule chose que la section pese avant** | 8 | 107 |
+| **D-336 — LA PLAQUE D'ENTREE — aplat franc, jamais un degrade.** | 14 | 197 |
+| **D-337 — Pannellum impose box-sizing: content-box a tous ses descendants, et** | 8 | 113 |
+| **D-338 — Points de passage** | 9 | 103 |
+| **D-339 — Plan** | 9 | 91 |
+| **D-340 — Le lien de licence, sous la visite.** | 14 | 197 |
+| **D-341 — Mouvement reduit. La derive automatique ne demarre jamais (c'est** | 8 | 108 |
+| **D-620 · LE CADRE A TROIS ETAGES.** | 11 | 118 |
+| **D-624 · L'etiquette de lieu, posee sur l'affiche.** | 10 | 111 |
+| **D-632 · LA PROVENANCE EST UNE LEGENDE DE CADRE.** | 15 | 186 |
+
+<!-- INDEX:FIN -->
 
 ## D-334 — APED AGENCE - Visite virtuelle 360
 

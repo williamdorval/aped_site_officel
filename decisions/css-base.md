@@ -4,14 +4,22 @@
 > qui figure aussi dans le fichier source : `grep D-042` trouve les deux.
 > Ne se lit jamais en entier — on y arrive par l'identifiant.
 
-## Table
+<!-- INDEX:DEBUT -->
 
-- **D-348** — APED AGENCE - Socle
-- **D-349** — Champs desactives. Aucun champ du site ne l'est aujourd'hui,
-- **D-350** — Contrastes forces (contraste eleve Windows). Le site n'a que
-- **D-351** — Primitives de revelation.
+> **NE LIS PAS CE FICHIER EN ENTIER.** Cette table donne le titre exact
+> de chaque partie et ce qu'elle coûte. Va chercher la seule qui répond :
+> `grep -n "^## <titre>" <fichier>` puis lis la plage. Le titre est la clé —
+> il ne périme pas, un numéro de ligne oui.
 
----
+| Partie | Lignes | Jetons ~ |
+|---|---:|---:|
+| **D-348 — APED AGENCE - Socle** | 7 | 66 |
+| **D-349 — Champs desactives. Aucun champ du site ne l'est aujourd'hui,** | 8 | 97 |
+| **D-350 — Contrastes forces (contraste eleve Windows). Le site n'a que** | 8 | 105 |
+| **D-351 — Primitives de revelation.** | 26 | 325 |
+| **D-635 · LE FONDU UNIVERSEL DE BASCULE EST SUPPRIME.** | 26 | 336 |
+
+<!-- INDEX:FIN -->
 
 ## D-348 — APED AGENCE - Socle
 
