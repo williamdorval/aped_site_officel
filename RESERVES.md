@@ -128,6 +128,8 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Les trois autres assistants ont la même géométrie que celui qu'on vient de corriger | 15 | 224 |
 | &nbsp;&nbsp;↳ Deux échecs d'outil qui EXISTAIENT AVANT ce chantier | 13 | 172 |
 | &nbsp;&nbsp;↳ Le classeur attend quatre colonnes | 9 | 113 |
+| &nbsp;&nbsp;↳ Le panneau des conditions n'a aucun moyen de s'y retrouver | 15 | 170 |
+| &nbsp;&nbsp;↳ Ce que la skill de goût refuse et que le site fait quand même | 14 | 184 |
 
 <!-- INDEX:FIN -->
 
@@ -1682,3 +1684,32 @@ colonnes : `RÉFÉRENT · versement`, `Conditions acceptées`,
 été refait et `initialiser()` relancé**, `classeur-check.mjs` s'arrête
 sur « déploiement trop vieux » — c'est voulu, il refuse de juger un
 service qu'il sait périmé.
+
+### Le panneau des conditions n'a aucun moyen de s'y retrouver
+
+Mille deux cents mots d'un seul tenant, douze titres d'article, aucun
+sommaire. Le texte doit rester intégral — c'est un engagement — mais
+quelqu'un qui cherche « et si le projet est annulé » descend à
+l'aveugle.
+
+Trois façons de le régler, par coût croissant : une liste de liens
+d'ancre en tête du panneau · un repli par article (`aria-expanded`,
+comme le tiroir) · une colonne de repères collante à gauche du texte,
+au-dessus de 1024 px.
+
+**Rien n'a été fait** : c'est un chantier à soi, avec ses propres
+captures, pas une retouche de celui-ci.
+
+### Ce que la skill de goût refuse et que le site fait quand même
+
+Trois règles de `design-taste-frontend` entrent en conflit direct avec
+l'identité écrite du projet. Les instructions du dépôt priment ; rien
+n'a été changé, mais il faut que ce soit dit une fois :
+
+- **le tiret cadratin**, banni à zéro exemplaire par la skill, est la
+  ponctuation française du site ;
+- **un libellé de section en capitales par section**, alors que la
+  skill n'en tolère qu'un par trois : c'est le système de repérage du
+  rail 01 → 11 ;
+- **la plaque sombre dans les deux thèmes**, que la skill lit comme
+  une inversion de thème interdite : c'est l'arc de luminance, D-236.
