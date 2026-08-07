@@ -147,6 +147,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ OUVERTE PAR L'AUDIT CLIENT DU 2026-08-07 (D-783) | 2 | 15 |
 | &nbsp;&nbsp;↳ Le site ne montre aucun client réel, et je ne peux pas y remédier | 23 | 309 |
 | &nbsp;&nbsp;↳ L'en-tête sur téléphone vend au mauvais public | 9 | 121 |
+| &nbsp;&nbsp;↳ Le LCP rend 408 à 484 ms en fin de chantier, et je ne sais pas dire pourquoi | 27 | 396 |
 
 <!-- INDEX:FIN -->
 
@@ -1928,3 +1929,30 @@ parle du programme de parrainage à quelqu'un qui n'a rien acheté. Y
 glisser le numéro ou le CTA d'achat demande de décider **ce qui sort**.
 L'arbitrage coûte de l'argent dans les deux sens et appartient au
 propriétaire ; il n'a pas été tranché.
+
+### Le LCP rend 408 à 484 ms en fin de chantier, et je ne sais pas dire pourquoi
+
+`cas-tordus-check` rendait **34 / 34** en milieu de session, LCP
+compris. En fin de chantier, trois passes de suite rendent **408 ms,
+464 ms, 484 ms** contre un seuil de **300**. Ce n'est pas du bruit :
+trois passes ne se trompent pas dans le même sens.
+
+**Ce qui n'a pas changé, et qui devrait suffire à disculper le
+chantier :** `css/critique.css` fait **52 401 octets, exactement comme
+ce matin** — toutes les règles ajoutées ce jour-là sont tombées dans
+`differe.css`, injecté après le premier rendu. Et l'élément LCP,
+`SPAN.plate-big`, est dans le hero, que rien n'a touché. `index.html` a
+grossi de 9,5 Ko (+3 %), ce qui ne vaut pas 200 ms.
+
+**Ce que je soupçonne sans pouvoir le prouver :** la machine. Deux
+serveurs de développement tournent depuis le matin, et cette session a
+lancé plusieurs dizaines d'instances de Chromium, dont trois suites
+Playwright en parallèle pendant une partie du chantier.
+
+**Ce qu'il faut faire :** relancer `node tools/cas-tordus-check.mjs`
+sur une machine au repos, seul, sans autre serveur. Si le chiffre reste
+au-dessus de 300, comparer avec `node tools/accueil-check.mjs` — les
+deux outils ne mesurent pas pareil, et le 2026-08-07 l'un rendait
+216 ms quand `verif` rendait 596 ms sur la même page. **Tant que ce
+n'est pas fait, personne ne doit écrire que le seuil LCP tient, ni
+qu'il a régressé.**
