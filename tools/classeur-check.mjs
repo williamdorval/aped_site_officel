@@ -34,7 +34,7 @@ const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
 if (!m) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = m[1].trim();
 
-const VERSION_MINIMALE = 8;
+const VERSION_MINIMALE = 9;
 
 /* ---- l'ordre des colonnes, lu dans Code.gs, jamais recopie ---- */
 const SRC = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
@@ -48,6 +48,11 @@ const DEFS = new Function("var out = {};"
   + bloc(/var STATUTS = [\s\S]*?;/, "STATUTS")
   + bloc(/var COL_SIGNATURE = [\s\S]*?;/, "COL_SIGNATURE")
   + bloc(/var SUIVI = \[[\s\S]*?\n\];/, "SUIVI")
+  /* `SUIVI_FIN` porte « Notes internes », passee en queue par D-759.
+     Sans ce bloc, l'outil mourait sur `SUIVI_FIN is not defined` —
+     ce qui est le bon comportement : un outil qui ne connait pas la
+     forme attendue doit s'arreter, jamais rendre « sain ». */
+  + bloc(/var SUIVI_FIN = \[[\s\S]*?\n\];/, "SUIVI_FIN")
   + bloc(/var TECHNIQUES = \[[\s\S]*?\n\];/, "TECHNIQUES")
   + bloc(/var SCHEMA = \{[\s\S]*?\n\};/, "SCHEMA")
   + "out.SUIVI = SUIVI; out.SUIVI_FIN = SUIVI_FIN; out.TECHNIQUES = TECHNIQUES; out.SCHEMA = SCHEMA;"

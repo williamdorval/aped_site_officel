@@ -458,6 +458,66 @@ titre("10 · CE QU'ON REFUSE D'ECRIRE");
 
 
 /* ============================================================
+   12 · UNE FUSION NE DOIT PAS RALLUMER LE POISON
+   ============================================================ */
+titre("12 · LA FUSION NE RECREE PAS LA FORMULE (D-761)");
+{
+  remise(); viderDebit();
+
+  /* CE CAS VIENT DE LA PRODUCTION, PAS DU BANC. Le 2026-08-06,
+     `tools/verite-prod.mjs` a lu le vrai classeur apres un retour en
+     arriere : « Entreprise » valait 2 et « Description » valait
+     #N/A. La PREMIERE ecriture etait bien inerte — D-757 tient — et
+     la SECONDE la rallumait.
+
+     La cause : `fusionnerLigne` relit la ligne avec `getValues()`,
+     qui rend « =1+1 » SANS l'apostrophe, puis reecrit la ligne
+     entiere. Les cellules qu'on ne touche pas repartent donc en
+     `setValues` sous leur forme nue, et Sheets les recalcule. Le
+     poison n'avait pas besoin d'etre renvoye : il suffisait qu'une
+     etape suivante touche N'IMPORTE QUEL autre champ.
+
+     Aucun cas ne pouvait le voir : tous ecrivaient une fois. */
+  const S = "ZZTESTfusionpoison01";
+  poster({ _form: "project", _sid: S, _etape: 1, _etapes: 6,
+    email: "zztest@exemple.ca", nom: "ZZTEST Poison" });
+  poster({ _form: "project", _sid: S, _etape: 2, _etapes: 6,
+    email: "zztest@exemple.ca",
+    entreprise: "=1+1",
+    description: '=IMPORTXML("https://exemple.ca/x","//a")',
+    ville: "+41855501@42" });
+
+  const f = etat.feuilles.get("Démarrer un projet");
+  dire("apres la PREMIERE ecriture, aucune cellule calculee", f.formules.size, 0);
+
+  /* UNE ETAPE QUI NE TOUCHE MEME PAS AUX CHAMPS EMPOISONNES. */
+  poster({ _form: "project", _sid: S, _etape: 3, _etapes: 6,
+    email: "zztest@exemple.ca", telephone: "418 555 0164",
+    budget: "10 000 $ et plus" });
+
+  dire("apres la FUSION, toujours aucune cellule calculee", f.formules.size, 0,
+    f.formules.size ? "cellules rallumees : " + [...f.formules].join(", ") : "");
+
+  const titres = gs.colonnes("project").map((c) => c.titre);
+  const l = lignes("Démarrer un projet")[0] || [];
+  dire("et le texte est intact", String(l[titres.indexOf("Entreprise")] || ""), "=1+1");
+  dire("le second aussi",
+    String(l[titres.indexOf("Description")] || ""),
+    '=IMPORTXML("https://exemple.ca/x","//a")');
+
+  /* LA CASE A COCHER SURVIT AU PASSAGE. `texteInerte` traverse
+     maintenant la ligne ENTIERE, colonnes de suivi comprises : si
+     elle rendait « false » au lieu du booleen, la case deviendrait
+     du texte et la regle de couleur des non-lues mourrait. */
+  const vu = l[titres.indexOf("Vu")];
+  dire("« Vu » est resté une case à cocher, pas le texte « false »",
+    typeof vu, "boolean", "valeur : " + JSON.stringify(vu));
+  dire("« Statut » n'a pas bouge non plus",
+    String(l[titres.indexOf("Statut")] || ""), "Nouveau");
+}
+
+
+/* ============================================================
    11 · LE COMPTE DES APPELS — UNE PORTE PUBLIQUE DE PLUS
    ============================================================ */
 titre("11 · LE COMPTE DES APPELS N'OUVRE RIEN D'AUTRE (D-760)");

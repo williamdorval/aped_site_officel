@@ -56,6 +56,9 @@ export const etat = {
      cache SANS toucher aux dates du reste du banc — un essai peut
      ainsi prouver qu'une entree expire, sans attendre 90 s. */
   cache: {},
+  /* Ce que la veille des blocages a fait : D-762 */
+  renommages: [],
+  declencheurs: [],
   decalageHorloge: 0,
   horloge() { return Date.now() + this.decalageHorloge; }
 };
@@ -328,6 +331,17 @@ function faireFeuille(f) {
     setRowHeight: (r, h) => { f.hauteurs[r] = h; },
     setColumnWidth: (c, w) => { f.largeurs[c] = w; },
     hideColumns: (c) => { if (!f.cachees.includes(c)) f.cachees.push(c); },
+    /* `clear()` VIDE TOUT — valeurs, formules, formats. La veille
+       des blocages s'en sert pour reecrire son onglet a chaque
+       passage : sans lui elle echouait dans son propre `try`, et le
+       banc rendait « vert » sur une veille qui n'ecrivait rien. */
+    clear: () => {
+      f.valeurs.length = 0;
+      f.ecrites.clear();
+      f.formules.clear();
+      f.formatsTexte.length = 0;
+      return faireFeuille(f);
+    },
     /* `appendRow` ECRIT SOUS LA DERNIERE LIGNE NON VIDE, pas au
        bout du tableau : une feuille dont la ligne 3 est vide et la
        ligne 2 pleine recoit sa nouvelle ligne en 3.  D-760 */
@@ -377,7 +391,7 @@ const classeurFactice = {
   setSpreadsheetTimeZone: (tz) => { etat.fuseauClasseur = tz; },
   getSpreadsheetTimeZone: () => etat.fuseauClasseur || "America/Toronto",
   getSheetByName: (n) => (etat.feuilles.has(n) ? faireFeuille(etat.feuilles.get(n)) : null),
-  insertSheet: (n) => faireFeuille(feuille(n)),
+  insertSheet: (n /* , index — l'ordre des onglets ne se prouve pas ici */) => faireFeuille(feuille(n)),
   getSheets: () => [...etat.feuilles.keys()].map((n) => faireFeuille(etat.feuilles.get(n))),
   deleteSheet: (s) => etat.feuilles.delete(s.getName())
 };
@@ -440,7 +454,12 @@ function bornes(e) {
 }
 
 function versApiAvancee(e) {
-  const out = { summary: e.titre, status: e.annule ? "cancelled" : "confirmed" };
+  /* L'IDENTIFIANT EST INDISPENSABLE DEPUIS D-762 : sans lui, la
+     veille des blocages sans effet ne peut renommer aucun
+     evenement, et le banc rendrait « 0 renomme » sur un code qui
+     marche — ou l'inverse. */
+  if (!e.id) e.id = "EV" + (etat.evenements.indexOf(e) + 1);
+  const out = { id: e.id, summary: e.titre, status: e.annule ? "cancelled" : "confirmed" };
   if (e.disponible) out.transparency = "transparent";
   if (e.refuse) out.attendees = [{ self: true, responseStatus: "declined" }];
   else if (e.invites && e.invites.length) out.attendees = e.invites.map((a) => ({ email: a }));
@@ -625,7 +644,48 @@ const services = {
           rep.conferenceData = { entryPoints: [{ entryPointType: "video", uri: lien }] };
         }
         return rep;
+      },
+      /* LE RENOMMAGE, tel que `veilleBlocages` l'appelle.  D-762
+         Il ne touche QUE le titre : si un jour le code se mettait a
+         deplacer ou supprimer un evenement, ce bouchon le laisserait
+         passer sans rien changer et le cas ne le verrait pas. On
+         leve donc sur toute cle autre que `summary`. */
+      patch: (champs, calId, id) => {
+        const inconnues = Object.keys(champs).filter((k) => k !== "summary");
+        if (inconnues.length) {
+          throw new Error("le bouchon ne modifie que `summary` — recu : " + inconnues.join(", "));
+        }
+        const ev = etat.evenements.find((e) => e.id === id);
+        if (!ev) throw new Error("Not Found: " + id);
+        ev.titre = champs.summary;
+        etat.renommages.push({ id, titre: champs.summary });
+        return versApiAvancee(ev);
       }
+    }
+  },
+
+  /* LES DECLENCHEURS. `poserVeille` les pose et les depose ; sans
+     bouchon, elle echouait en silence dans son propre `try` et le
+     banc ne voyait jamais si elle en empilait douze.  D-762 */
+  ScriptApp: {
+    getProjectTriggers: () => etat.declencheurs.slice(),
+    deleteTrigger: (t) => {
+      const i = etat.declencheurs.indexOf(t);
+      if (i >= 0) etat.declencheurs.splice(i, 1);
+    },
+    newTrigger: (nom) => {
+      const b = { nom, heure: null, jours: null };
+      const api = {
+        timeBased: () => api,
+        atHour: (h) => { b.heure = h; return api; },
+        everyDays: (d) => { b.jours = d; return api; },
+        create: () => {
+          const t = Object.assign({}, b, { getHandlerFunction: () => b.nom });
+          etat.declencheurs.push(t);
+          return t;
+        }
+      };
+      return api;
     }
   },
 
@@ -741,6 +801,7 @@ const fabrique = new Function(...noms, source + `
            instantLocal, partsLocal, decalageMin, libelleHeure, libelleComplet,
            surLaGrille, fenetreReservable, colonneLettre, migrerColonnes,
            nettoyerAutotest, nettoyerRendezVousEssai, titreDuSite,
+           blocagesSansEffet, veilleBlocages, poserVeille, bloqueAuMoinsUnCreneau,
            libelleEtape, repererLigne, diagnostic };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));

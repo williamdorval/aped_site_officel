@@ -206,6 +206,46 @@ mesuré, sur quel modèle, quelle version d'OS et quelle date.
 <a id="defauts"></a>
 ## 2 · DÉFAUTS OUVERTS
 
+**Un `_sid` connu permet d'ÉCRIRE dans la ligne de quelqu'un d'autre.**
+*Ouverte le 2026-08-06. D-744, D-761.*
+
+`signature()` rend `"S:" + _sid` et `repererLigne()` retrouve la ligne
+qui porte cette signature. Le `_sid` est donc la seule preuve
+d'identité : **il n'est ni signé, ni lié à quoi que ce soit.** Une
+requête forgée qui porte un `_sid` valide fusionne dans la ligne de son
+propriétaire — elle peut y écrire n'importe quel champ du schéma.
+
+**Ce qu'elle ne permet PAS**, et c'est vérifié par
+`tools/securite-check.mjs` § 7 :
+- **lire** la ligne : la réponse ne rend que `ligne`, `session`,
+  `etape`, `champs`. Aucune valeur de visiteur n'en ressort ;
+- toucher un **autre onglet** : la recherche se fait dans celui du
+  `_form` ;
+- écrire dans les **colonnes de suivi** : `ecrireLigne` ne lit que les
+  champs du `SCHEMA`.
+
+**Pourquoi c'est jugé faible.** `_sid` vaut 32 signes de
+`crypto.randomUUID`, soit 128 bits. Il ne sort du navigateur que vers
+notre propre service, il vit en `localStorage` (jamais en témoin, donc
+jamais envoyé automatiquement), et le site ne fait aucune requête
+tierce — il n'y a pas de fuite par en-tête `Referer` vers un tiers.
+Deviner un `_sid` n'est pas praticable ; il faut le **voler**, ce qui
+suppose déjà l'accès à l'appareil.
+
+**Ce que coûterait la fermeture — un jeton signé.** Chiffré le
+2026-08-06, non fait :
+
+| | Ce qu'il faut | Coût |
+|---|---|---|
+| **Serveur** | à la naissance de la ligne, rendre `_jeton = HMAC-SHA256(sid, secret)` tronqué à 32 signes ; le secret vit en `PropertiesService`. `Utilities.computeHmacSha256Signature` existe déjà. | ~25 lignes |
+| | `repererLigne` n'accepte une session que si le jeton reçu correspond | ~10 lignes |
+| **Site** | garder le jeton à côté du `_sid` dans `localStorage`, le renvoyer à chaque étape | ~10 lignes |
+| **Migration** | les sessions en cours n'ont pas de jeton. Ou bien on les casse — le visiteur repart d'une ligne neuve, on perd la fusion —, ou bien on accepte les deux formes pendant 30 jours, ce qui laisse le trou ouvert le temps de la transition | c'est ça, le vrai coût |
+| **Banc** | 6 à 8 cas : jeton absent, jeton d'une autre session, jeton tronqué, secret changé | ~80 lignes |
+
+**Le point de décision est la migration, pas le code.** Le reste tient
+en une heure. Tant que ce n'est pas tranché, la réserve reste ouverte.
+
 **`<footer class="footer">` est imbriqué dans `<main class="shell">`.**
 Un `<footer>` descendant de `<main>` perd son rôle `contentinfo` dans
 l'arbre d'accessibilité. Le déplacer n'est pas trivial : le seuil du

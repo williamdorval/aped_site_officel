@@ -657,6 +657,20 @@ function initialiser() {
     }
   });
 
+  /* LA VEILLE DES BLOCAGES SANS EFFET.  D-762
+     On la POSE et on la FAIT TOURNER TOUT DE SUITE : un déclencheur
+     quotidien qui ne parlera que demain matin laisse une journée
+     entière à croire qu'un blocage inerte bloque quelque chose. */
+  poserVeille();
+  var veille = veilleBlocages();
+  if (veille && veille.sansEffet) {
+    Logger.log("*** " + veille.sansEffet + " blocage(s) SANS EFFET dans l'agenda —"
+      + " voir l'onglet « " + ONGLET_BLOCAGES + " ».");
+    Logger.log("    " + veille.marques + " renommé(s) dans l'agenda avec « " + MARQUE_INERTE + " ».");
+  } else {
+    Logger.log("Veille des blocages : aucun blocage sans effet.");
+  }
+
   var url = classeur.getUrl();
   Logger.log("Classeur prêt : " + url);
   Logger.log("Identifiant retenu : " + classeur.getId());
@@ -964,7 +978,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 8,
+    version: 9,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
@@ -1120,6 +1134,28 @@ function diagnostic() {
       tampon: DISPONIBILITES.TAMPON_MIN
     },
     quota: quotaRestant(),
+
+    /* LES BLOCAGES SANS EFFET, HEURES SEULEMENT.  D-762
+
+       CETTE PORTE EST PUBLIQUE, et on vient de prouver qu'elle ne
+       fuit rien : pas un titre d'événement, pas un invité, pas une
+       adresse. On ne va pas casser ça ici. Ce qui sort est ce qui
+       sort DÉJÀ de la porte des créneaux à l'envers — des heures —
+       plus une phrase écrite par nous. Ni titre, ni identifiant,
+       ni agenda d'origine.
+
+       Elle existe pour une seule raison : depuis le dépôt, on ne
+       peut pas savoir si un blocage a marché. Le 2026-08-06, il a
+       fallu le DÉDUIRE des créneaux manquants, tampon compris. */
+    blocagesSansEffet: (function () {
+      try {
+        return blocagesSansEffet().map(function (b) {
+          return { debut: libelleComplet(b.debut), fin: libelleHeure(b.fin),
+                   pourquoi: b.pourquoi };
+        });
+      } catch (e) { return [{ erreur: String(e) }]; }
+    })(),
+
     onglets: onglets
   };
 }
@@ -1785,6 +1821,28 @@ function fusionnerLigne(kind, cible, data, extra) {
   if (touchees) {
     /* Le format AVANT les valeurs, ici comme à l'écriture. D-731 */
     formaterTexte(feuille, ligne, kind);
+
+    /* TOUTE LA LIGNE REPART INERTE, PAS SEULEMENT CE QU'ON VIENT DE
+       CHANGER.  D-761
+
+       C'EST LA MOITIÉ QUI MANQUAIT À D-757, et elle ne s'est vue
+       qu'en relisant le vrai classeur après un retour en arrière :
+       « Entreprise » valait 2 et « Description » valait #N/A. La
+       PREMIÈRE écriture était bien inerte ; la SECONDE rallumait
+       tout.
+
+       Pourquoi. `getValues()` rend « =1+1 » SANS son apostrophe —
+       Sheets la mange à l'enregistrement, c'est ce qui rend
+       l'astuce utilisable. `apres` porte donc la forme NUE de
+       chaque cellule qu'on ne touche pas, et `setValues` la
+       recalcule. Le poison n'avait pas besoin d'être renvoyé : il
+       suffisait qu'une étape suivante touche n'importe quel autre
+       champ.
+
+       Une écriture ne suffisait donc pas à prouver l'inertie, et
+       aucun de nos cas n'en faisait deux. */
+    for (var k = 0; k < apres.length; k++) apres[k] = texteInerte(apres[k]);
+
     poserLigne(feuille, ligne, apres, cible.titres);
   }
   return {
@@ -1888,11 +1946,18 @@ function formaterTexte(feuille, ligne, kind) {
    comme du texte ; on ne rejette pas le client. */
 function texteInerte(v) {
   if (v == null) return "";
-  /* Une date reste une date : elle ne vient pas du visiteur, et la
-     changer en chaîne casserait le format de sa colonne. */
-  if (v instanceof Date) return v;
-  var s = String(v);
-  return /^[=+\-@]/.test(s) ? "'" + s : s;
+  /* CE QUI N'EST PAS UNE CHAÎNE TRAVERSE INTACT.  D-761
+
+     Une date reste une date : elle ne vient pas du visiteur, et la
+     changer en chaîne casserait le format de sa colonne. Une case à
+     cocher vaut le BOOLÉEN `false` : la rendre en « false » la
+     transformerait en texte, la case disparaîtrait, et la règle de
+     couleur des non-lues cesserait de fonctionner (D-743).
+
+     Ça compte depuis que `fusionnerLigne` fait passer la LIGNE
+     ENTIÈRE par ici, colonnes de suivi comprises. */
+  if (typeof v !== "string") return v;
+  return /^[=+\-@]/.test(v) ? "'" + v : v;
 }
 
 /* UNE ÉCRITURE REFUSÉE NE DOIT PAS PASSER POUR UNE ÉCRITURE FAITE.
@@ -2326,7 +2391,10 @@ function occupationsDe(calId, depuis, jusqua) {
       var lot = Calendar.Events.list(calId, params);
       (lot.items || []).forEach(function (ev) {
         var i = intervalleEvenement(ev);
-        if (i) out.push(i);
+        /* L'AGENDA D'ORIGINE VOYAGE AVEC L'INTERVALLE.  D-762
+           Sans lui, `veilleBlocages` ne saurait pas ou renommer
+           l'evenement qu'elle vient de juger sans effet. */
+        if (i) { i.calId = calId; out.push(i); }
       });
       jeton = lot.nextPageToken;
       tours++;
@@ -2392,11 +2460,12 @@ function intervalleEvenement(ev) {
     var d0 = instantLocal(Number(a[0]), Number(a[1]), Number(a[2]), 0, 0);
     var d1 = instantLocal(Number(b[0]), Number(b[1]), Number(b[2]), 0, 0);
     if (d1.getTime() <= d0.getTime()) d1 = jourSuivant(d0);
-    return { debut: d0, fin: d1 };
+    return { debut: d0, fin: d1, id: ev.id, titre: String(ev.summary || ""), jour: true };
   }
 
   if (ev.start && ev.start.dateTime && ev.end && ev.end.dateTime) {
-    return { debut: new Date(ev.start.dateTime), fin: new Date(ev.end.dateTime) };
+    return { debut: new Date(ev.start.dateTime), fin: new Date(ev.end.dateTime),
+             id: ev.id, titre: String(ev.summary || ""), jour: false };
   }
   return null;
 }
@@ -2471,6 +2540,211 @@ function surLaGrille(debut) {
    seule occasion de la rendre dans le fuseau du visiteur. Il reçoit
    aussi l'instant ISO, qu'il ne fait que renvoyer tel quel à la
    réservation. */
+/* ============================================================
+   UN BLOCAGE QUI NE BLOQUE RIEN.  D-762
+
+   LE DÉFAUT, ET IL EST SILENCIEUX PAR CONSTRUCTION. La journée
+   n'est offerte qu'entre 9 h et 20 h, les jours ouvrables. Poser
+   un événement de 6 h 30 à 7 h 30 ne retire donc AUCUN créneau —
+   et rien ne le dit. On croit s'être libéré l'avant-midi, le site
+   continue d'offrir la journée entière, et on apprend le problème
+   en recevant une réservation qu'on ne peut pas honorer.
+
+   Trouvé le 2026-08-06 : un blocage du 10 août « de 6 h 30 à
+   7 h 30 » avait en fait été saisi de 18 h 30 à 19 h 30. Il a
+   fonctionné — mais s'il avait été saisi comme voulu, il n'aurait
+   rien fait, et personne ne l'aurait su.
+
+   LE TEST EST CELUI DE LA VRAIE GRILLE, PAS UNE COMPARAISON
+   D'HEURES. « Est-ce que cet événement retire au moins un créneau
+   de la grille théorique ? » — même fonction, `creneauTient`, que
+   la porte des créneaux. Deux calculs écrits séparément finissent
+   toujours par diverger, et ici la divergence dirait « ça bloque »
+   sur un blocage sans effet.
+   ============================================================ */
+function blocagesSansEffet() {
+  var f = fenetreReservable();
+  var occ = occupations(
+    new Date(f.plancher.getTime() - 86400000),
+    new Date(f.plafond.getTime() + 86400000)
+  );
+
+  var sansEffet = [];
+  occ.forEach(function (o) {
+    if (!o || !o.debut || !o.fin) return;
+    /* Ce qui est déjà passé n'a plus rien à bloquer : le signaler
+       serait du bruit, et le bruit fait ignorer l'alerte. */
+    if (o.fin.getTime() <= Date.now()) return;
+    if (o.debut.getTime() > f.plafond.getTime()) return;
+
+    /* Les rendez-vous que le site a posés lui-même bloquent
+       toujours quelque chose ; on ne les juge pas. `titreDuSite`
+       est la même fonction que celle du nettoyage : deux listes de
+       préfixes finiraient par diverger. */
+    if (titreDuSite(o.titre)) return;
+
+    if (bloqueAuMoinsUnCreneau(o)) return;
+    sansEffet.push({
+      calId: o.calId || "primary",
+      id: o.id || "",
+      titre: String(o.titre || ""),
+      debut: o.debut,
+      fin: o.fin,
+      pourquoi: raisonSansEffet(o)
+    });
+  });
+  return sansEffet;
+}
+
+/* Cet événement retire-t-il au moins un créneau de la grille ? */
+function bloqueAuMoinsUnCreneau(o) {
+  var jour = minuitLocal(o.debut);
+  /* Un événement peut s'étendre sur plusieurs jours. On borne la
+     boucle par un NOMBRE de tours, jamais par une comparaison de
+     dates : au changement d'heure, une comparaison qui n'avance pas
+     tourne sans fin et le script meurt sur le temps d'exécution. */
+  for (var n = 0; n < 400; n++) {
+    if (jour.getTime() > o.fin.getTime()) break;
+    var grille = grilleDuJour(partsLocal(jour));
+    for (var i = 0; i < grille.length; i++) {
+      if (!creneauTient(grille[i], [o])) return true;
+    }
+    jour = jourSuivant(jour);
+  }
+  return false;
+}
+
+/* Pourquoi il ne bloque rien, en une phrase lisible au téléphone. */
+function raisonSansEffet(o) {
+  var p = partsLocal(o.debut);
+  if (DISPONIBILITES.JOURS_OUVRABLES.indexOf(p.jsem) === -1
+      && minuitLocal(o.fin).getTime() <= jourSuivant(minuitLocal(o.debut)).getTime()) {
+    return "jour non ouvrable — rien n’y était offert";
+  }
+  return "hors des heures offertes (" + DISPONIBILITES.HEURE_DEBUT
+    + " – " + DISPONIBILITES.HEURE_FIN + ")";
+}
+
+var ONGLET_BLOCAGES = "⚠ Blocages sans effet";
+var MARQUE_INERTE = "⚠ NE BLOQUE RIEN · ";
+
+/* ============================================================
+   LA VEILLE — elle écrit là où on regarde déjà.  D-762
+
+   DEUX SIGNAUX, ET LE PREMIER EST LE SEUL QU'ON NE PEUT PAS RATER.
+
+   1. L'ÉVÉNEMENT EST RENOMMÉ, dans l'agenda, avec « ⚠ NE BLOQUE
+      RIEN · » devant son titre. C'est là qu'on a fait l'erreur,
+      c'est là qu'on la voit. Un onglet de classeur qu'on n'ouvre
+      pas ne prévient personne.
+
+      La marque se RETIRE toute seule si l'événement redevient
+      efficace — quelqu'un l'a déplacé dans la journée. Une alerte
+      qui reste après la correction devient un décor.
+
+   2. Le classeur en tient la liste, avec l'heure exacte de chaque
+      blocage inerte. C'est ce qui permet de comprendre APRÈS COUP
+      ce qu'on avait saisi.
+
+   ELLE NE SUPPRIME NI NE DÉPLACE JAMAIS RIEN. Elle ajoute un mot
+   devant un titre, et l'enlève. Le pire qu'elle puisse faire est
+   d'être en retard d'une journée.
+   ============================================================ */
+function veilleBlocages() {
+  var liste;
+  try { liste = blocagesSansEffet(); }
+  catch (e) {
+    console.error("veille des blocages : " + (e && e.stack ? e.stack : e));
+    return { erreur: String(e) };
+  }
+
+  var marques = 0, demarques = 0;
+  liste.forEach(function (b) {
+    if (!b.id) return;
+    if (String(b.titre).indexOf(MARQUE_INERTE) === 0) return;
+    if (renommerEvenement(b.calId, b.id, MARQUE_INERTE + b.titre)) marques++;
+  });
+
+  /* ON RETIRE LA MARQUE DE CE QUI BLOQUE DE NOUVEAU. On relit les
+     occupations : celles qui portent la marque ET qui bloquent
+     quelque chose ont été corrigées. */
+  try {
+    var f = fenetreReservable();
+    var toutes = occupations(new Date(f.plancher.getTime() - 86400000),
+                             new Date(f.plafond.getTime() + 86400000));
+    toutes.forEach(function (o) {
+      if (!o.id || String(o.titre || "").indexOf(MARQUE_INERTE) !== 0) return;
+      if (!bloqueAuMoinsUnCreneau(o)) return;
+      if (renommerEvenement(o.calId, o.id,
+          String(o.titre).slice(MARQUE_INERTE.length))) demarques++;
+    });
+  } catch (e) { console.error("retrait des marques : " + e); }
+
+  ecrireBlocages(liste);
+  return { sansEffet: liste.length, marques: marques, demarques: demarques };
+}
+
+function renommerEvenement(calId, id, titre) {
+  try {
+    if (typeof Calendar !== "undefined" && Calendar.Events && Calendar.Events.patch) {
+      Calendar.Events.patch({ summary: titre }, calId || "primary", id);
+      return true;
+    }
+  } catch (e) {
+    /* UN AGENDA EN LECTURE SEULE NE DOIT PAS FAIRE ÉCHOUER LA
+       VEILLE. L'onglet du classeur reste, et il suffit. */
+    console.warn("renommage « " + id + " » : " + e);
+  }
+  return false;
+}
+
+function ecrireBlocages(liste) {
+  try {
+    var cl = classeur();
+    var feuille = cl.getSheetByName(ONGLET_BLOCAGES);
+    if (!feuille) {
+      feuille = cl.insertSheet(ONGLET_BLOCAGES, 0);
+      feuille.setFrozenRows(1);
+      feuille.setColumnWidth(1, 260);
+      feuille.setColumnWidth(2, 200);
+      feuille.setColumnWidth(3, 300);
+    }
+    feuille.clear();
+    var entetes = [["Ce que vous aviez bloqué", "Quand, exactement", "Pourquoi ça ne bloque rien"]];
+    feuille.getRange(1, 1, 1, 3).setValues(entetes).setFontWeight("bold");
+
+    if (!liste.length) {
+      feuille.getRange(2, 1).setValue(
+        "Aucun blocage sans effet — vérifié le " + quand(new Date()) + ".");
+      return;
+    }
+    var lignes = liste.map(function (b) {
+      return [texteInerte(String(b.titre || "(sans titre)").replace(MARQUE_INERTE, "")),
+              libelleComplet(b.debut) + " → " + libelleHeure(b.fin),
+              b.pourquoi];
+    });
+    feuille.getRange(2, 1, lignes.length, 3).setValues(lignes);
+    feuille.getRange(2 + lignes.length, 1).setValue("Vérifié le " + quand(new Date()) + ".");
+  } catch (e) {
+    console.error("onglet des blocages : " + e);
+  }
+}
+
+/* LE DÉCLENCHEUR QUOTIDIEN, POSÉ UNE SEULE FOIS.  D-762
+   `initialiser()` l'appelle. Relancer `initialiser()` ne doit pas
+   empiler douze déclencheurs : on retire les nôtres d'abord. */
+function poserVeille() {
+  try {
+    ScriptApp.getProjectTriggers().forEach(function (t) {
+      if (t.getHandlerFunction() === "veilleBlocages") ScriptApp.deleteTrigger(t);
+    });
+    ScriptApp.newTrigger("veilleBlocages").timeBased().atHour(7).everyDays(1).create();
+    Logger.log("Veille des blocages : déclencheur quotidien posé (7 h).");
+  } catch (e) {
+    Logger.log("Veille des blocages : déclencheur NON posé — " + e);
+  }
+}
+
 function creneauxLibres() {
   var f = fenetreReservable();
 
