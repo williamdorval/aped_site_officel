@@ -1375,6 +1375,26 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
    plus de trois mots : ils ne se replient pas. */
 #modal-refer .step-nav .btn { white-space: nowrap; }
 
+/* L'ESTIMATEUR HERITE DE LA MEME BARRE, ET POUR LA MEME RAISON.
+   D-776
+   Ses deux ecrans a DEUX questions font trois listes d'options bout
+   a bout : a 1440 x 950, « Continuer » tombait sous la ligne de
+   flottaison. Quelqu'un repondait aux deux questions et ne voyait
+   AUCUNE sortie — le panneau defile, mais rien ne le dit. Vu a
+   l'image, jamais par un test : une sonde du DOM trouve un bouton
+   qui existe, elle ne sait pas qu'il est loin. */
+#modal-estimate .step-nav {
+  position: sticky;
+  bottom: calc(-1 * var(--pad-modale));
+  margin-inline: calc(-1 * var(--pad-modale));
+  padding-inline: var(--pad-modale);
+  padding-bottom: var(--pad-modale);
+  z-index: 2;
+  margin-top: var(--s-6);
+  background: var(--surface-2);
+}
+#modal-estimate .step-nav .btn { white-space: nowrap; }
+
 .success { display: grid; gap: var(--s-4); justify-items: start; }
 .success .num { font-size: var(--fs-2); color: var(--accent-text); }
 
@@ -6040,11 +6060,24 @@ html:not(.js) .ba-trait { display: none; }
   margin-top: calc(-1 * var(--s-3));
 }
 
-/* CE QUI MANQUE SE DIT, ET ÇA NE CLIGNOTE PAS. Un bouton
-   « Continuer » qui ne repond pas laisse croire a une panne. Le
-   titre de la question sans reponse passe au minium le temps qu'on
-   la voie — c'est V4, un cran, pas un fondu. */
+/* CE QUI MANQUE SE DIT EN TOUTES LETTRES.  D-776
+
+   Premiere version : le titre de la question passait au minium
+   pendant 1,4 s. Trop court pour etre lu, et surtout
+   INDISTINGUABLE de l'anneau de focus, qui est du minium lui aussi
+   et qui entoure deja la premiere option de l'ecran. Un patron de
+   PME voyait du rouge a deux endroits et n'apprenait rien.
+
+   Le titre garde sa couleur, ET une phrase parait sous lui. Elle
+   reste tant que la question n'a pas de reponse : « ca ne clignote
+   pas » est le contraire de « ca disparait ». */
 .step-q--manque { color: var(--accent-text); }
+.step-manque {
+  font-size: var(--fs-7);
+  color: var(--accent-text);
+  margin-top: calc(-1 * var(--s-3));
+}
+.step-manque[hidden] { display: none; }
 
 /* LE RESUME DE CE QU'ON A COMPRIS. Il etait ecrit en style en
    ligne dans le balisage — trois declarations posees a la main sur

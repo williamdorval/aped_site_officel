@@ -4410,6 +4410,7 @@
            ============================================================ -->
       <div class="step" data-step="11" data-pour="prix" hidden>
         <p class="step-q">À quoi ça doit ressembler&nbsp;?</p>
+        <p class="step-manque" role="status" hidden>Choisissez une réponse pour continuer.</p>
         <div class="options options--serre" data-key="niveau_design">
           <button type="button" data-value="Propre et rapide"><span class="o-num">01</span><span><strong>Propre et rapide</strong><small>Ça charge vite, ça se lit, ça fait appeler</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
           <button type="button" data-value="Marqué, avec des animations"><span class="o-num">02</span><span><strong>Marqué, avec des animations</strong><small>On se souvient de vous après avoir fermé l’onglet</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -4418,6 +4419,7 @@
 
         <div class="step-second" data-pour="vitrine boutique">
           <p class="step-q step-q--second">Vos textes et vos photos&nbsp;?</p>
+          <p class="step-manque" role="status" hidden>Choisissez une réponse pour continuer.</p>
           <div class="options options--serre" data-key="contenu">
             <button type="button" data-value="Mes textes et mes photos sont prêts"><span class="o-num">01</span><span><strong>Ils sont prêts</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
             <button type="button" data-value="J’en ai une partie"><span class="o-num">02</span><span><strong>J’en ai une partie</strong><small>Il manque des bouts</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -4427,6 +4429,7 @@
 
         <div class="step-second" data-pour="estimateur" hidden>
           <p class="step-q step-q--second">Le calcul, il est compliqué&nbsp;?</p>
+          <p class="step-manque" role="status" hidden>Choisissez une réponse pour continuer.</p>
           <div class="options options--serre" data-key="complexite">
             <button type="button" data-value="Quelques options"><span class="o-num">01</span><span><strong>Quelques options</strong><small>Trois ou quatre choix, et on a le prix</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
             <button type="button" data-value="Plusieurs options et matériaux"><span class="o-num">02</span><span><strong>Plusieurs options et matériaux</strong><small>Chaque combinaison a son prix</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -4436,6 +4439,7 @@
 
         <div class="step-second" data-pour="logiciel" hidden>
           <p class="step-q step-q--second">Qui va s’en servir&nbsp;?</p>
+          <p class="step-manque" role="status" hidden>Choisissez une réponse pour continuer.</p>
           <div class="options options--serre" data-key="usagers">
             <button type="button" data-value="Mon équipe"><span class="o-num">01</span><span><strong>Mon équipe</strong><small>Quelques personnes, tous les jours</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
             <button type="button" data-value="Toute l’entreprise"><span class="o-num">02</span><span><strong>Toute l’entreprise</strong><small>Plusieurs services, plusieurs façons de travailler</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -4464,6 +4468,7 @@
            ============================================================ -->
       <div class="step" data-step="12" data-pour="tous" hidden>
         <p class="step-q">Pour quand&nbsp;?</p>
+        <p class="step-manque" role="status" hidden>Choisissez une réponse pour continuer.</p>
         <div class="options options--serre" data-key="echeancier">
           <button type="button" data-value="Dans le mois"><span class="o-num">01</span><span><strong>Dans le mois</strong><small>On comprime le calendrier, et ça se paie</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
           <button type="button" data-value="Dans 1 à 3 mois"><span class="o-num">02</span><span><strong>Dans 1 à 3 mois</strong><small>Le rythme normal</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -4473,6 +4478,7 @@
 
         <div class="step-second">
           <p class="step-q step-q--second">Vous êtes combien dans l’entreprise&nbsp;?</p>
+          <p class="step-manque" role="status" hidden>Choisissez une réponse pour continuer.</p>
           <div class="options options--serre" data-key="taille_equipe">
             <button type="button" data-value="1 à 5 personnes"><span class="o-num">01</span><span><strong>1 à 5</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
             <button type="button" data-value="6 à 25 personnes"><span class="o-num">02</span><span><strong>6 à 25</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
@@ -4530,8 +4536,18 @@
             <p class="field-aide">Une fourchette se règle en deux minutes au téléphone
               et jamais en trois courriels. On appelle une fois, on ne relance pas.</p>
           </div>
+          <!-- ON DIT QUE LA DEMANDE PART, ET ON LE DIT AVANT.  D-774
+               « Voir ma fourchette » laisse croire qu'on va seulement
+               lire un chiffre. La demande part a ce clic-la — c'est
+               tout l'interet du montage, on garde le lead meme si le
+               prix ne convient pas — mais quelqu'un qui l'apprend en
+               recevant l'appel se sent pris. Le dire coute une ligne
+               et rapporte la confiance. -->
+          <p class="field-aide field-aide--avant">Ce bouton envoie votre demande et
+            affiche la fourchette juste après. On vous rappelle en moins de
+            12&nbsp;h ouvrables.</p>
           <button class="btn btn--primary" type="submit" data-submit>
-            <span data-label>Voir ma fourchette</span>
+            <span data-label>Envoyer et voir ma fourchette</span>
             <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
           </button>
           <p class="form-status" role="status" aria-live="polite"></p>

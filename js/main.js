@@ -4198,11 +4198,36 @@
       $$("[data-key] button[aria-pressed]", wizard).forEach(function (b) {
         b.setAttribute("aria-pressed", "false");
       });
+      /* LES BOUTONS DE LA QUESTION DU PRIX AUSSI, ET C'EST UN DEFAUT
+         CORRIGE. Ils vivent hors de `[data-key]` — ce sont des
+         `.choices[data-choice]`. Quelqu'un qui repondait « Non,
+         c'est trop » puis rouvrait l'estimateur retrouvait ce
+         bouton MARQUE au bas de son nouveau prix, avec un motif
+         deja choisi. Le visiteur suivant lisait une question a
+         laquelle il n'avait pas repondu. */
+      var panneauR = wizard.closest(".modal-panel") || wizard.parentElement;
+      if (panneauR) {
+        $$('.choices[data-choice] button[aria-pressed]', panneauR).forEach(function (b) {
+          b.setAttribute("aria-pressed", "false");
+        });
+      }
+      $$(".step-manque", wizard).forEach(function (m) { m.hidden = true; });
+      $$(".step-q--manque", wizard).forEach(function (t) {
+        t.classList.remove("step-q--manque");
+      });
       $$('[data-checks] input[type="checkbox"]', wizard).forEach(function (c) {
         c.checked = false;
       });
-      var besoin = $("#esBesoin");
-      if (besoin) besoin.value = "";
+      /* LES DEUX CHAMPS LIBRES VIVENT HORS DU `<form>`, donc
+         `form.reset()` ne les touche pas. « Autre chose » gardait le
+         texte du visiteur PRECEDENT — sur un poste partage, la
+         personne suivante lisait « on a un devis a 12k » sous son
+         propre prix. Trouve par la sonde de reouverture, pas a
+         l'oeil : il fallait deux parcours dans le meme onglet. */
+      ["#esBesoin", "#esPrixRaison"].forEach(function (sel) {
+        var c = $(sel);
+        if (c) c.value = "";
+      });
     }
     goEStep(1);
     var form = wizard ? $('form[data-form="estimate"]', wizard) : null;
@@ -4363,15 +4388,25 @@
           if (bloc && !convient(bloc, famille)) return;
           if (!answers[g.dataset.key] && !manque) manque = g;
         });
+        /* CE QUI MANQUE SE DIT EN TOUTES LETTRES, ET CA RESTE.
+           D-776
+           Le titre passait au minium 1,4 s. Trop court pour etre lu,
+           et de la meme couleur que l'anneau de focus qui entoure
+           deja la premiere option : on voyait du rouge a deux
+           endroits et on n'apprenait rien. La phrase parait sous le
+           titre et ne part que quand la reponse arrive. */
+        $$(".step-manque", ecran).forEach(function (m) { m.hidden = true; });
+        $$(".step-q--manque", ecran).forEach(function (t) {
+          t.classList.remove("step-q--manque");
+        });
         if (manque) {
           var q = manque.closest(".step-second") || ecran;
           var titre = $(".step-q", q);
           if (titre) titre.classList.add("step-q--manque");
+          var mot = $(".step-manque", q);
+          if (mot) mot.hidden = false;
           var prem = $("button", manque);
           if (prem) prem.focus();
-          window.setTimeout(function () {
-            if (titre) titre.classList.remove("step-q--manque");
-          }, 1400);
           return;
         }
 

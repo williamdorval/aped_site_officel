@@ -318,6 +318,38 @@ for (const c of CHEMINS) {
     dire("et la seconde est celle du type", e.groupes[1], c.second[0]);
     dire("« Continuer » refuse tant qu'il manque une reponse",
       await continuer(page), false, "les deux groupes sont vides");
+
+    /* CE QUI MANQUE SE DIT EN TOUTES LETTRES, ET CA RESTE. Le
+       premier jet colorait le titre 1,4 s — trop court pour etre
+       lu, et de la meme couleur que l'anneau de focus qui entoure
+       deja la premiere option. */
+    dire("une phrase dit ce qui manque",
+      await page.evaluate(() => {
+        const s = document.querySelector("#wizard .step[data-step]:not([hidden])");
+        const m = [...s.querySelectorAll(".step-manque")].filter((x) => !x.hidden);
+        return m.length ? m[0].textContent.trim() : "(rien)";
+      }), "Choisissez une réponse pour continuer.");
+    await page.waitForTimeout(1700);
+    dire("et elle est encore la deux secondes plus tard",
+      await page.evaluate(() => {
+        const s = document.querySelector("#wizard .step[data-step]:not([hidden])");
+        return [...s.querySelectorAll(".step-manque")].some((x) => !x.hidden);
+      }), true, "un avertissement qui disparait n'avertit personne");
+
+    /* LE BOUTON « CONTINUER » DOIT ETRE DANS LE CADRE, PAS LOIN.
+       A 1440 x 950 il tombait sous la ligne de flottaison sur les
+       ecrans a deux questions : on repondait aux deux et on ne
+       voyait aucune sortie. La barre est collante depuis. */
+    dire("« Continuer » est visible sans defiler",
+      await page.evaluate(() => {
+        const s = document.querySelector("#wizard .step[data-step]:not([hidden])");
+        const b = s.querySelector("[data-esuivant]");
+        if (!b) return "(absent)";
+        const r = b.getBoundingClientRect();
+        return (r.top >= 0 && r.bottom <= window.innerHeight + 1) ? "dans le cadre"
+          : "hors cadre (bas " + Math.round(r.bottom) + " pour " + window.innerHeight + ")";
+      }), "dans le cadre");
+
     await choisir(page, "niveau_design", "Propre et rapide");
     dire("« Continuer » refuse encore avec une seule des deux",
       await continuer(page), false);
@@ -558,6 +590,48 @@ titre("4 · LE « NON », ET CE QU'IL OUVRE");
   });
   await page.waitForTimeout(300);
   await page.screenshot({ path: path.join(SORTIE, "non-plus-petit.png") });
+}
+
+/* ============================================================
+   4bis · ROUVRIR NE MONTRE RIEN DU VISITEUR PRECEDENT
+   ============================================================ */
+titre("4bis · CE QUE LA REOUVERTURE DOIT EFFACER");
+{
+  /* La modale vient d'etre laissee sur un « Non » avec un motif
+     choisi. Le visiteur suivant — ou le meme, qui recommence — ne
+     doit trouver aucune de ces marques. Elles vivent hors de
+     `[data-key]`, dans des `.choices[data-choice]`, et la premiere
+     purge ne les voyait pas : « Non, c'est trop » restait marque au
+     bas d'un prix tout neuf. */
+  const restait = await page.evaluate(() => {
+    const p = document.querySelector("#modal-estimate");
+    return [...p.querySelectorAll("[aria-pressed='true']")].map((b) =>
+      (b.dataset.value || b.textContent || "").trim().slice(0, 30));
+  });
+  dire("avant reouverture, des marques existent bien", restait.length > 0, true,
+    "temoin positif : sans lui, « rien ne reste » ne prouve rien");
+
+  await ouvrirEstimateur(page);
+  const apres = await page.evaluate(() => {
+    const p = document.querySelector("#modal-estimate");
+    return {
+      marques: [...p.querySelectorAll("[aria-pressed='true']")].map((b) =>
+        (b.dataset.value || b.textContent || "").trim().slice(0, 30)),
+      manques: [...p.querySelectorAll(".step-manque")].filter((x) => !x.hidden).length,
+      devis: !document.getElementById("esDevis").hidden,
+      petit: !document.getElementById("esPetit").hidden,
+      sans: !document.getElementById("esSansPrix").hidden,
+      raison: document.getElementById("esPrixRaison").value,
+      besoin: (document.getElementById("esBesoin") || {}).value || ""
+    };
+  });
+  dire("aucune reponse ne reste marquee", apres.marques.length, 0, JSON.stringify(apres.marques));
+  dire("aucun avertissement ne reste ouvert", apres.manques, 0);
+  dire("les trois boites du prix sont refermees",
+    [apres.devis, apres.petit, apres.sans].join(","), "false,false,false");
+  dire("le champ « autre chose » est vide", apres.raison, "");
+  dire("le champ du besoin est vide", apres.besoin, "");
+  dire("et on repart de l'ecran 1", (await etatEcran(page)).ecran, 1);
 }
 
 /* ============================================================

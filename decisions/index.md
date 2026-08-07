@@ -2096,3 +2096,185 @@ main divergent. La source est `conditions/reference-<version>.md` ;
 sort 1 s'ils ont derive. **Une version archivee ne se modifie
 JAMAIS** : quand le texte change, on cree un fichier a cote. Un
 fichier reecrit est une preuve perdue.
+
+## D-774 · La grille de prix quitte le navigateur
+
+**LE BAREME ETAIT PUBLIE, ET PERSONNE NE L'AVAIT VU AINSI.** Il vivait
+dans `js/main.js` : cinq paliers chiffres et une table de points,
+servis en clair a quiconque ouvrait l'onglet « Sources ». Un
+concurrent n'avait pas a sonder l'estimateur, il n'avait qu'a LIRE.
+Toute parade qui suppose le secret d'un bareme calcule par le
+navigateur est morte-nee — la litterature du scraping le dit sans
+detour : si le navigateur le calcule, c'est lisible.
+
+**LA GRILLE VIT DANS `google/Code.gs` ET NULLE PART AILLEURS.** Le
+site envoie des REPONSES, il recoit une FOURCHETTE dans
+`reponse.fourchette`. Il ne connait ni les bases, ni les modules, ni
+l'echelle. `tools/retro-estim.mjs` refuse qu'un montant de la grille
+reparaisse dans un fichier servi ; `tools/prix-check.mjs` refuse
+qu'une grille se reforme dans `js/`.
+
+**CE QUE CA FERME, ET CE QUE CA NE FERME PAS.** Sonder reste
+possible : on remplit le formulaire, on change une reponse, on
+recommence. Trois choses le rendent cher.
+
+  · **L'echelle.** Le total ne s'affiche jamais tel quel : il se
+    range au cran le plus proche de onze, espaces d'un tiers. Mesure
+    sur le produit cartesien complet des quatre types : basculer une
+    fonction ne bouge l'ecran que dans 18 a 49 % des contextes, et
+    jamais du meme nombre de crans. **L'attaque nommee au brief —
+    changer une option a la fois — ne rend rien.**
+  · **L'economie de lot.** Cinq modules montes ensemble coutent moins
+    que cinq modules montes un par un : une seule mise en route, une
+    seule tournee d'essais, une seule mise en ligne. C'est VRAI, ca
+    se defend au telephone, et ca rend le total NON ADDITIF. Mesure :
+    sans cette courbe, une regression lineaire retrouvait les modules
+    a 3 % pres en 400 sondages ; avec elle, elle plafonne a 20-25 %
+    et n'y descend plus, meme a 2 000. **La parade est aussi un
+    argument de vente** — c'est la meilleure espece.
+  · **Le prix du sondage.** La demande part AVANT le chiffre : chaque
+    sondage laisse une ligne au classeur, avec un nom, un courriel et
+    un telephone.
+
+**CE QU'ON N'A PAS FAIT : DU BRUIT ALEATOIRE.** Deux visiteurs au
+projet identique verraient deux chiffres differents, et le meme
+visiteur qui recharge en verrait un troisieme. Ca casse la regle A,
+ca se decouvre en rechargeant, et ca s'annule en moyennant quelques
+sondages. **La quantification est le cousin honnete du bruit** : elle
+cache la meme information, elle est deterministe, et elle se defend.
+
+**CE QU'ON N'A PAS FAIT NON PLUS : UN PLAFOND D'ESSAIS.** Celui qui
+refait le tour trois fois est le prospect le plus chaud du site. Le
+punir pour arreter un script qu'un plafond n'arrete pas de toute
+facon est un mauvais echange.
+
+**LA CALIBRATION SE VERIFIE CONTRE QUATRE VRAIS PROJETS.** La regle :
+la valeur reelle doit tomber DANS la fourchette et dans sa MOITIE
+BASSE. Le plancher au plus pres du vrai prix n'est pas un gout —
+Ames & Mason (*JPSP* 108(2), 2015) mesurent qu'une fourchette dont le
+plancher EST la cible obtient les meilleures contre-offres, et qu'une
+fourchette bat un nombre seul dans tous les cas. Et un depassement du
+haut annonce se vit comme une trahison : le federal americain l'a
+codifie a 110 % de l'estime pour le demenagement.
+
+**« A PARTIR DE X » EST LA PIRE DES FORMULATIONS.** C'est un plancher
+sans plafond, donc une promesse que la soumission dementira toujours.
+Le site dit « on prepare une soumission entre X et Y », et ajoute que
+le prix ferme n'en sort que si on decouvre quelque chose que le
+formulaire ne demandait pas — auquel cas on dit quoi.
+
+**LA FOURCHETTE EST ECRITE PAR LE SERVEUR, PAS PAR LE SITE.** Elle
+arrivait dans la charge : une requete forgee pouvait ecrire
+« fourchette vue : 2 500 $ » sur un projet a 40 000. La colonne est
+maintenant calculee ici, et FIGEE une fois ecrite — c'est le chiffre
+que la personne a lu avant de repondre « c'est trop cher ».
+
+**ELLE NE SE CALCULE QU'A LA FIN.** Le site enregistre a chaque
+ecran ; a l'ecran 1 on ne connait que le type, et la grille rendrait
+deja le montant d'un projet vide. La colonne etant figee, ce
+montant-la se serait grave. Meme lecon que D-773.
+
+**UN LIBELLE INCONNU REND `null`, JAMAIS ZERO.** Un zero silencieux
+donnerait une fourchette calculee sur une reponse perdue, et personne
+ne le verrait. `tools/retro-estim.mjs` compare les libelles
+d'`index.html` et ceux de la grille **dans les deux sens** : un
+accent de travers arrete l'outil.
+
+**DEUX DEFAUTS DE CE CHANTIER, GARDES ICI.** `estimDeProjet`
+appliquait les deux pourcentages DEUX fois — invisible au banc,
+puisque les deux temoins valaient 1, et 80 % de trop des qu'un projet
+etait urgent. Et la branche de session de `traiter()` sortait sans la
+fourchette : elle n'aurait atteint AUCUN visiteur reel, puisqu'ils
+portent tous un `_sid`.
+
+## D-775 · Le « non » n'est pas une sortie
+
+**ON NE RABAT JAMAIS LE PRIX.** Un rabais dit que le premier chiffre
+etait faux, et detruit la veracite de tout l'outil. On rabat la
+PORTEE : le meme projet sans ce qui peut attendre.
+
+**CE QUI SORT EST NOMME, UN PAR UN.** La personne voit le troc, elle
+ne quemande rien. Et le grand chiffre reste a l'ecran : c'est lui qui
+rend le petit raisonnable — l'ancrage joue tout seul, sans qu'on ait
+a le dire.
+
+**AUCUN MONTANT PAR LIGNE RETIREE.** « Sans le paiement en ligne :
+-2 500 $ » publierait un module de la grille en une phrase. La liste
+dit ce qui sort ; le total dit le reste.
+
+**LA COMPLEXITE NE SE RETIRE PAS.** Un calcul a cent regles ne
+devient pas un calcul a trois parce qu'on veut payer moins : c'est la
+nature du metier du client, pas une option. Idem pour « qui va s'en
+servir ». Seuls les modules, le soin visuel, le contenu et l'urgence
+sortent.
+
+**LA PORTE VIENT AVANT LE CHAMP LIBRE.** Elle etait posee apres lui
+et apres le bouton d'envoi, donc sous la ligne de flottaison :
+quelqu'un qui vient de dire « c'est trop cher » devait defiler pour
+trouver ce qu'on lui propose. Vu a l'image, jamais par un test —
+aucune sonde du DOM ne mesure ce qui est LOIN.
+
+**TROIS MOTIFS, ET UN SEUL OUVRE LA PORTE.** « Je compare » et « je
+voulais juste une idee » ne sont pas des problemes de portee : offrir
+moins a quelqu'un qui compare est a cote de sa question, et ca se lit
+comme du rabais. Seul « c'est au-dessus de mon budget » ouvre la
+version allegee.
+
+**LE MOTIF ET LE TEXTE LIBRE SE CUMULENT.** Le motif se recopiait
+dans le champ « autre chose » : la personne relisait sa propre
+reponse sous une etiquette qui promettait autre chose, et un mot
+ajoute REMPLACAIT le motif.
+
+**LE PHASAGE NE PROMET PAS UN TOTAL EGAL.** Refaire le tour d'un
+projet deux fois coute du temps, et le dire est plus solide que de
+laisser croire le contraire jusqu'a la soumission.
+
+## D-776 · Un questionnaire conditionnel, et ce qu'il compte
+
+**QUATORZE ECRANS DANS LE BALISAGE, SIX AU PLUS A L'USAGE.** Chaque
+ecran declare `data-pour` : la famille de projet a laquelle il
+s'adresse. Un patron qui veut automatiser sa facturation ne se fait
+plus demander combien de pages il veut — la question prouverait qu'on
+n'a pas lu sa reponse d'avant.
+
+**LA LISTE DE NUMEROS A SAUTER EST MORTE.** `ESTIM_SAUTS =
+{ automatisation: [4, 6] }` designait des ecrans par leur numero :
+elle aurait designe le mauvais des le premier ajout. La condition vit
+sur l'ecran lui-meme.
+
+**LA PROGRESSION SE COMPTE, ELLE NE SE POURCENTAGE PAS.** « 25 % » ne
+dit pas combien de temps il reste ; « 2 sur 6 » est un compte fini, et
+un compte fini se termine. Le total DESCEND a 4 pour un projet sans
+prix automatique : une progression qui raccourcit est une bonne
+nouvelle.
+
+**ON COMPTE DES ECRANS, PAS DES QUESTIONS.** Deux ecrans en posent
+DEUX chacun : promettre « six questions » serait faux de deux, et
+dans le sens qui decoit. Le compteur a l'ecran et la promesse dans la
+page comptent donc la meme chose — sinon les deux chiffres se
+contredisent sous les yeux du visiteur. « Neuf questions » etait
+promis a cinq endroits, meta-description et politique de
+confidentialite comprises.
+
+**LES TROIS CATEGORIES SANS PRIX NE SONT PAS UN CUL-DE-SAC.**
+Automatisation, IA, immobilier : leur prix depend de choses qu'un
+formulaire ne peut pas deviner. Dire « ca depend » est une esquive ;
+nommer CE dont ca depend est une reponse. **La difference entre les
+deux est la quantite d'information donnee gratuitement.** L'ecran
+nomme trois facteurs, dit qu'on refuse d'inventer un chiffre, et
+mene a l'appel.
+
+**CHANGER DE TYPE EFFACE CE QUI N'A PLUS DE SENS.** Passer de
+« boutique » a « logiciel » garderait sinon « 25 a 250 produits »
+comme ampleur — un libelle que la grille du logiciel ne connait pas,
+donc AUCUNE fourchette, et personne pour s'en apercevoir.
+
+**LA VALEUR D'UN BOUTON EST LE LIBELLE QUE LA GRILLE ATTEND.** Il y
+avait une table de traduction `type_de_projet -> type`,
+`niveau_design -> design` : le brouillon parlait une langue, le DOM
+une autre, et une correspondance ratee se serait vue nulle part.
+
+**QUATRE GROUPES PORTENT `data-key="ampleur"`, UN PAR TYPE.** `$` en
+rend UN. Toute purge, tout comptage, toute sonde qui vise un
+`data-key` de cet estimateur doit viser les QUATRE — c'est la forme
+de defaut que ce chantier a produite trois fois.
