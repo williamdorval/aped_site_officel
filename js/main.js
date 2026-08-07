@@ -3020,19 +3020,56 @@
   }
 
   /* ============================================================
-     L'ASSISTANT DE REFERENCE — QUATRE ETAPES  D-752
+     LES TIROIRS — le panneau des montants, le texte des conditions
+     D-773
 
-     C'etait un mur de onze champs. Le nom de l'entreprise referee
-     est le minimum vital d'une reference : avec lui on peut
-     chercher, sans lui on n'a rien. Il passe donc SEUL a l'etape 1,
-     et la ligne s'ouvre des qu'elle est validee.
+     UN SEUL ETAT, ET C'EST `aria-expanded`. Le lecteur d'ecran le
+     lit deja ; le signe + / − le suit en CSS ; `hidden` suit en
+     JavaScript. Une classe de plus serait un second etat a tenir
+     d'accord avec le premier, et c'est comme ca qu'un panneau finit
+     ouvert pour l'oeil et ferme pour la voix.
+
+     IL VIT DANS `main.js`, PAS DANS `motion.js`. Ce qui est dedans
+     n'est pas une decoration : c'est ce qu'on paie et a quelles
+     conditions. `motion.js` s'arrete net sous
+     `prefers-reduced-motion` — l'information, jamais.
+
+     ET IL N'ANIME RIEN. Un depliement n'est aucun des quatre
+     verbes ; faute d'en etre un, il ne se fait pas.
+     ============================================================ */
+  doc.addEventListener("click", function (e) {
+    var bouton = e.target && e.target.closest && e.target.closest("[data-tiroir]");
+    if (!bouton) return;
+    var cible = doc.getElementById(bouton.getAttribute("data-tiroir"));
+    if (!cible) return;
+    var ouvert = bouton.getAttribute("aria-expanded") === "true";
+    bouton.setAttribute("aria-expanded", ouvert ? "false" : "true");
+    cible.hidden = ouvert;
+  });
+
+  /* ============================================================
+     L'ASSISTANT DE REFERENCE — SIX ECRANS  D-773
+
+     C'etait un mur de onze champs (D-752 l'a coupe en quatre, et
+     le troisieme en portait encore cinq). Un ecran pose maintenant
+     UNE question, deux au plus.
+
+     LE NOM DE L'ENTREPRISE RESTE SEUL A L'ETAPE 1 : c'est le
+     minimum vital d'une reference — avec lui on peut chercher,
+     sans lui on n'a rien — et la ligne s'ouvre des qu'il est
+     valide, meme si la personne s'arrete la. Le REFERENT vient
+     apres : quelqu'un qui donne un nom sans finir reste un lead.
+
+     LE DERNIER ECRAN N'EST PAS UN CHAMP DE PLUS, c'est
+     l'acceptation. Elle ferme le formulaire parce qu'elle porte
+     sur tout ce qui precede.
 
      Le moteur est le meme que celui de l'assistant de projet, en
      plus court : ce formulaire n'a ni fichiers, ni fourchette.
      ============================================================ */
   var referForm = $('form[data-form="refer"]');
   if (referForm) {
-    var R_TOTAL = 5;
+    var R_TOTAL = 7;
     var rStep = 1;
     var referBar = $("#referBar");
     var referBack = $("#referBack");

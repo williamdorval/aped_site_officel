@@ -34,7 +34,7 @@ const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
 if (!m) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = m[1].trim();
 
-const VERSION_MINIMALE = 11;
+const VERSION_MINIMALE = 12;
 
 /* ---- l'ordre des colonnes, lu dans Code.gs, jamais recopie ---- */
 const SRC = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
@@ -65,6 +65,32 @@ function colonnes(kind) {
 
 const KINDS = Object.keys(DEFS.SCHEMA);
 if (!KINDS.length) { console.error("SCHEMA vide : Code.gs n'a pas ete lu."); process.exit(2); }
+
+/* LES COLONNES FIGEES DOIVENT EXISTER.  D-773
+
+   `COLONNES_FIGEES` est une liste de TITRES, ecrite en toutes
+   lettres, que `fusionnerLigne` refuse de reecrire une fois
+   remplies : c'est ce qui empeche une etape suivante de rejouer une
+   acceptation. Une faute de frappe d'un cote ne casserait rien de
+   visible — la colonne se laisserait simplement reecrire, et la
+   preuve deviendrait modifiable sans que personne le sache. On
+   compare donc les deux listes ici, avant tout appel reseau. */
+{
+  const mf = /var COLONNES_FIGEES = \[([^\]]*)\]/.exec(SRC);
+  if (!mf) { console.error("`COLONNES_FIGEES` introuvable dans Code.gs."); process.exit(2); }
+  const figees = mf[1].split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
+  if (!figees.length) { console.error("`COLONNES_FIGEES` est vide : l'acceptation serait reecrivable."); process.exit(2); }
+  const tousTitres = new Set(KINDS.flatMap((k) => DEFS.SCHEMA[k].champs.map((c) => c.titre)));
+  const fantomes = figees.filter((t) => !tousTitres.has(t));
+  if (fantomes.length) {
+    console.error("ARRET · COLONNES_FIGEES nomme " + fantomes.length
+      + " colonne(s) qui n'existe(nt) dans aucun SCHEMA :\n       "
+      + fantomes.join(" · ")
+      + "\n       Le gel ne s'applique alors a RIEN, et rien ne le dit.");
+    process.exit(2);
+  }
+  console.log("COLONNES FIGEES : " + figees.join(" · ") + "  (toutes presentes au schema)");
+}
 
 /* ---- le service ---- */
 const lire = async (q) => {

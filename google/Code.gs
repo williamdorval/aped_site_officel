@@ -325,6 +325,52 @@ var STATUTS = ["Nouveau", "Contacté", "En discussion", "Client", "Fermé"];
 /* Les deux modes d'un rendez-vous. */
 var MODES = { TEL: "Appel téléphonique", MEET: "Google Meet" };
 
+/* ============================================================
+   LES VERSIONS DES CONDITIONS DE RÉFÉRENCE  D-773
+
+   CE QUE CETTE LISTE PROTÈGE. Une case cochée ne prouve rien : ce
+   qui protège, c'est de pouvoir dire QUEL TEXTE a été accepté. Le
+   site envoie la version qu'il a AFFICHÉE ; on la range telle
+   quelle, et on refuse celles qu'on ne reconnaît pas.
+
+   POURQUOI ON RANGE CELLE DU SITE ET PAS LA NÔTRE. Le site est en
+   cache chez le visiteur. Le jour où le texte change, quelqu'un
+   peut encore avoir l'ancienne page à l'écran : ranger « la version
+   courante du serveur » écrirait qu'il a accepté un texte qu'il n'a
+   jamais vu. La preuve doit dire ce qui a été MONTRÉ.
+
+   ET ÇA NE S'ACHÈTE PAS DE FORGERIE. Une requête fabriquée ne peut
+   choisir qu'une version réellement publiée — chacune est archivée
+   dans `conditions/reference-<version>.md`, et
+   `node tools/conditions.mjs verifier` refuse qu'une archive
+   disparaisse de cette liste.
+
+   LA PLUS RÉCENTE EN TÊTE. C'est celle que le site affiche, et
+   l'outil vérifie que les deux s'accordent.
+   ============================================================ */
+var CONDITIONS_VERSIONS = ["2026-08-07"];
+
+/* CE QU'UNE ÉTAPE SUIVANTE N'A PAS LE DROIT DE RÉÉCRIRE.  D-773
+
+   UNE PREUVE QUI SE MODIFIE N'EST PAS UNE PREUVE. Le reste de la
+   ligne se corrige librement — un visiteur qui revient changer son
+   courriel a raison de le faire. L'acceptation, elle, porte une
+   date et une version : la laisser bouger permettrait d'écrire
+   « accepté le 12 mars, version 2027-01-01 » sur une référence
+   envoyée le 7 août, et le classeur dirait le contraire de ce qui
+   s'est passé.
+
+   ELLE NE SE FIGE QU'UNE FOIS ÉCRITE : une colonne vide accepte sa
+   PREMIÈRE valeur, sinon aucune acceptation n'entrerait jamais.
+
+   LES TITRES SONT ÉCRITS EN TOUTES LETTRES, ici comme dans le
+   SCHÉMA. Une constante partagée se lirait mieux, mais
+   `tools/classeur-check.mjs` évalue le bloc `SCHEMA` SEUL, hors de
+   ce fichier : une constante y serait indéfinie et l'outil
+   mourrait au lieu de vérifier. Il compare donc les deux listes,
+   et une faute de frappe d'un côté le fait échouer. */
+var COLONNES_FIGEES = ["Conditions acceptées", "Acceptées le", "Version acceptée"];
+
 
 /* ============================================================
    2 · LE SCHÉMA — sept onglets, leurs colonnes, leur ordre
@@ -493,7 +539,25 @@ var SCHEMA = {
       { champ: "votre_telephone",    titre: "RÉFÉRENT · téléphone", largeur: 140 },
       { champ: "votre_email",        titre: "RÉFÉRENT · courriel",  largeur: 210 },
       { champ: "votre_entreprise",   titre: "RÉFÉRENT · entreprise", largeur: 180 },
-      { champ: "votre_lien",         titre: "RÉFÉRENT · lien avec elle", largeur: 190 }
+      { champ: "votre_lien",         titre: "RÉFÉRENT · lien avec elle", largeur: 190 },
+      /* COMMENT IL VEUT ÊTRE PAYÉ, ET RIEN DE PLUS.  D-773
+         La question reste ouverte au formulaire : le mode se règle
+         au moment de verser, des mois plus tard. On range une
+         PRÉFÉRENCE, pas un engagement — et surtout aucune
+         coordonnée bancaire, qui n'a rien à faire dans un classeur. */
+      { champ: "mode_paiement",      titre: "RÉFÉRENT · versement", largeur: 170 },
+
+      /* LA PREUVE DE L'ACCEPTATION.  D-773
+         Trois colonnes, et il en faut trois. « Oui » seul ne dit pas
+         QUAND ; la date seule ne dit pas QUOI. La version renvoie au
+         fichier archivé, qui porte le texte exact. Sans elle, une
+         condition modifiée dans six mois effacerait rétroactivement
+         ce que la personne avait accepté. */
+      { champ: "conditions_acceptees", titre: "Conditions acceptées", largeur: 130 },
+      /* Remplie par le SERVEUR. Une heure fournie par celui qui
+         accepte ne prouve rien : il l'écrit lui-même. */
+      { champ: "_conditions_le",       titre: "Acceptées le",         largeur: 150 },
+      { champ: "conditions_version",   titre: "Version acceptée",     largeur: 140 }
     ]
   },
 
@@ -1039,7 +1103,8 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 11,
+    version: 12,
+    conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
@@ -1425,6 +1490,25 @@ function traiter(kind, data) {
   var sig = signature(kind, data);
   var enSession = !!(data && data._sid);
 
+  /* L'HEURE DE L'ACCEPTATION SE RELÈVE ICI, ET C'EST LA NÔTRE.
+     D-773
+
+     `valider()` vient de garantir que l'acceptation est là et que
+     sa version est archivée. Ce qui manque à la preuve, c'est
+     QUAND — et cette heure-là ne peut pas venir du navigateur :
+     celui qui accepte l'écrirait lui-même, et une date qu'on se
+     donne à soi-même ne prouve rien.
+
+     ELLE SE POSE AVANT LA BRANCHE DE SESSION, parce que le chemin
+     normal passe par là : la ligne est née à l'étape 1, donc c'est
+     `fusionnerLigne` qui reçoit la dernière étape. La poser plus
+     bas ne l'aurait écrite que sur les références envoyées d'un
+     seul coup — celles qui n'arrivent jamais. */
+  if (kind === "refer" && data && data._final
+      && String(data.conditions_acceptees || "").trim().toLowerCase() === "oui") {
+    extra._conditions_le = quand(new Date());
+  }
+
   /* UNE SESSION EN COURS SE MET À JOUR, ELLE NE SE DÉDOUBLONNE PAS.
      D-744
 
@@ -1447,7 +1531,7 @@ function traiter(kind, data) {
        mécanisme existe pour empêcher. */
     var traverse = kind === "booking" && data._final && cible && !dejaReserve(cible);
     if (cible && !traverse) {
-      var fus = fusionnerLigne(kind, cible, data, {});
+      var fus = fusionnerLigne(kind, cible, data, extra);
       var envoisF = null;
       if (data._final) {
         var dF = data, kF = kind, ligneF = fus;
@@ -1627,7 +1711,8 @@ var LONGUEURS = {
   prix_reaction: 40, systeme: 500, depuis_quand: 160, gravite: 80,
   ampleur: 120, fonctions: 160, contenu: 120, niveau_design: 160,
   envergure: 120, objectif: 160, moment_contact: 60, taille: 60, besoin: 120,
-  impact: 2000, presentation: 1000, budget: 120
+  impact: 2000, presentation: 1000, budget: 120,
+  mode_paiement: 60, conditions_acceptees: 8, conditions_version: 20
 };
 
 function valider(kind, data) {
@@ -1708,6 +1793,34 @@ function valider(kind, data) {
     var sid = String(data._sid);
     if (!/^[A-Za-z0-9_-]{8,40}$/.test(sid)) {
       return "La session n’est pas reconnue. Rechargez la page.";
+    }
+  }
+
+  /* 7 · UNE RÉFÉRENCE NE SE TERMINE PAS SANS ACCEPTATION.  D-773
+
+     C'EST ICI QUE LA RÈGLE TIENT, PAS DANS LE NAVIGATEUR. La case
+     du site sert au visiteur ; celui qui fabrique sa requête ne la
+     voit jamais. Le refus est donc côté serveur, sur la seule étape
+     où l'acceptation a un sens — la dernière.
+
+     ELLE NE S'EXIGE PAS EN COURS DE ROUTE, et c'est le même
+     équilibre que `requisPartiel` : quelqu'un qui donne un nom
+     d'entreprise à l'étape 1 n'a pas encore lu les conditions, et
+     lui refuser sa ligne ferait perdre l'abandon qu'on cherche à
+     capter. Le dernier envoi, lui, ne passe pas sans.
+
+     LA VERSION DOIT ÊTRE UNE VRAIE. On accepte celle que le site a
+     AFFICHÉE, pas celle qu'on croit courante — mais seulement si
+     elle figure dans `CONDITIONS_VERSIONS`, donc si son texte est
+     archivé quelque part. « oui » sur une version inventée ne
+     prouverait rien du tout. */
+  if (kind === "refer" && data && data._final) {
+    if (String(data.conditions_acceptees || "").trim().toLowerCase() !== "oui") {
+      return "Il faut accepter les conditions du programme pour envoyer une référence.";
+    }
+    var ver = String(data.conditions_version || "").trim();
+    if (CONDITIONS_VERSIONS.indexOf(ver) === -1) {
+      return "La version des conditions n’est pas reconnue. Rechargez la page et recommencez la dernière étape.";
     }
   }
 
@@ -1854,6 +1967,8 @@ function fusionnerLigne(kind, cible, data, extra) {
   cols.forEach(function (c, i) {
     var nom = c.champ;
     if (!nom) return;
+    if (COLONNES_FIGEES.indexOf(c.titre) !== -1
+        && String(avant[i] == null ? "" : avant[i]).trim() !== "") return;
     var v = null;
     if (extra && Object.prototype.hasOwnProperty.call(extra, nom)) v = extra[nom];
     else if (Object.prototype.hasOwnProperty.call(data, nom)) v = data[nom];
@@ -3968,8 +4083,13 @@ function autotest() {
     project:  { nom: "Essai", entreprise: "Essai inc", email: "essai@exemple.ca", telephone: "418 555 0142" },
     estimate: { nom: "Essai", email: "essai@exemple.ca" },
     urgent:   { nom: "Essai", telephone: "418 555 0142", email: "essai@exemple.ca", message: "Essai." },
+    /* L'ESSAI PORTE L'ACCEPTATION, sinon il ne prouve plus rien
+       depuis D-773 : `valider()` refuse une référence complète qui
+       n'en a pas, et l'autotest rendrait « refusé » sur une
+       plomberie parfaitement saine. */
     refer:    { votre_nom: "Essai", votre_email: "essai@exemple.ca", votre_lien: "Ami ou famille",
-                entreprise_referee: "Essai inc", contact_reference: "Marie Tremblay" },
+                entreprise_referee: "Essai inc", contact_reference: "Marie Tremblay",
+                conditions_acceptees: "oui", conditions_version: CONDITIONS_VERSIONS[0] },
     booking:  null,   /* poserait un vrai rendez-vous : hors autotest */
     contact:  { nom: "Essai", email: "essai@exemple.ca", message: "Essai." },
     cadeau:   { email: "essai@exemple.ca", telephone: "418 555 0142" }

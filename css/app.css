@@ -5657,6 +5657,181 @@ html:not(.js) .ba-trait { display: none; }
   transform-origin: left center;
 }
 
+/* --- LE PANNEAU DES MONTANTS ET DES CONDITIONS  D-773 ---
+
+   IL N'A AUCUN MOUVEMENT, ET C'EST LA REGLE D'ADMISSION QUI LE DIT :
+   un depliement n'est ni DEGAGER, ni S'ALIGNER, ni SOUDER, ni CRAN.
+   Faute d'etre l'un des quatre, il ne se fait pas — meme si l'effet
+   serait joli. La section garde son seul mouvement, le filet des
+   quatre etapes qui se soude au defilement.
+
+   ET IL NE COUTE RIEN AU CLS : il nait `hidden`, donc a hauteur
+   nulle, et il ne s'ouvre que sur un clic. Un decalage provoque par
+   le visiteur n'est pas un decalage, c'est une reponse. */
+.referral-portes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+}
+/* LE PLUS ET LE MOINS NE SE CHOISISSENT PAS EN JAVASCRIPT. L'etat du
+   panneau vit dans `aria-expanded`, qui est deja la seule source de
+   verite pour le lecteur d'ecran : le signe la suit. Une classe de
+   plus serait un second etat a tenir d'accord avec le premier. */
+.btn--tiroir .icon--moins,
+.btn--tiroir[aria-expanded="true"] .icon--plus { display: none; }
+.btn--tiroir[aria-expanded="true"] .icon--moins { display: inline-block; }
+
+.referral-panneau {
+  padding-top: var(--s-6);
+  border-top: var(--rule-w) solid var(--ref-filet);
+}
+.referral-panneau-in { display: grid; gap: var(--s-4); }
+
+/* == 21b. LES CONDITIONS - le meme bloc, sur deux fonds ==
+
+   Le texte parait a DEUX endroits : le panneau de la section, qui
+   est sur la plaque sombre, et le tiroir du formulaire, qui est sur
+   une modale claire. Les deux copies sont GENEREES et identiques au
+   signe pres (`node tools/conditions.mjs`) : elles ne peuvent donc
+   pas porter de styles differents. Les quatre couleurs passent par
+   des variables locales, et seul le CONTENANT les redefinit. */
+.cond {
+  --c-ink: var(--ink);
+  --c-mute: var(--ink-muted);
+  --c-filet: var(--rule);
+  --c-fort: var(--rule-strong);
+}
+.referral .cond {
+  --c-ink: var(--ref-encre);
+  --c-mute: var(--ref-mute);
+  --c-filet: var(--ref-filet);
+  --c-fort: var(--ref-filet);
+}
+.cond-h { font-size: var(--fs-4); color: var(--c-ink); }
+.cond-lead { color: var(--c-ink); max-width: 60ch; }
+.cond-lead strong { color: var(--c-ink); }
+
+/* Le titre d'article : le repere qu'on balaye quand on cherche « et
+   si le projet est annule ». En capitales de donnees, comme tous les
+   libelles du site — un texte de mille mots a besoin d'ancres, pas
+   d'une seconde graisse de titre. */
+.cond-t {
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  border-top: var(--rule-w) solid var(--c-filet);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+.cond-t:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.cond p { color: var(--c-mute); max-width: 68ch; margin-top: var(--s-3); }
+.cond p strong { color: var(--c-ink); }
+.cond a { color: var(--c-ink); text-decoration: underline; text-underline-offset: 0.2em; }
+
+/* LA GRILLE. Aucun minium : le seul de la section reste le plafond
+   de 5 000 $, qui est la seule chose sur quoi le visiteur AGIT. Sept
+   montants en minium feraient sept appels a l'action pour un seul
+   geste. Chiffres tabulaires, pour que les colonnes s'alignent sans
+   qu'on ait a le demander. */
+.cond-grille {
+  width: 100%;
+  margin-top: var(--s-4);
+  border-collapse: collapse;
+  font-size: var(--fs-7);
+}
+.cond-grille th,
+.cond-grille td {
+  padding: var(--s-3) 0;
+  border-bottom: var(--rule-w) solid var(--c-filet);
+  text-align: left;
+  vertical-align: baseline;
+  color: var(--c-mute);
+}
+.cond-grille th {
+  border-bottom: var(--rule-w) solid var(--c-fort);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+.cond-grille th:last-child,
+.cond-grille .cond-prime { text-align: right; padding-left: var(--s-4); white-space: nowrap; }
+.cond-prime b {
+  font-family: var(--font-data);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-ink);
+}
+
+/* --- LE TIROIR DU FORMULAIRE, ET LA CASE ---
+
+   L'ESSENTIEL EN QUATRE LIGNES, PUIS LE TEXTE ENTIER. Les quatre
+   puces ne remplacent pas les conditions : elles nomment les quatre
+   points qui font les litiges — combien, quand, combien de temps, et
+   « on la connaissait deja ». Celui qui ne lit que ca sait ce qui
+   peut mal tourner. Celui qui veut tout lire ouvre le tiroir sans
+   quitter l'ecran, donc sans perdre cinq ecrans de saisie. */
+.cond-puces { display: grid; gap: var(--s-3); margin-top: var(--s-4); }
+.cond-puces li {
+  padding-left: var(--s-5);
+  position: relative;
+  font-size: var(--fs-7);
+  color: var(--ink-muted);
+}
+.cond-puces li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--ink);
+}
+.cond-puces b { color: var(--ink); }
+
+.cond-tiroir { margin-top: var(--s-5); }
+/* LA HAUTEUR EST BORNEE ET LE TEXTE DEFILE CHEZ LUI. Mille mots
+   pousseraient la case a cocher et le bouton d'envoi hors de
+   l'ecran : celui qui vient de lire ne retrouverait plus ce qu'il
+   etait venu accepter. Le filet dit ou le bloc commence et finit. */
+.cond-texte {
+  margin-top: var(--s-4);
+  padding: var(--s-5);
+  max-height: 26rem;
+  overflow-y: auto;
+  border: var(--rule-w) solid var(--rule-strong);
+  background: var(--surface-1);
+}
+
+/* LA CASE PREND TOUTE LA LARGEUR, et son etiquette entiere est la
+   cible : sur un telephone, une case de 16 px seule est en dessous
+   des 44 px exiges, l'etiquette lui en donne le double. */
+.check--bloc {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: var(--s-5);
+  padding: var(--s-4);
+  text-align: left;
+}
+.check--bloc input { margin-top: 0.2em; }
+.check--bloc b { font-family: var(--font-data); font-size: 0.95em; }
+
+.cond-version {
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  border-top: var(--rule-w) solid var(--c-filet);
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+  color: var(--c-mute) !important;
+}
+.cond-version b { color: var(--c-ink); }
+
 /* LES TROIS PREUVES SONT PARTIES — vingt-cinq regles, une bulle de
    texto, une signature en SVG et un avis de depot. Elles illustraient
    le mecanisme sans l'expliquer, et l'etape qui manquait — remplir le
@@ -6530,6 +6705,15 @@ html.js.reduced-motion .derail-row:not(.derail-row--lost) { opacity: 1; }
      ligne — sur la seule section dont la consigne est « la clarte
      prime », c'etait le contraire de la consigne. */
   .referral > .referral-foot .fine { margin-top: 0 !important; max-width: 38ch; }
+
+  /* LE PANNEAU PREND TOUTE LA LARGEUR, ET SON TEXTE N'EN PREND PAS
+     LA MOITIE.  D-773
+     Mille mots sur douze colonnes rendraient des lignes de 140
+     signes : on relit deux fois la meme, on decroche. Le bloc tient
+     sur les huit premieres colonnes, ce qui plafonne la mesure sans
+     ajouter une contrainte de plus en `ch`. */
+  .referral > .referral-panneau { grid-column: 1 / span 12; }
+  .referral > .referral-panneau .referral-panneau-in { max-width: 62rem; }
 
   /* TROIS NIVEAUX, ET ILS SE VOIENT AVANT D'ETRE LUS.  D-255
        rangee 1-2 : le chemin recommande, seul, sur quatre colonnes
