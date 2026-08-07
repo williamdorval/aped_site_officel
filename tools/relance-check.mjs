@@ -112,6 +112,56 @@ titre("1 · UN BOUTON QUI NE MÈNE NULLE PART NE S'ENVOIE PAS");
   dire("aucun courriel n'est parti", etat.courriels.length, avant);
   dire("et la colonne reste VIDE", String(valeur("project", 2, "Relance") || ""), "",
     "sinon la ligne serait marquée relancée sans l'avoir été");
+
+  /* CE QU'ELLE NE DOIT PAS ENTRAINER DANS SA CHUTE.  D-772
+     Le site n'est pas en ligne : `SITE_URL` n'existe pas, et
+     `relancerAbandons` sort a sa premiere ligne toutes les quatre
+     heures. Ce qui compte alors n'est pas qu'elle echoue — c'est
+     que le RESTE continue. Une relance qui leve au lieu de sortir
+     ferait echouer son declencheur, et un declencheur en echec
+     repete finit par etre desactive par Apps Script : le jour ou
+     l'adresse serait posee, plus rien ne tournerait. */
+  const avantLigne = etat.feuilles.get(gs.SCHEMA.refer.onglet);
+  const rep = JSON.parse(gs.doPost({ postData: { contents: JSON.stringify({
+    _form: "refer", _sid: sidDe("sidApres"), _etape: 1, _etapes: 7,
+    entreprise_referee: "ZZ Garage Sans Adresse" }) } }).getContent());
+  dire("un formulaire passe quand meme", rep.success, true,
+    "la relance ne doit rien emporter avec elle");
+  dire("et sa ligne s'ecrit", String(valeur("refer", 2, "Entreprise référée") || ""),
+    "ZZ Garage Sans Adresse");
+  dire("la relance ne leve pas, elle SORT",
+    typeof gs.relancerAbandons().raison, "string",
+    "une exception ferait echouer le declencheur des quatre heures");
+  void avantLigne;
+}
+
+/* ============================================================
+   1bis · ELLE SE RALLUME SEULE, SANS TOUCHER AU CODE
+   ============================================================ */
+titre("1bis · LE JOUR OÙ L'ADRESSE EST POSÉE");
+{
+  remise(false);
+  abandon("project", "sidDormant", { email: "dormant@exemple.ca", nom: "ZZ Dormant" }, 30 * H);
+
+  /* Trois passages a vide, comme les trois premieres nuits d'un
+     site pas encore en ligne. */
+  gs.relancerAbandons(); gs.relancerAbandons(); gs.relancerAbandons();
+  dire("après trois passages à vide, la ligne est intacte",
+    String(valeur("project", 2, "Relance") || ""), "");
+  const avant = etat.courriels.length;
+
+  /* L'adresse se pose dans les proprietes du script, pas dans le
+     code : aucun redeploiement, aucune modification de fichier. */
+  etat.proprietes.SITE_URL = SITE;
+
+  const r = gs.relancerAbandons();
+  dire("le passage suivant part tout seul", r.envoyees, 1,
+    "aucune ligne de code n'a change entre les deux");
+  dire("et il part à la ligne qui dormait", etat.courriels.length, avant + 1);
+  const c = etat.courriels[etat.courriels.length - 1];
+  dire("le lien porte enfin l'adresse", c.body.indexOf(SITE), c.body.indexOf("https://"),
+    "c'est ce qui manquait, et rien d'autre");
+  dire("il ramène à la bonne étape", /[?&]e=3/.test(c.body), true);
 }
 
 /* ============================================================
