@@ -287,8 +287,17 @@ console.log("\n--- 9 · L'ORDRE DES COLONNES ET LA MISE EN FORME");
      quand » ; le reste de l'ecran est a la demande. */
   dire("les quatre colonnes de suivi ouvrent le classeur",
     cols.slice(0, 4).join("|"), "Vu|Lu par|Rappelé par|Statut");
-  dire("puis l'etape et l'horodatage", cols.slice(4, 6).join("|"), "Étape|Horodatage");
-  dire("le visiteur commence en G", cols[6], "Nom");
+  /* LES COLONNES DE SERVICE SE LISENT DANS `TECHNIQUES`, ELLES NE
+     S'ENUMERENT PAS. Ce cas disait « Étape|Horodatage » et « le
+     visiteur commence en G » : D-764 a ajoute « Parti vers » et
+     « Relance », et les deux ont accuse un code sain. Ce qui compte
+     n'est pas COMBIEN il y en a — c'est qu'elles soient toutes
+     groupees apres le suivi, et que la demande vienne juste apres. */
+  const TECH = cols.slice(4, cols.indexOf("Nom"));
+  dire("l'etape ouvre les colonnes de service", TECH[0], "Étape");
+  dire("l'horodatage les ferme", TECH[TECH.length - 1], "Horodatage");
+  dire("la demande commence juste apres elles",
+    cols[4 + TECH.length], "Nom");
   dire("« Notes internes » ferme la demande, avant les deux colonnes de service",
     cols.slice(-3).join("|"), "Notes internes|Renvois|Signature");
   /* LA LARGEUR DE TETE SE MESURE, ELLE NE SE SUPPOSE PAS. Un seul

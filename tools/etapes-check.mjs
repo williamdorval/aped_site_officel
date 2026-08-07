@@ -334,8 +334,16 @@ titre("10 · CE QU'ON VOIT EN OUVRANT L'ONGLET");
      restait la place que du nom. Elle ferme maintenant la demande. */
   verifier("les quatre colonnes de suivi ouvrent l'onglet",
     o.titres.slice(0, 4).join("|"), "Vu|Lu par|Rappelé par|Statut");
-  verifier("« Étape » est en E", o.titres[4], "Étape");
-  verifier("« Horodatage » en F", o.titres[5], "Horodatage");
+  /* LES COLONNES DE SERVICE SE LISENT, ELLES NE SE COMPTENT PAS.
+     « Étape en E » et « Horodatage en F » etaient des positions
+     apprises par coeur : D-764 en a insere deux entre les deux, et
+     les cas ont accuse un classeur parfaitement conforme. Ce qui
+     doit tenir, c'est l'ORDRE — l'etape ouvre, l'horodatage ferme. */
+  const iEtape = o.titres.indexOf("Étape");
+  const iHoro = o.titres.indexOf("Horodatage");
+  verifier("« Étape » ouvre les colonnes de service", iEtape, 4);
+  verifier("« Horodatage » les ferme", iHoro > iEtape, true);
+  verifier("la demande commence juste apres", o.titres[iHoro + 1], "Nom");
   verifier("« Notes internes » ferme la demande",
     o.titres.slice(-3).join("|"), "Notes internes|Renvois|Signature");
 

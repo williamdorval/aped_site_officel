@@ -2017,6 +2017,82 @@
 
   $$("input[list]").forEach(brancherSuggestions);
 
+  /* ============================================================
+     LE NUMÉRO SE MET EN FORME PENDANT QU'ON LE TAPE.  D-766
+
+     POURQUOI ÇA N'EST PAS DE LA DÉCORATION. Le serveur compte les
+     CHIFFRES (`valider()`, D-759) : « 8195230871 » passe déjà. Ce
+     qu'on gagne n'est pas la validité, c'est la RELECTURE — dix
+     chiffres collés se vérifient mal, et un patron qui ne se relit
+     pas laisse une faute dans le seul champ qui sert à le rappeler.
+     Un numéro faux dans une colonne est un client perdu en silence.
+
+     ON NE REFUSE RIEN, ON RANGE. Un numéro à onze chiffres, un
+     poste, un indicatif de pays : le champ garde les dix premiers
+     chiffres en forme et laisse le reste tel quel derrière. Refuser
+     serait pire que ne rien faire — le visiteur ne saurait pas quoi
+     corriger, et il partirait.
+     ============================================================ */
+  function formaterTel(brut) {
+    var s = String(brut == null ? "" : brut);
+    /* Le « + » de tête d'un indicatif international se garde : le
+       retirer transformerait « +1 819… » en « 181 952-30871 ». */
+    var plus = s.charAt(0) === "+" ? "+" : "";
+    var d = s.replace(/\D/g, "");
+    if (plus && d.charAt(0) === "1" && d.length > 10) d = d.slice(1);
+    var reste = d.length > 10 ? " " + d.slice(10) : "";
+    d = d.slice(0, 10);
+    if (d.length <= 3) return plus + d;
+    if (d.length <= 6) return plus + d.slice(0, 3) + " " + d.slice(3);
+    return plus + d.slice(0, 3) + " " + d.slice(3, 6) + "-" + d.slice(6) + reste;
+  }
+
+  function brancherTelephone(champ) {
+    /* LE BON CLAVIER, POSÉ ICI PLUTÔT QUE DANS LE HTML : un champ
+       `type="tel"` de plus n'aura pas à y penser. */
+    if (!champ.getAttribute("inputmode")) champ.setAttribute("inputmode", "tel");
+    if (!champ.getAttribute("autocomplete")) champ.setAttribute("autocomplete", "tel");
+
+    champ.addEventListener("input", function (e) {
+      var avant = champ.value;
+      var caret = champ.selectionStart;
+
+      /* EFFACER UN SÉPARATEUR DOIT EFFACER UN CHIFFRE.  Sans ça, on
+         retire l'espace, le formatage le remet, le curseur ne bouge
+         pas — et la touche « effacer » a l'air cassée. */
+      if (e && e.inputType === "deleteContentBackward"
+          && caret > 0 && /\D/.test(avant.charAt(caret - 1) || "")) {
+        avant = avant.slice(0, caret - 1) + avant.slice(caret);
+        caret--;
+      }
+
+      /* LE CURSEUR SE REPÈRE EN CHIFFRES, PAS EN CARACTÈRES.
+         Compter des caractères le ferait sauter d'un cran à chaque
+         séparateur inséré, et taper au milieu d'un numéro déjà
+         écrit deviendrait impossible. */
+      var chiffresAvant = avant.slice(0, caret).replace(/\D/g, "").length;
+      var apres = formaterTel(avant);
+      if (apres === champ.value && caret === champ.selectionStart) return;
+
+      champ.value = apres;
+      var vus = 0, pos = apres.length;
+      for (var i = 0; i < apres.length; i++) {
+        if (/\d/.test(apres.charAt(i))) vus++;
+        if (vus >= chiffresAvant) { pos = i + 1; break; }
+      }
+      if (!chiffresAvant) pos = apres.charAt(0) === "+" ? 1 : 0;
+      try { champ.setSelectionRange(pos, pos); } catch (err) { /* champ masqué */ }
+    });
+
+    /* AU DÉPART D'UN CHAMP COLLÉ, on range une dernière fois : un
+       collage depuis un courriel arrive souvent en « (819) 523-0871 ». */
+    champ.addEventListener("blur", function () {
+      if (champ.value) champ.value = formaterTel(champ.value);
+    });
+  }
+
+  $$('input[type="tel"]').forEach(brancherTelephone);
+
   function validate(scope) {
     var firstBad = null;
     $$(".field", scope).forEach(function (field) {
@@ -3572,6 +3648,42 @@
         });
       });
     };
+
+    /* ============================================================
+       LES DEUX PORTES — partir d'ici sans sortir de chez nous. D-764
+
+       ON ENREGISTRE AVANT D'OUVRIR L'AUTRE MODALE, et sans attendre
+       la réponse. `enregistrerDiscret` ne rend pas de promesse : si
+       on attendait, un réseau lent retiendrait la porte fermée, et
+       le visiteur cliquerait deux fois.
+
+       CE N'EST PAS UN ABANDON, ET LA LIGNE DOIT LE DIRE. Sans
+       `_parti_vers`, la ligne du projet ressemble trait pour trait
+       à quelqu'un qui a fermé l'onglet — on le relancerait pour un
+       formulaire qu'il est en train de remplir ailleurs.
+
+       ON NE VALIDE PAS L'ÉTAPE EN COURS. Un champ obligatoire vide
+       ne doit pas retenir quelqu'un qui a justement choisi de faire
+       autrement : ce serait transformer une porte de sortie en
+       piège. Ce qui est rempli part, le reste ne part pas.
+       ============================================================ */
+    $$("[data-porte]", projectWizard).forEach(function (bouton) {
+      bouton.addEventListener("click", function () {
+        var ou = bouton.dataset.porte;
+        try {
+          var data = serialize(projectWizard);
+          data._parti_vers = ou;
+          enregistrerDiscret("project", data, pStep, P_TOTAL);
+        } catch (e) { /* la porte s'ouvre quand même */ }
+        /* LA RETENUE NE DOIT PAS SAUTER SUR QUELQU'UN QUI CHANGE DE
+           PARCOURS. `closeModal` l'arme à la fermeture ; ici le
+           visiteur n'a rien abandonné, il a suivi une porte qu'on
+           lui a nous-mêmes montrée. */
+        retenueFinie();
+        closeModal();
+        openModal(ou === "estimate" ? "modal-estimate" : "modal-booking");
+      });
+    });
 
     brancherDevis("project");
 

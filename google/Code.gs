@@ -551,6 +551,17 @@ var SUIVI_FIN = [
    information nouvelle du classeur. */
 var TECHNIQUES = [
   { titre: "Étape",      largeur: 110 },
+  /* OÙ LA PERSONNE EST PARTIE, QUAND ELLE N'EST PAS PARTIE.  D-764
+     Un visiteur qui quitte « Démarrer un projet » pour l'estimation
+     n'est PAS un abandon : c'est le même client par une autre porte.
+     Sans cette colonne les deux se ressemblent dans le classeur, et
+     on relance quelqu'un qui est déjà en train de remplir ailleurs. */
+  { titre: "Parti vers", largeur: 130 },
+  /* CE QU'ON LUI A DÉJÀ ENVOYÉ.  D-765
+     Elle porte la date de la relance. Vide = jamais relancé. C'est
+     elle, et rien d'autre, qui garantit « une seule par personne » :
+     un compteur en mémoire ne survit pas à un redéploiement. */
+  { titre: "Relance",    largeur: 150 },
   { titre: "Horodatage", largeur: 150 }
 ];
 
@@ -990,7 +1001,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 10,
+    version: 11,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
@@ -1820,6 +1831,21 @@ function fusionnerLigne(kind, cible, data, extra) {
     touchees++;
   });
 
+  /* LA BASCULE VERS L'AUTRE PARCOURS.  D-764
+     Elle n'a pas de `champ`, donc la boucle ci-dessus l'ignore :
+     c'est voulu. Elle s'écrit ici, une seule fois — le premier
+     départ est celui qui compte. L'écraser au second dirait
+     « parti vers la réservation » de quelqu'un qui était d'abord
+     allé voir l'estimation, et on perdrait le vrai chemin. */
+  var iParti = cible.titres.indexOf("Parti vers");
+  if (iParti >= 0) {
+    var ou = partiVers(data);
+    if (ou && !String(apres[iParti] || "").trim()) {
+      apres[iParti] = ou;
+      touchees++;
+    }
+  }
+
   /* L'étape avance, elle ne recule pas : un visiteur qui revient en
      arrière pour corriger l'étape 2 n'a pas « désappris » l'étape 4. */
   if (cible.iEtape > 0) {
@@ -1869,6 +1895,29 @@ function fusionnerLigne(kind, cible, data, extra) {
     touchees: touchees,
     url: lienVersLigne(feuille, ligne)
   };
+}
+
+/* OÙ LA PERSONNE EST PARTIE — dans un vocabulaire FERMÉ.  D-764
+
+   Le visiteur envoie `_parti_vers`, donc il l'écrit. On ne range
+   donc pas ce qu'il dit, on range ce qu'on reconnaît : un champ
+   libre ici deviendrait une colonne de texte imprévisible qu'aucun
+   tri ne rattraperait, et une porte de plus à surveiller.
+
+   Ce qui n'est pas reconnu tombe à vide, PAS à « autre » : « autre »
+   se lirait comme une bascule réelle et fausserait le compte. */
+var PARCOURS_CONNUS = {
+  estimate: "Estimation",
+  booking:  "Réservation",
+  project:  "Projet",
+  refer:    "Référence",
+  urgent:   "Urgence",
+  contact:  "Contact"
+};
+function partiVers(data) {
+  var v = String((data && data._parti_vers) || "").trim();
+  if (!v) return "";
+  return PARCOURS_CONNUS[v] || "";
 }
 
 /* « 3 / 6 », ou « ✓ complète ». Une seule façon de l'écrire. */
@@ -2026,6 +2075,7 @@ function ecrireLigne(kind, data, extra, sig) {
     if (c.titre === "Renvois") return 0;
     if (c.titre === "Statut") return STATUTS[0];
     if (c.titre === "Étape") return libelleEtape(data);
+    if (c.titre === "Parti vers") return partiVers(data);
     /* Une case à cocher se range comme un booléen, pas comme une
        chaîne vide : `""` la rendrait invalide. */
     if (c.case) return false;

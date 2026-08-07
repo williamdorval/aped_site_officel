@@ -386,6 +386,60 @@
 }
 .appel-num:hover,
 .appel-num:focus-visible { text-decoration-color: currentColor; }
+/* ============================================================
+   LES DEUX PORTES D'UN FORMULAIRE À ÉTAPES.  D-764
+
+   ELLES SONT SECONDES, ET ÇA SE VOIT SANS SE LIRE. Le bouton
+   « Continuer » est en minium plein ; celles-ci sont en contour.
+   La hiérarchie tient par la MATIÈRE, pas par la taille : deux
+   boutons plus petits mais pleins se disputeraient l'oeil, et
+   celui qui gagnerait n'est pas celui qu'on veut.
+
+   AUCUN MINIUM ICI. Le minium marque un seul endroit où agir par
+   écran, et dans un formulaire c'est l'envoi. Il ne reste sur ces
+   deux-là que la signature V3 du `.btn` — la trame de grains qui
+   se ressoude en trait plein au survol.
+
+   Le filet de tête les sépare de la navigation : sans lui, les
+   quatre boutons se lisent comme une seule rangée d'égaux.
+   ============================================================ */
+.form-portes {
+  margin: var(--s-4) 0 0;
+  padding-top: var(--s-3);
+  border-top: var(--rule-w) solid var(--rule);
+}
+.form-portes-quoi {
+  margin: 0 0 var(--s-3);
+  font-size: var(--fs-7);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.form-portes-choix {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+/* CHACUNE PREND LA MOITIÉ, ET PASSE À LA LIGNE PLUTÔT QUE DE
+   SERRER SON TEXTE. `1 1 16rem` : au-dessus de 32 rem elles se
+   partagent la largeur, en dessous elles s'empilent — et une
+   cible empilee reste pleine largeur, donc facile au pouce. */
+.form-portes-choix .btn {
+  flex: 1 1 16rem;
+  justify-content: space-between;
+  /* 44 px AU POUCE, mesure imposee et non deduite du remplissage :
+     `padding` + `line-height` donnent 43,x px selon la police
+     chargee, et un pixel manquant est un pixel manquant. */
+  min-height: 2.75rem;
+  /* Le libelle peut passer sur deux lignes sur un petit ecran ;
+     `nowrap` herite du `.btn` le couperait. */
+  white-space: normal;
+}
+.form-portes-note {
+  margin: var(--s-3) 0 0;
+  font-size: var(--fs-8);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
 /* LA RAISON D'UNE QUESTION, SOUS LA QUESTION.  D-759
    Un champ obligatoire de plus fait fermer un formulaire quand il a
    l'air d'une formalite. Elle dit ce qu'on FERA de la reponse — pas
