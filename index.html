@@ -3238,7 +3238,13 @@
           <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
         </button>
         <p class="form-status" role="status" aria-live="polite"></p>
-        <p class="form-legal">Vos coordonnées servent à créer le rendez-vous et à vous envoyer l’invitation. L’appel passe par Google Agenda et Google Meet, hors Québec. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
+        <!-- LA MENTION SUIT LE MODE, PARCE QUE LE FAIT SUIT LE MODE.  D-771
+             Elle annonçait « Google Agenda ET Google Meet » à tout le
+             monde — y compris à quelqu'un qui a coché « Téléphone » et
+             dont l'appel ne passe par aucun Meet. Une phrase légale
+             fausse est plus grave qu'une phrase de vente fausse : elle
+             prétend décrire ce qu'on fait de leurs données. -->
+        <p class="form-legal" id="bkLegal">Vos coordonnées servent à créer le rendez-vous et à vous envoyer l’invitation. L’appel passe par Google Agenda, hors Québec. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
       </form>
     </div>
 
@@ -3865,8 +3871,15 @@
         </div>
         <div class="form-row">
           <div class="field">
-            <label for="rfPhone">Votre téléphone</label>
-            <input id="rfPhone" name="votre_telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+            <!-- CELUI QUI REND SERVICE NE PAIE PAS LE CHAMP LE PLUS
+                 CHER DU SITE.  D-771
+                 Exiger courriel ET telephone d'un referent benevole,
+                 sur l'ecran ou on lui demande deja son nom, son
+                 courriel, son lien et son entreprise : c'est le
+                 moment ou il ferme. Le courriel suffit a le joindre
+                 et a le payer. -->
+            <label for="rfPhone">Votre téléphone <span class="opt">(optionnel)</span></label>
+            <input id="rfPhone" name="votre_telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="418 555 0142…" />
             <span class="field-error">Entrez un numéro à dix chiffres.</span>
           </div>
           <div class="field">

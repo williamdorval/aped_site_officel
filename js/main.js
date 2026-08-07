@@ -3691,6 +3691,13 @@
   var MAX_BYTES = 10 * 1024 * 1024;
 
   function goPStep(n) {
+    /* Les écrans 4 et 5 portent l'ampleur, le design, le contenu et
+       les fonctions. Voir `projetSauteLeBareme`. */
+    var sens = n >= pStep ? 1 : -1;
+    var garde = 0;
+    while (projetSauteLeBareme() && (n === 4 || n === 5) && garde++ < 6) n += sens;
+    if (n < 1) n = 1;
+    if (n > P_TOTAL) n = P_TOTAL;
     pStep = n;
     $$(".step[data-pstep]", projectWizard).forEach(function (s) {
       s.hidden = Number(s.dataset.pstep) !== n;
@@ -3801,17 +3808,132 @@
         /* Le mode commande ce que le visiteur lit sous les boutons :
            on ne promet pas un lien Meet a quelqu'un qu'on va
            appeler. */
-        if (key === "mode") {
-          var note = $("#bkModeNote");
-          if (note) {
-            note.textContent = btn.dataset.value === "Google Meet"
-              ? "L’invitation et le lien Meet partent vers votre courriel et votre calendrier."
-              : "On vous appelle au numéro ci-dessous, à l’heure choisie.";
-          }
-        }
+        if (key === "mode") appliquerMode(btn.dataset.value);
       });
     });
   });
+
+  /* ============================================================
+     LES QUESTIONS CONDITIONNELLES.  D-771
+
+     UNE QUESTION SANS OBJET N'EST PAS NEUTRE : elle coûte le même
+     temps qu'une vraie et elle apprend au visiteur que le
+     formulaire ne l'écoute pas. Demander « combien de pages » à
+     quelqu'un qui veut automatiser une facturation, c'est prouver
+     qu'on n'a pas lu sa réponse d'avant.
+
+     ELLES MASQUENT, ELLES NE SUPPRIMENT PAS. `validate()` saute
+     déjà tout `.field` masqué ou sous un ancêtre masqué : un champ
+     caché ne retient donc personne. L'enlever du DOM à la place
+     casserait `serialize`, la reprise et le retour en arrière.
+
+     RIEN N'EST JAMAIS PERDU EN CHEMIN. Si quelqu'un répond, puis
+     revient changer d'avis, la réponse devenue hors sujet reste
+     dans le champ masqué — et le service, lui, ne l'écrase pas
+     avec du vide (D-744). Le jour où il rechange d'avis, elle est
+     encore là.
+     ============================================================ */
+  function montrerChamp(id, visible) {
+    var el = $("#" + id);
+    if (!el) return;
+    var champ = el.closest(".field") || el;
+    champ.hidden = !visible;
+  }
+
+  /* LE MODE COMMANDE TROIS CHOSES, ET LA TROISIÈME EST LÉGALE. */
+  function appliquerMode(valeur) {
+    var tel = valeur !== "Google Meet";
+    var note = $("#bkModeNote");
+    if (note) {
+      note.textContent = tel
+        ? "On vous appelle au numéro ci-dessous, à l’heure choisie."
+        : "L’invitation et le lien Meet partent vers votre courriel et votre calendrier.";
+    }
+    /* Le numéro n'est vraiment obligatoire que si on doit composer.
+       Pour un Meet il reste utile — un lien qui n'ouvre pas se
+       rattrape par téléphone — mais l'exiger fait perdre des
+       réservations au moment du plus grand engagement. */
+    var champ = $("#bkPhone");
+    if (champ) {
+      champ.required = tel;
+      var lib = $('label[for="bkPhone"]');
+      if (lib) lib.textContent = tel ? "Le numéro qu’on compose" : "Téléphone (au cas où)";
+    }
+    /* LA MENTION LÉGALE NE PARLE DE MEET QUE S'IL Y A UN MEET. */
+    var legal = $("#bkLegal");
+    if (legal) {
+      var lien = legal.querySelector("a");
+      legal.textContent = "Vos coordonnées servent à créer le rendez-vous et à vous "
+        + "envoyer l’invitation. L’appel passe par Google Agenda"
+        + (tel ? "" : " et Google Meet") + ", hors Québec. ";
+      if (lien) legal.appendChild(lien);
+      legal.appendChild(doc.createTextNode("."));
+    }
+  }
+
+  /* ---- PROJET ---- */
+  var BESOIN_FLOU = "Je ne sais pas encore";
+  var BESOINS_SANS_PAGES = ["Automatisation et IA", "Application ou logiciel"];
+
+  function besoinsCoches() {
+    return $$('#projectWizard input[name="besoins"]:checked')
+      .map(function (c) { return c.value; });
+  }
+
+  /* Les écrans 4 et 5 pèsent QUATRE des sept questions du barème.
+     On ne les saute que quand la seule réponse donnée est « je ne
+     sais pas encore » : dans ce cas la fourchette ne se calcule
+     déjà plus (moins de trois réponses notées), et les poser
+     reviendrait à faire remplir quatre menus pour rien. */
+  function projetSauteLeBareme() {
+    var b = besoinsCoches();
+    return b.length === 1 && b[0] === BESOIN_FLOU;
+  }
+
+  function appliquerProjet() {
+    var b = besoinsCoches();
+    /* Ni pages ni contenu à rédiger quand rien ne se publie. */
+    var sansPages = b.length > 0 && b.every(function (v) {
+      return BESOINS_SANS_PAGES.indexOf(v) !== -1;
+    });
+    montrerChamp("prAmpleur", !sansPages);
+    montrerChamp("prContenu", !sansPages);
+
+    /* « Juste moi » n'a pas de raison sociale : l'exiger bloque un
+       travailleur autonome sur un champ qu'il ne peut pas remplir. */
+    var taille = $("#prSize");
+    var seul = taille && /juste moi/i.test(String(taille.value));
+    var ent = $("#prCompany");
+    if (ent) {
+      ent.required = !seul;
+      var lib = $('label[for="prCompany"]');
+      if (lib && seul) lib.innerHTML = "Nom de l’entreprise <span class=\"opt\">(si vous en avez une)</span>";
+      else if (lib) lib.textContent = "Nom de l’entreprise";
+    }
+
+    /* Sans numéro, « quand vous appeler » ne veut rien dire. */
+    var tel = $("#prPhone");
+    montrerChamp("prContactPref", !!(tel && String(tel.value).trim()));
+  }
+
+  if (projectWizard) {
+    projectWizard.addEventListener("change", appliquerProjet);
+    projectWizard.addEventListener("input", appliquerProjet);
+    appliquerProjet();
+  }
+
+  /* ---- ESTIMATION ---- */
+  /* Une automatisation n'a ni pages ni textes à écrire : deux
+     questions du barème deviennent sans objet. Il reste cinq
+     réponses notées, donc la fourchette survit — vérifié dans
+     `conditionnelles-check`, parce que passer sous trois la ferait
+     disparaître en silence. */
+  var ESTIM_SAUTS = { automatisation: [4, 6] };
+  function estimSaute(n) {
+    var t = answers && answers.type;
+    var sauts = t ? ESTIM_SAUTS[t] : null;
+    return !!(sauts && sauts.indexOf(n) !== -1);
+  }
 
   if (projectWizard) {
 
@@ -3961,7 +4083,23 @@
   }
 
   function goEStep(n) {
+    /* ON SAUTE DANS LE SENS OÙ ON MARCHE. Sans mémoire du sens, un
+       retour arrière depuis l'écran 7 retomberait sur l'écran 6
+       sauté, qui renverrait vers 7 : la personne resterait
+       coincée. L'estimateur n'a pas de bouton « retour »
+       aujourd'hui, mais le jour où il en aura un, ce garde sera
+       déjà là. */
     if (!wizard) return;
+    /* L'ESTIMATEUR NE GARDE PAS SON ETAPE DANS UNE VARIABLE : elle
+       se lit dans le DOM, qui en est la seule source. En inventer
+       une seconde ici, c'est se donner deux verites a tenir. */
+    var visible = $(".step[data-step]:not([hidden])", wizard);
+    var actuel = visible ? Number(visible.dataset.step) : 0;
+    var sens = n >= actuel ? 1 : -1;
+    var garde = 0;
+    while (estimSaute(n) && garde++ < 12) n += sens;
+    if (n < 1) n = 1;
+    if (n > E_TOTAL) n = E_TOTAL;
     $$(".step[data-step]", wizard).forEach(function (s) {
       s.hidden = Number(s.dataset.step) !== n;
     });

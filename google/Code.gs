@@ -455,7 +455,14 @@ var SCHEMA = {
        le contrat se signe. Une reference sans moyen de joindre
        celui qui l'a faite est une reference qu'on ne peut pas
        honorer, et c'est pire que pas de reference du tout. */
-    requis: ["votre_nom", "votre_email", "votre_telephone", "votre_lien",
+    /* LE TELEPHONE DU REFERENT A QUITTE CETTE LISTE.  D-771
+       Le site ne le demande plus : celui qui rend service ne doit
+       pas payer le champ le plus cher du formulaire. Le laisser
+       requis ICI produirait le pire des deux mondes — un champ
+       annonce optionnel a l'ecran, et un refus du service que le
+       visiteur ne peut ni comprendre ni corriger. Le courriel
+       reste exige : sans lui on ne peut ni le joindre ni le payer. */
+    requis: ["votre_nom", "votre_email", "votre_lien",
              "entreprise_referee", "contact_reference"],
     /* LE NOM DE L'ENTREPRISE SUFFIT À OUVRIR UNE LIGNE. C'est le
        minimum vital d'une référence : avec lui on peut chercher, et
