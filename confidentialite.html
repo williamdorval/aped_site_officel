@@ -81,17 +81,30 @@
       Un bandeau annoncerait un suivi qui n’existe pas.
     </p>
     <p>
-      Votre navigateur garde quand même deux choses, <strong>chez vous</strong>,
-      et elles ne nous sont jamais transmises&nbsp;:
+      Votre navigateur, lui, garde cinq choses <strong>chez vous</strong>.
+      Elles restent sur votre appareil&nbsp;: on ne peut ni les lire à
+      distance, ni les relier à quoi que ce soit d’autre.
     </p>
     <ul>
       <li>le thème que vous avez choisi, clair ou sombre&nbsp;;</li>
-      <li>le fait que la fenêtre des deux guides vous a déjà été présentée,
-        pour qu’elle ne revienne pas à chaque visite.</li>
+      <li>la date à laquelle vous avez obtenu les deux guides, pour qu’on ne
+        vous redemande pas ce que vous avez déjà donné&nbsp;;</li>
+      <li>le fait qu’un rappel vous a déjà été montré au moment de quitter un
+        formulaire, pour qu’il ne se représente jamais&nbsp;;</li>
+      <li><strong>vos réponses en cours dans un formulaire</strong>, tant que
+        vous ne l’avez pas terminé — c’est ce qui vous permet de reprendre
+        où vous étiez&nbsp;;</li>
+      <li><strong>un numéro tiré au hasard</strong> pour chaque formulaire
+        commencé. C’est lui qui fait que vos allers-retours forment une
+        seule demande chez nous, et pas cinq.</li>
     </ul>
     <p>
-      Ni l’une ni l’autre ne vous identifie. Vider les données du site dans
-      votre navigateur les efface.
+      Les trois premières ne disent rien de vous. Les deux dernières, oui&nbsp;:
+      vos réponses sont vos réponses, et le numéro tiré au hasard identifie
+      <em>votre demande</em>. Il ne dit ni qui vous êtes, ni où vous êtes, et
+      il ne sert à rien d’autre. <strong>Vider les données du site dans votre
+      navigateur les efface toutes</strong> — un formulaire commencé repart
+      alors de zéro.
     </p>
     <p>
       Une seule chose part vers notre serveur sans que vous ayez rien
@@ -267,8 +280,34 @@
 </main>
 
 <footer class="footer" style="padding-top: var(--s-8); margin-top: var(--s-8);">
+  <div class="wrap footer-grid">
+    <div class="footer-left">
+      <h2>Revenir au site.</h2>
+      <p class="footer-hors">Cette page-ci est en dehors du site principal. Tout le reste est à un clic.</p>
+      <a class="btn btn--primary btn--lg" href="index.html" style="margin-top: var(--s-6);">
+        Retour à l’accueil
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+      </a>
+      <p class="footer-tel">Ou appelez&nbsp;: <a class="appel-num num" href="tel:+18195230871">819&nbsp;523-0871</a></p>
+    </div>
+    <div class="footer-right">
+      <a class="footer-mail" href="index.html#contact">Nous écrire</a>
+      <nav class="footer-nav" aria-label="Pied de page">
+        <a href="index.html#services">Services</a>
+        <a href="index.html#realisations">Démonstrations</a>
+        <a href="index.html#demos">Secteurs</a>
+        <a href="index.html#calculateur">Calculateur</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
   <div class="wrap footer-legal">
     <span>© 2026 APED Agence. Tous droits réservés.</span>
+    <!-- QUI A FAIT CE SITE.  D-779  Une agence web dont le propre site
+         ne dit pas qui l'a fait laisse la question ouverte. « A la
+         main » est verifiable : le code source ne porte la signature
+         d'aucun gabarit ni d'aucun constructeur de pages. -->
+    <span>Conçu et codé à la main par APED&nbsp;Agence.</span>
     <span>Québec, Canada</span>
   </div>
 </footer>

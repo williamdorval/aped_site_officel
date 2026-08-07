@@ -6,18 +6,11 @@
     "tel": 5
   },
   "liensMorts": [],
-  "boutons": 129,
+  "boutons": 151,
   "boutonsMuets": [],
   "motsDeRemplissage": [],
   "images": 43,
   "imagesVides": [
-    {
-      "src": "images/realisations/ecran-restaurant.webp",
-      "chargee": false,
-      "visible": true,
-      "dimensionnee": true,
-      "differee": true
-    },
     {
       "src": "images/realisations/ecran-boutique.webp",
       "chargee": false,

@@ -36,8 +36,8 @@
       "ouvert": true,
       "role": "dialog",
       "hauteurPanneau": 925,
-      "hauteurContenu": 638,
-      "defileInterne": 174,
+      "hauteurContenu": 665,
+      "defileInterne": 201,
       "debordeFenetre": 0,
       "visuels": 2,
       "elementsAnimes": 0,
@@ -148,7 +148,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -156,7 +156,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -164,7 +164,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -172,7 +172,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -180,7 +180,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -188,7 +188,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -196,7 +196,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -204,7 +204,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -212,7 +212,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       },
       {
         "panneauFerme": true,
@@ -220,7 +220,7 @@
         "ecartAuHaut": 88,
         "tourPret": true,
         "lecteurLance": true,
-        "etat": "tour rise is-live"
+        "etat": "tour is-live"
       }
     ]
   },

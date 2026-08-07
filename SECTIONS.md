@@ -64,7 +64,7 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | 09 | **Référence** | `#reference` | 2571-2740 | 170 | 5650-5799 · 5800-6003 | — | — |
 | 10 | **Questions** | `#faq` | 2741-2825 | 85 | 6171-6220 | `langue.js` 613-641 | — |
 | 11 | **Contact** | `#contact` | 2826-3036 | 211 | 6221-6438 | `main.js` 1736-1769 · `main.js` 2114-2278 · `main.js` 2645-2746 | — |
-| — | **Pied de page** | `#footer` | 3037-3090 | 54 | 6439-6499 | `main.js` 5392-5412 | — |
+| — | **Pied de page** | `#footer` | 3037-3092 | 56 | 6439-6507 | `main.js` 5392-5412 | — |
 
 <!-- PLAGES:FIN -->
 

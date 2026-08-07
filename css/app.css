@@ -6452,6 +6452,14 @@ html:not(.js) .ba-trait { display: none; }
   transition: color var(--t-2) var(--e-snap), border-color var(--t-2) var(--e-snap);
 }
 .footer-mail:hover { color: var(--accent-text); border-color: var(--accent-text); }
+/* LE PIED DES PAGES HORS DU SITE.  D-779
+   `confidentialite.html` et `404.html` finissaient sur deux lignes
+   grises : on lisait 300 lignes de politique et il n'y avait plus
+   aucun chemin de retour au bas de la page. Elles portent maintenant
+   le meme pied que l'accueil, moins ce qui depend du JavaScript. */
+.footer-hors { margin-top: var(--s-4); max-width: 46ch; font-size: var(--fs-7); color: var(--ink-muted); }
+.footer-tel { margin-top: var(--s-6); font-size: var(--fs-7); color: var(--ink-muted); }
+
 .footer-nav { display: grid; margin-top: var(--s-6); }
 /* Ces liens mesuraient 21 px de haut. La cible tactile fait maintenant
    28 px de contenu plus le rembourrage, soit 40 px. */
@@ -6670,14 +6678,23 @@ html:not(.js) .ba-trait { display: none; }
    de la collecte. Elle se lit apres le bouton, pas avant : ce n'est
    pas une condition a franchir, c'est une precision a portee de
    main. Meme graisse que `form-status`, un ton plus bas. */
-.form-legal {
+/* `.form-note` A LA MEME APPARENCE ET UN AUTRE SENS.  D-779
+   `confidentialite-check` compte les `.form-legal` par formulaire
+   pour verifier qu'il y en a UNE et une seule. Deux aides du
+   questionnaire empruntaient la classe pour son look — « Rien n'est
+   coule dans le beton » — et le faisaient echouer sur un defaut qui
+   n'existait pas. Une classe qui sert a la fois de style et de
+   marqueur finit toujours par mentir a l'un des deux. */
+.form-legal,
+.form-note {
   margin-top: var(--s-3);
   max-width: 62ch;
   font-size: var(--fs-8);
   line-height: 1.5;
   color: var(--ink-muted);
 }
-.form-legal a {
+.form-legal a,
+.form-note a {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
