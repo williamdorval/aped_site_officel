@@ -1,6 +1,6 @@
 {
   "geo": {
-    "haut": 1050,
+    "haut": 1077,
     "course": 1980,
     "collant": 56,
     "actif": true,
@@ -419,25 +419,25 @@
     }
   ],
   "ecarts": [
-    4.59,
-    4.93,
-    3.82,
-    5.21,
-    4.87,
-    5.85,
-    5.6,
-    5.05,
+    4.57,
+    4.95,
+    3.85,
+    5.22,
+    4.85,
+    5.7,
+    5.75,
+    5.06,
     6.09,
-    4.1,
-    5.89,
-    4.22
+    4.15,
+    5.95,
+    4.26
   ],
   "molette": {
-    "images": 73,
+    "images": 75,
     "imagesFigees": 4,
-    "partFigee": 5.5,
-    "pasMoyenPx": 25.25,
-    "plusGrandBondPx": 53
+    "partFigee": 5.3,
+    "pasMoyenPx": 24.92,
+    "plusGrandBondPx": 54
   },
   "erreurs": [],
   "verdict": {

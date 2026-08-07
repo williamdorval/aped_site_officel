@@ -4208,6 +4208,17 @@
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
       </button>
     </div>
+    <!-- APRES LA FOURCHETTE, ON NE REDEMANDE PAS UNE ADRESSE.  D-780
+         Quelqu'un qui a vu son chiffre a deja donne son courriel et
+         son telephone : le champ serait insultant. Ce qui manque a
+         ce moment-la n'est pas une coordonnee, c'est un rendez-vous. -->
+    <div class="retenue-champ retenue-champ--seul" id="retenueRdv" hidden>
+      <button class="btn btn--primary" type="button" id="retenueRdvBtn" data-modal-switch="modal-booking">
+        <span data-label>Choisir un moment</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+      </button>
+    </div>
+
     <p class="form-status" id="retenueStatut" role="status" aria-live="polite"></p>
 
     <button class="link-btn" type="button" id="retenueSuite">Je continue maintenant</button>

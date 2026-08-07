@@ -6556,6 +6556,14 @@ html:not(.js) .ba-trait { display: none; }
 @media (min-width: 26rem) {
   .retenue-champ { grid-template-columns: 1fr auto; align-items: stretch; }
 }
+/* SANS CHAMP, LE BOUTON NE S'ETIRE PAS SUR TOUTE LA LARGEUR.  D-780
+   La variante d'apres-fourchette n'a qu'un bouton : la grille a deux
+   colonnes le laisserait seul dans la premiere, etire sur 70 % du
+   panneau, ce qui le fait lire comme une bande et non comme un
+   bouton. */
+@media (min-width: 26rem) {
+  .retenue-champ--seul { grid-template-columns: auto; justify-content: start; }
+}
 /* Cible tactile : le champ ET le bouton tiennent les 44 px. */
 .retenue-champ input { min-height: 2.75rem; }
 .retenue-champ .btn { min-height: 2.75rem; }

@@ -138,6 +138,7 @@
 | **D-777 · Ce que l'estimateur laissait passer** | 95 | 1 521 |
 | **D-778 · Les trois associés s'appellent William, Allen et Eli** | 61 | 898 |
 | **D-779 · Une prime par entreprise référée, et elle se lit avant de référer** | 80 | 1 217 |
+| **D-780 · La retenue après la fourchette, et sur les deux formulaires d'un seul écran** | 98 | 1 448 |
 
 <!-- INDEX:FIN -->
 
@@ -2551,3 +2552,101 @@ Prouvé au rouge en renommant `ESTIM_ECHELLE`.
 > test, jamais comme un test qui passe. Une suite qui contient un
 > `exit 2` permanent ment exactement autant qu'un test vert sur du
 > vide — et se voit encore moins.
+
+## D-780 · La retenue après la fourchette, et sur les deux formulaires d'un seul écran
+
+La retenue (D-753, D-768) couvrait quatre formulaires : `project`,
+`estimate`, `refer`, `booking`. Elle s'arme dans `enregistrerDiscret`,
+donc **uniquement là où il y a des étapes**. Deux trous en découlaient,
+et le second est le plus cher du site.
+
+**PREMIER TROU — LES FORMULAIRES D'UN SEUL ÉCRAN.** `contact` et
+`urgent` n'ont pas de sauvegarde progressive : `enregistrerDiscret`
+n'y tourne jamais, donc `retenuePossible` non plus. Quelqu'un qui
+tapait la moitié d'un message de panne et fermait la fenêtre partait
+sans qu'on lui dise rien.
+
+Ils s'arment maintenant **à la première frappe**, jamais à
+l'ouverture — ouvrir puis refermer sans rien écrire n'est pas un
+abandon, et montrer un rappel à quelqu'un qui n'a rien à perdre est
+absurde. C'est le même principe que `retenuePossible`, appliqué au
+seul signal disponible quand il n'y a pas d'étape à franchir.
+
+**LEURS TEXTES NE PROMETTENT AUCUNE SAUVEGARDE**, et c'est une
+contrainte, pas une pudeur. Les quatre autres disent « c'est
+enregistré » parce que ça l'est. Ici rien n'est parti : l'écrire
+serait faux, et le visiteur le découvrirait en revenant sur un
+formulaire vide. Ils disent l'inverse — « on ne garde que ce que vous
+envoyez » — et l'inverse rassure, sur un site dont la politique de
+confidentialité dit exactement la même chose.
+
+**SECOND TROU — APRÈS LA FOURCHETTE, ET C'EST LE MOMENT LE PLUS CHAUD
+DU SITE.** `retenueFinie()` était appelée **juste avant**
+`montrerFourchette`. Quelqu'un qui lisait son ordre de grandeur,
+hésitait, et fermait la modale sans répondre « Oui » ni « Non »
+repartait sans qu'on lui ait rien proposé — alors qu'il venait de
+remplir six écrans ET de donner son courriel et son téléphone. C'est
+le visiteur le mieux qualifié que le site produise, et c'est le seul à
+qui on ne disait rien.
+
+`retenueApres(kind)` remplace `retenueFinie()` aux deux endroits où
+une fourchette paraît : `project` et `estimate`.
+
+**ON NE REDEMANDE PAS UNE ADRESSE.** Le champ de courriel serait
+insultant : il vient d'en donner une pour obtenir ce chiffre. Ce qui
+manque n'est pas une coordonnée, c'est un rendez-vous. Le bloc
+`#retenueRdv` remplace `#retenueChamp`, et son bouton mène à la
+réservation — la même proposition que « Oui, on en parle » sur l'écran
+du résultat. **La retenue ne dit rien de neuf : elle repose la même
+question à celui qui partait sans y répondre.**
+
+**LE DÉCLENCHEUR EST LA FERMETURE DE LA MODALE, PAS LA SOURIS.**
+`closeModal` arme déjà `ouvrirRetenue` (D-753) ; la souris qui sort
+par le haut est bloquée par `if (activeModal) return`, et devait
+l'être — la retenue se pose en bas à droite, là où vit le bouton
+« Continuer ». Sur l'écran du résultat il n'y a pas de « Continuer »,
+mais s'en remettre à la fermeture évite tout recouvrement et marche
+aussi sur téléphone, où il n'existe aucun geste de sortie.
+
+**DEUX MARQUES, PAS UNE.** « Une seule fois » vise le harcèlement :
+redire la même chose à la même personne. Ce sont deux conversations
+différentes, et celle d'après ne peut pas se produire sans que la
+demande soit partie. Une marque commune faisait qu'un visiteur ayant
+vu la retenue à l'étape 2 ne voyait **jamais** celle d'après-fourchette
+— la seule des deux qui vaut de l'argent. `aped-retenue-vue` et
+`aped-retenue-apres-vue`. **Plafond à vie : deux.**
+
+**QUI PREND LE RENDEZ-VOUS N'A PLUS RIEN À RETENIR.** Tout
+`[data-modal-switch]` désarme et ferme la retenue, des deux côtés : le
+« Oui, on en parle » de l'écran du résultat, et le bouton de la retenue
+elle-même. Sans ça elle se reposait à la fermeture du calendrier, sur
+quelqu'un qui venait d'accepter. Même raison qu'en D-753 : un visiteur
+qui suit une porte qu'on lui a montrée n'abandonne rien.
+
+**PROUVÉ AU ROUGE, ET DEUX FOIS CONTRE MOI-MÊME.** Les quatorze
+contrôles neufs de `retenue-check` sont partis à **4 échecs sur 51**,
+et **deux venaient du banc, pas du site** :
+
+- `fermerTout()` cache le balisage sans toucher à `activeModal` : la
+  souris qui sort par le haut était donc bloquée par un `activeModal`
+  fantôme, et `retenueEtat` héritait de la frappe du cas précédent.
+  Chaque cas recharge maintenant la page. **Une mesure qui part d'un
+  état sale mesure l'état sale.**
+- la sonde des deux marques lisait
+  `document.querySelectorAll("script")` — `main.js` est **externe**,
+  son contenu n'y est jamais. Elle lisait du vide et rendait `ECHEC`
+  sur un code juste. Elle relit le fichier par `fetch`, et **s'arrête**
+  s'il fait moins de 10 000 octets.
+
+Une troisième assertion rendait `OK` sur du **DOM périmé** : le
+panneau garde le texte de la fois d'avant quand il ne s'ouvre pas, et
+« elle a un texte à elle » passait au vert sur une retenue qui n'avait
+jamais paru. Les trois assertions de texte ne se jugent plus que si
+`ouvert` est vrai. **53 / 53.**
+
+**CE QUI N'EST PAS COUVERT.** Le popup des guides (`cadeauForm`) n'a
+pas de retenue, et n'en aura pas : c'est lui-même un popup, et un
+popup par-dessus un popup est exactement ce que « jamais insistant »
+interdit. Et le banc ne peut pas atteindre l'écran du résultat — il
+faudrait un envoi vers le vrai service. Il vérifie la mécanique ; le
+rendu est prouvé en capture.

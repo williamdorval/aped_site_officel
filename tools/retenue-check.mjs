@@ -529,7 +529,163 @@ titre("5 · L'ENVOI FINAL COMPLÈTE LA MÊME LIGNE");
   }
 }
 
-titre("6 · CE QUE ÇA DONNE À L'ÉCRAN");
+/* ============================================================
+   6 · LES DEUX FORMULAIRES D'UN SEUL ECRAN  (D-780)
+
+   `contact` et `urgent` n'ont pas de sauvegarde progressive : la
+   retenue ne s'y armait donc jamais, parce qu'elle s'arme dans
+   `enregistrerDiscret`. Quelqu'un qui tapait la moitie d'un message
+   de panne et fermait la fenetre partait sans qu'on lui dise rien.
+
+   ET ELLE NE DOIT PAS S'ARMER A L'OUVERTURE. Ouvrir puis refermer
+   sans rien ecrire n'est pas un abandon.
+
+   CHAQUE CAS RECHARGE LA PAGE, ET C'EST OBLIGATOIRE. `retenueEtat`
+   est une variable interne : rien du dehors ne la remet a zero, et
+   `fermerTout()` ne cache que du balisage — il ne touche ni a
+   `activeModal` ni a l'etat de la retenue. Sans rechargement, le
+   cas « rien tape » d'`urgent` heritait de la frappe de `contact`
+   et rendait un ECHEC sur un comportement juste. Une mesure qui
+   part d'un etat sale mesure l'etat sale.
+   ============================================================ */
+titre("6 · LES DEUX FORMULAIRES D'UN SEUL ECRAN  (D-780)");
+{
+  const rechargerPropre = async () => {
+    await page.goto(BASE, { waitUntil: "load" });
+    await page.evaluate(() => {
+      try {
+        localStorage.removeItem("aped-retenue-vue");
+        localStorage.removeItem("aped-retenue-apres-vue");
+      } catch (e) {}
+    });
+    /* 3 s : `data-palier` et les scripts de la deuxieme vague
+       arrivent apres, et la retenue vit dans la deuxieme. */
+    await page.waitForTimeout(3200);
+  };
+
+  /* LA SOURIS QUI SORT PAR LE HAUT, pour le formulaire de contact :
+     il vit dans la page, pas dans une modale, donc « fermer » n'est
+     pas le geste qui le quitte. */
+  const sortirParLeHaut = async () => {
+    await page.evaluate(() => {
+      document.dispatchEvent(new MouseEvent("mouseout",
+        { bubbles: true, clientY: 0, relatedTarget: null }));
+    });
+    await page.waitForTimeout(700);
+  };
+
+  const ouvrirModale = async (id) => {
+    await page.evaluate((i) => {
+      const b = document.querySelector('[data-modal-open="' + i + '"]');
+      if (b) b.click();
+    }, id);
+    await page.waitForTimeout(600);
+  };
+
+  for (const [kind, modale, champ] of [
+    ["contact", null, 'form[data-form="contact"] textarea'],
+    ["urgent", "modal-urgent", 'form[data-form="urgent"] textarea']
+  ]) {
+    /* --- rien tape : elle doit se TAIRE --- */
+    await rechargerPropre();
+    if (modale) { await ouvrirModale(modale); await provoquer(); }
+    else await sortirParLeHaut();
+    dire(kind + " · rien tapé, elle se tait", (await lu()).ouvert, false,
+      "ouvrir puis refermer sans rien ecrire n'est pas un abandon");
+
+    /* --- une frappe : elle doit PARLER --- */
+    await rechargerPropre();
+    if (modale) await ouvrirModale(modale);
+    const tape = await page.evaluate((sel) => {
+      const el = [...document.querySelectorAll(sel)].find((x) => x.offsetParent !== null);
+      if (!el) return false;
+      el.value = "ZZ essai";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      return true;
+    }, champ);
+    /* UN OUTIL QUI NE TROUVE PAS SON CHAMP DOIT S'ARRETER, jamais
+       conclure « elle ne s'ouvre pas » : ce serait rendre un defaut
+       sur une mesure qui n'a pas eu lieu. */
+    if (!tape) { console.error("ARRET · aucun champ visible pour " + kind); process.exit(2); }
+    await page.waitForTimeout(200);
+    if (modale) await provoquer(); else await sortirParLeHaut();
+
+    const v = await lu();
+    dire(kind + " · une frappe, elle s'ouvre", v.ouvert, true);
+    /* LES TROIS SUIVANTES NE SE JUGENT QUE SI ELLE EST OUVERTE.
+       Le panneau garde le texte de la fois d'avant quand il ne
+       s'ouvre pas : une premiere version lisait ce texte-la et
+       rendait « elle a un texte a elle · OK » sur une retenue qui
+       n'avait jamais paru. Un verdict sur du DOM perime. */
+    if (v.ouvert) {
+      dire(kind + " · elle a un texte à elle",
+        v.titre !== RETENUE_GENERIQUE, true, "titre lu : " + JSON.stringify(v.titre));
+      /* ELLE NE PROMET PAS CE QUI N'EXISTE PAS. Ces deux formulaires
+         n'enregistrent RIEN en chemin : ecrire « c'est enregistre »
+         serait faux, et le visiteur le decouvrirait en revenant sur
+         un formulaire vide. */
+      dire(kind + " · elle ne promet aucune sauvegarde",
+        /enregistré|gardé pour|on a votre/.test(String(v.texte || "").toLowerCase()),
+        false, JSON.stringify(v.texte));
+      vus[kind] = [v];
+    }
+  }
+}
+
+/* ============================================================
+   7 · APRES LA FOURCHETTE  (D-780)
+
+   Le moment le plus chaud du site : le visiteur a vu son ordre de
+   grandeur, il hesite, il ferme. Jusqu'au 2026-08-07,
+   `retenueFinie()` desarmait la retenue juste avant d'afficher le
+   chiffre — il repartait sans qu'on lui ait rien propose.
+
+   CE QUE CE BANC PEUT PROUVER, ET CE QU'IL NE PEUT PAS. L'ecran du
+   resultat n'est atteignable qu'apres un ENVOI, et un envoi part
+   vers le vrai service Google : le banc ne le fera pas. Il verifie
+   donc la MECANIQUE — le bloc de rendez-vous, sa destination, les
+   deux marques distinctes, et le fait que les deux sites qui
+   affichent une fourchette appellent bien `retenueApres` et non
+   `retenueFinie`. Le rendu se prouve en capture, a la main.
+   ============================================================ */
+titre("7 · APRÈS LA FOURCHETTE  (D-780)");
+{
+  const bal = await page.evaluate(() => ({
+    bloc: !!document.getElementById("retenueRdv"),
+    versRdv: document.getElementById("retenueRdvBtn")
+      ? document.getElementById("retenueRdvBtn").getAttribute("data-modal-switch") : null,
+    cache: document.getElementById("retenueRdv")
+      ? document.getElementById("retenueRdv").hidden : null
+  }));
+  dire("le bloc de rendez-vous existe", bal.bloc, true);
+  dire("son bouton mène à la réservation", bal.versRdv, "modal-booking");
+  dire("il est caché au repos", bal.cache, true);
+
+  /* LE SOURCE SE LIT PAR LE RESEAU, PAS DANS LE DOM. `main.js` est
+     injecte comme fichier externe : `document.querySelectorAll(
+     "script")` n'en rend JAMAIS le contenu. Premiere version : elle
+     lisait du vide et rendait ECHEC sur un code parfaitement juste
+     — un faux verdict sur une sonde qui regardait au mauvais
+     endroit. */
+  const src = await page.evaluate(async () => {
+    try { return await (await fetch("js/main.js")).text(); } catch (e) { return ""; }
+  });
+  if (src.length < 10000) {
+    console.error("ARRET · js/main.js n'a pas ete relu (" + src.length + " octets)");
+    process.exit(2);
+  }
+  dire("la marque d'après-fourchette est distincte de l'autre",
+    /aped-retenue-apres-vue/.test(src) && /aped-retenue-vue/.test(src), true,
+    "une seule marque ferait qu'une retenue vue a l'etape 2 tuerait celle d'apres");
+  dire("les deux fourchettes arment l'après, pas la fin",
+    (src.match(/retenueApres\("(project|estimate)"\)/g) || []).length, 2,
+    "project et estimate affichent tous deux une fourchette");
+  dire("le rendez-vous pris désarme la retenue",
+    /data-modal-switch[\s\S]{0,400}?retenueFinie\(\)/.test(src), true,
+    "sans ca, elle se reposerait sur quelqu'un qui vient d'accepter");
+}
+
+titre("8 · CE QUE ÇA DONNE À L'ÉCRAN");
 {
   await page.evaluate(() => {
     document.querySelectorAll(".modal").forEach((m) => { m.hidden = true; });

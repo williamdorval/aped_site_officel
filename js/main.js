@@ -1715,7 +1715,17 @@
     var open = e.target.closest("[data-modal-open]");
     if (open) { openModal(open.getAttribute("data-modal-open")); return; }
     var swap = e.target.closest("[data-modal-switch]");
-    if (swap) { switchModal(swap.getAttribute("data-modal-switch")); return; }
+    if (swap) {
+      /* CELUI QUI PREND LE RENDEZ-VOUS N'A PLUS RIEN A RETENIR.  D-780
+         Vrai des deux cotes : le bouton « Oui, on en parle » de
+         l'ecran du resultat, et celui de la retenue elle-meme. Sans
+         ca, elle se reposerait a la fermeture du calendrier sur
+         quelqu'un qui vient d'accepter. */
+      if (typeof retenueFinie === "function") retenueFinie();
+      if (typeof fermerRetenue === "function") fermerRetenue();
+      switchModal(swap.getAttribute("data-modal-switch"));
+      return;
+    }
     var close = e.target.closest("[data-modal-close]");
     if (close) { closeModal(); }
   });
@@ -2772,11 +2782,24 @@
   var retenue = $("#retenue");
   var retenueEtat = null;   /* { kind, quoi, perte } quand un formulaire est en cours */
 
+  /* DEUX MARQUES, PAS UNE.  D-780
+
+     « Une seule fois » vise le harcèlement : redire la même chose à
+     la même personne. Ce sont deux conversations différentes — l’une
+     avant le chiffre, l’autre après —, et celle d’après ne peut pas
+     se produire sans que la demande soit déjà partie. Une seule
+     marque commune faisait qu’un visiteur ayant vu la retenue à
+     l’étape 2 ne voyait jamais celle d’après-fourchette, qui est la
+     seule des deux à valoir de l’argent. Plafond à VIE : deux. */
+  var CLE_RETENUE_APRES = "aped-retenue-apres-vue";
+  function marqueRetenue() {
+    return (retenueEtat && retenueEtat.apres) ? CLE_RETENUE_APRES : CLE_RETENUE;
+  }
   function retenueDejaVue() {
-    try { return localStorage.getItem(CLE_RETENUE) === "1"; } catch (e) { return false; }
+    try { return localStorage.getItem(marqueRetenue()) === "1"; } catch (e) { return false; }
   }
   function marquerRetenueVue() {
-    try { localStorage.setItem(CLE_RETENUE, "1"); } catch (e) {}
+    try { localStorage.setItem(marqueRetenue(), "1"); } catch (e) {}
   }
 
   /* Ce que le visiteur est en train de perdre, en toutes lettres.
@@ -2860,10 +2883,61 @@
                 titre: "Il reste vos coordonnées",
                 texte: "Votre plage est notée, pas encore confirmée — vos coordonnées font partir la confirmation. Si vous devez filer, laissez une adresse : le lien vous ramène ici.",
                 bouton: "Gardez-moi ça" }
+    },
+
+    /* LES DEUX FORMULAIRES D'UN SEUL ÉCRAN.  D-780
+
+       Ils n'ont PAS de sauvegarde progressive, et ces textes-ci ne
+       promettent donc rien de tel : dire « c'est enregistré » à
+       quelqu'un dont rien n'est parti serait faux, et il s'en
+       apercevrait en revenant sur un formulaire vide. Ils disent
+       l'inverse, et l'inverse rassure : on ne garde QUE ce qui est
+       envoyé. Un seul jeu de textes — sans étapes, il n'y a pas de
+       « milieu » ni de « fin ». */
+    contact: {
+      tot:    { quoi: "Vous partiez avec un message commencé.",
+                titre: "On garde votre adresse ?",
+                texte: "Rien n’est encore parti — on ne garde que ce que vous envoyez. Laissez une adresse et c’est nous qui reprenons le fil, ou finissez : il ne reste que le bouton.",
+                bouton: "Gardez mon adresse" }
+    },
+    urgent: {
+      tot:    { quoi: "Vous partiez au milieu d’une panne.",
+                titre: "On peut vous rappeler",
+                texte: "Rien n’est encore parti — on ne garde que ce que vous envoyez. Si c’est pressant, le téléphone va plus vite : 819 523-0871. Sinon laissez une adresse, on répond en moins de 12 h ouvrables.",
+                bouton: "Gardez mon adresse" }
     }
   };
 
-  /* Le repli, quand un formulaire n'a pas de texte à lui. Il ne
+  /* CE QU’ON DIT À QUELQU’UN QUI A VU SON CHIFFRE.  D-780
+
+     C’EST LE MOMENT LE PLUS CHAUD DU SITE, et jusqu’ici il ne
+     portait rien : `retenueFinie()` désarmait la retenue juste
+     avant d’afficher la fourchette. Quelqu’un qui lisait son ordre
+     de grandeur, hésitait, et fermait la modale sans répondre
+     « Oui » ni « Non » repartait sans qu’on lui ait rien proposé.
+
+     ON NE REDEMANDE PAS UNE ADRESSE : il vient de donner son
+     courriel ET son téléphone pour obtenir ce chiffre. Ce qui
+     manque n’est pas une coordonnée, c’est un rendez-vous — et
+     c’est ce que l’écran du résultat propose déjà sous « Oui, on en
+     parle ». La retenue ne dit rien de neuf : elle repose la même
+     question à celui qui partait sans y répondre. */
+  var RETENUE_APRES = {
+    estimate: {
+      quoi: "Vous partiez avec votre fourchette.",
+      titre: "Le prix ferme se dit de vive voix",
+      texte: "Votre demande est enregistrée, rien à refaire. Ce qu’un appel de trente minutes ajoute : le prix ferme — celui de la facture — et par quoi commencer. Vous repartez avec la réponse même si on ne travaille pas ensemble.",
+      bouton: "Choisir un moment"
+    },
+    project: {
+      quoi: "Vous partiez avec votre fourchette.",
+      titre: "On en parle trente minutes ?",
+      texte: "Votre demande est enregistrée, on l’a reçue. Le prix ferme se dit au premier appel, et c’est celui de la facture. Vous repartez avec la réponse même si on ne travaille pas ensemble.",
+      bouton: "Choisir un moment"
+    }
+  };
+
+  /* Le repli, quand un formulaire n’a pas de texte à lui. Il ne
      PARLE de rien de précis, parce qu'il ne sait rien de précis. */
   var RETENUE_REPLI = {
     quoi: "Vous alliez partir avec votre demande.",
@@ -2902,22 +2976,40 @@
     if (retenue.hidden === false) return;
     marquerRetenueVue();
 
-    var jeu = RETENUE_TEXTES[retenueEtat.kind];
-    var t = (jeu && jeu[zoneRetenue(retenueEtat.etape, retenueEtat.total)]) || RETENUE_REPLI;
+    var t;
+    if (retenueEtat.apres) {
+      t = RETENUE_APRES[retenueEtat.kind];
+      /* SANS TEXTE D'APRES, ON NE DIT RIEN. Le repli parle de
+         « finir quand ça vous adonne » — faux pour une demande deja
+         partie. Mieux vaut aucune retenue qu'une retenue qui ment. */
+      if (!t) { return; }
+    } else {
+      var jeu = RETENUE_TEXTES[retenueEtat.kind];
+      t = (jeu && jeu[zoneRetenue(retenueEtat.etape, retenueEtat.total)]) || RETENUE_REPLI;
+    }
+
+    /* LE CHAMP OU LE RENDEZ-VOUS, JAMAIS LES DEUX. */
+    var champBloc = $("#retenueChamp");
+    var rdvBloc = $("#retenueRdv");
+    if (champBloc) champBloc.hidden = !!retenueEtat.apres;
+    if (rdvBloc) rdvBloc.hidden = !retenueEtat.apres;
 
     $("#retenueQuoi").textContent = t.quoi;
     $("#retenueTitre").textContent = t.titre;
     $("#retenueTexte").textContent = t.texte;
-    var libelle = $("#retenueEnvoi [data-label]");
+    var cible = retenueEtat.apres ? "#retenueRdvBtn" : "#retenueEnvoi";
+    var libelle = $(cible + " [data-label]");
     if (libelle) libelle.textContent = t.bouton;
     /* LE BOUTON REPART DE SON LIBELLÉ, sinon `setLoading` le
        remettrait à celui du formulaire précédent au prochain envoi. */
-    var envoi = $("#retenueEnvoi");
+    var envoi = $(cible);
     if (envoi) envoi.dataset.idle = t.bouton;
+    var statut = $("#retenueStatut");
+    if (statut) statut.textContent = "";
 
     retenue.hidden = false;
-    var champ = $("#retenueEmail");
-    if (champ && isDesktop.matches) champ.focus({ preventScroll: true });
+    var premier = retenueEtat.apres ? $("#retenueRdvBtn") : $("#retenueEmail");
+    if (premier && isDesktop.matches) premier.focus({ preventScroll: true });
   }
 
   function fermerRetenue() {
@@ -3001,6 +3093,14 @@
   }
   function retenueFinie() {
     retenueEtat = null;
+  }
+
+  /* LA DEMANDE EST PARTIE, LA CONVERSATION NE L'EST PAS.  D-780
+     Remplace `retenueFinie()` la ou une FOURCHETTE vient de
+     paraitre. Le seul depart qui compte alors est la fermeture de
+     la modale, et `closeModal` la declenche deja. */
+  function retenueApres(kind) {
+    retenueEtat = RETENUE_APRES[kind] ? { kind: kind, apres: true } : null;
   }
 
   /* ============================================================
@@ -3137,6 +3237,22 @@
     var btn = $("[data-submit]", form);
     var status = $(".form-status", form);
 
+    /* UN ÉCRAN UNIQUE PEUT S'ABANDONNER AUSSI.  D-780
+
+       La retenue ne couvrait que les quatre formulaires à étapes,
+       parce qu'elle s'arme dans `enregistrerDiscret` — qui ne
+       tourne que là. Quelqu'un qui tape la moitié d'un message de
+       panne et ferme la fenêtre partait sans qu'on lui dise rien.
+
+       ELLE S'ARME À LA PREMIÈRE FRAPPE, PAS À L'OUVERTURE : ouvrir
+       une modale et la refermer sans rien écrire n'est pas un
+       abandon, et lui montrer un rappel serait absurde — c'est le
+       même principe que `retenuePossible`. `once` : une seule
+       écoute, elle se retire d'elle-même. */
+    form.addEventListener("input", function () {
+      retenuePossible(kind, 1, 0);
+    }, { once: true });
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!validate(form)) { say(status, "Vérifiez les champs signalés puis renvoyez.", "err"); return; }
@@ -3146,6 +3262,9 @@
       var contenu = serialize(form);
       sendJson(kind, contenu).then(function () {
         setLoading(btn, false);
+        /* ENVOYÉ, DONC PLUS RIEN À RETENIR — et `closeModal` deux
+           secondes plus tard ouvrirait la retenue sans ça.  D-780 */
+        retenueFinie();
         say(status, "Reçu. On vous répond très vite.", "ok");
         form.reset();
         window.setTimeout(function () { closeModal(); say(status, ""); }, 2200);
@@ -4025,7 +4144,7 @@
       var done = function (rep) {
         setLoading(projectNext, false);
         oublierSession("project");
-        retenueFinie();
+        retenueApres("project");   /* la fourchette parait juste apres  D-780 */
         oublierBrouillon("project");
         montrerFourchette("project", rep && rep.fourchette, data, sid, surProjet);
         goPStep(P_TOTAL);
@@ -4507,7 +4626,7 @@
         sendJson("estimate", charge).then(function (rep) {
           setLoading(btn, false);
           oublierSession("estimate");
-          retenueFinie();
+          retenueApres("estimate");   /* la fourchette parait juste apres  D-780 */
           oublierBrouillon("estimate");
           goEStep(E_RESULTAT);
           var res = $("#estimateResume");
