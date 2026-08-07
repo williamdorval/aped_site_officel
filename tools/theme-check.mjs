@@ -100,6 +100,25 @@ for (const vp of LARGEURS) {
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(600);
 
+    /* ET ON OUVRE LES TIROIRS.  D-773
+       Meme raison que la traversee ci-dessus, poussee d'un cran : un
+       panneau replie est en `display: none`, donc son texte est
+       filtre avant meme d'atteindre le seuil. Les conditions du
+       programme de reference — mille mots, encre pale sur la plaque
+       sombre, et le seul texte du site qu'il FAUT avoir lu — n'ont
+       jamais ete mesurees tant qu'elles sont nees fermees.
+       On les ouvre, on mesure, et on dit combien de texte ca ajoute. */
+    const ajoutes = await page.evaluate(() => {
+      let n = 0;
+      document.querySelectorAll("[data-tiroir]").forEach((b) => {
+        const c = document.getElementById(b.getAttribute("data-tiroir"));
+        if (c && c.hidden) { c.hidden = false; n++; }
+      });
+      return n;
+    });
+    rapport.tiroirs = (rapport.tiroirs || 0) + ajoutes;
+    await page.waitForTimeout(300);
+
     const applique = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
     rapport.themes[`${vp.nom}/${theme}`] = applique;
 

@@ -2583,7 +2583,14 @@
         <div class="referral-head">
           <p class="label">Programme de référence</p>
           <h2 style="margin-top: var(--s-4);">Vous présentez. On encaisse ensemble.</h2>
-          <p style="margin-top: var(--s-4);">Un nom et un numéro suffisent. Vous n’avez aucune vente à faire, aucun suivi à donner, et rien à avancer.</p>
+          <!-- « AUCUN SUIVI A DONNER » CONTREDISAIT L'ARTICLE 11.
+               D-773
+               Les conditions demandent de prevenir son contact qu'on
+               va l'appeler — c'est une minute, mais ce n'est pas
+               RIEN, et l'ecrire ici evite la surprise. Une accroche
+               que le contrat dement est une accroche qui se retourne
+               contre nous au premier appel. -->
+          <p style="margin-top: var(--s-4);">Un nom et un numéro suffisent. Vous n’avez aucune vente à faire et rien à avancer&nbsp;: prévenez votre contact qu’on va l’appeler, on s’occupe du reste.</p>
         </div>
 
         <!-- Le plafond est un bloc a lui, dans la colonne de droite :  D-070 -->
@@ -3896,6 +3903,7 @@
 
       <div class="step" data-rstep="2" hidden>
         <p class="step-q">Que fait-elle, et que cherche-t-elle&nbsp;?</p>
+        <p class="field-aide">Tout est optionnel ici. Si vous ne savez pas, continuez.</p>
         <div class="field">
           <label for="rfIndustry">Dans quel domaine&nbsp;? <span class="opt">(optionnel)</span></label>
           <input id="rfIndustry" name="domaine" type="text" autocomplete="off"
@@ -3993,6 +4001,7 @@
            c'est aussi ce que la consigne demandait. -->
       <div class="step" data-rstep="5" hidden>
         <p class="step-q">Où on vous envoie votre prime&nbsp;?</p>
+        <p class="field-aide">Tout est optionnel ici. On se reparle avant de verser, de toute façon.</p>
         <div class="form-row">
           <div class="field">
             <label for="rfOwnCompany">Votre entreprise <span class="opt">(si vous en avez une)</span></label>
@@ -4018,9 +4027,10 @@
       </div>
 
       <div class="step" data-rstep="6" hidden>
-        <p class="step-q">Ce qu’on doit savoir avant d’appeler</p>
+        <p class="step-q">Y a-t-il quelque chose qu’on devrait savoir&nbsp;?</p>
+        <p class="field-aide">Tout est optionnel ici. Si vous n’avez rien à ajouter, continuez.</p>
         <div class="field">
-          <label for="rfPresentation">Ce qu’on dit en appelant <span class="opt">(optionnel)</span></label>
+          <label for="rfPresentation">Comment on se présente <span class="opt">(optionnel)</span></label>
           <textarea id="rfPresentation" name="presentation" rows="2" placeholder="« C’est Marc qui nous a parlé de vous » · ne dites pas que ça vient de moi · appelez plutôt le matin…"></textarea>
         </div>
         <div class="field">

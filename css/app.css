@@ -1335,8 +1335,19 @@ input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
   z-index: 2;
   margin-top: var(--s-6);
   padding-bottom: var(--s-4);
-  background: var(--surface-0);
+  /* LE FOND EST CELUI DU PANNEAU, PAS `--surface-0`. La premiere
+     version posait la surface de la PAGE : sur la modale, en
+     `--surface-2`, la barre ressortait comme une bande grise
+     rapportee — un bandeau d'une autre interface. */
+  background: var(--surface-2);
 }
+/* « RETOUR » SE CASSAIT EN « RETO / UR ».  D-773
+   D-119 pose `white-space: normal` sous 26em pour qu'un libelle de
+   six mots se replie plutot que de deborder. Sur un mot de six
+   lettres dans une boite etroite, la meme regle coupe AU MILIEU du
+   mot. Les deux boutons d'une barre de navigation ne portent jamais
+   plus de trois mots : ils ne se replient pas. */
+#modal-refer .step-nav .btn { white-space: nowrap; }
 
 .success { display: grid; gap: var(--s-4); justify-items: start; }
 .success .num { font-size: var(--fs-2); color: var(--accent-text); }
@@ -5707,6 +5718,25 @@ html:not(.js) .ba-trait { display: none; }
   align-items: center;
   gap: var(--s-4);
 }
+/* LE BOUTON DU PANNEAU ETAIT INVISIBLE, ET LA PREMIERE CAPTURE L'A
+   DIT TOUT DE SUITE.  D-773
+
+   `.btn--ghost` n'a pas de couleurs a lui : il herite de `.btn`, qui
+   prend `--ink` et `--rule-strong`, c'est-a-dire l'encre du THEME.
+   La plaque `.referral`, elle, est en `--surface-inverse` dans les
+   deux themes — encre foncee sur fond fonce. Le bouton etait bien
+   la, a la bonne place, avec sa bordure et son libelle : illisible.
+
+   C'est la regle B de `CLAUDE.md` dans sa forme la plus simple —
+   visible, sinon ca ne compte pas — et aucun test de structure ne
+   pouvait la voir. Il a fallu ouvrir l'image. */
+.referral .btn--ghost {
+  color: var(--ref-encre);
+  border-color: var(--ref-filet);
+}
+.referral .btn--ghost .icon { color: var(--ref-encre); }
+.referral .btn--ghost:hover,
+.referral .btn--ghost:focus-visible { border-color: var(--ref-encre); }
 /* LE PLUS ET LE MOINS NE SE CHOISISSENT PAS EN JAVASCRIPT. L'etat du
    panneau vit dans `aria-expanded`, qui est deja la seule source de
    verite pour le lecteur d'ecran : le signe la suit. Une classe de
@@ -5843,17 +5873,33 @@ html:not(.js) .ba-trait { display: none; }
 
 /* LA CASE PREND TOUTE LA LARGEUR, et son etiquette entiere est la
    cible : sur un telephone, une case de 16 px seule est en dessous
-   des 44 px exiges, l'etiquette lui en donne le double. */
-.check--bloc {
+   des 44 px exiges, l'etiquette lui en donne le double.
+
+   ET ELLE SE LIT COMME UNE PHRASE, PAS COMME UN LIBELLE DE CHAMP.
+   D-773
+   `.field > label` met tous les libelles du site en capitales de
+   donnees — c'est juste pour « VOTRE COURRIEL », qui est une
+   etiquette. Ici c'est une phrase de consentement de quinze mots :
+   en capitales monospace elle devenait un pave illisible sur un
+   telephone, et c'est la SEULE phrase du formulaire qu'il faut
+   avoir lue. Elle reprend donc la casse et la police du texte. */
+.field > label.check--bloc {
   display: flex;
   align-items: flex-start;
   width: 100%;
   margin-top: var(--s-5);
   padding: var(--s-4);
   text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--fs-7);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.5;
+  color: var(--ink);
 }
 .check--bloc input { margin-top: 0.2em; }
-.check--bloc b { font-family: var(--font-data); font-size: 0.95em; }
+.check--bloc b { font-weight: 700; color: var(--ink); }
 
 .cond-version {
   margin-top: var(--s-5);
