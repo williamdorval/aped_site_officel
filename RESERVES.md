@@ -130,6 +130,16 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le classeur attend quatre colonnes | 9 | 113 |
 | &nbsp;&nbsp;↳ Le panneau des conditions n'a aucun moyen de s'y retrouver | 15 | 170 |
 | &nbsp;&nbsp;↳ Ce que la skill de goût refuse et que le site fait quand même | 14 | 184 |
+| &nbsp;&nbsp;↳ OUVERTES PAR L'ESTIMATEUR — 2026-08-07 (D-774 · D-775 · D-776) | 2 | 19 |
+| &nbsp;&nbsp;↳ Le solveur retrouve encore la grille à 20-25 % près | 26 | 352 |
+| &nbsp;&nbsp;↳ Le chiffre paraît après un formulaire, et c'est contraire à ce que Nielsen Norman recommande | 20 | 272 |
+| &nbsp;&nbsp;↳ La promesse « six écrans au plus » se lit avant qu'on sache si elle vaut quatre | 8 | 111 |
+| &nbsp;&nbsp;↳ Le prix des trois catégories sans prix n'a pas été arbitré | 7 | 79 |
+| &nbsp;&nbsp;↳ Les modules du questionnaire n'ont jamais été confrontés à un vrai devis | 9 | 128 |
+| &nbsp;&nbsp;↳ La taille de l'entreprise fait monter le prix, et on ne le dit pas | 10 | 140 |
+| &nbsp;&nbsp;↳ Le classeur attend onze colonnes de plus | 10 | 130 |
+| &nbsp;&nbsp;↳ Deux échecs d'outil qui EXISTAIENT AVANT ce chantier | 6 | 69 |
+| &nbsp;&nbsp;↳ Ce que le rôle attaquant n'a pas couvert | 8 | 88 |
 
 <!-- INDEX:FIN -->
 
@@ -1713,3 +1723,109 @@ n'a été changé, mais il faut que ce soit dit une fois :
   rail 01 → 11 ;
 - **la plaque sombre dans les deux thèmes**, que la skill lit comme
   une inversion de thème interdite : c'est l'arc de luminance, D-236.
+
+### OUVERTES PAR L'ESTIMATEUR — 2026-08-07 (D-774 · D-775 · D-776)
+
+### Le solveur retrouve encore la grille à 20-25 % près
+
+`tools/retro-estim.mjs` mesure trois attaques. Deux sont fermées :
+la compression est de 700 à 2 300 projets par fourchette, et
+**l'attaque nommée au brief — changer une option à la fois — ne rend
+rien** : aucune bascule ne bouge l'écran de façon constante.
+
+La troisième ne l'est pas. Une régression linéaire sur N sondages
+retrouve les modules à **20-25 % près**, et ce plancher ne descend
+plus au-delà de N = 100 : c'est l'économie de lot qui le pose, en
+rendant le total non additif. Sans elle, l'erreur tombait à 3 % en
+400 sondages.
+
+**Ce que ça vaut, honnêtement.** 20-25 % d'erreur sur « combien APED
+charge pour le paiement en ligne » est un ordre de grandeur, pas un
+prix. Un concurrent avec un an de métier le devine aussi bien sans
+sonder. Et chaque sondage lui coûte une ligne au classeur avec un nom,
+un courriel et un téléphone — cent sondages depuis la même adresse
+jetable se voient à l'œil dans l'onglet.
+
+**Ce que ça ne prouve pas.** Le solveur que j'ai écrit est LINÉAIRE.
+Quelqu'un qui devine la forme de l'économie de lot et l'ajuste aussi
+ferait mieux. Je n'ai pas mesuré de combien. À décider : est-ce que ça
+vaut un chantier, ou est-ce que la grille n'est pas le secret qu'on
+croit ?
+
+### Le chiffre paraît après un formulaire, et c'est contraire à ce que Nielsen Norman recommande
+
+La recherche a rendu un résultat gênant qu'il faut garder écrit. Le
+**Nielsen Norman Group** documente que le prix est le besoin
+d'information n° 1 des acheteurs B2B, et que **« les gens perçoivent
+les entreprises qui cachent les coûts comme évasives et indignes de
+confiance »**. Ils recommandent des prix-échantillons ou des
+fourchettes en accès libre, et rejettent explicitement le
+configurateur.
+
+Le montage d'ici fait l'inverse : six écrans, puis des coordonnées,
+puis le chiffre. C'est **l'interdit du projet** qui le dicte (aucun
+prix sur la page publique, D-748), pas une mesure.
+
+**Le montage qui gagnerait les deux**, si tu veux l'arbitrer un
+jour : un chiffre grossier gratuit — large, visiblement approximatif
+— puis « on peut resserrer ça en trois questions », et LÀ les
+coordonnées. On ne vend plus l'accès au prix, on vend sa précision.
+Ça demande de rouvrir D-748.
+
+### La promesse « six écrans au plus » se lit avant qu'on sache si elle vaut quatre
+
+Le compteur annonce « 1 sur 6 » dès l'écran 1, avant tout choix : six
+est le chemin le plus fréquent. Quelqu'un qui choisit l'automatisation
+voit le total DESCENDRE à 4. Une progression qui raccourcit est une
+bonne nouvelle, mais un total qui bouge reste un total qui bouge, et
+personne n'a mesuré si ça inquiète.
+
+### Le prix des trois catégories sans prix n'a pas été arbitré
+
+Automatisation, IA, immobilier : l'écran nomme trois facteurs et mène
+à l'appel. Les trois facteurs de chaque catégorie sont **de moi**,
+pas de toi. Relis-les — ce sont eux qui décideront de quoi tu parles
+au téléphone.
+
+### Les modules du questionnaire n'ont jamais été confrontés à un vrai devis
+
+La grille est calibrée sur QUATRE vrais projets, et elle les retrouve.
+Mais chaque module pris isolément — « des comptes clients : 2 000 $ »,
+« une application mobile : 8 000 $ » — vient de tes ancrages étendus
+par moi. Le prochain vrai projet est le seul juge. **Ajoute-le à
+`REELS` dans `tools/retro-estim.mjs` quand tu l'auras vendu** : c'est
+comme ça que la grille reste vraie.
+
+### La taille de l'entreprise fait monter le prix, et on ne le dit pas
+
+L'écran demande « vous êtes combien dans l'entreprise ». La réponse
+multiplie le total par 1 à 1,12. C'est défendable — plus de personnes,
+plus de gens qui ont un mot à dire, plus de temps — mais le visiteur
+ne l'apprend nulle part. J'ai refusé de demander le chiffre
+d'affaires, qui se lit comme un examen de solvabilité ; la taille
+d'équipe pose la même question en plus discret. **À arbitrer : le
+dire, ou retirer le facteur.**
+
+### Le classeur attend onze colonnes de plus
+
+`SCHEMA.estimate` est passé de 15 à 16 champs, et trois d'entre eux
+sont neufs (`complexite`, `usagers`, `besoin_detail`), plus le
+renommage de `domaine`/`envergure`/`site_existant` qui disparaissent.
+`VERSION_MINIMALE` est à **13** dans `classeur-check`, `sept-parcours`
+et `verite-prod` ; le déploiement est à 12. **Redéploie et relance
+`initialiser()`** — jusque-là ces trois outils refusent de juger, et
+c'est voulu.
+
+### Deux échecs d'outil qui EXISTAIENT AVANT ce chantier
+
+`appel-check` rend 31/32 : l'échec est sur `project`, pas sur
+l'estimateur. `formulaires-prod` rend 7/8. Vérifié contre `232949b`
+avant de commencer. Hors périmètre, mais toujours ouverts.
+
+### Ce que le rôle attaquant n'a pas couvert
+
+`tools/estimateur-attaque.mjs` teste la forgerie, l'injection, les
+doublons et les cibles tactiles. Il ne teste PAS : un vrai navigateur
+mobile, un lecteur d'écran réel, une connexion lente, ni le
+comportement du vrai service Google — tout passe par
+`faux-google.mjs`.

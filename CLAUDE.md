@@ -44,6 +44,7 @@ d'index — la table de `PIEGES.md`, tenue à la main, s'était arrêtée à
 | **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` |
 | **un écran de secteur** (les douze métiers) | `demos-secteurs/STANDARD.md` — la loi · `demos-secteurs/plans/<clé>.md` — la DA du métier · `ARCHITECTURE.md § 10` |
 | **le programme de référence** | `decisions/index.md § D-773`. Le texte des conditions est **généré** : source `conditions/reference-<version>.md`, `node tools/conditions.mjs ecrire` puis `verifier`. **Une version archivée ne se modifie jamais** — on en crée une à côté |
+| **l'estimateur ou un prix** | `decisions/index.md § D-774`. **La grille de prix vit dans `google/Code.gs` et nulle part ailleurs** — le site envoie des réponses, il reçoit une fourchette. `node tools/retro-estim.mjs` refuse qu'un montant reparaisse dans un fichier servi, et refait trois attaques |
 | **les preuves d'un chantier** | `preuves/LISEZ-MOI.md` |
 | **l'historique** | `archives/rapports/` |
 
@@ -96,8 +97,11 @@ Une animation qu'on ne remarque pas n'existe pas.
   **L'interdit s'est rétréci le 2026-08-06** (D-748, il disait « nulle
   part ») : une **fourchette** peut paraître **après** un formulaire
   complété, dans la modale, étiquetée « ordre de grandeur, pas un
-  devis ». Le barème vit dans `js/main.js` ; l'outil échoue s'il
-  **disparaît** autant que si un de ses montants **fuit** dans la page ;
+  devis ». **Depuis le 2026-08-07 (D-774) la grille vit dans
+  `google/Code.gs` et NULLE PART ailleurs** : le site envoie des
+  réponses et reçoit une fourchette. `prix-check` échoue maintenant si
+  une grille se **reforme** dans un fichier servi — la règle s'est
+  inversée. `node tools/retro-estim.mjs` en garde les montants ;
 - **aucune requête tierce** ;
 - **rien qui ne se réclame pas d'un des quatre verbes** ;
 - **`prefers-reduced-motion` respecté sans jamais faire perdre ni
