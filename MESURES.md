@@ -59,6 +59,7 @@ outil en regard n'a pas sa place dans ce fichier.
 | &nbsp;&nbsp;↳ Le fuseau | 8 | 80 |
 | &nbsp;&nbsp;↳ Latence et taux d'échec | 11 | 114 |
 | &nbsp;&nbsp;↳ Les cibles tactiles | 16 | 149 |
+| &nbsp;&nbsp;↳ RELEVÉS DU 2026-08-07 · LE PROGRAMME DE RÉFÉRENCE (D-773) | 62 | 700 |
 
 <!-- INDEX:FIN -->
 
@@ -590,3 +591,65 @@ donnait 348 px ; elle oubliait le remplissage propre du panneau. La
 grille ne tient les 44 px qu'à partir de **378 px** de fenêtre — d'où
 la bascule à 24 rem (384 px).
 
+
+### RELEVÉS DU 2026-08-07 · LE PROGRAMME DE RÉFÉRENCE (D-773)
+
+**Les seuils, après le chantier** — `node tools/verif.mjs 8099`, deux
+passes, machine de bureau Windows :
+
+| Mesure | Seuil | Relevé |
+|---|---|---|
+| LCP | < 300 ms | **132** puis **176 ms** |
+| CLS | 0 | **0** |
+| i/s, moyenne · p95 · pire | 60 · — · — | **60 · 60 · 60** |
+| INP au clic | — | 86 puis **97 ms** |
+| Requêtes tierces | 0 | **0** |
+| Arrêts au clavier sans anneau | 0 | **0 sur 104** |
+| Contraste, 5 largeurs × 2 thèmes | 0 échec | **0 sur 812 éléments** (light 1920) |
+| Débordement horizontal, 320 → 1920 | aucun | **aucun** |
+| Écart de cascade, découpée vs entière | 0 | **0 sur 332 464** |
+
+> **UN RELEVÉ DE 304 ms A ÉTÉ ÉCARTÉ**, et il faut le dire. Il vient
+> de `cas-tordus-check` lancé pendant que deux serveurs et deux agents
+> tournaient. La règle 1 de ce fichier s'applique : une mesure de
+> performance se reprend **machine au repos**, et les deux reprises
+> donnent 132 et 176 ms.
+
+**Les cibles tactiles, mesurées et pas déduites du CSS** —
+`getBoundingClientRect` à 360, 390 et 1440 px, sur les cinq modales :
+
+| Bouton | Avant | Après |
+|---|---|---|
+| `.btn-icon` de `modal-refer` | **20,2 × 44** à 390 px | 44 × 44 |
+| `.btn-icon` de `modal-urgent` | 25,7 × 44 | 44 × 44 |
+| `.btn-icon` de `modal-estimate` | 33 × 44 | 44 × 44 |
+| `.btn-icon` de `modal-project` | 42,5 × 44 | 44 × 44 |
+| `.btn-icon` de `modal-booking` | 44 × 44 | 44 × 44 |
+
+Le contrôle de `cas-tordus-check` ne regardait **que la hauteur**, qui
+valait 44 partout : il passait depuis toujours sur un bouton de 20 px.
+
+**Le taux effectif de la grille des primes** — `node
+tools/prime-check.mjs`, au **plancher** de chaque type, qui est le
+point le plus cher :
+
+| Prime | % plancher | % typique | % sommet |
+|---:|---:|---:|---:|
+| 150 $ | 6,0 | 3,8 | 2,5 |
+| 250 $ | 6,3 | 4,2 | 2,5 |
+| 400 $ | 6,7 | 4,4 | 2,7 |
+| 600 $ | 6,7 | 5,0 | 3,0 |
+| 1 200 $ | 6,7 | 4,0 | 2,7 |
+| 2 500 $ | 6,3 | 4,5 | 3,1 |
+| 5 000 $ | 6,3 | 4,2 | — |
+
+**Maximum de toute la grille : 6,7 %.** Rapports entre lignes
+voisines : ×1,7 · ×1,6 · ×1,5 · ×2,0 · ×2,1 · ×2,0.
+
+**Les bancs** : `prime-check` 34/34 · `acceptation-check` 42/42 ·
+`reference-attaque` 158/158 (dont trois désarmements qui font bien
+tomber ce qu'ils doivent) · `relance-check` 47/47 ·
+`retenue-check` 39/39 · `cas-tordus-check` 34/34 ·
+`conditionnelles-check` 27/27 · `suggestions-check` 59/59 ·
+`formulaires-prod` **7/8** — le huitième, l'estimation, échouait déjà
+sur le commit d'avant, vérifié en worktree.
