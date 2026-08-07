@@ -942,18 +942,32 @@ titre("8 · TOUTES LES CIBLES DU FORMULAIRE ET DE LA SECTION, EN 390 × 844");
     return out;
   };
 
-  /* --- la section --- */
+  /* --- la section, PANNEAU FERMÉ PUIS OUVERT ---
+     Le panneau des montants est `hidden` au chargement (D-773) : ses
+     cibles mesurent zéro tant qu'on ne l'ouvre pas. Les mesurer
+     fermé puis ouvert est le seul moyen de toutes les voir. */
   await page.evaluate(() => {
     const s = document.getElementById("reference");
     if (s) s.scrollIntoView({ block: "center", behavior: "instant" });
   });
   await page.waitForTimeout(800);
   const section = await page.evaluate(MESURE, "#reference");
-  if (!section.length) {
-    arret("aucune cible mesurée dans `#reference` — la section n'était pas peinte, "
-      + "`content-visibility` a rendu la taille RÉSERVÉE (pièges 4 · 34).");
+  await cliquer(page, "#refVoir");
+  await page.waitForTimeout(500);
+  const ouvert = await page.evaluate(MESURE, "#reference");
+  ouvert.forEach((x) => section.push(x));
+
+  /* ZÉRO RÉSULTAT DOIT ARRÊTER L'OUTIL, ET « PRESQUE ZÉRO » AUSSI.
+     La première passe rendait 50 cibles ici — toutes hors de la
+     section, par une portée mal appliquée. Puis 2. Le vrai compte
+     tient entre les deux, et un seuil trop bas laisserait passer
+     une section qui n'a pas été peinte. */
+  if (section.length < 3) {
+    arret("seulement " + section.length + " cible(s) mesurée(s) dans `#reference` — "
+      + "la section n'était probablement pas peinte : `content-visibility: auto` rend "
+      + "la taille RÉSERVÉE, pas la vraie (pièges 4 · 34).");
   }
-  note("cibles mesurées dans #reference : " + section.length);
+  note("cibles mesurées dans #reference (panneau fermé puis ouvert) : " + section.length);
 
   /* --- la modale, ses sept écrans, tiroir des conditions ouvert --- */
   await ouvrirRefer(page);

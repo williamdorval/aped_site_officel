@@ -122,6 +122,12 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le changement de Code.gs n'est pas déployé | 20 | 241 |
 | &nbsp;&nbsp;↳ Le préchargement n'a jamais été mesuré contre le vrai service | 6 | 76 |
 | &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 8 | 92 |
+| &nbsp;&nbsp;↳ OUVERTES PAR LE PROGRAMME DE RÉFÉRENCE — 2026-08-07 (D-773) | 28 | 396 |
+| &nbsp;&nbsp;↳ La grille se laisse deviner en RATIO, jamais en dollars | 18 | 226 |
+| &nbsp;&nbsp;↳ « Jusqu'à 5 000 $ » sans son plancher | 13 | 176 |
+| &nbsp;&nbsp;↳ Les trois autres assistants ont la même géométrie que celui qu'on vient de corriger | 15 | 224 |
+| &nbsp;&nbsp;↳ Deux échecs d'outil qui EXISTAIENT AVANT ce chantier | 13 | 172 |
+| &nbsp;&nbsp;↳ Le classeur attend quatre colonnes | 9 | 113 |
 
 <!-- INDEX:FIN -->
 
@@ -1580,3 +1586,99 @@ millisecondes un visiteur récupère vraiment — n'a pas été relevé.**
 > `isMobile: true, hasTouch: true` sous Playwright, sur un poste de
 > bureau Windows. **Le panneau de réservation n'a jamais été touché
 > par un vrai pouce.**
+
+### OUVERTES PAR LE PROGRAMME DE RÉFÉRENCE — 2026-08-07 (D-773)
+
+**LE FISCAL ET LE LÉGAL N'ONT ÉTÉ VALIDÉS PAR PERSONNE.** L'article 10
+des conditions dit que le référent est responsable de ses propres
+obligations fiscales, et il ne prétend rien d'autre. C'est
+volontairement prudent, parce que le sujet est incertain sur au moins
+quatre points, tous à faire trancher par un comptable :
+
+- fédéral, un feuillet **T4A case 048** semble requis au-delà de
+  **500 $** versés à un même bénéficiaire dans l'année ;
+- Québec, **relevé 1 case O**, code **RD** ou **RM** — les deux codes
+  existent pour des situations voisines et le bon n'est pas évident ;
+- si la prime est versée à une **entreprise incorporée**, le feuillet
+  reste requis en principe mais l'application varie ;
+- si le référent est un **client actif**, une prime pourrait être
+  requalifiée en rabais.
+
+**Les pages officielles de l'ARC et de Revenu Québec ont refusé la
+récupération automatisée (HTTP 403).** Ce qui précède vient d'extraits
+de recherche et de sources secondaires : rien n'a été lu à la source.
+**Aucune de ces quatre lignes ne doit être écrite sur le site tant
+qu'un comptable ne les a pas confirmées** — l'article 10 est rédigé
+pour n'en affirmer aucune.
+
+Le reste du texte n'a pas non plus été relu par un avocat. Il tient
+sur des clauses relevées chez Gorgias, Callbox et Gusto, ce qui n'est
+pas la même chose qu'un avis juridique québécois.
+
+### La grille se laisse deviner en RATIO, jamais en dollars
+
+Le rôle du client a essayé, et il faut le rapporter tel quel : il a
+supposé que la commission valait 10 %, multiplié la grille par dix, et
+conclu « j'ai leur liste de prix ». **Ses chiffres sont faux d'un
+facteur 2 à 3** — le taux réel est de 3 à 6,7 %, jamais 10. Il n'a
+donc rien deviné ; il croit l'avoir fait, ce qui est un problème
+différent et plus petit.
+
+Deux façons de le fermer, et les deux coûtent :
+
+- **casser la régularité de la progression** (150 · 250 · 400 · 600 ·
+  1 200 · 2 500 · 5 000) — mais c'est justement cette régularité qui
+  garantit « aucune marche brutale », qui était une exigence explicite ;
+- **afficher le taux** — ce qui publie exactement ce qu'on protège.
+
+**Rien n'a été changé.** L'arbitrage appartient à William.
+
+### « Jusqu'à 5 000 $ » sans son plancher
+
+Le rôle du client l'a nommé « mentir par omission » : l'accroche
+annonce 5 000 $, la ligne d'entrée en paie 150. Trente-trois fois
+l'écart, et il faut ouvrir un panneau pour l'apprendre.
+
+La consigne du chantier était explicite — « le plafond affiché
+publiquement reste *jusqu'à 5 000 $ et plus* » — donc **rien n'a été
+changé**. La correction, si William la veut, tient en une ligne : la
+mention sous les boutons dirait « de 150 $ à 5 000 $ ». Elle ferait
+échouer `prime-check` sur son contrôle « aucun montant de la grille ne
+se lit sans ouvrir le panneau », qu'il faudrait alors ajuster.
+
+### Les trois autres assistants ont la même géométrie que celui qu'on vient de corriger
+
+Le bouton « Continuer » du formulaire de référence débordait du
+panneau : sa moitié basse était rognée par l'`overflow`, mais toujours
+à sa place pour `getBoundingClientRect`, et un clic dessus touchait le
+voile — donc **fermait le formulaire**. Cible ramenée de 44 à 16 px.
+
+La barre de navigation est devenue collante **dans `#modal-refer`
+seulement**. `#modal-project`, `#modal-estimate` et `#modal-booking`
+ont la même structure et donc le même risque latent ; aucun ne
+l'atteint aujourd'hui parce qu'aucun de leurs écrans n'est aussi haut.
+Le corriger partout d'un coup changerait quatre formulaires dans un
+chantier qui n'en visait qu'un. **À faire, mais dans son propre
+chantier, avec ses propres captures.**
+
+### Deux échecs d'outil qui EXISTAIENT AVANT ce chantier
+
+Vérifiés en worktree sur le commit `232949b`, avant toute modification :
+
+- **`formulaires-prod.mjs` rend 7 / 8**, et le huitième est
+  l'ESTIMATION. Elle n'atteint pas son écran de succès. Rien dans ce
+  chantier ne touche l'estimateur — le compte est identique avant et
+  après.
+- **`appel-check.mjs`** échoue sur `project` (« le lien existe ») et
+  **`confidentialite-check.mjs`** compte trois mentions `.form-legal`
+  dans `projectWizard` au lieu d'une. Les deux comptes sont identiques
+  entre `232949b` et aujourd'hui : **pré-existants, hors périmètre.**
+
+### Le classeur attend quatre colonnes
+
+`google/Code.gs` passe en version 12 et le schéma `refer` gagne quatre
+colonnes : `RÉFÉRENT · versement`, `Conditions acceptées`,
+`Acceptées le`, `Version acceptée`. **Tant que le déploiement n'a pas
+été refait et `initialiser()` relancé**, `classeur-check.mjs` s'arrête
+sur « déploiement trop vieux » — c'est voulu, il refuse de juger un
+service qu'il sait périmé.

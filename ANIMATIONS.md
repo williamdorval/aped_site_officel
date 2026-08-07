@@ -28,7 +28,7 @@ un mouvement sans verbe ne se fait pas.
 | &nbsp;&nbsp;↳ 1.9 · 404.html — la ligne déraillée | 9 | 264 |
 | &nbsp;&nbsp;↳ 1.10 · css/secteurs.css — il n'en reste qu'UNE | 25 | 341 |
 | &nbsp;&nbsp;↳ 1.11 · css/tour360.css | 11 | 174 |
-| &nbsp;&nbsp;↳ 1.12 · js/motion.js — la chorégraphie au défilement (vague 2) | 39 | 2 132 |
+| &nbsp;&nbsp;↳ 1.12 · js/motion.js — la chorégraphie au défilement (vague 2) | 40 | 2 318 |
 | &nbsp;&nbsp;↳ 1.13 · js/langue.js — les quatre verbes (vague 2) | 31 | 1 861 |
 | &nbsp;&nbsp;↳ 1.14 · js/main.js — l'orientation (vague 1, jamais sacrifiée) | 23 | 1 295 |
 | &nbsp;&nbsp;↳ 1.15 · js/hero.js + js/limaille.js — la plaque de limaille (vague 1) | 12 | 538 |
@@ -381,6 +381,7 @@ sous `prefers-reduced-motion` (il pose alors `html.reduced-motion`).
 | ~~A134b~~ | ~~les trois faits de l'agence~~ | **SUPPRIMÉE le 2026-08-03** avec la section 09 · Agence et le bloc `12ter` de `motion.js` (D-628). Elle n'avait vécu qu'un jour. Archivé dans `archives/2026-08-03-agence/blocs-12bis-12ter.js`. | — | — | — | — | — | — |
 | ~~A135~~ | ~~preuves de l'agence~~ | **SUPPRIMÉE le 2026-08-03** avec le bloc `12bis` de `motion.js` (D-520), même archive. Avec elle partent les six sélecteurs `.pr-*`, qui ne sont plus atteints par rien. | — | — | — | — | — | — |
 | A136 | filet du programme de référence | motion.js | — | `.referral-line b` | scroll, `top 82%` → `bottom 62%` | **scrub 0,5**, `scaleX 0 → 1` | — | V3 | N2 |
+| ~~A136b~~ | ~~panneau des montants et des conditions~~ | **N'EXISTE PAS, ET C'EST UNE DÉCISION.**  D-773 · Un dépliement n'est ni DÉGAGER, ni S'ALIGNER, ni SOUDER, ni CRAN : faute d'être l'un des quatre, il ne se fait pas, même si l'effet serait joli. La règle d'admission ne connaît pas d'exception « c'est juste un panneau ». La section garde son seul mouvement, A136. L'état vit dans `aria-expanded` — jamais dans `motion.js`, qui s'arrête net sous `prefers-reduced-motion` : ce qu'il y a dans ce panneau est **ce qu'on paie et à quelles conditions**, pas une décoration. | — | `#refPanneau` · `#rfCondTexte` | clic sur `[data-tiroir]` | **aucune** | — | — | — |
 | A137 | preuves de référence | motion.js | boucle `.ref-preuve` (3) | `.rp-bulle` · `.rp-signature path` · `.rp-avis` · `.rp-etat` | scroll, `top 84%`, `once` | **0,34 s** `power3.out` · **0,72 s** `power2.inOut` (`strokeDashoffset 220 → 0`) · **0,26 s** décalage 0,1 · **0,24 s** à `−0,06` | seul tracé SVG du site, assumé | V2 + V3 | N2 |
 | A138 | filet « ce qui arrive après » | motion.js | — | `.suite-fil b` | scroll, `top 84%` → `bottom 66%` | **scrub 0,5**, `scaleX 0 → 1` | — | V3 | N2 |
 | A139 | recalcul | motion.js | — | tous les ScrollTrigger | `window load` + `document.fonts.ready` | — | — | — | — |

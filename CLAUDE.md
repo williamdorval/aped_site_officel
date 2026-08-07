@@ -43,6 +43,7 @@ d'index — la table de `PIEGES.md`, tenue à la main, s'était arrêtée à
 | **quels skills charger** | `DESIGN-STACK.md` |
 | **les sas, l'arc de luminance, la chambre noire** | `REFONTE-IMMERSIVE.md` |
 | **un écran de secteur** (les douze métiers) | `demos-secteurs/STANDARD.md` — la loi · `demos-secteurs/plans/<clé>.md` — la DA du métier · `ARCHITECTURE.md § 10` |
+| **le programme de référence** | `decisions/index.md § D-773`. Le texte des conditions est **généré** : source `conditions/reference-<version>.md`, `node tools/conditions.mjs ecrire` puis `verifier`. **Une version archivée ne se modifie jamais** — on en crée une à côté |
 | **les preuves d'un chantier** | `preuves/LISEZ-MOI.md` |
 | **l'historique** | `archives/rapports/` |
 

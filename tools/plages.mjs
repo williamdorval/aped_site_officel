@@ -51,7 +51,7 @@ const SECTIONS = [
   { n: "08", nom: "Processus", ancre: "processus",
     css: ["19. PROCESSUS"], js: { "js/main.js": ["PARCOURS"] } },
   { n: "09", nom: "Référence", ancre: "reference",
-    css: ["21. REFERENCE"], js: {} },
+    css: ["21. REFERENCE", "21b. LES CONDITIONS"], js: {} },
   { n: "10", nom: "Questions", ancre: "faq",
     css: ["22. FAQ"], js: { "js/langue.js": ["7. LA FAQ"] } },
   { n: "11", nom: "Contact", ancre: "contact",

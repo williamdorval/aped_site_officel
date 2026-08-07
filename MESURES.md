@@ -28,7 +28,7 @@ outil en regard n'a pas sa place dans ce fichier.
 | **3 · LES OUTILS** | 5 | 35 |
 | &nbsp;&nbsp;↳ Non-régression de structure | 12 | 573 |
 | &nbsp;&nbsp;↳ L'accueil et les sections | 12 | 426 |
-| &nbsp;&nbsp;↳ Identité, contraste, débordement | 11 | 223 |
+| &nbsp;&nbsp;↳ Identité, contraste, débordement | 15 | 703 |
 | &nbsp;&nbsp;↳ Le mouvement | 10 | 161 |
 | &nbsp;&nbsp;↳ Le reste | 12 | 244 |
 | &nbsp;&nbsp;↳ Le service des formulaires et la réservation | 38 | 667 |
@@ -153,7 +153,11 @@ complète**, pas un numéro de port.
 |---|---|
 | `theme-check.mjs` | parité clair/sombre, contrastes, débordement, **11** sections × 2 thèmes × 5 largeurs. **Ses captures ne sont pas déterministes** — voir `PIEGES.md` § 29 |
 | `deborde.mjs` | contenu **coupé** par un `overflow`, à 9 largeurs |
-| `prix-check.mjs` | tout montant en dollars, source **et** texte rendu |
+| `prix-check.mjs` | tout montant en dollars, source **et** texte rendu. Depuis D-773 il **décode les entités** (`5&nbsp;000&nbsp;$` lui était invisible), **marche dans les nœuds de texte** au lieu de lire `innerText` (qui rend vide sous `content-visibility` hors écran — il comptait **2** montants sur toute la page), **ouvre les tiroirs**, et cherche les **phrases** du barème, pas les nombres nus |
+| `prime-check.mjs` | la grille des primes de référence : la page dit exactement la grille déclarée · aucun taux effectif au-dessus de **7 %** au plancher de son type · aucune marche au-dessus de **2,5×** entre deux lignes · aucune prime qui puisse se lire comme le prix de son propre projet · rien de tout ça lisible **sans ouvrir le panneau**. Les fourchettes de prix vivent dans l'outil, jamais dans la page |
+| `conditions.mjs` | `ecrire` \| `verifier` — les deux copies du texte des conditions sont **générées** depuis `conditions/reference-<version>.md` et identiques au signe près ; la version affichée, celle du champ caché, celle du libellé de la case et celle de `CONDITIONS_VERSIONS` s'accordent ; aucune archive n'a disparu de la liste acceptée |
+| `acceptation-check.mjs` | la preuve d'acceptation côté serveur, sur le banc : refus sans case · « non » ≠ « oui » · version inventée refusée · **heure du serveur**, jamais celle qu'on lui donne · les trois colonnes **figées** une fois écrites · l'étape intermédiaire passe quand même · le honeypot |
+| `reference-vue.mjs` | la planche du programme : section fermée, panneau ouvert, les sept écrans du formulaire, le tiroir des conditions, le refus sans case — en 1440×900 et 390×844. **Captures de fenêtre, pas d'élément** : une capture d'élément peint une barre `sticky` à sa position collée et invente un recouvrement qui n'existe pas |
 | `contraste-arret.mjs` | contraste **à l'arrêt**, à N positions de défilement |
 | `contraste-survol.mjs` | contraste **pendant** une transition, image par image, aller ET retour |
 | `palier-check.mjs` | les trois paliers par leur déclencheur réel, palier 2 en **bridant le processeur** (×6 par défaut, `APED_BRIDE` pour changer). Rend **NON MESURÉ**, jamais « échec », quand la machine est trop chargée |

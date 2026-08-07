@@ -27,7 +27,7 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **Les plages** | 26 | 432 |
+| **Les plages** | 26 | 436 |
 | **Comment lire cet index** | 58 | 787 |
 | **01 · Accueil** | 27 | 289 |
 | **02 · Services** | 54 | 771 |
@@ -37,7 +37,7 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | **06 · Calculateur** | 21 | 304 |
 | **07 · Comparatif** | 17 | 180 |
 | **08 · Processus** | 27 | 352 |
-| **09 · Référence** | 20 | 252 |
+| **09 · Référence** | 31 | 417 |
 | **10 · Questions** | 24 | 310 |
 | **11 · Contact** | 20 | 251 |
 | **Pied de page** | 108 | 1 682 |
@@ -53,18 +53,18 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 
 | № | Section | Ancre | `index.html` | l. | `css/app.css` | JS | autres |
 |---|---|---|---|---:|---|---|---|
-| 01 | **Accueil** | `#top` | 223-281 | 59 | 2067-2330 · 1551-1826 | `main.js` 442-547 | — |
-| 02 | **Services** | `#services` | 282-900 | 619 | 2331-2979 | `main.js` 548-947 | — |
-| 03 | **Réalisations** | `#realisations` | 901-1789 | 889 | 2980-4801 | `main.js` 948-1194 | — |
-| 04 | **Secteurs** | `#demos` | 1790-2002 | 213 | 4802-4955 | `main.js` 4439-4633 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 01 | **Accueil** | `#top` | 223-281 | 59 | 2078-2341 · 1562-1837 | `main.js` 442-547 | — |
+| 02 | **Services** | `#services` | 282-900 | 619 | 2342-2990 | `main.js` 548-947 | — |
+| 03 | **Réalisations** | `#realisations` | 901-1789 | 889 | 2991-4812 | `main.js` 948-1194 | — |
+| 04 | **Secteurs** | `#demos` | 1790-2002 | 213 | 4813-4966 | `main.js` 4439-4633 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
 | 05 | **Visite 360** | `#visite` | 2003-2082 | 80 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2083-2224 | 142 | 4956-5122 | `main.js` 4272-4438 | — |
-| 07 | **Comparatif** | `#comparatif` | 2225-2341 | 117 | 5123-5249 | — | — |
-| 08 | **Processus** | `#processus` | 2342-2570 | 229 | 5250-5592 | `main.js` 1195-1235 | — |
-| 09 | **Référence** | `#reference` | 2571-2728 | 158 | 5593-5723 | — | — |
-| 10 | **Questions** | `#faq` | 2729-2813 | 85 | 5877-5926 | `langue.js` 613-641 | — |
-| 11 | **Contact** | `#contact` | 2814-3024 | 211 | 5927-6144 | `main.js` 1808-1828 · `main.js` 2130-2294 · `main.js` 2661-2762 | — |
-| — | **Pied de page** | `#footer` | 3025-3078 | 54 | 6145-6205 | `main.js` 5059-5079 | — |
+| 06 | **Calculateur** | `#calculateur` | 2083-2224 | 142 | 4967-5133 | `main.js` 4272-4438 | — |
+| 07 | **Comparatif** | `#comparatif` | 2225-2341 | 117 | 5134-5260 | — | — |
+| 08 | **Processus** | `#processus` | 2342-2570 | 229 | 5261-5603 | `main.js` 1195-1235 | — |
+| 09 | **Référence** | `#reference` | 2571-2735 | 165 | 5604-5753 · 5754-5922 | — | — |
+| 10 | **Questions** | `#faq` | 2736-2820 | 85 | 5923-5972 | `langue.js` 613-641 | — |
+| 11 | **Contact** | `#contact` | 2821-3031 | 211 | 5973-6190 | `main.js` 1808-1828 · `main.js` 2130-2294 · `main.js` 2661-2762 | — |
+| — | **Pied de page** | `#footer` | 3032-3085 | 54 | 6191-6251 | `main.js` 5059-5079 | — |
 
 <!-- PLAGES:FIN -->
 
@@ -396,16 +396,27 @@ parle, On dessine, On code, On met en ligne).
 | **Seuil** | `08 → 09` · nom **« Référence »** |
 | **Verbe / sens** | `data-verbe="cran"` `data-sens="droite"` `data-cible=".referral-max .num"` — **seule frontière en V4 · CRAN** ; pas de trame |
 | **Fond encre** | non pour la bande de seuil — mais la section porte le seul aplat sombre de la page dans **les deux thèmes** |
-| **Blocs CSS** | `21. REFERENCE` |
-| **JS** | `js/motion.js` bloc `13. Programme de reference` |
+| **Blocs CSS** | `21. REFERENCE` · `21b. LES CONDITIONS` |
+| **JS** | `js/motion.js` bloc `13. Programme de reference` · `js/main.js` « LES TIROIRS » |
 
 **Composants** : seuil → `div.plate.referral > div.referral-head`
 (libellé + h2 « Vous présentez. On encaisse ensemble. ») →
 `p.referral-max` (« Jusqu'à » + `b.num`, cible du cran de frontière) →
-`ol.referral-steps[data-ref]` (3 temps, chacun avec sa preuve
-`figure.ref-preuve` : `pr--texto`, `pr--signe`, `pr--vire`) →
-`i.referral-line` → `div.referral-foot` (bouton `modal-refer` +
-mention fine).
+`ol.referral-steps[data-ref]` (4 temps) → `i.referral-line` →
+`div.referral-foot` (`div.referral-portes` : bouton `modal-refer` +
+`#refVoir[data-tiroir="refPanneau"]` — puis mention fine) →
+`div#refPanneau[hidden]` (la grille et les conditions).
+
+**Le texte des conditions est GÉNÉRÉ.**  D-773 · Il vit entre
+`<!-- CONDITIONS:DEBUT -->` et `<!-- CONDITIONS:FIN -->`, à **deux**
+endroits — ici et dans l'écran 7 de `#modal-refer`. Source :
+`conditions/reference-<version>.md`. `node tools/conditions.mjs
+ecrire` les réécrit, `verifier` sort 1 s'ils ont dérivé. **On ne les
+modifie jamais à la main.**
+
+**Aucune animation sur le panneau**, et c'est la règle d'admission :
+un dépliement n'est aucun des quatre verbes. Voir `ANIMATIONS.md`
+A136b.
 
 <a id="s10"></a>
 ## 10 · Questions

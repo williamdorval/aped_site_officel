@@ -2013,3 +2013,86 @@ qu'on ecrit dans la proposition — c'est le test qui les a gardes.
 etapes a la main : le libelle du bouton, l'avance, l'arrivee et la
 barre. Preuve : la traversee complete, cinq etapes, aucune bloquee,
 bouton « Envoyer ma demande » a la cinquieme, 0 erreur console.
+
+## D-773 · Le programme de reference : une grille par TYPE, et une preuve d'acceptation
+
+**LA CONTRAINTE QUI GOUVERNE TOUT.** On paie ceux qui nous referent
+des clients. Le referent ne doit JAMAIS pouvoir deduire le prix
+auquel on a vendu : c'est notre information la plus sensible, et
+quelqu'un qui la connait peut la repeter, la comparer, ou nous mettre
+en difficulte avec le client lui-meme.
+
+**POURQUOI UNE GRILLE PAR TYPE, ET PAS PAR TRANCHE DE PRIX.** Une
+tranche trahit. « Projet de 5 000 a 10 000 $ → 400 $ » dit au
+referent, le jour ou il touche 400 $, dans quelle fourchette on a
+vendu. Une ligne par TYPE ne dit rien : « une automatisation →
+400 $ » couvre 6 000 comme 15 000 $. La meme ligne enjambe un facteur
+deux a trois — c'est l'ecart qui protege, pas le secret.
+
+Elle a un second merite, et il n'etait pas cherche : il n'y a plus de
+POINT DE BASCULE. Personne ne perd 250 $ pour deux cents dollars de
+projet en moins, parce que le prix du projet n'entre nulle part dans
+le calcul.
+
+**LE TAUX PLAFONNE A 7 %, ET IL SE MESURE AU PLANCHER.** Les vendeurs
+internes touchent 10 % ; un referent qui ne fait qu'une presentation
+ne peut pas s'en approcher. Le plancher de chaque type est le point
+le plus cher pour nous — c'est donc lui, et pas le prix moyen, qui
+decide. Le maximum de toute la grille est 6,7 %.
+
+Ce plafond ECRASE LE BAS DE LA GRILLE, et c'est assume : un site
+vitrine a 2 500 $ ne peut pas financer plus de 175 $ sans le
+depasser. La ligne d'entree vaut donc 150 $. Le seul levier qui la
+remonterait est le plafond lui-meme.
+
+**LES FOURCHETTES DE PRIX VIVENT DANS L'OUTIL, PAS DANS LA PAGE.**
+`tools/prime-check.mjs` porte, pour chaque type, son plancher, son
+prix typique et son sommet. Rien de tout ca ne part au navigateur :
+c'est ce qui permet de VERIFIER le taux sans le PUBLIER.
+
+**LA GRILLE NE TRAINE PAS A LA VUE DE TOUT LE MONDE.** Ce qui attire
+est le plafond ; ce qui rassure est la regle. Les deux ne se lisent
+pas au meme moment. Le panneau porte donc les DEUX dans un seul bloc
+— on ne peut pas consulter la grille sans croiser les conditions.
+
+**LA PRIME EST DUE TRENTE JOURS APRES LE PAIEMENT FINAL, PAS A LA
+SIGNATURE.** C'est le seul point qui cause des litiges, et le site
+disait le contraire a quatre endroits. Payer a la signature obligerait
+a RECLAMER la somme quand un projet s'arrete en route — la pire
+conversation possible avec quelqu'un qui nous a rendu service. On
+paie sur de l'argent encaisse. Pour un mandat de plus de six mois, la
+moitie part apres le premier versement du client : sinon on ferait
+attendre un an.
+
+**UNE CASE COCHEE NE PROTEGE PERSONNE.** Ce qui protege, c'est de
+pouvoir dire QUEL TEXTE a ete accepte et QUAND, dans un an, devant
+quelqu'un qui conteste. Trois colonnes, et il en faut trois :
+l'acceptation, l'heure, la version.
+
+  · **L'heure est celle du SERVEUR.** Une date fournie par celui qui
+    accepte ne prouve rien : il l'ecrit lui-meme.
+  · **La version est celle que le site a AFFICHEE**, pas celle qu'on
+    croit courante. Une page en cache peut montrer l'ancienne, et
+    ranger « la version du serveur » ecrirait qu'une personne a
+    accepte un texte qu'elle n'a jamais vu. Elle doit figurer dans
+    `CONDITIONS_VERSIONS`, donc etre archivee : une forgerie ne peut
+    choisir qu'une version reellement publiee.
+  · **Les trois colonnes se figent une fois ecrites.** Le reste de la
+    ligne se corrige librement — un visiteur qui revient changer son
+    courriel a raison de le faire. Une preuve qui bouge n'en est pas
+    une.
+
+**LE REFUS EST COTE SERVEUR.** La case du site sert au visiteur ;
+celui qui forge une requete ne la voit jamais. `valider()` refuse
+tout `_final` de type `refer` sans acceptation valide. Les etapes
+intermediaires, elles, passent sans : exiger la case a l'etape 1
+ferait perdre exactement l'abandon que la sauvegarde progressive
+existe pour capter.
+
+**LE TEXTE DES CONDITIONS EST GENERE.** Il parait a deux endroits —
+le panneau et le tiroir du formulaire — et deux copies tenues a la
+main divergent. La source est `conditions/reference-<version>.md` ;
+`node tools/conditions.mjs ecrire` reecrit les deux blocs, `verifier`
+sort 1 s'ils ont derive. **Une version archivee ne se modifie
+JAMAIS** : quand le texte change, on cree un fichier a cote. Un
+fichier reecrit est une preuve perdue.
