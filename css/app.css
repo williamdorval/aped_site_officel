@@ -376,6 +376,12 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
   position: relative;
   display: inline-flex;
   align-items: center;
+  /* 44 px AU POUCE, IMPOSÉ ET NON DÉDUIT.  D-772
+     Le remplissage et l'interligne donnaient 43,5 px selon la
+     police chargée — mesuré, pas suppose. Un demi-pixel sous la
+     cible reste sous la cible, et c'est le bouton « Continuer »
+     d'un formulaire a sept ecrans : celui qu'on touche le plus. */
+  min-height: 2.75rem;
   justify-content: space-between;
   gap: var(--s-5);
   padding: 0.8125rem 1.125rem;
@@ -460,8 +466,13 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 .btn-icon {
   display: inline-grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  /* 36 px MESURES, ET C'EST LE BOUTON « FERMER » D'UNE MODALE.
+     Le rater fait toucher a cote, donc rester enferme dans un
+     formulaire qu'on voulait quitter — la pire chose qu'un bouton
+     de fermeture puisse faire.  D-772
+     Le CARRE reste : c'est la cible qui grandit, pas le dessin. */
+  width: 2.75rem;
+  height: 2.75rem;
   border: var(--rule-w) solid var(--rule-strong);
   color: var(--ink);
   font-size: 1.125rem;
