@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>APED Agence | Sites web, automatisation et logiciels sur mesure</title>
-  <meta name="description" content="APED Agence code des sites web, des boutiques en ligne, des automatisations et des logiciels internes pour les entreprises du Québec. Le code vous appartient. Calculez vos économies en six questions." />
+  <meta name="description" content="APED Agence code des sites web, des boutiques en ligne, des automatisations et des logiciels internes pour les entreprises du Québec. Le code vous appartient. Calculez vos économies en neuf questions." />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_CA" />
@@ -243,7 +243,7 @@
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
       </button>
       <button class="btn btn--ghost btn--lg" type="button" data-modal-open="modal-estimate">
-        Estimation en six questions
+        Estimation en neuf questions
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
       </button>
     </div>
@@ -2752,8 +2752,14 @@
       <div class="bento">
         <!-- NIVEAU 1 · LE CHEMIN RECOMMANDE, ET IL EST SEUL -->
         <button class="cell cell--lead" type="button" data-modal-open="modal-project">
-          <!-- Cinq questions, pas sept, et plus de minutes.  D-703 -->
-          <span class="num">Recommandé · 5 questions</span>
+          <!-- LE COMPTE EST CELUI DES ECRANS, ET IL SE VERIFIE.  D-767
+               D-703 avait ecrit « cinq », et c'etait vrai. D-749 a
+               ajoute deux ecrans sans toucher a la tuile : sept ecrans
+               annonces cinq. Un visiteur a qui on promet cinq et qui en
+               voit sept a ete trompe, et c'est la premiere cause
+               d'abandon d'un formulaire long. `tools/compte-check.mjs`
+               compte les `data-pstep` et refuse tout ecart. -->
+          <span class="num">Recommandé · 7 étapes</span>
           <span>
             <h3>Démarrer votre projet</h3>
             <p>Des questions simples, une à la fois. Vous joignez vos photos et vos documents, on revient avec une proposition écrite.</p>
@@ -2785,18 +2791,18 @@
              ni demarrer un projet — est repris par le formulaire
              simple, au bas de cette section. -->
         <button class="cell cell--moyen" type="button" data-modal-open="modal-estimate">
-          <span class="num">6 questions</span>
+          <span class="num">9 questions</span>
           <span>
             <!-- « Cadrer votre projet » ne veut rien dire pour un patron
                  de PME : c'est du vocabulaire d'agence. Le titre dit
                  maintenant ce qu'on en retire. -->
             <h3>Estimer votre projet</h3>
-            <p>Six questions. On vous rappelle avec un prix ferme.</p>
+            <p>Neuf questions. On vous rappelle avec un prix ferme.</p>
           </span>
           <!-- « Ouvre le questionnaire, ici » etait ecrit sur DEUX tuiles
                qui ouvrent deux choses differentes. Chaque ligne de
                destination doit nommer la sienne. -->
-          <span class="cell-ou">Ouvre les six questions, ici</span>
+          <span class="cell-ou">Ouvre les neuf questions, ici</span>
           <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
 
@@ -3119,7 +3125,7 @@
       </button>
       <button type="button" data-modal-switch="modal-estimate">
         <span class="o-num">02</span>
-        <span><strong>Estimation en six questions</strong><small>On cadre le projet, puis on vous rappelle.</small></span>
+        <span><strong>Estimation en neuf questions</strong><small>On cadre le projet, puis on vous rappelle.</small></span>
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
       </button>
       <button type="button" data-modal-switch="modal-project">
@@ -3501,6 +3507,12 @@
         <div class="field">
           <label for="prContactPref">Meilleur moment pour vous joindre</label>
           <select id="prContactPref" name="moment_contact">
+            <!-- UNE PREMIERE OPTION VIDE, SINON LA REPONSE EST FABRIQUEE.  D-767
+                 Sans elle, « Peu importe » part dans CHAQUE envoi sans que
+                 personne l'ait choisi : la colonne se remplit d'une
+                 reponse que le visiteur n'a jamais donnee, et aucune
+                 regle conditionnelle posee dessus ne peut etre juste. -->
+            <option value="">Choisir…</option>
             <option>Peu importe</option>
             <option>Avant-midi</option>
             <option>Après-midi</option>
@@ -3804,6 +3816,12 @@
           <div class="field">
             <label for="rfSizeRef">Taille approximative</label>
             <select id="rfSizeRef" name="taille">
+              <!-- UNE PREMIERE OPTION VIDE, SINON LA REPONSE EST FABRIQUEE.  D-767
+                 Sans elle, « Je ne sais pas » part dans CHAQUE envoi sans que
+                 personne l'ait choisi : la colonne se remplit d'une
+                 reponse que le visiteur n'a jamais donnee, et aucune
+                 regle conditionnelle posee dessus ne peut etre juste. -->
+            <option value="">Choisir…</option>
               <option>Je ne sais pas</option>
               <option>Travailleur autonome</option>
               <option>2 à 10 employés</option>
@@ -3814,6 +3832,12 @@
           <div class="field">
             <label for="rfNeed">Besoin pressenti</label>
             <select id="rfNeed" name="besoin">
+              <!-- UNE PREMIERE OPTION VIDE, SINON LA REPONSE EST FABRIQUEE.  D-767
+                 Sans elle, « Je ne sais pas » part dans CHAQUE envoi sans que
+                 personne l'ait choisi : la colonne se remplit d'une
+                 reponse que le visiteur n'a jamais donnee, et aucune
+                 regle conditionnelle posee dessus ne peut etre juste. -->
+            <option value="">Choisir…</option>
               <option>Je ne sais pas</option>
               <option>Site web</option>
               <option>Boutique en ligne</option>
@@ -3940,7 +3964,7 @@
   <div class="modal-scrim" data-modal-close></div>
   <div class="modal-panel modal-panel--wide">
     <div class="modal-head">
-      <h3 id="estimateTitle">Estimation en huit questions</h3>
+      <h3 id="estimateTitle">Estimation en neuf questions</h3>
       <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
         <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
       </button>
@@ -4091,7 +4115,7 @@
         <p class="num" id="estimateResume" style="font-size: var(--fs-4); letter-spacing: -0.02em; line-height: 1.35;">—</p>
 
         <!-- LA FOURCHETTE REVIENT ICI, sous la regle de D-748 :
-             apres huit questions, jamais en acces libre. -->
+             apres neuf questions, jamais en acces libre. -->
         <div class="devis" id="esDevis" hidden>
           <p class="devis-quoi">Pour ce que vous décrivez, un projet comme le vôtre
             se situe généralement entre&nbsp;:</p>
