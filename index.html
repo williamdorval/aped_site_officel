@@ -2758,10 +2758,10 @@
       <div class="faq-grid" style="margin-top: var(--s-6);">
         <!-- La colonne de gauche etait un en-tete collant de 140 px  D-071 -->
         <div class="faq-head head">
-          <p class="head-index">7 questions</p>
+          <p class="head-index">8 questions</p>
           <h2>Questions fréquentes.</h2>
           <!-- B3 · « LES NEUF QU'ON NOUS POSE LE PLUS » affirmait un  D-072 -->
-          <p>Sept questions, et la vraie réponse à chacune.</p>
+          <p>Huit questions, et la vraie réponse à chacune.</p>
           <!-- L'ADRESSE COURRIEL EST PARTIE D'ICI, ET DE PARTOUT.
                Le renvoi va au formulaire de la section Contact : une
                adresse affichee se ramasse par un robot, et elle ne
@@ -2787,6 +2787,36 @@
                  est chez nous, la question appelait une reponse
                  ambigue ;
                · « Vous avez fait quoi, avant ? » -->
+          <!-- « COMBIEN ÇA COÛTE » ÉTAIT LA SEULE QUESTION SANS
+               RÉPONSE.  D-783
+
+               Quatre questions de prix ont été retirées le
+               2026-08-03 : elles annonçaient des montants, et aucun
+               prix public n'est permis hors des trois exceptions.
+               Le retrait était juste ; le SILENCE qui a suivi ne
+               l'était pas. Un acheteur qui magasine trois
+               fournisseurs et n'obtient d'aucune façon un ordre de
+               grandeur élimine celui qui se tait — avant l'appel.
+
+               ON NE DONNE PAS DE PRIX ICI, ON DONNE LE CHEMIN :
+               l'estimateur rend une fourchette en six écrans, et
+               les deux seuls chiffres permis en clair — 40 % au
+               démarrage, 75 $ l'heure — sont déjà écrits trois
+               questions plus bas. La réponse ne les invente pas,
+               elle les rassemble. -->
+          <details class="faq-item">
+            <summary>Combien ça coûte ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
+            <p>Ça dépend de ce que vous faites faire, et on refuse de vous donner un chiffre qu’on devrait corriger ensuite. Deux façons d’en avoir un&nbsp;:</p>
+            <p><b>Tout de suite</b>&nbsp;: l’estimateur pose six écrans de questions et vous rend une fourchette — un ordre de grandeur, pas un devis.</p>
+            <p><b>Au premier appel</b>&nbsp;: trente minutes, gratuites, et vous repartez avec le <b>prix ferme</b>. C’est celui de la facture — il n’en sort que si on découvre quelque chose que le formulaire ne demandait pas, et on vous dit quoi.</p>
+            <p>Ce qui ne varie jamais&nbsp;: <b>40&nbsp;% au démarrage</b>, le solde à la livraison, et <b>75&nbsp;$ l’heure</b> pour les changements après la mise en ligne. Rien ne vous est demandé tant que rien n’est signé.</p>
+            <p class="faq-cta">
+              <button class="btn btn--ghost" type="button" data-modal-open="modal-estimate">
+                Voir ma fourchette
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+              </button>
+            </p>
+          </details>
           <details class="faq-item">
             <summary>L’automatisation, ça veut dire quoi concrètement ?<svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg></summary>
             <p>On relie vos outils entre eux pour que les tâches répétitives se fassent seules : rappels de rendez-vous, factures, suivis, rapports. Vous gardez la décision, la machine fait la saisie.</p>
@@ -2849,6 +2879,14 @@
              — la seule voie qui ne depend d'aucun service — etait la
              derniere, apres deux autres blocs. -->
         <p>Le premier est celui qu’on recommande. Chaque entrée dit ce qu’elle ouvre&nbsp;: tout se passe dans cette page, sauf le courriel.</p>
+        <!-- LE NUMERO DANS LA SECTION QUI S'APPELLE « COMMENT NOUS
+             JOINDRE ».  D-783
+             Elle alignait quatre tuiles et pas un seul numero : il
+             n'existait qu'a l'interieur de la modale d'urgence et
+             sous le bouton du formulaire, en 13 px, a 14 000 px du
+             haut. Un acheteur de 55 ans qui veut parler a quelqu'un
+             cherche un numero, ne le trouve pas, et s'en va. -->
+        <p class="joindre-tel">Ou tout simplement&nbsp;: <a class="appel-num num" href="tel:+18195230871" data-appel="section-contact">819&nbsp;523-0871</a> &middot; du lundi au dimanche, 9&nbsp;h à 20&nbsp;h.</p>
       </div>
 
       <div class="bento">
@@ -3074,6 +3112,10 @@
         <span class="footer-mark"><svg class="wordmark-mark" viewBox="0 0 685 501" aria-hidden="true"><path fill="currentColor" d="M227.2 0 454.3 487 179.1 487 202.9 436 373.5 436 227.2 122.2 57.1 487 .1 487Z"/><path fill="currentColor" opacity=".47" d="M289.7 4H519.5a131.5 131.5 0 0 1 0 263H402.7L378 214H519.5a78.5 78.5 0 0 0 0-157H314.4Z"/><path fill="var(--accent)" d="M424.9 322H571.5V373H448.6ZM478 436H571.5V487H501.8Z"/><path fill="currentColor" opacity=".47" d="M605 302.5a101.5 101.5 0 0 1 0 198V448.9a52.5 52.5 0 0 0 0-94.8Z"/></svg></span>
         <!-- L'adresse courriel affichee est partie du site entier. -->
         <a class="footer-mail" href="#contact">Nous écrire</a>
+        <!-- ET LE NUMERO, PARCE QUE C'EST LA QU'ON LE CHERCHE.  D-783
+             Le pied de `404.html` en avait un ; celui de l'accueil,
+             non. La page d'erreur etait plus joignable que le site. -->
+        <p class="footer-tel">Ou appelez&nbsp;: <a class="appel-num num" href="tel:+18195230871" data-appel="pied">819&nbsp;523-0871</a></p>
         <nav class="footer-nav" aria-label="Pied de page">
           <a href="#services">Services</a>
           <a href="#realisations">Démonstrations</a>
@@ -3738,6 +3780,18 @@
           <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
       </div>
+
+      <!-- LA PORTE DE SECOURS DU PLUS LONG FORMULAIRE.  D-783
+           Sept ecrans, et aucune facon de dire « je prefere en
+           parler ». Contact et Reservation en avaient une ;
+           l’assistant de projet non — celui ou l’envie de decrocher
+           est la plus forte.
+           ELLE EST SOUS LA BARRE DE NAVIGATION, PAS DANS UN ECRAN :
+           posee dans le dernier « step », elle etait masquee six
+           ecrans sur sept, et « appel-check » mesurait 0 px de haut.
+           Une porte de secours qui ne parait qu’a la fin n’en est
+           pas une. -->
+      <p class="form-appel">Sept &eacute;crans, c’est long&nbsp;? Dites-le-nous de vive voix&nbsp;: <a class="appel-num num" href="tel:+18195230871" data-appel="project">819&nbsp;523-0871</a></p>
       <!-- LES DEUX PORTES, HORS DES ÉTAPES DONC VISIBLES À TOUTES.  D-764 -->
       <div class="form-portes" role="group" aria-labelledby="prPortesQuoi">
         <p class="form-portes-quoi" id="prPortesQuoi">Deux chemins plus courts, si vous préférez</p>

@@ -144,6 +144,9 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Aucune ligne du VRAI classeur n'a été relue après le renommage | 27 | 380 |
 | &nbsp;&nbsp;↳ OUVERTE PAR LE CHANTIER DU 2026-08-07 — LE CLASSEUR ATTEND SA MIGRATION (D-781) | 2 | 23 |
 | &nbsp;&nbsp;↳ L'ordre des colonnes du code ne sera pas celui du classeur tant que initialiser() n'aura pas tourné | 26 | 373 |
+| &nbsp;&nbsp;↳ OUVERTE PAR L'AUDIT CLIENT DU 2026-08-07 (D-783) | 2 | 15 |
+| &nbsp;&nbsp;↳ Le site ne montre aucun client réel, et je ne peux pas y remédier | 23 | 309 |
+| &nbsp;&nbsp;↳ L'en-tête sur téléphone vend au mauvais public | 9 | 121 |
 
 <!-- INDEX:FIN -->
 
@@ -1891,3 +1894,37 @@ version`, lancer `initialiser()`, **lire le journal d'exécution**, puis
 `node tools/classeur-check.mjs` — qui doit rendre « le classeur est
 sain » et annoncer la version 16. Tant que ce verdict n'a pas été lu,
 D-781 est posée, pas faite.
+
+### OUVERTE PAR L'AUDIT CLIENT DU 2026-08-07 (D-783)
+
+### Le site ne montre aucun client réel, et je ne peux pas y remédier
+
+Le rôle client a classé trois défauts BLOQUANTS. Deux sont corrigés :
+le numéro de téléphone était introuvable (D-783), et « Combien ça
+coûte » était la seule question sans réponse (D-783).
+
+**Le troisième ne peut pas l'être depuis cette session.** Les sections
+03, 04 et 05 enchaînent trois aveux : « entreprises fictives — pas des
+mandats livrés », « il n'y a pas de site à visiter derrière », « ce ne
+sont pas nos prises de vue ». **Zéro client nommé, zéro témoignage,
+zéro logo, zéro précédent.** Un acheteur en conclut qu'on n'a jamais
+livré.
+
+L'honnêteté de ces trois phrases est exemplaire et ne doit pas bouger —
+c'est la règle A qui les a écrites. Ce qui manque n'est pas une
+atténuation, c'est **une** preuve réelle : un client qui accepte d'être
+nommé, une adresse de site en ligne, une phrase signée. Elle demande
+l'accord d'un vrai client, et personne d'autre que le propriétaire ne
+peut l'obtenir.
+
+Tant qu'elle manque, le site prouve sa méthode et jamais son passé.
+Un acheteur n'achète pas une méthode, il achète un précédent.
+
+### L'en-tête sur téléphone vend au mauvais public
+
+Sur 390 px, l'en-tête collant tient `APED · Référez · 5 000 $` et rien
+d'autre : la place la plus chère du site, visible sur chaque écran,
+parle du programme de parrainage à quelqu'un qui n'a rien acheté. Y
+glisser le numéro ou le CTA d'achat demande de décider **ce qui sort**.
+L'arbitrage coûte de l'argent dans les deux sens et appartient au
+propriétaire ; il n'a pas été tranché.

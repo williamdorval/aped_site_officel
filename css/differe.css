@@ -4974,6 +4974,8 @@ html:not(.js) .ba-trait { display: none; }
    grises : on lisait 300 lignes de politique et il n'y avait plus
    aucun chemin de retour au bas de la page. Elles portent maintenant
    le meme pied que l'accueil, moins ce qui depend du JavaScript. */
+/* Le numero, sous la section « Comment nous joindre ».  D-783 */
+.joindre-tel { margin-top: var(--s-4); font-size: var(--fs-7); color: var(--ink-muted); }
 .footer-hors { margin-top: var(--s-4); max-width: 46ch; font-size: var(--fs-7); color: var(--ink-muted); }
 .footer-tel { margin-top: var(--s-6); font-size: var(--fs-7); color: var(--ink-muted); }
 .footer-nav { display: grid; margin-top: var(--s-6); }

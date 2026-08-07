@@ -141,6 +141,7 @@
 | **D-780 · La retenue après la fourchette, et sur les deux formulaires d'un seul écran** | 98 | 1 448 |
 | **D-781 · Le classeur et les avis, vus un lundi matin avec vingt demandes** | 79 | 1 164 |
 | **D-782 · Le popup des guides : la valeur devant le coût, et le plus petit pas d'abord** | 84 | 1 158 |
+| **D-783 · Le numéro, et la seule question à laquelle le site refusait de répondre** | 72 | 1 025 |
 
 <!-- INDEX:FIN -->
 
@@ -2815,3 +2816,75 @@ et le classeur se remplit.
 de fiche → `ECHEC la fiche ouvre sur les taches chiffrees` ; `required`
 retiré du téléphone → `ECHEC les DEUX coordonnees sont requises,
 obtenu "email"`.
+
+## D-783 · Le numéro, et la seule question à laquelle le site refusait de répondre
+
+Deux constats du rôle client, tous deux classés **BLOQUANT**, tous deux
+vérifiés dans le source avant d'être crus.
+
+**LE NUMÉRO ÉTAIT À 14 465 PX DU HAUT, EN 13 PX, SOUS UN BOUTON.** Il
+n'existait qu'à trois endroits : dans la modale d'urgence, sous le
+bouton du formulaire de contact, et sous celui de la réservation.
+Absent de l'en-tête, absent du pied, absent du menu — et absent de la
+section qui s'appelle « **Comment nous joindre** », qui alignait quatre
+tuiles et pas un chiffre. **La page 404, elle, en avait un dans son
+pied** : la page d'erreur était plus joignable que le site.
+
+Un patron de PME de 55 ans qui achète n'écrit pas, il appelle. Il
+cherche un numéro, ne le trouve pas, et va voir ailleurs — avant même
+d'avoir jugé le travail.
+
+Trois ajouts, tous dans des conteneurs qui existaient déjà :
+
+- **la section « Comment nous joindre »** porte le numéro et les heures
+  (« du lundi au dimanche, 9 h à 20 h » — les valeurs de
+  `DISPONIBILITES`, pas une promesse inventée) ;
+- **le pied de l'accueil**, à côté de « Nous écrire », comme sur les
+  deux pages secondaires depuis D-779 ;
+- **l'assistant de projet**, sous sa barre de navigation.
+
+Ce dernier était réclamé par `appel-check` depuis longtemps, et il ne
+l'obtenait pas : sept écrans, aucune façon de dire « je préfère en
+parler », dans le seul formulaire assez long pour que l'envie de
+décrocher arrive. **Et la première pose était fausse** : mise à côté de
+la mention légale, elle vivait dans le dernier `.step`, donc masquée six
+écrans sur sept — `appel-check` rendait « 0 px de haut », et il avait
+raison. Une porte de secours qui ne paraît qu'à la fin n'en est pas une.
+Elle est sous `#projectNav`, hors des étapes. **36 / 36.**
+
+**L'EN-TÊTE N'A PAS BOUGÉ, ET C'EST DÉLIBÉRÉ.** Sur téléphone il tient
+`APED · Référez · 5 000 $` et rien d'autre : la place la plus chère du
+site vend au mauvais public. Y glisser un numéro demande de décider ce
+qui sort — le bouton de référence, ou le CTA d'achat. C'est un
+arbitrage qui coûte de l'argent dans un sens comme dans l'autre, et il
+appartient au propriétaire.
+
+---
+
+**« COMBIEN ÇA COÛTE » ÉTAIT LA SEULE QUESTION SANS RÉPONSE.** Quatre
+questions de prix ont été retirées de la FAQ le 2026-08-03 — le code le
+dit lui-même : « QUATRE QUESTIONS RETIREES : "Combien coute un site
+web ?" ». Le retrait était juste : elles annonçaient des montants, et
+aucun prix public n'est permis hors des trois exceptions.
+
+**Le silence qui a suivi ne l'était pas.** Un acheteur qui magasine
+trois fournisseurs et n'obtient d'aucune façon un ordre de grandeur
+élimine celui qui se tait, avant l'appel. Le seul montant visible en
+dix-neuf écrans était **5 000 $** — la prime de parrainage, c'est-à-dire
+un chiffre qui ne le concerne pas.
+
+La huitième question ne donne **aucun prix neuf** : elle donne le
+CHEMIN vers le chiffre — l'estimateur pour tout de suite, l'appel pour
+le prix ferme — et rassemble les deux seules valeurs déjà permises et
+déjà écrites trois questions plus bas : **40 % au démarrage** et
+**75 $ l'heure**. Elle finit sur le bouton de l'estimateur.
+`prix-check` reste à « 0 prix non autorisé ».
+
+**CE QUE JE NE PEUX PAS CORRIGER.** Le troisième BLOQUANT est
+l'absence de tout client nommé : trois aveux d'affilée — « entreprises
+fictives », « il n'y a pas de site à visiter derrière », « ce ne sont
+pas nos prises de vue » — et zéro témoignage, zéro logo, zéro
+précédent. L'honnêteté est exemplaire et ne doit pas bouger ; ce qui
+manque est **une** preuve réelle, et elle demande l'accord d'un vrai
+client. Personne d'autre que le propriétaire ne peut l'obtenir.
+`RESERVES.md`.

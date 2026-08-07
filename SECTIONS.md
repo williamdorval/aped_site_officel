@@ -62,9 +62,9 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | 07 | **Comparatif** | `#comparatif` | 2225-2347 | 123 | 5180-5306 | — | — |
 | 08 | **Processus** | `#processus` | 2348-2576 | 229 | 5307-5649 | `main.js` 1123-1163 | — |
 | 09 | **Référence** | `#reference` | 2577-2746 | 170 | 5650-5799 · 5800-6003 | — | — |
-| 10 | **Questions** | `#faq` | 2747-2831 | 85 | 6171-6220 | `langue.js` 613-641 | — |
-| 11 | **Contact** | `#contact` | 2832-3042 | 211 | 6221-6438 | `main.js` 1771-1804 · `main.js` 2149-2313 · `main.js` 2680-2781 | — |
-| — | **Pied de page** | `#footer` | 3043-3098 | 56 | 6439-6507 | `main.js` 5536-5556 | — |
+| 10 | **Questions** | `#faq` | 2747-2861 | 115 | 6171-6220 | `langue.js` 613-641 | — |
+| 11 | **Contact** | `#contact` | 2862-3080 | 219 | 6221-6438 | `main.js` 1771-1804 · `main.js` 2149-2313 · `main.js` 2680-2781 | — |
+| — | **Pied de page** | `#footer` | 3081-3140 | 60 | 6439-6510 | `main.js` 5536-5556 | — |
 
 <!-- PLAGES:FIN -->
 
