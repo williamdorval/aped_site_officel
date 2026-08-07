@@ -232,19 +232,57 @@ async function menerA(kind, cible) {
     return 2;
   }
   if (kind === "estimate") {
-    for (let g = 0; g < 14; g++) {
-      const ici = await visible("#wizard", "data-step");
-      if (ici >= cible || ici >= 10) return ici;
-      const ok = await page.evaluate(() => {
-        const e = [...document.querySelectorAll("#wizard .step[data-step]")].find((s) => !s.hidden);
-        const b = e && e.querySelector(".options button");
-        if (b) { b.click(); return true; }
-        return false;
+    /* LA CIBLE EST UN RANG, PLUS UN NUMERO D'ECRAN.  D-776
+
+       L'estimateur porte QUATORZE ecrans dans le balisage et n'en
+       montre jamais plus de six : ses numeros ne se suivent plus.
+       L'ancien marcheur s'arretait sur `ici >= 10` — « l'ecran des
+       coordonnees » d'un balisage qui n'existe plus, ou 10 est un
+       ecran de fonctions. Il cliquait aussi le premier
+       `.options button` de l'ecran, ce qui ne marche pas sur un
+       ecran de cases a cocher : il n'y en a aucun.
+
+       On avance donc au RANG, en repondant a tout ce que l'ecran
+       demande, et en cliquant « Continuer » quand il y en a un. */
+    const rang = () => page.evaluate(() => {
+      const w = document.getElementById("wizard");
+      const vu = [...w.querySelectorAll(".step[data-step]")].find((x) => !x.hidden);
+      if (!vu) return 0;
+      const t = document.getElementById("estimCompte");
+      return t ? Number(t.textContent) : 0;
+    });
+    for (let g = 0; g < 20; g++) {
+      const ici = await rang();
+      if (ici >= cible || ici === 0) return ici;
+      const avance = await page.evaluate(() => {
+        const w = document.getElementById("wizard");
+        const e = [...w.querySelectorAll(".step[data-step]")].find((s) => !s.hidden);
+        if (!e) return false;
+        /* Toute question VISIBLE de cet ecran recoit sa premiere
+           reponse. Un ecran a deux questions n'avance pas si une
+           seule est remplie — c'est voulu, et le marcheur doit le
+           savoir. */
+        let fait = false;
+        e.querySelectorAll(".options[data-key]").forEach((g2) => {
+          const bloc = g2.closest(".step-second");
+          if (bloc && bloc.hidden) return;
+          const b = g2.querySelector("button");
+          if (b) { b.click(); fait = true; }
+        });
+        const c = e.querySelector('[data-checks] input[type="checkbox"]');
+        if (c && !c.checked) {
+          c.checked = true;
+          c.dispatchEvent(new Event("change", { bubbles: true }));
+          fait = true;
+        }
+        const suivant = e.querySelector("[data-esuivant]");
+        if (suivant) { suivant.click(); return true; }
+        return fait;
       });
-      if (!ok) return await visible("#wizard", "data-step");
-      await page.waitForTimeout(320);
+      if (!avance) return await rang();
+      await page.waitForTimeout(340);
     }
-    return await visible("#wizard", "data-step");
+    return await rang();
   }
   const racine = kind === "project" ? "#projectWizard" : 'form[data-form="refer"]';
   const attr = kind === "project" ? "data-pstep" : "data-rstep";
@@ -303,7 +341,17 @@ for (const [kind, total, cibles] of [
      l'ecran 1 n'a rien fait perdre a personne — et la retenue a
      raison de se taire. Le premier cas demandait « ouvre-toi »
      alors qu'il n'y avait rien a retenir. */
-  ["project", 8, [2, 4, 7]], ["estimate", 11, [2, 5, 9]],
+  ["project", 8, [2, 4, 7]],
+  /* SIX ECRANS DEPUIS D-776, ET LA CIBLE EST UN RANG. L'etape
+     enregistree est celle qu'on QUITTE, donc `cible - 1`, et les
+     zones se calculent sur `etape / (total - 1)` = /6 :
+       cible 2 → etape 1 → 0,17 « tot »
+       cible 4 → etape 3 → 0,50 « milieu »
+       cible 6 → etape 5 → 0,83 « fin »
+     Les anciennes cibles [2, 5, 9] visaient des numeros d'ecran
+     d'un balisage a onze etapes : elles rendaient trois fois le
+     meme texte, et l'outil le disait. */
+  ["estimate", 7, [2, 4, 6]],
   /* SEPT ECRANS DEPUIS D-773, ET LA CIBLE N'EST PAS L'ETAPE MESUREE.
      `menerA(kind, cible)` s'ARRETE sur l'ecran `cible` ; l'etape
      enregistree est celle qu'on vient de QUITTER, donc `cible - 1`.

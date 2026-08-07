@@ -412,12 +412,17 @@ sous("8 · LES LIBELLES — ce que le site envoie est ce que la grille attend");
   const bloc = modale.split("</div>\n</div>")[0];
 
   /* Tout ce que l'estimateur peut envoyer comme reponse fermee. */
+  /* LES REPONSES A LA QUESTION DU PRIX NE SONT PAS DES REPONSES DE
+     GRILLE. « C’est au-dessus de mon budget » se range dans la
+     colonne « Pourquoi pas » ; la grille n'a pas a la connaitre. On
+     retire donc les groupes de choix qui portent un `data-choice`. */
+  const sansChoix = bloc.replace(/<div class="choices[\s\S]*?<\/div>/g, "");
   const envoyes = new Set();
   const re = /data-value="([^"]+)"/g;
   let m;
-  while ((m = re.exec(bloc))) envoyes.add(m[1]);
+  while ((m = re.exec(sansChoix))) envoyes.add(m[1]);
   const reC = /<input[^>]*type="checkbox"[^>]*value="([^"]+)"/g;
-  while ((m = reC.exec(bloc))) envoyes.add(m[1]);
+  while ((m = reC.exec(sansChoix))) envoyes.add(m[1]);
   if (envoyes.size === 0) ARRET("aucune reponse fermee trouvee dans #modal-estimate — la sonde regarde a cote");
 
   /* Tout ce que la grille sait lire. */

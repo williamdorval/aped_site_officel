@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>APED Agence | Sites web, automatisation et logiciels sur mesure</title>
-  <meta name="description" content="APED Agence code des sites web, des boutiques en ligne, des automatisations et des logiciels internes pour les entreprises du Québec. Le code vous appartient. Calculez vos économies en neuf questions." />
+  <meta name="description" content="APED Agence code des sites web, des boutiques en ligne, des automatisations et des logiciels internes pour les entreprises du Québec. Le code vous appartient. Calculez vos économies en six écrans au plus." />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_CA" />
@@ -243,7 +243,7 @@
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right" /></svg>
       </button>
       <button class="btn btn--ghost btn--lg" type="button" data-modal-open="modal-estimate">
-        Estimation en neuf questions
+        Estimation en six écrans au plus
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
       </button>
     </div>
@@ -2882,18 +2882,18 @@
              ni demarrer un projet — est repris par le formulaire
              simple, au bas de cette section. -->
         <button class="cell cell--moyen" type="button" data-modal-open="modal-estimate">
-          <span class="num">9 questions</span>
+          <span class="num">6 écrans</span>
           <span>
             <!-- « Cadrer votre projet » ne veut rien dire pour un patron
                  de PME : c'est du vocabulaire d'agence. Le titre dit
                  maintenant ce qu'on en retire. -->
             <h3>Estimer votre projet</h3>
-            <p>Neuf questions. On vous rappelle avec un prix ferme.</p>
+            <p>Six écrans au plus, et la fourchette paraît. Le prix ferme se dit à l’appel.</p>
           </span>
           <!-- « Ouvre le questionnaire, ici » etait ecrit sur DEUX tuiles
                qui ouvrent deux choses differentes. Chaque ligne de
                destination doit nommer la sienne. -->
-          <span class="cell-ou">Ouvre les neuf questions, ici</span>
+          <span class="cell-ou">Ouvre l’estimation, ici</span>
           <svg class="icon cell-go" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
 
@@ -3216,7 +3216,7 @@
       </button>
       <button type="button" data-modal-switch="modal-estimate">
         <span class="o-num">02</span>
-        <span><strong>Estimation en neuf questions</strong><small>On cadre le projet, puis on vous rappelle.</small></span>
+        <span><strong>Estimation en six écrans au plus</strong><small>On cadre le projet, la fourchette paraît au bout.</small></span>
         <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
       </button>
       <button type="button" data-modal-switch="modal-project">
@@ -4207,102 +4207,296 @@
   <div class="modal-scrim" data-modal-close></div>
   <div class="modal-panel modal-panel--wide">
     <div class="modal-head">
-      <h3 id="estimateTitle">Estimation en neuf questions</h3>
+      <h3 id="estimateTitle">L’estimation, en six écrans au plus</h3>
       <button class="btn-icon" type="button" data-modal-close aria-label="Fermer">
         <svg class="icon" aria-hidden="true"><use href="#i-x" /></svg>
       </button>
     </div>
-    <div class="progress" role="progressbar" aria-label="Progression du questionnaire" aria-valuemin="0" aria-valuemax="100" aria-valuenow="12"><i id="wizardBar"></i></div>
+    <!-- LA PROGRESSION SE COMPTE, ELLE NE SE POURCENTAGE PAS.  D-776
+         « 25 % » ne dit pas combien de temps il reste ; « 2 sur 6 »
+         est un compte fini, et un compte fini se termine. Le total
+         DESCEND a 4 si le projet n'a pas de prix automatique : une
+         progression qui raccourcit est une bonne nouvelle. -->
+    <div class="progress-ligne">
+      <div class="progress" role="progressbar" aria-label="Progression du questionnaire" aria-valuemin="0" aria-valuemax="100" aria-valuenow="17"><i id="wizardBar"></i></div>
+      <p class="progress-compte"><b id="estimCompte">1</b> sur <b id="estimTotal">6</b></p>
+    </div>
 
     <div id="wizard">
 
-      <div class="step" data-step="1">
-        <p class="step-q">Quel type de projet ?</p>
-        <div class="options" data-key="type">
-          <button type="button" data-value="vitrine"><span class="o-num">01</span><span><strong>Site vitrine</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="ecommerce"><span class="o-num">02</span><span><strong>E-commerce</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="app"><span class="o-num">03</span><span><strong>Application ou logiciel</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="automatisation"><span class="o-num">04</span><span><strong>Automatisation et IA</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+      <!-- ============================================================
+           1 · LE TYPE.  Intention : la seule question a laquelle tout
+           le monde repond sans reflechir — et c'est aussi le plus gros
+           facteur de prix. Un clic, et la personne est engagee.
+           ============================================================ -->
+      <div class="step" data-step="1" data-pour="tous">
+        <p class="step-q">Qu’est-ce que vous voulez faire faire&nbsp;?</p>
+        <div class="options options--menu" data-key="type_de_projet">
+          <button type="button" data-value="Un site pour présenter mon entreprise"><span class="o-num">01</span><span><strong>Un site pour présenter mon entreprise</strong><small>Vos services, vos coordonnées, ce que vous faites</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Une boutique en ligne"><span class="o-num">02</span><span><strong>Une boutique en ligne</strong><small>Vendre vos produits sans être au comptoir</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Un outil de soumission ou de calcul"><span class="o-num">03</span><span><strong>Un outil de soumission ou de calcul</strong><small>Vos clients obtiennent un prix sans vous appeler</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Un logiciel ou une application sur mesure"><span class="o-num">04</span><span><strong>Un logiciel ou une application sur mesure</strong><small>Un outil qui remplace vos chiffriers</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Automatiser des tâches qui me prennent du temps"><span class="o-num">05</span><span><strong>Automatiser des tâches qui me prennent du temps</strong><small>Ce qui se refait pareil toutes les semaines</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="De l’intelligence artificielle"><span class="o-num">06</span><span><strong>De l’intelligence artificielle</strong><small>Répondre, trier, résumer, chercher</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Des visites virtuelles ou de l’immobilier"><span class="o-num">07</span><span><strong>Des visites virtuelles ou de l’immobilier</strong><small>Faire visiter sans se déplacer</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Je ne sais pas encore"><span class="o-num">08</span><span><strong>Je ne sais pas encore</strong><small>On regarde ça ensemble</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
         </div>
       </div>
 
-      <div class="step" data-step="2" hidden>
-        <p class="step-q">Dans quel domaine ?</p>
-        <div class="options" data-key="industrie">
-          <button type="button" data-value="restauration"><span class="o-num">01</span><span><strong>Restauration</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="construction"><span class="o-num">02</span><span><strong>Construction et services</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="commerce"><span class="o-num">03</span><span><strong>Commerce de détail</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="sante"><span class="o-num">04</span><span><strong>Santé et beauté</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="immobilier"><span class="o-num">05</span><span><strong>Immobilier</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="autre"><span class="o-num">06</span><span><strong>Autre</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-        </div>
-      </div>
-
-      <div class="step" data-step="3" hidden>
-        <p class="step-q">Quelle envergure ?</p>
-        <div class="options" data-key="envergure">
-          <button type="button" data-value="petit"><span class="o-num">01</span><span><strong>Simple</strong><small>Quelques pages ou fonctions</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="moyen"><span class="o-num">02</span><span><strong>Moyen</strong><small>Plusieurs sections et intégrations</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="grand"><span class="o-num">03</span><span><strong>Ambitieux</strong><small>Plateforme complète</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-        </div>
-      </div>
-
-      <div class="step" data-step="4" hidden>
-        <p class="step-q">Combien de pages ou d’écrans ?</p>
+      <!-- ============================================================
+           2 · L'AMPLEUR, EN QUATRE VERSIONS.  Intention : le
+           multiplicateur le plus direct qui existe, et il oblige la
+           personne a se representer SON projet — donc a le projeter
+           comme reel. Un seul de ces quatre ecrans se voit.
+           ============================================================ -->
+      <div class="step" data-step="2" data-pour="vitrine" hidden>
+        <p class="step-q">Combien de pages, à peu près&nbsp;?</p>
         <div class="options" data-key="ampleur">
-          <button type="button" data-value="1 à 5 pages"><span class="o-num">01</span><span><strong>1 à 5</strong><small>L’essentiel, bien fait</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="6 à 15 pages"><span class="o-num">02</span><span><strong>6 à 15</strong><small>Un vrai site</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="Plus de 15 pages"><span class="o-num">03</span><span><strong>Plus de 15</strong><small>Une plateforme</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="Aucune idée, à voir ensemble"><span class="o-num">04</span><span><strong>Aucune idée</strong><small>On regardera ensemble</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="1 à 5 pages"><span class="o-num">01</span><span><strong>1 à 5 pages</strong><small>L’essentiel&nbsp;: accueil, services, contact</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="6 à 15 pages"><span class="o-num">02</span><span><strong>6 à 15 pages</strong><small>Une page par service, une par secteur</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Plus de 15 pages"><span class="o-num">03</span><span><strong>Plus de 15 pages</strong><small>Une vraie plateforme</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Je ne sais pas encore"><span class="o-num">04</span><span><strong>Je ne sais pas encore</strong><small>On le regardera ensemble</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
         </div>
       </div>
 
-      <div class="step" data-step="5" hidden>
-        <p class="step-q">Des fonctions particulières ?</p>
-        <div class="options" data-key="fonctions">
-          <button type="button" data-value="Aucune"><span class="o-num">01</span><span><strong>Aucune</strong><small>Un site qui présente, et c’est très bien</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="Une ou deux"><span class="o-num">02</span><span><strong>Une ou deux</strong><small>Réservation, paiement, formulaire</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="Plusieurs"><span class="o-num">03</span><span><strong>Plusieurs</strong><small>Comptes, tableau de bord, connexions</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+      <div class="step" data-step="3" data-pour="boutique" hidden>
+        <p class="step-q">Combien de produits&nbsp;?</p>
+        <div class="options" data-key="ampleur">
+          <button type="button" data-value="Moins de 25 produits"><span class="o-num">01</span><span><strong>Moins de 25</strong><small>Un catalogue qui se tient dans la tête</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="25 à 250 produits"><span class="o-num">02</span><span><strong>25 à 250</strong><small>Des familles, des variantes, des formats</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Plus de 250 produits"><span class="o-num">03</span><span><strong>Plus de 250</strong><small>Un inventaire à gérer, pas juste à montrer</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Je ne sais pas encore"><span class="o-num">04</span><span><strong>Je ne sais pas encore</strong><small>On le regardera ensemble</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
         </div>
       </div>
 
-      <div class="step" data-step="6" hidden>
-        <p class="step-q">Vos textes et vos photos ?</p>
-        <div class="options" data-key="contenu">
-          <button type="button" data-value="Prêts"><span class="o-num">01</span><span><strong>Prêts</strong><small>J’ai tout sous la main</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="En partie"><span class="o-num">02</span><span><strong>En partie</strong><small>Il manque des bouts</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="Tout est à créer"><span class="o-num">03</span><span><strong>Tout est à créer</strong><small>On s’en occupe</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+      <div class="step" data-step="4" data-pour="estimateur" hidden>
+        <p class="step-q">Qu’est-ce que votre client obtient au bout&nbsp;?</p>
+        <div class="options" data-key="ampleur">
+          <button type="button" data-value="Un prix"><span class="o-num">01</span><span><strong>Un prix</strong><small>Un montant, tout de suite à l’écran</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Un prix et un plan en 2D"><span class="o-num">02</span><span><strong>Un prix et un plan en 2D</strong><small>Il voit ce qu’il achète, vu de haut</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Un rendu en 3D"><span class="o-num">03</span><span><strong>Un rendu en 3D</strong><small>Il tourne autour avant de dire oui</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
         </div>
       </div>
 
-      <div class="step" data-step="7" hidden>
-        <p class="step-q">Quel niveau de design ?</p>
-        <div class="options" data-key="design">
-          <button type="button" data-value="essentiel"><span class="o-num">01</span><span><strong>Essentiel</strong><small>Propre et efficace</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="premium"><span class="o-num">02</span><span><strong>Premium</strong><small>Animations et identité forte</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="signature"><span class="o-num">03</span><span><strong>Signature</strong><small>Direction visuelle complète, animations sur mesure</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+      <div class="step" data-step="5" data-pour="logiciel" hidden>
+        <p class="step-q">Combien d’écrans, à peu près&nbsp;?</p>
+        <div class="options" data-key="ampleur">
+          <button type="button" data-value="Moins de 5 écrans"><span class="o-num">01</span><span><strong>Moins de 5</strong><small>Un outil qui fait une chose, bien</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="5 à 15 écrans"><span class="o-num">02</span><span><strong>5 à 15</strong><small>Plusieurs façons de travailler dedans</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Plus de 15 écrans"><span class="o-num">03</span><span><strong>Plus de 15</strong><small>Un système, pas un outil</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Je ne sais pas encore"><span class="o-num">04</span><span><strong>Je ne sais pas encore</strong><small>On le regardera ensemble</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
         </div>
       </div>
 
-      <div class="step" data-step="8" hidden>
-        <p class="step-q">Quel échéancier ?</p>
-        <div class="options" data-key="delai">
-          <button type="button" data-value="urgent"><span class="o-num">01</span><span><strong>Urgent</strong><small>Moins d’un mois</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="normal"><span class="o-num">02</span><span><strong>1 à 2 mois</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="flexible"><span class="o-num">03</span><span><strong>Flexible</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+      <!-- ============================================================
+           6 · LE CHEMIN SANS PRIX.  Intention : ne pas laisser
+           l'automatisation, l'IA et l'immobilier dans un cul-de-sac.
+           On demande ce qu'ils veulent VRAIMENT, parce que c'est la
+           seule chose qui rendra l'appel utile.
+           ============================================================ -->
+      <div class="step" data-step="6" data-pour="sansprix" hidden>
+        <p class="step-q">Qu’est-ce qui vous prend le plus de temps&nbsp;?</p>
+        <p class="step-aide">Deux lignes suffisent. C’est ce qu’on regardera en premier
+          au téléphone.</p>
+        <div class="field">
+          <label for="esBesoin">Ce que vous aimeriez ne plus faire à la main</label>
+          <textarea id="esBesoin" name="besoin_detail" rows="3" maxlength="3000"
+            placeholder="Retaper les commandes dans la comptabilité · répondre trente fois à la même question · monter les soumissions à la main…"></textarea>
+          <span class="field-error">Ce champ accepte 3 000 caractères.</span>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn--primary" type="button" data-esuivant>
+            Continuer
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
         </div>
       </div>
 
-      <div class="step" data-step="9" hidden>
-        <p class="step-q">Avez-vous déjà un site web ?</p>
-        <div class="options" data-key="site_existant">
-          <button type="button" data-value="oui"><span class="o-num">01</span><span><strong>Oui</strong><small>À refaire ou améliorer</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
-          <button type="button" data-value="non"><span class="o-num">02</span><span><strong>Non</strong><small>On part de zéro</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+      <!-- ============================================================
+           7 · LES FONCTIONS, EN QUATRE VERSIONS.  Intention : c'est
+           l'ecran qui VEND. Chaque case est un benefice pour SES
+           clients a lui, jamais une technologie. Et c'est la qu'on dit
+           que grouper coute moins cher — c'est vrai, et ca fait
+           cocher.
+           ============================================================ -->
+      <div class="step" data-step="7" data-pour="vitrine" hidden>
+        <p class="step-q">Qu’est-ce que le site doit savoir faire&nbsp;?</p>
+        <p class="step-aide">Plusieurs choix. Tout monter d’un coup coûte moins cher
+          que d’y revenir&nbsp;: une seule mise en route, une seule tournée d’essais.</p>
+        <div class="check-grid" data-checks="fonctions" role="group" aria-label="Fonctions du site">
+          <label class="check"><input type="checkbox" name="fonctions" value="Un formulaire de contact" /><span><strong>Un formulaire de contact</strong><small>Les demandes arrivent dans votre boîte, pas sur un répondeur</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="La prise de rendez-vous en ligne" /><span><strong>La prise de rendez-vous en ligne</strong><small>Le client choisit son heure, vous ne rappelez plus</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Une carte du secteur desservi" /><span><strong>Une carte du secteur desservi</strong><small>On voit tout de suite si vous allez chez lui</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Un blogue ou des nouvelles" /><span><strong>Un blogue ou des nouvelles</strong><small>Ce que Google va chercher</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Un espace client" /><span><strong>Un espace client</strong><small>Ses factures et ses documents, sans vous les demander</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Rien de tout ça" data-seul /><span><strong>Rien de tout ça</strong><small>Un site qui présente, et c’est très bien</small></span></label>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn--primary" type="button" data-esuivant>
+            Continuer
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
         </div>
       </div>
 
-      <div class="step" data-step="10" hidden>
-        <p class="step-q">Où envoyer votre estimation ?</p>
+      <div class="step" data-step="8" data-pour="boutique" hidden>
+        <p class="step-q">Qu’est-ce que la boutique doit savoir faire&nbsp;?</p>
+        <p class="step-aide">Plusieurs choix. Tout monter d’un coup coûte moins cher
+          que d’y revenir&nbsp;: une seule mise en route, une seule tournée d’essais.</p>
+        <div class="check-grid" data-checks="fonctions" role="group" aria-label="Fonctions de la boutique">
+          <label class="check"><input type="checkbox" name="fonctions" value="Le paiement en ligne" /><span><strong>Le paiement en ligne</strong><small>Il paie tout de suite, vous n’avez plus à facturer</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Le calcul de la livraison" /><span><strong>Le calcul de la livraison</strong><small>Le bon prix selon où il habite</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Un panneau pour gérer mes produits" /><span><strong>Un panneau pour gérer mes produits</strong><small>Vous changez vos prix vous-même, sans nous appeler</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Des comptes clients" /><span><strong>Des comptes clients</strong><small>Il retrouve ses commandes, il rachète plus vite</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Des rabais et des codes promo" /><span><strong>Des rabais et des codes promo</strong><small>Une promotion se lance en deux minutes</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Rien de tout ça" data-seul /><span><strong>Rien de tout ça</strong><small>Un catalogue qu’on regarde, et on vous appelle</small></span></label>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn--primary" type="button" data-esuivant>
+            Continuer
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="step" data-step="9" data-pour="estimateur" hidden>
+        <p class="step-q">Qu’est-ce que l’outil doit savoir faire&nbsp;?</p>
+        <p class="step-aide">Plusieurs choix. Tout monter d’un coup coûte moins cher
+          que d’y revenir&nbsp;: une seule mise en route, une seule tournée d’essais.</p>
+        <div class="check-grid" data-checks="fonctions" role="group" aria-label="Fonctions de l’outil">
+          <label class="check"><input type="checkbox" name="fonctions" value="Il s’installe dans mon site" /><span><strong>Il s’installe dans mon site</strong><small>À la même adresse, dans le même habillage</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Il envoie la soumission par courriel" /><span><strong>Il envoie la soumission par courriel</strong><small>Le client repart avec, vous en gardez une copie</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Il se branche à mon inventaire" /><span><strong>Il se branche à mon inventaire</strong><small>Le prix suit vos vrais coûts, tout seul</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Le client peut sauvegarder et revenir" /><span><strong>Le client peut sauvegarder et revenir</strong><small>Il compare, il en parle chez lui, il revient</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Un tableau des soumissions reçues" /><span><strong>Un tableau des soumissions reçues</strong><small>Vous voyez qui a chiffré quoi, et vous rappelez</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Rien de tout ça" data-seul /><span><strong>Rien de tout ça</strong><small>Le calcul, et rien d’autre</small></span></label>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn--primary" type="button" data-esuivant>
+            Continuer
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="step" data-step="10" data-pour="logiciel" hidden>
+        <p class="step-q">Qu’est-ce que le logiciel doit savoir faire&nbsp;?</p>
+        <p class="step-aide">Plusieurs choix. Tout monter d’un coup coûte moins cher
+          que d’y revenir&nbsp;: une seule mise en route, une seule tournée d’essais.</p>
+        <div class="check-grid" data-checks="fonctions" role="group" aria-label="Fonctions du logiciel">
+          <label class="check"><input type="checkbox" name="fonctions" value="Des comptes et des permissions" /><span><strong>Des comptes et des permissions</strong><small>Chacun voit ce qui le regarde</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Des paiements" /><span><strong>Des paiements</strong><small>Encaisser sans sortir de l’outil</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Des rapports et un tableau de bord" /><span><strong>Des rapports et un tableau de bord</strong><small>Les chiffres de la semaine sans les monter à la main</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Il se branche à un système que j’ai déjà" /><span><strong>Il se branche à un système que j’ai déjà</strong><small>Votre comptabilité, votre inventaire, vos fournisseurs</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Une application mobile" /><span><strong>Une application mobile</strong><small>Sur le téléphone de vos gens, sur le terrain</small></span></label>
+          <label class="check"><input type="checkbox" name="fonctions" value="Rien de tout ça" data-seul /><span><strong>Rien de tout ça</strong><small>Le cœur du métier d’abord, le reste après</small></span></label>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn--primary" type="button" data-esuivant>
+            Continuer
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           11 · LE SOIN, ET LE FACTEUR PROPRE AU TYPE.
+           Intention de la premiere : faire choisir un niveau
+           d'ambition, en disant ce que le soin change pour SES clients
+           a lui — pas pour nous.
+           Intention de la seconde : faire apparaitre AVANT le chiffre
+           un cout que tout le monde oublie. Un budget qui apprend
+           l'existence du contenu apres la soumission se sent trompe.
+           ============================================================ -->
+      <div class="step" data-step="11" data-pour="prix" hidden>
+        <p class="step-q">À quoi ça doit ressembler&nbsp;?</p>
+        <div class="options options--serre" data-key="niveau_design">
+          <button type="button" data-value="Propre et rapide"><span class="o-num">01</span><span><strong>Propre et rapide</strong><small>Ça charge vite, ça se lit, ça fait appeler</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Marqué, avec des animations"><span class="o-num">02</span><span><strong>Marqué, avec des animations</strong><small>On se souvient de vous après avoir fermé l’onglet</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Une signature visuelle complète"><span class="o-num">03</span><span><strong>Une signature visuelle complète</strong><small>Personne d’autre dans votre domaine n’a le même</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+
+        <div class="step-second" data-pour="vitrine boutique">
+          <p class="step-q step-q--second">Vos textes et vos photos&nbsp;?</p>
+          <div class="options options--serre" data-key="contenu">
+            <button type="button" data-value="Mes textes et mes photos sont prêts"><span class="o-num">01</span><span><strong>Ils sont prêts</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="J’en ai une partie"><span class="o-num">02</span><span><strong>J’en ai une partie</strong><small>Il manque des bouts</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="Tout est à faire"><span class="o-num">03</span><span><strong>Tout est à faire</strong><small>C’est souvent le cas, et c’est nous qui l’écrivons</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          </div>
+        </div>
+
+        <div class="step-second" data-pour="estimateur" hidden>
+          <p class="step-q step-q--second">Le calcul, il est compliqué&nbsp;?</p>
+          <div class="options options--serre" data-key="complexite">
+            <button type="button" data-value="Quelques options"><span class="o-num">01</span><span><strong>Quelques options</strong><small>Trois ou quatre choix, et on a le prix</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="Plusieurs options et matériaux"><span class="o-num">02</span><span><strong>Plusieurs options et matériaux</strong><small>Chaque combinaison a son prix</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="Beaucoup de règles et de contraintes"><span class="o-num">03</span><span><strong>Beaucoup de règles et de contraintes</strong><small>Ce qui va avec quoi, ce qui est impossible, le volume</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          </div>
+        </div>
+
+        <div class="step-second" data-pour="logiciel" hidden>
+          <p class="step-q step-q--second">Qui va s’en servir&nbsp;?</p>
+          <div class="options options--serre" data-key="usagers">
+            <button type="button" data-value="Mon équipe"><span class="o-num">01</span><span><strong>Mon équipe</strong><small>Quelques personnes, tous les jours</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="Toute l’entreprise"><span class="o-num">02</span><span><strong>Toute l’entreprise</strong><small>Plusieurs services, plusieurs façons de travailler</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="Mes clients aussi"><span class="o-num">03</span><span><strong>Mes clients aussi</strong><small>Ils y entrent eux-mêmes</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn--primary" type="button" data-esuivant>
+            Continuer
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           12 · L'ECHEANCE ET LA TAILLE.
+           Intention de la premiere : une date en tete est un pas de
+           plus vers la decision — et comprimer un calendrier coute,
+           toujours.
+           Intention de la seconde : elle dit combien de personnes
+           auront un mot a dire. Ca change la duree d'un projet autant
+           que le code. On demande le NOMBRE, jamais le chiffre
+           d'affaires : « combien vous gagnez » se lit comme un examen
+           de solvabilite, et c'est la que les gens ferment l'onglet.
+           ============================================================ -->
+      <div class="step" data-step="12" data-pour="tous" hidden>
+        <p class="step-q">Pour quand&nbsp;?</p>
+        <div class="options options--serre" data-key="echeancier">
+          <button type="button" data-value="Dans le mois"><span class="o-num">01</span><span><strong>Dans le mois</strong><small>On comprime le calendrier, et ça se paie</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Dans 1 à 3 mois"><span class="o-num">02</span><span><strong>Dans 1 à 3 mois</strong><small>Le rythme normal</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Plus tard cette année"><span class="o-num">03</span><span><strong>Plus tard cette année</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          <button type="button" data-value="Pas de date fixe"><span class="o-num">04</span><span><strong>Pas de date fixe</strong><small>On prépare, vous lancez quand vous voulez</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+        </div>
+
+        <div class="step-second">
+          <p class="step-q step-q--second">Vous êtes combien dans l’entreprise&nbsp;?</p>
+          <div class="options options--serre" data-key="taille_equipe">
+            <button type="button" data-value="1 à 5 personnes"><span class="o-num">01</span><span><strong>1 à 5</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="6 à 25 personnes"><span class="o-num">02</span><span><strong>6 à 25</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+            <button type="button" data-value="26 personnes et plus"><span class="o-num">03</span><span><strong>26 et plus</strong></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></button>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn--primary" type="button" data-esuivant>
+            Continuer
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           13 · LES COORDONNEES.  Intention : on les demande MAINTENANT
+           et pas avant. La personne a repondu a cinq ecrans, et la
+           question a une raison visible — c'est la qu'on lui envoie sa
+           reponse. Le telephone est obligatoire : une fourchette se
+           regle en deux minutes d'appel et jamais en trois courriels.
+           ============================================================ -->
+      <div class="step" data-step="13" data-pour="tous" hidden>
+        <p class="step-q">Où on vous envoie ça&nbsp;?</p>
         <form class="form" data-form="estimate" novalidate>
         <!-- LE PIEGE A ROBOTS. Il n'est pas cache par `hidden` :
              un robot un peu serieux saute ce qui porte `hidden`.
@@ -4320,58 +4514,67 @@
           <div class="form-row">
             <div class="field">
               <label for="esName">Votre nom</label>
-              <input id="esName" name="nom" type="text" required autocomplete="name" />
+              <input id="esName" name="nom" type="text" required autocomplete="name" maxlength="120" />
               <span class="field-error">Entrez votre nom.</span>
             </div>
             <div class="field">
               <label for="esEmail">Courriel</label>
-              <input id="esEmail" name="email" type="email" autocapitalize="none" inputmode="email" spellcheck="false" required autocomplete="email" placeholder="prenom@entreprise.ca…" />
+              <input id="esEmail" name="email" type="email" autocapitalize="none" inputmode="email" spellcheck="false" required autocomplete="email" maxlength="254" placeholder="prenom@entreprise.ca…" />
               <span class="field-error">Entrez un courriel valide.</span>
             </div>
           </div>
           <div class="field">
             <label for="esPhone">Téléphone</label>
-            <input id="esPhone" name="telephone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="418 555 0142…" />
+            <input id="esPhone" name="telephone" type="tel" inputmode="tel" required autocomplete="tel" maxlength="40" placeholder="418 555 0142…" />
             <span class="field-error">Entrez un numéro à dix chiffres.</span>
-            <p class="field-aide">Une estimation se discute mieux en deux minutes au téléphone qu’en trois courriels. On appelle, on ne relance pas.</p>
+            <p class="field-aide">Une fourchette se règle en deux minutes au téléphone
+              et jamais en trois courriels. On appelle une fois, on ne relance pas.</p>
           </div>
           <button class="btn btn--primary" type="submit" data-submit>
-            <span data-label>Voir mon estimation</span>
+            <span data-label>Voir ma fourchette</span>
             <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
           </button>
           <p class="form-status" role="status" aria-live="polite"></p>
-          <p class="form-legal">Nom, courriel et téléphone servent à vous envoyer l’estimation et à en discuter. Aucune infolettre, aucun partage. <a href="confidentialite.html">Politique de confidentialité</a>.</p>
+          <p class="form-legal">Nom, courriel et téléphone servent à préparer votre
+            prix ferme et à en discuter. Aucune infolettre, aucun partage.
+            <a href="confidentialite.html">Politique de confidentialité</a>.</p>
         </form>
       </div>
 
-      <!-- LA FOURCHETTE CHIFFREE EST RETIREE LE 2026-08-03.
-           Elle publiait cinq paliers, de 2 500 $ a 40 000 $ et plus :
-           c'etait la grille tarifaire d'APED, affichee a l'ecran. Les
-           seuls prix autorises sur le site sont desormais 75 $
-           l'heure, 40 % au demarrage, et le plafond de 5 000 $ du
-           programme de reference.
-           L'etape 8 rend maintenant CE QU'ON A COMPRIS du projet —
-           ce qui est utile au visiteur, verifiable par lui, et ce qui
-           justifie l'appel. -->
-      <div class="step" data-step="11" hidden>
-        <p class="label">Ce qu’on a compris de votre projet</p>
-        <p class="num" id="estimateResume" style="font-size: var(--fs-4); letter-spacing: -0.02em; line-height: 1.35;">—</p>
+      <!-- ============================================================
+           14 · LE CHIFFRE.  D-774
 
-        <!-- LA FOURCHETTE REVIENT ICI, sous la regle de D-748 :
-             apres neuf questions, jamais en acces libre. -->
+           LA DEMANDE EST DEJA PARTIE QUAND CET ECRAN PARAIT. On ne
+           retient pas le visiteur en otage du prix : s'il trouve ca
+           trop cher, on l'a quand meme — et on sait POURQUOI, ce qui
+           vaut plus cher que le lead.
+
+           LE CHIFFRE NE VIENT PAS D'ICI. Il descend du serveur, dans
+           la reponse. Le navigateur ne porte plus la grille.
+           ============================================================ -->
+      <div class="step" data-step="14" data-pour="tous" hidden>
+        <p class="label">Ce qu’on a compris de votre projet</p>
+        <p class="num estim-resume" id="estimateResume">—</p>
+
+        <!-- LA FOURCHETTE. Le plancher EST le prix qu'on prepare :
+             une fourchette dont le bas est la cible obtient de
+             meilleures contre-offres qu'une fourchette centree
+             (Ames & Mason, JPSP 2015). Et le haut n'est jamais un
+             « a partir de » : un plancher sans plafond est une
+             promesse que la soumission dementira toujours. -->
         <div class="devis" id="esDevis" hidden>
-          <p class="devis-quoi">Pour ce que vous décrivez, un projet comme le vôtre
-            se situe généralement entre&nbsp;:</p>
+          <p class="devis-quoi">Pour ce que vous décrivez, on prépare une soumission
+            entre&nbsp;:</p>
           <p class="devis-montant num" id="esFourchette">—</p>
           <p class="devis-sur" id="esFourchetteSur"></p>
           <p class="devis-mise">
-            C’est un <b>ordre de grandeur</b>, pas un devis. Le prix ferme est dit
-            au premier appel, et c’est celui de la facture. Il peut descendre&nbsp;:
-            la moitié de nos mandats commencent plus petit que prévu.
+            Le prix ferme se dit au premier appel, et c’est celui de la facture.
+            Il sort de cette fourchette seulement si on découvre quelque chose
+            que le formulaire ne demandait pas&nbsp;— et on vous dit quoi.
           </p>
 
           <div class="devis-question" id="esDevisQuestion">
-            <p class="devis-demande">Est-ce que cet ordre de grandeur vous convient&nbsp;?</p>
+            <p class="devis-demande">Est-ce que ça vous convient&nbsp;?</p>
             <div class="choices" data-choice="prix_reaction">
               <button class="btn btn--ghost" type="button" data-value="Oui">Oui, on en parle</button>
               <button class="btn btn--ghost" type="button" data-value="Non">Non, c’est trop</button>
@@ -4389,13 +4592,51 @@
             </button>
           </div>
 
+          <!-- LE « NON » N'EST PAS UNE SORTIE.  D-775
+               On ne rabat jamais le PRIX — un rabais dirait que le
+               premier chiffre etait faux, et detruirait la veracite de
+               tout l'outil. On rabat la PORTEE, et le visiteur VOIT ce
+               qu'il troque. Le grand chiffre reste a l'ecran : c'est
+               lui qui rend le petit raisonnable. -->
           <div class="devis-suite" id="esDevisNon" hidden>
             <p class="devis-mise">Merci de le dire — c’est plus utile qu’un silence.
-              En deux mots, qu’est-ce qui accroche&nbsp;?</p>
+              Qu’est-ce qui accroche&nbsp;?</p>
+            <div class="choices choices--empile" data-choice="prix_pourquoi">
+              <button class="btn btn--ghost" type="button" data-value="C’est au-dessus de mon budget">C’est au-dessus de mon budget</button>
+              <button class="btn btn--ghost" type="button" data-value="Je voulais juste une idée">Je voulais juste une idée</button>
+              <button class="btn btn--ghost" type="button" data-value="Je compare avec d’autres">Je compare avec d’autres</button>
+            </div>
+            <!-- LA PORTE DE SORTIE VIENT AVANT LE CHAMP LIBRE, ET
+                 C'EST UN DEFAUT CORRIGE. Elle etait posee APRES le
+                 champ « autre chose » et le bouton « Envoyer », donc
+                 sous la ligne de flottaison : quelqu'un qui vient de
+                 dire « c'est trop cher » devait defiler pour trouver
+                 ce qu'on lui propose. Vu a l'image, pas au test —
+                 aucune sonde du DOM ne mesure ce qui est LOIN. -->
+            <div class="devis-petit" id="esPetit" hidden>
+              <p class="devis-demande">En commençant plus petit&nbsp;:</p>
+              <p class="devis-montant devis-montant--petit num" id="esPetitMontant">—</p>
+              <!-- « CE QUI CHANGE », PAS « CE QUI SORT ». La liste
+                   porte aussi « on prend le temps normal » — un delai
+                   qui se detend ne SORT de rien. Une etiquette fausse
+                   sur une liste vraie, et c'est la liste qu'on croit
+                   fausse. -->
+              <p class="devis-sur">Ce qui change&nbsp;:</p>
+              <ul class="devis-retire" id="esPetitRetire"></ul>
+              <p class="devis-mise">Le reste s’ajoute quand vous voulez. Étalé en deux,
+                le total monte un peu — refaire le tour d’un projet deux fois coûte du
+                temps — mais vous êtes en ligne bien plus vite.</p>
+              <button class="btn btn--primary" type="button" data-modal-switch="modal-booking">
+                En parler trente minutes
+                <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+              </button>
+            </div>
+
             <div class="field">
-              <label for="esPrixRaison">Ce qui accroche</label>
-              <textarea id="esPrixRaison" name="prix_raison" rows="2"
-                placeholder="Au-dessus de mon budget · je voulais juste une idée · je compare…"></textarea>
+              <label for="esPrixRaison">Autre chose <span class="opt">(optionnel)</span></label>
+              <textarea id="esPrixRaison" name="prix_raison" rows="2" maxlength="2000"
+                placeholder="Ce qui vous fait hésiter…"></textarea>
+              <span class="field-error">Ce champ accepte 2 000 caractères.</span>
             </div>
             <button class="btn btn--primary" type="button" id="esPrixEnvoi" data-submit>
               <span data-label>Envoyer</span>
@@ -4405,14 +4646,31 @@
           </div>
         </div>
 
+        <!-- LES TROIS CATEGORIES SANS PRIX.  D-774
+             Dire « ca depend » est une esquive ; nommer CE dont ca
+             depend est une reponse. La difference entre les deux est
+             la quantite d'information donnee gratuitement. -->
+        <div class="devis devis--sansprix" id="esSansPrix" hidden>
+          <p class="devis-quoi">On ne vous donnera pas un chiffre inventé.</p>
+          <p class="devis-mise">Pour ce genre de projet, le prix dépend de trois
+            choses&nbsp;:</p>
+          <ul class="devis-retire" id="esSansPrixRaisons"></ul>
+          <p class="devis-mise">Ces trois-là ne se devinent pas depuis un formulaire.
+            On pourrait sortir un chiffre en devinant vos réponses&nbsp;: vous le
+            sauriez en lisant la soumission.</p>
+          <p class="devis-mise"><b>Trente minutes au téléphone donnent un prix ferme,
+            pas une fourchette.</b> Et vous repartez avec la réponse même si on ne
+            travaille pas ensemble.</p>
+          <button class="btn btn--primary" type="button" data-modal-switch="modal-booking">
+            Choisir un moment
+            <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
+          </button>
+        </div>
+
         <p class="roi-note" id="esSuiteTexte">Le prix ferme est dit au premier appel,
           et c’est celui de la facture.</p>
         <!-- L'ETAT DE L'ENVOI VIT ICI, ET C'EST UN DEFAUT CORRIGE.  D-087 -->
         <p class="form-status" id="estimateStatus" role="status" aria-live="polite"></p>
-        <button class="btn btn--primary" type="button" data-modal-switch="modal-booking" style="justify-self:start">
-          Réserver un appel
-          <svg class="icon" aria-hidden="true"><use href="#i-calendar-check" /></svg>
-        </button>
       </div>
 
       <p class="form-appel form-appel--pied">Vous voulez le vrai chiffre tout de suite&nbsp;? Il se donne au téléphone&nbsp;: <a class="appel-num num" href="tel:+18195230871" data-appel="estimate">819&nbsp;523-0871</a></p>

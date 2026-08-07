@@ -127,7 +127,7 @@ const CONTEXTES_OK = [
   /* LA FORME D'UNE LIGNE DE BAREME, pas le mot « BAREME » : le
      mot n'est ecrit que sur la ligne d'ouverture, et ce sont les
      CINQ lignes suivantes qui portent les montants. */
-  { motif: /BAREME|devis-montant|fourchette_vue|fourchetteDe|score:\s*\d+\s*,\s*texte:/, pourquoi: "bareme revele apres le formulaire, D-748" }
+  { motif: /devis-montant|fourchette_vue/, pourquoi: "bareme revele apres le formulaire, D-748" }
 ];
 const autorise = (n) => AUTORISES.find((a) => a.motif.test(n.trim()));
 const contexteOk = (l) => CONTEXTES_OK.find((c) => c.motif.test(l));
@@ -332,7 +332,35 @@ function chercherGrille(source) {
   }
 }
 
-const grilles = chercherGrille(fs.readFileSync(path.join(RACINE, "js/main.js"), "utf8"));
+/* LA REGLE S'INVERSE LE 2026-08-07.  D-774
+
+   Cet outil EXIGEAIT la presence du bareme dans `js/main.js` :
+   « bareme INTROUVABLE » etait un echec, parce que sans lui la
+   fourchette promise a la fin de l'assistant de projet ne
+   s'affichait plus. C'etait juste tant que le navigateur calculait
+   le prix.
+
+   Il ne le calcule plus. La grille vit dans `google/Code.gs`, le
+   site envoie des reponses et recoit une fourchette. Trouver un
+   bareme dans un fichier servi n'est donc plus une condition : c'est
+   une FUITE. La ligne `CONTEXTES_OK` qui blanchissait
+   `BAREME|fourchetteDe|score:\s*\d+\s*,\s*texte:` blanchissait
+   exactement ce qu'il faut maintenant denoncer — elle part aussi.
+
+   ON CHERCHE DANS TOUS LES FICHIERS SERVIS, pas seulement
+   `js/main.js` : une grille recopiee dans `js/langue.js` serait
+   tout aussi lisible. */
+const SERVIS_GRILLE = ["js/main.js", "js/motion.js", "js/hero.js", "js/limaille.js",
+  "js/pointe.js", "js/langue.js", "js/trame.js", "js/tour360.js",
+  "css/critique.css", "css/differe.css", "index.html"];
+const grilles = [];
+for (const rel of SERVIS_GRILLE) {
+  const abs = path.join(RACINE, rel);
+  if (!fs.existsSync(abs)) continue;
+  chercherGrille(fs.readFileSync(abs, "utf8")).forEach((g) => {
+    grilles.push({ fichier: rel, ligne: g.ligne, texte: g.texte });
+  });
+}
 
 /* ---- passe 2 : le texte reellement rendu ---- */
 const nav = await chromium.launch();
@@ -575,6 +603,7 @@ const coincidences = [...new Set(rendu
 
 console.log(`
 Bareme trouve dans js/main.js : ${grilles.length} ligne(s)`);
+console.log(`Grilles de prix dans un fichier servi : ${grilles.length}   (doit valoir 0)`);
 console.log(`Fourchettes du bareme lues dans la page : ${fuites.length}`);
 console.log(`  note · ${coincidences.length} montant(s) de la page coincident avec une BORNE du bareme`
   + (coincidences.length ? " : " + coincidences.join(" \u00b7 ") + " $" : "")
@@ -584,20 +613,22 @@ if (fuites.length) {
   fuites.forEach((f) => console.log("   *** " + f.montant + "   « " + f.avant + " »"));
 }
 
-if (aRetirer.length || aVerifier.length || fuites.length || grilles.length === 0) {
+if (aRetirer.length || aVerifier.length || fuites.length || grilles.length > 0) {
   console.error(
     `\nECHEC : ${aRetirer.length} prix a retirer dans le source, ` +
     `${aVerifier.length} a verifier dans le rendu, ` +
     `${fuites.length} montant(s) du bareme dans la page, ` +
-    `bareme ${grilles.length ? "present" : "INTROUVABLE"}.`
+    `${grilles.length} ligne(s) de grille dans un fichier servi.`
   );
-  if (!grilles.length) {
+  if (grilles.length) {
     console.error(
-      "       Le bareme a disparu de js/main.js. La fourchette promise\n" +
-      "       a la fin de l'assistant de projet ne s'affichera plus, et\n" +
-      "       rien d'autre ne le dirait."
+      "       UNE GRILLE DE PRIX S'EST REFORMEE DANS UN FICHIER SERVI.\n" +
+      "       Elle doit vivre dans google/Code.gs et nulle part ailleurs :\n" +
+      "       tout ce que le navigateur calcule, un concurrent le lit."
     );
+    grilles.slice(0, 8).forEach((g) =>
+      console.error("       " + g.fichier + ":" + g.ligne + " · " + g.texte));
   }
   process.exit(1);
 }
-console.log("\nok — 0 prix non autorise sur la page, bareme present et non divulgue.");
+console.log("\nok — 0 prix non autorise sur la page, aucune grille dans ce qui part au navigateur.");

@@ -90,18 +90,54 @@ const eSteps = compter("data-step");
 const pSteps = compter("data-pstep");
 const rSteps = compter("data-rstep");
 
-/* L'ESTIMATEUR : les questions s'arrêtent où le formulaire commence.
-   L'écran des coordonnées et celui du résultat ne sont pas des
-   questions — les compter gonflerait la promesse dans l'autre sens,
-   ce qui est aussi un mensonge. */
-const Q_ESTIM = eSteps.filter((x) => x <= 9).length;
+/* L'ESTIMATEUR NE SE COMPTE PLUS AU NOMBRE D'ECRANS DU BALISAGE.
+   D-776
+
+   Il en porte QUATORZE et n'en montre JAMAIS plus de six : chaque
+   écran déclare `data-pour`, la famille de projet à laquelle il
+   s'adresse, et le questionnaire choisit son chemin au premier
+   clic. L'ancienne règle — « tout `data-step` jusqu'à 9 est une
+   question » — comptait donc les quatre écrans d'ampleur comme
+   quatre questions posées à la même personne. Elle rendait 9 sur un
+   parcours qui en fait 6.
+
+   CE QU'ON COMPTE : le PLUS LONG chemin. C'est ce que la promesse
+   « six écrans au plus » engage, et c'est le seul nombre qu'aucun
+   visiteur ne verra dépassé. L'écran du résultat ne s'y compte pas :
+   il ne se remplit pas. */
+const FAMILLES = ["vitrine", "boutique", "estimateur", "logiciel", "sansprix"];
+function ecransDe(famille) {
+  const re = /<div class="step"[^>]*data-step="(\d+)"[^>]*data-pour="([^"]+)"/g;
+  let m, k = 0, dernier = 0;
+  while ((m = re.exec(HTML))) {
+    const num = Number(m[1]);
+    const pour = m[2].trim().split(/\s+/);
+    dernier = Math.max(dernier, num);
+    const ok = pour.includes("tous") || pour.includes(famille)
+      || (pour.includes("prix") && famille !== "sansprix");
+    if (ok) k++;
+  }
+  /* Le dernier ecran est celui du resultat : il est `data-pour="tous"`
+     et il ne se remplit pas. */
+  return { ecrans: k - 1, dernier };
+}
+const PARCOURS = FAMILLES.map((f) => ({ f, ...ecransDe(f) }));
+const Q_ESTIM = Math.max(...PARCOURS.map((x) => x.ecrans));
+const Q_MIN = Math.min(...PARCOURS.map((x) => x.ecrans));
+if (PARCOURS.some((x) => x.ecrans < 1)) {
+  console.error("ARRET · un parcours de l'estimateur ne compte aucun écran remplissable.");
+  console.error("        Le balisage a changé de forme et cet outil ne le lit plus.");
+  process.exit(2);
+}
 /* LE PROJET : le dernier écran est le SUCCÈS, il ne se remplit pas. */
 const E_PROJET = pSteps.length - 1;
 const E_REFER = rSteps.length - 1;
 
 console.log("============================================================");
 console.log("CE QUE LE CODE CONTIENT");
-console.log("  estimation · questions      : " + Q_ESTIM + "   (data-step " + eSteps.join(",") + ")");
+console.log("  estimation · le plus long chemin : " + Q_ESTIM + " écrans remplissables");
+PARCOURS.forEach((x) => console.log("               · " + x.f.padEnd(11) + " " + x.ecrans + " écrans"));
+console.log("               (le plus court : " + Q_MIN + ")");
 console.log("  projet     · écrans remplis : " + E_PROJET + "   (data-pstep " + pSteps.join(",") + ")");
 console.log("  référence  · écrans remplis : " + E_REFER + "   (data-rstep " + rSteps.join(",") + ")");
 console.log("============================================================");
@@ -141,8 +177,14 @@ function parleDeLEstimateur(src, i) {
 
 const CIBLES = [
   { fichiers: ["index.html", "confidentialite.html"],
-    motif: /(?:^|[^\wàâçéèêëîïôûùüÿñ])(?:(un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze)|(\d{1,2}))\s+questions/gi,
-    attendu: Q_ESTIM, quoi: "questions de l'estimateur", filtre: parleDeLEstimateur }
+    /* « ECRANS », PAS « QUESTIONS ».  D-776
+       Deux ecrans posent DEUX questions chacun : promettre « six
+       questions » serait faux de deux, et dans le sens qui deçoit.
+       Le compteur a l'ecran dit « 3 sur 6 » et compte des ecrans :
+       la promesse doit compter la meme chose, sinon les deux
+       chiffres se contredisent sous les yeux du visiteur. */
+    motif: /(?:^|[^\wàâçéèêëîïôûùüÿñ])(?:(un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze)|(\d{1,2}))\s+écrans/gi,
+    attendu: Q_ESTIM, quoi: "écrans de l'estimateur", filtre: parleDeLEstimateur }
 ];
 
 let promesses = 0;
@@ -172,7 +214,7 @@ for (const c of CIBLES) {
    n'annonce de nombre, cet outil n'a plus rien à garder — et il
    doit le dire, pas rendre « tout concorde ». */
 console.log("");
-dire("le site annonce bien un nombre de questions", promesses > 0, true,
+dire("le site annonce bien un nombre d'écrans", promesses > 0, true,
   "aucune promesse chiffrée trouvée : soit elles ont disparu, soit le motif ne les voit plus");
 
 /* ---- 3 · LA FAQ COMPTE SES PROPRES QUESTIONS ---- */

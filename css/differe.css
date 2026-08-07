@@ -4524,6 +4524,157 @@ html:not(.js) .ba-trait { display: none; }
   color: var(--c-mute) !important;
 }
 .cond-version b { color: var(--c-ink); }
+/* LA LIGNE DE PROGRESSION SE CACHE, ET IL A FALLU LE DIRE EN CSS.
+   `.progress-ligne` est un `display: flex` : la regle de l'agent
+   utilisateur `[hidden] { display: none }` n'a qu'UN selecteur de
+   type et perd contre une classe. Le script posait donc bien
+   `hidden`, et « 6 sur 6 » restait affiche sur l'ecran du prix —
+   au-dessus du seul chiffre qui compte. Vu a l'image. */
+.progress-ligne[hidden] { display: none; }
+/* == 21c. L'ESTIMATEUR — ce que le questionnaire refait a gagne ==
+   D-776
+
+   Les ecrans a DEUX questions sont neufs. Jusqu'ici l'estimateur
+   n'en posait qu'une par ecran et sautait au clic : rien n'avait
+   besoin de montrer ce qui etait choisi. Deux questions demandent
+   un etat de selection VISIBLE, sinon on repond a la premiere, on
+   descend, et on ne sait plus si on a repondu. */
+/* L'ETAT CHOISI PASSE PAR `aria-pressed`, PAS PAR UNE CLASSE.
+   Une classe `is-on` n'aurait rien dit au lecteur d'ecran : la
+   personne aurait entendu « bouton, 6 a 15 pages » sans savoir
+   qu'elle vient de le choisir. L'attribut dit les deux a la fois,
+   et il porte le style. */
+.options button[aria-pressed="true"] {
+  color: var(--accent-text);
+  padding-left: var(--s-3);
+}
+.options button[aria-pressed="true"] .o-num { color: var(--accent-text); }
+/* LE FILET DE GAUCHE EST LA MARQUE. Rayon 0, aucune ombre, aucun
+   fond : un trait de 2 px, pose la ou l'oeil descend la liste. */
+.options button[aria-pressed="true"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0;
+  width: 2px;
+  background: var(--accent);
+}
+.options button { position: relative; }
+/* L'ECRAN 1 PORTE HUIT CHOIX : ses libelles sont longs, et le
+   `<small>` sous chacun ferait douze centimetres de haut a l'ecran
+   d'un telephone. On resserre. */
+.options--menu button { padding-block: var(--s-3); }
+.options--menu strong { font-size: var(--fs-6); }
+.options--serre button { padding-block: var(--s-3); }
+.options--serre strong { font-size: var(--fs-6); }
+/* LA SECONDE QUESTION D'UN ECRAN. Elle se separe par un filet, pas
+   par un cadre : la profondeur de ce site est un trait, jamais une
+   boite. */
+.step-second {
+  display: grid;
+  gap: var(--s-4);
+  margin-top: var(--s-2);
+  padding-top: var(--s-5);
+  border-top: var(--rule-w) solid var(--rule);
+}
+.step-second[hidden] { display: none; }
+.step-q--second { font-size: var(--fs-5); }
+.step-aide {
+  max-width: 56ch;
+  font-size: var(--fs-7);
+  line-height: 1.6;
+  color: var(--ink-muted);
+  margin-top: calc(-1 * var(--s-3));
+}
+/* CE QUI MANQUE SE DIT, ET ÇA NE CLIGNOTE PAS. Un bouton
+   « Continuer » qui ne repond pas laisse croire a une panne. Le
+   titre de la question sans reponse passe au minium le temps qu'on
+   la voie — c'est V4, un cran, pas un fondu. */
+.step-q--manque { color: var(--accent-text); }
+/* LE RESUME DE CE QU'ON A COMPRIS. Il etait ecrit en style en
+   ligne dans le balisage — trois declarations posees a la main sur
+   un `<p class="num">`. Il vit ici. */
+.estim-resume {
+  font-size: var(--fs-4);
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+/* LES CASES DES FONCTIONS PORTENT MAINTENANT UN BENEFICE SOUS LEUR
+   TITRE. `.check` etait un `inline-flex` centre : le `<small>` s'y
+   serait aligne au milieu de la case a cocher. */
+.check-grid .check { align-items: flex-start; }
+.check-grid .check span { display: grid; gap: 0.125rem; }
+.check-grid .check strong { font-weight: 600; font-size: var(--fs-7); }
+.check-grid .check small {
+  color: var(--ink-muted);
+  font-size: var(--fs-8);
+  line-height: 1.45;
+}
+@media (min-width: 48em) {
+.check-grid { grid-template-columns: 1fr 1fr; }
+}
+/* LES TROIS MOTIFS DE REFUS S'EMPILENT. Cote a cote, ils se
+   coupaient en deux lignes chacun sous 26em et devenaient
+   illisibles. */
+.choices--empile { flex-direction: column; align-items: stretch; }
+.choices--empile button { justify-content: flex-start; text-align: left; }
+.choices button[aria-pressed="true"] {
+  border-color: var(--accent-text);
+  background: var(--accent-wash);
+}
+/* LA VERSION ALLEGEE.  D-775
+   Son montant est en ENCRE, pas en minium. Le minium marque l'endroit
+   ou le visiteur peut agir, et l'action reste le grand chiffre : le
+   petit est une porte de sortie, pas la proposition. Deux montants en
+   minium se seraient disputes l'oeil. */
+.devis-petit {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+  width: 100%;
+  margin-top: var(--s-4);
+  padding-top: var(--s-5);
+  border-top: var(--rule-w) solid var(--rule-strong);
+}
+/* DEUX CLASSES, DEUX SELECTEURS DE MEME POIDS — ET `.devis-montant`
+   est declare 600 lignes PLUS BAS, donc il gagnait. Les deux
+   montants sortaient en minium et se disputaient l'oeil ; vu a
+   l'image, pas au test. On ajoute le contenant plutot que de
+   deplacer un bloc : `.devis` est ce qui les entoure tous les
+   deux, et il dit exactement ce qu'on veut dire — « dans la boite
+   du devis, le petit montant est en encre ». */
+.devis .devis-montant--petit { color: var(--ink); font-size: var(--fs-3); }
+.devis-retire {
+  display: grid;
+  gap: var(--s-2);
+  max-width: 52ch;
+  font-size: var(--fs-7);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  list-style: none;
+  padding-left: var(--s-5);
+}
+.devis-retire li { position: relative; }
+.devis-retire li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(-1 * var(--s-4));
+  top: 0.6em;
+  width: var(--s-3);
+  height: var(--rule-w);
+  background: var(--rule-strong);
+}
+/* LES TROIS CATEGORIES SANS PRIX. Aucun chiffre, donc aucun minium :
+   ici le visiteur n'a rien a peser, il a un appel a prendre. */
+.devis--sansprix { justify-items: start; }
+.devis--sansprix .devis-quoi {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-4);
+  font-variation-settings: "wdth" var(--wdth-wide);
+  color: var(--ink);
+  max-width: 22ch;
+}
 /* == 22. FAQ - deux colonnes, accordeon == */
 /* LA SORTIE DE SECOURS EXISTE MAINTENANT SUR TELEPHONE AUSSI.  D-238
    Elle etait en `display: none` sous 64em : un visiteur de telephone
