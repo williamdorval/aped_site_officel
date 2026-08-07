@@ -1,15 +1,23 @@
 {
-  "liens": 63,
+  "liens": 78,
   "parGenre": {
     "ancre": 59,
-    "relatif": 4
+    "relatif": 14,
+    "tel": 5
   },
   "liensMorts": [],
-  "boutons": 101,
+  "boutons": 129,
   "boutonsMuets": [],
   "motsDeRemplissage": [],
   "images": 43,
   "imagesVides": [
+    {
+      "src": "images/realisations/ecran-restaurant.webp",
+      "chargee": false,
+      "visible": true,
+      "dimensionnee": true,
+      "differee": true
+    },
     {
       "src": "images/realisations/ecran-boutique.webp",
       "chargee": false,

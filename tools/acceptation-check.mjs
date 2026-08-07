@@ -248,6 +248,76 @@ titre("4 · L'ETAPE 1 PASSE SANS ACCEPTATION");
 }
 
 /* ============================================================
+   4bis · UNE ETAPE INTERMEDIAIRE N'ECRIT AUCUNE PREUVE
+
+   LE DEFAUT QU'ON GARDE ICI. Le site enregistre a chaque ecran et
+   serialise le formulaire ENTIER : le champ cache
+   `conditions_version` partait des l'etape 1, et quelqu'un qui
+   cochait la case puis revenait d'un ecran envoyait
+   `conditions_acceptees` sans `_final`. Le classeur affirmait alors
+   « acceptees : oui, version 2026-08-07, heure VIDE » sur une
+   reference jamais envoyee — et `COLONNES_FIGEES` interdisait
+   ensuite de le corriger.
+
+   Une preuve figee et fausse est le contraire exact de ce que ces
+   trois colonnes existent pour donner.
+   ============================================================ */
+titre("4bis · UNE ETAPE INTERMEDIAIRE N'ECRIT AUCUNE PREUVE");
+{
+  remise();
+  /* Le cas exact : la case cochee, la version envoyee, PAS `_final`. */
+  const r = poste({
+    _form: "refer", _sid: sidDe("sidTot"), _etape: 6, _etapes: 8,
+    entreprise_referee: "ZZ Boucherie",
+    conditions_acceptees: "oui", conditions_version: VERSION
+  });
+  dire("l'etape passe", r.success, true, r.message || "");
+  dire("mais « Conditions acceptées » reste VIDE",
+    valeur(2, "Conditions acceptées"), "",
+    "une preuve ne nait qu'a la confirmation, jamais en chemin");
+  dire("« Version acceptée » aussi", valeur(2, "Version acceptée"), "");
+  dire("et « Acceptées le » aussi", valeur(2, "Acceptées le"), "");
+
+  /* ET LA MEME SESSION, FINIE, LES ECRIT TOUTES LES TROIS. Sans ce
+     second temps, la purge pourrait avoir casse l'acceptation tout
+     court et le cas ci-dessus passerait quand meme. */
+  const r2 = poste(reference("sidTot", {
+    entreprise_referee: "ZZ Boucherie",
+    conditions_acceptees: "oui", conditions_version: VERSION
+  }));
+  dire("la confirmation passe", r2.success, true, r2.message || "");
+  dire("et la preuve s'ecrit alors", valeur(2, "Conditions acceptées"), "oui");
+  dire("avec sa version", valeur(2, "Version acceptée"), VERSION);
+  dire("et son heure", valeur(2, "Acceptées le").length > 0, true);
+  dire("toujours une seule ligne",
+    etat.feuilles.get(gs.SCHEMA.refer.onglet).valeurs.length, 2);
+}
+
+/* ============================================================
+   4ter · CE QUI N'EST PAS UN NUMERO NE SE JUGE PAS COMME UN
+   ============================================================ */
+titre("4ter · « bureau 12 » N'EST PAS UN TELEPHONE INCOMPLET");
+{
+  remise();
+  const r = poste(reference("sidLocal", {
+    contact_reference: "Marie Lavoie, bureau 12",
+    conditions_acceptees: "oui", conditions_version: VERSION
+  }));
+  dire("un local ne fait pas refuser la reference", r.success, true,
+    "l'etiquette dit « nom et courriel OU telephone » : un chiffre isole n'est pas un numero · " + (r.message || ""));
+
+  /* MAIS UN VRAI NUMERO TRONQUE, LUI, SE FAIT TOUJOURS PRENDRE.
+     Sans ce temoin, on aurait pu desarmer la regle au lieu de la
+     regler. */
+  remise();
+  const r2 = poste(reference("sidTronq", {
+    contact_reference: "Marie Lavoie 418 555 01",
+    conditions_acceptees: "oui", conditions_version: VERSION
+  }));
+  dire("un numero a huit chiffres reste refuse", r2.success, false, r2.message);
+}
+
+/* ============================================================
    5 · LE PIEGE A ROBOTS PASSE AVANT TOUT LE RESTE
    ============================================================ */
 titre("5 · UN ROBOT QUI COCHE TOUT N'ECRIT RIEN");

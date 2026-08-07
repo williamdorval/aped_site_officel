@@ -582,30 +582,44 @@ titre("4 · LES ÉCRANS OBLIGATOIRES REFUSENT LE VIDE, ET DISENT LEQUEL");
    C'est exactement le « pire des deux mondes » que le commentaire
    de D-771 dit vouloir éviter dans `Code.gs`.
    ------------------------------------------------------------ */
+/* CORRIGE LE 2026-08-07 (D-773), ET CE CAS A ETE RETOURNE.
+
+   Il affirmait « les ecrans laissent passer 418 » — c'est-a-dire
+   qu'il DECRIVAIT le defaut pour en montrer la suite. Un cas ecrit
+   comme ca verrouille le defaut : le jour ou on corrige, c'est le
+   TEST qui tombe. Il dit maintenant ce qu'on veut, pas ce qu'on
+   avait — l'ecran refuse tout de suite, et il designe le bon
+   champ. */
 titre("4bis · UN TÉLÉPHONE FACULTATIF À MOITIÉ TAPÉ (écran 4)");
 {
   remise();
   const { ctx, page, posts } = await ouvrir();
   await ouvrirRefer(page);
+  const avantEcrans = posts.length;
   const t = await traverser(page, 1, 7, { 4: Object.assign({}, JEU[4], { rfPhone: "418" }) });
-  dire("les écrans laissent passer « 418 »", t.bloque, false, "bloqué à l'écran " + t.ecran);
-  await poser(page, { rfAccept: true });
-  const avant = posts.length;
-  await cliquer(page, "#referNext");
-  await page.waitForTimeout(1800);
+  dire("l'écran 4 refuse tout de suite", t.bloque, true,
+    "un champ facultatif REMPLI se juge quand même");
+  dire("et on reste sur l'écran où le champ se trouve", t.ecran, 4,
+    "refuser trois écrans plus loin est le pire des deux mondes");
+  const marques = await champsFautifs(page);
+  dire("c'est le téléphone qu'on accuse", marques.indexOf("rfPhone") !== -1, true,
+    "champs marqués : " + JSON.stringify(marques));
+  /* LES SAUVEGARDES D'ETAPE, ELLES, PARTENT — c'est tout l'interet
+     de la sauvegarde progressive. Ce qui ne doit PAS partir, c'est
+     un envoi FINAL : un refus a l'ecran ne confirme rien. */
+  dire("aucun envoi FINAL n'est parti",
+    posts.filter((c) => { try { return !!JSON.parse(c)._final; } catch (e) { return false; } }).length, 0,
+    "un refus a l’ecran ne confirme rien");
 
-  const ou = await ecran(page);
-  const msg = await statut(page);
-  dire("la référence aboutit", ou, 8,
-    "sinon : refusée au dernier écran sur un champ FACULTATIF saisi trois écrans plus tôt · « " + msg + " »");
-  if (ou !== 8) {
-    dire("… au moins le message nomme le champ fautif", /téléphone|numéro/i.test(msg), true, "« " + msg + " »");
-    dire("… au moins un champ est marqué à l'écran", (await champsFautifs(page)).length > 0, true,
-      "champs marqués : " + JSON.stringify(await champsFautifs(page)));
-    dire("… au moins la ligne au classeur porte le reste",
-      valeur(2, "Entreprise référée"), "ZZ Garage Tremblay");
-  }
-  note("requêtes parties pendant l'envoi final : " + (posts.length - avant));
+  /* ET VIDE PASSE TOUJOURS. Sans ce temps, on aurait pu rendre le
+     champ OBLIGATOIRE au lieu de le valider — ce qui casserait
+     D-771, qui existe pour qu'un référent bénévole ne paie pas le
+     champ le plus cher du site. */
+  await poser(page, { rfPhone: "" });
+  await cliquer(page, "#referNext");
+  await page.waitForTimeout(600);
+  dire("laissé VIDE, il passe", await ecran(page), 5,
+    "facultatif veut dire « tu peux ne rien mettre », pas « tu peux mettre n'importe quoi »");
   await ctx.close();
 }
 
@@ -645,41 +659,48 @@ titre("4ter · UNE PERSONNE À CONTACTER QUI PORTE UN CHIFFRE SANS ÊTRE UN NUM�
    ------------------------------------------------------------ */
 titre("5 · DIX MILLE SIGNES DANS « présentation » ET « contexte »");
 {
+  /* RETOURNE LE 2026-08-07 (D-773), COMME LE 4bis.
+
+     Il affirmait « les ecrans laissent passer le texte long » et
+     « la reference aboutit » — deux facons de decrire l'etat qu'on
+     voulait corriger. Depuis : `maxlength` borne la saisie humaine,
+     `validate()` borne le collage pose par script, et le service
+     NOMME le champ quand il refuse quand meme. Le cas dit
+     maintenant les trois. */
   remise();
-  const { ctx, page, erreurs, posts } = await ouvrir();
+  const { ctx, page, posts } = await ouvrir();
   await ouvrirRefer(page);
-  const LONG = "Bonjour, voici le contexte. ".repeat(400).slice(0, 10000);
-  dire("la charge fait bien 10 000 signes", LONG.length, 10000);
+  const long = "A".repeat(10000);
+  dire("la charge fait bien 10 000 signes", long.length, 10000);
 
-  const t = await traverser(page, 1, 7, { 6: { rfPresentation: LONG, rfMsg: LONG } });
-  dire("les écrans laissent passer le texte long", t.bloque, false, "bloqué à l'écran " + t.ecran);
-  dire("le champ garde le texte ENTIER, sans troncature muette",
-    await page.evaluate(() => document.getElementById("rfPresentation").value.length), 10000);
-  dire("la page ne déborde pas en largeur",
-    await page.evaluate(() =>
-      document.documentElement.scrollWidth > document.documentElement.clientWidth + 1), false);
+  const avantEcrans = posts.length;
+  const t = await traverser(page, 1, 7, { 6: { rfPresentation: long, rfMsg: long } });
+  dire("l'écran 6 refuse le texte trop long", t.bloque, true,
+    "bloqué à l'écran " + t.ecran);
+  const marques = await champsFautifs(page);
+  dire("et il marque le champ fautif", marques.length > 0, true,
+    "champs marqués : " + JSON.stringify(marques));
+  dire("aucun envoi FINAL n'est parti",
+    posts.filter((c) => { try { return !!JSON.parse(c)._final; } catch (e) { return false; } }).length, 0,
+    "les sauvegardes d’etape partent, c’est voulu ; la confirmation, non");
+  dire("le texte du visiteur n'est pas perdu",
+    (await page.inputValue("#rfPresentation")).length > 0, true,
+    "on refuse, on n'efface pas");
 
-  await poser(page, { rfAccept: true });
-  const avant = posts.length;
-  await cliquer(page, "#referNext");
-  await page.waitForTimeout(2000);
+  /* LE SERVICE NOMME LE CHAMP, LUI AUSSI. Le navigateur est
+     contournable ; c'est la reponse du service qu'on lit quand une
+     requete est forgee, et « une des reponses est trop longue » ne
+     dit rien a personne. */
+  const rep = await forge(reference("sidLong", { presentation: long }));
+  dire("le service refuse la requête forgée", rep.success, false, rep.message);
+  dire("… en nommant le champ et sa borne",
+    /trop longue\s*:\s*\d+\s+signes\s+pour\s+\d+/.test(String(rep.message)), true,
+    "« " + rep.message + " »");
 
-  const ou = await ecran(page);
-  const msg = await statut(page);
-  dire("la référence aboutit", ou, 8,
-    "sinon : le site accepte à l'écran ce que le service refuse · « " + msg + " »");
-  if (ou !== 8) {
-    dire("… au moins le message nomme le champ trop long",
-      /présentation|contexte|ce qu.on dit|1\s?000|3\s?000/i.test(msg), true, "« " + msg + " »");
-    dire("… au moins un champ est marqué à l'écran", (await champsFautifs(page)).length > 0, true);
-    dire("… au moins le texte du visiteur n'est pas perdu",
-      await page.evaluate(() => document.getElementById("rfPresentation").value.length), 10000);
-  }
-  const parti = posts.slice(avant)[0] || "";
-  dire("ce qui part n'est pas tronqué côté site",
-    parti ? (JSON.parse(parti).presentation || "").length : 0, 10000,
-    "tronquer côté site ferait perdre la fin sans que personne le sache");
-  dire("aucune erreur console", erreurs.length, 0, erreurs.slice(0, 2).join(" | "));
+  /* ET LE TEMOIN : un texte DANS la borne passe. Sans lui, on
+     aurait pu casser la zone de texte au lieu de la borner. */
+  const rep2 = await forge(reference("sidCourt", { presentation: "A".repeat(900) }));
+  dire("un texte de 900 signes passe", rep2.success, true, rep2.message || "");
   await ctx.close();
 }
 

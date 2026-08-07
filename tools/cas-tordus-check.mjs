@@ -451,8 +451,17 @@ titre("8 · TOUT CE QUI SE TOUCHE FAIT 44 px");
          pas a etre touchable — l'exiger a 44 px reviendrait a
          demander qu'un piege a robots soit confortable au pouce. */
       if (el.classList.contains("piege") || (el.closest && el.closest(".piege"))) return;
-      if (r.height < 44) {
-        out.push((el.id || el.className || el.tagName) + " " + Math.round(r.height) + "px");
+      /* LA LARGEUR COMPTE AUTANT QUE LA HAUTEUR, ET ELLE MANQUAIT.
+         D-773
+         Ce controle ne regardait que `r.height`. Le bouton « Fermer »
+         d'une modale mesurait 44 px de haut et 20 px de large a
+         390 px — comprime par le titre, faute de consigne de retrait
+         sur son item flex — et il passait depuis toujours. Un test
+         qui verrouille le defaut qu'il est cense garder est la faute
+         la plus chere du depot (piege 17). */
+      if (r.height < 44 || r.width < 44) {
+        out.push((el.id || el.className || el.tagName)
+          + " " + Math.round(r.width) + "x" + Math.round(r.height) + "px");
       }
     });
     return out;

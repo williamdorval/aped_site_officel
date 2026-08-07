@@ -1509,6 +1509,31 @@ function traiter(kind, data) {
     extra._conditions_le = quand(new Date());
   }
 
+  /* UNE ETAPE INTERMEDIAIRE N'ECRIT AUCUNE PREUVE.  D-773
+
+     LE DEFAUT, ET IL ETAIT GRAVE. Le site enregistre discretement a
+     chaque ecran, et il serialise le formulaire ENTIER — donc le
+     champ cache `conditions_version`, present des le chargement,
+     partait des l'etape 1. Et quelqu'un qui cochait la case puis
+     revenait d'un ecran envoyait `conditions_acceptees` sans
+     `_final`.
+
+     Le classeur affirmait alors « acceptees : oui, version
+     2026-08-07, heure VIDE » sur une reference jamais envoyee. Pire :
+     `COLONNES_FIGEES` interdisait ensuite de le corriger. Une preuve
+     figee et fausse est le contraire exact de ce que ces trois
+     colonnes existent pour donner.
+
+     LA PURGE EST ICI, PAS DANS LE SITE. Le site sera corrige aussi —
+     il n'a rien a envoyer — mais celui qui forge une requete ne suit
+     aucune de nos regles. C'est le serveur qui decide qu'une preuve
+     ne naisse qu'a la confirmation. */
+  if (kind === "refer" && data && !data._final) {
+    data = Object.assign({}, data);
+    delete data.conditions_acceptees;
+    delete data.conditions_version;
+  }
+
   /* UNE SESSION EN COURS SE MET À JOUR, ELLE NE SE DÉDOUBLONNE PAS.
      D-744
 
@@ -1756,20 +1781,44 @@ function valider(kind, data) {
     if (brut === "") continue;
     /* `contact_reference` est « une personne à contacter » : un nom
        suivi ou non d'un numéro. On ne le juge que s'il ressemble à
-       un numéro, sinon on refuserait « Marie Tremblay ». */
-    if (tels[t] === "contact_reference" && chiffres(brut).length === 0) continue;
+       un numéro, sinon on refuserait « Marie Tremblay ».
+
+       LE SEUIL ÉTAIT À UN CHIFFRE, ET C'ÉTAIT TROP BAS.  D-773
+       Le commentaire disait « s'il ressemble à un numéro » ; le code
+       écrivait « s'il contient au moins un chiffre ». « Marie
+       Lavoie, bureau 12 » se faisait donc refuser comme numéro
+       incomplet — sur un champ dont l'étiquette dit « nom et
+       courriel OU téléphone ». Un local, un rang, un « 2e étage »
+       tombaient tous dedans.
+
+       SEPT CHIFFRES : c'est le plus court numéro nord-américain
+       (sans indicatif). En dessous, ce qui est écrit n'est pas un
+       numéro, c'est une adresse ou un local — et on ne le juge pas. */
+    if (tels[t] === "contact_reference" && chiffres(brut).length < 7) continue;
     if (chiffres(brut).length < 10) return "Le numéro de téléphone est incomplet.";
   }
 
   /* 4 · Rien d'absurdement long. Un champ de 2 Mo est un abus, pas
-     une demande. */
+     une demande.
+
+     LE MESSAGE NOMME LE CHAMP, ET IL NE LE FAISAIT PAS.  D-773
+     « Une des réponses est trop longue » sur un formulaire de sept
+     écrans laisse le visiteur chercher laquelle, sans indice, alors
+     qu'on sait exactement de quoi il s'agit. On lui donne le titre
+     lisible de la colonne, celui du SCHÉMA — jamais le `name` de
+     l'input, qui ne veut rien dire pour lui. */
   var cles = Object.keys(data);
   for (var c = 0; c < cles.length; c++) {
     var cle = cles[c];
     if (cle.charAt(0) === "_") continue;
     var max = LONGUEURS[cle] || 2000;
-    if (String(data[cle] == null ? "" : data[cle]).length > max) {
-      return "Une des réponses est trop longue.";
+    var vu = String(data[cle] == null ? "" : data[cle]).length;
+    if (vu > max) {
+      var lisible = "";
+      (def.champs || []).forEach(function (ch) { if (ch.champ === cle) lisible = ch.titre; });
+      return lisible
+        ? "La réponse « " + lisible + " » est trop longue : " + vu + " signes pour " + max + " au maximum."
+        : "Une des réponses est trop longue.";
     }
   }
 

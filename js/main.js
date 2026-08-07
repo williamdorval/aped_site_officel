@@ -2106,8 +2106,51 @@
       }
       var input = $("input, select, textarea", field);
       if (!input) return;
-      if (!input.required) { markField(field, true); return; }
-      var ok = String(input.value).trim().length > 0;
+
+      /* UN CHAMP FACULTATIF REMPLI SE JUGE QUAND MEME.  D-773
+
+         LE DEFAUT, ET IL COUTAIT SEPT ECRANS. « Votre téléphone
+         (optionnel) » n'etait jamais valide ici — `!input.required`
+         rendait tout de suite. Mais `valider()` de `Code.gs` juge
+         TOUT numero non vide, requis ou non. Taper « 418 » et
+         continuer : les six ecrans suivants passent, l'envoi final
+         echoue sur « Le numero de telephone est incomplet », on
+         reste sur le dernier ecran, AUCUN champ n'est marque, et le
+         champ fautif est trois ecrans en arriere.
+
+         C'est mot pour mot le « pire des deux mondes » que le
+         commentaire de D-771 dit vouloir eviter : un champ annonce
+         optionnel a l'ecran, et un refus que le visiteur ne peut ni
+         comprendre ni corriger.
+
+         VIDE RESTE VIDE. Facultatif veut dire « tu peux ne rien
+         mettre », pas « tu peux mettre n'importe quoi ». */
+      /* TROP LONG SE VOIT A L'ECRAN, PAS AU RETOUR DU SERVICE.
+         D-773
+         `maxlength` empeche la SAISIE au-dela de la limite, mais pas
+         un collage pose par script, ni un champ prerempli par une
+         reprise de brouillon. `valider()` de `Code.gs`, lui, refuse
+         — et refusait sans dire QUEL champ. On le juge donc ici
+         aussi : c'est le seul endroit qui puisse marquer le champ
+         fautif et y ramener le visiteur. */
+      var borne = Number(input.getAttribute("maxlength")) || 0;
+      if (borne > 0 && String(input.value).length > borne) {
+        markField(field, false);
+        if (!firstBad) firstBad = input;
+        return;
+      }
+
+      var rempli = String(input.value).trim().length > 0;
+      if (!input.required) {
+        if (!rempli) { markField(field, true); return; }
+        var okOpt = true;
+        if (input.type === "email") okOpt = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+        if (input.type === "tel") okOpt = String(input.value).replace(/\D/g, "").length >= 10;
+        markField(field, okOpt);
+        if (!okOpt && !firstBad) firstBad = input;
+        return;
+      }
+      var ok = rempli;
       if (ok && input.type === "email") {
         ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
       }

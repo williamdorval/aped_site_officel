@@ -357,6 +357,19 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
      Le CARRE reste : c'est la cible qui grandit, pas le dessin. */
   width: 2.75rem;
   height: 2.75rem;
+  /* ET LA MESURE AVAIT ETE PRISE EN LARGE, JAMAIS EN 390.  D-773
+     `.btn-icon` est un item flex de `.modal-head`, sans consigne de
+     retrait : le titre le COMPRIMAIT. Releve du 2026-08-07 par
+     `getBoundingClientRect`, pas deduit du CSS — a 390 px,
+     `modal-refer` 20,2 px de large, `modal-urgent` 25,7,
+     `modal-estimate` 33, `modal-project` 42,5. A 1440 px, tous a 44.
+     La hauteur, elle, valait 44 partout : le controle de
+     `cas-tordus-check` ne regardait QUE la hauteur, et passait
+     depuis toujours sur un bouton de 20 px. Piege 17 dans sa forme
+     la plus couteuse — un test qui verrouille le defaut qu'il est
+     cense garder. */
+  flex: 0 0 auto;
+  min-width: 2.75rem;
   border: var(--rule-w) solid var(--rule-strong);
   color: var(--ink);
   font-size: 1.125rem;
