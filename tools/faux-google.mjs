@@ -512,7 +512,7 @@ const calendrierFactice = (calId) => ({
 });
 
 /* ---------- les services ---------- */
-const services = {
+export const services = {
   PropertiesService: {
     getScriptProperties: () => ({
       getProperty: (k) => etat.proprietes[k] ?? null,
@@ -674,12 +674,28 @@ const services = {
       if (i >= 0) etat.declencheurs.splice(i, 1);
     },
     newTrigger: (nom) => {
-      const b = { nom, heure: null, jours: null };
+      const b = { nom, heure: null, jours: null, agenda: null, sur: null };
       const api = {
         timeBased: () => api,
         atHour: (h) => { b.heure = h; return api; },
         everyDays: (d) => { b.jours = d; return api; },
+        /* LE BANC REFUSE « primary ».  D-763
+           `forUserCalendar` veut une ADRESSE ; le vrai Google leve
+           sur « primary ». Un bouchon qui l'accepterait laisserait
+           passer un declencheur qui ne se pose jamais en vrai — le
+           banc dirait « pose », la production n'aurait rien. */
+        forUserCalendar: (id) => {
+          if (!id || String(id).indexOf("@") === -1) {
+            throw new Error("forUserCalendar veut une adresse, pas « " + id + " »");
+          }
+          b.agenda = id; return api;
+        },
+        onEventUpdated: () => { b.sur = "evenement"; return api; },
         create: () => {
+          /* UN DECLENCHEUR DE CALENDRIER SANS AGENDA N'EXISTE PAS. */
+          if (b.sur === "evenement" && !b.agenda) {
+            throw new Error("onEventUpdated sans forUserCalendar");
+          }
           const t = Object.assign({}, b, { getHandlerFunction: () => b.nom });
           etat.declencheurs.push(t);
           return t;
@@ -802,6 +818,7 @@ const fabrique = new Function(...noms, source + `
            surLaGrille, fenetreReservable, colonneLettre, migrerColonnes,
            nettoyerAutotest, nettoyerRendezVousEssai, titreDuSite,
            blocagesSansEffet, veilleBlocages, poserVeille, bloqueAuMoinsUnCreneau,
+           surChangementAgenda, declencheursPoses, oublierCreneaux,
            libelleEtape, repererLigne, diagnostic };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));

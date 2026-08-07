@@ -261,10 +261,22 @@ var REGLAGES = {
      l'épuiser, et le script mort emporte AUSSI les formulaires.
 
      Le cache est court, et il est VIDÉ à chaque réservation : un
-     créneau qui vient d'être pris disparaît tout de suite. Le seul
-     décalage qui reste est celui d'un blocage posé à la main dans
-     l'agenda, et il ne dépasse pas cette durée. */
+     créneau qui vient d'être pris disparaît tout de suite.
+
+     DEPUIS D-763, IL EST AUSSI VIDÉ DÈS QUE L'AGENDA BOUGE. Cette
+     durée n'est donc plus le délai normal — c'est le délai du jour
+     où le déclencheur de changement n'a pas répondu. Elle reste,
+     et elle reste courte, pour cette raison-là seulement. */
   CRENEAUX_CACHE_S: 90,
+
+  /* LA SOUPAPE DU DÉCLENCHEUR D'AGENDA.  D-763
+     La veille renomme, un renommage réveille le déclencheur : la
+     boucle converge en deux tours. Ce plafond n'est pas là pour
+     elle, il est là pour un agenda qu'un autre service resynchronise
+     en continu. Au-delà, le cache continue d'être vidé — c'est le
+     geste utile — et seule la veille attend le passage quotidien. */
+  VEILLE_REVEILS_MAX: 120,
+  VEILLE_REVEILS_FENETRE_S: 3600,
 
   /* Nom du dossier Drive où atterrissent les pièces jointes. */
   DOSSIER_PIECES: "APED — pièces jointes des formulaires",
@@ -978,12 +990,17 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 9,
+    version: 10,
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
     fuseau: REGLAGES.FUSEAU,
     creneaux: true,
-    diag: true
+    diag: true,
+    /* CE QUI EST POSÉ, LU DANS LE PROJET, PAS DÉDUIT.  D-763
+       Sans ça, « le déclencheur est installé » resterait une
+       croyance : on ne saurait la distinguer d'un `create()` qui a
+       levé pendant `initialiser()` et dont le message a défilé. */
+    declencheurs: declencheursPoses()
   });
 }
 
@@ -2730,19 +2747,142 @@ function ecrireBlocages(liste) {
   }
 }
 
-/* LE DÉCLENCHEUR QUOTIDIEN, POSÉ UNE SEULE FOIS.  D-762
+/* ============================================================
+   DÈS QUE L'AGENDA BOUGE, LE SITE LE SAIT.  D-763
+
+   LE CACHE N'EXPIRE PLUS PAR LE TEMPS QUI PASSE, IL TOMBE PARCE
+   QUE QUELQUE CHOSE A CHANGÉ. Les 90 secondes de D-758 restaient
+   un compromis : elles protégeaient des robots, mais elles
+   faisaient mentir la page pendant une minute et demie après
+   chaque blocage posé au téléphone.
+
+   L'ORDRE DES DEUX GESTES N'EST PAS INDIFFÉRENT. Le vidage du
+   cache passe EN PREMIER et hors du `try` : c'est une écriture
+   locale, elle ne peut pas échouer, et c'est la seule chose que
+   le visiteur voit. La veille vient après parce qu'elle parle au
+   calendrier — donc elle peut être lente, échouer, ou dépasser le
+   temps d'exécution. Dans cet ordre, une veille qui meurt laisse
+   quand même un site à jour.
+
+   LA VEILLE RENOMME, ET UN RENOMMAGE EST UN CHANGEMENT D'AGENDA.
+   La boucle converge d'elle-même en deux tours : au second,
+   l'événement porte déjà sa marque et `veilleBlocages` ne le
+   renomme plus, donc aucun troisième réveil. On garde quand même
+   une soupape, parce qu'un agenda synchronisé depuis un autre
+   service (téléphone, Outlook) peut battre en continu sans que
+   personne le sache. Au-delà du plafond on garde le vidage du
+   cache — le geste utile — et on lâche la veille : le filet
+   quotidien la rattrapera.
+   ============================================================ */
+/* CE QUI EST RÉELLEMENT POSÉ. On lit le projet, on ne se souvient
+   pas de ce qu'on a essayé de poser.  D-763 */
+function declencheursPoses() {
+  try {
+    var out = { changement: 0, quotidien: 0 };
+    ScriptApp.getProjectTriggers().forEach(function (t) {
+      var h = t.getHandlerFunction();
+      if (h === "surChangementAgenda") out.changement++;
+      else if (h === "veilleBlocages") out.quotidien++;
+    });
+    return out;
+  } catch (e) {
+    /* PAS DE ZÉRO SILENCIEUX. `{changement:0}` se lirait « aucun
+       déclencheur », ce qui est un verdict ; ici on ne sait pas. */
+    return { erreur: String(e) };
+  }
+}
+
+function surChangementAgenda(e) {
+  oublierCreneaux();
+  try {
+    if (tropVite("veille-agenda", REGLAGES.VEILLE_REVEILS_MAX,
+                 REGLAGES.VEILLE_REVEILS_FENETRE_S)) {
+      console.warn("agenda : soupape — trop de réveils dans l'heure. "
+        + "Le cache reste vidé, la veille attend le passage quotidien.");
+      return;
+    }
+    veilleBlocages();
+  } catch (err) {
+    console.error("changement d'agenda : " + (err && err.stack ? err.stack : err));
+  }
+}
+
+/* LES DÉCLENCHEURS, POSÉS UNE SEULE FOIS.  D-762 · D-763
    `initialiser()` l'appelle. Relancer `initialiser()` ne doit pas
-   empiler douze déclencheurs : on retire les nôtres d'abord. */
+   empiler douze déclencheurs : on retire les nôtres d'abord.
+
+   IL Y EN A DEUX, ET LE QUOTIDIEN N'EST PAS UN DOUBLON.
+   Le déclencheur de changement ne voit que des CHANGEMENTS. Trois
+   choses lui échappent par construction, et chacune ramène
+   exactement le défaut qu'on cherche à tuer — croire qu'on a
+   bloqué quelque chose alors que non :
+
+     1. Ce qui existait AVANT sa pose. Un agenda déjà rempli n'a
+        jamais déclenché quoi que ce soit.
+     2. Un événement qui devient inerte SANS ÊTRE TOUCHÉ — parce
+        que ce sont les heures d'ouverture qui ont bougé, pas lui.
+        Rétrécir la journée à 10 h - 17 h rend inertes tous les
+        blocages de 9 h, et aucun calendrier ne change.
+     3. Les réveils que Google laisse tomber. Le déclencheur de
+        calendrier est au mieux-effort, documenté comme tel.
+
+   Le quotidien coûte une exécution de quelques secondes par jour.
+   Il ne fait pas le travail : il rattrape ce que l'autre a raté.
+
+   IL REND CE QUI A MARCHÉ ET CE QUI N'A PAS MARCHÉ, au lieu
+   d'avaler l'erreur. Un déclencheur qu'on croit posé et qui ne
+   l'est pas est pire que pas de déclencheur du tout. */
 function poserVeille() {
+  var etat = { changement: false, quotidien: false, agenda: "", pourquoi: "" };
+
   try {
     ScriptApp.getProjectTriggers().forEach(function (t) {
-      if (t.getHandlerFunction() === "veilleBlocages") ScriptApp.deleteTrigger(t);
+      var h = t.getHandlerFunction();
+      if (h === "veilleBlocages" || h === "surChangementAgenda") ScriptApp.deleteTrigger(t);
     });
-    ScriptApp.newTrigger("veilleBlocages").timeBased().atHour(7).everyDays(1).create();
-    Logger.log("Veille des blocages : déclencheur quotidien posé (7 h).");
   } catch (e) {
-    Logger.log("Veille des blocages : déclencheur NON posé — " + e);
+    etat.pourquoi = "ménage des anciens déclencheurs : " + e;
   }
+
+  /* 1 · CELUI QUI FAIT LE TRAVAIL.
+     `forUserCalendar` veut une ADRESSE, pas « primary » : c'est
+     l'agenda du compte qui exécute le script. Les agendas de
+     `CALENDRIERS_EN_PLUS` en reçoivent chacun un. */
+  var agendas = [notifDest()];
+  (DISPONIBILITES.CALENDRIERS_EN_PLUS || []).forEach(function (id) {
+    if (id && agendas.indexOf(id) === -1) agendas.push(id);
+  });
+  var poses = [];
+  agendas.forEach(function (id) {
+    try {
+      ScriptApp.newTrigger("surChangementAgenda")
+        .forUserCalendar(id).onEventUpdated().create();
+      poses.push(id);
+    } catch (e) {
+      etat.pourquoi += (etat.pourquoi ? " · " : "") + "agenda « " + id + " » : " + e;
+    }
+  });
+  etat.changement = poses.length > 0;
+  etat.agenda = poses.join(", ");
+
+  /* 2 · LE FILET. Voir le commentaire de tête. */
+  try {
+    ScriptApp.newTrigger("veilleBlocages").timeBased().atHour(7).everyDays(1).create();
+    etat.quotidien = true;
+  } catch (e) {
+    etat.pourquoi += (etat.pourquoi ? " · " : "") + "quotidien : " + e;
+  }
+
+  Logger.log("Déclencheurs — changement d'agenda : "
+    + (etat.changement ? "POSÉ sur " + etat.agenda : "*** NON POSÉ ***")
+    + " · filet quotidien 7 h : " + (etat.quotidien ? "posé" : "*** NON POSÉ ***")
+    + (etat.pourquoi ? "\n    " + etat.pourquoi : ""));
+  if (!etat.changement) {
+    Logger.log("    Sans lui, le site met jusqu'à "
+      + REGLAGES.CRENEAUX_CACHE_S + " s à voir un blocage. Rien n'est faux, "
+      + "c'est seulement en retard.");
+  }
+  return etat;
 }
 
 function creneauxLibres() {

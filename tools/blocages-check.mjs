@@ -268,18 +268,28 @@ titre("5 · CE QUE LE CLASSEUR EN DIT");
 /* ============================================================
    6 · LE DECLENCHEUR
    ============================================================ */
-titre("6 · LE DECLENCHEUR QUOTIDIEN");
+titre("6 · LE FILET QUOTIDIEN");
 {
   etat.declencheurs.length = 0;
   gs.poserVeille();
-  dire("il est pose", etat.declencheurs.length, 1);
-  dire("il appelle la veille", etat.declencheurs[0].getHandlerFunction(), "veilleBlocages");
-  dire("tous les jours", etat.declencheurs[0].jours, 1);
+  /* ON CHERCHE LE DECLENCHEUR PAR SON NOM, ON NE PREND PAS LE
+     PREMIER DE LA LISTE. D-763 en a pose un second — celui du
+     changement d'agenda — et ces trois cas sont tombes en accusant
+     un code parfaitement sain : ils avaient « il n'y en a qu'un »
+     appris par coeur. Le reste de la veille, lui, n'avait pas bouge.
+     Ce que cet outil garde, c'est le FILET ; le declencheur de
+     changement se juge dans `declencheur-check.mjs`. */
+  const filets = etat.declencheurs.filter(
+    (t) => t.getHandlerFunction() === "veilleBlocages");
+  dire("il est pose", filets.length, 1);
+  dire("il appelle la veille", filets[0] && filets[0].getHandlerFunction(), "veilleBlocages");
+  dire("tous les jours", filets[0] && filets[0].jours, 1);
 
   /* RELANCER `initialiser()` NE DOIT PAS EN EMPILER DOUZE. */
   gs.poserVeille();
   gs.poserVeille();
-  dire("trois poses, un seul declencheur", etat.declencheurs.length, 1);
+  dire("trois poses, un seul filet",
+    etat.declencheurs.filter((t) => t.getHandlerFunction() === "veilleBlocages").length, 1);
 }
 
 console.log("");
