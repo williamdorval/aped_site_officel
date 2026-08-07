@@ -56,15 +56,15 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | 01 | **Accueil** | `#top` | 223-281 | 59 | 2124-2387 · 1608-1883 | `main.js` 370-475 | — |
 | 02 | **Services** | `#services` | 282-900 | 619 | 2388-3036 | `main.js` 476-875 | — |
 | 03 | **Réalisations** | `#realisations` | 901-1789 | 889 | 3037-4858 | `main.js` 876-1122 | — |
-| 04 | **Secteurs** | `#demos` | 1790-2002 | 213 | 4859-5012 | `main.js` 4734-4928 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
+| 04 | **Secteurs** | `#demos` | 1790-2002 | 213 | 4859-5012 | `main.js` 4746-4940 · `langue.js` 524-612 | `css/secteurs.css` (entier, injecte par JS) |
 | 05 | **Visite 360** | `#visite` | 2003-2082 | 80 | — | — | `css/tour360.css` · `js/tour360.js` (entiers) |
-| 06 | **Calculateur** | `#calculateur` | 2083-2224 | 142 | 5013-5179 | `main.js` 4567-4733 | — |
+| 06 | **Calculateur** | `#calculateur` | 2083-2224 | 142 | 5013-5179 | `main.js` 4579-4745 | — |
 | 07 | **Comparatif** | `#comparatif` | 2225-2341 | 117 | 5180-5306 | — | — |
 | 08 | **Processus** | `#processus` | 2342-2570 | 229 | 5307-5649 | `main.js` 1123-1163 | — |
 | 09 | **Référence** | `#reference` | 2571-2735 | 165 | 5650-5799 · 5800-6003 | — | — |
 | 10 | **Questions** | `#faq` | 2736-2820 | 85 | 6171-6220 | `langue.js` 613-641 | — |
 | 11 | **Contact** | `#contact` | 2821-3031 | 211 | 6221-6438 | `main.js` 1736-1769 · `main.js` 2114-2278 · `main.js` 2645-2746 | — |
-| — | **Pied de page** | `#footer` | 3032-3085 | 54 | 6439-6499 | `main.js` 5380-5400 | — |
+| — | **Pied de page** | `#footer` | 3032-3085 | 54 | 6439-6499 | `main.js` 5392-5412 | — |
 
 <!-- PLAGES:FIN -->
 
