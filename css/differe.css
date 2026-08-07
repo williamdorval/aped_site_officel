@@ -434,6 +434,18 @@
      `nowrap` herite du `.btn` le couperait. */
   white-space: normal;
 }
+/* LES PORTES SE FERMENT QUAND LA DEMANDE EST PARTIE.  D-773
+   Elles vivent hors des etapes — c'est ce qui les rend visibles
+   partout — donc rien ne les retirait de l'ecran de reponse. On y
+   proposait « Se parler 30 minutes » sous un bouton « Choisir un
+   moment » qui fait exactement ca, et « Avoir une idee du prix »
+   sous le prix. Pire : « ce que vous avez deja rempli reste
+   enregistre » n'est plus vrai d'un formulaire qui vient d'etre
+   ENVOYE. Regle A. */
+#projectWizard:has(.step[data-pstep="8"]:not([hidden])) .form-portes { display: none; }
+/* RIEN N'EST ENCORE REMPLI A LA PREMIERE ETAPE. La phrase promet
+   quelque chose a perdre avant qu'il y ait quoi que ce soit. */
+#projectWizard:has(.step[data-pstep="1"]:not([hidden])) .form-portes-note { display: none; }
 .form-portes-note {
   margin: var(--s-3) 0 0;
   font-size: var(--fs-8);
@@ -796,7 +808,21 @@
   font-size: var(--fs-8);
   margin-bottom: var(--s-5);
 }
-.link-btn { text-decoration: underline; text-underline-offset: 3px; font-family: var(--font-data); font-size: var(--fs-8); }
+/* 44 px AU POUCE, ET CE N'EST PAS DECORATIF.  D-773
+   « Changer » sous la plage choisie est le SEUL chemin de retour
+   vers le calendrier, et il mesurait 17 px de haut : rater cette
+   cible, c'est rester coince sur une heure qu'on ne voulait plus.
+   Le remplissage vertical porte la cible sans deplacer la ligne
+   de base — meme mecanique que `.appel-num`. */
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-family: var(--font-data);
+  font-size: var(--fs-8);
+}
 @keyframes rail-aligne {
   from { transform: translate3d(-28px, 0, 0); }
   to { transform: translate3d(0, 0, 0); }

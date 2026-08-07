@@ -8,6 +8,35 @@
    ============================================================ */
 
 /* == APED AGENCE - Direction ATELIER ==  D-096 */
+/* ============================================================
+   `[hidden]` DOIT VRAIMENT CACHER.  D-773
+
+   LA REGLE DU NAVIGATEUR PERD, ET ELLE PERD TOUJOURS. Le `[hidden]
+   { display: none }` de la feuille par defaut vient de l'origine
+   « navigateur » ; TOUTE regle d'auteur qui pose un `display` la
+   bat, quelle que soit la specificite. Un `.btn { display:
+   inline-flex }` suffit a rendre visible un bouton qu'on croit
+   masque.
+
+   CE QUE CA DONNAIT. Le bouton « Retour » du formulaire projet
+   etait a l'ecran DES LA PREMIERE ETAPE — mesure 44 x 108 px avec
+   `hidden = true` — et il ne menait nulle part.
+
+   HUIT RUSTINES AVAIENT DEJA ETE POSEES, une par classe prise en
+   flagrant delit : `.menu`, `.sug`, `.modal`, `.step`,
+   `.cadeau-form`, `.cadeau-suite`, `.cadeau-deja`, `.cadeau-fin`,
+   `.retenue`. Chacune reparait UN symptome. La cause n'avait
+   jamais ete touchee, alors chaque nouveau composant qui pose un
+   `display` ramenait le defaut — et il fallait le voir a l'oeil
+   pour le trouver.
+
+   `!important` EST ICI LE BON OUTIL, et c'est rare. `hidden` est
+   une declaration d'INTENTION du HTML : rien dans une feuille de
+   style n'a le droit de la contredire. Les huit rustines restent
+   volontairement en place — elles ne coutent rien et elles servent
+   de filet si cette ligne disparaissait.
+   ============================================================ */
+[hidden] { display: none !important; }
 /* == 1. GRILLE ==  D-097 */
 .wrap {
   width: min(100% - (var(--pad) * 2), var(--maxw));

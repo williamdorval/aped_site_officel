@@ -477,8 +477,14 @@ titre("6 · CE QUE ÇA DONNE À L'ÉCRAN");
   await page.evaluate(() => {
     document.querySelectorAll(".modal").forEach((m) => { m.hidden = true; });
   });
+  /* « DEBUT » VEUT DIRE UNE ETAPE FRANCHIE, PAS ZERO.
+     Avec 1, `menerA` rendait la main sans rien franchir : aucun
+     `enregistrerDiscret`, donc `retenueEtat` gardait l'etat du
+     formulaire PRECEDENT, et la capture « projet-debut » montrait
+     le texte de la reservation. Une preuve mal etiquetee est pire
+     qu'une preuve manquante — on la croit. */
   for (const [kind, etape, nom] of [
-    ["project", 1, "projet-debut"],
+    ["project", 2, "projet-debut"],
     ["project", 7, "projet-fin"],
     ["booking", 2, "reservation-fin"]
   ]) {

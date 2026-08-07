@@ -315,6 +315,23 @@ titre("4 · « QUAND VOUS APPELER » SANS NUMÉRO");
   for (let i = 0; i < 8; i++) {
     const ici = await visible("#projectWizard", "data-pstep");
     if (ici >= 7) break;
+    /* ON REGARDE SI LE BOUTON EXISTE AVANT DE TAPER DESSUS. D-773 a
+       rendu `[hidden]` reellement effectif : la barre de navigation
+       DISPARAIT a l'ecran de succes, alors qu'avant elle restait
+       cliquable en douce. Un banc qui clique en aveugle attend
+       trente secondes puis meurt, au lieu de dire ce qu'il voit. */
+    const cliquable = await page.evaluate(() => {
+      const b = document.getElementById("projectNext");
+      if (!b) return false;
+      const r = b.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    if (!cliquable) break;
+    /* CLIC DIRECT, SANS ATTENTE DE VISIBILITE. `page.click` attend
+       que l'element soit « stable » ; entre ma verification et son
+       attente, le formulaire peut avoir change d'ecran et masque le
+       bouton — trente secondes d'attente pour une course que
+       personne ne gagne. */
     await page.evaluate(() => {
       const e = [...document.querySelectorAll("#projectWizard .step[data-pstep]")].find((s) => !s.hidden);
       e.querySelectorAll(".choices").forEach((g) => {
@@ -332,8 +349,8 @@ titre("4 · « QUAND VOUS APPELER » SANS NUMÉRO");
         el.dispatchEvent(new Event("input", { bubbles: true }));
       });
     });
-    await page.click("#projectNext");
-    await page.waitForTimeout(300);
+    await page.evaluate(() => document.getElementById("projectNext").click());
+    await page.waitForTimeout(340);
   }
   dire("on est à l'écran des coordonnées",
     await visible("#projectWizard", "data-pstep"), 7);
