@@ -1735,6 +1735,19 @@
 
   /* == Validation. Le focus se pose sur le premier champ en erreur, ==  D-419 */
   function markField(field, ok) {
+    /* UN CHOIX A DEUX BOUTONS NE VIT PAS TOUJOURS DANS UN `.field`.
+       D-777
+
+       LE DEFAUT, ET IL CRIAIT DANS LA CONSOLE. Le bloc des
+       `.choices` appelle `markField(hidden.closest(".field"), true)`.
+       L'entree cachee `prix_reaction` de l'ecran du chiffre n'est
+       enveloppee d'aucun `.field` : `closest` rendait `null`, et le
+       premier `field.classList` levait. Un « Oui, on en parle » ou un
+       « Non, c'est trop » — le geste le plus interessant de tout
+       l'estimateur — laissait donc une TypeError a chaque clic, sur
+       un seuil du depot qui exige ZERO erreur de console. L'envoi
+       partait quand meme : c'est ce qui l'a rendu invisible. */
+    if (!field) return;
     /* PHASE 8 · V3 — LA SOUDURE NE SE VOIT QUE SUR CE QUI VIENT  D-420 */
     if (ok && field.classList.contains("is-invalid")) {
       field.classList.add("is-valid");
@@ -4205,10 +4218,22 @@
          bouton MARQUE au bas de son nouveau prix, avec un motif
          deja choisi. Le visiteur suivant lisait une question a
          laquelle il n'avait pas repondu. */
+      /* ET LA CLASSE `is-on`, PAS SEULEMENT L'ATTRIBUT. Le
+         gestionnaire generique des `.choices` pose les DEUX ; c'est
+         `is-on` qui porte le style (css `1150`). Premier correctif :
+         il ne purgeait que `aria-pressed`, et le bouton restait
+         PEINT. Ma propre sonde ne mesurait que l'attribut, donc elle
+         passait au vert sur un ecran ou le defaut se voyait a l'oeil
+         nu. Piege 1 dans les deux sens : ni le correctif ni le test
+         ne regardaient ce que le visiteur regarde. */
       var panneauR = wizard.closest(".modal-panel") || wizard.parentElement;
       if (panneauR) {
-        $$('.choices[data-choice] button[aria-pressed]', panneauR).forEach(function (b) {
+        $$('.choices[data-choice] button', panneauR).forEach(function (b) {
           b.setAttribute("aria-pressed", "false");
+          b.classList.remove("is-on");
+        });
+        $$('.choices[data-choice] input[type="hidden"]', panneauR).forEach(function (c) {
+          c.value = "";
         });
       }
       $$(".step-manque", wizard).forEach(function (m) { m.hidden = true; });
@@ -4248,6 +4273,11 @@
     if (suite) suite.hidden = false;
     var sortie = $("#estimateStatus");
     if (sortie) { retirerRepli(sortie); say(sortie, ""); }
+    /* LE DEVIS EN COURS PART AVEC LE RESTE. Sans ca,
+       `sauverEnEcrivant` sur « autre chose » posterait encore sur le
+       `_sid` de la personne PRECEDENTE — la ligne d'un visiteur
+       recevrait la phrase d'un autre. */
+    devisEnCours = null;
   }
 
   /* LES REPONSES, SOUS LE LIBELLE EXACT QUE LE SERVEUR ATTEND.
@@ -4376,6 +4406,21 @@
     $$("[data-esuivant]", wizard).forEach(function (btn) {
       btn.addEventListener("click", function () {
         var ecran = btn.closest(".step");
+        /* UN CLIC SUR UN ECRAN DEJA QUITTE NE FAIT RIEN.  D-777
+
+           LE DEFAUT, ET IL RENVOYAIT EN ARRIERE. Deux clics dans la
+           meme image — le geste d'un pouce nerveux sur un telephone
+           lent — partaient tous les deux de l'ecran du BOUTON, donc
+           du meme `n`. Le premier avancait ; le second rappelait
+           `goEStep(n + 1)` alors que l'ecran visible etait deja plus
+           loin, et `goEStep` deduit son SENS de l'ecran visible :
+           il marchait donc a reculons jusqu'au premier ecran visible
+           qu'il croisait. Depuis les fonctions d'une boutique, deux
+           clics sur « Continuer » ramenaient... aux fonctions. Le
+           bouton avait l'air mort.
+
+           `hidden` est le seul juge : c'est ce que `goEStep` pose. */
+        if (ecran.hidden) return;
         var n = Number(ecran.dataset.step);
         var famille = familleDe(answers.type_de_projet);
 
@@ -4469,10 +4514,29 @@
           if (res) res.textContent = resume;
           montrerFourchette("estimate", rep && rep.fourchette, payload, sid, sur);
         }).catch(function (err) {
-          /* L'ORDRE COMPTE. On revele d'abord le resume — la demande
-             a peut-etre abouti malgre l'erreur — puis on dit ce qui
-             s'est passe, sous les yeux du visiteur.  D-426 */
           setLoading(btn, false);
+          /* UN REFUS DU SERVICE SE CORRIGE, IL NE SE SUBIT PAS.
+             D-777
+
+             LE DEFAUT, ET IL ENFERMAIT. Toute erreur menait a
+             l'ecran du chiffre. Quand le service REFUSE — un champ
+             trop long, une reponse obligatoire manquante — le
+             visiteur atterrissait donc sur un ecran sans formulaire,
+             sans chiffre, et sans retour possible : l'estimateur n'a
+             pas de bouton « precedent ». Le repli lui disait meme
+             « le formulaire est encore la, tel que vous l'avez
+             laisse » — c'etait faux, il venait de disparaitre.
+
+             Un refus du service NOMME ce qui cloche : on reste donc
+             sur l'ecran des coordonnees, ou les trois champs sont, et
+             on met le message dessous. Une PANNE, elle, garde
+             l'ancien chemin : la demande a peut-etre abouti malgre
+             l'erreur, et on montre le resume avant de le dire.
+             D-426 */
+          if (err && err.duService) {
+            say(status, messageEchec(err), "err");
+            return;
+          }
           goEStep(E_RESULTAT);
           var r2 = $("#estimateResume");
           if (r2) r2.textContent = resume;

@@ -11,7 +11,7 @@
    essaie d'écrire soi-même dans le classeur.
 
    ------------------------------------------------------------
-   TROIS DÉFAUTS RÉELS TROUVÉS PAR CET OUTIL, ET CORRIGÉS
+   SIX DÉFAUTS RÉELS TROUVÉS PAR CET OUTIL, ET CORRIGÉS
 
    1 · LA BORNE DE « FONCTIONS » COUPAIT UN CHEMIN COMPLET.
        `LONGUEURS.fonctions` valait 160 signes. Les cinq cases du
@@ -21,38 +21,81 @@
        lead — remplissait ses six écrans, cliquait « Voir ma
        fourchette », et lisait « La réponse « Fonctions » est trop
        longue ». Il ne pouvait rien corriger : ce ne sont pas des
-       champs de texte, ce sont des cases, et rien à l'écran ne
+       champs de texte, ce sont des CASES, et rien à l'écran ne
        disait laquelle décocher. Aucune ligne au classeur, aucun
-       courriel, le lead perdu. Corrigé dans `google/Code.gs` :
-       la borne passe à 400, soit plus du double de la plus longue
+       courriel, le lead perdu. Borne portée à 400 dans
+       `google/Code.gs` — plus du double de la plus longue
        combinaison possible.
 
-   2 · UNE FONCTION RÉPÉTÉE GONFLAIT LE TOTAL.
+   2 · UNE CLÉ DE LA CHAÎNE DE PROTOTYPES FABRIQUAIT UN MONTANT.
+       `g.ampleur["constructor"]` ne rend pas `undefined` : il rend
+       la fonction `Object`, donc « défini ». Le garde « je refuse
+       plutôt que de deviner » laissait passer, le total devenait
+       `NaN`, et `estimCran(NaN)` ne trouvait jamais mieux que son
+       point de départ — il retombait sur le PREMIER cran. Une
+       requête portant `ampleur: "constructor"` obtenait donc une
+       fourchette du bas de l'échelle sur n'importe quel projet, et
+       ce montant se gravait dans « Fourchette vue », colonne FIGÉE.
+       Même famille : `_form: "constructor"` traversait
+       `!SCHEMA[kind]` et faisait lever `valider()` trois lignes plus
+       bas — le refus propre ne partait pas, le visiteur lisait « Le
+       service a rencontré une erreur », et le journal Apps Script se
+       remplissait de traces à chaque requête d'un robot. Et
+       `_parti_vers: "toString"` écrivait une FONCTION dans une
+       cellule. Corrigé par `dans()` dans `google/Code.gs`, partout
+       où une clé vient du visiteur.
+
+   3 · UNE FONCTION RÉPÉTÉE GONFLAIT LE TOTAL.
        `estimTotal` additionnait `fonctions` telle qu'elle arrive.
-       Sept fois « Le paiement en ligne » (152 signes, donc sous la
-       borne) faisait passer une boutique de « 13 000 $ à 18 000 $ »
-       à « 24 000 $ à 32 000 $ ». Le navigateur ne peut pas produire
-       ça — une case cochée deux fois n'existe pas — mais une requête
-       forgée, oui, et le montant se gravait dans une colonne FIGÉE.
-       Corrigé : `estimListe()` dédoublonne.
+       Sept fois « Le paiement en ligne » — 152 signes, donc sous la
+       borne — faisait monter une boutique de deux crans. Le
+       navigateur ne peut pas produire ça ; une requête forgée, oui,
+       et le montant se gravait dans la colonne figée. Corrigé :
+       `estimListe()` dédoublonne.
 
-   3 · `_form: "constructor"` TRAVERSAIT LE GARDE.
-       `!SCHEMA[kind]` interroge la chaîne de prototypes :
-       `SCHEMA["constructor"]`, `SCHEMA["toString"]`,
-       `SCHEMA["hasOwnProperty"]` rendent tous une fonction, donc
-       « vrai ». Le refus propre « Formulaire inconnu. » ne se
-       déclenchait pas ; `valider()` levait trois lignes plus bas et
-       le visiteur lisait « Le service a rencontré une erreur »,
-       avec une trace d'exception dans le journal Apps Script à
-       chaque requête. Corrigé : `hasOwnProperty.call`.
+   4 · DEUX CLICS SUR « CONTINUER » RENVOYAIENT EN ARRIÈRE.
+       Le geste d'un pouce nerveux sur un téléphone lent. Les deux
+       clics partent de l'écran du BOUTON, donc du même `n` ; le
+       second appelait `goEStep(n + 1)` alors que l'écran visible
+       était déjà plus loin, et `goEStep` déduit son SENS de l'écran
+       visible : il marchait à reculons jusqu'au premier écran
+       visible croisé. Depuis les fonctions d'une boutique, deux
+       clics sur « Continuer » ramenaient... aux fonctions. Le bouton
+       avait l'air mort. Corrigé dans `js/main.js` : un clic sur un
+       écran déjà quitté ne fait rien.
 
-   4 · LA RÉPONSE DU VISITEUR PRÉCÉDENT SURVIVAIT À `resetEstimate`.
-       `#esPrixRaison` — « qu'est-ce qui accroche ? » — vit dans
-       l'écran 14, DEHORS du `<form>` de l'écran 13. `form.reset()`
-       ne le touchait donc pas, et `resetEstimate()` ne le nommait
-       pas. Rouvrir la modale gardait la phrase du visiteur
-       précédent dans le champ ; le suivant qui clique « Non »
-       l'envoyait sous son propre nom. Corrigé dans `js/main.js`.
+   5 · CHAQUE « OUI » OU « NON » SUR LE PRIX LEVAIT UNE TypeError.
+       Le bloc des `.choices` appelle
+       `markField(hidden.closest(".field"), true)`. L'entrée cachée
+       `prix_reaction` de l'écran du chiffre n'est enveloppée
+       d'aucun `.field` : `closest` rendait `null`. Le geste le plus
+       intéressant de tout l'estimateur laissait donc une exception
+       dans la console à chaque clic — sur un seuil du dépôt qui
+       exige ZÉRO erreur. L'envoi partait quand même : c'est ce qui
+       l'a rendu invisible pendant tout ce temps. `markField` rend
+       maintenant sur un champ absent.
+
+   6 · UN REFUS DU SERVICE ENFERMAIT LE VISITEUR.
+       Toute erreur menait à l'écran du chiffre. Quand le service
+       REFUSE — un champ trop long, une réponse obligatoire
+       manquante — la personne atterrissait sur un écran sans
+       formulaire, sans chiffre, et sans retour possible :
+       l'estimateur n'a pas de bouton « précédent ». Le repli lui
+       disait même « le formulaire est encore là, tel que vous
+       l'avez laissé », ce qui venait de devenir faux. Un refus
+       nommé se corrige : on reste maintenant sur l'écran des
+       coordonnées, message dessous. Une PANNE garde l'ancien
+       chemin — la demande a peut-être abouti.
+
+   ET UN SEPTIÈME QUE LA PASSE DE DÉSARMEMENT A TROUVÉ DANS CET
+   OUTIL LUI-MÊME. Le cas 1 vérifiait qu'un `fourchette_vue` forgé
+   est ignoré, sur un envoi FINAL. D3 a désarmé la purge de
+   `traiter()` et RIEN n'est tombé : sur un envoi final,
+   `extra.fourchette_vue` — écrit par le serveur — bat `data` de
+   toute façon. Le cas prouvait donc moins que ce qu'il annonçait.
+   La purge garde en réalité deux AUTRES portes, celles où `extra`
+   reste vide : l'étape intermédiaire, et le type que la grille
+   refuse. Le cas 1 et D3 les éprouvent maintenant toutes les deux.
 
    ------------------------------------------------------------
    TROIS RÈGLES DE FABRICATION, ET ELLES VIENNENT DE `CLAUDE.md` :
@@ -246,6 +289,21 @@ function estimation(sid, extra) {
   }, extra || {});
 }
 
+/* LE MONTANT ATTENDU SE DEMANDE À LA GRILLE, IL NE SE RECOPIE PAS.
+
+   Deux raisons, et la première a déjà coûté un faux verdict.
+   `estimEcrire()` sépare les milliers par une ESPACE INSÉCABLE : un
+   « 13 000 $ » tapé à la main dans cet outil n'est PAS égal à celui
+   du serveur, et le cas échoue sur une différence invisible à
+   l'œil — deux chaînes qui s'affichent pareil.
+   La seconde : recopier un montant mettrait un prix dans un fichier
+   du dépôt, et `tools/prix-check.mjs` a raison de s'en méfier. */
+function texteDe(charge) {
+  let vue = null;
+  try { vue = gs.estimerPour("estimate", charge); } catch (e) {}
+  return vue && vue.texte ? vue.texte : "";
+}
+
 /* ============================================================
    LE SITE — servi par moi, sur un port à moi
    ============================================================ */
@@ -342,13 +400,51 @@ console.log("############################################################");
 titre("1 · `fourchette_vue` FABRIQUÉ DANS LA CHARGE");
 {
   remise();
-  const r = await forge(estimation("vueForgee", { fourchette_vue: "1 $ à 2 $" }));
+  const charge = estimation("vueForgee", { fourchette_vue: "1 $ à 2 $" });
+  const attendu = texteDe(charge);
+  if (!attendu) arret("la grille ne rend aucune fourchette pour le jeu témoin.");
+  const r = await forge(charge);
   dire("l'envoi passe — on n'attaque pas la validité", r.success, true, r.message || "");
-  dire("la réponse porte la fourchette du SERVEUR", (r.fourchette || {}).texte, "13 000 $ à 18 000 $");
-  dire("la colonne aussi", valeur(2, "Fourchette vue"), "13 000 $ à 18 000 $",
+  dire("la réponse porte la fourchette du SERVEUR", (r.fourchette || {}).texte, attendu);
+  dire("la colonne aussi", valeur(2, "Fourchette vue"), attendu,
     "la colonne est FIGÉE : un montant faux gravé ici ne se corrige plus jamais");
   dire("le montant forgé n'apparaît nulle part dans la ligne",
     feuille().valeurs[1].some((c) => String(c).indexOf("1 $ à 2 $") !== -1), false);
+
+  /* CE QUI PRÉCÈDE NE PROUVE PAS CE QU'ON CROYAIT, ET LA PASSE DE
+     DÉSARMEMENT L'A DIT. Sur un envoi FINAL, `extra.fourchette_vue`
+     — écrit par le serveur — bat `data` dans `ecrireLigne` comme
+     dans `fusionnerLigne` : la purge de `traiter()` n'y sert à
+     rien, et on peut la retirer sans qu'un seul contrôle tombe.
+     Elle garde DEUX autres portes, et ce sont elles qui comptent. */
+  remise();
+  const etape1 = await forge({
+    _form: "estimate", _sid: sidDe("vueEtape"), _etape: 1, _etapes: 7,
+    email: "zz-vue-etape@exemple.ca", type_de_projet: "Une boutique en ligne",
+    fourchette_vue: "1 $ à 2 $"
+  });
+  dire("PORTE 1 · une ÉTAPE INTERMÉDIAIRE passe", etape1.success, true, etape1.message || "");
+  dire("PORTE 1 · et elle n'écrit AUCUNE fourchette", valeur(2, "Fourchette vue"), "",
+    "à l'étape 1 le serveur ne calcule rien : sans la purge, c'est le montant du "
+    + "NAVIGATEUR qui se graverait — et la colonne étant FIGÉE, le vrai ne pourrait "
+    + "plus jamais le remplacer");
+
+  /* Le vrai montant arrive ensuite, et il DOIT pouvoir entrer. */
+  const fin = await forge(estimation("vueEtape", { email: "zz-vue-etape@exemple.ca" }));
+  dire("PORTE 1 · le vrai montant entre encore après coup",
+    valeur(2, "Fourchette vue"), (fin.fourchette || {}).texte,
+    "une colonne figée empoisonnée à l'étape 1 serait perdue pour toujours");
+  dire("PORTE 1 · une seule ligne", nbLignes(), 1);
+
+  /* PORTE 2 · quand la grille REFUSE, `extra` reste vide — et c'est
+     encore la purge, seule, qui empêche le montant forgé d'entrer. */
+  remise();
+  const inconnu = await forge(estimation("vueInconnue", {
+    type_de_projet: "Un vaisseau spatial", fourchette_vue: "1 $ à 2 $" }));
+  dire("PORTE 2 · un type inconnu passe", inconnu.success, true, inconnu.message || "");
+  dire("PORTE 2 · aucune fourchette n'est rendue", inconnu.fourchette === undefined, true);
+  dire("PORTE 2 · et la colonne reste VIDE", valeur(2, "Fourchette vue"), "",
+    "la grille a refusé de deviner ; le navigateur ne doit pas pouvoir décider à sa place");
 }
 
 titre("2 · LES CHAMPS DE SERVICE FORGÉS");
@@ -372,6 +468,14 @@ titre("2 · LES CHAMPS DE SERVICE FORGÉS");
   dire("« Horodatage » n'est pas 1999", String(valeur(2, "Horodatage")).indexOf("1999"), -1,
     "lu : " + valeur(2, "Horodatage"));
   dire("« Parti vers » n'obéit pas à un vocabulaire inventé", valeur(2, "Parti vers"), "");
+
+  /* `PARCOURS_CONNUS["constructor"]` rend la fonction `Object` :
+     sans garde, c'est ELLE qui entrait dans la cellule. */
+  remise();
+  const proto = await forge(estimation("protoParti", { _parti_vers: "constructor" }));
+  dire("`_parti_vers: \"constructor\"` : l'envoi passe", proto.success, true, proto.message || "");
+  dire("… et « Parti vers » reste vide", valeur(2, "Parti vers"), "",
+    "une clé de la chaîne de prototypes ne doit jamais devenir une valeur de colonne");
   /* TÉMOIN POSITIF. Sans lui, « rien n'a atteint les colonnes »
      pourrait simplement vouloir dire que rien n'a été écrit. */
   dire("TÉMOIN · un champ connu atteint bien sa colonne", valeur(2, "Nom"), "ZZTEST Attaque");
@@ -396,7 +500,20 @@ titre("3 · UN TYPE, UNE AMPLEUR, UNE FONCTION QUI N'EXISTENT PAS");
       fonctions: "Une application mobile" }],
     ["un échéancier inventé", { echeancier: "Hier" }],
     ["une taille d'équipe inventée", { taille_equipe: "Douze" }],
-    ["un niveau visuel inventé", { niveau_design: "Somptueux" }]
+    ["un niveau visuel inventé", { niveau_design: "Somptueux" }],
+    /* LES CLÉS DE LA CHAÎNE DE PROTOTYPES, ET C'EST CELLE-LÀ QUI
+       FABRIQUAIT UN MONTANT. `g.ampleur["constructor"]` rend une
+       FONCTION, donc « défini » : le garde laissait passer, le
+       total devenait `NaN`, et `estimCran(NaN)` retombait sur le
+       PREMIER cran — « 2 500 $ à 3 500 $ » sur n'importe quoi, dans
+       une colonne FIGÉE. */
+    ["une ampleur « constructor »", { ampleur: "constructor" }],
+    ["une ampleur « toString »", { ampleur: "toString" }],
+    ["une fonction « constructor »", { fonctions: "constructor" }],
+    ["un échéancier « valueOf »", { echeancier: "valueOf" }],
+    ["un visuel « hasOwnProperty »", { niveau_design: "hasOwnProperty" }],
+    ["un contenu « __proto__ »", { contenu: "__proto__" }],
+    ["un type « constructor »", { type_de_projet: "constructor" }]
   ];
   for (const [quoi, extra] of CAS) {
     remise();
@@ -501,13 +618,14 @@ titre("6 · LES CINQ CASES DE CHAQUE TYPE, COCHÉES ENSEMBLE");
 titre("7 · UN ENVOI SANS `_final`, AVEC `prix_reaction` SEUL");
 {
   remise();
-  const r = await forge({
+  const charge7 = {
     _form: "estimate", _sid: sidDe("reacSeule"), _etape: 99, _etapes: 99,
     email: "zz-reaction@exemple.ca", prix_reaction: "Non", prix_raison: "trop cher",
     type_de_projet: "Une boutique en ligne", ampleur: "25 à 250 produits",
     fonctions: "", niveau_design: "Propre et rapide",
     contenu: "Tout est à faire", echeancier: "Dans le mois", taille_equipe: "26 personnes et plus"
-  });
+  };
+  const r = await forge(charge7);
   dire("l'envoi passe — c'est la sauvegarde progressive (D-744)", r.success, true, r.message || "");
   dire("une ligne naît", nbLignes(), 1);
   dire("elle porte le courriel, seul minimum vital exigé",
@@ -515,7 +633,8 @@ titre("7 · UN ENVOI SANS `_final`, AVEC `prix_reaction` SEUL");
   note("une ligne sans nom ni téléphone est VOULUE : `requisPartiel` n'exige que le courriel, "
     + "sinon on perdrait l'abandon qu'on cherche justement à capter");
   dire("et la fourchette est celle que le SERVEUR recalcule",
-    valeur(2, "Fourchette vue"), "18 000 $ à 24 000 $");
+    valeur(2, "Fourchette vue"), texteDe(charge7),
+    "elle se calcule aussi sur le second envoi, celui qui porte la réaction au prix");
 
   /* SANS `_sid` NI `_final`, rien n'est partiel : le jeu complet
      est exigé, et une ligne anonyme ne peut pas naître. */
@@ -805,10 +924,20 @@ titre("16 · AUCUN MONTANT DE LA GRILLE DANS UNE RÉPONSE DU SERVICE");
   }
   note("réponses examinées : " + REPONSES.length);
 
-  /* CE QU'ON CHERCHE : un module de la grille rendu en clair. Les
-     CRANS de l'échelle, eux, PARAISSENT — c'est la fourchette
-     elle-même, et c'est voulu. On cherche donc les montants qui ne
-     sont PAS des crans : les modules, la base, les paliers. */
+  /* UN ENTIER NU N'EST PAS UN PRIX, ET LA PREMIÈRE VERSION DE CE
+     CONTRÔLE LE CROYAIT. Elle cherchait « 3000 », « 2000 », « 1000 »
+     en toutes lettres et accusait trois réponses : les deux
+     premières sont des BORNES DE LONGUEUR citées dans un message de
+     refus — « 50 000 signes pour 3 000 au maximum » — la troisième
+     une LARGEUR DE COLONNE de `?action=diag`. Trois faux verdicts
+     rendus par un instrument qui n'avait rien vu du tout.
+     (pièges 30 · 40 · 62)
+
+     UN MONTANT SE RECONNAÎT À SON SIGNE DE DOLLAR. On extrait donc
+     chaque « N $ » de chaque réponse et on vérifie que c'est un CRAN
+     de l'échelle : les crans PARAISSENT, c'est la fourchette
+     elle-même. Tout montant qui n'est pas un cran est un morceau de
+     grille qui fuit — une base, un module, un palier. */
   const CRANS = new Set(gs.ESTIM_ECHELLE.map(String));
   const modules = new Set();
   Object.keys(gs.ESTIM_GRILLE).forEach((k) => {
@@ -821,20 +950,44 @@ titre("16 · AUCUN MONTANT DE LA GRILLE DANS UNE RÉPONSE DU SERVICE");
   if (!listeModules.length) arret("aucun module hors-cran dans la grille — la sonde n'a rien à chercher.");
   note("montants de la grille qui ne sont PAS des crans : " + listeModules.join(", "));
 
-  const motif = new RegExp("(?:^|[^0-9])(" + listeModules.join("|") + ")(?:[^0-9]|$)");
+  /* Les montants d'un texte, en dollars, normalisés en entiers. */
+  const montantsDe = (texte) => {
+    const out = [];
+    const re = /(\d[\d\s  ]*)\s*\$/g;
+    let m;
+    while ((m = re.exec(String(texte)))) out.push(m[1].replace(/\D/g, ""));
+    return out;
+  };
+
   const fautes = [];
+  let vusEnTout = 0;
   REPONSES.forEach((r) => {
-    const c = String(r.corps || "").replace(/[\s ]/g, "");
-    const m = motif.exec(c);
-    if (m) fautes.push(r.ou + " · « " + m[1] + " » dans : " + String(r.corps).slice(0, 140));
+    montantsDe(r.corps).forEach((v) => {
+      vusEnTout++;
+      if (!CRANS.has(v)) {
+        fautes.push(r.ou + " · « " + v + " $ » n'est pas un cran : " + String(r.corps).slice(0, 140));
+      }
+    });
   });
-  dire("aucun module de la grille ne fuit dans une réponse", fautes.length, 0,
+  /* ZÉRO MONTANT LU ARRÊTE L'OUTIL : une sonde qui n'a rien vu ne
+     peut pas conclure « aucune fuite ». Chaque réponse portant une
+     fourchette en compte deux. */
+  if (vusEnTout < 10) {
+    arret("seulement " + vusEnTout + " montant(s) en dollars lu(s) dans " + REPONSES.length
+      + " réponses — la sonde n'a pas assez regardé pour conclure.");
+  }
+  note("montants en dollars lus dans les réponses : " + vusEnTout);
+  dire("aucun montant hors échelle ne fuit dans une réponse", fautes.length, 0,
     fautes.slice(0, 4).join("\n         · "));
 
   dire("TÉMOIN D'INSTRUMENT · la sonde VOIT un module rendu en clair",
-    motif.test('{"module":"' + listeModules[0] + '"}'), true);
-  dire("TÉMOIN D'INSTRUMENT · et elle ne prend pas un cran pour un module",
-    motif.test('{"texte":"' + gs.ESTIM_ECHELLE[0] + '"}'), false);
+    montantsDe('{"module":"1 500 $"}').filter((v) => !CRANS.has(v)).length, 1);
+  dire("TÉMOIN D'INSTRUMENT · elle laisse passer une vraie fourchette",
+    montantsDe('{"texte":"13 000 $ à 18 000 $"}').filter((v) => !CRANS.has(v)).length, 0);
+  dire("TÉMOIN D'INSTRUMENT · elle ne prend pas une borne de longueur pour un prix",
+    montantsDe('{"message":"50000 signes pour 3000 au maximum."}').length, 0);
+  dire("TÉMOIN D'INSTRUMENT · ni une largeur de colonne",
+    montantsDe('{"largeurs":[150,250,400,1000]}').length, 0);
 }
 
 /* ============================================================
@@ -1128,9 +1281,21 @@ titre("19 · LE FORMULAIRE ENVOYÉ VIDE, PUIS SANS `required`");
     "si elle ne partait pas, le cas ne testerait pas le serveur");
   dire("LE SERVEUR REFUSE", nbLignes(), 0,
     "aucune ligne ne doit naître d'un formulaire vide, quoi qu'ait fait le navigateur");
-  const msg = await statut(page);
-  dire("… et il dit pourquoi, à l'écran",
+  /* UN REFUS DU SERVICE DOIT LAISSER LE VISITEUR LÀ OÙ IL PEUT
+     CORRIGER. Toute erreur menait autrefois à l'écran du chiffre —
+     un écran sans formulaire, sans chiffre, et sans retour possible :
+     l'estimateur n'a pas de bouton « précédent ». Le repli affirmait
+     même « le formulaire est encore là, tel que vous l'avez
+     laissé », ce qui était faux. */
+  dire("on RESTE sur l'écran des coordonnées, là où on peut corriger",
+    await ecran(page), 13,
+    "l'estimateur n'a pas de bouton « précédent » : partir vers l'écran du chiffre enferme");
+  const msg = await statut(page, '#modal-estimate form[data-form="estimate"] .form-status');
+  dire("… et le refus se lit sous le formulaire",
     /manque une réponse obligatoire/i.test(msg), true, "« " + msg + " »");
+  dire("les trois champs sont toujours là, remplissables",
+    await page.evaluate(() => ["esName", "esEmail", "esPhone"]
+      .every((id) => document.getElementById(id).offsetParent !== null)), true);
   dire("aucune erreur console", erreurs.length, 0, erreurs.slice(0, 2).join(" | "));
 
   /* TÉMOIN : les mêmes champs remplis passent. */
@@ -1902,23 +2067,54 @@ function serveurDesarme(ancre, remplacement, quoi) {
     (...noms.map((x) => services[x]));
 }
 
+/* ------------------------------------------------------------
+   D3 · la purge serveur de `fourchette_vue`
+
+   LE PREMIER JET DE CETTE PASSE A RENDU « ELLE NE GARDAIT RIEN »,
+   ET IL AVAIT RAISON — sur le scénario qu'il jouait. Il envoyait un
+   `_final` : là, `extra.fourchette_vue`, écrit par le serveur, bat
+   `data` dans `ecrireLigne` comme dans `fusionnerLigne`, et la
+   purge est effectivement sans effet. Ce qu'elle garde, ce sont les
+   deux portes où `extra` reste VIDE : l'étape intermédiaire, où le
+   serveur ne calcule rien, et le type que la grille refuse. C'est
+   celles-là qu'on désarme.
+
+   C'est exactement le service que rend le désarmement : il a dit
+   que le cas 1 prouvait moins que ce qu'il annonçait.
+   ------------------------------------------------------------ */
 titre("D3 · GARDE DU SERVEUR — `delete data.fourchette_vue` désarmé");
 {
-  const CHARGE = () => estimation("desarmeVue", {
-    email: "zz-desarme-vue@exemple.ca", fourchette_vue: "1 $ à 2 $" });
+  /* Une ÉTAPE INTERMÉDIAIRE : pas de `_final`, pas de
+     `prix_reaction`, donc aucun calcul serveur et aucun `extra`. */
+  const ETAPE = () => ({
+    _form: "estimate", _sid: sidDe("desarmeVue"), _etape: 1, _etapes: 7,
+    email: "zz-desarme-vue@exemple.ca", type_de_projet: "Une boutique en ligne",
+    fourchette_vue: "1 $ à 2 $"
+  });
+  /* Un type que la GRILLE REFUSE : `estimerPour` rend `null`, donc
+     `extra` reste vide là aussi. */
+  const INCONNU = () => estimation("desarmeVue2", {
+    email: "zz-desarme-vue2@exemple.ca",
+    type_de_projet: "Un vaisseau spatial", fourchette_vue: "1 $ à 2 $" });
 
   function releve(instance) {
     remise();
     instance.initialiser();
-    const r = JSON.parse(instance.doPost({
-      postData: { contents: JSON.stringify(CHARGE()) } }).getContent());
+    const a = JSON.parse(instance.doPost({
+      postData: { contents: JSON.stringify(ETAPE()) } }).getContent());
+    const colEtape = valeur(2, "Fourchette vue");
+    remise();
+    instance.initialiser();
+    const b = JSON.parse(instance.doPost({
+      postData: { contents: JSON.stringify(INCONNU()) } }).getContent());
+    const colInconnu = valeur(2, "Fourchette vue");
     return [
-      { quoi: "l'envoi passe", obtenu: r.success, attendu: true },
-      { quoi: "la colonne porte la fourchette du SERVEUR",
-        obtenu: valeur(2, "Fourchette vue"), attendu: "13 000 $ à 18 000 $" },
-      { quoi: "le montant forgé n'apparaît nulle part dans la ligne",
-        obtenu: feuille().valeurs[1].some((c) => String(c).indexOf("1 $ à 2 $") !== -1),
-        attendu: false }
+      { quoi: "l'étape intermédiaire passe", obtenu: a.success, attendu: true },
+      { quoi: "une étape intermédiaire n'écrit AUCUNE fourchette",
+        obtenu: colEtape, attendu: "" },
+      { quoi: "l'envoi au type inconnu passe", obtenu: b.success, attendu: true },
+      { quoi: "un type que la grille refuse n'écrit AUCUNE fourchette",
+        obtenu: colInconnu, attendu: "" }
     ];
   }
   const arme = releve(gs);
@@ -1927,8 +2123,9 @@ titre("D3 · GARDE DU SERVEUR — `delete data.fourchette_vue` désarmé");
     "if (false && data.fourchette_vue !== undefined) {",
     "la purge de `fourchette_vue`"));
   rapporter("D3 · purge de `fourchette_vue`", arme, desarme,
-    "sans elle, un montant forgé se grave dans une colonne FIGÉE, et « ce que le "
-    + "visiteur a vu » devient un mensonge qu'on ne peut plus corriger");
+    "sans elle, le montant du NAVIGATEUR se grave dès l'étape 1 dans une colonne "
+    + "FIGÉE, et le vrai — celui que la personne lira à la fin — ne pourra plus "
+    + "jamais le remplacer");
 }
 
 titre("D4 · GARDE DU SERVEUR — `texteInerte()` neutralisé");

@@ -570,6 +570,26 @@ var ESTIM_TAILLE = {
   "1 à 5 personnes": 1, "6 à 25 personnes": 1.05, "26 personnes et plus": 1.12
 };
 
+/* UNE CLÉ DU VISITEUR NE SE CHERCHE JAMAIS SUR LA CHAÎNE DE
+   PROTOTYPES.  D-777
+
+   `g.ampleur["constructor"]` ne rend pas `undefined` : il rend la
+   FONCTION `Object`, donc « défini ». Le garde « je refuse plutôt
+   que de deviner » laissait passer, le total devenait `NaN`,
+   `estimCran(NaN)` ne trouvait jamais mieux que son point de
+   départ et retombait sur le PREMIER cran. Une requête forgée
+   portant `ampleur: "constructor"` obtenait donc « 2 500 $ à
+   3 500 $ » sur n'importe quel projet — et ce montant se gravait
+   dans « Fourchette vue », qui est une colonne FIGÉE.
+
+   Même famille : `_form: "constructor"` traversait `!SCHEMA[kind]`
+   et faisait lever `valider()` trois lignes plus bas, et
+   `_parti_vers: "toString"` écrivait une fonction dans une cellule.
+   Tout ce fichier cherche donc ses clés avec `dans()`. */
+function dans(objet, cle) {
+  return !!objet && Object.prototype.hasOwnProperty.call(objet, cle);
+}
+
 /* Le cran le plus proche ; à égalité, le plus haut. */
 function estimCran(n) {
   var best = 0, ecart = Infinity;
@@ -587,12 +607,21 @@ function estimEcrire(n) {
 }
 
 /* Les fonctions cochées, telles qu'elles arrivent : une chaîne
-   « a, b, c » que `serialize` a produite côté site. */
+   « a, b, c » que `serialize` a produite côté site.
+
+   ELLE DÉDOUBLONNE, ET C'EST UNE CORRECTION.  D-777
+   Une case ne se coche pas deux fois : le navigateur ne peut pas
+   produire de répétition. Une requête forgée, si — et sept fois
+   « Le paiement en ligne » tient sous la borne de longueur, donc
+   rien ne l'arrêtait. Le total d'une boutique passait de
+   « 13 000 $ à 18 000 $ » à « 24 000 $ à 32 000 $ », et l'économie
+   de lot se déclenchait sur une seule fonction comptée sept fois.
+   Le montant faux se gravait ensuite dans une colonne FIGÉE. */
 function estimListe(v) {
   var out = [];
   String(v == null ? "" : v).split(",").forEach(function (x) {
     var t = x.trim();
-    if (t) out.push(t);
+    if (t && out.indexOf(t) === -1) out.push(t);
   });
   return out;
 }
@@ -605,49 +634,51 @@ function estimListe(v) {
    verrait jamais. C'est le piège qui a déjà coûté trois sondes à
    ce dépôt. */
 function estimTotal(cle, r) {
+  if (!dans(ESTIM_GRILLE, cle)) return null;
   var g = ESTIM_GRILLE[cle];
-  if (!g) return null;
   var n = g.base;
 
   if (r.ampleur) {
-    if (g.ampleur[r.ampleur] === undefined) return null;
+    if (!dans(g.ampleur, r.ampleur)) return null;
     n += g.ampleur[r.ampleur];
   }
 
   var fs = estimListe(r.fonctions), somme = 0, comptees = 0;
   for (var i = 0; i < fs.length; i++) {
     if (fs[i] === "Rien de tout ça") continue;
-    if (g.fonctions[fs[i]] === undefined) return null;
+    if (!dans(g.fonctions, fs[i])) return null;
     somme += g.fonctions[fs[i]];
     comptees++;
   }
   n += somme * ESTIM_LOT[Math.min(comptees, ESTIM_LOT.length - 1)];
 
   if (r.visuel) {
-    if (g.visuel[r.visuel] === undefined) return null;
+    if (!dans(g.visuel, r.visuel)) return null;
     n += g.visuel[r.visuel];
   }
 
   var f = r[g.facteur.champ];
   if (f) {
-    if (g.facteur.valeurs[f] === undefined) return null;
+    if (!dans(g.facteur.valeurs, f)) return null;
     n += g.facteur.valeurs[f];
   }
 
   if (r.echeancier) {
-    if (ESTIM_ECHEANCE[r.echeancier] === undefined) return null;
+    if (!dans(ESTIM_ECHEANCE, r.echeancier)) return null;
     n *= ESTIM_ECHEANCE[r.echeancier];
   }
   if (r.taille_equipe) {
-    if (ESTIM_TAILLE[r.taille_equipe] === undefined) return null;
+    if (!dans(ESTIM_TAILLE, r.taille_equipe)) return null;
     n *= ESTIM_TAILLE[r.taille_equipe];
   }
-  return n;
+  /* LE DERNIER FILET. Aucun chemin connu ne rend `NaN` maintenant ;
+     s'il en réapparaît un, on rend `null` — pas un premier cran. */
+  return isFinite(n) ? n : null;
 }
 
 function estimFourchette(cle, r) {
   var t = estimTotal(cle, r);
-  if (t === null) return null;
+  if (t === null || !isFinite(t)) return null;
   if (t > ESTIM_PLAFOND) return { horsEchelle: true };
   var i = estimCran(t);
   var bas = ESTIM_ECHELLE[i];
@@ -668,8 +699,8 @@ function estimFourchette(cle, r) {
    reprend ses textes tels quels quand c'est possible, et lâche
    l'urgence. Ce qui sort est nommé, un à un. */
 function estimAllege(cle, r) {
+  if (!dans(ESTIM_GRILLE, cle)) return null;
   var g = ESTIM_GRILLE[cle];
-  if (!g) return null;
   var retire = [];
 
   var fs = estimListe(r.fonctions).filter(function (x) { return x !== "Rien de tout ça"; });
@@ -683,6 +714,7 @@ function estimAllege(cle, r) {
     retire.push(r.visuel.charAt(0).toLowerCase() + r.visuel.slice(1));
   }
   if (g.facteur.reductible && r[g.facteur.champ]
+      && dans(g.facteur.valeurs, r[g.facteur.champ])
       && g.facteur.valeurs[r[g.facteur.champ]] > 0) {
     petit[g.facteur.champ] = "Mes textes et mes photos sont prêts";
     retire.push("vous fournissez vos textes et vos photos");
@@ -760,7 +792,7 @@ function estimTypeProjet(data) {
   var ordre = ["logiciel", "boutique", "vitrine"];
   var vus = {};
   estimListe(data.besoins).forEach(function (b) {
-    if (ESTIM_PROJET_TYPE[b]) vus[ESTIM_PROJET_TYPE[b]] = true;
+    if (dans(ESTIM_PROJET_TYPE, b)) vus[ESTIM_PROJET_TYPE[b]] = true;
   });
   for (var i = 0; i < ordre.length; i++) if (vus[ordre[i]]) return ordre[i];
   return null;
@@ -769,15 +801,20 @@ function estimTypeProjet(data) {
 function estimDeProjet(data) {
   var cle = estimTypeProjet(data);
   if (!cle) return null;
-  var bloc = ESTIM_PROJET_BLOC[cle][data.fonctions];
+  var bloc = dans(ESTIM_PROJET_BLOC[cle], data.fonctions)
+    ? ESTIM_PROJET_BLOC[cle][data.fonctions] : undefined;
   if (data.fonctions && bloc === undefined) return null;
 
   var r = {
-    ampleur: data.ampleur ? ESTIM_PROJET_AMPLEUR[cle][data.ampleur] : "",
+    ampleur: dans(ESTIM_PROJET_AMPLEUR[cle], data.ampleur)
+      ? ESTIM_PROJET_AMPLEUR[cle][data.ampleur] : "",
     fonctions: "",
-    visuel: data.niveau_design ? ESTIM_PROJET_DESIGN[data.niveau_design] : "",
-    echeancier: data.echeancier ? ESTIM_PROJET_ECHEANCE[data.echeancier] : "",
-    taille_equipe: data.nombre_employes ? ESTIM_PROJET_TAILLE[data.nombre_employes] : ""
+    visuel: dans(ESTIM_PROJET_DESIGN, data.niveau_design)
+      ? ESTIM_PROJET_DESIGN[data.niveau_design] : "",
+    echeancier: dans(ESTIM_PROJET_ECHEANCE, data.echeancier)
+      ? ESTIM_PROJET_ECHEANCE[data.echeancier] : "",
+    taille_equipe: dans(ESTIM_PROJET_TAILLE, data.nombre_employes)
+      ? ESTIM_PROJET_TAILLE[data.nombre_employes] : ""
   };
   if (data.ampleur && !r.ampleur) return null;
   if (data.niveau_design && !r.visuel) return null;
@@ -793,7 +830,8 @@ function estimDeProjet(data) {
      fourchette pour tous les logiciels, en silence. */
   var champ = ESTIM_GRILLE[cle].facteur.champ;
   if (champ === "contenu") {
-    r.contenu = data.contenu ? (ESTIM_PROJET_CONTENU[data.contenu] || "") : "";
+    r.contenu = dans(ESTIM_PROJET_CONTENU, data.contenu)
+      ? ESTIM_PROJET_CONTENU[data.contenu] : "";
     if (data.contenu && !r.contenu) return null;
   }
 
@@ -836,10 +874,10 @@ function estimerPour(kind, data) {
 
   var t = String(data.type_de_projet || "").trim();
   if (!t) return null;
-  if (ESTIM_SANS_PRIX[t]) return { sansPrix: true, raisons: ESTIM_SANS_PRIX[t] };
+  if (dans(ESTIM_SANS_PRIX, t)) return { sansPrix: true, raisons: ESTIM_SANS_PRIX[t] };
 
+  if (!dans(ESTIM_TYPES, t)) return null;
   var cle = ESTIM_TYPES[t];
-  if (!cle) return null;
 
   var r = {
     ampleur: String(data.ampleur || "").trim(),
@@ -1825,7 +1863,13 @@ function doPost(e) {
       return json({ success: true, compte: true });
     }
 
-    if (!SCHEMA[kind]) {
+    /* `dans()` ET PAS `!SCHEMA[kind]`.  D-777
+       `SCHEMA["constructor"]` rend une fonction, donc « connu » :
+       le refus propre ne partait pas, `valider()` levait trois
+       lignes plus bas, et le visiteur — ou le robot — lisait
+       « Le service a rencontré une erreur » pendant que le journal
+       Apps Script se remplissait de traces d'exception. */
+    if (!dans(SCHEMA, kind)) {
       return json({ success: false, message: "Formulaire inconnu." });
     }
 
@@ -2314,7 +2358,18 @@ var LONGUEURS = {
   site_actuel: 500, besoins: 500, plage_demandee: 200,
   blocage: 2000, connu_par: 160, prix_raison: 2000, fourchette_vue: 120,
   prix_reaction: 40, systeme: 500, depuis_quand: 160, gravite: 80,
-  ampleur: 120, fonctions: 160, contenu: 120, niveau_design: 160,
+  /* `fonctions` EST UNE LISTE, PAS UNE RÉPONSE.  D-777
+     La borne était à 160, et elle coupait un chemin entier : les
+     cinq cases de « Un outil de soumission ou de calcul », jointes
+     par `serialize()`, font 171 signes. Celui qui coche tout est
+     le plus gros projet du type — donc le meilleur lead — et il
+     remplissait ses six écrans pour lire « La réponse « Fonctions »
+     est trop longue ». Il ne pouvait rien corriger : ce sont des
+     CASES, pas un champ de texte, et rien ne disait laquelle
+     décocher. Aucune ligne au classeur, aucun courriel.
+     400 laisse plus du double de la plus longue combinaison
+     possible aujourd'hui, donc la place d'un module de plus. */
+  ampleur: 120, fonctions: 400, contenu: 120, niveau_design: 160,
   envergure: 120, objectif: 160, moment_contact: 60, taille: 60, besoin: 120,
   impact: 2000, presentation: 1000, budget: 120,
   mode_paiement: 60, conditions_acceptees: 8, conditions_version: 20,
@@ -2392,7 +2447,7 @@ function valider(kind, data) {
   for (var c = 0; c < cles.length; c++) {
     var cle = cles[c];
     if (cle.charAt(0) === "_") continue;
-    var max = LONGUEURS[cle] || 2000;
+    var max = dans(LONGUEURS, cle) ? LONGUEURS[cle] : 2000;
     var vu = String(data[cle] == null ? "" : data[cle]).length;
     if (vu > max) {
       var lisible = "";
@@ -2703,7 +2758,7 @@ var PARCOURS_CONNUS = {
 function partiVers(data) {
   var v = String((data && data._parti_vers) || "").trim();
   if (!v) return "";
-  return PARCOURS_CONNUS[v] || "";
+  return dans(PARCOURS_CONNUS, v) ? PARCOURS_CONNUS[v] : "";
 }
 
 /* « 3 / 6 », ou « ✓ complète ». Une seule façon de l'écrire. */

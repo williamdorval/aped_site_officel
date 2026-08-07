@@ -154,10 +154,21 @@ titre("3 · LA DERNIERE ETAPE");
            email: "zztest@exemple.ca", nom: "ZZTEST Fin" });
   etat.courriels.length = 0;
 
+  /* LA CHARGE PORTE DE VRAIES REPONSES DEPUIS LE 2026-08-07.  D-774
+     Elle portait `fourchette_vue: "10 000 $ à 20 000 $"` et rien
+     d'autre : le navigateur calculait le montant et le serveur le
+     recopiait. Il ne le recopie plus — il le CALCULE, a partir des
+     reponses. Sans reponses, la colonne reste vide, et c'est juste. */
   const f = poster({ _form: "project", _sid: S, _etape: 6, _etapes: 6, _final: true,
                      email: "zztest@exemple.ca", nom: "ZZTEST Fin",
                      entreprise: "ZZTEST inc", budget: "10 000 $ à 20 000 $",
-                     fourchette_vue: "10 000 $ à 20 000 $", prix_reaction: "Oui" });
+                     besoins: "Application ou logiciel",
+                     ampleur: "Plus de 15 — une plateforme",
+                     niveau_design: "Premium — identité forte, animations",
+                     contenu: "Prêts — j’ai tout sous la main",
+                     fonctions: "Plusieurs — comptes, tableau de bord, connexions",
+                     echeancier: "D’ici 1 à 2 mois", nombre_employes: "11 à 50",
+                     fourchette_vue: "ZZ-MENTEUR", prix_reaction: "Oui" });
   verifier("acceptee", f.success, true);
   verifier("une seule ligne, toujours", lignes("Démarrer un projet").length, 1);
   verifier("l'etape dit que c'est complet",
@@ -165,8 +176,22 @@ titre("3 · LA DERNIERE ETAPE");
   verifier("DEUX courriels : l'avis et la confirmation", etat.courriels.length, 2);
   verifier("le visiteur en recoit un",
     etat.courriels.filter((c) => c.to === "zztest@exemple.ca").length, 1);
-  verifier("la fourchette vue est enregistree",
-    cellule("Démarrer un projet", 1, "Fourchette vue"), "10 000 $ à 20 000 $");
+  /* CE CAS VERROUILLAIT LE DEFAUT QU'ON VIENT DE CORRIGER.  D-774
+     Il exigeait que le montant ENVOYE PAR LE NAVIGATEUR se retrouve
+     au classeur — c'est-a-dire exactement ce qu'une requete forgee
+     exploitait pour ecrire « 2 500 $ » sur un projet a 40 000. Il
+     verifie maintenant les deux choses qui comptent : une vraie
+     fourchette arrive, et ce n'est PAS celle qu'on a soufflee. */
+  {
+    const vue = String(cellule("Démarrer un projet", 1, "Fourchette vue"));
+    verifier("une vraie fourchette est enregistree",
+      /^\d[\d\s\u00a0]*\$ à \d[\d\s\u00a0]*\$/.test(vue) ? "une fourchette" : vue || "(vide)",
+      "une fourchette");
+    verifier("et ce n'est pas celle que le navigateur pretendait",
+      vue.indexOf("ZZ-MENTEUR") === -1 ? "non" : "OUI", "non");
+    verifier("la reponse la redescend au site",
+      f.fourchette && f.fourchette.texte === vue ? "la meme" : "differente", "la meme");
+  }
   verifier("sa reaction aussi", cellule("Démarrer un projet", 1, "Ça convient ?"), "Oui");
 }
 

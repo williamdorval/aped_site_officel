@@ -183,3 +183,36 @@ V1 · DÉGAGER. Elle est prise en **mouvement réduit**, où l'animation ne
 joue pas — et la raison est mesurée, pas supposée : sous mouvement
 plein et défilement programmatique, la scène rend un aplat noir, sur le
 code d'avant le chantier **comme** sur celui d'après (pièges 78 à 82).
+
+---
+
+## Chantier 9 · L'estimateur, refait au complet — `estimateur-vue/`, `estimateur/`, `estimateur-attaque/`
+
+`node tools/estimateur-vue.mjs` · `node tools/estimateur-check.mjs` ·
+`node tools/estimateur-attaque.mjs` · `node tools/retro-estim.mjs`
+
+**La grille de prix a quitté le navigateur.** Elle vivait dans
+`js/main.js`, en clair. Elle vit dans `google/Code.gs` : le site envoie
+des réponses, il reçoit une fourchette. D-774.
+
+| Ce qu'il faut voir | Fichiers |
+|---|---|
+| Les huit portes de l'écran 1, chacune avec son bénéfice | `estimateur-vue/1440-clair-01-type--palier0.png` |
+| Un écran à DEUX questions, et « Continuer » tenu au bas du panneau | `estimateur-vue/1440-clair-boutique-05-soin--palier0.png` |
+| Les fonctions, en bénéfices pour SES clients, jamais en technologies | `estimateur-vue/1440-clair-boutique-03-fonctions--palier0.png` |
+| Les coordonnées, en dernier — et le bouton dit que la demande part | `estimateur-vue/1440-clair-boutique-08-coordonnees--palier0.png` |
+| **Le moment du prix** : la fourchette, ses raisons, et la question | `estimateur-vue/1440-clair-boutique-09-prix--palier0.png` |
+| **Le « non »** : la version allégée, et ce qui en sort, un par un | `estimateur-vue/1440-clair-vitrine-12-plus-petit--palier0.png` |
+| **Les trois sans prix** : aucun chiffre, trois facteurs nommés | `estimateur-vue/1440-clair-auto-09-prix--palier0.png` |
+| Le même sur téléphone, en 390 px | `estimateur-vue/390-clair-*` |
+| Le même en thème sombre | `estimateur-vue/1440-sombre-*` |
+
+**Ce que la planche a trouvé et qu'aucun test n'aurait vu :** le bouton
+« Continuer » sous la ligne de flottaison, la porte de sortie posée
+après le champ libre, « 6 sur 6 » resté affiché au-dessus du prix, les
+deux montants en minium qui se disputaient l'œil, et le motif recopié
+dans le champ « autre chose ». Cinq défauts, cinq images.
+
+**Ce que la planche ne prouve pas :** rien de ce qu'elle montre ne
+vient d'un appareil réel. Chromium sous Playwright, sur une machine de
+bureau Windows — relevés « téléphone » compris.

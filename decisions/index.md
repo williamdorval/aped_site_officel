@@ -2120,10 +2120,14 @@ recommence. Trois choses le rendent cher.
 
   · **L'echelle.** Le total ne s'affiche jamais tel quel : il se
     range au cran le plus proche de onze, espaces d'un tiers. Mesure
-    sur le produit cartesien complet des quatre types : basculer une
-    fonction ne bouge l'ecran que dans 18 a 49 % des contextes, et
-    jamais du meme nombre de crans. **L'attaque nommee au brief —
-    changer une option a la fois — ne rend rien.**
+    sur le produit cartesien complet des quatre types — 47 000
+    combinaisons : pour QUINZE des vingt modules, l'ecart le plus
+    frequent est **zero cran**, c'est-a-dire rien de visible. Le
+    plus lisible de tous, « une application mobile » a 8 000 $,
+    donne un cran dans 75 % des contextes — sous le seuil de 80 %
+    au-dela duquel on considere une option comme lue. **L'attaque
+    nommee au brief — changer une option a la fois — ne rend
+    rien.**
   · **L'economie de lot.** Cinq modules montes ensemble coutent moins
     que cinq modules montes un par un : une seule mise en route, une
     seule tournee d'essais, une seule mise en ligne. C'est VRAI, ca
@@ -2278,3 +2282,98 @@ une autre, et une correspondance ratee se serait vue nulle part.
 rend UN. Toute purge, tout comptage, toute sonde qui vise un
 `data-key` de cet estimateur doit viser les QUATRE — c'est la forme
 de defaut que ce chantier a produite trois fois.
+
+## D-777 · Ce que l'estimateur laissait passer
+
+`node tools/estimateur-attaque.mjs` — 277 cas, trois parties : la
+requete forgee, le navigateur, et le desarmement.
+
+**UNE BORNE DE LONGUEUR COUPAIT UN CHEMIN ENTIER.**
+`LONGUEURS.fonctions` valait 160 signes. Les cinq cases du chemin
+« outil de soumission ou de calcul » font 171 signes une fois jointes
+par `serialize()`. Celui qui coche tout est le plus GROS projet du
+type — donc le meilleur lead — et il remplissait ses six ecrans pour
+lire « La reponse « Fonctions » est trop longue ». Il ne pouvait rien
+corriger : ce sont des CASES, pas un champ de texte, et rien a l'ecran
+ne disait laquelle decocher. Aucune ligne au classeur, aucun courriel.
+**Une borne posee sur une reponse ne se pose pas pareil sur une
+LISTE** : elle doit tenir la plus longue combinaison que les cases
+peuvent produire, avec de la place pour un module de plus.
+
+**UNE CLE DU VISITEUR NE SE CHERCHE JAMAIS SUR LA CHAINE DE
+PROTOTYPES.** `g.ampleur["constructor"]` ne rend pas `undefined` : il
+rend la fonction `Object`, donc « defini ». Le garde « je refuse
+plutot que de deviner » laissait passer, le total devenait `NaN`, et
+`estimCran(NaN)` ne trouvait jamais mieux que son point de depart — il
+retombait sur le PREMIER cran. Une requete portant
+`ampleur: "constructor"` obtenait donc une fourchette du bas de
+l'echelle sur n'importe quel projet, **et ce montant se gravait dans
+« Fourchette vue », qui est une colonne FIGEE**. Meme famille :
+`_form: "constructor"` traversait `!SCHEMA[kind]` et faisait lever
+`valider()` trois lignes plus bas — le refus propre ne partait pas, le
+visiteur lisait « Le service a rencontre une erreur », et le journal
+Apps Script se remplissait de traces a chaque requete d'un robot. Et
+`_parti_vers: "toString"` ecrivait une FONCTION dans une cellule.
+`dans()` cherche maintenant partout ou une cle vient du visiteur, et
+`estimTotal` rend `null` plutot qu'un total non fini.
+
+**UNE FONCTION REPETEE GONFLAIT LE TOTAL.** Sept fois « Le paiement en
+ligne » — 152 signes, donc sous la borne — faisait monter une boutique
+de deux crans, et l'economie de lot se declenchait sur une seule
+fonction comptee sept fois. Le navigateur ne peut pas produire ca ;
+une requete forgee, oui. `estimListe()` dedoublonne.
+
+**DEUX CLICS SUR « CONTINUER » RENVOYAIENT EN ARRIERE.** Le geste d'un
+pouce nerveux sur un telephone lent. Les deux clics partent de l'ecran
+du BOUTON, donc du meme `n` ; le second appelait `goEStep(n + 1)`
+alors que l'ecran visible etait deja plus loin, et **`goEStep` deduit
+son SENS de l'ecran visible** : il marchait a reculons jusqu'au
+premier ecran visible croise. Depuis les fonctions d'une boutique,
+deux clics sur « Continuer » ramenaient aux fonctions. Le bouton avait
+l'air mort. Un clic sur un ecran deja quitte ne fait plus rien.
+
+**CHAQUE « OUI » OU « NON » SUR LE PRIX LEVAIT UNE TypeError.** Le
+bloc des `.choices` appelle `markField(hidden.closest(".field"))`.
+L'entree cachee `prix_reaction` de l'ecran du chiffre n'est enveloppee
+d'aucun `.field` : `closest` rendait `null`. **Le geste le plus
+interessant de tout l'estimateur laissait une exception a chaque
+clic**, sur un seuil qui exige ZERO erreur de console. L'envoi partait
+quand meme : c'est ce qui l'a rendu invisible.
+
+**UN REFUS DU SERVICE ENFERMAIT LE VISITEUR.** Toute erreur menait a
+l'ecran du chiffre. Quand le service REFUSE, la personne atterrissait
+sur un ecran sans formulaire, sans chiffre, et sans retour :
+l'estimateur n'a pas de bouton « precedent ». Le repli lui disait meme
+« le formulaire est encore la, tel que vous l'avez laisse », ce qui
+venait de devenir faux. **Un refus nomme se corrige** : on reste sur
+l'ecran des coordonnees, message dessous. Une PANNE garde l'ancien
+chemin — la demande a peut-etre abouti malgre l'erreur.
+
+**LE DESARMEMENT A CORRIGE UN CAS QUI PROUVAIT MOINS QU'IL
+N'ANNONCAIT.** Le cas 1 verifiait qu'un `fourchette_vue` forge est
+ignore, sur un envoi FINAL. En desarmant la purge de `traiter()`,
+RIEN n'est tombe : sur un envoi final, `extra.fourchette_vue` — ecrit
+par le serveur — bat `data` dans `ecrireLigne` comme dans
+`fusionnerLigne`. La purge garde en realite deux AUTRES portes,
+celles ou `extra` reste vide : **l'etape intermediaire**, ou le
+serveur ne calcule rien, et **le type que la grille refuse**. Sans
+elle, le montant du navigateur se grave des l'etape 1 dans la colonne
+figee, et le vrai ne peut plus jamais le remplacer.
+
+**LE DESARMEMENT DU SERVEUR N'ECRIT PLUS SUR LE DISQUE.**
+`reference-attaque.mjs` patche `google/Code.gs`, restaure dans un
+`finally`, et refuse de le faire si le fichier porte des
+modifications non validees. Cette prudence se retourne contre nous :
+**la session qui CORRIGE un defaut laisse justement le fichier
+modifie**, donc la passe qui compte le plus se sauterait toute seule,
+en silence, le jour ou elle sert. `estimateur-attaque.mjs` LIT le
+source, patche la chaine en memoire, et l'evalue dans une seconde
+instance qui partage `etat` — le disque n'est jamais ouvert en
+ecriture, et l'empreinte sha256 le prouve avant et apres.
+
+**CE QUE L'ATTAQUE N'A PAS PU FERMER, ET QUI RESTE UNE RESERVE.** Un
+`_sid` connu permet toujours d'ECRIRE dans les colonnes non figees de
+la ligne correspondante — « Pourquoi pas », « Ca convient ? ». Il ne
+permet ni de la LIRE, ni d'en creer une seconde, ni de toucher
+« Fourchette vue », qui est figee. C'est la reserve deja inscrite dans
+`RESERVES.md` : le `_sid` n'est ni signe ni lie a personne.

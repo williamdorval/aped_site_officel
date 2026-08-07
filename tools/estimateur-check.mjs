@@ -603,20 +603,31 @@ titre("4bis · CE QUE LA REOUVERTURE DOIT EFFACER");
      `[data-key]`, dans des `.choices[data-choice]`, et la premiere
      purge ne les voyait pas : « Non, c'est trop » restait marque au
      bas d'un prix tout neuf. */
-  const restait = await page.evaluate(() => {
+  /* ON MESURE LA PEINTURE, PAS L'ATTRIBUT. Premiere version : elle
+     ne comptait que `[aria-pressed='true']`. Le gestionnaire des
+     `.choices` pose AUSSI la classe `is-on`, et c'est `is-on` qui
+     porte le style — la sonde passait au vert sur un « Non, c'est
+     trop » visiblement marque au bas d'un prix tout neuf. On
+     compare donc le fond calcule au fond d'un bouton neutre. */
+  const marquesDe = () => page.evaluate(() => {
     const p = document.querySelector("#modal-estimate");
-    return [...p.querySelectorAll("[aria-pressed='true']")].map((b) =>
-      (b.dataset.value || b.textContent || "").trim().slice(0, 30));
+    const neutre = getComputedStyle(
+      [...p.querySelectorAll(".choices button")].slice(-1)[0] || document.body).backgroundColor;
+    return [...p.querySelectorAll("[aria-pressed='true'], .choices button.is-on")]
+      .concat([...p.querySelectorAll(".choices button")].filter((b) =>
+        getComputedStyle(b).backgroundColor !== neutre))
+      .map((b) => (b.dataset.value || b.textContent || "").trim().slice(0, 30))
+      .filter((v, i, t) => t.indexOf(v) === i);
   });
+  const restait = await marquesDe();
   dire("avant reouverture, des marques existent bien", restait.length > 0, true,
     "temoin positif : sans lui, « rien ne reste » ne prouve rien");
 
   await ouvrirEstimateur(page);
+  const marques = await marquesDe();
   const apres = await page.evaluate(() => {
     const p = document.querySelector("#modal-estimate");
     return {
-      marques: [...p.querySelectorAll("[aria-pressed='true']")].map((b) =>
-        (b.dataset.value || b.textContent || "").trim().slice(0, 30)),
       manques: [...p.querySelectorAll(".step-manque")].filter((x) => !x.hidden).length,
       devis: !document.getElementById("esDevis").hidden,
       petit: !document.getElementById("esPetit").hidden,
@@ -625,7 +636,8 @@ titre("4bis · CE QUE LA REOUVERTURE DOIT EFFACER");
       besoin: (document.getElementById("esBesoin") || {}).value || ""
     };
   });
-  dire("aucune reponse ne reste marquee", apres.marques.length, 0, JSON.stringify(apres.marques));
+  dire("aucune reponse ne reste marquee, ni en attribut ni en PEINTURE",
+    marques.length, 0, JSON.stringify(marques));
   dire("aucun avertissement ne reste ouvert", apres.manques, 0);
   dire("les trois boites du prix sont refermees",
     [apres.devis, apres.petit, apres.sans].join(","), "false,false,false");
