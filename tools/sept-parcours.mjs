@@ -34,7 +34,7 @@ import { fileURLToPath } from "node:url";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
-const VERSION_MINIMALE = 11;
+const VERSION_MINIMALE = 13;
 
 const COUT = { contact: 2, urgent: 2, cadeau: 1, project: 3,
                estimate: 3, refer: 3, booking: 3 };

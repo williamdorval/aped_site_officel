@@ -830,7 +830,10 @@ const fabrique = new Function(...noms, source + `
            blocagesSansEffet, veilleBlocages, poserVeille, bloqueAuMoinsUnCreneau,
            surChangementAgenda, declencheursPoses, oublierCreneaux,
            relancerAbandons, adresseDuSite, lienReprise, RELANCES,
-           libelleEtape, repererLigne, diagnostic };
+           libelleEtape, repererLigne, diagnostic,
+           estimerPour, estimTotal, estimFourchette, estimAllege, estimCran,
+           ESTIM_ECHELLE, ESTIM_GRILLE, ESTIM_LOT, ESTIM_TYPES, ESTIM_SANS_PRIX,
+           ESTIM_ECHEANCE, ESTIM_TAILLE, ESTIM_PLAFOND };
 `);
 export const gs = fabrique(...noms.map((n) => services[n]));
 

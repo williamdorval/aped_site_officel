@@ -369,7 +369,495 @@ var CONDITIONS_VERSIONS = ["2026-08-07"];
    ce fichier : une constante y serait indéfinie et l'outil
    mourrait au lieu de vérifier. Il compare donc les deux listes,
    et une faute de frappe d'un côté le fait échouer. */
-var COLONNES_FIGEES = ["Conditions acceptées", "Acceptées le", "Version acceptée"];
+var COLONNES_FIGEES = ["Conditions acceptées", "Acceptées le",
+                       "Version acceptée", "Fourchette vue"];
+
+
+/* ============================================================
+   LA GRILLE DE PRIX  D-774
+
+   ELLE VIT ICI, ET NULLE PART AILLEURS.
+
+   Jusqu'au 2026-08-07 le barème vivait dans `js/main.js` : cinq
+   paliers et une table de points, servis en clair à quiconque
+   ouvrait l'onglet « Sources ». Un concurrent n'avait pas à sonder
+   l'estimateur — il n'avait qu'à LIRE. Toute parade qui suppose le
+   secret d'un barème calculé par le navigateur est morte-née.
+
+   Le navigateur envoie donc des RÉPONSES, et reçoit une
+   FOURCHETTE. Il ne connaît ni les bases, ni les modules, ni
+   l'échelle. `tools/prix-check.mjs` refuse maintenant qu'un seul
+   montant de cette grille reparaisse dans un fichier servi.
+
+   CE QUE ÇA NE FERME PAS, ET IL FAUT LE DIRE : quelqu'un peut
+   toujours SONDER. Il remplit le formulaire, change une réponse,
+   recommence. Trois choses lui coûtent cher :
+
+     1 · l'échelle. Le total ne s'affiche jamais tel quel : il se
+         range au cran le plus proche de `ESTIM_ECHELLE`. Douze
+         crans espacés d'un tiers avalent les petits modules —
+         mesuré : basculer une fonction ne bouge l'écran que dans
+         23 à 63 % des contextes, et jamais du même nombre de
+         crans. L'attaque du « je change une option à la fois » ne
+         rend rien.
+
+     2 · l'économie de lot. Cinq modules montés ensemble coûtent
+         moins que cinq modules montés un par un : une seule mise
+         en route, une seule tournée d'essais, une seule mise en
+         ligne. C'est VRAI, ça se défend au téléphone, et ça rend
+         le total NON ADDITIF — donc illisible par une régression
+         linéaire. Mesuré : le solveur plafonne à 20-25 %
+         d'erreur et n'y descend plus, même à 2 000 sondages.
+         Sans cette courbe il tombait à 3 % en 400.
+
+     3 · le prix du sondage. La demande part AVANT le chiffre :
+         chaque sondage laisse une ligne au classeur, avec un nom,
+         un courriel et un téléphone.
+
+   `tools/retro-estim.mjs` refait les trois attaques à chaque
+   lancement et échoue si l'une d'elles redevient payante.
+
+   LA CALIBRATION EST VÉRIFIABLE. Quatre vrais projets d'APED
+   servent de témoins ; la règle est que la valeur réelle tombe
+   DANS la fourchette affichée et dans sa MOITIÉ BASSE. Le plancher
+   au plus près du vrai prix n'est pas un hasard : Ames & Mason
+   (JPSP 2015) mesurent qu'une fourchette dont le plancher EST la
+   cible obtient les meilleures contre-offres. Et un dépassement
+   du haut annoncé se vit comme une trahison — le fédéral américain
+   l'a même codifié pour le déménagement, à 110 % de l'estimé.
+   ============================================================ */
+
+/* LES CRANS. Un total ne s'affiche jamais tel quel : il se range au
+   plus proche, et la fourchette va de ce cran au suivant. À égalité
+   on monte — se tromper vers le haut coûte une surprise agréable,
+   se tromper vers le bas coûte le client ET la crédibilité. */
+var ESTIM_ECHELLE = [2500, 3500, 5000, 6000, 8000, 10000, 13000, 18000,
+                     24000, 32000, 42000];
+
+/* Au-delà du dernier cran, aucune fourchette : à cette taille-là un
+   ordre de grandeur ne veut plus rien dire, et on le dit. */
+var ESTIM_PLAFOND = 42000;
+
+/* L'ÉCONOMIE DE LOT, par nombre de fonctions retenues. */
+var ESTIM_LOT = [1, 1, 0.95, 0.90, 0.86, 0.83, 0.81, 0.80];
+
+/* CE QUE LE VISITEUR CHOISIT À L'ÉCRAN 1, ET CE QUE ÇA OUVRE. */
+var ESTIM_TYPES = {
+  "Un site pour présenter mon entreprise": "vitrine",
+  "Une boutique en ligne": "boutique",
+  "Un outil de soumission ou de calcul": "estimateur",
+  "Un logiciel ou une application sur mesure": "logiciel"
+};
+
+/* LES TROIS CATÉGORIES SANS PRIX, ET POURQUOI — c'est le texte que
+   le visiteur lit. Dire « ça dépend » est une esquive ; nommer CE
+   dont ça dépend est une réponse. La différence entre les deux est
+   la quantité d'information donnée gratuitement. */
+var ESTIM_SANS_PRIX = {
+  "Automatiser des tâches qui me prennent du temps":
+    ["les logiciels qu’il faut relier entre eux",
+     "ce qui doit se décider tout seul et ce qui reste dans vos mains",
+     "le volume : dix dossiers par semaine ou mille"],
+  "De l’intelligence artificielle":
+    ["ce qu’elle doit lire — vos documents, vos courriels, vos appels",
+     "si elle répond à vos clients ou seulement à votre équipe",
+     "le modèle, dont le coût se compte à l’usage et pas au projet"],
+  "Des visites virtuelles ou de l’immobilier":
+    ["le nombre de pièces et la taille de la propriété",
+     "la prise de vue : une journée sur place, ou trois",
+     "ce qu’on garde après — un tour figé ou un outil qui se met à jour"],
+  "Je ne sais pas encore":
+    ["ce que vous voulez que ça change dans votre semaine",
+     "ce qui vous coûte le plus de temps aujourd’hui",
+     "ce que vos clients vous demandent et que vous n’avez pas"]
+};
+
+/* LA GRILLE. Quatre types, quatre questions chacun.
+   `facteur` est la quatrième question, propre au type.
+   `reductible` dit si elle peut sortir d'une version allégée. */
+var ESTIM_GRILLE = {
+  vitrine: {
+    base: 2500,
+    ampleur: { "1 à 5 pages": 0, "6 à 15 pages": 1000,
+               "Plus de 15 pages": 3500, "Je ne sais pas encore": 750 },
+    fonctions: {
+      "Un formulaire de contact": 1000,
+      "La prise de rendez-vous en ligne": 1500,
+      "Une carte du secteur desservi": 1000,
+      "Un blogue ou des nouvelles": 1000,
+      "Un espace client": 3000
+    },
+    visuel: { "Propre et rapide": 0, "Marqué, avec des animations": 500,
+              "Une signature visuelle complète": 2500 },
+    facteur: { champ: "contenu", reductible: true, valeurs: {
+      "Mes textes et mes photos sont prêts": 0,
+      "J’en ai une partie": 500,
+      "Tout est à faire": 2000 } }
+  },
+  boutique: {
+    base: 8000,
+    ampleur: { "Moins de 25 produits": 0, "25 à 250 produits": 1000,
+               "Plus de 250 produits": 3000, "Je ne sais pas encore": 500 },
+    fonctions: {
+      "Le paiement en ligne": 2500,
+      "Le calcul de la livraison": 2500,
+      "Un panneau pour gérer mes produits": 2500,
+      "Des comptes clients": 2000,
+      "Des rabais et des codes promo": 1500
+    },
+    visuel: { "Propre et rapide": 0, "Marqué, avec des animations": 1000,
+              "Une signature visuelle complète": 3000 },
+    facteur: { champ: "contenu", reductible: true, valeurs: {
+      "Mes textes et mes photos sont prêts": 0,
+      "J’en ai une partie": 1000,
+      "Tout est à faire": 3000 } }
+  },
+  estimateur: {
+    base: 6000,
+    ampleur: { "Un prix": 0, "Un prix et un plan en 2D": 2500,
+               "Un rendu en 3D": 5000 },
+    fonctions: {
+      "Il s’installe dans mon site": 1000,
+      "Il envoie la soumission par courriel": 1000,
+      "Il se branche à mon inventaire": 3000,
+      "Le client peut sauvegarder et revenir": 2000,
+      /* LE CINQUIÈME MODULE EST ARRIVÉ PAR LA MESURE, PAS PAR L'IDÉE.
+         À quatre fonctions, l'économie de lot ne descend qu'à 0,86 et
+         laisse trop peu de courbure : le solveur retrouvait les
+         modules de ce type à 8 % près en 400 sondages, contre 20 à
+         25 % pour les trois autres. Un cinquième palier lui coûte le
+         double. Il se trouve que c'est aussi la fonction que tout
+         propriétaire d'outil de soumission finit par demander. */
+      "Un tableau des soumissions reçues": 2500
+    },
+    visuel: { "Propre et rapide": 0, "Marqué, avec des animations": 1000,
+              "Une signature visuelle complète": 3000 },
+    /* LA COMPLEXITÉ NE SE RETIRE PAS. Un calcul à cent règles ne
+       devient pas un calcul à trois parce qu'on veut payer moins :
+       c'est la nature du métier du client, pas une option. */
+    facteur: { champ: "complexite", reductible: false, valeurs: {
+      "Quelques options": 0,
+      "Plusieurs options et matériaux": 2000,
+      "Beaucoup de règles et de contraintes": 4000 } }
+  },
+  logiciel: {
+    base: 10000,
+    ampleur: { "Moins de 5 écrans": 0, "5 à 15 écrans": 3500,
+               "Plus de 15 écrans": 9000, "Je ne sais pas encore": 2000 },
+    fonctions: {
+      "Des comptes et des permissions": 3000,
+      "Des paiements": 3000,
+      "Des rapports et un tableau de bord": 3000,
+      "Il se branche à un système que j’ai déjà": 5000,
+      "Une application mobile": 8000
+    },
+    visuel: { "Propre et rapide": 0, "Marqué, avec des animations": 2000,
+              "Une signature visuelle complète": 5000 },
+    facteur: { champ: "usagers", reductible: false, valeurs: {
+      "Mon équipe": 0, "Toute l’entreprise": 3000, "Mes clients aussi": 8000 } }
+  }
+};
+
+/* DEUX MODIFICATEURS EN POURCENTAGE, ET C'EST DÉLIBÉRÉ. Leur valeur
+   en dollars change avec tout le reste des réponses : on ne peut
+   donc pas la lire en basculant l'option seule. Un module fixe se
+   lit, un pourcentage se dilue. */
+var ESTIM_ECHEANCE = {
+  "Dans le mois": 1.20, "Dans 1 à 3 mois": 1,
+  "Plus tard cette année": 1, "Pas de date fixe": 1
+};
+var ESTIM_TAILLE = {
+  "1 à 5 personnes": 1, "6 à 25 personnes": 1.05, "26 personnes et plus": 1.12
+};
+
+/* Le cran le plus proche ; à égalité, le plus haut. */
+function estimCran(n) {
+  var best = 0, ecart = Infinity;
+  for (var i = 0; i < ESTIM_ECHELLE.length; i++) {
+    var d = Math.abs(ESTIM_ECHELLE[i] - n);
+    if (d < ecart || (d === ecart && ESTIM_ECHELLE[i] > ESTIM_ECHELLE[best])) {
+      ecart = d; best = i;
+    }
+  }
+  return best;
+}
+
+function estimEcrire(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0") + "\u00a0$";
+}
+
+/* Les fonctions cochées, telles qu'elles arrivent : une chaîne
+   « a, b, c » que `serialize` a produite côté site. */
+function estimListe(v) {
+  var out = [];
+  String(v == null ? "" : v).split(",").forEach(function (x) {
+    var t = x.trim();
+    if (t) out.push(t);
+  });
+  return out;
+}
+
+/* LE TOTAL D'UN JEU DE RÉPONSES.
+
+   IL REFUSE PLUTÔT QUE DE DEVINER. Un libellé qu'on ne reconnaît
+   pas rend `null` — pas zéro. Un zéro silencieux donnerait une
+   fourchette calculée sur une réponse perdue, et personne ne le
+   verrait jamais. C'est le piège qui a déjà coûté trois sondes à
+   ce dépôt. */
+function estimTotal(cle, r) {
+  var g = ESTIM_GRILLE[cle];
+  if (!g) return null;
+  var n = g.base;
+
+  if (r.ampleur) {
+    if (g.ampleur[r.ampleur] === undefined) return null;
+    n += g.ampleur[r.ampleur];
+  }
+
+  var fs = estimListe(r.fonctions), somme = 0, comptees = 0;
+  for (var i = 0; i < fs.length; i++) {
+    if (fs[i] === "Rien de tout ça") continue;
+    if (g.fonctions[fs[i]] === undefined) return null;
+    somme += g.fonctions[fs[i]];
+    comptees++;
+  }
+  n += somme * ESTIM_LOT[Math.min(comptees, ESTIM_LOT.length - 1)];
+
+  if (r.visuel) {
+    if (g.visuel[r.visuel] === undefined) return null;
+    n += g.visuel[r.visuel];
+  }
+
+  var f = r[g.facteur.champ];
+  if (f) {
+    if (g.facteur.valeurs[f] === undefined) return null;
+    n += g.facteur.valeurs[f];
+  }
+
+  if (r.echeancier) {
+    if (ESTIM_ECHEANCE[r.echeancier] === undefined) return null;
+    n *= ESTIM_ECHEANCE[r.echeancier];
+  }
+  if (r.taille_equipe) {
+    if (ESTIM_TAILLE[r.taille_equipe] === undefined) return null;
+    n *= ESTIM_TAILLE[r.taille_equipe];
+  }
+  return n;
+}
+
+function estimFourchette(cle, r) {
+  var t = estimTotal(cle, r);
+  if (t === null) return null;
+  if (t > ESTIM_PLAFOND) return { horsEchelle: true };
+  var i = estimCran(t);
+  var bas = ESTIM_ECHELLE[i];
+  var haut = ESTIM_ECHELLE[Math.min(i + 1, ESTIM_ECHELLE.length - 1)];
+  return { bas: bas, haut: haut, texte: estimEcrire(bas) + " à " + estimEcrire(haut) };
+}
+
+/* LA VERSION ALLÉGÉE — ce qu'on montre à quelqu'un qui trouve ça
+   trop cher.  D-775
+
+   ON NE RABAT PAS LE PRIX, ON RABAT LA PORTÉE. Un rabais dirait que
+   le premier chiffre était faux, et détruirait la véracité de tout
+   l'outil. Une portée réduite est un autre projet, honnêtement
+   moins cher, et le visiteur voit CE QU'IL TROQUE.
+
+   Elle garde le type et l'ampleur : c'est encore son projet. Elle
+   retire les fonctions, redescend le visuel au propre-et-rapide,
+   reprend ses textes tels quels quand c'est possible, et lâche
+   l'urgence. Ce qui sort est nommé, un à un. */
+function estimAllege(cle, r) {
+  var g = ESTIM_GRILLE[cle];
+  if (!g) return null;
+  var retire = [];
+
+  var fs = estimListe(r.fonctions).filter(function (x) { return x !== "Rien de tout ça"; });
+  fs.forEach(function (x) { retire.push(x.charAt(0).toLowerCase() + x.slice(1)); });
+
+  var petit = { ampleur: r.ampleur, fonctions: "", visuel: "Propre et rapide",
+                echeancier: "Dans 1 à 3 mois", taille_equipe: r.taille_equipe };
+  petit[g.facteur.champ] = r[g.facteur.champ];
+
+  if (r.visuel && r.visuel !== "Propre et rapide") {
+    retire.push(r.visuel.charAt(0).toLowerCase() + r.visuel.slice(1));
+  }
+  if (g.facteur.reductible && r[g.facteur.champ]
+      && g.facteur.valeurs[r[g.facteur.champ]] > 0) {
+    petit[g.facteur.champ] = "Mes textes et mes photos sont prêts";
+    retire.push("vous fournissez vos textes et vos photos");
+  }
+  if (r.echeancier === "Dans le mois") retire.push("on prend le temps normal");
+
+  if (!retire.length) return null;
+  var f = estimFourchette(cle, petit);
+  if (!f || f.horsEchelle) return null;
+  f.retire = retire;
+  return f;
+}
+
+/* LE VOCABULAIRE DE L'ASSISTANT DE PROJET, TRADUIT.  D-774
+
+   Les deux portes posent les mêmes questions dans des mots
+   différents : « 1 à 5 — l’essentiel » d'un côté, « 1 à 5 pages »
+   de l'autre. Traduire ici plutôt que d'aligner les deux
+   formulaires évite de toucher un formulaire qui marche — et
+   `tools/retro-estim.mjs` vérifie que les deux portes ne se
+   contredisent jamais de plus d'un cran. */
+var ESTIM_PROJET_TYPE = {
+  "Site vitrine": "vitrine", "Boutique en ligne": "boutique",
+  "Application ou logiciel": "logiciel"
+};
+var ESTIM_PROJET_AMPLEUR = {
+  vitrine: { "1 à 5 — l’essentiel": "1 à 5 pages", "6 à 15 — un vrai site": "6 à 15 pages",
+             "Plus de 15 — une plateforme": "Plus de 15 pages",
+             "Aucune idée, à voir ensemble": "Je ne sais pas encore" },
+  boutique: { "1 à 5 — l’essentiel": "Moins de 25 produits", "6 à 15 — un vrai site": "25 à 250 produits",
+              "Plus de 15 — une plateforme": "Plus de 250 produits",
+              "Aucune idée, à voir ensemble": "Je ne sais pas encore" },
+  logiciel: { "1 à 5 — l’essentiel": "Moins de 5 écrans", "6 à 15 — un vrai site": "5 à 15 écrans",
+              "Plus de 15 — une plateforme": "Plus de 15 écrans",
+              "Aucune idée, à voir ensemble": "Je ne sais pas encore" }
+};
+var ESTIM_PROJET_DESIGN = {
+  "Essentiel — propre, rapide, efficace": "Propre et rapide",
+  "Premium — identité forte, animations": "Marqué, avec des animations",
+  "Signature — direction visuelle sur mesure": "Une signature visuelle complète"
+};
+var ESTIM_PROJET_CONTENU = {
+  "Prêts — j’ai tout sous la main": "Mes textes et mes photos sont prêts",
+  "En partie — il manque des bouts": "J’en ai une partie",
+  "Tout est à créer": "Tout est à faire"
+};
+/* L'assistant demande « des fonctions particulières ? » en trois
+   paliers, pas en cases. On rend le montant du palier, choisi au
+   milieu de ce que les cases donneraient. */
+var ESTIM_PROJET_BLOC = {
+  vitrine:    { "Aucune — un site qui présente": 0,
+                "Une ou deux — réservation, paiement, formulaire": 2400,
+                "Plusieurs — comptes, tableau de bord, connexions": 4300 },
+  boutique:   { "Aucune — un site qui présente": 0,
+                "Une ou deux — réservation, paiement, formulaire": 4800,
+                "Plusieurs — comptes, tableau de bord, connexions": 8200 },
+  logiciel:   { "Aucune — un site qui présente": 0,
+                "Une ou deux — réservation, paiement, formulaire": 5700,
+                "Plusieurs — comptes, tableau de bord, connexions": 11200 }
+};
+var ESTIM_PROJET_ECHEANCE = {
+  "Le plus vite possible": "Dans le mois", "D’ici 1 à 2 mois": "Dans 1 à 3 mois",
+  "D’ici 3 à 6 mois": "Plus tard cette année", "Pas pressé, j’explore": "Pas de date fixe"
+};
+var ESTIM_PROJET_TAILLE = {
+  "Juste moi": "1 à 5 personnes", "2 à 10": "1 à 5 personnes",
+  "11 à 50": "6 à 25 personnes", "51 à 200": "26 personnes et plus",
+  "Plus de 200": "26 personnes et plus"
+};
+
+/* LE TYPE LE PLUS LOURD GOUVERNE. L'assistant coche « de quoi
+   avez-vous besoin » : quelqu'un qui coche vitrine ET logiciel
+   paie un logiciel. */
+function estimTypeProjet(data) {
+  var ordre = ["logiciel", "boutique", "vitrine"];
+  var vus = {};
+  estimListe(data.besoins).forEach(function (b) {
+    if (ESTIM_PROJET_TYPE[b]) vus[ESTIM_PROJET_TYPE[b]] = true;
+  });
+  for (var i = 0; i < ordre.length; i++) if (vus[ordre[i]]) return ordre[i];
+  return null;
+}
+
+function estimDeProjet(data) {
+  var cle = estimTypeProjet(data);
+  if (!cle) return null;
+  var bloc = ESTIM_PROJET_BLOC[cle][data.fonctions];
+  if (data.fonctions && bloc === undefined) return null;
+
+  var r = {
+    ampleur: data.ampleur ? ESTIM_PROJET_AMPLEUR[cle][data.ampleur] : "",
+    fonctions: "",
+    visuel: data.niveau_design ? ESTIM_PROJET_DESIGN[data.niveau_design] : "",
+    echeancier: data.echeancier ? ESTIM_PROJET_ECHEANCE[data.echeancier] : "",
+    taille_equipe: data.nombre_employes ? ESTIM_PROJET_TAILLE[data.nombre_employes] : ""
+  };
+  if (data.ampleur && !r.ampleur) return null;
+  if (data.niveau_design && !r.visuel) return null;
+  if (data.echeancier && !r.echeancier) return null;
+  if (data.nombre_employes && !r.taille_equipe) return null;
+  /* LA QUATRIÈME QUESTION N'EXISTE QUE POUR DEUX TYPES ICI.
+     L'assistant demande « vos textes et vos photos » à tout le
+     monde ; ça ne veut rien dire pour un logiciel, dont le facteur
+     est « qui va s'en servir ». On ne traduit donc que là où les
+     deux parlent de la même chose — la première écriture forçait la
+     réponse « contenu » dans le facteur `usagers`, ne la trouvait
+     pas, et rendait `null` : l'assistant de projet perdait sa
+     fourchette pour tous les logiciels, en silence. */
+  var champ = ESTIM_GRILLE[cle].facteur.champ;
+  if (champ === "contenu") {
+    r.contenu = data.contenu ? (ESTIM_PROJET_CONTENU[data.contenu] || "") : "";
+    if (data.contenu && !r.contenu) return null;
+  }
+
+  /* LES DEUX POURCENTAGES S'APPLIQUENT UNE FOIS, ET APRÈS LE BLOC.
+     La première écriture les passait à `estimTotal` PUIS les
+     réappliquait sur la somme : un projet urgent d'une entreprise de
+     cent personnes sortait à 1,20 × 1,12 au carré, soit 80 % de trop.
+     Le défaut était invisible au banc — les deux témoins valaient 1.
+     On les retire donc de `r` et on multiplie une seule fois, ici,
+     sur un total qui contient déjà le bloc de fonctions. */
+  var vitesse = r.echeancier, equipe = r.taille_equipe;
+  r.echeancier = ""; r.taille_equipe = "";
+  var t = estimTotal(cle, r);
+  if (t === null) return null;
+  t = (t + (bloc || 0))
+    * (vitesse ? ESTIM_ECHEANCE[vitesse] : 1)
+    * (equipe ? ESTIM_TAILLE[equipe] : 1);
+  if (t > ESTIM_PLAFOND) return { cle: cle, horsEchelle: true };
+  var i = estimCran(t);
+  return { cle: cle, bas: ESTIM_ECHELLE[i],
+           haut: ESTIM_ECHELLE[Math.min(i + 1, ESTIM_ECHELLE.length - 1)],
+           texte: estimEcrire(ESTIM_ECHELLE[i]) + " à "
+                + estimEcrire(ESTIM_ECHELLE[Math.min(i + 1, ESTIM_ECHELLE.length - 1)]) };
+}
+
+/* CE QUE LE SITE REÇOIT. La seule porte de sortie de la grille.
+
+   Rend `null` quand il n'y a rien à dire — et le site affiche alors
+   sa confirmation ordinaire, sans chiffre. Rend `{sansPrix}` pour
+   les trois catégories qui n'ont pas de prix automatique : ce n'est
+   pas un échec, c'est un chemin. */
+function estimerPour(kind, data) {
+  if (kind === "project") {
+    var pv = estimDeProjet(data);
+    if (!pv) return null;
+    if (pv.horsEchelle) return { horsEchelle: true };
+    return { texte: pv.texte, bas: pv.bas, haut: pv.haut };
+  }
+  if (kind !== "estimate") return null;
+
+  var t = String(data.type_de_projet || "").trim();
+  if (!t) return null;
+  if (ESTIM_SANS_PRIX[t]) return { sansPrix: true, raisons: ESTIM_SANS_PRIX[t] };
+
+  var cle = ESTIM_TYPES[t];
+  if (!cle) return null;
+
+  var r = {
+    ampleur: String(data.ampleur || "").trim(),
+    fonctions: data.fonctions,
+    visuel: String(data.niveau_design || "").trim(),
+    contenu: String(data.contenu || "").trim(),
+    complexite: String(data.complexite || "").trim(),
+    usagers: String(data.usagers || "").trim(),
+    echeancier: String(data.echeancier || "").trim(),
+    taille_equipe: String(data.taille_equipe || "").trim()
+  };
+  var f = estimFourchette(cle, r);
+  if (!f) return null;
+  if (f.horsEchelle) return { horsEchelle: true };
+  f.petit = estimAllege(cle, r);
+  return f;
+}
+
 
 
 /* ============================================================
@@ -452,23 +940,33 @@ var SCHEMA = {
     champs: [
       { champ: "nom",             titre: "Nom",                largeur: 150 },
       { champ: "telephone",       titre: "Téléphone",          largeur: 140 },
-      /* CE QUE LE VISITEUR A VU, PAS CE QU'ON RECALCULE.  D-746
-         Une fourchette recalculée après coup n'est pas la même
-         preuve : le barème peut changer entre-temps, et c'est
-         justement sur le chiffre AFFICHÉ que la personne a réagi. */
+      /* CE QUE LE VISITEUR A VU, ET C'EST LE SERVEUR QUI L'ÉCRIT.
+         D-774
+         La colonne est FIGÉE : elle accepte sa première valeur et
+         plus jamais aucune autre. Une fourchette qu'une étape
+         suivante pourrait réécrire ne prouverait rien de ce que la
+         personne a lu avant de répondre « c'est trop cher ». */
       { champ: "fourchette_vue",  titre: "Fourchette vue",     largeur: 170 },
       { champ: "prix_reaction",   titre: "Ça convient ?",      largeur: 120 },
       { champ: "prix_raison",     titre: "Pourquoi pas",       largeur: 300 },
       { champ: "email",           titre: "Courriel",           largeur: 210 },
-      { champ: "type_de_projet",  titre: "Type de projet",     largeur: 150 },
-      { champ: "domaine",         titre: "Domaine",            largeur: 150 },
-      { champ: "envergure",       titre: "Envergure",          largeur: 130 },
-      { champ: "ampleur",         titre: "Ampleur",            largeur: 160 },
-      { champ: "fonctions",       titre: "Fonctions",          largeur: 160 },
-      { champ: "contenu",         titre: "Contenu",            largeur: 160 },
-      { champ: "niveau_design",   titre: "Niveau de design",   largeur: 140 },
-      { champ: "echeancier",      titre: "Échéancier",         largeur: 140 },
-      { champ: "site_existant",   titre: "A déjà un site",     largeur: 110 }
+      { champ: "type_de_projet",  titre: "Type de projet",     largeur: 240 },
+      { champ: "ampleur",         titre: "Ampleur",            largeur: 180 },
+      { champ: "fonctions",       titre: "Fonctions",          largeur: 320 },
+      { champ: "niveau_design",   titre: "Niveau visuel",      largeur: 180 },
+      /* TROIS COLONNES POUR UNE SEULE QUESTION, ET C'EST VOULU. La
+         quatrième question change de nature selon le type : les
+         textes et photos pour un site, la complexité du calcul pour
+         un outil de soumission, les usagers pour un logiciel. Une
+         colonne fourre-tout obligerait à deviner laquelle on lit. */
+      { champ: "contenu",         titre: "Contenu",            largeur: 200 },
+      { champ: "complexite",      titre: "Complexité du calcul", largeur: 200 },
+      { champ: "usagers",         titre: "Qui s'en sert",      largeur: 160 },
+      /* Ce que quelqu'un veut faire, quand son projet n'a pas de
+         prix automatique — automatisation, IA, visite virtuelle. */
+      { champ: "besoin_detail",   titre: "Ce qu'il veut faire", largeur: 340 },
+      { champ: "echeancier",      titre: "Échéancier",         largeur: 150 },
+      { champ: "taille_equipe",   titre: "Taille de l'équipe", largeur: 150 }
     ]
   },
 
@@ -1103,7 +1601,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 12,
+    version: 13,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
@@ -1479,6 +1977,25 @@ function lireCorps(e) {
    qu'à la première fois — lien Meet compris — sans rien recréer.
    Un réessai devient inoffensif, et c'est ce qui autorise le site
    à en faire un. */
+/* LA FOURCHETTE REDESCEND AU SITE PAR LA RÉPONSE.  D-774
+
+   C'est le seul endroit où elle traverse : le site ne sait pas la
+   calculer, il sait l'afficher. On ne renvoie que du TEXTE — les
+   bornes en chiffres ne lui serviraient à rien et feraient une
+   surface de plus à surveiller.
+
+   `traiter` a DEUX sorties — la mise à jour d'une session, et
+   l'écriture d'une ligne neuve. Elles doivent poser la même chose,
+   donc elles appellent la même fonction. */
+function poserFourchette(reponse, vue) {
+  if (!vue) return;
+  if (vue.sansPrix) { reponse.fourchette = { sansPrix: true, raisons: vue.raisons }; return; }
+  if (vue.horsEchelle) { reponse.fourchette = { horsEchelle: true }; return; }
+  if (!vue.texte) return;
+  reponse.fourchette = { texte: vue.texte };
+  if (vue.petit) reponse.fourchette.petit = { texte: vue.petit.texte, retire: vue.petit.retire };
+}
+
 function traiter(kind, data) {
   var extra = {};
 
@@ -1534,6 +2051,51 @@ function traiter(kind, data) {
     delete data.conditions_version;
   }
 
+  /* LA FOURCHETTE SE CALCULE ICI, ET LE NAVIGATEUR N'A PAS SON MOT
+     À DIRE.  D-774
+
+     Elle arrivait autrefois dans la charge : le site la calculait,
+     l'affichait, et l'envoyait. Deux problèmes. Le premier est que
+     la grille devait vivre dans `js/main.js` pour ça, donc en clair.
+     Le second est qu'une requête forgée pouvait écrire « fourchette
+     vue : 2 500 $ à 3 500 $ » sur un projet à 40 000 — et le
+     classeur aurait porté la preuve du contraire de ce qui s'est
+     passé.
+
+     ELLE NE SE CALCULE QU'À LA FIN, ET C'EST LA MÊME LEÇON QUE
+     D-773. Le site enregistre à chaque écran ; à l'écran 1 on ne
+     connaît que le type, et la grille rendrait déjà un montant —
+     celui d'un projet vide. « Fourchette vue » étant une colonne
+     FIGÉE, ce montant-là se serait gravé, et le vrai n'aurait
+     jamais pu le remplacer. On attend donc `_final`, ou le second
+     envoi qui porte la réaction au prix : les deux portent toutes
+     les réponses.
+
+     LE RENVOI DE RÉACTION RECALCULE, et c'est voulu : si les deux
+     calculs divergeaient, la colonne figée garderait le premier —
+     celui que le visiteur a vraiment lu. */
+  var vue = null;
+  if ((kind === "estimate" || kind === "project") && data
+      && (data._final || String(data.prix_reaction || "").trim() !== "")) {
+    try {
+      vue = estimerPour(kind, data);
+    } catch (errE) {
+      console.error("estimerPour " + kind + " : " + (errE && errE.stack ? errE.stack : errE));
+      vue = null;
+    }
+    if (vue && vue.texte) extra.fourchette_vue = vue.texte;
+    else if (vue && vue.sansPrix) extra.fourchette_vue = "Sans prix automatique";
+    else if (vue && vue.horsEchelle) extra.fourchette_vue = "Au-delà de l’échelle";
+  }
+  /* CE QUE LE SITE ENVOIE COMME FOURCHETTE NE COMPTE PAS. Il n'a
+     plus la grille ; s'il en envoie une, elle est fabriquée. */
+  if (kind === "estimate" || kind === "project") {
+    if (data && data.fourchette_vue !== undefined) {
+      data = Object.assign({}, data);
+      delete data.fourchette_vue;
+    }
+  }
+
   /* UNE SESSION EN COURS SE MET À JOUR, ELLE NE SE DÉDOUBLONNE PAS.
      D-744
 
@@ -1559,21 +2121,36 @@ function traiter(kind, data) {
       var fus = fusionnerLigne(kind, cible, data, extra);
       var envoisF = null;
       if (data._final) {
-        var dF = data, kF = kind, ligneF = fus;
+        var dF = data, kF = kind, ligneF = fus, extraF = extra;
         envoisF = function () {
           var reste = quotaRestant();
-          avertirAgence(kF, dF, {}, ligneF, false);
-          confirmerAuVisiteur(kF, dF, {});
+          /* `extra` ET PAS `{}`. L'avis interne se construit sur les
+             colonnes ; passer un objet vide lui cachait tout ce que
+             le SERVEUR a écrit — l'heure d'acceptation d'une
+             référence, et maintenant la fourchette. On y lisait donc
+             « Fourchette vue : (vide) » sur une demande qui en
+             portait une, par le chemin que tout le monde emprunte. */
+          avertirAgence(kF, dF, extraF, ligneF, false);
+          confirmerAuVisiteur(kF, dF, extraF);
           if (reste < 1) noterQuotaEpuise(kF, ligneF.ligne);
         };
       }
-      return { envois: envoisF, reponse: {
+      /* LA FOURCHETTE PASSE AUSSI PAR ICI, ET C'EST LE CHEMIN
+         NORMAL.  D-774
+         Cette branche rend sa propre réponse et sort. Le premier
+         jet ne posait la fourchette que sur la sortie du bas :
+         elle ne serait jamais arrivée à personne, puisque TOUT
+         visiteur qui a rempli plus d'un écran porte un `_sid` et
+         passe par ici. Trouvé au banc, avant le navigateur. */
+      var repF = {
         success: true,
         ligne: fus.ligne,
         session: true,
         etape: libelleEtape(data),
         champs: fus.touchees
-      } };
+      };
+      poserFourchette(repF, vue);
+      return { envois: envoisF, reponse: repF };
     }
   } else {
     /* LE RENVOI SE RECONNAÎT AVANT TOUT EFFET DE BORD. */
@@ -1683,14 +2260,17 @@ function traiter(kind, data) {
     };
   }
 
-  return { envois: envois, reponse: {
+  var reponse = {
     success: true,
     ligne: ecrit.ligne,
     renvoi: ecrit.doublon || false,
     session: enSession,
     etape: libelleEtape(data),
     meet: extra._meet || ""
-  } };
+  };
+
+  poserFourchette(reponse, vue);
+  return { envois: envois, reponse: reponse };
 }
 
 /* Cette ligne de réservation porte-t-elle déjà son événement ?
@@ -1737,7 +2317,8 @@ var LONGUEURS = {
   ampleur: 120, fonctions: 160, contenu: 120, niveau_design: 160,
   envergure: 120, objectif: 160, moment_contact: 60, taille: 60, besoin: 120,
   impact: 2000, presentation: 1000, budget: 120,
-  mode_paiement: 60, conditions_acceptees: 8, conditions_version: 20
+  mode_paiement: 60, conditions_acceptees: 8, conditions_version: 20,
+  complexite: 80, usagers: 60, taille_equipe: 40, besoin_detail: 3000
 };
 
 function valider(kind, data) {

@@ -422,11 +422,17 @@ console.log("\n--- 11 · UNE VALIDATION PERIMEE NE TRONQUE PLUS LA LIGNE  (D-756
     };
   };
   const iSig = titres.indexOf("Signature");
+  /* « FOURCHETTE VUE » A QUITTE CETTE LISTE LE 2026-08-07.  D-774
+     Elle y etait marquee « ZZ-fourchette_vue » depuis le site : le
+     navigateur portait la grille et calculait le montant lui-meme.
+     Il ne l'a plus. Le cas se dedouble donc plus bas — une fois pour
+     prouver qu'un montant venu du navigateur est JETE, une fois pour
+     prouver que celui du serveur arrive quand meme jusqu'ici. */
   const APRES = ["Ce qui les bloque", "Objectif", "Budget", "Échéancier",
-                 "Description", "Fourchette vue"];
+                 "Description"];
   const CHAMPS = { "Ce qui les bloque": "blocage", "Objectif": "objectif",
                    "Budget": "budget", "Échéancier": "echeancier",
-                   "Description": "description", "Fourchette vue": "fourchette_vue" };
+                   "Description": "description" };
   const finale = (S) => ({ _form: "project", _sid: S, _etape: 3, _etapes: 3, _final: true,
     email: "zztest@exemple.ca", nom: "ZZTEST D756", entreprise: "ZZTEST Inc",
     blocage: "ZZ-blocage", objectif: "ZZ-objectif", budget: "ZZ-budget",
@@ -467,6 +473,40 @@ console.log("\n--- 11 · UNE VALIDATION PERIMEE NE TRONQUE PLUS LA LIGNE  (D-756
   APRES.forEach((t) => dire("« " + t + " » est arrivee",
     val(t) === "" ? "-- VIDE --" : val(t), "ZZ-" + CHAMPS[t]));
   dire("et l'etape dit bien que c'est complet", val("Étape"), "✓ complète");
+
+  /* --- d · le montant du navigateur est jete --- */
+  /* La charge ci-dessus porte « ZZ-fourchette_vue » ET un echeancier
+     que la grille ne connait pas : le serveur ne peut donc rien
+     calculer, et il ne recopie pas ce qu'on lui souffle. La colonne
+     doit rester VIDE — un « ZZ- » ici voudrait dire que n'importe
+     qui peut ecrire n'importe quel prix dans le classeur. */
+  dire("le montant envoye par le navigateur ne se rend pas",
+    val("Fourchette vue") === "" ? "-- VIDE --" : val("Fourchette vue"), "-- VIDE --");
+
+  /* --- e · celui du serveur, lui, arrive --- */
+  const S2 = "sondeD774serveur";
+  poster({ _form: "project", _sid: S2, _etape: 1, _etapes: 3,
+    email: "zztest@exemple.ca", nom: "ZZTEST D774" });
+  const rE = poster({ _form: "project", _sid: S2, _etape: 3, _etapes: 3, _final: true,
+    email: "zztest@exemple.ca", nom: "ZZTEST D774", entreprise: "ZZTEST Inc",
+    besoins: "Boutique en ligne",
+    ampleur: "6 à 15 — un vrai site",
+    niveau_design: "Essentiel — propre, rapide, efficace",
+    contenu: "Prêts — j’ai tout sous la main",
+    fonctions: "Aucune — un site qui présente",
+    echeancier: "D’ici 1 à 2 mois", nombre_employes: "2 à 10",
+    budget: "J’ai un ordre de grandeur en tête, à valider",
+    fourchette_vue: "ZZ-menteur" });
+  dire("la demande passe", rE.success, true);
+  const ligneE = trouver(S2);
+  const vueE = lire1(ligneE, "Fourchette vue");
+  dire("le serveur a ecrit une vraie fourchette",
+    /^\d[\d\s\u00a0]*\$ à \d[\d\s\u00a0]*\$/.test(vueE) ? "une fourchette" : (vueE || "-- VIDE --"),
+    "une fourchette", vueE);
+  dire("et ce n'est pas celle que le navigateur pretendait",
+    vueE.indexOf("ZZ-menteur") === -1 ? "non" : "OUI", "non");
+  dire("la reponse la redescend au site",
+    rE.fourchette && rE.fourchette.texte === vueE ? "la meme" : "differente", "la meme");
 }
 
 console.log("\n============================================================");
