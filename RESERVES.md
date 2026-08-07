@@ -206,6 +206,29 @@ mesuré, sur quel modèle, quelle version d'OS et quelle date.
 <a id="defauts"></a>
 ## 2 · DÉFAUTS OUVERTS
 
+**Le compteur de courriels de Google ne dit pas ce qu'on croit.**
+*Ouverte le 2026-08-06. D-758.*
+
+Relevé contre le vrai service : `verite-prod.mjs` fait naître **trois**
+lignes, donc envoie **trois** avis internes. `MailApp.getRemainingDailyQuota()`
+est passé de **9 à 4** — cinq unités pour trois envois.
+
+Deux lectures possibles, et **rien dans ce dépôt ne permet de trancher** :
+soit le compteur est quantifié et arrondi — c'est documenté comme
+« approximatif » —, soit deux courriels partent sans qu'on sache
+lesquels. Le second cas serait un vrai défaut.
+
+**Ce qu'on en fait en attendant :** on ne se sert plus de ce compteur
+comme d'un budget. Il sert de **plancher**, jamais de solde. Tout outil
+qui dépense annonce d'abord combien il va dépenser, et on garde une
+marge d'au moins le double.
+
+**Comment trancher, quand le quota sera plein :** faire naître UNE seule
+ligne, lire le compteur avant et après. Un écart de 1 ferme la réserve ;
+un écart de 2 ouvre une chasse dans `traiter()`. C'est une mesure à
+1 courriel, elle ne coûte rien — elle n'a pas été faite parce que le
+quota était déjà à 4 quand la question s'est posée.
+
 **Un `_sid` connu permet d'ÉCRIRE dans la ligne de quelqu'un d'autre.**
 *Ouverte le 2026-08-06. D-744, D-761.*
 

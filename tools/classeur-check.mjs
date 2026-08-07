@@ -34,7 +34,7 @@ const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
 if (!m) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = m[1].trim();
 
-const VERSION_MINIMALE = 9;
+const VERSION_MINIMALE = 10;
 
 /* ---- l'ordre des colonnes, lu dans Code.gs, jamais recopie ---- */
 const SRC = fs.readFileSync(path.join(RACINE, "google", "Code.gs"), "utf8");
