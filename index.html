@@ -3286,10 +3286,11 @@
           Ou d&eacute;crire mon projet
           <svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg>
         </button>
-        <p class="cadeau-liens">
-          <a href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">Retélécharger le guide 1</a>
-          <a href="documents/aped-ia-croissance.pdf" download data-cadeau-pdf="ia">Retélécharger le guide 2</a>
-        </p>
+        <!-- PLUS AUCUN LIEN VERS LES PDF.  D-788
+             Ils etaient servis en statique : deux `GET` et on les
+             avait sans rien donner. Le serveur les envoie en pieces
+             jointes, c'est ce qui rend la condition vraie. -->
+        <p class="cadeau-liens cadeau-liens--dit">Les deux&nbsp;PDF partent à votre adresse&nbsp;: ils arrivent en pièces jointes, dans la minute.</p>
       </div>
 
       <!-- LE RETOUR. Une personne qui a deja donne ses coordonnees ne
@@ -3298,10 +3299,11 @@
       <div class="cadeau-deja" hidden>
         <p class="label cadeau-eyebrow">Vous les avez d&eacute;j&agrave;</p>
         <p class="cadeau-lead">Vous avez r&eacute;cup&eacute;r&eacute; vos guides. Reprenez-les quand vous voulez.</p>
-        <p class="cadeau-liens">
-          <a href="documents/aped-automatisation.pdf" download data-cadeau-pdf="automatisation">Retélécharger le guide 1</a>
-          <a href="documents/aped-ia-croissance.pdf" download data-cadeau-pdf="ia">Retélécharger le guide 2</a>
-        </p>
+        <!-- PLUS AUCUN LIEN VERS LES PDF.  D-788
+             Ils etaient servis en statique : deux `GET` et on les
+             avait sans rien donner. Le serveur les envoie en pieces
+             jointes, c'est ce qui rend la condition vraie. -->
+        <p class="cadeau-liens cadeau-liens--dit">Les deux&nbsp;PDF partent à votre adresse&nbsp;: ils arrivent en pièces jointes, dans la minute.</p>
       </div>
 
       <button class="cadeau-non link-btn" type="button" data-cadeau-non>Non merci</button>

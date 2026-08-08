@@ -1073,6 +1073,11 @@
   transition: color var(--t-2) var(--e-snap), border-color var(--t-2) var(--e-snap);
 }
 .cadeau-liens a:hover { color: var(--accent-text); border-color: var(--accent-text); }
+/* CE N'EST PLUS UNE LISTE DE LIENS, C'EST UNE PHRASE.  D-788
+   Les deux PDF ne sont plus servis par le site ; le serveur les
+   envoie en pieces jointes. Ce qui reste ici l'annonce, et se lit
+   comme du texte, pas comme deux boutons morts. */
+.cadeau-liens--dit { display: block; color: var(--ink-muted); line-height: 1.5; max-width: 44ch; }
 .cadeau-fin {
   font-family: var(--font-data);
   font-size: var(--fs-8);

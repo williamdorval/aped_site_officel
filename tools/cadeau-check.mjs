@@ -195,7 +195,8 @@ const apres = await page.evaluate(() => {
     boutons: boutons.map((b) => (b.textContent || "").trim().replace(/\s+/g, " ")),
     premierEstLeRdv: !!(boutons[0] && boutons[0].hasAttribute("data-cadeau-rdv")),
     focusSurLePremier: !!(boutons[0] && document.activeElement === boutons[0]),
-    liens: s ? [...s.querySelectorAll("a[href$='.pdf']")].map((a) => a.getAttribute("href")) : []
+    liens: s ? [...s.querySelectorAll("a[href$='.pdf']")].map((a) => a.getAttribute("href")) : [],
+    phrase: s ? ((s.querySelector(".cadeau-liens") || {}).textContent || "").trim() : ""
   };
 });
 dire("le bloc d'apres remplace le formulaire",
@@ -212,13 +213,42 @@ dire("le PREMIER bouton est le rendez-vous", apres.premierEstLeRdv, true,
 dire("et il porte le focus", apres.focusSurLePremier, true);
 dire("l'assistant de projet reste, en second",
   apres.boutons.length >= 2, true, JSON.stringify(apres.boutons));
-dire("les deux guides restent retelechargeables", apres.liens.length, 2,
+/* LES GUIDES NE SONT PLUS TELECHARGEABLES, ET C'EST LE CORRECTIF.
+   D-788
+   Ils etaient servis en statique — deux `GET` et on les avait sans
+   rien donner — pendant que le popup annoncait « contre vos
+   coordonnees ». Le serveur les envoie desormais en pieces jointes.
+   Ce cas gardait l'ancien comportement : il exigeait deux liens,
+   c'est-a-dire exactement la fuite. Il exige maintenant qu'il n'y
+   en ait AUCUN. */
+dire("aucun lien vers un PDF dans le bloc d'apres", apres.liens.length, 0,
   JSON.stringify(apres.liens));
+dire("et il dit que les guides partent par courriel",
+  /pi[eè]ces? jointes?/i.test(apres.phrase || ""), true, JSON.stringify(apres.phrase));
 await page.screenshot({ path: path.join(SORTIE, "02-apres.png") });
 
 /* ============================================================
    5 · LA MEMOIRE
    ============================================================ */
+/* ET NULLE PART AILLEURS DANS LA PAGE.  D-788
+   Le bloc d'apres n'est pas le seul endroit ou un lien pouvait
+   vivre : le pied en a porte, Services aussi. On regarde le
+   document ENTIER, et le source servi avec. */
+{
+  const partout = await page.evaluate(() =>
+    [...document.querySelectorAll("a[href]")].map((a) => a.getAttribute("href"))
+      .filter((h) => /\.pdf(\?|$)/i.test(h || "")));
+  dire("aucun lien PDF dans TOUTE la page", partout.length, 0, JSON.stringify(partout));
+
+  const src = await page.evaluate(async () => {
+    try { return await (await fetch("js/main.js")).text(); } catch (e) { return ""; }
+  });
+  if (src.length < 10000) { console.error("ARRET · js/main.js n'a pas ete relu"); process.exit(2); }
+  dire("et aucune adresse de guide dans le script servi",
+    /documents\/aped-[a-z-]+\.pdf/.test(src), false,
+    "elles y etaient en clair : il suffisait de lire le fichier");
+}
+
 titre("5 · QUI A DEJA DONNE NE REDONNE RIEN");
 await page.goto(BASE, { waitUntil: "load" });
 await page.waitForTimeout(3200);
@@ -249,7 +279,7 @@ const retour = await page.evaluate(() => {
 dire("la porte manuelle rouvre le popup", retour.ouvert, true);
 dire("il ne redemande AUCUNE coordonnee", retour.formulaireRange, true, JSON.stringify(retour));
 dire("il montre le bloc « vous les avez deja »", retour.dejaVisible, true);
-dire("avec les deux liens", retour.liens.length, 2);
+dire("aucun lien vers un PDF non plus", retour.liens.length, 0);
 await page.screenshot({ path: path.join(SORTIE, "03-deja.png") });
 
 /* ============================================================

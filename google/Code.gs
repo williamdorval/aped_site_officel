@@ -325,6 +325,28 @@ var REGLAGES = {
   /* Nom du dossier Drive où atterrissent les pièces jointes. */
   DOSSIER_PIECES: "APED — pièces jointes des formulaires",
 
+  /* LES DEUX GUIDES VIVENT DANS DRIVE, PAS SUR LE SITE.  D-788
+
+     Ils etaient servis en statique : `GET /documents/aped-*.pdf`
+     rendait 2 Mo de PDF a qui connaissait l'adresse, et l'adresse
+     etait EN CLAIR dans `index.html`. Le popup annoncait
+     « contre vos coordonnees » et ne gardait rien : le lead magnet
+     ne captait que ceux qui voulaient bien jouer le jeu.
+
+     APPS SCRIPT NE SAIT PAS SERVIR D'OCTETS. `ContentService` ne
+     rend que du texte, `HtmlService` que du HTML : il n'existe
+     aucune facon de faire descendre un PDF par une Web App. La
+     seule livraison qui soit a la fois REELLE et CONDITIONNELLE
+     est donc la piece jointe par courriel — et c'est celle-la.
+
+     LES DEUX FICHIERS SE DEPOSENT UNE FOIS DANS CE DOSSIER, sous
+     ces noms exacts. Le script les relit a chaque envoi. */
+  DOSSIER_GUIDES: "APED — guides du lead magnet",
+  GUIDES: [
+    { fichier: "aped-automatisation.pdf", titre: "Ce que votre entreprise pourrait automatiser" },
+    { fichier: "aped-ia-croissance.pdf",  titre: "Comment utiliser l'IA pour faire grossir votre entreprise" }
+  ],
+
   /* Nom du classeur créé par `initialiser()`. */
   NOM_CLASSEUR: "APED — demandes du site"
 };
@@ -1759,7 +1781,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 18,
+    version: 19,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
@@ -4547,7 +4569,7 @@ function quotaRestant() {
    l'avis écrit AU CLIENT, directement, depuis le téléphone, sans
    ouvrir le classeur. C'est la seule ligne de ce fichier qui fasse
    gagner du temps tous les jours. */
-function envoyer(dest, sujet, corps, repondreA) {
+function envoyer(dest, sujet, corps, repondreA, pieces) {
   if (!dest) return false;
   if (quotaRestant() < 1) {
     console.warn("Quota d'envoi épuisé : « " + sujet + " » non envoyé à " + dest);
@@ -4555,6 +4577,9 @@ function envoyer(dest, sujet, corps, repondreA) {
   }
   try {
     var options = { to: dest, subject: sujet, body: corps, name: "APED Agence" };
+    /* LES PIECES JOINTES.  D-788  Un tableau vide ne se pose pas :
+       MailApp refuse un tableau vide sur certaines versions. */
+    if (pieces && pieces.length) options.attachments = pieces;
     if (repondreA && RE_COURRIEL.test(String(repondreA).trim())) {
       options.replyTo = String(repondreA).trim();
     }
@@ -4904,8 +4929,61 @@ function texteVisiteur(kind, data, extra) {
     };
   }
 
-  /* `cadeau` : les guides sont déjà téléchargés. Rien à confirmer. */
+  /* LES DEUX GUIDES PARTENT ICI, EN PIECES JOINTES.  D-788
+     Ils ne sont plus telechargeables depuis le site : c'est ce
+     courriel-ci qui les livre, et c'est ce qui rend la condition
+     vraie. Un envoi de plus au quota des cent par jour — c'est le
+     prix d'un lead magnet qui capte vraiment. */
+  if (kind === "cadeau") {
+    return {
+      sujet: "Vos deux guides sont en pièce jointe",
+      corps: [
+        "Les voici, tels quels, sans rien d’autre :",
+        "",
+        "  · Ce que votre entreprise pourrait automatiser",
+        "  · Comment utiliser l’IA pour faire grossir votre entreprise",
+        "",
+        "Vingt-quatre tâches y sont chiffrées, chacune avec sa source.",
+        "Cherchez la vôtre ; le reste peut attendre.",
+        "",
+        "La question qu’ils posent tous les deux, c’est : par où",
+        "commencer chez vous ? Trente minutes au téléphone suffisent",
+        "pour y répondre, et vous repartez avec la réponse même si on",
+        "ne travaille pas ensemble. 819 523-0871.",
+        "",
+        "Vous ne recevrez rien d’autre : pas d’infolettre, pas de",
+        "relance automatique. On vous rappelle une fois, c’est tout."
+      ].concat(signature).join("\n"),
+      pieces: guidesEnPieces()
+    };
+  }
+
   return null;
+}
+
+/* LES DEUX GUIDES, LUS DANS DRIVE.  D-788
+
+   UN GUIDE MANQUANT NE FAIT PAS ECHOUER L'ENVOI, et c'est un
+   choix : la personne a donne ses coordonnees, elle doit recevoir
+   quelque chose. Le manque part au journal, ou il se voit — un
+   envoi qui leve, lui, ne laisserait que du silence. */
+function guidesEnPieces() {
+  var out = [];
+  var it = DriveApp.getFoldersByName(REGLAGES.DOSSIER_GUIDES);
+  if (!it.hasNext()) {
+    console.warn("Dossier « " + REGLAGES.DOSSIER_GUIDES + " » introuvable : aucun guide joint.");
+    return out;
+  }
+  var dossier = it.next();
+  REGLAGES.GUIDES.forEach(function (g) {
+    var f = dossier.getFilesByName(g.fichier);
+    if (!f.hasNext()) {
+      console.warn("Guide « " + g.fichier + " » absent du dossier Drive.");
+      return;
+    }
+    out.push(f.next().getBlob());
+  });
+  return out;
 }
 
 function confirmerAuVisiteur(kind, data, extra) {
@@ -4924,7 +5002,7 @@ function confirmerAuVisiteur(kind, data, extra) {
   }
   if (!t) return;
 
-  envoyer(dest, t.sujet, t.corps);
+  envoyer(dest, t.sujet, t.corps, null, t.pieces);
 }
 
 

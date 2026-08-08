@@ -1256,31 +1256,19 @@
       b.addEventListener("click", fermer);
     });
 
-    /* --- LES DEUX GUIDES, ET CE QU'ILS COUTENT MAINTENANT. --- */
-    var GUIDES = [
-      { fichier: "documents/aped-automatisation.pdf", nom: "aped-ce-que-vous-pourriez-automatiser.pdf" },
-      { fichier: "documents/aped-ia-croissance.pdf", nom: "aped-lia-pour-faire-grossir-votre-entreprise.pdf" }
-    ];
+    /* LES GUIDES NE SONT PLUS DANS LE SITE.  D-788
 
-    /* LE TELECHARGEMENT SE FAIT ICI, PAS PAR COURRIEL.  D-406
-       L'ancienne version promettait un envoi par courriel, alors
-       qu'aucun service d'envoi n'a jamais ete active : la promesse ne
-       tenait pas. Un `<a download>` clique par le script telecharge
-       tout de suite, sans reseau, sans promesse. */
-    function telecharger() {
-      GUIDES.forEach(function (g, i) {
-        window.setTimeout(function () {
-          var a = doc.createElement("a");
-          a.href = g.fichier;
-          a.download = g.nom;
-          a.rel = "noopener";
-          doc.body.appendChild(a);
-          a.click();
-          doc.body.removeChild(a);
-        }, i * 350);   /* deux telechargements simultanes : le second est souvent ignore */
-      });
-    }
+       Ils etaient servis en statique, et leurs adresses etaient EN
+       CLAIR ici meme : `GET /documents/aped-*.pdf` rendait 2 Mo de
+       PDF a qui les lisait dans ce fichier. Le popup annoncait
+       « contre vos coordonnees » et ne gardait rien.
 
+       C'est le serveur qui les envoie maintenant, en pieces
+       jointes, apres avoir recu les coordonnees. Il n'y a plus
+       rien a telecharger depuis le navigateur — et c'est pour ca
+       que `telecharger()` a disparu au lieu d'etre reecrite : une
+       fonction qui pointe vers des fichiers qu'on ne sert plus est
+       un lien mort qui attend son heure. */
     var form = $("#cadeauForm");
     var suite = $(".cadeau-suite", boite);
     var dejaBloc = $(".cadeau-deja", boite);
@@ -1320,11 +1308,21 @@
         setLoading(bouton, true, "Préparation…");
         say(etat, "");
 
-        /* LE TELECHARGEMENT NE DEPEND PAS DE L'ENVOI. Le visiteur a
-           donne ce qu'on demandait : il repart avec les guides, que
-           l'enregistrement de ses coordonnees aboutisse ou non. */
+        /* LA LIVRAISON DEPEND MAINTENANT DE L'ENVOI, ET C'EST LE
+           POINT.  D-788
+
+           Elle n'en dependait pas : les deux PDF se telechargeaient
+           depuis le site, l'enregistrement des coordonnees pouvait
+           echouer, le visiteur repartait servi. C'etait honnete
+           envers lui et faux envers le popup, qui annoncait
+           « contre vos coordonnees » et ne gardait rien.
+
+           C'est le serveur qui les envoie desormais, en pieces
+           jointes, apres avoir recu l'adresse. La MARQUE du don,
+           elle, se pose ici comme avant : quelqu'un qui a donne ses
+           coordonnees ne doit plus jamais qu'on les lui redemande,
+           meme si le courriel se perd en route. */
         try { localStorage.setItem(CLE_DONNE, new Date().toISOString().slice(0, 10)); } catch (err) {}
-        telecharger();
 
         var finir = function () {
           setLoading(bouton, false);
