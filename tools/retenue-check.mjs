@@ -50,7 +50,12 @@ const MIME = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript
   ".pdf": "application/pdf", ".json": "application/json" };
 const serveur = http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split("?")[0]);
-  if (p === "/") p = "/index.html";
+  /* LA RACINE MENE A `contact.html`, PAS A L'ACCUEIL.
+     Le site est passe a sept pages : l'accueil ne porte plus de
+     porte vers `modal-project` ni vers `modal-refer`, et le
+     formulaire de contact n'y est plus. `contact.html` est la seule
+     page qui porte les cinq formulaires que la retenue surveille. */
+  if (p === "/") p = "/contact.html";
   const f = path.join(RACINE, p);
   if (!f.startsWith(RACINE) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) {
     res.writeHead(404); res.end("non"); return;
@@ -111,9 +116,12 @@ await page.addInitScript(() => {
     sessionStorage.setItem("adexweb-entree-saut", "1");
   } catch (e) {}
 });
-await page.goto(BASE + "/index.html", { waitUntil: "load" });
+await page.goto(BASE + "/contact.html", { waitUntil: "load" });
 await page.waitForTimeout(2800);
-console.log("data-palier : " + await page.getAttribute("html", "data-palier"));
+/* `data-main-ok` remplace `data-palier` comme temoin : les paliers
+   sont partis avec l'ancienne identite, et ce qu'on veut savoir
+   avant de mesurer, c'est que `main.js` est alle jusqu'au bout. */
+console.log("main.js au bout : " + (await page.getAttribute("html", "data-main-ok") !== null));
 
 /* La retenue ne s'ouvre qu'UNE fois par navigateur : `adexweb-retenue-vue`
    la verrouille. Chaque cas la deverrouille, sinon seul le premier

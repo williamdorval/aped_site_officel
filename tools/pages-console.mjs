@@ -101,6 +101,54 @@ for (const page of PAGES) {
   await p.close();
 }
 
+/* ============================================================
+   LES PORTES INTER-PAGES  D-844 · D-846
+
+   `js/site.js` renvoie vers `contact.html#<id>` toute porte dont la
+   modale n'est pas sur la page ou on a clique. Ce renvoi ne vaut que
+   si la page d'arrivee OUVRE la modale nommee : sinon on remplace un
+   bouton mort par une porte close, ce qui n'est pas mieux.
+   ============================================================ */
+console.log("\n--- LES PORTES QUI TRAVERSENT LES PAGES");
+let portes = 0, portesKo = 0;
+for (const [depart, id] of [
+  ["404.html", "modal-refer"],
+  ["confidentialite.html", "modal-booking"],
+  ["404.html", "modal-urgent"]
+]) {
+  portes++;
+  const p = await ctx.newPage();
+  await p.goto(`${BASE}/${depart}`, { waitUntil: "load" });
+  await p.waitForTimeout(900);
+  const present = await p.evaluate((i) => !!document.getElementById(i), id);
+  if (present) {
+    console.log(`  · ${depart} porte deja ${id} — rien a renvoyer`);
+    await p.close();
+    continue;
+  }
+  /* La porte peut ne pas exister sur cette page : on la fabrique,
+     parce que ce qu'on mesure est le MECANISME, pas le balisage. */
+  await p.evaluate((i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.id = "porte-essai";
+    b.setAttribute("data-modal-open", i);
+    b.textContent = "essai";
+    document.body.appendChild(b);
+  }, id);
+  await p.click("#porte-essai");
+  await p.waitForTimeout(2200);
+  const fin = p.url().split("/").pop();
+  const ouverte = await p.evaluate((i) => {
+    const m = document.getElementById(i);
+    return !!m && !m.hidden;
+  }, id);
+  const ok = fin.indexOf("contact.html") === 0 && ouverte;
+  if (!ok) portesKo++;
+  console.log(`  ${ok ? "OK   " : "ECHEC"} ${depart} → ${id} · arrivee « ${fin} » · modale ouverte : ${ouverte}`);
+  await p.close();
+}
+
 await nav.close();
 
 let mortes = 0;
@@ -113,4 +161,5 @@ for (const r of rapport) {
 }
 
 console.log(`\n${rapport.length} pages · ${total} erreur(s) · ${mortes} page(s) ou main.js n'est pas alle au bout.`);
-if (total > 0 || mortes > 0) process.exit(1);
+console.log(`${portes} porte(s) inter-pages · ${portesKo} en echec.`);
+if (total > 0 || mortes > 0 || portesKo > 0) process.exit(1);

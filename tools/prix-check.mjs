@@ -41,9 +41,18 @@ import { adresse, port as portDe } from "./_adresse.mjs";
 const PORT = portDe(process.argv[2]);
 
 
-const FICHIERS = ["index.html", "404.html", "css/app.css", "css/tokens.css", "css/base.css",
-  "css/tour360.css", "js/main.js", "js/motion.js", "js/hero.js", "js/limaille.js",
-  "js/pointe.js", "js/tour360.js"];
+/* NEUF PAGES, PLUS UNE SEULE. Cette liste s'arretait a `index.html`
+   et `404.html` : les sept pages nees du decoupage n'etaient
+   inspectees par PERSONNE, et un prix pose sur Services serait passe
+   sans un mot. Les six fichiers JS de l'ancienne identite en sont
+   sortis — ils n'existent plus. */
+const FICHIERS = [
+  "index.html", "services.html", "realisations.html", "automatisation.html",
+  "processus.html", "contact.html", "reference.html", "404.html",
+  "confidentialite.html",
+  "partiels/entete.html", "partiels/pied.html", "partiels/modales.html",
+  "css/app.css", "css/tokens.css", "css/base.css", "css/secteurs.css",
+  "css/tour360.css", "js/main.js", "js/site.js", "js/tour360.js"];
 
 /* Un montant : un nombre, espaces insecables compris, suivi de $. */
 const MONTANT = /(\d[\d  \s]*)\$/g;
@@ -82,6 +91,17 @@ const AUTORISES = [
    large finirait par laisser passer un vrai tarif. */
 const CONTEXTES_OK = [
   { motif: /outRate|inRate|coûte une heure de main/, pourquoi: "taux horaire saisi par le visiteur" },
+  /* LA VALEUR DE DEPART DU CALCULATEUR.  D-847
+     La passe du TEXTE RENDU blanchit deja tout montant precede d'un
+     « ≈ » — « sortie vivante du calculateur ». La passe du SOURCE ne
+     le faisait pas, et personne ne s'en apercevait tant qu'elle ne
+     lisait que `index.html` : le calculateur vit maintenant sur
+     `automatisation.html`, et l'elargissement de la liste l'a fait
+     paraitre. Ce n'est PAS un tarif — c'est un montant d'economies
+     estimees, la seule exception que CLAUDE.md nomme pour cet
+     ecran — et il faut bien qu'une valeur soit ecrite dans le
+     balisage, sinon la case est vide sans JavaScript. */
+  { motif: /roiImpact|roiWeekly|barManualVal|barAutoVal|outAdmin/, pourquoi: "sortie du calculateur d'economies, pas un tarif" },
   { motif: /outRev|inRev|Chiffre d’affaires par mois/, pourquoi: "chiffre d'affaires saisi par le visiteur" },
   { motif: /une minute par semaine|par année, à|par minute hebdo/, pourquoi: "constante de methode du calcul, pas un tarif" },
   { motif: /grille de commissions|Commission versée uniquement/, pourquoi: "bareme de commission, revele apres l'interet — decision du client" },
@@ -350,9 +370,11 @@ function chercherGrille(source) {
    ON CHERCHE DANS TOUS LES FICHIERS SERVIS, pas seulement
    `js/main.js` : une grille recopiee dans `js/langue.js` serait
    tout aussi lisible. */
-const SERVIS_GRILLE = ["js/main.js", "js/motion.js", "js/hero.js", "js/limaille.js",
-  "js/pointe.js", "js/langue.js", "js/trame.js", "js/tour360.js",
-  "css/critique.css", "css/differe.css", "index.html"];
+const SERVIS_GRILLE = ["js/main.js", "js/site.js", "js/tour360.js",
+  "css/critique.css", "css/differe.css",
+  "index.html", "services.html", "realisations.html", "automatisation.html",
+  "processus.html", "contact.html", "reference.html", "404.html",
+  "confidentialite.html", "partiels/modales.html"];
 const grilles = [];
 for (const rel of SERVIS_GRILLE) {
   const abs = path.join(RACINE, rel);

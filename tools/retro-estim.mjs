@@ -455,8 +455,13 @@ sous("8 · LES LIBELLES — ce que le site envoie est ce que la grille attend");
    ============================================================ */
 sous("9 · AUCUN MONTANT DE LA GRILLE DANS UN FICHIER SERVI");
 {
-  const servis = ["index.html", "404.html", "js/main.js", "js/motion.js", "js/hero.js",
-                  "js/limaille.js", "js/pointe.js", "js/langue.js", "js/trame.js",
+  /* Les neuf pages du decoupage, et plus les six fichiers JS de
+     l'ancienne identite : ils n'existent plus. */
+  const servis = ["index.html", "services.html", "realisations.html",
+                  "automatisation.html", "processus.html", "contact.html",
+                  "reference.html", "404.html", "confidentialite.html",
+                  "partiels/modales.html",
+                  "js/main.js", "js/site.js", "js/tour360.js",
                   "css/app.css", "css/critique.css", "css/differe.css"];
   const montants = new Set();
   for (const cle of Object.keys(GRILLE)) {

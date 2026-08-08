@@ -624,8 +624,26 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
     if (arrive !== E_COORD) throw new Error("le parcours s'arrete a l'ecran " + arrive + " au lieu de " + E_COORD);
     await page.fill("#esName", T.nom);
     await page.fill("#esEmail", T.courriel);
+    /* LE TELEPHONE EST `required` SUR CET ECRAN. Sans lui,
+       `validate()` refuse et AUCUNE requete ne part : le dernier
+       corps lu etait alors celui d'un enregistrement d'etape
+       intermediaire — « Il manque ce qui permettrait de vous
+       rappeler » — et l'outil accusait l'envoi final d'un refus qui
+       n'etait pas le sien. */
+    await page.fill("#esPhone", T.tel);
+    /* L'ecran des coordonnees pose aussi la taille de l'equipe. */
+    await page.evaluate(() => {
+      const vu = [...document.querySelectorAll('#wizard .step[data-step]')].find((s) => !s.hidden);
+      if (!vu) return;
+      vu.querySelectorAll(".options[data-key]").forEach((g) => {
+        const b = g.querySelector("button");
+        if (b) b.click();
+      });
+    });
+    await page.waitForTimeout(300);
     await page.click("#modal-estimate [data-submit]");
-    await page.waitForTimeout(2600);
+    console.log(`    (reponse en ${await attendreReponse(page, '#modal-estimate form[data-form="estimate"]')} ms)`);
+    await page.waitForTimeout(1200);
     const vu = await page.evaluate(() => ({
       /* L'ecran du RESULTAT est le 14e, pas le 8e : le 8 datait du
          questionnaire d'avant D-776. */

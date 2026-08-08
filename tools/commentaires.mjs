@@ -32,10 +32,11 @@ const MODE = process.argv[2] || "rapport";
 const SEUIL = 4;                       /* lignes : en dessous, le bloc reste */
 
 const FICHIERS = [
-  "index.html", "404.html",
+  "index.html", "services.html", "realisations.html", "automatisation.html",
+  "processus.html", "contact.html", "reference.html", "404.html",
+  "confidentialite.html",
   "css/app.css", "css/secteurs.css", "css/tour360.css", "css/tokens.css", "css/base.css",
-  "js/main.js", "js/langue.js", "js/motion.js", "js/limaille.js",
-  "js/tour360.js", "js/hero.js", "js/trame.js", "js/pointe.js",
+  "js/main.js", "js/site.js", "js/tour360.js",
 ];
 
 /* ------------------------------------------------------------
