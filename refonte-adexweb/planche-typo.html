@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Planche typo — ADEXWEB</title>
+<style>
+/* --- polices candidates, auto-hebergees --- */
+@font-face{font-family:"Newsreader";src:url("polices/newsreader-latin.woff2") format("woff2");font-weight:200 800;font-display:block}
+@font-face{font-family:"Instrument Sans";src:url("polices/instrument-sans-latin.woff2") format("woff2");font-weight:400 700;font-display:block}
+@font-face{font-family:"Fraunces";src:url("polices/fraunces-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+@font-face{font-family:"Plus Jakarta Sans";src:url("polices/plus-jakarta-sans-latin.woff2") format("woff2");font-weight:200 800;font-display:block}
+@font-face{font-family:"Public Sans";src:url("polices/public-sans-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+
+:root{
+  --navy-dark:#18213D; --navy:#222D52; --navy-light:#35446F;
+  --champagne-dark:#B99B6B; --champagne:#D2B68A; --champagne-light:#E7D7BC;
+  --silk:#EEE5D9; --marble:#E8E4E0; --pearl:#FDFFFF;
+  --text-dark:#161A24; --text-muted:#6E7180;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--pearl);color:var(--text-dark);padding:0 0 8rem}
+
+.essai{padding:5rem 5rem 4.5rem;border-bottom:1px solid var(--marble)}
+.essai:nth-child(even){background:var(--silk)}
+.tag{
+  font:600 11px/1 "Instrument Sans",sans-serif;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--champagne-dark);display:block;margin-bottom:2.5rem
+}
+.eyebrow{
+  font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+  color:var(--text-muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:.9rem
+}
+.eyebrow::after{content:"";flex:0 0 56px;height:1px;background:var(--champagne)}
+h1{font-size:76px;line-height:1.02;letter-spacing:-.02em;font-weight:400;max-width:16ch;margin-bottom:1.5rem}
+h1 em{font-style:italic;color:var(--navy)}
+p.chapeau{font-size:20px;line-height:1.6;color:var(--text-muted);max-width:52ch;margin-bottom:2.5rem}
+.rangee{display:flex;gap:1rem;align-items:center;margin-bottom:3rem}
+.btn{
+  font-size:15px;font-weight:600;letter-spacing:.01em;padding:1.05rem 2rem;border:0;
+  background:var(--navy);color:#fff;border-radius:6px;cursor:pointer
+}
+.btn2{background:transparent;color:var(--navy);border:1px solid var(--marble);border-radius:6px}
+.corps{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:1100px}
+h3{font-size:26px;font-weight:500;letter-spacing:-.01em;margin-bottom:.75rem}
+.corps p{font-size:17px;line-height:1.7;color:var(--text-muted)}
+.chiffre{font-size:52px;font-weight:500;letter-spacing:-.02em;color:var(--navy)}
+.legende{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:.4rem}
+
+/* --- les cinq accouplements --- */
+#a1 h1,#a1 .chiffre{font-family:"Newsreader",serif}
+#a1 h3{font-family:"Newsreader",serif}
+#a1 .eyebrow,#a1 p,#a1 .btn,#a1 .legende{font-family:"Instrument Sans",sans-serif}
+
+#a2 h1,#a2 .chiffre{font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 0,"WONK" 0}
+#a2 h3{font-family:"Fraunces",serif;font-variation-settings:"opsz" 40,"SOFT" 0,"WONK" 0}
+#a2 .eyebrow,#a2 p,#a2 .btn,#a2 .legende{font-family:"Instrument Sans",sans-serif}
+
+#a3 h1,#a3 h3,#a3 .chiffre{font-family:"Instrument Sans",sans-serif;font-weight:600;letter-spacing:-.035em}
+#a3 .eyebrow,#a3 p,#a3 .btn,#a3 .legende{font-family:"Instrument Sans",sans-serif}
+
+#a4 h1,#a4 .chiffre,#a4 h3{font-family:"Newsreader",serif}
+#a4 .eyebrow,#a4 p,#a4 .btn,#a4 .legende{font-family:"Public Sans",sans-serif}
+
+#a5 h1,#a5 .chiffre,#a5 h3{font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 20,"WONK" 0}
+#a5 .eyebrow,#a5 p,#a5 .btn,#a5 .legende{font-family:"Plus Jakarta Sans",sans-serif}
+</style>
+</head>
+<body>
+
+<section class="essai" id="a1">
+  <span class="tag">1 · Newsreader + Instrument Sans</span>
+  <p class="eyebrow">Agence web · Québec</p>
+  <h1>Un site web qui vous <em>amène</em> des clients.</h1>
+  <p class="chapeau">On le conçoit, on l'installe, on l'entretient. Vous, vous vous occupez de votre entreprise.</p>
+  <div class="rangee"><button class="btn">Réserver un appel</button><button class="btn btn2">Voir nos réalisations</button></div>
+  <div class="corps">
+    <div><h3>Sites web sur mesure</h3><p>Un site clair, rapide, qui fonctionne sur téléphone. Bâti pour qu'un client vous appelle, pas pour gagner un prix.</p></div>
+    <div><h3>Automatisation</h3><p>Les soumissions, les rappels, les factures. Ce que vous faites à la main trois heures par semaine, on l'écrit une fois.</p></div>
+  </div>
+  <p class="chiffre" style="margin-top:2.5rem">75 $/heure</p><p class="legende">Taux affiché, sans surprise</p>
+</section>
+
+<section class="essai" id="a2">
+  <span class="tag">2 · Fraunces (net) + Instrument Sans</span>
+  <p class="eyebrow">Agence web · Québec</p>
+  <h1>Un site web qui vous <em>amène</em> des clients.</h1>
+  <p class="chapeau">On le conçoit, on l'installe, on l'entretient. Vous, vous vous occupez de votre entreprise.</p>
+  <div class="rangee"><button class="btn">Réserver un appel</button><button class="btn btn2">Voir nos réalisations</button></div>
+  <div class="corps">
+    <div><h3>Sites web sur mesure</h3><p>Un site clair, rapide, qui fonctionne sur téléphone. Bâti pour qu'un client vous appelle, pas pour gagner un prix.</p></div>
+    <div><h3>Automatisation</h3><p>Les soumissions, les rappels, les factures. Ce que vous faites à la main trois heures par semaine, on l'écrit une fois.</p></div>
+  </div>
+  <p class="chiffre" style="margin-top:2.5rem">75 $/heure</p><p class="legende">Taux affiché, sans surprise</p>
+</section>
+
+<section class="essai" id="a3">
+  <span class="tag">3 · Instrument Sans seul (tout-sans)</span>
+  <p class="eyebrow">Agence web · Québec</p>
+  <h1>Un site web qui vous <em>amène</em> des clients.</h1>
+  <p class="chapeau">On le conçoit, on l'installe, on l'entretient. Vous, vous vous occupez de votre entreprise.</p>
+  <div class="rangee"><button class="btn">Réserver un appel</button><button class="btn btn2">Voir nos réalisations</button></div>
+  <div class="corps">
+    <div><h3>Sites web sur mesure</h3><p>Un site clair, rapide, qui fonctionne sur téléphone. Bâti pour qu'un client vous appelle, pas pour gagner un prix.</p></div>
+    <div><h3>Automatisation</h3><p>Les soumissions, les rappels, les factures. Ce que vous faites à la main trois heures par semaine, on l'écrit une fois.</p></div>
+  </div>
+  <p class="chiffre" style="margin-top:2.5rem">75 $/heure</p><p class="legende">Taux affiché, sans surprise</p>
+</section>
+
+<section class="essai" id="a4">
+  <span class="tag">4 · Newsreader + Public Sans</span>
+  <p class="eyebrow">Agence web · Québec</p>
+  <h1>Un site web qui vous <em>amène</em> des clients.</h1>
+  <p class="chapeau">On le conçoit, on l'installe, on l'entretient. Vous, vous vous occupez de votre entreprise.</p>
+  <div class="rangee"><button class="btn">Réserver un appel</button><button class="btn btn2">Voir nos réalisations</button></div>
+  <div class="corps">
+    <div><h3>Sites web sur mesure</h3><p>Un site clair, rapide, qui fonctionne sur téléphone. Bâti pour qu'un client vous appelle, pas pour gagner un prix.</p></div>
+    <div><h3>Automatisation</h3><p>Les soumissions, les rappels, les factures. Ce que vous faites à la main trois heures par semaine, on l'écrit une fois.</p></div>
+  </div>
+  <p class="chiffre" style="margin-top:2.5rem">75 $/heure</p><p class="legende">Taux affiché, sans surprise</p>
+</section>
+
+<section class="essai" id="a5">
+  <span class="tag">5 · Fraunces (adouci) + Plus Jakarta Sans</span>
+  <p class="eyebrow">Agence web · Québec</p>
+  <h1>Un site web qui vous <em>amène</em> des clients.</h1>
+  <p class="chapeau">On le conçoit, on l'installe, on l'entretient. Vous, vous vous occupez de votre entreprise.</p>
+  <div class="rangee"><button class="btn">Réserver un appel</button><button class="btn btn2">Voir nos réalisations</button></div>
+  <div class="corps">
+    <div><h3>Sites web sur mesure</h3><p>Un site clair, rapide, qui fonctionne sur téléphone. Bâti pour qu'un client vous appelle, pas pour gagner un prix.</p></div>
+    <div><h3>Automatisation</h3><p>Les soumissions, les rappels, les factures. Ce que vous faites à la main trois heures par semaine, on l'écrit une fois.</p></div>
+  </div>
+  <p class="chiffre" style="margin-top:2.5rem">75 $/heure</p><p class="legende">Taux affiché, sans surprise</p>
+</section>
+
+</body>
+</html>
