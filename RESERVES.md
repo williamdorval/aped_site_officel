@@ -147,7 +147,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ OUVERTE PAR L'AUDIT CLIENT DU 2026-08-07 (D-783) | 2 | 15 |
 | &nbsp;&nbsp;↳ Le site ne montre aucun client réel, et je ne peux pas y remédier | 23 | 309 |
 | &nbsp;&nbsp;↳ L'en-tête sur téléphone vend au mauvais public | 9 | 121 |
-| &nbsp;&nbsp;↳ Le LCP rend 408 à 484 ms en fin de chantier, et je ne sais pas dire pourquoi | 27 | 396 |
+| &nbsp;&nbsp;↳ Le LCP tient à 340-380 ms au lieu de 300, et ce n'est ni la machine ni ce chantier | 53 | 712 |
 
 <!-- INDEX:FIN -->
 
@@ -1930,29 +1930,55 @@ glisser le numéro ou le CTA d'achat demande de décider **ce qui sort**.
 L'arbitrage coûte de l'argent dans les deux sens et appartient au
 propriétaire ; il n'a pas été tranché.
 
-### Le LCP rend 408 à 484 ms en fin de chantier, et je ne sais pas dire pourquoi
+### Le LCP tient à 340-380 ms au lieu de 300, et ce n'est ni la machine ni ce chantier
 
-`cas-tordus-check` rendait **34 / 34** en milieu de session, LCP
-compris. En fin de chantier, trois passes de suite rendent **408 ms,
-464 ms, 484 ms** contre un seuil de **300**. Ce n'est pas du bruit :
-trois passes ne se trompent pas dans le même sens.
+**Quatre séries de mesures, machine au repos, aucune suite en
+parallèle.** `cas-tordus-check`, cinq passes chacune.
 
-**Ce qui n'a pas changé, et qui devrait suffire à disculper le
-chantier :** `css/critique.css` fait **52 401 octets, exactement comme
-ce matin** — toutes les règles ajoutées ce jour-là sont tombées dans
-`differe.css`, injecté après le premier rendu. Et l'élément LCP,
-`SPAN.plate-big`, est dans le hero, que rien n'a touché. `index.html` a
-grossi de 9,5 Ko (+3 %), ce qui ne vaut pas 200 ms.
+| Ce qui est mesuré | Passes | Médiane |
+|---|---|---|
+| Machine chargée (deux serveurs, trois suites Playwright) | 408 · 464 · 484 · 496 | **~474 ms** |
+| Machine au repos, `HEAD` | 336 · 340 · 344 · 348 · 384 | **344 ms** |
+| Machine au repos, `2bb72b1` en worktree — **avant tout ce chantier** | 336 · 348 · 360 · 364 · 372 | **360 ms** |
 
-**Ce que je soupçonne sans pouvoir le prouver :** la machine. Deux
-serveurs de développement tournent depuis le matin, et cette session a
-lancé plusieurs dizaines d'instances de Chromium, dont trois suites
-Playwright en parallèle pendant une partie du chantier.
+**CE CHANTIER N'A RIEN CASSÉ.** Le commit de départ mesure la même
+chose que la tête, à la milliseconde de bruit près. La charge de la
+machine expliquait ~130 ms, pas les 44 restants.
 
-**Ce qu'il faut faire :** relancer `node tools/cas-tordus-check.mjs`
-sur une machine au repos, seul, sans autre serveur. Si le chiffre reste
-au-dessus de 300, comparer avec `node tools/accueil-check.mjs` — les
-deux outils ne mesurent pas pareil, et le 2026-08-07 l'un rendait
-216 ms quand `verif` rendait 596 ms sur la même page. **Tant que ce
-n'est pas fait, personne ne doit écrire que le seuil LCP tient, ni
-qu'il a régressé.**
+**LE LCP EST EXACTEMENT LE FCP.** Un seul candidat, `SPAN.plate-big`,
+et son horodatage égale le premier rendu contentful à la milliseconde :
+440/440, 388/388, 380/380. Il n'y a donc pas de « repeinture » tardive
+à chasser — tout le coût est **avant le premier pixel**.
+
+**ET CE N'EST NI LE CSS, NI LES POLICES, NI LE POIDS DU DOCUMENT.**
+Deux expériences, mêmes feuilles, mêmes polices, même hero, passes
+alternées :
+
+| Document servi | Octets | FCP |
+|---|---|---|
+| complet | 329 249 | 396 · 380 · 340 ms |
+| **coupé juste après le hero** | 20 058 | **172 · 164 · 204 ms** |
+| complet **moins les sept modales** | 226 345 | 388 · 340 · 360 ms |
+
+Retirer **103 Ko de modales** ne change **rien** — elles portent
+`hidden`, elles ne coûtent aucune mise en page. Couper après le hero
+**divise le FCP par deux**. Le coût n'est donc pas le nombre d'octets :
+ce sont **les onze sections**, leur mise en page et les sous-ressources
+que le scanner de préchargement y découvre, qui passent devant le
+premier rendu du hero.
+
+**CE QU'IL FAUDRAIT FAIRE, ET POURQUOI JE NE L'AI PAS FAIT.** Réduire
+ce que l'analyseur et la mise en page doivent traiter avant que le hero
+peigne — c'est une refonte de la structure du document, pas un réglage.
+Elle touche `content-visibility`, l'ordre des sections et la découverte
+des images. Improviser ça à la fin d'un chantier de quinze heures, sur
+un site qui tient tous ses autres seuils, serait le genre de décision
+qu'on regrette. **C'est un chantier à part, et il appartient au
+propriétaire de le lancer.**
+
+**EN ATTENDANT, LE SEUIL DE `CLAUDE.md` EST FAUX SUR CETTE MACHINE.**
+Il annonce `< 300 ms` ; rien n'a mesuré moins de 336 aujourd'hui, à
+aucun commit. Soit le seuil a été établi ailleurs, soit il l'a été
+avant une régression antérieure à cette session. Personne ne doit
+écrire qu'il tient.
+
