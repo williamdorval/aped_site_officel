@@ -269,6 +269,51 @@ main.shell > section > .band-loose:last-child { padding-bottom: 0; }
 @media (max-width: 24em) {
 .nav .btn.nav-refer .nav-refer-num { display: none; }
 }
+/* ============================================================
+   LA BARRE SUR TELEPHONE : LE PARRAINAGE SORT.  D-787
+
+   Elle tenait « APED · Referez · 5 000 $ » et rien d'autre — la
+   place la plus chere du site, visible sur chaque ecran, vendant le
+   programme de parrainage a quelqu'un qui n'a rien achete. Le seul
+   montant qu'un visiteur voyait en dix-neuf ecrans etait une prime
+   qui ne le concerne pas.
+
+   A SA PLACE : LE CTA D'ACHAT ET LE NUMERO. Le parrainage reste
+   dans le menu plein ecran et dans sa propre section 09 ; il n'a
+   rien perdu qu'un raccourci mal place.
+
+   LE NUMERO EST L'INVERSE DU CTA : il ne parait QUE sur petit
+   ecran. Sur un ordinateur on ne tape pas un numero depuis une
+   barre — il est dans le pied et dans la section Contact — mais sur
+   un telephone, une tape et l'appel part.
+   ============================================================ */
+.nav .nav-tel { display: none; }
+.nav .btn.nav-cta .nav-cta-court { display: none; }
+@media (max-width: 63.99em) {
+.nav .btn.nav-refer { display: none; }
+.nav .btn.nav-cta { display: inline-flex; }
+.nav .nav-tel { display: inline-flex; }
+}
+/* Sous 48em le libelle raccourcit : « Demarrer votre projet » ne
+   rentre pas a cote du numero, du bourgeon de theme et du menu. */
+@media (max-width: 47.99em) {
+.nav .btn.nav-cta { padding-inline: 0.75rem; }
+.nav .btn.nav-cta .nav-cta-long { display: none; }
+/* SUR UNE SEULE LIGNE. Sans ca « Mon projet » se coupe en deux et
+     le bouton grandit en hauteur : il se lit alors comme un pave, pas
+     comme un bouton. */
+.nav .btn.nav-cta .nav-cta-court { display: inline; white-space: nowrap; }
+.nav .btn.nav-cta .icon { display: none; }
+}
+/* SOUS 352 px, LE CTA PART ET LE NUMERO RESTE.  D-787
+   Mesure a 320 px : theme + numero + CTA + menu poussaient le menu
+   a 319-355, donc HORS DE L'ECRAN — sans debordement horizontal, ce
+   qui veut dire que personne ne l'aurait vu passer. Des deux, c'est
+   le numero qui reste : le CTA est dans le menu plein ecran, et sur
+   un ecran de 320 px on appelle plus qu'on ne remplit. */
+@media (max-width: 22em) {
+.nav .btn.nav-cta { display: none; }
+}
 /* == 4. BOUTONS ==  D-117 */
 .btn {
   --btn-rule: var(--rule-strong);

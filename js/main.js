@@ -5292,13 +5292,31 @@
           });
         }
       }
-      /* N1 · combien il en reste. Le nombre ROULE d'un cran : le
-         changement se voit, donc l'avancee se voit. */
-      var reste = railLinks.length - 1 - idx;
-      rouler(railLeftNum, String(reste));
-      if (railLeft) {
-        railLeft.lastChild.textContent = reste === 0 ? " derniere section"
-          : reste === 1 ? " section restante" : " sections restantes";
+      /* CE QUI VIENT, PAS CE QUI RESTE.  D-787
+
+         Il disait « 10 sections restantes ». A dix-neuf ecrans de
+         page, annoncer a quelqu'un combien il lui reste a endurer
+         est un decompte de corvee : le chiffre le plus visible du
+         rail mesurait la fatigue a venir.
+
+         Il NOMME maintenant la suivante. Une promesse concrete se
+         suit ; un inventaire se referme. Le numero roule toujours
+         d'un cran — c'est le meme V4, sur une autre information.
+
+         LE NOM SORT DU RAIL LUI-MEME, jamais d'une liste recopiee :
+         une seconde liste de onze titres finirait par mentir le jour
+         ou une section change de nom. */
+      var suivant = railLinks[idx + 1];
+      if (suivant) {
+        var num = suivant.querySelector("em");
+        rouler(railLeftNum, num ? num.textContent.trim() : String(idx + 2));
+        if (railLeft) {
+          var titre = String(suivant.textContent || "").replace(/^\s*\d+\s*/, "").trim();
+          railLeft.lastChild.textContent = " " + titre + ", ensuite";
+        }
+      } else {
+        rouler(railLeftNum, "11");
+        if (railLeft) railLeft.lastChild.textContent = " vous avez tout vu";
       }
     };
 
