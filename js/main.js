@@ -2304,11 +2304,25 @@
 
   /* `_form` est ce qui aiguille vers le bon onglet du classeur.
      `_subject` reste : il sert au sujet de l'avis interne. */
+  /* LE POINT UNIQUE OU LE JETON DE SESSION S'ATTACHE ET SE
+     RAMASSE.  D-786
+
+     Tout ce qui part vers le service passe par ici, et c'est la
+     seule raison pour laquelle ce correctif tient en dix lignes :
+     s'il fallait le poser a chaque appel, il en manquerait un. */
   function sendJson(kind, data) {
-    return poster(Object.assign({}, data, {
+    var charge = Object.assign({}, data, {
       _form: kind,
       _subject: SUBJECTS[kind] || "Message - site APED"
-    }));
+    });
+    if (charge._sid) {
+      var j = jetonDe(kind);
+      if (j) charge._jeton = j;
+    }
+    return poster(charge).then(function (rep) {
+      if (rep && rep.jeton) garderJeton(kind, rep.jeton);
+      return rep;
+    });
   }
 
   /* ============================================================
@@ -2364,11 +2378,36 @@
     return v;
   }
 
+  /* LE JETON QUI SIGNE LA SESSION.  D-786
+
+     Le `_sid` seul ne prouvait rien : quiconque connaissait celui
+     d'un autre pouvait ecrire dans SA ligne. Le serveur rend
+     maintenant un `jeton` — un HMAC du `_sid` avec une cle qu'il
+     est le seul a avoir — et l'exige a la requete suivante.
+
+     ON LE GARDE A COTE DU `_sid`, PAS DEDANS : si on le perd
+     (vidage du stockage, autre appareil), le serveur refuse d'ecrire
+     dans la ligne existante et le visiteur repart d'une ligne
+     neuve. C'est le comportement voulu — mieux vaut une ligne de
+     trop qu'une ligne ecrasee par quelqu'un d'autre. */
+  var CLE_JETON = "aped-jeton-";
+
+  function jetonDe(kind) {
+    try { return localStorage.getItem(CLE_JETON + kind) || ""; } catch (e) { return ""; }
+  }
+  function garderJeton(kind, j) {
+    if (!j) return;
+    try { localStorage.setItem(CLE_JETON + kind, String(j)); } catch (e) {}
+  }
+
   /* On oublie la session UNE FOIS LA DEMANDE COMPLETE. Sans ca, le
      visiteur suivant sur le meme appareil — ou la meme personne qui
-     revient pour un second projet — ecraserait la ligne precedente. */
+     revient pour un second projet — ecraserait la ligne precedente.
+     LE JETON PART AVEC ELLE : garde seul, il designerait une session
+     qui n'existe plus. */
   function oublierSession(kind) {
     try { localStorage.removeItem(CLE_SESSION + kind); } catch (e) {}
+    try { localStorage.removeItem(CLE_JETON + kind); } catch (e) {}
   }
 
   /* L'etat de ce qui a deja ete envoye, par formulaire. Sert a ne
@@ -2488,6 +2527,14 @@
         _form: kind,
         _subject: SUBJECTS[kind] || "Message - site APED"
       });
+      /* LE DERNIER ENVOI PORTE LE JETON, LUI AUSSI.  D-786
+         C'est le SECOND chemin vers le service, et il part au pire
+         moment — la page se ferme. Sans le jeton, le serveur
+         refuserait exactement l'envoi qu'on ne peut pas rejouer. */
+      if (charge._sid) {
+        var jB = jetonDe(kind);
+        if (jB) charge._jeton = jB;
+      }
       var blob = new Blob([JSON.stringify(charge)], { type: "text/plain;charset=utf-8" });
       return navigator.sendBeacon(FORM_ENDPOINT, blob);
     } catch (e) { return false; }

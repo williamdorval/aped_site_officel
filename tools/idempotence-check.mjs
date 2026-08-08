@@ -44,7 +44,22 @@ function dire(nom, obtenu, attendu) {
     + "\n         obtenu  : " + obtenu
     + "\n         attendu : " + attendu);
 }
-const poster = (c) => JSON.parse(gs.doPost({ postData: { contents: JSON.stringify(c) }, parameter: {} }).getContent());
+
+/* LE JETON DE SESSION SE GARDE ENTRE DEUX ENVOIS.  D-786
+   C'est ce que fait localStorage dans le navigateur : sans ca le
+   banc rejouerait le role de l'attaquant a chaque etape. */
+const JETONS_BANC = new Map();
+function avecJeton(c) {
+  const sid = c && c._sid;
+  if (!sid) return c;
+  const j = JETONS_BANC.get(sid);
+  return (j && c._jeton === undefined) ? Object.assign({}, c, { _jeton: j }) : c;
+}
+function retenirJeton(c, r) {
+  if (c && c._sid && r && r.jeton) JETONS_BANC.set(c._sid, r.jeton);
+  return r;
+}
+const poster = (c) => { const q = avecJeton(c); return retenirJeton(q, JSON.parse(gs.doPost({ postData: { contents: JSON.stringify(q) }, parameter: {} }).getContent())); };
 const etatDe = () => ({
   courriels: etat.courriels.length,
   evenements: etat.evenements.length,

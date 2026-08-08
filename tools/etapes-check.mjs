@@ -60,10 +60,26 @@ function remise() {
   }
 }
 
+
+/* LE JETON DE SESSION SE GARDE ENTRE DEUX ENVOIS.  D-786
+   C'est ce que fait localStorage dans le navigateur : sans ca le
+   banc rejouerait le role de l'attaquant a chaque etape. */
+const JETONS_BANC = new Map();
+function avecJeton(c) {
+  const sid = c && c._sid;
+  if (!sid) return c;
+  const j = JETONS_BANC.get(sid);
+  return (j && c._jeton === undefined) ? Object.assign({}, c, { _jeton: j }) : c;
+}
+function retenirJeton(c, r) {
+  if (c && c._sid && r && r.jeton) JETONS_BANC.set(c._sid, r.jeton);
+  return r;
+}
 function poster(charge) {
-  return JSON.parse(gs.doPost({
-    postData: { contents: JSON.stringify(charge) }, parameter: {}
-  }).getContent());
+  const c = avecJeton(charge);
+  return retenirJeton(c, JSON.parse(gs.doPost({
+    postData: { contents: JSON.stringify(c) }, parameter: {}
+  }).getContent()));
 }
 
 const onglet = (nom) => etat.feuilles.get(nom);

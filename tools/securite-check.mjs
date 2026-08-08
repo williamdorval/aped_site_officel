@@ -45,8 +45,30 @@ function dire(nom, obtenu, attendu, note) {
 }
 function titre(t) { console.log(""); console.log("--- " + t); }
 
-const poster = (c) => JSON.parse(
-  gs.doPost({ postData: { contents: JSON.stringify(c) }, parameter: {} }).getContent());
+
+/* LE JETON DE SESSION SE GARDE ENTRE DEUX ENVOIS.  D-786
+   Le serveur le rend avec chaque reponse de session et l'exige a
+   la suivante ; le navigateur le garde en localStorage. Un banc qui
+   ne le garde pas ne teste plus la sauvegarde progressive, il
+   rejoue le role de l'attaquant a chaque etape.
+
+   Un `_jeton: null` dans une charge veut dire « n'en mets pas » —
+   et c'est ce dont les cas d'attaque ont besoin pour rester des
+   attaques. */
+const JETONS_BANC = new Map();
+function avecJeton(c) {
+  const sid = c && c._sid;
+  if (!sid) return c;
+  if (c._jeton === null) { const q = Object.assign({}, c); delete q._jeton; return q; }
+  const j = JETONS_BANC.get(sid);
+  return (j && c._jeton === undefined) ? Object.assign({}, c, { _jeton: j }) : c;
+}
+function retenirJeton(c, r) {
+  if (c && c._sid && r && r.jeton) JETONS_BANC.set(c._sid, r.jeton);
+  return r;
+}
+const poster = (c) => { const q = avecJeton(c); return retenirJeton(q, JSON.parse(
+  gs.doPost({ postData: { contents: JSON.stringify(q) }, parameter: {} }).getContent())); };
 const porte = (p) => JSON.parse(gs.doGet({ parameter: p }).getContent());
 
 /* Avancer le temps du cache, sans toucher aux dates du banc. */
@@ -238,6 +260,83 @@ titre("4 · AU PLAFOND D'AVIS, LA LIGNE S'ECRIT QUAND MEME (D-758)");
   dire("le plafond dur est bien au-dessus du plafond d'avis",
     gs.REGLAGES.DEBIT_LIGNES_MAX > gs.REGLAGES.DEBIT_AVIS_MAX * 3, true,
     gs.REGLAGES.DEBIT_LIGNES_MAX + " contre " + gs.REGLAGES.DEBIT_AVIS_MAX);
+}
+
+
+/* ============================================================
+   4bis · LE `_sid` VOLE N'ECRIT PLUS RIEN  (D-786)
+
+   C'ETAIT LA SEULE ECRITURE ARBITRAIRE QUI RESTAIT. `_sid` est
+   fabrique par le navigateur et n'etait signe par personne :
+   quiconque connaissait celui d'un autre pouvait poster dans SA
+   ligne — ecraser son nom, son telephone, son courriel, et
+   detourner le rappel vers soi. Aucune lecture n'etait possible et
+   les colonnes figees resistaient, mais un lead pouvait etre
+   corrompu.
+
+   ET IL ALLAIT FUIR : `lienReprise()` met le `_sid` EN CLAIR dans
+   l'URL d'un courriel de relance.
+   ============================================================ */
+titre("4bis · UN `_sid` VOLE N'ECRIT PLUS RIEN (D-786)");
+{
+  remise(); viderDebit();
+  const SID = "ZZTESTvictime001";
+
+  /* --- la victime commence son formulaire --- */
+  const r1 = poster({ _form: "estimate", _sid: SID, _etape: 2, _etapes: 7,
+    nom: "ZZTEST Victime", email: "zztest@exemple.ca", telephone: "418 555 0100" });
+  dire("la victime ecrit sa premiere etape", r1.success, true);
+  dire("et le serveur lui rend un jeton", typeof r1.jeton === "string" && r1.jeton.length > 10, true);
+  dire("le jeton n'est PAS le `_sid`", r1.jeton === SID, false);
+  dire("ni un prefixe du `_sid`", String(r1.jeton).indexOf(SID) !== -1, false,
+    "un jeton qu'on deduit du sid ne protege rien");
+
+  const ligneAvant = JSON.parse(JSON.stringify(
+    etat.feuilles.get(gs.SCHEMA.estimate.onglet).valeurs[1]));
+
+  /* --- l'attaquant connait le `_sid`, pas le jeton --- */
+  const att = poster({ _form: "estimate", _sid: SID, _etape: 3, _etapes: 7,
+    _jeton: null,
+    nom: "PIRATE", email: "pirate@evil.ca", telephone: "9999999999" });
+  dire("l'attaquant qui connait le `_sid` est REFUSE", att.success, false, att.message);
+  dire("le message ne dit pas CE QUI a echoue",
+    /jeton|signature|existe/i.test(String(att.message || "")), false,
+    "sinon il apprend lesquels de ses sid devines correspondent a une vraie ligne");
+
+  /* --- et un faux jeton ne marche pas mieux --- */
+  const faux = poster({ _form: "estimate", _sid: SID, _etape: 3, _etapes: 7,
+    _jeton: "n-importe-quoi-de-la-bonne-longueur-ou-presque",
+    nom: "PIRATE2", email: "pirate2@evil.ca", telephone: "8888888888" });
+  dire("un faux jeton est refuse aussi", faux.success, false);
+
+  const ligneApres = etat.feuilles.get(gs.SCHEMA.estimate.onglet).valeurs[1];
+  dire("la ligne de la victime n'a pas bouge d'un caractere",
+    JSON.stringify(ligneApres), JSON.stringify(ligneAvant),
+    "c'est la seule chose qui compte : ni le nom, ni le telephone, ni le courriel");
+
+  /* --- la victime, elle, continue --- */
+  const r2 = poster({ _form: "estimate", _sid: SID, _etape: 4, _etapes: 7, _jeton: r1.jeton,
+    nom: "ZZTEST Victime", email: "zztest@exemple.ca", telephone: "418 555 0100",
+    type_projet: "Un site web" });
+  dire("la victime, avec son jeton, continue normalement", r2.success, true);
+  dire("et c'est toujours la MEME ligne", r2.ligne, r1.ligne,
+    "un correctif de securite qui casse la sauvegarde progressive est un correctif rate");
+
+  /* --- un `_sid` inconnu cree sa propre ligne, sans jeton ---
+     LE COMPTE DE LIGNES EST L'ARBITRE, PAS LE NUMERO RENDU. Un
+     premier jet comparait `neuf.ligne` a `r1.ligne` : deux visiteurs
+     dont les demandes se dedoublonnent par CONTENU peuvent tomber
+     sur la meme ligne pour une raison qui n'a rien a voir avec le
+     jeton, et le cas accusait alors un code sain. Ce qui compte est
+     qu'une ligne DE PLUS existe, et que celle de la victime n'ait
+     pas bouge — ce que le cas d'au-dessus prouve deja. */
+  const avantN = lignes(gs.SCHEMA.estimate.onglet).length;
+  const neuf = poster({ _form: "estimate", _sid: "ZZTESTinconnu0001", _etape: 2, _etapes: 7,
+    _jeton: null, nom: "ZZTEST Neuf", email: "zzautre@exemple.ca", telephone: "418 555 0101" });
+  dire("un `_sid` jamais vu ecrit sans jeton, et en recoit un", neuf.success, true);
+  dire("et il en recoit un a son tour", typeof neuf.jeton === "string" && neuf.jeton.length > 10, true);
+  dire("le sien n'est pas celui de la victime", neuf.jeton === r1.jeton, false);
+  dire("une ligne de PLUS existe", lignes(gs.SCHEMA.estimate.onglet).length, avantN + 1);
 }
 
 
@@ -456,7 +555,12 @@ titre("7 · L'IDENTIFIANT DE SESSION");
   const suite = poster({ _form: "contact", _sid: sid, nom: "ZZTEST Victime",
     email: "zztest@exemple.ca", message: "ma demande a moi, suite" });
   const cles = Object.keys(suite).sort().join(",");
-  dire("la reponse ne rend que des metadonnees", cles, "champs,etape,ligne,session,success",
+  /* `jeton` A REJOINT LA LISTE LE 2026-08-07.  D-786
+     C'est une metadonnee de session, pas une donnee de visiteur :
+     le serveur la rend pour que le navigateur la represente. Elle
+     est verifiee juste apres — un jeton qui serait le `_sid` lui
+     meme, ou qui s'en deduirait, ne protegerait rien. */
+  dire("la reponse ne rend que des metadonnees", cles, "champs,etape,jeton,ligne,session,success",
     "aucun champ du visiteur ne revient par la porte");
 
   /* UN _sid MAL FORME EST REFUSE AVANT TOUT LE RESTE. */

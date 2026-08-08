@@ -743,6 +743,27 @@ export const services = {
     },
     getUuid: () => "uuid-" + Math.random().toString(36).slice(2, 12),
 
+    /* LE HMAC DU BANC N'EST PAS DE LA CRYPTOGRAPHIE, ET IL NE DOIT
+       PAS PRETENDRE L'ETRE. Ce qu'on teste de D-786, c'est le
+       PROTOCOLE : le jeton part avec la reponse, il revient avec la
+       requete suivante, un jeton absent ou faux fait refuser. Pour
+       ca il suffit que la fonction soit deterministe, qu'elle depende
+       de la cle, et que deux entrees differentes donnent deux
+       sorties differentes. Le vrai Apps Script fait le vrai HMAC. */
+    computeHmacSha256Signature: (texte, cle) => {
+      const out = [];
+      let h1 = 0x811c9dc5, h2 = 0x01000193;
+      const s = String(cle) + " " + String(texte);
+      for (let i = 0; i < s.length; i++) {
+        h1 = Math.imul(h1 ^ s.charCodeAt(i), 16777619) >>> 0;
+        h2 = Math.imul(h2 + s.charCodeAt(i) * (i + 7), 2246822519) >>> 0;
+      }
+      for (let i = 0; i < 32; i++) out.push(((i % 2 ? h1 : h2) >>> ((i % 4) * 8)) & 0xff);
+      return out;
+    },
+    base64EncodeWebSafe: (oct) => Buffer.from(oct.map((n) => n & 0xff))
+      .toString("base64").replace(/\+/g, "-").replace(/\//g, "_"),
+
     /* IL RENDAIT DE L'ISO, ET C'ETAIT UN BOUCHON QUI MENTAIT.
        `Code.gs` lit le decalage du fuseau en demandant `"Z"` a
        `formatDate` : la reponse « 2026-08-10T13:00:00.000Z » aurait

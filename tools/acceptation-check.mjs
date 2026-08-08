@@ -1,3 +1,25 @@
+
+/* LE JETON DE SESSION SE GARDE ENTRE DEUX ENVOIS.  D-786
+   Le serveur le rend avec chaque reponse de session et l'exige a
+   la suivante ; le navigateur le garde en localStorage. Un banc qui
+   ne le garde pas ne teste plus la sauvegarde progressive, il
+   rejoue le role de l'attaquant a chaque etape.
+
+    DANS UNE CHARGE VEUT DIRE « n'en mets pas » — et
+   c'est ce dont les cas d'attaque ont besoin pour rester des
+   attaques. */
+const JETONS_BANC = new Map();
+function avecJeton(c) {
+  const sid = c && c._sid;
+  if (!sid) return c;
+  if (c._jeton === null) { const q = Object.assign({}, c); delete q._jeton; return q; }
+  const j = JETONS_BANC.get(sid);
+  return (j && c._jeton === undefined) ? Object.assign({}, c, { _jeton: j }) : c;
+}
+function retenirJeton(c, r) {
+  if (c && c._sid && r && r.jeton) JETONS_BANC.set(c._sid, r.jeton);
+  return r;
+}
 /* ============================================================
    L'ACCEPTATION DES CONDITIONS — `node tools/acceptation-check.mjs`
 
@@ -54,7 +76,7 @@ if (!VERSION) { console.error("ARRET · aucune archive de conditions."); process
 
 const sidDe = (nom) => (nom + "0123456789abcdefghij").slice(0, 24);
 const poste = (charge) =>
-  JSON.parse(gs.doPost({ postData: { contents: JSON.stringify(charge) } }).getContent());
+  retenirJeton(avecJeton(charge), JSON.parse(gs.doPost({ postData: { contents: JSON.stringify(avecJeton(charge)) } }).getContent()));
 
 function remise() {
   etat.feuilles.clear();

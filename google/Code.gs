@@ -1759,7 +1759,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 17,
+    version: 18,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
@@ -2273,6 +2273,11 @@ function traiter(kind, data) {
   var cible = null;
   if (enSession) {
     cible = repererLigne(kind, sig);
+    /* LE JETON SE VERIFIE AVANT TOUT EFFET DE BORD.  D-786
+       Apres `repererLigne` — il faut savoir si la ligne existe —
+       et avant `fusionnerLigne`, qui ecrit. */
+    var refusJ = refusDeJeton(data, cible);
+    if (refusJ) return { envois: null, reponse: { success: false, message: refusJ } };
     /* UNE RÉSERVATION DE FIN DE PARCOURS DOIT ENCORE POSER SON
        RENDEZ-VOUS. La ligne existe déjà, l'événement non : on laisse
        la demande traverser vers le bloc `booking` plus bas, et c'est
@@ -2310,6 +2315,7 @@ function traiter(kind, data) {
         success: true,
         ligne: fus.ligne,
         session: true,
+        jeton: signerSid(String(data._sid)),   /* D-786 */
         etape: libelleEtape(data),
         champs: fus.touchees
       };
@@ -2432,6 +2438,11 @@ function traiter(kind, data) {
     etape: libelleEtape(data),
     meet: extra._meet || ""
   };
+  /* LE JETON PART AVEC LA PREMIERE REPONSE, ET AVEC TOUTES LES
+     SUIVANTES.  D-786  Le navigateur le garde a cote du `_sid` ;
+     s'il le perd — vidage du stockage, autre appareil — il repart
+     d'une ligne neuve, ce qui est le comportement voulu. */
+  if (enSession) reponse.jeton = signerSid(String(data._sid));
 
   poserFourchette(reponse, vue);
   return { envois: envois, reponse: reponse };
@@ -2698,6 +2709,78 @@ function chercherJumelle(kind, sig) {
     renvois: n + 1,
     meet: t.iMeet > 0 ? String(t.feuille.getRange(t.ligne, t.iMeet).getValue() || "") : ""
   };
+}
+
+/* ============================================================
+   LE JETON DE SESSION.  D-786
+
+   CE QUE `_sid` PERMETTAIT. Il est fabriqué par le navigateur et
+   il n’était signé par personne : quiconque connaissait celui d’un
+   autre pouvait POSTER dans SA ligne — écraser son nom, son
+   téléphone, son courriel, et détourner le rappel vers soi. Aucune
+   LECTURE n’était possible, et les colonnes figées résistaient,
+   mais un lead pouvait être corrompu.
+
+   ET IL ALLAIT FUIR. `lienReprise()` met le `_sid` EN CLAIR dans
+   l’URL d’un courriel de relance. Tant que la relance dort, le
+   jeton d’écriture ne quitte pas le localStorage et le TLS ; le
+   jour où elle s’allume, il voyage dans des boîtes de courriel et
+   des journaux de serveur. C’est pour ça que ça se règle
+   maintenant : après, il y aurait de vraies sessions à casser.
+
+   LE JETON NE SE STOCKE NULLE PART, ET C’EST TOUT L’INTÉRÊT.
+   Il est `HMAC-SHA256(sid, clé du script)` : le serveur le
+   recalcule à chaque requête. Aucune colonne à ajouter, aucune
+   ligne existante à migrer, rien à nettoyer si on change d’avis.
+   Un attaquant qui vole un `_sid` ne peut pas en fabriquer le
+   jeton — il lui faudrait la clé, qui vit dans les propriétés du
+   script et n’est jamais servie.
+
+   LA CLÉ SE FABRIQUE TOUTE SEULE À LA PREMIÈRE DEMANDE. Pas de
+   réglage manuel : une clé qu’on doit penser à poser est une clé
+   qui reste vide.
+   ============================================================ */
+function cleSessions() {
+  var props = PropertiesService.getScriptProperties();
+  var c = props.getProperty("CLE_SESSIONS");
+  if (!c) {
+    c = Utilities.getUuid() + Utilities.getUuid();
+    props.setProperty("CLE_SESSIONS", c);
+  }
+  return c;
+}
+
+function signerSid(sid) {
+  var oct = Utilities.computeHmacSha256Signature(String(sid), cleSessions());
+  var b64 = Utilities.base64EncodeWebSafe(oct);
+  return String(b64).replace(/=+$/, "");
+}
+
+/* CE QUI EST REFUSÉ, ET CE QUI PASSE.  D-786
+
+   · jeton juste                       → on écrit ;
+   · aucun jeton et AUCUNE ligne       → première écriture, on la
+     crée et on rend le jeton dans la réponse ;
+   · aucun jeton mais une ligne existe → REFUS. C’est le cas de
+     l’attaquant qui connaît un `_sid` sans son jeton, et c’est
+     aussi celui d’un visiteur d’avant D-786 : il recharge, son
+     navigateur refait un `_sid`, et il repart d’une ligne neuve.
+     On perd son brouillon, une fois, aujourd’hui. C’est le prix,
+     et il ne sera jamais plus bas ;
+   · jeton faux                        → REFUS.
+
+   LE MESSAGE NE DIT PAS CE QUI A ÉCHOUÉ. « Session non reconnue »
+   dans les deux cas : distinguer « la ligne existe » de « le jeton
+   est faux » dirait à un attaquant lequel de ses `_sid` devinés
+   correspond à une vraie ligne. */
+function refusDeJeton(data, cible) {
+  var sid = String((data && data._sid) || "");
+  if (!sid) return null;
+  var presente = String((data && data._jeton) || "");
+  var attendu = signerSid(sid);
+  if (presente && presente === attendu) return null;
+  if (!presente && !cible) return null;
+  return "La session n’est pas reconnue. Rechargez la page et recommencez la dernière étape.";
 }
 
 /* OÙ EST LA LIGNE QUI PORTE CETTE SIGNATURE, si elle existe.
