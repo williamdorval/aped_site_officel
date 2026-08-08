@@ -1,2 +1,21 @@
+<!-- L'ORDRE N'EST PAS DECORATIF.  D-845
+     1. `config.local.js` EN PREMIER, et sans `defer` : il pose
+        `window.ADEXWEB_ENVOI`, que `main.js` lit a l'evaluation. Genere
+        par `node tools/config-envoi.mjs`, hors depot. Absent, rien ne
+        casse : le point de sortie reste vide et les formulaires
+        echouent franchement au lieu de faire semblant.
+     2. `site.js` — la barre, le menu plein ecran, le geste d'entree, et
+        le renvoi vers `contact.html` des portes dont la modale n'est
+        pas sur cette page.
+     3. `main.js` — les sept formulaires, l'estimateur, l'agenda, la
+        retenue, le calculateur, l'avant/apres. Chacun de ses blocs sort
+        de lui-meme quand sa section n'est pas la : il se charge donc
+        sur les NEUF pages, y compris 404 et confidentialite, ou il ne
+        fait que compter les clics sur le numero et renvoyer le bouton
+        des guides vers la page de contact.
+     `js/tour360.js` ne se declare PAS ici : il ne sert que sur
+     Realisations, et il est appele dans cette page-la, hors des
+     bornes du partiel. -->
 <script src="js/config.local.js"></script>
 <script src="js/site.js" defer></script>
+<script src="js/main.js" defer></script>

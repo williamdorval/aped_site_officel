@@ -123,6 +123,11 @@
   color: var(--text-soft);
   text-decoration: none;
   border-radius: var(--rayon);
+  /* UN LIBELLE DE NAVIGATION NE SE COUPE PAS EN DEUX. Sans ca, la barre
+     « rentrait » — la sonde de debordement rendait 0 — parce que « Comment
+     ca marche » se pliait sur deux lignes. La mesure disait oui, l'image
+     disait non.  D-860 */
+  white-space: nowrap;
   transition: color var(--t-etat), background-color var(--t-etat);
 }
 .nav-lien:hover { color: var(--navy-dark); background: var(--marble); }
@@ -135,7 +140,7 @@
 
 .barre-actes { display: flex; align-items: center; gap: var(--e-2); margin-left: auto; }
 .barre-tel {
-  display: none; align-items: center; gap: var(--e-1);
+  display: none; align-items: center; gap: var(--e-1); white-space: nowrap;
   font-size: var(--t-00); font-weight: 600;
   color: var(--navy-dark); text-decoration: none;
   min-height: var(--cible-min); padding-inline: var(--e-1);
@@ -169,7 +174,9 @@
   .barre-dedans { padding-inline: var(--e-4); }
   .nav-lien { padding: 0 var(--e-1); }
 }
-@media (min-width: 75em) {
+/* 78em et pas 75 : a 1 200 px pile, le numero qui reparaissait poussait la
+   barre de 26 px. Le seuil se mesure, il ne se choisit pas rond.  D-861 */
+@media (min-width: 78em) {
   .barre-tel { display: inline-flex; }
   .barre-dedans { padding-inline: var(--gouttiere); }
   .nav-lien { padding: 0 var(--e-2); }
@@ -672,6 +679,18 @@ select.saisie {
                 transform var(--m-duree) var(--m-courbe);
     transition-delay: var(--m-retard, 0ms);
   }
+  /* CE QUI EST DEJA A L'ECRAN NE S'ANIME PAS.
+     Mesure : le LCP de l'accueil etait a 768 ms pour un FCP a 204. L'ecart
+     n'etait pas le poids du document — c'etait mon propre fondu. Le plus
+     gros element peint N'EST PAS FINI tant qu'il monte de 0 a 1, et le
+     navigateur horodate la DERNIERE peinture. Une animation qui retarde de
+     500 ms le moment ou le titre est lisible ne sert aucune comprehension :
+     elle la retarde.  D-854 */
+  html.js .entre[data-vu-net] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* ===================================================================
@@ -692,3 +711,3600 @@ select.saisie {
    le meme nom de transition des deux cotes, donc le navigateur les garde. */
 .barre { view-transition-name: barre; }
 .pied { view-transition-name: pied; }
+
+/* ===================================================================
+   FUSIONNE DEPUIS modales.css
+   =================================================================== */
+
+/* == ADEXWEB - LES MODALES, LES ASSISTANTS, L'AGENDA, LA FOURCHETTE ==  D-843
+      A FUSIONNER dans `css/app.css`, puis `node tools/css-critique.mjs` et
+      `node tools/cascade-check.mjs`. Ce fichier se pose APRES les sections
+      existantes : il complete `.champ`, `.saisie`, `.refus` et `.btn`, il ne
+      les remplace pas.
+
+      DEUX NOMS POUR UNE MEME BOITE, ET C'EST VOULU. Le balisage porte
+      `class="champ field"` et `class="refus field-error"` : `champ` et
+      `refus` sont le systeme ADEXWEB, `field` et `field-error` sont les
+      crochets que `js/main.js` interroge (`closest(".field")`,
+      `$(".field-error", field)`, `.field.is-invalid`). Renommer l'un des
+      deux casse la validation sans une erreur.
+      `refonte-adexweb/INVENTAIRE-PLOMBERIE.md § 11`. */
+
+/* ===================================================================
+   1 · `hidden` DOIT GAGNER SUR TOUT `display` POSE PAR UNE CLASSE
+   Sans ces lignes, un bouton « Retour » marque `hidden` reste visible :
+   `.btn { display: inline-flex }` bat l'attribut.  D-844
+   =================================================================== */
+
+.modal[hidden], .step[hidden], .step-second[hidden], .champ[hidden],
+.btn[hidden], .devis[hidden], .devis-suite[hidden], .devis-petit[hidden],
+.devis-question[hidden], .retenue[hidden], .retenue-champ[hidden],
+.cadeau-avant[hidden], .cadeau-suite[hidden], .cadeau-deja[hidden],
+.cond-texte[hidden], .step-manque[hidden], .empty[hidden],
+.step-nav[hidden], .form-portes[hidden], .booking[hidden] { display: none; }
+
+/* ===================================================================
+   2 · LE VOILE ET LE PANNEAU
+   Un seul panneau a l'ecran, cadre a 92 % de la hauteur : c'est le corps
+   qui defile, jamais la page derriere.  D-845
+   =================================================================== */
+
+.modal {
+  position: fixed; inset: 0; z-index: var(--z-modal);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0;
+}
+@media (min-width: 48em) {
+  .modal { align-items: center; padding: var(--e-5) var(--e-3); }
+}
+
+.modal-scrim {
+  position: absolute; inset: 0;
+  background: var(--scrim);
+  border: 0;
+}
+
+.modal-panel {
+  position: relative;
+  display: flex; flex-direction: column;
+  width: 100%; max-width: 38rem;
+  max-height: 94vh;
+  background: var(--pearl);
+  border-radius: var(--rayon-large) var(--rayon-large) 0 0;
+  box-shadow: var(--ombre-levee);
+  overflow: hidden;
+}
+.modal-panel--large { max-width: 60rem; }
+@media (min-width: 48em) {
+  .modal-panel { max-height: 88vh; border-radius: var(--rayon-large); }
+}
+
+/* L'en-tete ne defile pas : la croix reste sous le pouce, et le titre
+   reste lisible au vingtieme ecran d'un assistant. */
+.modal-head {
+  flex: 0 0 auto;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--e-3);
+  padding: var(--e-4) var(--e-4) var(--e-3);
+  border-bottom: var(--filet) solid var(--line);
+  background: var(--pearl);
+}
+.modal-titre {
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+}
+.modal-sub {
+  color: var(--text-soft);
+  margin-top: var(--e-1);
+  max-width: 54ch;
+}
+.modal-corps {
+  flex: 1 1 auto;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--e-4);
+}
+@media (min-width: 48em) {
+  .modal-head { padding: var(--e-5) var(--e-5) var(--e-3); }
+  .modal-corps { padding: var(--e-5); }
+}
+
+/* Le bouton-icone : 44 px de cible, aucun fond au repos. Le script en
+   fabrique aussi (retirer un fichier) — la classe doit tenir seule. */
+.btn-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto;
+  width: var(--cible-min); height: var(--cible-min);
+  border-radius: var(--rayon);
+  color: var(--navy-dark);
+  transition: background-color var(--t-etat), color var(--t-etat);
+}
+.btn-icon:hover { background: var(--marble); }
+.btn-icon:disabled { color: var(--text-muted); cursor: not-allowed; }
+.btn-icon:disabled:hover { background: none; }
+.btn-icon svg { width: 1.375rem; height: 1.375rem; }
+
+/* ===================================================================
+   3 · LES DEUX NOMS DE BOUTON QUE LE SCRIPT FABRIQUE
+   `js/main.js` cree des boutons `btn--primary` et `btn--ghost` (repli
+   d'envoi, actions du popup). Sans ces alias, ils sortent NUS.  D-846
+   =================================================================== */
+
+.btn--primary {
+  background: var(--navy); color: var(--pearl);
+  box-shadow: var(--ombre-pose);
+}
+.btn--primary:hover { background: var(--navy-dark); box-shadow: var(--ombre-levee); }
+.btn--ghost {
+  background: var(--pearl); color: var(--navy-dark);
+  border: var(--filet) solid var(--line-strong);
+}
+.btn--ghost:hover { border-color: var(--navy-light); background: var(--marble); }
+
+.btn--bloc { width: 100%; }
+/* Un envoi en cours ne se reclique pas, et ca se VOIT. */
+.btn.is-loading { opacity: 0.62; cursor: progress; pointer-events: none; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Les `<svg>` fabriques par le script portent `class="icon"` et aucune
+   dimension : sans ceci ils sortent a 300 x 150. */
+.icon { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
+
+.form-actes { display: flex; flex-wrap: wrap; gap: var(--e-2); margin-top: var(--e-6); }
+
+/* ===================================================================
+   4 · LES ECRANS D'ASSISTANT
+   =================================================================== */
+
+.step { display: block; }
+.step + .step-nav { margin-top: var(--e-6); }
+
+/* « Étape 3 sur 7 » se lit, la barre ne se lit pas. Les deux, jamais la
+   barre seule.  D-847 */
+.step-compte,
+.progress-compte {
+  font-size: var(--t-00); font-weight: 600;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: var(--e-2);
+}
+.progress-compte { margin-bottom: 0; white-space: nowrap; }
+.progress-compte b { color: var(--navy-dark); }
+
+.step-q {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  margin-bottom: var(--e-3);
+  max-width: 34ch;
+}
+.step-q--second { font-size: var(--t-1); margin-top: var(--e-6); }
+/* Un ecran qui refuse d'avancer dit LEQUEL des deux choix manque. */
+.step-q--manque { color: var(--danger); }
+.step-aide { color: var(--text-soft); margin: calc(var(--e-3) * -1) 0 var(--e-3); max-width: 58ch; }
+.step-manque {
+  display: flex; align-items: center; gap: var(--e-1);
+  font-size: var(--t-00); font-weight: 600; color: var(--danger);
+  margin-bottom: var(--e-2);
+}
+
+.step-second { margin-top: var(--e-6); padding-top: var(--e-5); border-top: var(--filet) solid var(--line); }
+
+.step-nav {
+  display: flex; align-items: center; gap: var(--e-2);
+  margin-top: var(--e-6); padding-top: var(--e-4);
+  border-top: var(--filet) solid var(--line);
+}
+/* Le bouton d'avancement est toujours a droite, meme quand « Retour »
+   n'est pas la : la cible ne bouge pas d'un ecran a l'autre. */
+.step-nav > :last-child { margin-left: auto; }
+
+/* L'ecran de fin. Une seule chose y est vraie : c'est parti. */
+.step-reussi .modal-titre { margin-top: var(--e-1); }
+.step-reussi > .modal-sub { margin-bottom: var(--e-2); }
+
+.progress-ligne {
+  display: flex; align-items: center; gap: var(--e-3);
+  margin-bottom: var(--e-5);
+}
+.progress {
+  flex: 1 1 auto;
+  height: 6px;
+  background: var(--marble);
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+.progress i {
+  display: block; height: 100%; width: 14%;
+  background: var(--navy);
+  border-radius: var(--rayon);
+  transition: width var(--t-panneau) var(--m-courbe);
+}
+#projectWizard > .progress,
+.modal-corps > .progress { margin-bottom: var(--e-5); }
+
+/* ===================================================================
+   5 · LES LISTES DE CHOIX
+   Un groupe de choix est un `<fieldset>` : sans lui, un lecteur d'ecran
+   entend six boutons sans savoir a quelle question ils repondent.
+   =================================================================== */
+
+.bloc-choix {
+  display: block;
+  border: 0; padding: 0; margin: 0; min-width: 0;
+}
+.bloc-choix > legend { display: block; width: 100%; padding: 0; }
+.bloc-choix > legend.etiquette { margin-bottom: var(--e-1); }
+
+/* 5.1 · LES GRANDES CARTES DE L'ESTIMATEUR */
+.options { display: grid; gap: var(--e-2); }
+.options--serre { gap: var(--e-1); }
+.options button {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr 1.25rem;
+  align-items: center; gap: var(--e-3);
+  width: 100%;
+  min-height: var(--cible);
+  padding: var(--e-2) var(--e-3);
+  text-align: left;
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  color: var(--text);
+  transition: border-color var(--t-etat), background-color var(--t-etat),
+              box-shadow var(--t-etat);
+}
+.options button:hover { border-color: var(--navy-light); box-shadow: var(--ombre-pose); }
+.options button strong { display: block; font-weight: 600; line-height: var(--lh-1); }
+.options button small {
+  display: block;
+  font-size: var(--t-00); line-height: 1.5;
+  color: var(--text-soft);
+  margin-top: 0.15rem;
+}
+.options button > svg { width: 1.25rem; height: 1.25rem; color: var(--navy-light); }
+/* Le numero est du TEXTE : il tient 4,5:1, donc jamais en champagne. */
+.o-num {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette);
+  color: var(--text-muted);
+}
+/* CHOISI : le fond champagne clair porte du navy a 9,41:1, et la barre
+   navy a gauche dit la meme chose sans la couleur.  D-848 */
+.options button.is-on {
+  background: var(--champagne-light);
+  border-color: var(--champagne-dark);
+  box-shadow: inset 3px 0 0 var(--navy);
+}
+.options button.is-on small { color: var(--text-soft); }
+.options button.is-on .o-num { color: var(--navy-dark); }
+
+/* 5.2 · LES CHOIX A DEUX OU TROIS BOUTONS */
+.choices { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+.choices--empile { flex-direction: column; align-items: stretch; }
+.choices button {
+  flex: 1 1 12rem;
+  min-height: var(--cible);
+  padding: 0 var(--e-3);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  transition: border-color var(--t-etat), background-color var(--t-etat), color var(--t-etat);
+}
+.choices button:hover { border-color: var(--navy-light); background: var(--marble); }
+.choices button.is-on { background: var(--navy); border-color: var(--navy); color: var(--pearl); }
+
+/* 5.3 · LES CASES A COCHER */
+/* Meme motif que `.deux-portes` : c'est la largeur du PANNEAU qui decide,
+   pas celle de la fenetre.  D-852 */
+.check-grid { display: grid; gap: var(--e-2); grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+
+.check {
+  display: flex; align-items: flex-start; gap: var(--e-2);
+  min-height: var(--cible);
+  padding: var(--e-2) var(--e-3);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  cursor: pointer;
+  transition: border-color var(--t-etat), background-color var(--t-etat);
+}
+.check:hover { border-color: var(--navy-light); }
+.check--bloc { align-items: flex-start; }
+/* La case est dessinee ici : `base.css` remet `background` et `border` a
+   zero sur tout `input`, ce qui efface la case native.  D-849 */
+.check input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 1.375rem; height: 1.375rem;
+  margin-top: 0.28rem;
+  background: var(--pearl);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--rayon);
+  display: grid; place-content: center;
+  transition: background-color var(--t-vif), border-color var(--t-vif);
+}
+.check input[type="checkbox"]:checked { background: var(--navy); border-color: var(--navy); }
+.check input[type="checkbox"]:checked::after {
+  content: "";
+  width: 0.7rem; height: 0.35rem;
+  border-left: 2px solid var(--pearl);
+  border-bottom: 2px solid var(--pearl);
+  transform: rotate(-45deg) translate(1px, -2px);
+}
+.check:has(input:checked) { border-color: var(--navy); background: var(--champagne-light); }
+.check span strong { display: block; font-weight: 600; line-height: var(--lh-1); }
+.check span small {
+  display: block;
+  font-size: var(--t-00); line-height: 1.5;
+  color: var(--text-soft);
+  margin-top: 0.15rem;
+}
+
+/* ===================================================================
+   6 · LES CHAMPS — CE QUE LE SYSTEME N'A PAS ENCORE
+   =================================================================== */
+
+/* Dans une modale, l'etiquette d'un champ est du texte a LIRE avant de
+   repondre : elle passe au corps, pas a la mention.  D-850 */
+.modal .etiquette,
+.cadeau .etiquette { font-size: var(--t-0); line-height: var(--lh-1); }
+
+/* Le message de refus ne parait que quand le champ est refuse. Le script
+   pose `.is-invalid` sur le `.field` et lie le texte par
+   `aria-describedby` : la classe et l'attribut disent la meme chose. */
+.field .refus,
+.champ .refus { display: none; }
+.field.is-invalid .refus,
+.champ[data-refus] .refus { display: flex; }
+.field.is-invalid .saisie {
+  border-color: var(--danger);
+  border-bottom-width: 3px;
+  background: var(--danger-wash);
+}
+/* Un champ qui vient d'etre corrige le dit une fois, puis se tait. */
+.field.is-valid .saisie { border-color: var(--ok); }
+
+.field-note, .field-aide { max-width: 58ch; }
+.field-aide--avant { margin-top: var(--e-4); }
+/* `.opt` est l'ancien nom de `.facultatif` ; le script reecrit un libelle
+   entier avec, il faut donc que les deux rendent pareil. */
+.opt { font-weight: 400; color: var(--text-muted); }
+/* Sur un fond silk ou champagne, `--text-muted` tombe sous 4,5:1. */
+.devis .opt, .devis .facultatif,
+.cond .opt, .cond .facultatif,
+.porte .opt, .porte .facultatif { color: var(--text-soft); }
+
+.form-note {
+  margin-top: var(--e-3);
+  font-size: var(--t-00); color: var(--text-soft);
+  max-width: 58ch;
+}
+
+/* L'etat d'un envoi. Vide, il ne prend aucune place — un cadre vide sous
+   chaque bouton est du bruit permanent. */
+.form-status {
+  margin-top: var(--e-2);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--text-soft);
+}
+.form-status:empty { display: none; }
+.form-status.is-err {
+  color: var(--danger);
+  background: var(--danger-wash);
+  padding: var(--e-2); border-radius: var(--rayon);
+}
+.form-status.is-ok {
+  color: var(--ok);
+  background: var(--ok-wash);
+  padding: var(--e-2); border-radius: var(--rayon);
+}
+
+.form-legal { margin-top: var(--e-3); }
+
+/* La porte de secours : le numero, la ou l'envie de decrocher est la plus
+   forte. Elle vit HORS des ecrans, donc elle parait a tous.  D-783 */
+.form-appel {
+  margin-top: var(--e-4);
+  font-size: var(--t-00); color: var(--text-soft);
+}
+.form-appel--pied {
+  margin-top: var(--e-5); padding-top: var(--e-3);
+  border-top: var(--filet) solid var(--line);
+}
+.appel-num {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.appel-num:hover { text-decoration: underline; text-decoration-color: var(--champagne-dark); text-underline-offset: 0.24em; }
+
+/* Les deux chemins plus courts, sous la barre de navigation.  D-764 */
+.form-portes {
+  margin-top: var(--e-5); padding: var(--e-4);
+  background: var(--marble);
+  border-radius: var(--rayon-large);
+}
+.form-portes-quoi {
+  font-size: var(--t-00); font-weight: 600;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: var(--e-2);
+}
+.form-portes-choix { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+.form-portes-note { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+
+/* Le repli d'envoi, fabrique par le script quand la porte ne repond pas. */
+.form-repli {
+  margin-top: var(--e-3); padding: var(--e-3);
+  background: var(--silk);
+  border-radius: var(--rayon);
+  display: grid; gap: var(--e-2);
+}
+
+/* ===================================================================
+   7 · LE CALENDRIER ET LES PLAGES
+   =================================================================== */
+
+.booking { display: grid; gap: var(--e-5); }
+@media (min-width: 48em) {
+  .booking { grid-template-columns: 1fr 15rem; gap: var(--e-6); }
+}
+
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: var(--e-2); }
+.cal-mois {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  text-transform: capitalize;
+}
+.cal-week {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  margin-top: var(--e-3);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--text-soft);
+  text-align: center;
+}
+.cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: var(--e-1); }
+.cal-day {
+  display: flex; align-items: center; justify-content: center;
+  min-height: var(--cible-min);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  border: var(--filet) solid transparent;
+  transition: background-color var(--t-vif), color var(--t-vif), border-color var(--t-vif);
+}
+.cal-day:hover:not(:disabled) { background: var(--marble); }
+.cal-day:disabled { color: var(--text-muted); cursor: not-allowed; }
+.cal-day.is-blank { pointer-events: none; }
+/* Aujourd'hui se marque par un filet, pas par une couleur : un jour
+   marque en couleur se lit comme un jour CHOISI. */
+.cal-day.is-today { border-color: var(--champagne-dark); }
+.cal-day.is-on { background: var(--navy); color: var(--pearl); border-color: var(--navy); }
+.cal-long { display: none; }
+
+/* SOUS 30em LA GRILLE LACHE. Sept colonnes dans un panneau de 288 px
+   donnent des cases de 40 px, sous le seuil de 44 : se tromper de case
+   ne rate pas un clic, ca reserve le mauvais jour.  D-740 */
+@media (max-width: 29.99em) {
+  .cal-week { display: none; }
+  .cal-days { display: flex; flex-direction: column; gap: var(--e-1); }
+  .cal-day:disabled, .cal-day.is-blank { display: none; }
+  .cal-day {
+    justify-content: flex-start;
+    min-height: var(--cible);
+    padding-inline: var(--e-3);
+    border-color: var(--line);
+  }
+  .cal-num { display: none; }
+  .cal-long { display: block; text-transform: capitalize; }
+}
+
+.slots { display: flex; flex-direction: column; }
+.slots-title {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: var(--e-2);
+}
+.slots-list { display: grid; gap: var(--e-1); }
+/* LE CRAN DE L'ATTENTE. Les plages restent lisibles, elles ne se
+   cliquent plus. */
+.slots-list.is-attente { opacity: 0.55; pointer-events: none; }
+.slot {
+  min-height: var(--cible);
+  padding: 0 var(--e-3);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  transition: border-color var(--t-etat), background-color var(--t-etat), color var(--t-etat);
+}
+.slot:hover { background: var(--navy); border-color: var(--navy); color: var(--pearl); }
+.slot.is-on { background: var(--navy); border-color: var(--navy); color: var(--pearl); }
+
+/* La note dit D'OU viennent les heures. Trois etats, jamais de silence :
+   un visiteur qui ne sait pas si les plages sont a jour n'ose pas
+   reserver.  D-726 */
+.slots-note { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+.slots-note.is-filet {
+  padding: var(--e-2);
+  background: var(--silk);
+  border-left: 3px solid var(--champagne-dark);
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+}
+.slots-note.is-attente { color: var(--text-soft); font-style: italic; }
+
+.empty { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+
+.recap {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--e-2);
+  margin-bottom: var(--e-5); padding: var(--e-2) var(--e-3);
+  background: var(--silk);
+  border-radius: var(--rayon);
+  font-weight: 600; color: var(--text);
+}
+
+/* ===================================================================
+   8 · LE DEPOT DE FICHIERS
+   =================================================================== */
+
+.dropzone {
+  display: grid; justify-items: center; gap: var(--e-1);
+  padding: var(--e-5) var(--e-3);
+  text-align: center;
+  background: var(--pearl);
+  border: 2px dashed var(--line-strong);
+  border-radius: var(--rayon-large);
+  cursor: pointer;
+  transition: border-color var(--t-etat), background-color var(--t-etat);
+}
+.dropzone:hover { border-color: var(--navy-light); }
+.dropzone.is-over { border-color: var(--navy); background: var(--champagne-light); }
+.dropzone > svg { width: 2rem; height: 2rem; color: var(--navy-light); }
+.dropzone strong { font-weight: 600; }
+.dropzone > span { font-size: var(--t-00); color: var(--text-soft); }
+
+.file-list { display: grid; gap: var(--e-1); margin-top: var(--e-2); }
+.file-list li {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--e-2);
+  min-height: var(--cible-min);
+  padding: var(--e-1) var(--e-1) var(--e-1) var(--e-2);
+  background: var(--silk);
+  border-radius: var(--rayon);
+  font-size: var(--t-00);
+}
+.file-list li.is-warn {
+  background: var(--danger-wash);
+  color: var(--danger);
+  font-weight: 600;
+  padding: var(--e-2);
+}
+
+/* ===================================================================
+   9 · LA FOURCHETTE
+   Elle ne parait qu'apres un formulaire complete, et le texte dit ce
+   qu'elle vaut : « ordre de grandeur, pas un devis ».  D-748
+   =================================================================== */
+
+.devis {
+  margin-top: var(--e-4);
+  padding: var(--e-4);
+  background: var(--silk);
+  border-radius: var(--rayon-large);
+}
+.devis-quoi { color: var(--text-soft); max-width: 44ch; }
+.devis-montant {
+  font-family: var(--font-titre);
+  font-size: var(--t-4); line-height: 1.05; letter-spacing: var(--ls-4);
+  color: var(--navy-dark);
+  margin-top: var(--e-2);
+}
+.devis-montant--petit { font-size: var(--t-3); letter-spacing: var(--ls-3); }
+.devis-sur { margin-top: var(--e-1); font-size: var(--t-00); color: var(--text-soft); }
+
+/* LA NOTE VIENT AVEC LE CHIFFRE, PAS PLUS BAS. Elle porte son propre
+   titre et elle est sur son propre fond : elle doit etre LUE. Une
+   reserve enterree en petits caracteres ne protege personne.  D-784 */
+.devis-note {
+  margin-top: var(--e-4); padding: var(--e-3);
+  background: var(--pearl);
+  border-left: 3px solid var(--champagne-dark);
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+}
+.devis-note-t {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+  margin-bottom: var(--e-2);
+}
+.devis-note p { color: var(--text); }
+
+.devis-question, .devis-suite, .devis-petit {
+  margin-top: var(--e-4); padding-top: var(--e-4);
+  border-top: var(--filet) solid var(--line-strong);
+}
+.devis-demande { font-weight: 600; margin-bottom: var(--e-2); }
+.devis-mise { color: var(--text-soft); margin-bottom: var(--e-3); max-width: 56ch; }
+.devis-retire { display: grid; gap: var(--e-1); margin: var(--e-2) 0 var(--e-3); }
+.devis-retire li {
+  position: relative; padding-left: var(--e-2);
+  font-size: var(--t-00); color: var(--text);
+}
+.devis-retire li::before {
+  content: "·"; position: absolute; left: 0;
+  color: var(--champagne-dark); font-weight: 700;
+}
+.devis--sansprix .devis-quoi {
+  font-family: var(--font-titre);
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+}
+
+.estim-resume {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  margin-bottom: var(--e-3);
+}
+.estim-note { margin-top: var(--e-4); font-size: var(--t-00); color: var(--text-soft); }
+
+/* ===================================================================
+   10 · LES CONDITIONS DU PROGRAMME DE REFERENCE
+   LE TEXTE EST ICI, PAS AU BOUT D'UN LIEN : un lien qui ouvre une autre
+   page fait perdre cinq ecrans de saisie a celui qui le suit.  D-773
+   =================================================================== */
+
+.cond-puces { display: grid; gap: var(--e-2); margin-bottom: var(--e-4); }
+/* LA PUCE EST POSEE, PAS EMPILEE. En `display: flex`, le `<b>` de tete
+   devient un ELEMENT FLEX et la fin de la phrase un autre : « Votre prime
+   depend du type de projet signe » se retrouvait a gauche et « , pas de
+   son prix » a droite, avec un trou entre les deux. Vu a l'image.  D-851 */
+.cond-puces li {
+  position: relative;
+  padding-left: var(--e-3);
+  color: var(--text-soft);
+}
+.cond-puces li::before {
+  content: ""; position: absolute; left: 0; top: 0.62rem;
+  width: 0.5rem; height: 0.5rem;
+  background: var(--champagne-dark);
+  border-radius: var(--rayon);
+}
+.cond-puces b { color: var(--text); }
+
+.cond-tiroir { margin-bottom: var(--e-5); }
+.btn--tiroir { justify-content: space-between; text-align: left; }
+.btn--tiroir .icon--moins { display: none; }
+.btn--tiroir[aria-expanded="true"] .icon--plus { display: none; }
+.btn--tiroir[aria-expanded="true"] .icon--moins { display: block; }
+
+.cond {
+  margin-top: var(--e-2);
+  padding: var(--e-4);
+  max-height: 26rem; overflow-y: auto; overscroll-behavior: contain;
+  background: var(--silk);
+  border-radius: var(--rayon-large);
+  font-size: var(--t-00); line-height: 1.6;
+  color: var(--text);
+}
+.cond-t {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  margin: var(--e-4) 0 var(--e-2);
+}
+.cond-t:first-child { margin-top: 0; }
+.cond p + p { margin-top: var(--e-2); }
+.cond-grille {
+  width: 100%; margin: var(--e-3) 0;
+  border-collapse: collapse;
+  background: var(--pearl);
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+.cond-grille th, .cond-grille td {
+  padding: var(--e-2);
+  text-align: left;
+  border-bottom: var(--filet) solid var(--line);
+}
+.cond-grille th {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+}
+.cond-grille tr:last-child td { border-bottom: 0; }
+.cond-prime { text-align: right; white-space: nowrap; color: var(--navy-dark); }
+.cond-version { margin-top: var(--e-4); color: var(--text-soft); }
+
+/* ===================================================================
+   11 · LES DEUX PORTES DE L'URGENCE
+   Une vraie urgence n'ecrit pas : elle appelle. Le numero passe donc
+   DEVANT, en gros, et c'est un vrai lien `tel:`.  D-751
+   =================================================================== */
+
+/* `auto-fit`, PAS UNE REQUETE DE MEDIA. Une requete de media mesure la
+   FENETRE ; ici ce qui compte est la largeur du PANNEAU, qui plafonne a
+   38 rem quelle que soit la fenetre. A 1440 px les deux portes tombaient
+   donc en deux colonnes de 240 px, et le numero de 38 px n'y tenait
+   plus.  D-852 */
+.deux-portes {
+  display: grid; gap: var(--e-2); margin-bottom: var(--e-6);
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+}
+
+.porte {
+  padding: var(--e-4);
+  background: var(--marble);
+  border-radius: var(--rayon-large);
+}
+/* Le champagne clair porte du navy a 9,41:1 : il peut etre un FOND. */
+.porte--forte { background: var(--champagne-light); }
+.porte-quand {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+  margin-bottom: var(--e-2);
+}
+.porte-tel {
+  display: inline-flex; align-items: center; gap: var(--e-1);
+  min-height: var(--cible);
+  font-family: var(--font-titre);
+  font-size: var(--t-2); line-height: 1; letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* Sans `flex: 0 0 auto`, l'icone se comprime a zero des que le numero
+   remplit la carte : elle disparaissait sans qu'aucun test ne le voie. */
+.porte-tel svg { width: 1.5rem; height: 1.5rem; flex: 0 0 auto; }
+.porte-tel:hover { text-decoration: underline; text-underline-offset: 0.16em; }
+.porte-note, .porte-texte { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+
+/* ===================================================================
+   12 · LA RETENUE
+   Elle ne bloque rien : Echap la ferme, le fond aussi, et « Je continue »
+   rend la main au formulaire exactement ou il en etait.  D-753
+   =================================================================== */
+
+.retenue {
+  position: fixed; inset: auto 0 0 0; z-index: calc(var(--z-modal) + 1);
+  display: flex; justify-content: flex-end;
+  padding: var(--e-2);
+  pointer-events: none;
+}
+@media (min-width: 48em) { .retenue { padding: var(--e-4); } }
+
+.retenue-in {
+  pointer-events: auto;
+  width: 100%; max-width: 26rem;
+  padding: var(--e-4);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line);
+  border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-levee);
+}
+/* `.sur-titre` accroche un filet en `::after` : sur deux lignes il reste
+   colle a la PREMIERE et flotte dans le vide. Ces deux libelles-la sont
+   ecrits par le script, longueur inconnue — le filet saute.  D-853 */
+.retenue-quoi::after, .cadeau-eyebrow::after { display: none; }
+
+.retenue-titre {
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+  margin-bottom: var(--e-2);
+}
+.retenue-texte { font-size: var(--t-00); color: var(--text-soft); }
+.retenue-champ { display: grid; gap: var(--e-2); margin-top: var(--e-4); }
+.retenue-champ .btn { width: 100%; }
+.retenue-suite { margin-top: var(--e-3); }
+
+/* ===================================================================
+   13 · LE CADEAU — `<dialog>` natif, `showModal()`
+   Ce n'est pas un cadeau, c'est un echange, et le balisage le dit.  D-083
+   =================================================================== */
+
+.cadeau {
+  width: min(100% - 2rem, 58rem);
+  max-height: 92vh;
+  margin: auto;
+  padding: 0;
+  background: var(--pearl);
+  border: 0;
+  border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-levee);
+  color: var(--text);
+  overflow: hidden;
+}
+.cadeau::backdrop { background: var(--scrim); }
+.cadeau-in { position: relative; display: grid; max-height: 92vh; overflow-y: auto; }
+@media (min-width: 52em) {
+  .cadeau-in { grid-template-columns: 0.85fr 1fr; overflow: hidden; }
+}
+.cadeau-x { position: absolute; top: var(--e-1); right: var(--e-1); z-index: 2; background: var(--pearl); }
+
+.cadeau-vue {
+  display: none;
+  position: relative;
+  background: var(--silk);
+  padding: var(--e-7) var(--e-5);
+}
+@media (min-width: 52em) { .cadeau-vue { display: block; } }
+.cadeau-couv {
+  position: absolute;
+  width: 58%; height: auto;
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-levee);
+}
+.cadeau-couv--1 { top: 12%; left: 10%; transform: rotate(-4deg); }
+.cadeau-couv--2 { top: 24%; left: 32%; transform: rotate(3deg); }
+
+.cadeau-dire { padding: var(--e-5) var(--e-4) var(--e-4); overflow-y: auto; }
+@media (min-width: 52em) { .cadeau-dire { padding: var(--e-6) var(--e-5); } }
+.cadeau-titre {
+  font-size: var(--t-3); line-height: var(--lh-3); letter-spacing: var(--ls-3);
+  margin-bottom: var(--e-3);
+}
+/* Les trois chiffres. Le premier porte la valeur, « 91 pages » vient en
+   dernier : un patron de 55 ans lit « 91 pages » comme « je ne lirai
+   jamais ca ».  D-782 */
+.cadeau-fiche {
+  display: flex; flex-wrap: wrap; gap: var(--e-3);
+  padding: var(--e-2) 0;
+  border-block: var(--filet) solid var(--line);
+  margin-bottom: var(--e-3);
+}
+.cadeau-fiche span {
+  display: flex; align-items: baseline; gap: 0.35rem;
+  font-size: var(--t-00); color: var(--text-soft);
+}
+.cadeau-fiche b {
+  font-family: var(--font-titre);
+  font-size: var(--t-2); letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+}
+.cadeau-lead { color: var(--text-soft); margin-bottom: var(--e-4); }
+.cadeau-lead b { color: var(--text); }
+.cadeau-go { margin-top: var(--e-4); }
+.cadeau-fin { margin-top: var(--e-3); font-size: var(--t-00); color: var(--text-muted); }
+.cadeau-actes { display: grid; gap: var(--e-2); margin-top: var(--e-4); }
+.cadeau-liens { margin-top: var(--e-3); font-size: var(--t-00); color: var(--text-soft); }
+.cadeau-non { margin-top: var(--e-3); }
+
+/* ===================================================================
+   14 · LES SUGGESTIONS DE VILLE ET DE DOMAINE
+   Le champ garde son `<datalist>` : c'est le repli sans JavaScript. Le
+   panneau fabrique par le script se pose par-dessus.  D-759
+   =================================================================== */
+
+.champ { position: relative; }
+.sug {
+  position: absolute; z-index: 3; left: 0; right: 0;
+  max-height: 18rem; overflow-y: auto;
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-levee);
+}
+.sug-o {
+  display: flex; align-items: center;
+  width: 100%;
+  min-height: var(--cible-min);
+  padding: 0 var(--e-2);
+  text-align: left;
+  font-size: var(--t-00);
+  color: var(--text);
+  border-left: 3px solid transparent;
+}
+.sug-o:hover, .sug-o.is-on { background: var(--champagne-light); border-left-color: var(--navy); }
+.sug-o b { font-weight: 700; color: var(--navy-dark); }
+
+/* ===================================================================
+   FUSIONNE DEPUIS pages.css
+   =================================================================== */
+
+/* == ADEXWEB — LE STYLE DES QUATRE PAGES INTERIEURES ==
+      services.html · processus.html · contact.html · reference.html
+
+      CE FICHIER N'EST PAS SERVI. Il est le brouillon d'une fusion dans
+      `css/app.css`, qui reste la seule source. Les pages livrees ne le
+      chargent pas : le lien de travail a ete retire avant la remise.
+
+      Il ne redefinit aucune classe d'`app.css` sauf trois corrections de
+      contraste, nommees et justifiees en section 9.
+      Ordre de fusion : a la SUITE d'`app.css`, jamais avant — deux regles
+      de meme specificite s'y departagent par l'ordre.
+   ================================================================== */
+
+
+/* ===================================================================
+   1 · L'EN-TETE DE PAGE
+   Un seul h1 par page, et il ne monte JAMAIS a --t-5 : ce cran-la est
+   celui de l'accueil. Deux pages qui crient aussi fort ne disent plus
+   laquelle est la porte d'entree.
+   =================================================================== */
+
+.titre-page {
+  font-size: var(--t-4);
+  line-height: var(--lh-4);
+  letter-spacing: var(--ls-4);
+  font-weight: 460;
+  max-width: 18ch;
+}
+
+/* La premiere bande remplace le hero : elle respire plus haut que les
+   suivantes, sans en prendre la hauteur. */
+.bande--entete { padding-block: var(--e-8) var(--bande); }
+@media (min-width: 62em) { .bande--entete { padding-block: var(--e-9) var(--bande-large); } }
+
+/* Le filet d'`app.css` ne separe que deux bandes de MEME fond. Apres une
+   bande coloree, le changement de fond separe deja : un filet de plus
+   n'est qu'un trait qui traine. */
+.bande--silk + .bande:not([class*="--"]),
+.bande--marble + .bande:not([class*="--"]),
+.bande--navy + .bande:not([class*="--"]) { border-top: 0; }
+
+
+/* ===================================================================
+   2 · LES ANCRES DE PAGE
+   Cinq raccourcis vers les cinq services. Ce n'est pas une seconde idee
+   dans la bande : c'est la table de ce qu'elle annonce.
+   =================================================================== */
+
+.ancres {
+  display: flex; flex-wrap: wrap; gap: var(--e-1);
+  margin-top: var(--e-5);
+  padding-top: var(--e-3);
+  border-top: var(--filet) solid var(--line);
+}
+.ancre {
+  display: inline-flex; align-items: center; gap: var(--e-1);
+  min-height: var(--cible-min);
+  padding-inline: var(--e-2);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark); text-decoration: none;
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  transition: border-color var(--t-etat), background-color var(--t-etat);
+}
+.ancre:hover { border-color: var(--navy-light); background: var(--marble); }
+.ancre b { color: var(--text-soft); font-weight: 700; letter-spacing: var(--ls-etiquette); }
+
+
+/* ===================================================================
+   3 · CE QUI EST INCLUS — la colonne de droite d'un service
+   Le crochet est une icone PORTEUSE DE SENS : elle dit « compris ».
+   Elle est donc en navy, jamais en champagne (2,63:1 au mieux).
+   =================================================================== */
+
+.inclus { display: grid; gap: var(--e-3); align-content: start; }
+.liste-oui { display: grid; gap: var(--e-2); }
+.liste-oui li {
+  display: flex; align-items: flex-start; gap: var(--e-2);
+  font-size: var(--t-0); line-height: var(--lh-0);
+  color: var(--text);
+}
+.liste-oui svg {
+  width: 1.25rem; height: 1.25rem; flex: 0 0 auto;
+  margin-top: 0.34rem; color: var(--navy);
+}
+
+/* Le delai est une donnee, pas une mention : il porte son chiffre en
+   pleine couleur de texte. */
+.delai {
+  display: flex; align-items: flex-start; gap: var(--e-1);
+  margin-top: var(--e-4);
+  font-size: var(--t-00); color: var(--text-soft);
+}
+.delai svg {
+  width: 1.0625rem; height: 1.0625rem; flex: 0 0 auto;
+  margin-top: 0.18rem; color: var(--navy);
+}
+.delai b { color: var(--text); font-weight: 600; }
+
+/* Une precision qui ne tient pas dans la liste : elle reste du CORPS,
+   19 px, jamais une mention de 15. Dans une carte, `.carte p` d'`app.css`
+   la ferait tomber a 15 : on la retient a deux classes. */
+.precision {
+  margin-top: var(--e-3);
+  color: var(--text-soft);
+  max-width: 58ch;
+}
+.carte .precision { font-size: var(--t-0); line-height: var(--lh-0); }
+
+
+/* ===================================================================
+   4 · LES ETAPES — un rail, pas un accordeon
+   Deux colonnes : le numero, puis tout le reste. Le livrable descend
+   SOUS le texte et n'ouvre pas une troisieme colonne — notre lecteur
+   descend une colonne, il ne balaye pas une grille.
+   64 px entre deux etapes sous 992, 96 px au-dela (rythme § 6.3).
+   =================================================================== */
+
+.etapes { display: grid; }
+.etape {
+  display: grid; gap: var(--e-2);
+  padding-block: var(--e-4);
+  border-top: var(--filet) solid var(--line);
+  align-items: start;
+}
+.etape:last-child { border-bottom: var(--filet) solid var(--line); }
+
+.etape-num {
+  font-family: var(--font-texte);
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette);
+  color: var(--text-soft);
+}
+.etape-nom {
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+}
+.etape-dit {
+  margin-top: var(--e-1);
+  color: var(--text-soft);
+  max-width: 58ch;
+}
+.etape-corps { display: grid; gap: var(--e-3); }
+
+/* Le livrable est ce qui reste dans les mains du client : il porte le
+   seul filet champagne de la page, a gauche, la ou l'oeil revient. */
+.livrable {
+  display: grid; gap: 0.15rem;
+  padding-left: var(--e-3);
+  border-left: 3px solid var(--champagne);
+}
+.livrable span {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.livrable b { font-weight: 600; color: var(--text); }
+
+@media (min-width: 48em) {
+  .etape { grid-template-columns: 3.5rem 1fr; gap: var(--e-3) var(--e-4); }
+  .etape-num { padding-top: 0.5rem; }
+}
+@media (min-width: 62em) { .etape { padding-block: var(--e-6); } }
+
+
+/* ===================================================================
+   5 · LES QUESTIONS — `<details>` natif
+   Le marqueur ne tourne pas : il CHANGE. Un plus devient un moins. Le
+   site n'a droit qu'a un seul geste, et il est deja pris par l'entree.
+   =================================================================== */
+
+/* 736 px, pas les 1120 de la colonne utile : au-dela, le marqueur `+` se
+   retrouve a un demi-metre de la question qu'il ouvre, et le lien entre les
+   deux se perd. */
+.questions {
+  display: grid;
+  max-width: 46rem;
+  border-top: var(--filet) solid var(--line);
+}
+.question { border-bottom: var(--filet) solid var(--line); }
+
+.question > summary {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--e-3);
+  min-height: var(--cible);
+  padding-block: var(--e-3);
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  cursor: pointer;
+  list-style: none;
+}
+.question > summary::-webkit-details-marker { display: none; }
+.question > summary:hover { color: var(--navy-light); }
+
+.question-icone {
+  width: 1.5rem; height: 1.5rem; flex: 0 0 auto;
+  margin-top: 0.4rem; color: var(--navy);
+}
+.question:not([open]) .question-icone--moins { display: none; }
+.question[open] .question-icone--plus { display: none; }
+
+.question-dit {
+  padding-bottom: var(--e-4);
+  max-width: var(--colonne-texte);
+}
+.question-dit p { color: var(--text-soft); }
+.question-dit b { color: var(--text); font-weight: 600; }
+.question-dit .actes { margin-top: var(--e-3); }
+
+
+/* ===================================================================
+   6 · NOUS JOINDRE
+   =================================================================== */
+
+/* Le numero est la porte que cherche un patron de 55 ans. Il est en
+   grand, en serif, et c'est un lien — pas une image de numero. */
+.tel-geant {
+  display: inline-flex; align-items: center; gap: var(--e-2);
+  min-height: var(--cible);
+  margin-top: var(--e-5);
+  font-family: var(--font-titre);
+  font-size: var(--t-4); line-height: var(--lh-4); letter-spacing: var(--ls-4);
+  color: var(--navy-dark);
+  text-decoration: none;
+}
+.tel-geant svg { width: 2rem; height: 2rem; flex: 0 0 auto; color: var(--navy); }
+.tel-geant:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--champagne-dark);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.16em;
+}
+
+/* Les cinq portes. Deux colonnes au plus ; la porte recommandee prend la
+   largeur, parce qu'une recommandation qui a la meme taille que le reste
+   n'en est plus une. */
+.tuiles { display: grid; gap: var(--e-3); }
+@media (min-width: 48em) {
+  .tuiles { grid-template-columns: repeat(2, 1fr); }
+  .tuile--large { grid-column: 1 / -1; }
+}
+/* Une tuile est un BOUTON : son contenu est du texte en ligne, jamais un
+   `<h3>` ni un `<p>` — le modele de contenu d'un bouton ne les admet pas,
+   et un titre dans un bouton brouille l'annonce du lecteur d'ecran. Le
+   nom de la tuile reprend donc a la main ce que la base donnait au `<h3>`. */
+.tuile .carte-titre {
+  display: block;
+  font-family: var(--font-titre); font-weight: 440;
+  color: var(--navy-dark);
+  text-wrap: balance;
+}
+/* `.carte p` d'`app.css` descend a 15 px. Ici c'est du CORPS : 19. */
+.tuile-dit {
+  display: block;
+  font-size: var(--t-0); line-height: var(--lh-0);
+  color: var(--text-soft);
+}
+.tuile-ou {
+  display: flex; align-items: center; gap: var(--e-1);
+  margin-top: var(--e-1);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+}
+.tuile-ou svg { width: 1rem; height: 1rem; transition: transform var(--t-etat); }
+.tuile:hover .tuile-ou svg { transform: translateX(3px); }
+
+/* Les quatre garanties : un mot, une phrase. */
+.garanties { display: grid; gap: var(--e-5); }
+@media (min-width: 48em) { .garanties { grid-template-columns: repeat(2, 1fr); } }
+.garantie {
+  display: grid; gap: var(--e-1);
+  padding-left: var(--e-3);
+  border-left: 3px solid var(--champagne);
+}
+.garantie p { color: var(--text-soft); }
+
+/* Le septieme formulaire : le message ordinaire. */
+.form-contact { display: grid; gap: var(--e-5); max-width: 44rem; }
+.form-status { font-size: var(--t-00); font-weight: 600; color: var(--text-soft); }
+.form-status:empty { display: none; }
+.form-appel { color: var(--text-soft); }
+.form-appel a {
+  font-weight: 600; color: var(--navy-dark);
+  text-decoration-color: var(--champagne-dark);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.24em;
+}
+
+
+/* ===================================================================
+   7 · LE PROGRAMME DE REFERENCE
+   Le champagne porte le montant EN FOND, avec du navy dessus : 11,2:1.
+   Il ne porte jamais le trait ni la lettre.
+   =================================================================== */
+
+.prime-max {
+  display: grid; gap: var(--e-2);
+  padding: var(--e-5);
+  background: var(--champagne-light);
+  border-radius: var(--rayon-large);
+}
+.prime-max .etiquette-prime {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+}
+.prime-max .chiffre {
+  font-size: var(--t-4); line-height: var(--lh-4); letter-spacing: var(--ls-4);
+  color: var(--navy-dark);
+}
+.prime-max p { color: var(--navy-dark); }
+
+
+/* ===================================================================
+   8 · LES CONDITIONS — bloc GENERE par `tools/conditions.mjs`
+   Le HTML entre les bornes ne s'ecrit jamais a la main : ces regles
+   habillent des balises qu'un outil produit. Ne renommer aucune classe
+   `cond-*` sans toucher au convertisseur.
+   =================================================================== */
+
+.conditions { max-width: var(--colonne-texte); }
+.conditions p { margin-top: var(--e-2); color: var(--text-soft); }
+.conditions strong { color: var(--text); font-weight: 600; }
+
+.cond-t {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  margin-top: var(--e-6);
+}
+.cond-t:first-child { margin-top: 0; }
+
+/* `table-layout: fixed` : sans lui, la ligne la plus longue de la grille
+   pousse la page au-dela de 320 px de large. */
+.cond-grille {
+  width: 100%; table-layout: fixed; border-collapse: collapse;
+  margin-top: var(--e-3);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line);
+}
+.cond-grille th,
+.cond-grille td {
+  text-align: left; vertical-align: top;
+  padding: var(--e-2);
+  border-bottom: var(--filet) solid var(--line);
+  font-size: var(--t-0); line-height: var(--lh-0);
+}
+.cond-grille th {
+  font-family: var(--font-texte);
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.cond-grille tbody tr:last-child td { border-bottom: 0; }
+/* `.cond-grille td` pose `text-align: left` a deux crans : la classe seule
+   ne le bat pas, et les montants restaient colles au libelle. */
+.cond-grille td.cond-prime { text-align: right; white-space: nowrap; }
+.cond-prime b { color: var(--navy-dark); font-weight: 600; }
+/* Sous 768 les deux colonnes se partagent la largeur : une colonne de
+   montants figee a 9 rem y laisserait des libelles de trois mots par ligne. */
+@media (min-width: 48em) {
+  /* 11 rem : « VOTRE PRIME » en capitales espacees tient sur UNE ligne. */
+  .cond-grille th:last-child,
+  .cond-grille td:last-child { width: 11rem; }
+  .cond-grille th:last-child { text-align: right; }
+}
+
+.cond-version {
+  margin-top: var(--e-6);
+  padding-top: var(--e-3);
+  border-top: var(--filet) solid var(--line);
+  font-size: var(--t-00);
+}
+
+
+/* ===================================================================
+   9 · TROIS CORRECTIONS DE CONTRASTE — les seules redefinitions
+   `--text-muted` rend 3,88:1 sur silk et 3,83:1 sur marble : il y est
+   INTERDIT (D-803). Trois classes d'`app.css` le posent en dur et se
+   retrouvent sur ces fonds dans ces quatre pages.
+   =================================================================== */
+
+.bande--silk .facultatif,   .bande--marble .facultatif,
+.bande--silk .mention,      .bande--marble .mention,
+.bande--silk .service-num,  .bande--marble .service-num,
+.bande--silk .service-delai, .bande--marble .service-delai { color: var(--text-soft); }
+
+/* ===================================================================
+   FUSIONNE DEPUIS visuel.css
+   =================================================================== */
+
+/* == ADEXWEB — LE STYLE DES DEUX PAGES VISUELLES ==
+      realisations.html · automatisation.html
+
+      CE FICHIER N'EST PAS SERVI. Il est le brouillon d'une fusion dans
+      `css/app.css`, qui reste la seule source. Les deux pages livrees ne
+      le chargent pas : le lien de travail a ete retire avant la remise.
+      Ordre de fusion : a la SUITE d'`app.css`, jamais avant.
+
+      DEUX DEPENDANCES EXTERIEURES, chargees telles quelles par les pages
+      et JAMAIS modifiees : `css/secteurs.css` (les treize maquettes) et
+      `css/tour360.css` (la visite 360). Les deux sont ecrites contre les
+      jetons de l'ANCIENNE identite, qui n'existent plus. La section 0
+      leur en rend la valeur nouvelle, sur les seuls elements concernes.
+
+      DOUBLON ASSUME avec `refonte-adexweb/css-a-fusionner/pages.css` :
+      la section 1 y est identique (`.titre-page`, `.bande--entete`, la
+      remise a zero du filet). A LA FUSION, N'EN GARDER QU'UNE.
+
+      SOMMAIRE
+        0 · Le pont de jetons vers les deux feuilles heritees
+        1 · L'en-tete de page              (doublon de pages.css § 1)
+        2 · L'aveu de demonstration
+        3 · Avant / apres — le cadre, la vitre, la poignee
+        4 · Les treize apercus de secteur
+        5 · Les neuf sites de demonstration
+        6 · La visite 360 — les complements
+        7 · Le calculateur
+        8 · Le comparatif a la main / automatise
+        9 · Les deux guides
+       10 · LES RECONSTITUTIONS « AVANT » — HORS SYSTEME D'IDENTITE
+   ================================================================== */
+
+
+/* ===================================================================
+   0 · LE PONT DE JETONS
+   `css/secteurs.css` et `css/tour360.css` ne sont pas a nous a
+   reecrire : ils nomment des jetons de l'ancienne identite. Plutot que
+   de les toucher, on leur redonne une valeur — la NOUVELLE — sur les
+   trois racines qui les portent. Les proprietes personnalisees
+   heritent : tout descendant est couvert.
+
+   TROIS NOMS NE SONT PAS PONTES, ET C'EST VOULU : `--t-1` a `--t-4`
+   sont des DUREES dans l'ancien systeme et des TAILLES DE TEXTE dans
+   le nouveau. Les ponter casserait la typographie de tout ce qui vit
+   dans ces trois racines. Non pontes, les `transition` qui les citent
+   deviennent invalides et tombent — on perd un fondu, jamais une
+   information.
+   =================================================================== */
+
+.ba-scene,
+.sector-preview,
+.tour {
+  --surface-0: var(--pearl);
+  --surface-1: var(--marble);
+  --surface-2: var(--silk);
+  --surface-inverse: var(--navy-dark);
+
+  --ink: var(--text);
+  --ink-muted: var(--text-soft);
+  --ink-inverse: var(--pearl);
+
+  /* Le champagne reste DECOR. Partout ou l'ancien `--accent-text`
+     portait des lettres, il vaut donc `--navy` : 13,37:1. */
+  --accent: var(--champagne);
+  --accent-text: var(--navy);
+  --accent-ink: var(--navy-dark);
+  --accent-wash: var(--champagne-light);
+  --accent-on-inverse: var(--champagne-light);
+
+  --rule: var(--line);
+  --rule-strong: var(--line-strong);
+  --rule-w: var(--filet);
+
+  --font-text: var(--font-texte);
+  --font-data: var(--font-texte);
+  --font-display: var(--font-titre);
+
+  --fs-4: var(--t-1);
+  --fs-5: var(--t-0);
+  --fs-6: var(--t-00);
+  --fs-7: var(--t-00);
+  --fs-8: var(--t-00);
+  --measure: var(--colonne-texte);
+  --tracking-label: var(--ls-etiquette);
+
+  --s-1: 0.25rem;
+  --s-2: var(--e-1);
+  --s-3: 0.75rem;
+  --s-4: var(--e-2);
+  --s-5: var(--e-3);
+  --s-6: var(--e-4);
+  --s-7: var(--e-6);
+
+  --e-snap: var(--m-courbe);
+  --e-brake: var(--e-sortie);
+  --e-drive: var(--m-courbe);
+}
+
+
+/* ===================================================================
+   1 · L'EN-TETE DE PAGE — DOUBLON de `pages.css` § 1
+   Un seul h1 par page, et il ne monte JAMAIS a --t-5 : ce cran-la est
+   celui de l'accueil.
+   =================================================================== */
+
+.titre-page {
+  font-size: var(--t-4);
+  line-height: var(--lh-4);
+  letter-spacing: var(--ls-4);
+  font-weight: 460;
+  max-width: 18ch;
+}
+.bande--entete { padding-block: var(--e-8) var(--bande); }
+@media (min-width: 62em) { .bande--entete { padding-block: var(--e-9) var(--bande-large); } }
+
+.bande--silk + .bande:not([class*="--"]),
+.bande--marble + .bande:not([class*="--"]),
+.bande--navy + .bande:not([class*="--"]) { border-top: 0; }
+
+
+/* ===================================================================
+   2 · L'AVEU DE DEMONSTRATION
+   Il est dit UNE fois, en haut de la page, AU-DESSUS de tout ce qu'il
+   couvre — les quatre comparateurs, les treize apercus, la visite. En
+   CORPS (19 px), jamais en mention de 15 sous une image : une reserve
+   ecrite plus petit que ce qu'elle corrige est un petit caractere.
+   Les blocs suivants portent une etiquette neutre, pas une seconde
+   confession : une reserve dite trois fois se lit « on n'a jamais rien
+   livre ».
+   =================================================================== */
+
+.aveu {
+  margin-top: var(--e-5);
+  padding: var(--e-3) var(--e-4);
+  border-left: 3px solid var(--champagne);
+  background: var(--silk);
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+  max-width: 62ch;
+}
+.aveu b { font-weight: 600; color: var(--text); }
+.bande--silk .aveu, .bande--marble .aveu { background: var(--pearl); }
+
+/* L'etiquette neutre, en tete de chaque bloc concerne. */
+.etiquette-demo {
+  display: inline-flex; align-items: center;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: var(--e-4);
+  font-size: 0.8125rem; font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+  background: var(--champagne-light);
+  border-radius: var(--rayon);
+}
+
+
+/* ===================================================================
+   3 · AVANT / APRES — quatre demonstrations
+   L'unite interne du cadre est le `cqw` : la maquette « avant » est
+   dessinee a l'echelle de la fenetre, pas de la page. Sans
+   `container-type`, aucun `cqw` ne veut rien dire.
+   La poignee est un `input[type=range]` NATIF : la valeur, le clavier,
+   l'annonce vocale et l'anneau de mise au point viennent du navigateur.
+   Le script ne fait que reporter sa valeur dans `--ba-p`.
+   =================================================================== */
+
+.ba-grille { display: grid; gap: var(--e-8); }
+@media (min-width: 62em) {
+  .ba-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-9) var(--e-7); }
+}
+
+.ba { display: grid; gap: var(--e-3); align-content: start; }
+
+/* Le cadre porte la requete de conteneur : la barre du haut se met a
+   l'echelle de l'ecran, comme la page dedans. */
+.ba-cadre {
+  position: relative;
+  container-type: inline-size;
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon-large);
+  overflow: hidden;
+  background: var(--pearl);
+  box-shadow: var(--ombre-pose);
+}
+
+.ba-chrome {
+  display: flex; align-items: center; gap: 0.5em;
+  min-width: 0;
+  padding: 0.7em 0.9em;
+  background: var(--pearl);
+  border-bottom: var(--filet) solid var(--line);
+  font-size: clamp(9px, 2.1cqw, 13px);
+  color: var(--text-soft);
+}
+/* Les deux etiquettes sont permanentes : sans elles, on ne sait pas de
+   quel cote est quoi avant d'avoir bouge la poignee. */
+.ba-etq {
+  flex: 0 0 auto;
+  padding: 0.25em 0.7em;
+  font-size: 1em; font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  border-radius: var(--rayon);
+  pointer-events: none;
+}
+.ba-etq--a { background: var(--marble); color: var(--text); }
+.ba-etq--b { margin-left: auto; background: var(--navy); color: var(--pearl); }
+
+.ba-scene {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  background: var(--marble);
+  isolation: isolate;
+  /* La position de repos est 50 : les deux moities se voient d'emblee. */
+  --ba-p: 50;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  user-select: none; -webkit-user-select: none;
+}
+
+/* La vitre et la piste sont le crochet du defilement interne, pose par
+   le script du site. Au repos la piste fait la hauteur de la vitre :
+   rien ne defile, le cadre montre le haut des deux pages. */
+.ba-vitre { position: absolute; inset: 0; overflow: hidden; }
+.ba-piste { width: 100%; height: var(--ba-piste, 100%); }
+
+.ba-pile { position: absolute; inset: 0; display: grid; overflow: hidden; pointer-events: none; }
+.ba-vue { grid-area: 1 / 1; min-width: 0; overflow: hidden; background: #ffffff; }
+/* Le fond des deux vues est blanc EN DUR : c'est une image de site, pas
+   une surface d'ADEXWEB. Voir la section 10. */
+.ba-page { position: relative; background: #ffffff; color: #000000; transform: translateY(calc(var(--ba-y, 0) * -1cqw)); }
+.ba-page--shot { background: none; }
+.ba-shot { display: block; width: 100%; height: auto; -webkit-user-drag: none; }
+
+/* L'apres est la couche du dessous, entiere ; l'avant est rogne par la
+   poignee. Un `clip-path` ne redessine rien : il coupe. */
+.ba-vue--avant { z-index: 2; clip-path: inset(0 calc((100 - var(--ba-p)) * 1%) 0 0); }
+
+/* Les scenes epinglees de deux des quatre « apres ». */
+.ba-bande {
+  position: absolute; left: 0; right: 0;
+  top: calc(var(--ba-b-y) * 1cqw);
+  height: calc(var(--ba-b-h) * 1cqw);
+  overflow: hidden;
+}
+.ba-bande img { display: block; width: 100%; height: auto; }
+.ba-bande--continue .ba-bande-fond { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ba-bande--continue .ba-bande-piste {
+  position: absolute;
+  left: calc(var(--ba-p-x) * 1cqw);
+  top: calc(var(--ba-p-y) * 1cqw);
+  width: calc(var(--ba-p-l) * 1cqw);
+  height: auto; max-width: none;
+  transform: translateX(calc(var(--ba-piste, 0) * -1cqw));
+}
+
+/* L'arete. Un filet de 2 px en navy, et sa prise carree au milieu. */
+.ba-trait {
+  position: absolute; top: 0; bottom: 0;
+  left: calc(var(--ba-p) * 1%);
+  z-index: 3;
+  width: 2px;
+  background: var(--navy);
+  pointer-events: none;
+}
+.ba-trait::before {
+  content: "‹ ›";
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid; place-items: center;
+  width: 2.75rem; height: 2.75rem;
+  background: var(--navy); color: var(--pearl);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-levee);
+  font-size: var(--t-00); font-weight: 700; letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Le champ ne prend pas le pointeur : le glissement se pilote sur la
+   scene entiere, ce qui donne une prise de 528 px au lieu de 44. Le
+   clavier, lui, passe toujours par le champ. */
+.ba-poignee {
+  position: absolute; inset: 0; z-index: 4;
+  width: 100%; height: 100%;
+  margin: 0; padding: 0;
+  background: transparent; border: 0;
+  -webkit-appearance: none; appearance: none;
+  cursor: ew-resize;
+  pointer-events: none;
+  touch-action: pan-y;
+}
+.ba-poignee::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.ba-poignee::-webkit-slider-thumb { -webkit-appearance: none; width: 2.75rem; height: 100%; background: transparent; }
+.ba-poignee::-moz-range-track { height: 100%; background: transparent; }
+.ba-poignee::-moz-range-thumb { width: 2.75rem; height: 100%; background: transparent; border: 0; }
+.ba-poignee:focus-visible { outline: var(--focus-w) solid var(--navy); outline-offset: -3px; border-radius: 0; }
+
+/* Sans script, la poignee ne ferait rien : on la retire, et la mention
+   de repli prend la parole. */
+html:not(.js) .ba-poignee,
+html:not(.js) .ba-trait { display: none; }
+/* Le repli porte `hidden` dans le document : il ne parait QUE si le
+   script n'a pas tourne. Une regle d'auteur bat la feuille du
+   navigateur, donc `display` reprend la main sur `[hidden]`. */
+.ba-sans { display: none; color: var(--text-soft); max-width: 62ch; }
+html:not(.js) .ba-sans { display: block; }
+/* Sans script, `--ba-p` reste a 50 : le cadre montre les deux moities
+   cote a cote, fixes. On perd le geste, jamais l'information — et c'est
+   exactement ce que le repli annonce.  */
+
+/* La legende : un titre court, une ligne, jamais un paragraphe. */
+.ba-tete {
+  display: grid; grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: var(--e-1) var(--e-2);
+  margin: 0;
+}
+.ba-tete .num {
+  font-style: normal;
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette);
+  color: var(--text-soft);
+}
+.ba-tete b {
+  font-family: var(--font-titre);
+  font-weight: 440; font-size: var(--t-1);
+  line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+}
+.ba-tete span {
+  grid-column: 2;
+  font-size: var(--t-00);
+  color: var(--text-soft);
+}
+
+
+/* ===================================================================
+   4 · LES TREIZE APERCUS DE SECTEUR
+   La scene porte EXACTEMENT le rapport de la prise de vue, 1440 x 900 :
+   aucun rognage, aucune bande, la meme echelle aux treize. Les
+   maquettes elles-memes sont habillees par `css/secteurs.css`.
+   =================================================================== */
+
+.secteurs-grille { display: grid; gap: var(--e-6); align-items: start; }
+@media (min-width: 62em) {
+  .secteurs-grille { grid-template-columns: 1fr 1.15fr; gap: var(--e-7); }
+}
+
+.secteur-groupe { display: grid; gap: var(--e-2); }
+.secteur-groupe + .secteur-groupe {
+  margin-top: var(--e-4);
+  padding-top: var(--e-4);
+  border-top: var(--filet) solid var(--line);
+}
+.secteur-groupe h3 {
+  font-family: var(--font-texte);
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.pastilles { display: flex; flex-wrap: wrap; gap: var(--e-1); }
+.pastilles button {
+  display: inline-flex; align-items: center;
+  min-height: var(--cible-min);
+  padding: 0 var(--e-2);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  text-align: left;
+  transition: background-color var(--t-etat), border-color var(--t-etat), color var(--t-etat);
+}
+.pastilles button:hover,
+.pastilles button.is-on {
+  border-color: var(--navy);
+  background: var(--champagne-light);
+}
+
+/* La figure : le cartouche, la scene, la legende. La legende est un
+   ETAGE de la plaque, pas un bandeau pose dessus. */
+.sector-preview {
+  position: relative;
+  margin: 0;
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon-large);
+  overflow: hidden;
+  background: var(--silk);
+  box-shadow: var(--ombre-pose);
+  display: flex; flex-direction: column;
+}
+.sector-preview > .sec-chrome { flex: none; }
+.sector-preview figcaption {
+  flex: none;
+  padding: var(--e-2) var(--e-3);
+  background: var(--navy-dark);
+  color: var(--pearl);
+  font-size: var(--t-00);
+  line-height: 1.5;
+}
+
+.mock-stage { position: relative; flex: none; aspect-ratio: 1440 / 900; overflow: hidden; }
+.mock-stage .mock {
+  position: absolute; inset: 0;
+  display: grid; grid-template-rows: auto 1fr;
+  /* `content-visibility: hidden` et non `visibility` : le contenu cache
+     ne coute alors ni style ni mise en page. */
+  content-visibility: hidden;
+  opacity: 0;
+}
+.mock-stage .mock.is-on { content-visibility: visible; opacity: 1; }
+
+/* La scene n'est vide que dans un seul cas : le script n'a pas clone le
+   gabarit. Elle garde alors sa place et dit pourquoi, plutot que de
+   laisser un trou gris. Avec le script, elle est remplie avant la
+   premiere peinture et ce message ne parait jamais. */
+.mock-stage:empty::after {
+  content: "Les aperçus de métier demandent JavaScript. Les treize sites existent quand même : voir les neuf démonstrations complètes plus bas.";
+  padding: var(--e-4);
+  text-align: center;
+  max-width: 46ch;
+  margin-inline: auto;
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-size: var(--t-00); color: var(--text-soft);
+}
+
+
+/* ===================================================================
+   5 · LES NEUF SITES DE DEMONSTRATION
+   Une liste filetee, pas des pastilles : ce sont des DESTINATIONS, et
+   une destination ne se confond pas avec un filtre.
+   =================================================================== */
+
+.demos { display: grid; border-top: var(--filet) solid var(--line); }
+.demos li { border-bottom: var(--filet) solid var(--line); }
+.demos a {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: baseline; gap: var(--e-2) var(--e-3);
+  min-height: var(--cible);
+  padding-block: var(--e-2);
+  text-decoration: none;
+  transition: padding-left var(--t-etat), color var(--t-etat);
+}
+.demos a:hover, .demos a:focus-visible { padding-left: var(--e-1); color: var(--navy); }
+.demos-nom { font-size: var(--t-0); font-weight: 600; color: var(--navy-dark); }
+.demos-dit { grid-column: 1; font-size: var(--t-00); color: var(--text-soft); }
+.demos-voir {
+  display: inline-flex; align-items: center; gap: var(--e-1);
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--navy-dark);
+}
+.demos-voir svg { width: 1rem; height: 1rem; transition: transform var(--t-etat); }
+.demos a:hover .demos-voir svg { transform: translateX(3px); }
+@media (min-width: 48em) { .demos-dit { grid-column: 1; } }
+
+
+/* ===================================================================
+   6 · LA VISITE 360 — les complements
+   Tout le reste vient de `css/tour360.css`, charge tel quel. Ne sont
+   ecrites ici que les deux formes qui appartiennent a la page.
+   =================================================================== */
+
+.tour { max-width: 62rem; }
+.tour-cadre {
+  border-radius: var(--rayon-large);
+  overflow: hidden;
+  box-shadow: var(--ombre-pose);
+}
+.tour-source { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+
+
+/* ===================================================================
+   7 · LE CALCULATEUR
+   Le chiffre affiche est un montant d'ECONOMIES ESTIMEES, jamais un
+   prix. La methode qui le produit reste sur la page, sous son propre
+   titre : un chiffre sans sa methode ne se defend pas au telephone.
+   =================================================================== */
+
+.roi-grille { display: grid; gap: var(--e-6); align-items: start; }
+@media (min-width: 62em) { .roi-grille { grid-template-columns: 1fr 0.85fr; gap: var(--e-7); } }
+
+.roi-inputs { display: grid; gap: var(--e-2); align-content: start; }
+
+.roi-presets { display: flex; flex-wrap: wrap; gap: var(--e-1); }
+.roi-presets button {
+  display: inline-flex; align-items: center;
+  min-height: var(--cible-min);
+  padding: 0 var(--e-2);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  transition: background-color var(--t-etat), border-color var(--t-etat), color var(--t-etat);
+}
+.roi-presets button:hover { border-color: var(--navy-light); background: var(--pearl); }
+.roi-presets button[aria-pressed="true"] {
+  background: var(--navy); border-color: var(--navy); color: var(--pearl);
+}
+
+.roi-sub {
+  margin-top: var(--e-3);
+  padding-top: var(--e-3);
+  border-top: var(--filet) solid var(--line);
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.roi-field { display: grid; gap: var(--e-1); }
+.roi-field .roi-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-2); }
+.roi-field label { font-size: var(--t-00); color: var(--text-soft); cursor: pointer; }
+/* `nowrap` : sous 400 px, « 42 $ » cassait entre le chiffre et le dollar. */
+.roi-field output { font-size: var(--t-0); font-weight: 700; color: var(--text); white-space: nowrap; }
+
+/* Un `input[type=range]` habille : piste de 6 px, poignee de 28 px —
+   la cible reelle reste celle du navigateur, jamais reduite. */
+.roi-field input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 2.75rem;
+  background: transparent;
+  cursor: pointer;
+}
+.roi-field input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; background: var(--marble); border-radius: var(--rayon);
+}
+.roi-field input[type="range"]::-moz-range-track {
+  height: 6px; background: var(--marble); border-radius: var(--rayon);
+}
+.roi-field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1.75rem; height: 1.75rem; margin-top: -0.6875rem;
+  background: var(--navy); border: 2px solid var(--pearl);
+  border-radius: 50%;
+  box-shadow: var(--ombre-pose);
+}
+.roi-field input[type="range"]::-moz-range-thumb {
+  width: 1.75rem; height: 1.75rem;
+  background: var(--navy); border: 2px solid var(--pearl);
+  border-radius: 50%;
+}
+
+/* Les deux panneaux replies. Le marqueur ne tourne pas : un plus
+   devient un moins, comme partout ailleurs sur le site. */
+.roi-details { border-top: var(--filet) solid var(--line); margin-top: var(--e-2); }
+.roi-details > summary {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--e-2);
+  min-height: var(--cible-min);
+  padding-block: var(--e-2);
+  cursor: pointer; list-style: none;
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.roi-details > summary::-webkit-details-marker { display: none; }
+.roi-details > summary:hover { color: var(--navy-dark); }
+.roi-details > summary svg { width: 1.25rem; height: 1.25rem; flex: 0 0 auto; color: var(--navy); }
+.roi-details:not([open]) .icone-moins { display: none; }
+.roi-details[open] .icone-plus { display: none; }
+.roi-details > *:not(summary) { margin-top: var(--e-2); }
+.roi-details[open] { padding-bottom: var(--e-3); }
+.roi-methode { margin-top: var(--e-4); }
+.roi-note { font-size: var(--t-00); line-height: 1.6; color: var(--text-soft); max-width: 62ch; }
+.roi-note b { color: var(--text); font-weight: 600; }
+
+/* Le panneau de resultat. */
+.roi-panel {
+  align-self: start;
+  display: grid; gap: var(--e-3);
+  padding: var(--e-4);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line);
+  border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-pose);
+}
+.roi-verdict { display: grid; gap: var(--filet); background: var(--line); border-radius: var(--rayon); overflow: hidden; }
+.roi-vcell { display: grid; gap: 0.25rem; padding: var(--e-3); background: var(--silk); }
+.roi-vcell .label { font-size: var(--t-00); color: var(--text-soft); }
+.roi-vcell b {
+  font-family: var(--font-titre);
+  font-size: var(--t-3); line-height: 1;
+  letter-spacing: var(--ls-3);
+  color: var(--navy-dark);
+  font-variant-numeric: tabular-nums;
+}
+/* Une seule des deux cellules est retournee : le montant annuel, parce
+   que c'est le seul chiffre sur lequel le visiteur peut agir. */
+.roi-vcell--accent { background: var(--navy-dark); }
+.roi-vcell--accent .label { color: var(--champagne-light); }
+.roi-vcell--accent b { color: var(--pearl); }
+
+.roi-etat { display: grid; gap: var(--e-1); }
+.roi-etat .roi-block {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+}
+.roi-etat .num {
+  justify-self: end;
+  font-family: var(--font-titre);
+  font-size: var(--t-2); line-height: 1;
+  letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+  font-variant-numeric: tabular-nums;
+}
+/* La piste est une PISTE : un creux constant ou la valeur se pose. Deux
+   barres nues de longueurs differentes ne diraient pas de quoi elles
+   sont la part. */
+.roi-piste { display: block; height: 10px; background: var(--marble); border-radius: var(--rayon); overflow: hidden; }
+.roi-piste s { display: block; height: 100%; width: 0; background: var(--navy-dark); text-decoration: none; }
+.roi-etat + .roi-etat { padding-top: var(--e-2); border-top: var(--filet) solid var(--line); }
+.roi-etat + .roi-etat .roi-piste s { background: var(--champagne-dark); }
+
+.roi-actes {
+  display: grid; gap: var(--e-1);
+  padding-top: var(--e-3);
+  border-top: 2px solid var(--line-strong);
+}
+.roi-sur { margin-top: var(--e-1); font-size: var(--t-00); color: var(--text-soft); }
+
+
+/* ===================================================================
+   8 · LE COMPARATIF A LA MAIN / AUTOMATISE
+   Une seule barre par tache, en deux matieres, depuis la MEME origine :
+   deux barres cote a cote ne se comparent pas, elles s'additionnent
+   dans l'oeil.
+   =================================================================== */
+
+/* Trois enfants, deux colonnes : sans placement explicite, l'intitule du
+   detail part seul a droite et le tableau retombe SOUS le resume. Le
+   resume tient la colonne de gauche sur les deux rangees. */
+.ecart-deux { display: grid; gap: var(--e-6); align-items: start; }
+@media (min-width: 62em) {
+  .ecart-deux {
+    grid-template-columns: 0.9fr 1.1fr;
+    grid-template-rows: auto 1fr;
+    gap: var(--e-2) var(--e-7);
+  }
+  .ecart-deux > .ecart { grid-column: 1; grid-row: 1 / span 2; }
+  .ecart-deux > .ecart-sous { grid-column: 2; grid-row: 1; }
+  .ecart-deux > .vs { grid-column: 2; grid-row: 2; }
+}
+
+.ecart {
+  padding: var(--e-4);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line);
+  border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-pose);
+}
+.ecart > .label { display: block; margin-bottom: var(--e-3); max-width: 46ch; color: var(--text); font-size: var(--t-00); }
+
+.ecart-grand { display: grid; gap: var(--e-2); }
+.ecart-piste { position: relative; height: 36px; border-radius: var(--rayon); overflow: hidden; }
+.ecart-piste i { position: absolute; top: 0; bottom: 0; left: 0; display: block; }
+
+.ecart-bornes { position: relative; display: block; margin: 0; min-height: 3.5rem; }
+.ecart-borne { position: absolute; top: 0; display: grid; gap: 2px; font-size: var(--t-00); color: var(--text-soft); }
+.ecart-borne b {
+  font-family: var(--font-titre);
+  font-size: var(--t-2); line-height: 1;
+  letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+  font-variant-numeric: tabular-nums;
+}
+.ecart-borne--reste { left: 0; }
+.ecart-borne--part { right: 0; text-align: right; }
+
+.ecart-gain {
+  margin-top: var(--e-3);
+  padding-top: var(--e-2);
+  border-top: var(--filet) solid var(--line-strong);
+  text-align: right;
+  font-size: var(--t-00); color: var(--text-soft);
+}
+.ecart-gain b {
+  font-family: var(--font-titre);
+  font-size: var(--t-4); line-height: var(--lh-4);
+  letter-spacing: var(--ls-4);
+  color: var(--navy-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.ecart-acte {
+  margin-top: var(--e-3);
+  padding-top: var(--e-3);
+  border-top: var(--filet) solid var(--line);
+  display: grid; gap: var(--e-2); justify-items: start;
+}
+.ecart-acte .btn { width: 100%; }
+.ecart-sur { font-size: var(--t-00); color: var(--text-soft); }
+
+.ecart-sous {
+  display: block;
+  margin-bottom: var(--e-2);
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.vs { display: grid; border-top: var(--filet) solid var(--line); }
+.vs-row {
+  display: grid;
+  gap: var(--e-1) var(--e-3);
+  padding-block: var(--e-2);
+  border-bottom: var(--filet) solid var(--line);
+  align-items: center;
+}
+.vs-task { font-size: var(--t-00); font-weight: 600; color: var(--text); }
+.vs-track { position: relative; height: 20px; border-radius: var(--rayon); overflow: hidden; }
+.vs-track i { position: absolute; top: 0; bottom: 0; left: 0; display: block; }
+/* Ce qui part : une trame a 45 degres, donc jamais confondue avec un
+   aplat. Ce qui reste : un plein, pose PAR-DESSUS, meme origine. */
+.vs-tout {
+  width: var(--m, 0%);
+  background-image: repeating-linear-gradient(45deg, var(--line-strong) 0 2px, transparent 2px 6px);
+}
+.vs-reste { width: var(--a, 0%); background: var(--navy-dark); }
+.vs-gain { font-size: var(--t-00); color: var(--text-soft); justify-self: end; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.vs-gain b { font-family: var(--font-titre); font-size: var(--t-1); font-weight: 440; color: var(--navy-dark); letter-spacing: var(--ls-1); }
+
+@media (min-width: 48em) {
+  .vs-row { grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) auto; }
+  .vs-task { grid-row: 1; }
+}
+
+
+/* ===================================================================
+   9 · LES DEUX GUIDES
+   Aucun lien direct vers les PDF : ils partent par courriel contre des
+   coordonnees. Un lien qui telecharge et un bouton qui demande une
+   adresse ne se ressemblent pas — c'est un BOUTON.
+   =================================================================== */
+
+/* `minmax(0, …)` sur les deux colonnes : sans lui, le titre le plus long
+   d'une couverture impose sa largeur minimale et ecrase la colonne de
+   texte a deux mots par ligne. */
+.guides { display: grid; gap: var(--e-6); align-items: center; }
+@media (min-width: 62em) {
+  .guides { grid-template-columns: minmax(0, 30rem) minmax(0, 1fr); gap: var(--e-9); }
+}
+
+/* LES DEUX COUVERTURES SONT DESSINEES ICI, PAS SERVIES EN IMAGE, ET
+   C'EST UNE OBLIGATION. `images/doc-automatisation.webp` et
+   `images/doc-ia.webp` portent le mot APED en pleine masse et l'accent
+   minium : la couverture est l'ancienne identite, et la faire revenir
+   est une regression, meme reduite a huit pixels. Les deux fichiers
+   reprendront leur place le jour ou les PDF seront recomposes. */
+.guides-couvertures { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--e-3); max-width: 30rem; }
+.guide-couv {
+  aspect-ratio: 600 / 776;
+  display: grid; grid-template-rows: auto 1fr auto auto;
+  gap: var(--e-2);
+  padding: var(--e-3);
+  background: var(--navy-dark);
+  color: var(--pearl);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-levee);
+}
+.guide-couv .guide-marque {
+  font-size: 0.8125rem; font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--champagne-light);
+}
+.guide-couv .guide-titre {
+  align-self: end;
+  font-family: var(--font-titre);
+  font-weight: 440;
+  font-size: var(--t-0); line-height: 1.25; letter-spacing: var(--ls-1);
+  color: var(--pearl);
+}
+.guide-couv .guide-dit { font-size: var(--t-00); line-height: 1.5; color: var(--champagne-light); }
+.guide-couv .guide-pages {
+  padding-top: var(--e-2);
+  border-top: 2px solid var(--champagne);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--champagne-light);
+}
+/* `.mention` d'`app.css` est en `--text-muted` : 3,83:1 sur marble, donc
+   INTERDIT ici. La mention de cette bande porte sa propre classe plutot
+   que de redefinir une classe partagee.  D-803 */
+.guides-mention { margin-top: var(--e-3); font-size: var(--t-00); color: var(--text-soft); max-width: 52ch; }
+
+
+/* ===================================================================
+  10 · LES RECONSTITUTIONS « AVANT » — HORS SYSTEME D'IDENTITE
+  ====================================================================
+  CE QUI SUIT N'OBEIT A AUCUNE REGLE D'ADEXWEB, ET C'EST LE SUJET.
+
+  Ces quatre blocs — `.v11`, `.ann`, `.tou`, `.gab` — imitent de vieux
+  sites, un annuaire, une fiche d'office de tourisme et un gabarit
+  achete. Ils portent donc, VOLONTAIREMENT : des couleurs en
+  hexadecimal en dur, des degrades, des ombres portees, des coins
+  arrondis, Verdana et Arial Black, un texte defilant. Aucun jeton de
+  `css/tokens.css` n'y entre, et aucune de ces valeurs ne doit etre
+  « corrigee » vers la palette : ce serait effacer la demonstration.
+
+  Ils sont enfermes : chaque regle est prefixee par sa classe racine,
+  et cette racine ne parait que dans une `.ba-vue--avant`.
+  L'unite est le `cqw`, rapporte au `.ba-scene` qui les contient.
+
+  Repris tels quels du commit `avant-adexweb`, `css/app.css` § 15
+  (lignes 3438 a 4890), sans une valeur changee.
+  =================================================================== */
+
+/* == L'AVANT · 01 — 2008-2012, RECONSTITUE SUR PIECES. ==  D-213 */
+/* LES INTERDITS DU SITE NE S'APPLIQUENT PAS ICI, ET C'EST LE SUJET.  D-518 */
+.v11 {
+  min-height: 118cqw;
+  background: #ffffff;
+  color: #000000;
+  font-family: Verdana, Geneva, Arial, sans-serif;
+  font-size: 1.1cqw;
+  line-height: 1.5;
+}
+.v11-page { width: 90cqw; margin: 0 auto; border-collapse: collapse; table-layout: fixed; }
+.v11-banniere {
+  padding: 2.4cqw 2cqw;
+  background: #1b3d6d;
+  background-image: linear-gradient(#2a5a9e, #12294a);
+  color: #ffffff;
+  text-align: center;
+}
+.v11-nom { display: block; font-family: "Arial Black", Arial, sans-serif; font-size: 3.4cqw; letter-spacing: 0.02em; text-shadow: 1px 1px 0 #000; }
+.v11-slogan { display: block; margin-top: 0.6cqw; font-style: italic; font-size: 1.4cqw; color: #ffd67a; }
+.v11-onglets { padding: 0; background: #d8d8d8; background-image: linear-gradient(#f2f2f2, #c9c9c9); border-top: 1px solid #fff; border-bottom: 1px solid #8a8a8a; }
+.v11-onglet { display: inline-block; padding: 0.9cqw 1.8cqw; border-right: 1px solid #b0b0b0; font-size: 1.2cqw; color: #14417a; text-decoration: underline; }
+.v11-on { background: #ffffff; font-weight: bold; }
+.v11-cote { width: 22cqw; padding: 1.6cqw; background: #eef1f6; border-right: 1px solid #b8c2d0; vertical-align: top; }
+.v11-menu-t { margin: 0 0 1cqw; font-family: "Arial Black", Arial, sans-serif; font-size: 1.4cqw; color: #1b3d6d; }
+.v11-lien { margin: 0 0 0.7cqw; font-size: 1.1cqw; color: #14417a; text-decoration: underline; }
+.v11-compteur { margin: 2cqw 0 1.2cqw; padding: 0.8cqw; background: #000; color: #0f0; font-family: "Courier New", monospace; text-align: center; }
+.v11-compteur b { display: block; font-size: 0.9cqw; color: #fff; font-weight: normal; }
+.v11-compteur i { font-style: normal; font-size: 1.6cqw; letter-spacing: 0.24em; }
+.v11-badges { display: flex; gap: 0.6cqw; }
+.v11-badges i { flex: 1 1 auto; padding: 0.5cqw; border: 1px solid #7a7a7a; background: #dfe6ee; font-style: normal; font-size: 0.8cqw; text-align: center; line-height: 1.2; }
+.v11-mini { margin: 1.2cqw 0 0; font-size: 0.85cqw; color: #555; line-height: 1.35; }
+.v11-corps { padding: 1.8cqw 2cqw; vertical-align: top; background: #ffffff; }
+/* LE TEXTE DEFILANT. `<marquee>` est obsolete, mais l'effet EST le  D-041 */
+.v11-defile { overflow: hidden; margin: 0 0 1.4cqw; padding: 0.5cqw 0; background: #fff2c2; border: 1px solid #e0c96a; white-space: nowrap; }
+.v11-defile span { display: inline-block; padding-left: 100%; font-weight: bold; font-size: 1.1cqw; color: #a83b00; }
+@keyframes v11-defile { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+/* LE TEXTE DEFILANT N EST PAS CONDITIONNE A LA VISIBILITE.  D-543 */
+/* C est la SEULE animation permanente du site, et `palier-check`
+   s appuie dessus pour prouver que le palier 1 la fait tomber. La
+   conditionner a `data-vif` rendait la sonde muette : elle lisait
+   `none` de loin et appelait ca un echec. Une transformation sur un
+   seul span, que le navigateur bride deja hors ecran. */
+.v11-defile span { animation: v11-defile 16s linear infinite; }
+.v11-h1 { margin: 0 0 1.4cqw; font-family: "Arial Black", Arial, sans-serif; font-size: 2.4cqw; color: #1b3d6d; }
+/* LES BLOCS PHOTO DES RECONSTITUTIONS SONT DE VRAIES PHOTOS.  D-634 */
+.v11-photo {
+  height: 16cqw;
+  margin-bottom: 1.4cqw;
+  background: #9aa7b4 url("../images/realisations/avant-garage.webp") center / cover no-repeat;
+  border: 3px double #7a8794;
+}
+.v11-p { margin: 0 0 1.4cqw; text-align: justify; font-size: 1.1cqw; }
+.v11-p--centre { text-align: center; }
+.v11-p--casse { color: #333; }
+.v11-promo { margin: 0 0 1cqw; padding: 1cqw; border: 2px dashed #c00; background: #fff6f6; text-align: center; font-size: 1.1cqw; }
+.v11-promo b { color: #c00; }
+.v11-tel { margin: 1.4cqw 0 0; font-size: 1.3cqw; }
+.v11-pdf { margin: 0 0 1.4cqw; }
+.v11-flash { height: 10cqw; margin-bottom: 1.4cqw; border: 1px solid #999; background: #f4f4f4; display: grid; place-items: center; color: #777; font-size: 1.1cqw; }
+.v11-pied { padding: 1.4cqw 2cqw; background: #eef1f6; border-top: 1px solid #b8c2d0; text-align: center; font-size: 0.95cqw; color: #444; line-height: 1.6; }
+.v11-a { color: #14417a; text-decoration: underline; }
+
+/* == BA 02 · DESIGN INTERIEUR. L'AVANT reconstitue une page de resultats
+   d'annuaire specialise : filtres, 17 fiches, upsell, texte SEO, pied a
+   trois colonnes. Radius, ombres et degrades sont AUTORISES ICI SEULEMENT
+   — chaque regle est enfermee dans `.ba-vue--avant .ann`. Un seul orange,
+   reserve au bouton d'inscription de l'annuaire. Toute longueur est en
+   `cqw` (1cqw = 10 px de maquette), sauf les filets, qui restent a 1px. */
+
+/* ---------- LE SOCLE ---------- */
+.ba-vue--avant .ann {
+  display: block;
+  min-height: 118cqw;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #34383d;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.4cqw;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* ---------- L'EN-TETE DE L'ANNUAIRE ---------- */
+/* Le nom en haut a gauche n'est pas celui de l'entreprise : c'est
+   celui du proprietaire de la page. Tout part de la. */
+.ba-vue--avant .ann-tete {
+  display: flex;
+  align-items: center;
+  gap: 2.4cqw;
+  padding: 1.6cqw 3cqw;
+  background: #ffffff;
+  border-bottom: 1px solid #e4e7ea;
+  box-shadow: 0 0.2cqw 0.6cqw rgb(16 24 32 / 0.07);
+  position: relative;
+  z-index: 2;
+}
+.ba-vue--avant .ann-logo {
+  flex: 0 0 auto;
+  font-size: 2.1cqw;
+  font-weight: 400;
+  letter-spacing: -0.02cqw;
+  color: #656c72;
+  white-space: nowrap;
+}
+.ba-vue--avant .ann-logo b { font-weight: 700; color: #2b3035; }
+.ba-vue--avant .ann-rech {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid #d5dade;
+  border-radius: 0.5cqw;
+  background: #ffffff;
+  overflow: hidden;
+}
+.ba-vue--avant .ann-rech-txt {
+  flex: 1 1 auto;
+  padding: 0.95cqw 1.3cqw;
+  font-size: 1.35cqw;
+  color: #656c72;
+  background: #fbfcfc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ba-vue--avant .ann-rech-btn {
+  flex: 0 0 auto;
+  padding: 0.95cqw 1.8cqw;
+  font-size: 1.3cqw;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #4a5760;
+  background-image: linear-gradient(180deg, #56646e 0%, #414d56 100%);
+}
+.ba-vue--avant .ann-menu {
+  flex: 0 0 auto;
+  font-size: 1.3cqw;
+  color: #656c72;
+  white-space: nowrap;
+}
+
+/* ---------- LE TITRE — IL APPARTIENT A L'ANNUAIRE ---------- */
+.ba-vue--avant .ann-bandeau {
+  padding: 2.4cqw 3cqw 2.2cqw;
+  background-color: #f6f7f8;
+  background-image: linear-gradient(180deg, #fafbfb 0%, #f2f4f5 100%);
+  border-bottom: 1px solid #e4e7ea;
+}
+.ba-vue--avant .ann-fil { font-size: 1.2cqw; color: #656c72; }
+.ba-vue--avant .ann-fil b { font-weight: 400; color: #9aa2a8; }
+.ba-vue--avant .ann-h1 {
+  margin-top: 1cqw;
+  font-size: 3cqw;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #2b3035;
+}
+.ba-vue--avant .ann-sous { margin-top: 0.8cqw; font-size: 1.4cqw; color: #656c72; }
+
+/* ---------- LES TROIS FILTRES ---------- */
+.ba-vue--avant .ann-filtres {
+  display: flex;
+  gap: 1.4cqw;
+  padding: 1.8cqw 3cqw;
+  background: #ffffff;
+  border-bottom: 1px solid #eceef0;
+}
+.ba-vue--avant .ann-filtre {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  flex: 1 1 0;
+  padding: 1cqw 1.4cqw;
+  border: 1px solid #d9dee2;
+  border-radius: 0.5cqw;
+  background-color: #fbfcfc;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f3f5f6 100%);
+  font-size: 1.3cqw;
+  color: #52585e;
+  white-space: nowrap;
+}
+.ba-vue--avant .ann-filtre b { margin-left: auto; font-weight: 400; color: #8b9298; }
+
+/* ---------- LES FICHES — LA NOTRE EST LA QUATRIEME ---------- */
+.ba-vue--avant .ann-liste {
+  display: grid;
+  gap: 1.6cqw;
+  padding: 2.4cqw 3cqw;
+  background: #ffffff;
+}
+.ba-vue--avant .ann-item {
+  display: flex;
+  gap: 2cqw;
+  padding: 2cqw;
+  background: #ffffff;
+  border: 1px solid #e5e8eb;
+  border-radius: 0.7cqw;
+  box-shadow: 0 0.15cqw 0.5cqw rgb(16 24 32 / 0.06);
+}
+/* LA NOTRE. Une bordure un peu plus dense, rien de plus : dans un
+   annuaire, personne ne se distingue — c'est justement le probleme. */
+.ba-vue--avant .ann-item--moi {
+  border-color: #adb5bc;
+  box-shadow: 0 0.2cqw 0.7cqw rgb(16 24 32 / 0.13);
+}
+/* SIX INTERIEURS DIFFERENTS, UNE SEULE REQUETE.  D-634 */
+.ba-vue--avant .ann-vig {
+  flex: 0 0 14cqw;
+  height: 14cqw;
+  border-radius: 0.5cqw;
+  background-color: #dfe3e6;
+  background-image: url("../images/realisations/avant-design.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 600%;
+  background-position: 0 0%;
+  border: 1px solid #e2e6e9;
+}
+.ba-vue--avant .ann-item:nth-child(2) .ann-vig { background-position: 0 20%; }
+.ba-vue--avant .ann-item:nth-child(3) .ann-vig { background-position: 0 40%; }
+.ba-vue--avant .ann-item:nth-child(4) .ann-vig { background-position: 0 60%; }
+.ba-vue--avant .ann-item:nth-child(5) .ann-vig { background-position: 0 80%; }
+.ba-vue--avant .ann-item:nth-child(6) .ann-vig { background-position: 0 100%; }
+.ba-vue--avant .ann-corps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7cqw;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.ba-vue--avant .ann-ligne { display: flex; align-items: baseline; gap: 1cqw; }
+.ba-vue--avant .ann-nom { font-size: 1.9cqw; font-weight: 700; color: #2f3a42; }
+.ba-vue--avant .ann-badge {
+  padding: 0.25cqw 0.8cqw;
+  border-radius: 0.3cqw;
+  background: #eef0f2;
+  font-size: 1.05cqw;
+  letter-spacing: 0.07cqw;
+  text-transform: uppercase;
+  color: #656c72;
+}
+.ba-vue--avant .ann-cat { font-size: 1.3cqw; color: #656c72; }
+.ba-vue--avant .ann-tags { display: flex; flex-wrap: wrap; gap: 0.6cqw; }
+.ba-vue--avant .ann-tags span {
+  padding: 0.35cqw 0.9cqw;
+  border: 1px solid #e0e4e7;
+  border-radius: 1.4cqw;
+  background: #f6f7f8;
+  font-size: 1.15cqw;
+  color: #656c72;
+}
+.ba-vue--avant .ann-extrait {
+  font-size: 1.35cqw;
+  line-height: 1.55;
+  color: #52585e;
+}
+/* LE LIEN NE MENE PAS CHEZ ELLE : il mene a une autre page de
+   l'annuaire. C'est la seule sortie offerte par la fiche. */
+.ba-vue--avant .ann-plus {
+  margin-top: auto;
+  font-size: 1.3cqw;
+  font-weight: 700;
+  color: #3f4e58;
+}
+
+/* ---------- LA PAGINATION — IL EN RESTE DEUX PAGES ---------- */
+.ba-vue--avant .ann-pages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8cqw;
+  padding: 0 3cqw 2.6cqw;
+  background: #ffffff;
+}
+.ba-vue--avant .ann-pages b,
+.ba-vue--avant .ann-pages span {
+  padding: 0.85cqw 1.5cqw;
+  border: 1px solid #dfe3e6;
+  border-radius: 0.4cqw;
+  background: #ffffff;
+  font-size: 1.3cqw;
+  font-weight: 400;
+  color: #52585e;
+}
+.ba-vue--avant .ann-pages b {
+  background: #eceef0;
+  border-color: #c3cad0;
+  font-weight: 700;
+  color: #2b3035;
+}
+
+/* ---------- L'ENCART DE L'ANNUAIRE — LE SEUL ORANGE ---------- */
+.ba-vue--avant .ann-promo {
+  display: flex;
+  align-items: center;
+  gap: 2.4cqw;
+  margin: 0 3cqw 2.8cqw;
+  padding: 2.4cqw 2.6cqw;
+  border: 1px solid #e8e2d8;
+  border-radius: 0.8cqw;
+  background-color: #fbf7f2;
+  background-image: linear-gradient(180deg, #fefcf9 0%, #f7f1e8 100%);
+}
+.ba-vue--avant .ann-promo-txt { flex: 1 1 auto; min-width: 0; }
+.ba-vue--avant .ann-promo-t { font-size: 1.8cqw; font-weight: 700; color: #2b3035; }
+.ba-vue--avant .ann-promo-p { margin-top: 0.7cqw; font-size: 1.35cqw; color: #656c72; }
+.ba-vue--avant .ann-promo-btn {
+  flex: 0 0 auto;
+  padding: 1.2cqw 2.4cqw;
+  border-radius: 0.5cqw;
+  /* La couleur PLEINE reste #bb5600 : le degrade n'est qu'un vernis,
+     et le blanc dessus garde 4,7:1. */
+  background-color: #bb5600;
+  background-image: linear-gradient(180deg, #c25c00 0%, #a94b00 100%);
+  box-shadow: 0 0.2cqw 0.5cqw rgb(140 60 0 / 0.28);
+  font-size: 1.5cqw;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* ---------- LE TEXTE DE REFERENCEMENT DE L'ANNUAIRE ---------- */
+/* Quarante pour cent de la page repond a des questions generales sur le
+   metier — et conseille d'aller voir des realisations que la fiche, elle,
+   ne montre nulle part. */
+.ba-vue--avant .ann-texte {
+  padding: 0.6cqw 3cqw 3.4cqw;
+  background: #ffffff;
+  border-top: 1px solid #eceef0;
+}
+.ba-vue--avant .ann-h2 {
+  margin-top: 2.8cqw;
+  font-size: 2.1cqw;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #2b3035;
+}
+.ba-vue--avant .ann-p {
+  margin-top: 1.1cqw;
+  font-size: 1.4cqw;
+  line-height: 1.65;
+  color: #52585e;
+}
+.ba-vue--avant .ann-puces {
+  margin: 1.2cqw 0 0;
+  padding-left: 2.4cqw;
+  list-style: disc outside;
+}
+.ba-vue--avant .ann-puces li {
+  margin-bottom: 0.7cqw;
+  font-size: 1.4cqw;
+  line-height: 1.6;
+  color: #52585e;
+}
+
+/* ---------- LE PIED, TROIS COLONNES ---------- */
+.ba-vue--avant .ann-pied {
+  padding: 3.2cqw 3cqw 2.2cqw;
+  background: #3a4046;
+  color: #dfe3e6;
+}
+.ba-vue--avant .ann-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3cqw;
+}
+.ba-vue--avant .ann-col b {
+  display: block;
+  margin-bottom: 1.1cqw;
+  font-size: 1.45cqw;
+  font-weight: 700;
+  color: #ffffff;
+}
+.ba-vue--avant .ann-col span {
+  display: block;
+  margin-bottom: 0.75cqw;
+  font-size: 1.3cqw;
+  color: #a8b0b6;
+}
+.ba-vue--avant .ann-bas {
+  margin-top: 2.6cqw;
+  padding-top: 1.7cqw;
+  border-top: 1px solid rgb(255 255 255 / 0.16);
+  font-size: 1.2cqw;
+  color: #a8b0b6;
+}
+
+/* BA 04 — ENTREPRENEUR : le gabarit acheté de 2019 (.gab), et l’outil d’estimation (.ap-es-).
+   1cqw = 10 px de maquette. Seul .gab a droit aux arrondis, aux ombres et aux dégradés — ils y sont enfermés. */
+
+/* ============================================================
+   L’AVANT — un gabarit acheté, propre, récent, et muet sur le
+   seul chiffre qui intéresse le visiteur. Toutes les règles
+   portent `.gab` deux fois : la vue AVANT remet `all: revert`
+   sur `:where(*)` — même poids que `.gab` seul, donc l’ordre
+   de source déciderait, et il n’est pas garanti.
+
+   Toutes les longueurs sont en `cqw` (1cqw = 10 px de maquette),
+   sauf les filets, qui restent en `1px` littéral. Seule exception :
+   `letter-spacing`, laissé en `em` — il se mesure sur une
+   `font-size` déjà écrite en `cqw`, donc il suit la maquette au
+   même facteur. L’écrire en `cqw` le décrocherait de sa lettre.
+   ============================================================ */
+
+.gab.gab {
+  min-height: 118cqw;
+  background: #ffffff;
+  color: #5a6472;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5cqw;
+  line-height: 1.55;
+  text-align: left;
+}
+
+/* -- 1 · la barre supérieure : RBQ, heures, téléphone -- */
+.gab .gab-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 0.9cqw 4cqw;
+  background: #16233c;
+  color: #b9c2d0;
+  font-size: 1.25cqw;
+  letter-spacing: 0.02em;
+}
+.gab .gab-top-tel { color: #ffb04a; font-weight: bold; }
+
+/* -- 2 · l’en-tête : logo, six liens, bouton plein -- */
+.gab .gab-tete {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3cqw;
+  padding: 1.8cqw 4cqw;
+  background: #ffffff;
+  border-bottom: 1px solid #e6eaf0;
+  box-shadow: 0 2px 8px rgb(22 35 60 / 0.09);
+}
+.gab .gab-logo { display: flex; align-items: center; gap: 1.2cqw; }
+.gab .gab-logo-m {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.6cqw;
+  height: 4.6cqw;
+  border-radius: 6px;
+  background-color: #24406e;
+  background-image: linear-gradient(155deg, #2d4d80 0%, #16233c 100%);
+  box-shadow: 0 2px 5px rgb(22 35 60 / 0.28);
+  color: #ffffff;
+  font-size: 1.9cqw;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+}
+.gab .gab-logo-t { display: block; }
+.gab .gab-logo-n {
+  display: block;
+  color: #16233c;
+  font-size: 1.85cqw;
+  font-weight: bold;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.gab .gab-logo-s {
+  display: block;
+  color: #8b95a4;
+  font-size: 1.05cqw;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.gab .gab-menu { display: flex; flex-wrap: wrap; align-items: center; gap: 1.9cqw; }
+.gab .gab-menu > span {
+  color: #4a5566;
+  font-size: 1.3cqw;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.gab .gab-menu > span.gab-on { color: #e8760f; }
+
+/* -- le bouton orange, dégradé compris : c’est la signature du genre -- */
+.gab .gab-btn {
+  display: inline-block;
+  padding: 1.1cqw 2.1cqw;
+  border-radius: 4px;
+  background-color: #e8760f;
+  background-image: linear-gradient(#f28c1e 0%, #e0700c 100%);
+  box-shadow: 0 2px 5px rgb(224 112 12 / 0.38);
+  color: #ffffff;
+  font-size: 1.25cqw;
+  font-weight: bold;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.gab .gab-btn--gros { padding: 1.5cqw 3cqw; font-size: 1.5cqw; }
+.gab .gab-btn--large { display: block; width: 100%; padding: 1.6cqw; font-size: 1.5cqw; }
+
+/* -- 3 · le carrousel plein cadre, voile à 50 %, pastilles, flèches -- */
+.gab .gab-carr { position: relative; height: 38cqw; overflow: hidden; background: #39434f; }
+/* LE GABARIT ACHETE MONTRE DU STOCK, ET DU STOCK EST UNE PHOTO.
+   Une maison en construction sous « REALISEZ LA MAISON DE VOS
+   REVES » : c'est exactement ce qu'un gabarit livre, et le voile a
+   50 % par-dessus est deja la pour le titre.  D-634 */
+.gab .gab-carr-photo {
+  position: absolute;
+  inset: 0;
+  background: #6d7a86 url("../images/realisations/avant-renov-ban.webp") center / cover no-repeat;
+}
+.gab .gab-carr-voile {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(90deg, rgb(9 16 28 / 0.66) 0%, rgb(9 16 28 / 0.44) 100%);
+}
+.gab .gab-carr-txt {
+  position: absolute;
+  left: 9cqw;
+  right: 9cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+}
+.gab .gab-carr-h {
+  margin: 0 0 1.5cqw;
+  color: #ffffff;
+  font-size: 3.6cqw;
+  font-weight: bold;
+  line-height: 1.15;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgb(0 0 0 / 0.45);
+}
+.gab .gab-carr-p {
+  margin: 0 auto 2.4cqw;
+  max-width: 58cqw;
+  color: #e6eaf0;
+  font-size: 1.6cqw;
+  line-height: 1.6;
+}
+.gab .gab-fleche {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.8cqw;
+  height: 3.8cqw;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.22);
+  color: #ffffff;
+  font-size: 2cqw;
+  line-height: 1;
+}
+.gab .gab-fleche--g { left: 2.4cqw; }
+.gab .gab-fleche--d { right: 2.4cqw; }
+.gab .gab-puces {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.4cqw;
+  display: flex;
+  justify-content: center;
+  gap: 0.9cqw;
+}
+.gab .gab-puces i { width: 1cqw; height: 1cqw; border-radius: 50%; background: rgb(255 255 255 / 0.45); }
+.gab .gab-puces i.gab-on { background: #e8760f; }
+
+/* -- les sections, et leurs titres soulignés d’un trait orange -- */
+.gab .gab-sec { padding: 3.8cqw 4cqw; }
+.gab .gab-sec--gris { background: #f4f7fa; }
+.gab .gab-sec--fonce { background-color: #1b2b48; background-image: linear-gradient(#223454 0%, #16233c 100%); }
+.gab .gab-sec-t {
+  margin: 0 0 1cqw;
+  color: #16233c;
+  font-size: 2.5cqw;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.gab .gab-sec-t::after {
+  content: "";
+  display: block;
+  width: 6cqw;
+  height: 3px;
+  margin: 1.2cqw auto 0;
+  border-radius: 2px;
+  background: #e8760f;
+}
+.gab .gab-sec-s {
+  margin: 0 auto 2.8cqw;
+  max-width: 58cqw;
+  color: #8b95a4;
+  font-size: 1.45cqw;
+  text-align: center;
+}
+.gab .gab-sec--fonce .gab-sec-t { color: #ffffff; }
+.gab .gab-lien { display: inline-block; margin-top: 0.8cqw; color: #e8760f; font-size: 1.3cqw; font-weight: bold; }
+
+/* -- 4 · les trois cartes à icône ronde -- */
+.gab .gab-atouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.6cqw; }
+.gab .gab-atout {
+  padding: 2.6cqw 2.2cqw;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
+  text-align: center;
+}
+.gab .gab-ico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.4cqw;
+  height: 6.4cqw;
+  margin: 0 auto 1.6cqw;
+  border-radius: 50%;
+  background-color: #fdf0e0;
+  background-image: linear-gradient(#fdf1e2 0%, #f8dcbb 100%);
+  color: #e8760f;
+  font-size: 2.6cqw;
+  line-height: 1;
+}
+.gab .gab-atout b {
+  display: block;
+  margin-bottom: 0.9cqw;
+  color: #16233c;
+  font-size: 1.65cqw;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.gab .gab-atout p { margin: 0; color: #7b8698; font-size: 1.35cqw; line-height: 1.65; }
+
+/* -- 5 · le bloc « à propos », deux colonnes -- */
+.gab .gab-apropos { display: grid; grid-template-columns: 36cqw minmax(0, 1fr); gap: 3.6cqw; align-items: center; }
+.gab .gab-apropos-img {
+  height: 21cqw;
+  border-radius: 8px;
+  background: #8d97a3 url("../images/realisations/avant-renov-apropos.webp") center / cover no-repeat;
+  box-shadow: 0 4px 16px rgb(22 35 60 / 0.16);
+}
+.gab .gab-h3 {
+  margin: 0 0 1.2cqw;
+  color: #16233c;
+  font-size: 2.1cqw;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.gab .gab-apropos-c p { margin: 0 0 1.2cqw; font-size: 1.45cqw; line-height: 1.7; }
+
+/* -- 6 · la grille de six services, cartes identiques -- */
+.gab .gab-svc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqw; }
+.gab .gab-svc-c {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
+}
+/* SIX CARTES DE SERVICE, SIX PHOTOS DE STOCK.  D-634 */
+.gab .gab-svc-i {
+  height: 9.5cqw;
+  background-color: #8d97a3;
+  background-image: url("../images/realisations/avant-renov-svc.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 600%;
+  background-position: 0 0%;
+}
+.gab .gab-svc-c:nth-child(2) .gab-svc-i { background-position: 0 20%; }
+.gab .gab-svc-c:nth-child(3) .gab-svc-i { background-position: 0 40%; }
+.gab .gab-svc-c:nth-child(4) .gab-svc-i { background-position: 0 60%; }
+.gab .gab-svc-c:nth-child(5) .gab-svc-i { background-position: 0 80%; }
+.gab .gab-svc-c:nth-child(6) .gab-svc-i { background-position: 0 100%; }
+.gab .gab-svc-b { padding: 2cqw 2cqw 2.4cqw; }
+.gab .gab-svc-b b {
+  display: block;
+  margin-bottom: 0.8cqw;
+  color: #16233c;
+  font-size: 1.55cqw;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.gab .gab-svc-b p { margin: 0; color: #7b8698; font-size: 1.3cqw; line-height: 1.6; }
+
+/* -- 7 · « Pourquoi nous choisir ? », quatre puces sur fond marine -- */
+.gab .gab-pq {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2cqw 3.4cqw;
+  max-width: 76cqw;
+  margin: 0 auto;
+}
+.gab .gab-pq-l { display: flex; align-items: flex-start; gap: 1.3cqw; color: #ccd5e2; font-size: 1.4cqw; line-height: 1.6; }
+.gab .gab-pq-l i {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5cqw;
+  height: 2.5cqw;
+  margin-top: 0.2cqw;
+  border-radius: 50%;
+  background: #e8760f;
+  color: #ffffff;
+  font-size: 1.25cqw;
+  font-style: normal;
+  line-height: 1;
+}
+.gab .gab-pq-l b { color: #ffffff; }
+
+/* -- 8 · six vignettes de réalisations -- */
+.gab .gab-real { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2cqw; }
+/* LES SIX REALISATIONS SUIVENT LEURS SIX LEGENDES, DANS L'ORDRE :
+   cuisine · salle de bain · sous-sol · agrandissement · toiture ·
+   facade. Une vignette qui contredit sa legende est une faute qu'un
+   visiteur voit sans savoir la nommer.  D-634 */
+.gab .gab-real-v i {
+  display: block;
+  height: 11cqw;
+  border-radius: 6px;
+  background-color: #8d97a3;
+  background-image: url("../images/realisations/avant-renov-real.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 600%;
+  background-position: 0 0%;
+  box-shadow: 0 2px 9px rgb(22 35 60 / 0.14);
+}
+.gab .gab-real-v:nth-child(2) i { background-position: 0 20%; }
+.gab .gab-real-v:nth-child(3) i { background-position: 0 40%; }
+.gab .gab-real-v:nth-child(4) i { background-position: 0 60%; }
+.gab .gab-real-v:nth-child(5) i { background-position: 0 80%; }
+.gab .gab-real-v:nth-child(6) i { background-position: 0 100%; }
+.gab .gab-real-v span { display: block; margin-top: 0.9cqw; color: #8b95a4; font-size: 1.2cqw; text-align: center; }
+
+/* -- 9 · les témoignages : le seul serif italique de la maquette -- */
+.gab .gab-temo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4cqw; }
+.gab .gab-temo-c {
+  padding: 2.6cqw 2.2cqw;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgb(22 35 60 / 0.11);
+  text-align: center;
+}
+.gab .gab-etoiles { margin: 0 0 1.2cqw; color: #f5a623; font-size: 1.5cqw; letter-spacing: 0.16em; }
+.gab .gab-cite {
+  margin: 0 0 1.4cqw;
+  color: #5a6472;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.45cqw;
+  font-style: italic;
+  line-height: 1.7;
+}
+.gab .gab-temo-c b { color: #16233c; font-size: 1.2cqw; letter-spacing: 0.07em; text-transform: uppercase; }
+
+/* -- 10 · la FAQ en accordéon, quatre questions repliées -- */
+.gab .gab-faq { max-width: 70cqw; margin: 0 auto; }
+.gab .gab-faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  margin-bottom: 1.2cqw;
+  padding: 1.7cqw 2.2cqw;
+  border: 1px solid #e2e7ee;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgb(22 35 60 / 0.07);
+  color: #16233c;
+  font-size: 1.45cqw;
+  font-weight: bold;
+}
+.gab .gab-faq-q i { color: #e8760f; font-size: 2.2cqw; font-style: normal; line-height: 1; }
+
+/* -- 11 · LE CŒUR DU PROBLÈME : un formulaire qui promet un rappel,
+      et pas un seul chiffre à l’écran. -- */
+.gab .gab-form {
+  max-width: 66cqw;
+  margin: 0 auto;
+  padding: 2.8cqw;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 6px 22px rgb(22 35 60 / 0.15);
+}
+.gab .gab-form-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5cqw; margin-bottom: 1.5cqw; }
+.gab .gab-champ {
+  display: block;
+  padding: 1.35cqw 1.4cqw;
+  border: 1px solid #d5dce5;
+  border-radius: 4px;
+  background: #fbfcfd;
+  color: #a8b1bd;
+  font-size: 1.35cqw;
+}
+.gab .gab-champ--zone { min-height: 8.5cqw; margin-bottom: 1.8cqw; }
+.gab .gab-form-p { margin: 1.4cqw 0 0; color: #8b95a4; font-size: 1.2cqw; text-align: center; }
+
+/* -- 12 · le pied de page à trois colonnes -- */
+.gab .gab-pied {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3cqw;
+  padding: 3.6cqw 4cqw;
+  background: #16233c;
+  color: #b9c2d0;
+  font-size: 1.35cqw;
+}
+.gab .gab-pied > div b {
+  display: block;
+  margin-bottom: 1.2cqw;
+  color: #ffffff;
+  font-size: 1.4cqw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.gab .gab-pied > div p { margin: 0 0 0.5cqw; }
+.gab .gab-bas { padding: 1.5cqw 4cqw; background: #0f1928; color: #7b8698; font-size: 1.15cqw; text-align: center; }
+
+/* ------------------------------------------------------------
+   LE SOCLE. Le reset est en `:where()` a specificite zero cote
+   cible : n'importe quelle regle `.tou .tou-x` ci-dessous gagne,
+   quel que soit l'ordre du decoupage de la feuille.
+   ------------------------------------------------------------ */
+.tou,
+.tou *,
+.tou *::before,
+.tou *::after { box-sizing: border-box; }
+
+.tou :where(p, dl, dt, dd, ul, ol, li, figure) { margin: 0; padding: 0; }
+.tou :where(ul, ol) { list-style: none; }
+.tou :where(i) { font-style: normal; }
+
+.tou {
+  --tou-bleu: #123c59;
+  --tou-bleu-m: #1b6ea3;
+  --tou-bleu-p: #e9f1f7;
+  --tou-encre: #33424e;
+  --tou-gris: #6d7f8c;
+  --tou-pale: #9fb0bb;
+  --tou-ligne: #d5e0e8;
+  --tou-fond: #f2f6f9;
+
+  min-height: 118cqw;
+  background: #fff;
+  color: var(--tou-encre);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5cqw;
+  line-height: 1.55;
+}
+/* LA COLONNE DE L'OFFICE. 880 px dans une page de 1000. */
+.tou .tou-c { width: 88cqw; margin: 0 auto; }
+
+/* ------------------------------------------------------------
+   LE BANDEAU « NAVIGATEUR DESUET ». Servi AVANT le contenu :
+   la premiere chose que la page dit au client du restaurant
+   parle du navigateur.
+   ------------------------------------------------------------ */
+.tou .tou-desuet {
+  background: linear-gradient(#fffaea 0%, #ffeeb8 100%);
+  border-bottom: 1px solid #e3c765;
+  color: #6b4e00;
+  font-size: 1.25cqw;
+}
+.tou .tou-desuet-in {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  padding: 0.9cqw 0;
+}
+.tou .tou-desuet-in b { font-weight: bold; }
+.tou .tou-des-p { flex: 1 1 auto; }
+.tou .tou-brw { display: inline-flex; gap: 0.6cqw; }
+.tou .tou-brw i {
+  width: 1.9cqw;
+  height: 1.9cqw;
+  border-radius: 50%;
+  box-shadow: inset 0 -0.3cqw 0.5cqw rgba(0, 0, 0, .2);
+}
+.tou .tou-brw i:nth-child(1) { background: radial-gradient(circle at 34% 30%, #ffd483, #d9631a); }
+.tou .tou-brw i:nth-child(2) { background: radial-gradient(circle at 34% 30%, #8fd0ff, #1a63a8); }
+.tou .tou-brw i:nth-child(3) { background: radial-gradient(circle at 34% 30%, #ffe27a, #c9a300); }
+.tou .tou-brw i:nth-child(4) { background: radial-gradient(circle at 34% 30%, #b9c6cf, #5e7280); }
+.tou .tou-x { color: #9a7a2a; font-size: 1.4cqw; }
+
+/* ------------------------------------------------------------
+   LA BARRE UTILITAIRE, PUIS L'ENTETE DE L'OFFICE.
+   ------------------------------------------------------------ */
+.tou .tou-util {
+  background: var(--tou-bleu);
+  color: #cfe2ef;
+  font-size: 1.15cqw;
+}
+.tou .tou-util-in {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.8cqw;
+  padding: 0.7cqw 0;
+}
+.tou .tou-lang b { color: #fff; font-weight: bold; }
+
+.tou .tou-entete { border-bottom: 1px solid var(--tou-ligne); }
+.tou .tou-entete-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 1.4cqw 0;
+}
+.tou .tou-logo { display: flex; align-items: center; gap: 1.2cqw; }
+.tou .tou-logo-i {
+  flex: 0 0 auto;
+  width: 4.4cqw;
+  height: 4.4cqw;
+  border-radius: 1cqw;
+  background: linear-gradient(135deg, #35a0cf 0%, #123c59 100%);
+  box-shadow: 0 0.2cqw 0.6cqw rgba(18, 60, 89, .35);
+}
+.tou .tou-logo-t { display: grid; }
+.tou .tou-logo-t b {
+  font-size: 2.4cqw;
+  font-weight: bold;
+  line-height: 1.15;
+  letter-spacing: -0.05cqw;
+  color: var(--tou-bleu);
+}
+.tou .tou-logo-t span { font-size: 1.15cqw; color: var(--tou-gris); }
+/* LE CHAMP DE RECHERCHE DE L'OFFICE — plus gros que le nom du
+   restaurant, et il cherche dans TOUTE la region. */
+.tou .tou-rech {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1cqw;
+  width: 33cqw;
+  padding: 1cqw 1.4cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 2.4cqw;
+  background: var(--tou-fond);
+  box-shadow: inset 0 0.1cqw 0.35cqw rgba(18, 60, 89, .1);
+  color: #93a3ae;
+  font-size: 1.25cqw;
+}
+.tou .tou-loupe {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.6cqw;
+  height: 1.6cqw;
+  border: 2px solid #7b93a3;
+  border-radius: 50%;
+}
+.tou .tou-loupe::after {
+  content: "";
+  position: absolute;
+  right: -0.45cqw;
+  bottom: -0.15cqw;
+  width: 0.9cqw;
+  height: 2px;
+  background: #7b93a3;
+  transform: rotate(45deg);
+}
+
+.tou .tou-menu {
+  background: linear-gradient(#2180bc 0%, #145a86 100%);
+  box-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, .22);
+}
+.tou .tou-menu-in { display: flex; }
+.tou .tou-menu-in span {
+  padding: 1.05cqw 1.5cqw;
+  color: #eaf3f9;
+  font-size: 1.3cqw;
+}
+.tou .tou-menu-in .tou-on {
+  background: rgba(255, 255, 255, .18);
+  border-radius: 0.6cqw 0.6cqw 0 0;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* LE FIL D'ARIANE DE L'OFFICE. Le nom du restaurant est la
+   quatrieme chose de la ligne, et la plus petite. */
+.tou .tou-fil {
+  background: var(--tou-fond);
+  border-bottom: 1px solid var(--tou-ligne);
+  font-size: 1.2cqw;
+  color: var(--tou-gris);
+}
+.tou .tou-fil .tou-c { padding: 0.9cqw 0; }
+.tou .tou-fil b {
+  margin: 0 0.6cqw;
+  color: #aebdc7;
+  font-weight: 400;
+}
+.tou .tou-fil em { font-style: normal; color: var(--tou-encre); }
+
+/* ------------------------------------------------------------
+   LA BANNIERE. C'EST LA PHOTO D'UN AUTRE RESTAURANT — elle est
+   heritee de la categorie parente, et la legende le dit en
+   1,15cqw sous l'image. Aucun fichier : trois aplats et une
+   trame, comme partout ailleurs dans cette section.
+   ------------------------------------------------------------ */
+.tou .tou-ban-ph {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  height: 15cqw;
+  padding-bottom: 1.6cqw;
+  /* LA BANNIERE EST UNE VRAIE PHOTOGRAPHIE.  D-634 */
+  background:
+    linear-gradient(rgba(8, 22, 32, .34) 0%, rgba(8, 22, 32, 0) 42%, rgba(8, 22, 32, .62) 100%),
+    url("../images/realisations/avant-resto-ban.webp") center / cover no-repeat,
+    #4c3a27;
+}
+.tou .tou-ban-nom {
+  position: relative;
+  z-index: 1;
+  width: 88cqw;
+  margin: 0 auto;
+  color: #fff;
+  font-size: 2.5cqw;
+  font-weight: bold;
+  letter-spacing: -0.05cqw;
+  text-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, .6);
+}
+.tou .tou-ban-leg {
+  padding: 0.8cqw 0;
+  background: var(--tou-fond);
+  border-bottom: 1px solid var(--tou-ligne);
+  font-size: 1.15cqw;
+  color: var(--tou-gris);
+}
+
+/* ------------------------------------------------------------
+   LE CORPS. Deux colonnes : la fiche, et les encarts de l'office.
+   ------------------------------------------------------------ */
+.tou .tou-corps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 26cqw;
+  gap: 3cqw;
+  align-items: start;
+  padding: 2cqw 0 2.6cqw;
+}
+
+/* LES DRAPEAUX ADMINISTRATIFS. « En vedette » et « Ferme
+   temporairement » se contredisent, et personne au restaurant ne
+   peut retirer ni l'un ni l'autre. */
+.tou .tou-drapeaux {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8cqw;
+  margin-bottom: 1.2cqw;
+}
+.tou .tou-drap {
+  padding: 0.45cqw 1.1cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 2cqw;
+  background: #eef3f7;
+  color: var(--tou-gris);
+  font-size: 1.05cqw;
+  font-weight: bold;
+  letter-spacing: 0.06cqw;
+  text-transform: uppercase;
+}
+.tou .tou-drap--ved {
+  border-color: #d59b12;
+  background: linear-gradient(#ffd86b, #f0b429);
+  color: #5c3d00;
+}
+.tou .tou-drap--ferme {
+  border-color: #f3b5ae;
+  background: #fdecea;
+  color: #a32116;
+}
+
+.tou .tou-h1 {
+  font-size: 3.2cqw;
+  font-weight: bold;
+  line-height: 1.15;
+  letter-spacing: -0.05cqw;
+  color: var(--tou-bleu);
+}
+.tou .tou-sous {
+  margin-top: 0.5cqw;
+  font-size: 1.25cqw;
+  color: var(--tou-gris);
+}
+.tou .tou-st {
+  margin-top: 1.9cqw;
+  padding-bottom: 0.6cqw;
+  border-bottom: 1px solid var(--tou-ligne);
+  font-size: 1.7cqw;
+  font-weight: bold;
+  color: var(--tou-bleu);
+}
+.tou .tou-p { margin-top: 1.2cqw; font-size: 1.45cqw; }
+.tou .tou-note { margin-top: 0.8cqw; font-size: 1.1cqw; color: var(--tou-pale); }
+
+/* LE TABLEAU DE LA FICHE. Quatorze champs, dont trois vides — et
+   les trois vides sont exactement les trois que le client cherche :
+   les heures, le menu, la reservation. */
+.tou .tou-tab {
+  overflow: hidden;
+  margin-top: 1.2cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  box-shadow: 0 0.1cqw 0.4cqw rgba(18, 60, 89, .08);
+}
+.tou .tou-lig {
+  display: grid;
+  grid-template-columns: 17cqw minmax(0, 1fr);
+  gap: 1.2cqw;
+  padding: 0.7cqw 1.4cqw;
+  font-size: 1.3cqw;
+}
+.tou .tou-lig:nth-child(odd) { background: #f7fafc; }
+.tou .tou-lig + .tou-lig { border-top: 1px solid #e8eef3; }
+.tou .tou-cle { color: var(--tou-gris); }
+.tou .tou-lien { color: #1259a8; text-decoration: underline; }
+.tou .tou-vide { color: #a8b6c0; }
+.tou .tou-note-i { font-size: 1.05cqw; color: var(--tou-pale); }
+
+.tou .tou-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7cqw;
+  margin-top: 1.2cqw;
+}
+.tou .tou-cat {
+  padding: 0.55cqw 1.2cqw;
+  border: 1px solid #c9dcea;
+  border-radius: 2cqw;
+  background: var(--tou-bleu-p);
+  color: #1259a8;
+  font-size: 1.15cqw;
+}
+
+/* LA CARTE. Un quadrillage de rues, une punaise, un bouton
+   « agrandir » — et rien de ce qu'on vient chercher. */
+.tou .tou-carte {
+  position: relative;
+  overflow: hidden;
+  height: 14cqw;
+  margin-top: 1.2cqw;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  box-shadow: inset 0 0 2cqw rgba(0, 0, 0, .07);
+}
+.tou .tou-carte-rues {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg, transparent 0 46%, #cfe0ea 46% 52%, transparent 52%),
+    repeating-linear-gradient(90deg, transparent 0 7cqw, #fff 7cqw 8cqw),
+    repeating-linear-gradient(0deg, transparent 0 4.6cqw, #fff 4.6cqw 5.3cqw),
+    linear-gradient(#eaeee5, #dfe6da);
+}
+.tou .tou-carte-pin {
+  position: absolute;
+  left: 41%;
+  top: 34%;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: #d93025;
+  box-shadow: 0 0.3cqw 0.6cqw rgba(0, 0, 0, .38);
+  transform: rotate(-45deg);
+}
+.tou .tou-carte-btn {
+  position: absolute;
+  right: 1cqw;
+  top: 1cqw;
+  padding: 0.6cqw 1.1cqw;
+  border: 1px solid #c3ced6;
+  border-radius: 0.4cqw;
+  background: #fff;
+  box-shadow: 0 0.15cqw 0.4cqw rgba(0, 0, 0, .2);
+  color: #1259a8;
+  font-size: 1.1cqw;
+}
+.tou .tou-carte-att {
+  position: absolute;
+  left: 1cqw;
+  bottom: 0.8cqw;
+  font-size: 1cqw;
+  color: #7d8b93;
+}
+
+.tou .tou-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9cqw;
+  margin-top: 1.6cqw;
+}
+.tou .tou-btn {
+  padding: 1cqw 1.6cqw;
+  border: 1px solid #c3d3de;
+  border-radius: 0.5cqw;
+  background: linear-gradient(#fff, #eef3f7);
+  box-shadow: 0 0.1cqw 0.3cqw rgba(18, 60, 89, .14);
+  color: var(--tou-bleu);
+  font-size: 1.25cqw;
+  font-weight: bold;
+}
+/* LE BOUTON PLEIN EST CELUI DE L'OFFICE, PAS CELUI DU CLIENT :
+   « ajouter a mon carnet de voyage » sert l'annuaire. Reserver une
+   table n'existe nulle part sur cette page. */
+.tou .tou-btn--plein {
+  border-color: #12557f;
+  background: linear-gradient(#2a8fbf, #14638f);
+  color: #fff;
+}
+
+.tou .tou-tenue {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2cqw;
+  margin-top: 1.4cqw;
+  padding: 1.1cqw 1.4cqw;
+  border: 1px solid #cfe0ec;
+  border-left: 4px solid #2a8fbf;
+  border-radius: 0.6cqw;
+  background: var(--tou-bleu-p);
+  font-size: 1.2cqw;
+  color: #3b4c58;
+}
+.tou .tou-tenue-i {
+  flex: 0 0 auto;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  border-radius: 50%;
+  background: #2a8fbf;
+}
+.tou .tou-tenue b { font-weight: bold; color: var(--tou-bleu); }
+
+/* ------------------------------------------------------------
+   LA COLONNE DE DROITE — les encarts de l'office.
+   ------------------------------------------------------------ */
+.tou .tou-late { display: grid; gap: 1.6cqw; }
+.tou .tou-encart {
+  overflow: hidden;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  background: #fff;
+  box-shadow: 0 0.15cqw 0.5cqw rgba(18, 60, 89, .09);
+}
+.tou .tou-encart-t {
+  padding: 0.9cqw 1.2cqw;
+  border-bottom: 1px solid var(--tou-ligne);
+  background: linear-gradient(#f9fbfc, #e9f1f7);
+  font-size: 1.2cqw;
+  font-weight: bold;
+  color: var(--tou-bleu);
+}
+.tou .tou-enc-in {
+  display: grid;
+  gap: 0.6cqw;
+  padding: 1.2cqw;
+}
+.tou .tou-enc-l { font-size: 1.2cqw; }
+.tou .tou-enc-l b { font-weight: bold; }
+.tou .tou-lig2 {
+  display: flex;
+  justify-content: space-between;
+  gap: 1cqw;
+  padding-bottom: 0.5cqw;
+  border-bottom: 1px dotted #dde6ec;
+  font-size: 1.15cqw;
+}
+.tou .tou-lig2 span { color: var(--tou-gris); }
+.tou .tou-lig2 b { font-weight: bold; }
+.tou .tou-pub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 11cqw;
+  padding: 0 1cqw;
+  border: 1px dashed #c3d3de;
+  border-radius: 0.5cqw;
+  background: repeating-linear-gradient(45deg, #f5f9fb 0 1cqw, #eaf1f6 1cqw 2cqw);
+  color: var(--tou-pale);
+  font-size: 1.1cqw;
+  text-align: center;
+}
+.tou .tou-pub--court { height: 7.5cqw; }
+
+/* ------------------------------------------------------------
+   LES AUTRES ETABLISSEMENTS DE LA CATEGORIE. Quatre vignettes au
+   MEME gabarit : la fiche n'appartient pas au restaurant, elle
+   appartient a la liste.
+   ------------------------------------------------------------ */
+.tou .tou-autres {
+  padding: 2.4cqw 0 2.6cqw;
+  border-top: 1px solid var(--tou-ligne);
+  background: var(--tou-fond);
+}
+.tou .tou-st--centre {
+  margin-top: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+  text-align: center;
+}
+.tou .tou-vigs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.6cqw;
+  margin-top: 1.8cqw;
+}
+.tou .tou-vig {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--tou-ligne);
+  border-radius: 0.8cqw;
+  background: #fff;
+  box-shadow: 0 0.2cqw 0.6cqw rgba(18, 60, 89, .11);
+}
+/* QUATRE SALLES, PAS QUATRE ASSIETTES : un annuaire montre le LIEU.
+   Meme colonne de tuiles que les vignettes de l'annuaire, quatre
+   rangs cette fois.  D-634 */
+.tou .tou-vig-ph {
+  height: 9cqw;
+  background-color: #7a6144;
+  background-image: url("../images/realisations/avant-resto-vig.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 400%;
+  background-position: 0 0%;
+}
+.tou .tou-vig-ph--b { background-position: 0 33.333%; }
+.tou .tou-vig-ph--c { background-position: 0 66.667%; }
+.tou .tou-vig-ph--d { background-position: 0 100%; }
+.tou .tou-vig b {
+  padding: 1cqw 1.1cqw 0;
+  font-size: 1.3cqw;
+  font-weight: bold;
+  color: var(--tou-bleu);
+}
+.tou .tou-vig span {
+  padding: 0 1.1cqw;
+  font-size: 1.1cqw;
+  color: var(--tou-gris);
+}
+.tou .tou-vig em {
+  padding: 0.3cqw 1.1cqw 1.1cqw;
+  font-size: 1.1cqw;
+  font-style: normal;
+  color: var(--tou-pale);
+}
+
+/* ------------------------------------------------------------
+   L'INFOLETTRE DE L'OFFICE, PUIS SON PIED DE PAGE.
+   ------------------------------------------------------------ */
+.tou .tou-info {
+  padding: 2.2cqw 0;
+  background: linear-gradient(#2180bc, #123c59);
+  color: #fff;
+}
+.tou .tou-info-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+.tou .tou-info-t { font-size: 2cqw; font-weight: bold; }
+.tou .tou-info-p { margin-top: 0.3cqw; font-size: 1.25cqw; color: #cfe2ef; }
+.tou .tou-info-f { display: flex; gap: 0.8cqw; }
+.tou .tou-info-ch {
+  width: 24cqw;
+  padding: 1.1cqw 1.4cqw;
+  border-radius: 0.5cqw;
+  background: #fff;
+  color: #93a3ae;
+  font-size: 1.25cqw;
+}
+.tou .tou-info-b {
+  padding: 1.1cqw 1.8cqw;
+  border-radius: 0.5cqw;
+  background: linear-gradient(#ffd86b, #f0b429);
+  box-shadow: 0 0.2cqw 0.5cqw rgba(0, 0, 0, .28);
+  color: #5c3d00;
+  font-size: 1.25cqw;
+  font-weight: bold;
+}
+
+.tou .tou-pied {
+  padding: 2.4cqw 0 1.6cqw;
+  background: #0e2f45;
+  color: #b9cdda;
+}
+.tou .tou-pied-in {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2cqw;
+}
+.tou .tou-pt {
+  margin-bottom: 0.9cqw;
+  font-size: 1.25cqw;
+  font-weight: bold;
+  color: #fff;
+}
+.tou .tou-pl { padding: 0.3cqw 0; font-size: 1.15cqw; }
+.tou .tou-parts {
+  display: flex;
+  justify-content: center;
+  gap: 1.2cqw;
+  margin-top: 1.8cqw;
+  padding-top: 1.6cqw;
+  border-top: 1px solid rgba(255, 255, 255, .15);
+}
+/* LA BANDE DES PARTENAIRES N'EST PAS UNE PHOTO, ET NE PEUT PAS EN ETRE UNE : ce…  D-634 */
+.tou .tou-parts i {
+  position: relative;
+  width: 12cqw;
+  height: 4cqw;
+  border-radius: 0.4cqw;
+  background: rgba(255, 255, 255, .07);
+}
+.tou .tou-parts i::before {
+  content: "";
+  position: absolute;
+  left: 1cqw;
+  top: 1.05cqw;
+  width: 1.9cqw;
+  height: 1.9cqw;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .30);
+}
+.tou .tou-parts i::after {
+  content: "";
+  position: absolute;
+  left: 3.5cqw;
+  top: 1.5cqw;
+  width: 7.2cqw;
+  height: 1cqw;
+  border-radius: 0.2cqw;
+  background: rgba(255, 255, 255, .22);
+}
+.tou .tou-parts i:nth-child(2)::after { width: 5.4cqw; }
+.tou .tou-parts i:nth-child(3)::after { width: 6.6cqw; }
+.tou .tou-parts i:nth-child(5)::after { width: 5.9cqw; }
+.tou .tou-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqw;
+  margin-top: 2cqw;
+  font-size: 1.05cqw;
+  color: #7f97a7;
+}
+
+/* Le texte defilant doit RESTER LISIBLE a l'arret : sans le retrait du
+   decalage de depart, la bande s'arrete vide. */
+@media (prefers-reduced-motion: reduce) {
+  .v11-defile span { padding-left: 0; animation: none !important; }
+}
+
+/* ===================================================================
+   12 · LES PHOTOGRAPHIES
+   Le public est visuel : il ne lit pas, il regarde. Une illustration se
+   pose donc EN TETE de la colonne, avant la liste, jamais apres.
+   Toutes portent leur `width`/`height` : sans elles, une image
+   paresseuse decale la page en arrivant et le CLS quitte 0.  D-857
+   =================================================================== */
+
+.illus { margin: 0 0 var(--e-3); }
+.illus img {
+  width: 100%; height: auto;
+  aspect-ratio: 3 / 2; object-fit: cover;
+  border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-pose);
+}
+.illus--large { margin-bottom: var(--e-6); }
+.illus--large img { aspect-ratio: 21 / 9; }
+
+/* La bande de lieu ferme la page de contact : une seule image, pleine
+   largeur, avec un mot dessus. Le voile est un aplat navy translucide —
+   pas un degrade — pour que le texte tienne 4,5:1 sur n'importe quel
+   pixel de la photographie, y compris le plus clair.  D-858 */
+.bande-lieu { position: relative; isolation: isolate; }
+.bande-lieu img {
+  width: 100%; height: clamp(15rem, 34vw, 26rem);
+  object-fit: cover; display: block;
+}
+.bande-lieu::after {
+  content: ""; position: absolute; inset: 0;
+  background: rgb(24 33 61 / 0.62);
+  z-index: 1;
+}
+.bande-lieu-mot {
+  position: absolute; inset: auto 0 0 0; z-index: 2;
+  max-width: var(--page-max); margin-inline: auto;
+  padding: var(--e-6) var(--gouttiere);
+  font-family: var(--font-titre);
+  font-size: var(--t-3); line-height: var(--lh-3); letter-spacing: var(--ls-3);
+  color: var(--pearl);
+}
+
+/* La figure et la carte « ce qui est inclus » tiennent dans la MEME colonne.
+   Sans enveloppe commune, la grille posait la carte en rangee 2 colonne 1,
+   c'est-a-dire sous le texte : l'oeil descendait a gauche, remontait a
+   droite, redescendait a gauche.  D-859 */
+.colonne-visuelle { display: grid; gap: var(--e-3); align-content: start; }

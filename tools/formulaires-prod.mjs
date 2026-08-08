@@ -121,7 +121,16 @@ async function ouvrir(nav) {
        accuse le mauvais coupable. */
     try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
   });
-  await page.goto(BASE + "/index.html", { waitUntil: "load" });
+  /* LA PAGE DE DEPART EST `contact.html`, PLUS L'ACCUEIL.
+     Le site est passe d'une page a sept : l'accueil ne porte plus de
+     porte vers `modal-refer` ni vers `modal-project`, et le
+     formulaire de contact n'y est plus du tout.
+     `document.querySelector('[data-modal-open="modal-refer"]')` y
+     rendait donc `null`, et l'outil accusait un formulaire intact.
+     `contact.html` est la SEULE page qui porte les sept portes a la
+     fois — c'est ce qui en fait le banc, et c'est aussi ce que
+     `js/site.js` vise quand une modale manque ailleurs. */
+  await page.goto(BASE + "/contact.html", { waitUntil: "load" });
   await page.waitForTimeout(1500);
   return page;
 }
@@ -295,7 +304,13 @@ for (const [ouvre, portee, nom, remplir] of [
       await page.evaluate((i) => document.querySelector(`[data-modal-open="${i}"]`).click(), ouvre);
       await page.waitForTimeout(600);
     } else {
-      await page.evaluate(() => document.querySelector("#contact").scrollIntoView());
+      /* La section `#contact` de la page unique n'existe plus : on
+         amene le FORMULAIRE, qui est l'ancre du contrat. */
+      await page.evaluate(() => {
+        var f = document.querySelector('form[data-form="contact"]');
+        if (!f) throw new Error("form[data-form=contact] absent de contact.html");
+        f.scrollIntoView({ block: "center", behavior: "instant" });
+      });
       await page.waitForTimeout(400);
     }
     await remplir(page);

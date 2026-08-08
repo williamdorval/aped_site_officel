@@ -1,5 +1,5 @@
 /* ============================================================
-   APED AGENCE — CSS CRITIQUE
+   ADEXWEB — CSS CRITIQUE
    Les composants peints au PREMIER ECRAN.
    FABRIQUE PAR `node tools/css-critique.mjs` a partir de
    `css/app.css`, qui reste la seule source. Ne pas modifier a la
@@ -7,1475 +7,245 @@
    `node tools/cascade-check.mjs`.
    ============================================================ */
 
-/* == APED AGENCE - Direction ATELIER ==  D-096 */
-/* ============================================================
-   `[hidden]` DOIT VRAIMENT CACHER.  D-773
-
-   LA REGLE DU NAVIGATEUR PERD, ET ELLE PERD TOUJOURS. Le `[hidden]
-   { display: none }` de la feuille par defaut vient de l'origine
-   « navigateur » ; TOUTE regle d'auteur qui pose un `display` la
-   bat, quelle que soit la specificite. Un `.btn { display:
-   inline-flex }` suffit a rendre visible un bouton qu'on croit
-   masque.
-
-   CE QUE CA DONNAIT. Le bouton « Retour » du formulaire projet
-   etait a l'ecran DES LA PREMIERE ETAPE — mesure 44 x 108 px avec
-   `hidden = true` — et il ne menait nulle part.
-
-   HUIT RUSTINES AVAIENT DEJA ETE POSEES, une par classe prise en
-   flagrant delit : `.menu`, `.sug`, `.modal`, `.step`,
-   `.cadeau-form`, `.cadeau-suite`, `.cadeau-deja`, `.cadeau-fin`,
-   `.retenue`. Chacune reparait UN symptome. La cause n'avait
-   jamais ete touchee, alors chaque nouveau composant qui pose un
-   `display` ramenait le defaut — et il fallait le voir a l'oeil
-   pour le trouver.
-
-   `!important` EST ICI LE BON OUTIL, et c'est rare. `hidden` est
-   une declaration d'INTENTION du HTML : rien dans une feuille de
-   style n'a le droit de la contredire. Les huit rustines restent
-   volontairement en place — elles ne coutent rien et elles servent
-   de filet si cette ligne disparaissait.
-   ============================================================ */
-[hidden] { display: none !important; }
-/* == 1. GRILLE ==  D-097 */
-.wrap {
-  width: min(100% - (var(--pad) * 2), var(--maxw));
-  margin-inline: auto;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  column-gap: var(--gutter);
-}
-.band { padding-block: var(--band); }
-.band-tight { padding-block: var(--band-tight); }
-.band-loose { padding-block: var(--band-loose); }
-/* La respiration d'une jonction appartient a la section qui ARRIVE, jamais  D-098 */
-main.shell > section > .band:last-child,
-main.shell > section > .band-tight:last-child,
-main.shell > section > .band-loose:last-child { padding-bottom: 0; }
-/* == 1ter. LES SAS N'EXISTENT PLUS ==  D-571
-   Il y en avait trois. La descente et la remontee — le volet noir,
-   l'arete de grains, la forge de limaille et le mot « Essayez. » —
-   sont parties avec la chambre noire. La CLOTURE est partie le
-   2026-08-03 : sa piste de 100vh ne portait plus, sur 900 px de page
-   vide, qu'un trait de 2 px de large et 673 px de haut, plante au
-   milieu du blanc. C'etait la « grosse ligne parasite » entre la fin
-   du Contact et la bande « Fin de la traversee ».
-
-   Vingt-quatre regles, une classe decidee dans le script BLOQUANT du
-   `<head>` (`html.sas-ok`), et `js/sas.js` en entier sont partis avec
-   elle. La bande de cloture reste, en frontiere normale.
-
-   Ce qui a survecu au retrait : rien. C'est ce qu'on verifie quand on
-   retire un systeme — pas seulement qu'il ne peint plus, mais qu'il
-   ne reste aucune regle, aucun fichier, aucun drapeau. */
-/* LES SECTIONS HORS ECRAN NE SE METTENT PAS EN PAGE AU CHARGEMENT.  D-107 */
-#visite, #calculateur, #comparatif, #processus,
-#reference, #faq, #contact, .footer {
-  content-visibility: auto;
-}
-/* Releve du 2026-08-03 a 1440x900, section a l'ecran apres une
-   traversee complete de la page — `content-visibility: auto` rend la
-   taille RESERVEE tant qu'elle ne l'a pas ete (pieges 4 et 34).
-   1256 px datait de la chambre noire ; la section porte maintenant sa
-   propre bande de seuil et ne porte plus de sas.  D-580 */
-#visite { contain-intrinsic-size: auto 1149px; }
-#calculateur { contain-intrinsic-size: auto 1711px; }
-#comparatif { contain-intrinsic-size: auto 1125px; }
-/* 1602 -> 1183 : le parcours est passe de quatre a six etapes SANS
-   grandir (releve 2026-08-02 a 1440x900 et a 1920x1080, identiques).
-   Laisser l'ancienne valeur, c'est le defaut que D-580 a repare. */
-#processus { contain-intrinsic-size: auto 1183px; }
-#apropos { contain-intrinsic-size: auto 1108px; }
-#reference { contain-intrinsic-size: auto 1165px; }
-#faq { contain-intrinsic-size: auto 913px; }
-#contact { contain-intrinsic-size: auto 1402px; }
-.rule-top { border-top: var(--rule-w) solid var(--rule); }
-.rule-bottom { border-bottom: var(--rule-w) solid var(--rule); }
-.rule-left { border-left: var(--rule-w) solid var(--rule); }
-/* DÉCLINAISON DE LA SIGNATURE (N1 + N2).  D-108 */
-.section-rule {
-  height: var(--rule-w);
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--rule-strong) 0 2px,
-    transparent 2px 4px
-  );
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  transform-origin: left center;
-  transition: background-image var(--t-3) var(--e-snap);
-}
-/* == 2. EN-TETE DE SECTION ==  D-109 */
-.head { display: grid; gap: var(--s-3); margin-bottom: var(--s-6); }
-/* Les titres de section imposent sans manger l'ecran. L'enorme est  D-110 */
-.head h2 {
-  max-width: 22ch;
-  font-size: clamp(1.5rem, 0.9rem + 1.9vw, 2.375rem);
-}
-.head p { color: var(--ink-muted); font-size: var(--fs-5); max-width: 58ch; }
-/* Une ligne du titre est une BOITE : c'est elle que le balayage
-   decouvre, jamais un mot isole. `text-wrap` est neutralise ici,
-   sinon le navigateur re-equilibrerait des lignes deja arretees. */
-.head h2 .ligne { display: block; text-wrap: nowrap; }
-/* LE DECALAGE LATERAL NE DOIT PAS ETENDRE LA PAGE.  D-111 */
-[data-settle],
-.parc-corps {
-  overflow-x: clip;
-  overflow-y: visible;
-}
-.head-index {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  letter-spacing: var(--tracking-label);
-  color: var(--ink-muted);
-  font-variation-settings: "wdth" 100;
-}
-/* == 3. NAVIGATION ==  D-112 */
-.nav {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: var(--z-nav);
-  height: calc(var(--nav-h) + env(safe-area-inset-top));
-  padding-top: env(safe-area-inset-top);
-  padding-inline: var(--pad);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: var(--s-5);
-  background: var(--surface-0);
-  border-bottom: var(--rule-w) solid var(--rule);
-}
-.wordmark {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.0625rem;
-  letter-spacing: 0.02em;
-  font-variation-settings: "wdth" var(--wdth-wide);
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35em;
-}
-.wordmark span {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  font-weight: 400;
-  color: var(--ink-muted);
-  letter-spacing: var(--tracking-label);
-}
-/* Le monogramme, inline pour heriter de `currentColor` : une balise
-   <img> ne pourrait ni suivre le theme ni porter l'accent. */
-.wordmark-mark {
-  width: auto;
-  height: 1.05em;
-  align-self: center;
-  flex: none;
-  color: var(--ink);
-}
-/* Les deux telechargements directs du pied sont partis : les guides
-   ne s'obtiennent plus que par le popup, contre des coordonnees.
-   Onze regles avec eux.  D-080 */
-/* Impact ROI dans la nav. Sur petit ecran c'est la seule presence
-   du chiffre : une ligne, pas une bande. */
-.nav-impact {
-  justify-self: center;
-  display: flex;
-  align-items: baseline;
-  gap: var(--s-2);
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
+.nav-liens { display: none; gap: var(--e-1); margin-inline: auto; }
+.nav-lien {
+  display: inline-flex; align-items: center;
+  min-height: var(--cible-min);
+  padding: 0 var(--e-2);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--text-soft);
+  text-decoration: none;
+  border-radius: var(--rayon);
+  /* UN LIBELLE DE NAVIGATION NE SE COUPE PAS EN DEUX. Sans ca, la barre
+     « rentrait » — la sonde de debordement rendait 0 — parce que « Comment
+     ca marche » se pliait sur deux lignes. La mesure disait oui, l'image
+     disait non.  D-860 */
   white-space: nowrap;
-  overflow: hidden;
+  transition: color var(--t-etat), background-color var(--t-etat);
 }
-.nav-impact b {
-  color: var(--accent-text);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+.nav-lien:hover { color: var(--navy-dark); background: var(--marble); }
+/* La page courante est marquee par un filet champagne SOUS le mot, et par
+   `aria-current` : la couleur seule ne dirait rien a qui ne la voit pas. */
+.nav-lien[aria-current="page"] {
+  color: var(--navy-dark);
+  box-shadow: inset 0 -2px 0 var(--champagne-dark);
 }
-.nav-links {
-  display: none;
-  align-items: center;
-  gap: var(--s-5);
+/* A 1024, la barre pesait 1 044 px pour 864 de place : logo 187 + cinq
+   liens 519 + numero 120 + bouton 170. Elle debordait de 23 px, et un
+   debordement d'en-tete ne se voit pas — il pousse simplement le menu hors
+   de l'ecran. Deux mesures, dans cet ordre : la barre reprend une gouttiere
+   etroite entre 62 et 75em, et le NUMERO n'y parait qu'a partir de 75em. Il
+   reste joignable partout ailleurs : l'icone du telephone sous 48em, le
+   menu, le pied, et la page de contact.  D-849 */
+@media (min-width: 62em) {
+.nav-liens { display: flex; }
+.nav-lien { padding: 0 var(--e-1); }
 }
-.nav-links a {
-  font-size: var(--fs-7);
-  color: var(--ink-muted);
-  padding-block: var(--s-2);
-  position: relative;
-  transition: color var(--t-2) var(--e-snap);
+/* 78em et pas 75 : a 1 200 px pile, le numero qui reparaissait poussait la
+   barre de 26 px. Le seuil se mesure, il ne se choisit pas rond.  D-861 */
+@media (min-width: 78em) {
+.nav-lien { padding: 0 var(--e-2); }
 }
-.nav-links a::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: var(--rule-w);
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--t-2) var(--e-snap);
+/* Le bouton du menu ne parait que sous 62em, ou les liens sont caches. */
+.menu-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--e-1);
+  width: var(--cible-min); height: var(--cible-min);
+  border-radius: var(--rayon);
+  color: var(--navy-dark);
 }
-.nav-links a:hover { color: var(--ink); }
-.nav-links a:hover::after { transform: scaleX(1); }
-.nav-right { display: flex; align-items: center; gap: var(--s-3); }
-/* Sous 64em le CTA de la barre disparait : il ne rentre pas a cote du
-   montant et du menu, et il est deja dans le menu plein ecran.
-   Selecteur double pour passer devant `.btn`, declare plus bas. */
-.nav .btn.nav-cta { display: none; }
-/* Les liens de section n'apparaissent qu'a 72em, pas 64 : a 1024 px ils  D-113 */
-@media (min-width: 64em) {
-.nav .btn.nav-cta { display: inline-flex; }
+.menu-btn:hover { background: var(--marble); }
+@media (min-width: 62em) {
+.menu-btn { display: none; }
 }
-@media (max-width: 26em) {
-.wordmark span { display: none; }
-}
-/* LE MONTANT VIVANT NE TIENT PAS DANS LA BARRE SOUS 64em.  D-114 */
-@media (max-width: 63.99em) {
-.nav { grid-template-columns: auto 1fr auto; }
-.nav-impact { display: none; }
-}
-/* Reference : deuxieme CTA de la barre. Hierarchie tenue par le  D-115 */
-.nav .btn.nav-refer {
-  gap: var(--s-3);
-  padding-inline: 0.875rem;
-}
-.nav-refer-num {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  font-weight: 700;
-  color: var(--accent-text);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-/* Deux libelles dans le markup, un seul peint a la fois.  D-704 */
-/* LA SPECIFICITE EST LE FOND DU CORRECTIF : `langue.js` pose la  D-704 */
-.nav .btn.nav-refer .nav-refer-court { display: none; }
-/* Sur telephone, le libelle complet ne rentre pas a cote du bourgeon  D-116 */
-@media (max-width: 47.99em) {
-.nav .btn.nav-refer { padding-inline: 0.5rem; gap: var(--s-2); }
-.nav .btn.nav-refer .nav-refer-long { display: none; }
-.nav .btn.nav-refer .nav-refer-court {
-    display: inline-block;
-    font-family: var(--font-text);
-    font-size: var(--fs-8);
-    font-weight: 600;
-    color: var(--ink);
-  }
-.nav .btn.nav-refer .nav-refer-num { font-size: var(--fs-8); }
-}
-/* SOUS 384 px, C'EST LE MONTANT QUI PART, PAS LE MOT.  D-710 */
-@media (max-width: 24em) {
-.nav .btn.nav-refer .nav-refer-num { display: none; }
-}
-/* ============================================================
-   LA BARRE SUR TELEPHONE : LE PARRAINAGE SORT.  D-787
-
-   Elle tenait « APED · Referez · 5 000 $ » et rien d'autre — la
-   place la plus chere du site, visible sur chaque ecran, vendant le
-   programme de parrainage a quelqu'un qui n'a rien achete. Le seul
-   montant qu'un visiteur voyait en dix-neuf ecrans etait une prime
-   qui ne le concerne pas.
-
-   A SA PLACE : LE CTA D'ACHAT ET LE NUMERO. Le parrainage reste
-   dans le menu plein ecran et dans sa propre section 09 ; il n'a
-   rien perdu qu'un raccourci mal place.
-
-   LE NUMERO EST L'INVERSE DU CTA : il ne parait QUE sur petit
-   ecran. Sur un ordinateur on ne tape pas un numero depuis une
-   barre — il est dans le pied et dans la section Contact — mais sur
-   un telephone, une tape et l'appel part.
-   ============================================================ */
-.nav .nav-tel { display: none; }
-.nav .btn.nav-cta .nav-cta-court { display: none; }
-@media (max-width: 63.99em) {
-.nav .btn.nav-refer { display: none; }
-.nav .btn.nav-cta { display: inline-flex; }
-.nav .nav-tel { display: inline-flex; }
-}
-/* Sous 48em le libelle raccourcit : « Demarrer votre projet » ne
-   rentre pas a cote du numero, du bourgeon de theme et du menu. */
-@media (max-width: 47.99em) {
-.nav .btn.nav-cta { padding-inline: 0.75rem; }
-.nav .btn.nav-cta .nav-cta-long { display: none; }
-/* SUR UNE SEULE LIGNE. Sans ca « Mon projet » se coupe en deux et
-     le bouton grandit en hauteur : il se lit alors comme un pave, pas
-     comme un bouton. */
-.nav .btn.nav-cta .nav-cta-court { display: inline; white-space: nowrap; }
-.nav .btn.nav-cta .icon { display: none; }
-}
-/* SOUS 352 px, LE CTA PART ET LE NUMERO RESTE.  D-787
-   Mesure a 320 px : theme + numero + CTA + menu poussaient le menu
-   a 319-355, donc HORS DE L'ECRAN — sans debordement horizontal, ce
-   qui veut dire que personne ne l'aurait vu passer. Des deux, c'est
-   le numero qui reste : le CTA est dans le menu plein ecran, et sur
-   un ecran de 320 px on appelle plus qu'on ne remplit. */
-@media (max-width: 22em) {
-.nav .btn.nav-cta { display: none; }
-}
-/* == 4. BOUTONS ==  D-117 */
-.btn {
-  --btn-rule: var(--rule-strong);
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  /* 44 px AU POUCE, IMPOSÉ ET NON DÉDUIT.  D-772
-     Le remplissage et l'interligne donnaient 43,5 px selon la
-     police chargée — mesuré, pas suppose. Un demi-pixel sous la
-     cible reste sous la cible, et c'est le bouton « Continuer »
-     d'un formulaire a sept ecrans : celui qu'on touche le plus. */
-  min-height: 2.75rem;
-  justify-content: space-between;
-  gap: var(--s-5);
-  padding: 0.8125rem 1.125rem;
-  border: var(--rule-w) solid var(--btn-rule);
-  border-radius: var(--radius);
-  font-family: var(--font-text);
-  font-weight: 600;
-  font-size: var(--fs-7);
-  line-height: 1.2;
-  white-space: nowrap;
-  color: var(--ink);
-  background: transparent;
-  transition:
-    background-color var(--t-2) var(--e-snap),
-    border-color var(--t-2) var(--e-snap),
-    color var(--t-2) var(--e-snap),
-    transform var(--t-1) var(--e-snap);
-}
-.btn .icon { width: 1.125em; height: 1.125em; }
-/* DÉCLINAISON DE LA SIGNATURE (N2).  D-118 */
-.btn::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 -1px 0;
-  height: var(--focus-w);
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--accent) 0 2px,
-    transparent 2px 4px
-  );
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  transition: background-size var(--t-2) var(--e-snap);
-}
-.btn:hover::after,
-.btn:focus-visible::after { background-size: 100% 100%; }
-.btn:active { transform: translateY(1px); }
-.btn--primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-.btn--primary::after { background: var(--ink); }
-.btn--primary:hover { background: var(--accent-text); border-color: var(--accent-text); }
-.btn--ghost:hover { border-color: var(--ink); }
-.btn--lg { padding: 1.0625rem 1.375rem; font-size: var(--fs-5); }
-.btn--block { width: 100%; }
-/* Sous 26em, « Estimation en 60 secondes » mesure 307 px sur une  D-119 */
-@media (max-width: 26em) {
-.btn { white-space: normal; gap: var(--s-3); }
-.btn--lg { padding-inline: 1rem; }
-}
-.btn[disabled],
-.btn[aria-disabled="true"] {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-}
-.btn[disabled]::after { transform: scaleX(0); }
-@keyframes btn-load {
-  0% { transform: scaleX(0); transform-origin: left center; }
-  50% { transform: scaleX(1); transform-origin: left center; }
-  51% { transform: scaleX(1); transform-origin: right center; }
-  100% { transform: scaleX(0); transform-origin: right center; }
-}
-/* Bouton icone seul : nav, fermeture, calendrier. */
-.btn-icon {
-  display: inline-grid;
-  place-items: center;
-  /* 36 px MESURES, ET C'EST LE BOUTON « FERMER » D'UNE MODALE.
-     Le rater fait toucher a cote, donc rester enferme dans un
-     formulaire qu'on voulait quitter — la pire chose qu'un bouton
-     de fermeture puisse faire.  D-772
-     Le CARRE reste : c'est la cible qui grandit, pas le dessin. */
-  width: 2.75rem;
-  height: 2.75rem;
-  /* ET LA MESURE AVAIT ETE PRISE EN LARGE, JAMAIS EN 390.  D-773
-     `.btn-icon` est un item flex de `.modal-head`, sans consigne de
-     retrait : le titre le COMPRIMAIT. Releve du 2026-08-07 par
-     `getBoundingClientRect`, pas deduit du CSS — a 390 px,
-     `modal-refer` 20,2 px de large, `modal-urgent` 25,7,
-     `modal-estimate` 33, `modal-project` 42,5. A 1440 px, tous a 44.
-     La hauteur, elle, valait 44 partout : le controle de
-     `cas-tordus-check` ne regardait QUE la hauteur, et passait
-     depuis toujours sur un bouton de 20 px. Piege 17 dans sa forme
-     la plus couteuse — un test qui verrouille le defaut qu'il est
-     cense garder. */
-  flex: 0 0 auto;
-  min-width: 2.75rem;
-  border: var(--rule-w) solid var(--rule-strong);
-  color: var(--ink);
-  font-size: 1.125rem;
-  transition:
-    background-color var(--t-1) var(--e-snap),
-    border-color var(--t-1) var(--e-snap),
-    transform var(--t-1) var(--e-snap);
-}
-.btn-icon:hover { background: var(--surface-1); border-color: var(--ink); }
-.btn-icon:active { transform: translateY(1px); }
-.btn-icon[disabled] { opacity: 0.35; cursor: not-allowed; }
-/* Bourgeon de menu : deux filets, pas d'icone.  D-120 */
-.burger {
-  position: relative;
-  display: block;
-  width: 2.25rem;
-  height: 2.25rem;
-  border: var(--rule-w) solid var(--rule-strong);
-}
-.burger i {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 1rem;
-  height: var(--rule-w);
-  margin-left: -0.5rem;
-  background: var(--ink);
-  transition: transform var(--t-2) var(--e-snap);
-}
-.burger i:first-child { transform: translateY(-3px); }
-.burger i:last-child { transform: translateY(3px); }
-.burger[aria-expanded="true"] i:first-child { transform: rotate(45deg); }
-.burger[aria-expanded="true"] i:last-child { transform: rotate(-45deg); }
-/* Les cibles se laissent attirer. `transform` seulement, donc
-   composite, et remis a zero des que la pointe s'eloigne. */
-.btn, .btn-icon, .cell, .sector-pills button, .rail-list a, .nav-links a {
-  transition-property: background-color, border-color, color, transform, padding-left, background-size;
-  transition-duration: var(--t-2);
-  transition-timing-function: var(--e-snap);
-}
-/* == 5. INDEX COLLANT ==  D-122 */
-.rail {
-  display: none;
-  position: fixed;
-  left: var(--pad);
-  top: calc(var(--nav-h) + var(--s-7));
-  z-index: var(--z-rail);
-  width: var(--rail-w);
-  max-height: calc(100dvh - var(--nav-h) - var(--s-9));
-  grid-template-rows: 1fr auto;
-  gap: var(--s-5);
-}
-.rail-list { display: grid; align-content: start; gap: 1px; overflow: hidden; }
-.rail-list a {
-  display: grid;
-  grid-template-columns: 2.25rem 1fr;
-  align-items: baseline;
-  gap: var(--s-2);
-  padding: 0.3125rem 0;
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  letter-spacing: 0.04em;
-  color: var(--ink-muted);
-  border-left: var(--rule-w) solid transparent;
-  padding-left: var(--s-3);
-  transition: color var(--t-2) var(--e-snap), border-color var(--t-2) var(--e-snap);
-}
-.rail-list a:hover { color: var(--ink); border-left-color: var(--rule-strong); }
-.rail-list a[aria-current="true"] {
-  color: var(--accent-text);
-  border-left-color: var(--rule-accent);
-}
-.rail-list em { font-style: normal; opacity: 0.55; }
-/* N1 · progression DANS la section courante. Le filet de gauche de
-   l'entree active se remplit au fur et a mesure : on sait ou on en
-   est dans la section, pas seulement dans laquelle on est. */
-.rail-list a[aria-current="true"] {
-  background-image: linear-gradient(var(--rule-accent) 0 100%);
-  background-repeat: no-repeat;
-  background-position: left top;
-  background-size: var(--rule-w) var(--sec-progress, 0%);
-  border-left-color: var(--rule);
-}
-.rail-left {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  color: var(--ink-muted);
-  padding-top: var(--s-3);
-  border-top: var(--rule-w) solid var(--rule);
-}
-.rail-left .num { color: var(--ink); font-weight: 700; }
-/* N1 · progression de lecture. Trame de grains, comme le filet de
-   section : meme matiere, autre echelle. */
-.read-progress {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: calc(var(--z-nav) + 1);
-  height: 2px;
-  background: transparent;
-  pointer-events: none;
-}
-.read-progress i {
-  display: block;
-  height: 100%;
-  width: var(--read, 0%);
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--accent) 0 2px,
-    transparent 2px 4px
-  );
-}
-/* Impact ROI persistant. Il porte le seul accent du rail. */
-.rail-impact {
-  border-top: var(--rule-w) solid var(--rule-strong);
-  padding-top: var(--s-3);
-  display: grid;
-  gap: var(--s-1);
-}
-.rail-impact .label { font-size: var(--fs-8); }
-.rail-impact b {
-  font-family: var(--font-data);
-  font-size: 1.375rem;
-  font-weight: 700;
-  color: var(--accent-text);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.04em;
-  font-variation-settings: "wdth" 87.5;
-}
-/* Le minium ne se pose que sur un montant REEL : le cadratin qui  D-707 */
-.rail-impact b[data-vide],
-.nav-impact b[data-vide] { color: var(--ink-muted); }
-.rail-impact small {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  color: var(--ink-muted);
-  line-height: 1.4;
-}
-/* == 6. MENU PLEIN ECRAN == */
+/* Le menu plein ecran : une colonne, des cibles de 56 px, rien d'autre. */
 .menu {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-menu);
-  background: var(--surface-0);
-  padding: calc(var(--nav-h) + var(--s-7)) var(--pad) var(--s-7);
-  display: grid;
-  align-content: space-between;
-  gap: var(--s-7);
-  overscroll-behavior: contain;
+  position: fixed; inset: 0; z-index: var(--z-menu);
+  background: var(--pearl);
+  display: flex; flex-direction: column;
+  padding: var(--e-3) var(--gouttiere) var(--e-7);
   overflow-y: auto;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity var(--t-3) var(--e-snap), visibility 0s linear var(--t-3);
 }
-/* `display: grid` ci-dessus ecrasait l'attribut hidden : le menu ferme
-   restait dans l'arbre rendu et ses liens repondaient au focus. */
 .menu[hidden] { display: none; }
-.menu-list { display: grid; gap: 1px; }
-.menu-list a {
-  display: grid;
-  grid-template-columns: 3rem 1fr;
-  align-items: baseline;
-  padding: var(--s-4) 0;
-  border-top: var(--rule-w) solid var(--rule);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--fs-3);
-  font-variation-settings: "wdth" var(--wdth-wide);
-  letter-spacing: var(--tracking-display);
+.menu-tete { display: flex; align-items: center; justify-content: space-between; height: var(--nav-h); }
+.menu-liste { margin-top: var(--e-4); display: flex; flex-direction: column; }
+.menu-liste a {
+  display: flex; align-items: center;
+  min-height: var(--cible); padding-block: var(--e-1);
+  font-family: var(--font-titre);
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+  color: var(--navy-dark); text-decoration: none;
+  border-bottom: var(--filet) solid var(--line);
 }
-.menu-list em {
-  font-family: var(--font-data);
-  font-style: normal;
-  font-size: var(--fs-8);
-  font-weight: 400;
-  color: var(--ink-muted);
-  letter-spacing: var(--tracking-label);
+.menu-pied { margin-top: var(--e-5); display: grid; gap: var(--e-2); }
+/* ===================================================================
+   4 · LES BOUTONS — trois voix, jamais quatre
+   =================================================================== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--e-1);
+  min-height: var(--cible);
+  padding: 0 var(--e-4);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600; letter-spacing: 0.01em;
+  text-decoration: none; text-align: center;
+  transition: background-color var(--t-etat), color var(--t-etat),
+              border-color var(--t-etat), transform var(--t-vif),
+              box-shadow var(--t-etat);
 }
-.menu-actions { display: grid; gap: var(--s-3); }
-.menu-foot {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  color: var(--ink-muted);
+.btn svg { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
+/* Un seul bouton primaire par ecran. C'est la regle, pas une preference. */
+.btn--primaire {
+  background: var(--navy); color: var(--pearl);
+  box-shadow: var(--ombre-pose);
 }
-.plate--flush { background: var(--surface-1); }
-.plate--inverse {
-  background: var(--surface-inverse);
-  color: var(--ink-inverse);
-  border-color: transparent;
+.btn--primaire:hover { background: var(--navy-dark); box-shadow: var(--ombre-levee); }
+.btn--primaire:active { transform: translateY(1px); box-shadow: var(--ombre-pose); }
+.btn--second {
+  background: var(--pearl); color: var(--navy-dark);
+  border: var(--filet) solid var(--line-strong);
 }
-.plate--inverse .label,
-.plate--inverse p { color: color-mix(in srgb, var(--ink-inverse) 66%, transparent); }
-/* == 9. CURSEURS ==  D-126 */
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 1.5rem;
-  background: transparent;
-  cursor: ew-resize;
+.btn--second:hover { border-color: var(--navy-light); background: var(--marble); }
+/* Le troisieme n'est pas un bouton, c'est un lien qui se comporte en bouton :
+   il ne doit jamais entrer en concurrence avec le primaire. */
+.btn--nu {
+  padding-inline: var(--e-1); min-height: var(--cible-min);
+  color: var(--navy-dark);
+  text-decoration: underline; text-decoration-color: var(--champagne-dark);
+  text-decoration-thickness: 2px; text-underline-offset: 0.3em;
 }
-input[type="range"]::-webkit-slider-runnable-track {
-  height: var(--rule-w);
-  background: var(--rule-strong);
-}
-input[type="range"]::-moz-range-track {
-  height: var(--rule-w);
-  background: var(--rule-strong);
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 0.875rem;
-  height: 1.25rem;
-  margin-top: -0.625rem;
-  background: var(--ink);
-  border: 0;
-  border-radius: var(--radius);
-  transition: background-color var(--t-1) var(--e-snap), transform var(--t-1) var(--e-snap);
-}
-input[type="range"]::-moz-range-thumb {
-  width: 0.875rem;
-  height: 1.25rem;
-  background: var(--ink);
-  border: 0;
-  border-radius: var(--radius);
-}
-input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent); }
-input[type="range"]:active::-webkit-slider-thumb { transform: scaleY(1.15); }
-input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
-/* == 11b. SEQUENCE D'ENTREE ==  D-127 */
-/* LE SCENARIO, EN QUATRE TEMPS ET 1 420 ms.  D-128 */
-.entree { display: none; }
-/* LA PAUSE. Elle nomme exactement ce qui a le droit d'attendre.  D-129 */
-html.entree-attend .entree-bandes i,
-html.entree-attend .entree-plaque,
-html.entree-attend .entree-cadre { animation-play-state: paused !important; }
-html.entree-attend .entree-jauge,
-html.entree-attend .entree-etat,
-html.entree-attend .entree-rouleau { animation-play-state: running, paused !important; }
-/* LA COMPOSITION DU HERO ATTEND AVEC LE RESTE. Sans cette ligne,  D-130 */
-/* LA COMPOSITION EST POSEE TOT ET TENUE A L'ARRET.  D-131 */
-html.compo-attend .he,
-html.compo-attend .he::after,
-html.compo-attend .hero-fiche .fiche-rule,
-html.entree-attend .he,
-html.entree-attend .he::after,
-html.entree-attend .hero-fiche .fiche-rule { animation-play-state: paused !important; }
-/* LE CONTRAT DU VOYAGE — l'assemblage du rail.  D-584 */
-html.compo-hero .rail-list a {
-  animation: rail-aligne 520ms var(--e-snap) calc(160ms + var(--re, 0) * 1ms) both;
-}
-html.compo-attend .rail-list a,
-html.entree-attend .rail-list a { animation-play-state: paused !important; }
-@keyframes rail-aligne {
-  from { transform: translate3d(-28px, 0, 0); }
-  to { transform: translate3d(0, 0, 0); }
-}
-html.entree-on .entree {
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: calc(var(--z-skip) + 10);
-  pointer-events: none;
-}
-/* LES QUINZE BANDES.  D-132 */
-.entree-bandes { position: absolute; inset: 0; }
-.entree-bandes i {
-  --d: -1;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: calc(100% / 15 + 1px);
-  top: calc(var(--i) * 100% / 15);
-  background: var(--surface-0);
-  will-change: transform;
-  animation: entree-bande 300ms var(--e-drive) calc(700ms + var(--k) * 24ms) forwards;
-}
-.entree-bandes i:nth-child(even) { --d: 1; }
-@keyframes entree-bande {
-  to { transform: translate3d(calc(var(--d) * 101%), 0, 0); }
-}
-/* LA JAUGE. Pleine largeur, en haut, exactement la ou la barre de  D-133 */
-.entree-jauge {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  width: 100%;
-  height: 4px;
-  /* UNE PISTE SOUS LA TRAME. Sans elle on ne voit que ce qui est
-     deja fait, donc on ne voit pas une PROGRESSION : on voit un
-     filet qui pousse dans le vide. La piste dit la course totale. */
-  background-color: var(--rule);
-  background-image: repeating-linear-gradient(
-    90deg, var(--accent) 0 2px, transparent 2px 4px);
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  animation:
-    entree-filet-a 620ms linear 0ms forwards,
-    entree-filet-b 180ms linear 620ms forwards;
-}
-@keyframes entree-filet-a { to { background-size: 80% 100%; } }
-@keyframes entree-filet-b { from { background-size: 80% 100%; } to { background-size: 100% 100%; } }
-/* LE CADRE D'ATELIER. Quatre equerres qui reservent le format avant  D-134 */
-.entree-cadre {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(58rem, 74vw);
-  aspect-ratio: 16 / 7;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  /* Le cadre part AVANT que le rideau s'ouvre : c'est le banc qu'on  D-135 */
-  animation: entree-efface 140ms linear 640ms forwards;
-}
-.entree-cadre i {
-  position: absolute;
-  width: clamp(1.75rem, 3.4vw, 3rem);
-  height: clamp(1.75rem, 3.4vw, 3rem);
-  border: 0 solid var(--rule-strong);
-  transform: scale(0);
-  animation: entree-repere 240ms var(--e-snap) forwards;
-}
-.entree-cadre i:nth-child(1) { top: 0; left: 0; border-top-width: var(--rule-w); border-left-width: var(--rule-w); transform-origin: top left; animation-delay: 40ms; }
-.entree-cadre i:nth-child(2) { top: 0; right: 0; border-top-width: var(--rule-w); border-right-width: var(--rule-w); transform-origin: top right; animation-delay: 90ms; }
-.entree-cadre i:nth-child(3) { bottom: 0; right: 0; border-bottom-width: var(--rule-w); border-right-width: var(--rule-w); transform-origin: bottom right; animation-delay: 140ms; }
-.entree-cadre i:nth-child(4) { bottom: 0; left: 0; border-bottom-width: var(--rule-w); border-left-width: var(--rule-w); transform-origin: bottom left; animation-delay: 190ms; }
-@keyframes entree-repere { to { transform: scale(1); } }
-.entree-plaque {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: grid;
-  justify-items: center;
-  gap: var(--s-3);
-  transform: translate(-50%, -50%);
-  /* Les valeurs de repli servent quand le script n'a pas eu le temps
-     de mesurer le cadre du hero : la plaque monte un peu et
-     retrecit, ce qui reste un geste juste, seulement moins precis. */
-  animation:
-    entree-remise 300ms var(--e-drive) 620ms forwards,
-    entree-efface 160ms linear 800ms forwards;
-}
-@keyframes entree-remise {
-  to {
-    transform: translate(-50%, -50%)
-      translate3d(var(--entree-dx, 0px), var(--entree-dy, -60px), 0)
-      scale(var(--entree-k, 0.78));
-  }
-}
-@keyframes entree-efface { to { opacity: 0; } }
-/* Le monogramme est GRAND. A 6 rem il flottait au milieu d'un champ
-   vide et se lisait comme un indicateur d'attente, pas comme une
-   marque qui arrive. */
-.entree-mark {
-  width: auto;
-  height: clamp(5.5rem, 15vw, 12rem);
-  color: var(--ink);
-  /* Il n'apparait pas en fondu : ses moities se posent, comme une
-     piece qu'on encliquette sur le banc. */
-  clip-path: inset(0 0 100% 0);
-  animation: entree-pose 320ms var(--e-snap) 60ms forwards;
-}
-@keyframes entree-pose {
-  to { clip-path: inset(0 0 0 0); }
-}
-.entree-mot {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6em;
-  margin-top: var(--s-2);
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: var(--fs-4);
-  letter-spacing: 0.08em;
-  font-variation-settings: "wdth" var(--wdth-wide);
-  opacity: 0;
-  animation: entree-mot 200ms var(--e-snap) 300ms forwards;
-}
-.entree-mot span {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  font-weight: 400;
-  color: var(--ink-muted);
-  letter-spacing: var(--tracking-label);
-}
-@keyframes entree-mot { to { opacity: 1; } }
-/* LE COMPTEUR — V4 · CRAN, et il est en bas de l'ecran, sous la  D-136 */
-/* LA LIGNE D'ETAT PREND LA LARGEUR DU CADRE, pas celle du texte.  D-137 */
-.entree-etat {
-  position: absolute;
-  left: 50%;
-  top: calc(50% + (min(58rem, 74vw) * 7 / 32) + var(--s-5));
-  width: min(58rem, 74vw);
-  /* La mesure de lecture posee sur tous les `p` du site rognait
-     cette ligne a 478 px : le libelle et la valeur se retrouvaient
-     au milieu au lieu de tenir les deux montants du banc. */
-  max-width: none;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--s-4);
-  margin: 0;
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--ink-muted);
-  opacity: 0;
-  /* ELLE DOIT PARTIR, ET ELLE NE PARTAIT PAS.  D-138 */
-  animation:
-    entree-mot 200ms var(--e-snap) 260ms forwards,
-    entree-efface 140ms linear 760ms forwards;
-}
-.entree-lib { line-height: 1; padding-bottom: 0.18em; }
-/* LA FENETRE. Elle rogne, elle ne bouge pas. */
-.entree-cran {
-  display: block;
-  overflow: hidden;
-  /* `line-height` DOIT valoir la hauteur de boite, sinon chaque  D-139 */
-  height: 1em;
-  line-height: 1;
-  font-family: var(--font-display);
-  font-size: var(--fs-4);
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  color: var(--ink);
-  /* Les chiffres ne doivent pas changer de largeur en roulant, sinon
-     le compteur respire au lieu de rouler. */
-  font-variant-numeric: tabular-nums;
-}
-/* LA BANDE. Elle defile, elle ne rogne pas. */
-.entree-rouleau {
-  display: block;
-  font-style: normal;
-  animation:
-    entree-cran-a 620ms steps(8) 0ms forwards,
-    entree-cran-b 180ms steps(2) 620ms forwards;
-}
-.entree-cran b { display: block; height: 1em; line-height: 1; font-weight: inherit; }
-@keyframes entree-cran-a { to { transform: translateY(-8em); } }
-@keyframes entree-cran-b { from { transform: translateY(-8em); } to { transform: translateY(-10em); } }
-/* La sortie, ecrite. Elle arrive en dernier, quand l'attente
-   commence a compter — pas a la premiere image, ou elle
-   proposerait de partir avant d'avoir montre quoi que ce soit. */
-.entree-saut-mot {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(0.75rem, 3vh, 1.75rem);
-  transform: translateX(-50%);
-  margin: 0;
-  font-family: var(--font-data);
-  font-size: var(--fs-9, var(--fs-8));
-  letter-spacing: var(--tracking-label);
-  color: var(--ink-faint, var(--ink-muted));
-  opacity: 0;
-  animation: entree-mot 200ms linear 760ms forwards;
-}
-/* LE SAUT. N'importe quel clic, n'importe quelle touche. Ce n'est  D-140 */
-html.entree-saut .entree-bandes i {
-  animation: entree-bande 160ms var(--e-drive) calc(var(--k) * 6ms) forwards !important;
-}
-html.entree-saut .entree-jauge {
-  animation: entree-filet-b 120ms linear 0ms forwards !important;
-}
-html.entree-saut .entree-etat,
-html.entree-saut .entree-cadre,
-html.entree-saut .entree-saut-mot { animation: entree-efface 100ms linear forwards !important; }
-html.entree-saut .entree-plaque {
-  animation: entree-efface 120ms linear forwards !important;
-}
-/* MOUVEMENT REDUIT : LE LOGO, BREF, PUIS LE SITE.  D-141 */
-@media (prefers-reduced-motion: reduce) {
-html.entree-on .entree { animation: entree-part 1ms step-end 520ms forwards; }
-html.entree-on .entree-bandes i,
-  html.entree-on .entree-jauge,
-  html.entree-on .entree-mark { animation: none; }
-/* Les equerres sont a `scale(0)` au repos : couper leur animation
-     sans leur rendre leur echelle les rendrait invisibles. */
-html.entree-on .entree-cadre i { animation: none; transform: scale(1); }
-html.entree-on .entree-cadre,
-  html.entree-on .entree-plaque,
-  html.entree-on .entree-mot,
-  html.entree-on .entree-etat { animation: none; opacity: 1; }
-html.entree-on .entree-mark { clip-path: none; }
-html.entree-on .entree-jauge { background-size: 100% 100%; }
-html.entree-on .entree-rouleau { animation: none; transform: translateY(-10em); }
-html.entree-on .entree-saut-mot { display: none; }
-}
-@keyframes entree-part { to { visibility: hidden; } }
-@keyframes cadeau-degage {
-  from { clip-path: inset(0 0 100% 0); }
-  to { clip-path: inset(0 0 0 0); }
-}
-@keyframes cadeau-voile { from { opacity: 0; } to { opacity: 1; } }
-@keyframes cadeau-recoupe {
-  from { clip-path: inset(0 0 0 0); }
-  to { clip-path: inset(0 0 100% 0); }
-}
-@keyframes cadeau-aligne-g { from { transform: translate3d(-22px, 0, 0); } to { transform: none; } }
-@keyframes cadeau-aligne-d { from { transform: translate3d(22px, 0, 0); } to { transform: none; } }
-@keyframes cadeau-soude {
-  to { background-size: 100% var(--rule-w); }
-}
-/* == 12. HERO - plaque typographique == */
-.hero {
-  padding-top: calc(var(--nav-h) + var(--s-5));
-  padding-bottom: var(--s-7);
-  min-height: 100dvh;
-  display: grid;
-  /* `minmax(0, 1fr)` et non `auto` : une colonne de grille en `auto`  D-157 */
-  grid-template-columns: minmax(0, 1fr);
-  align-content: center;
-  gap: var(--s-4);
-}
-.hero-eyebrow { margin-bottom: var(--s-2); }
-/* LA PLAQUE DE LIMAILLE  D-158 */
-/* MESURE DU 2026-07-25 : a 1000/292 le bloc des deux mots occupait  D-159 */
-.hero-plate {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1000 / 310;
-  max-height: 40dvh;
-  margin-block: var(--s-2) var(--s-4);
-  touch-action: pan-y;      /* le tactile ne piege jamais le defilement */
-}
-.hero-plate canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-}
-/* Le texte reel. Visible tant que la matiere n'est pas prete, et
-   definitivement si le canvas est indisponible : la page ne depend
-   jamais du canvas pour dire son nom. */
-.plate-text {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  display: grid;
-  align-content: center;
-  justify-items: stretch;
-  transform: rotate(-2.2deg);
-  font-family: var(--font-display);
-  font-weight: 900;
-  line-height: 0.82;
-  letter-spacing: -0.035em;
+.btn--nu:hover { text-decoration-color: var(--navy); }
+.btn--large { width: 100%; }
+/* ===================================================================
+   5 · L'ACCUEIL — le premier ecran
+   Au plus 25 mots, et UN bouton. Compte : logo, 5 liens, un numero,
+   un titre de 7 mots, une phrase de 14, un bouton.  D-824
+   =================================================================== */
+.hero { padding-block: var(--e-9) var(--bande); position: relative; }
+.hero-grille { display: grid; gap: var(--e-7); align-items: center; }
+/* 18ch, pas 13 : a 13 le titre tombait en QUATRE lignes et le `<br>` voulu
+   ne servait plus a rien. Deux lignes, une idee par ligne.  D-837 */
+.hero h1 {
+  font-size: var(--t-5);
+  line-height: var(--lh-5);
+  letter-spacing: var(--ls-5);
+  font-weight: 460;
+  max-width: 18ch;
   text-wrap: nowrap;
-  color: var(--accent);
 }
-.plate-big {
-  display: block;
-  font-size: clamp(3.5rem, 21.5vw, 15.5rem);
-  font-variation-settings: "wdth" 125;
+@media (max-width: 61.99em) {
+.hero h1 { text-wrap: balance; max-width: 16ch; }
 }
-/* Le canvas trace AGENCE en capitales. Le repli textuel doit dire  D-160 */
-.plate-small {
-  display: block;
-  font-size: clamp(0.86rem, 5.3vw, 3.85rem);
-  font-variation-settings: "wdth" 125;
-  color: var(--ink);
-  letter-spacing: 0.34em;
-  margin-top: 0.12em;
-  text-transform: uppercase;
+.hero-phrase {
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--text-soft);
+  margin-top: var(--e-3);
+  max-width: 40ch;
 }
-.hero-claim {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--fs-3);
-  line-height: 1.06;
-  letter-spacing: var(--tracking-display);
-  font-variation-settings: "wdth" var(--wdth-wide);
-  max-width: 24ch;
-  text-wrap: balance;
-}
-.hero-sub {
-  font-size: var(--fs-5);
-  color: var(--ink-muted);
-  max-width: 46ch;
-}
-.hero-cta { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-4); }
-/* FICHE TECHNIQUE — la colonne droite du hero.  D-161 */
-.hero-fiche { display: none; align-content: start; gap: var(--s-3); }
-.fiche-rows { display: grid; }
-.hero-fiche .fiche-rule { display: block; }
-.hero-fiche a {
-  display: grid;
-  grid-template-columns: 2rem 1fr auto;
-  align-items: baseline;
-  gap: var(--s-3);
-  padding: var(--s-3) 0;
-  transition: padding-left var(--t-2) var(--e-snap), color var(--t-2) var(--e-snap);
-}
-.hero-fiche a:hover { padding-left: var(--s-2); color: var(--accent-text); }
-.hero-fiche em {
-  font-family: var(--font-data);
-  font-style: normal;
-  font-size: var(--fs-8);
-  color: var(--ink-muted);
-  letter-spacing: var(--tracking-label);
-}
-.hero-fiche span { font-size: var(--fs-7); }
-.hero-fiche b {
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  font-weight: 700;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-.fiche-foot {
-  display: grid;
-  gap: var(--s-3);
-  padding-top: var(--s-3);
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  line-height: 1.6;
-  color: var(--ink-muted);
-  max-width: none;
-}
-.fiche-foot .fiche-rule { order: -1; }
-/* 12bis. LE SOCLE DU HERO — ce qui reste des huit plaques.  D-162 */
+.hero-actes { margin-top: var(--e-5); }
+/* Les trois promesses sous le bouton : elles ne se disputent rien, elles
+   repondent aux trois objections qui viennent avant l'appel. */
 .hero-socle {
-  display: grid;
-  gap: var(--s-2);
-  margin: 0;
-  padding-top: var(--s-3);
-  font-family: var(--font-data);
-  font-size: var(--fs-8);
-  line-height: 1.6;
-  color: var(--ink-muted);
-  max-width: none;
+  margin-top: var(--e-6);
+  padding-top: var(--e-3);
+  border-top: var(--filet) solid var(--line);
+  display: grid; gap: var(--e-2);
 }
-.hero-socle .fiche-rule { order: -1; }
-/* LE MOT FORT PASSE A L'ENCRE PLEINE, ET C'EST LE SEUL SEPARATEUR  D-163 */
-.hero-socle b {
-  font-weight: 400;
-  color: var(--ink);
+.hero-socle li { display: flex; align-items: flex-start; gap: var(--e-1); font-size: var(--t-00); color: var(--text-soft); }
+.hero-socle svg { width: 1.0625rem; height: 1.0625rem; color: var(--navy); flex: 0 0 auto; margin-top: 0.15rem; }
+.hero-socle b { color: var(--text); font-weight: 600; }
+.hero-image { position: relative; }
+.hero-image img {
+  width: 100%; border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-levee);
+  aspect-ratio: 4 / 5; object-fit: cover;
 }
-@media (min-width: 48em) {
-.hero-socle {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: var(--s-4);
-    row-gap: var(--s-2);
-  }
-.hero-socle .fiche-rule { flex: 0 0 100%; }
-/* LE POINT MEDIAN SUIT L'ITEM QU'IL FERME, IL N'OUVRE PAS LE  D-164 */
-.hero-socle span:not(:last-of-type)::after {
-    content: "·";
-    margin-inline-start: var(--s-4);
-    color: var(--rule-strong);
-  }
+/* Le cadre champagne decale : la seule figure decorative du site, une fois. */
+.hero-image::before {
+  content: ""; position: absolute; inset: var(--e-3) calc(var(--e-3) * -1) calc(var(--e-3) * -1) var(--e-3);
+  border: var(--filet) solid var(--champagne);
+  border-radius: var(--rayon-large);
+  z-index: -1;
 }
-/* Sur ecran etroit le bloc a besoin de plus de hauteur relative :  D-165 */
-@media (max-width: 47.99em) {
-/* 1000/520 reservait 57 px de vide sous le bloc : le cadre etait
-     plus haut que ce que la composition pouvait remplir, puisque la
-     taille des mots est fixee par la LARGEUR. */
-.hero-plate { aspect-ratio: 1000 / 360; max-height: 34dvh; }
-.plate-small { letter-spacing: 0.28em; }
+@media (min-width: 62em) {
+.hero { padding-block: var(--e-10) var(--bande-large); }
+.hero-grille { grid-template-columns: 1.15fr 0.85fr; gap: var(--e-9); }
+.hero-socle { grid-template-columns: repeat(3, 1fr); gap: var(--e-3); }
 }
-/* == LA COMPOSITION DU HERO — V1 · DEGAGER et V3 · SOUDER. ==  D-166 */
-.hero-claim .ligne { display: block; }
-/* L'ETAT DE REPOS DU FILET DE FICHE EST LE TRAIT PLEIN.  D-167 */
-.fiche-rule {
-  background-image: linear-gradient(90deg, var(--rule-strong) 0 100%);
-}
-@keyframes he-plaque { to { transform: scaleX(0); } }
-/* V2 · S'ALIGNER, a l'echelle d'un pas. Le bloc arrive decale sur  D-168 */
-@keyframes he-venir { from { transform: translate3d(var(--he-x, -24px), 0, 0); } }
-@keyframes he-filet { from { transform: scaleX(0); } }
-/* V3 · SOUDER. La trame tient presque toute la course, puis le
-   trait se ferme d'un coup : une soudure ne se fond pas. */
-@keyframes he-souder {
-  0%, 86% {
-    background-image: repeating-linear-gradient(
-      90deg, var(--rule-strong) 0 2px, transparent 2px 4px);
-  }
-  100% { background-image: linear-gradient(90deg, var(--rule-strong) 0 100%); }
-}
+/* ===================================================================
+   11 · LA TRANSITION DE PAGE
+   180 ms, pas 1 680. Le voile ne cache jamais le contenu : il fond.  D-830
+   =================================================================== */
+@view-transition { navigation: auto; }
 @media (prefers-reduced-motion: no-preference) {
-/* == CE QUI A CHANGE LE 2026-07-29, ET POURQUOI CE N'EST PAS UN ==  D-169 */
-html.compo-hero .he {
-    position: relative;
-    animation: he-venir 560ms var(--e-snap) calc(var(--e, 0) * 1ms) backwards;
-  }
-/* L'AMPLITUDE SUIT LA HIERARCHIE. Le titre est ce qu'on doit voir  D-170 */
-html.compo-hero .hero-claim .ligne { --he-x: -40px; }
-html.compo-hero .hero-eyebrow,
-  html.compo-hero .hero-sub { --he-x: -32px; }
-html.compo-hero .he::after {
-    content: "";
-    position: absolute;
-    /* Hors flux, donc jamais un element de grille ni de flexbox :
-       `.fiche-foot` et `.hero-cta` en sont, et un pseudo-element en
-       flux y aurait pris une rangee a lui tout seul. */
-    inset: -0.06em -0.06em -0.16em;
-    background: var(--surface-0);
-    transform-origin: right center;
-    /* Pas de `backwards` : avant son retard, la plaque est a  D-171 */
-    animation: he-plaque 420ms var(--e-drive) calc(var(--e, 0) * 1ms) forwards;
-    pointer-events: none;
-    z-index: 2;
-  }
-/* Le libelle d'une rangee part 90 ms APRES son filet : un cran  D-172 */
-html.compo-hero .hero-fiche a.he,
-  html.compo-hero .hero-fiche a.he::after {
-    animation-delay: calc((var(--e, 0) + 90) * 1ms);
-  }
-html.compo-hero .hero-fiche .fiche-rule,
-  html.compo-hero .hero-socle .fiche-rule {
-    animation:
-      he-filet 340ms var(--e-drive) calc(var(--e, 0) * 1ms) backwards,
-      he-souder 600ms linear calc(var(--e, 0) * 1ms) backwards;
-  }
-/* Le filet du pied est SOUS la plaque de son propre paragraphe :  D-173 */
-html.compo-hero .fiche-foot .fiche-rule,
-  html.compo-hero .hero-socle .fiche-rule {
-    animation-delay: calc((var(--e, 0) + 300) * 1ms), calc((var(--e, 0) + 300) * 1ms);
-  }
-/* SAUTER, C'EST DIRE NON. `main.js` pose `entree-saut` au premier
-     geste et termine le rideau en 200 ms : la composition doit
-     finir avec lui, pas continuer a se jouer toute seule. */
-html.entree-saut .he,
-  html.entree-saut .he::after { animation-duration: 140ms; animation-delay: 0s; }
-html.entree-saut .hero-fiche .fiche-rule,
-  html.entree-saut .hero-socle .fiche-rule {
-    animation-duration: 140ms, 140ms;
-    animation-delay: 0s, 0s;
-  }
+::view-transition-old(root) { animation: sortir 120ms var(--e-sortie) both; }
+::view-transition-new(root) { animation: entrer 180ms var(--m-courbe) both; }
 }
-/* La fiche n'apparait qu'a partir de 64em : sous cette largeur la  D-174 */
-@media (min-width: 64em) {
-.hero { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
-.hero-eyebrow,
-  .hero-plate { grid-column: 1 / -1; }
-.hero-claim { grid-column: 1 / span 7; }
-.hero-sub { grid-column: 1 / span 6; }
-.hero-cta { grid-column: 1 / span 7; }
-.hero-fiche { display: grid; grid-column: 9 / span 4; grid-row: 3 / span 3; }
-/* LE SOCLE PREND LA BANDE ENTIERE, ET IL SE COLLE AU BAS.  D-175 */
-.hero-socle {
-    grid-column: 1 / -1;
-    align-self: end;
-    margin-top: var(--s-5);
-  }
+@keyframes sortir { to { opacity: 0; } }
+@keyframes entrer { from { opacity: 0; transform: translateY(8px); } }
+/* ===================================================================
+   FUSIONNE DEPUIS modales.css
+   =================================================================== */
+/* == ADEXWEB - LES MODALES, LES ASSISTANTS, L'AGENDA, LA FOURCHETTE ==  D-843
+      A FUSIONNER dans `css/app.css`, puis `node tools/css-critique.mjs` et
+      `node tools/cascade-check.mjs`. Ce fichier se pose APRES les sections
+      existantes : il complete `.champ`, `.saisie`, `.refus` et `.btn`, il ne
+      les remplace pas.
+
+      DEUX NOMS POUR UNE MEME BOITE, ET C'EST VOULU. Le balisage porte
+      `class="champ field"` et `class="refus field-error"` : `champ` et
+      `refus` sont le systeme ADEXWEB, `field` et `field-error` sont les
+      crochets que `js/main.js` interroge (`closest(".field")`,
+      `$(".field-error", field)`, `.field.is-invalid`). Renommer l'un des
+      deux casse la validation sans une erreur.
+      `refonte-adexweb/INVENTAIRE-PLOMBERIE.md § 11`. */
+/* ===================================================================
+   1 · `hidden` DOIT GAGNER SUR TOUT `display` POSE PAR UNE CLASSE
+   Sans ces lignes, un bouton « Retour » marque `hidden` reste visible :
+   `.btn { display: inline-flex }` bat l'attribut.  D-844
+   =================================================================== */
+.modal[hidden], .step[hidden], .step-second[hidden], .champ[hidden],
+.btn[hidden], .devis[hidden], .devis-suite[hidden], .devis-petit[hidden],
+.devis-question[hidden], .retenue[hidden], .retenue-champ[hidden],
+.cadeau-avant[hidden], .cadeau-suite[hidden], .cadeau-deja[hidden],
+.cond-texte[hidden], .step-manque[hidden], .empty[hidden],
+.step-nav[hidden], .form-portes[hidden], .booking[hidden] { display: none; }
+/* Le bouton-icone : 44 px de cible, aucun fond au repos. Le script en
+   fabrique aussi (retirer un fichier) — la classe doit tenir seule. */
+.btn-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto;
+  width: var(--cible-min); height: var(--cible-min);
+  border-radius: var(--rayon);
+  color: var(--navy-dark);
+  transition: background-color var(--t-etat), color var(--t-etat);
 }
-/* L'OUVERTURE — V1 · DEGAGER, sens BAS.  D-190 */
-@keyframes svc-degage {
-  from { clip-path: inset(0 0 100% 0); }
-  to { clip-path: inset(0 0 0 0); }
+.btn-icon:hover { background: var(--marble); }
+.btn-icon:disabled { color: var(--text-muted); cursor: not-allowed; }
+.btn-icon:disabled:hover { background: none; }
+.btn-icon svg { width: 1.375rem; height: 1.375rem; }
+/* ===================================================================
+   3 · LES DEUX NOMS DE BOUTON QUE LE SCRIPT FABRIQUE
+   `js/main.js` cree des boutons `btn--primary` et `btn--ghost` (repli
+   d'envoi, actions du popup). Sans ces alias, ils sortent NUS.  D-846
+   =================================================================== */
+.btn--primary {
+  background: var(--navy); color: var(--pearl);
+  box-shadow: var(--ombre-pose);
 }
-/* == LE RAIL — L'EXCEPTION, ET ELLE EST TRIPLEMENT CONDITIONNEE. ==  D-191 */
-@media (min-width: 48em) and (prefers-reduced-motion: no-preference) {
-/* V1 · DEGAGER — LE NOM SE DECOUVRE QUAND SON CHANTIER ARRIVE.  D-198 */
-@keyframes svc-degage-nom { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.btn--primary:hover { background: var(--navy-dark); box-shadow: var(--ombre-levee); }
+.btn--ghost {
+  background: var(--pearl); color: var(--navy-dark);
+  border: var(--filet) solid var(--line-strong);
 }
+.btn--ghost:hover { border-color: var(--navy-light); background: var(--marble); }
+.btn--bloc { width: 100%; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* Les `<svg>` fabriques par le script portent `class="icon"` et aucune
+   dimension : sans ceci ils sortent a 300 x 150. */
+.icon { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
+/* `.opt` est l'ancien nom de `.facultatif` ; le script reecrit un libelle
+   entier avec, il faut donc que les deux rendent pareil. */
+.opt { font-weight: 400; color: var(--text-muted); }
+.btn--tiroir { justify-content: space-between; text-align: left; }
 @keyframes v11-defile { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .tou :where(p, dl, dt, dd, ul, ol, li, figure) { margin: 0; padding: 0; }
 .tou :where(ul, ol) { list-style: none; }
-/* L'ECHELLE DE LA SECTION.  D-637 */
-#calculateur > .band { padding-block: var(--s-7); }
-/* == 18. COMPARATIF - deux barres nues par tache == */
-/* LE SCHEMA DE L'ECART — le meme objet que le tableau, en grand.  D-638 */
-/* L'ECHELLE.  D-638 */
-#comparatif > .band { padding-block: var(--s-7); }
-/* == 19. PROCESSUS - le parcours d'atelier ==  D-230 */
-/* SIX STATIONS, PAS QUATRE.  Le public est un patron de PME qui ne
-   lit pas : un titre, UNE ligne, un livrable, un composant. La
-   progression doit se SENTIR sans lecture, donc elle est portee par
-   la geometrie — un rail continu, six noeuds au meme pas — et jamais
-   par la longueur des paragraphes. Les deux etapes qui arrivent sont
-   payees par les paragraphes qui sautent : la section ne grandit pas.
-
-   L'ACCENT NE TOMBE QU'A UN SEUL ENDROIT DE LA SECTION : le nodule de
-   l'etape en cours. Toutes les autres marques de minium de ce bloc
-   (compteur, pastille du livrable, sortie des composants, derniere
-   station) sont passees a l'encre. Quatorze taches de la meme couleur
-   qui disent quatorze choses ne disent plus rien ; une seule tire
-   l'oeil a l'endroit qui repond a « ou j'en suis ». */
-/* La bande respire moins par le haut que la valeur commune : deux
-   stations de plus, et la section ne doit PAS grandir. Meme geste
-   que `#calculateur > .band`. */
-#processus > .band-loose { padding-top: var(--s-8); }
-/* LES TROIS PREUVES SONT PARTIES — vingt-cinq regles, une bulle de
-   texto, une signature en SVG et un avis de depot. Elles illustraient
-   le mecanisme sans l'expliquer, et l'etape qui manquait — remplir le
-   formulaire — n'avait aucune illustration parce qu'elle n'existait
-   pas dans la liste. La clarte prime sur le spectacle : quatre
-   etapes, un titre, une ligne.  D-237 */
-.fine { font-family: var(--font-data); font-size: var(--fs-8); line-height: 1.6; max-width: 52ch; }
-/* --- 768 px : compositions asymetriques --- */
-@media (min-width: 48em) {
-.hero-sub { max-width: 44ch; }
-}
-/* --- 1024 px : la navigation deploie ses liens --- */
-@media (min-width: 64em) {
-.nav-impact { display: none; }
-.burger { display: none; }
-}
-/* --- 1152 px : les liens de section rentrent enfin --- */
-@media (min-width: 72em) {
-.nav-links { display: flex; }
-}
-/* --- 1280 px : l'index collant apparait --- */
-@media (min-width: 80em) {
-.rail { display: grid; }
-.shell { padding-left: calc(var(--rail-w) + var(--s-7)); }
-.nav { padding-left: var(--pad); }
-}
-/* L'APLAT QUI MONTE. `transform: scaleY` depuis le bas, pas une  D-262 */
-/* == LA DUREE DU BALAYAGE EST UNE VARIABLE, ET ELLE N'EST PAS LA ==  D-263 */
-.btn { --cran: 230ms; }
-.btn[data-modal-open="modal-start"],
-.btn[data-modal-open="modal-refer"],
-.btn[data-modal-open="modal-booking"],
-.btn[data-modal-switch="modal-booking"],
-.cadeau .btn { --cran: 520ms; }
-.btn { overflow: hidden; }
-/* L'APLAT N'EXISTE QUE SUR UN BOUTON DEJA DECOUPE.  D-264 */
-.btn[data-lettres]::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--ink);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--cran) linear;
-  pointer-events: none;
-}
-.btn[data-lettres]:hover::before,
-.btn[data-lettres]:focus-visible::before { transform: scaleX(1); }
-/* L'icone passe AU-DESSUS de l'aplat, comme les lettres. */
-.btn .icon {
-  position: relative;
-  z-index: 1;
-  /* L'icone porte le meme `--p` que les lettres : elle bascule
-     quand l'arete passe SUR ELLE, pas a la fin arbitraire de la
-     course. */
-  transition: color 0s linear calc((1 - var(--p, 1)) * var(--cran));
-}
-.btn[data-lettres]:hover .icon,
-.btn[data-lettres]:focus-visible .icon {
-  color: var(--ink-inverse);
-  transition-delay: calc(var(--p, 1) * var(--cran));
-}
-/* Le CADRE suit l'aplat. La couleur du bouton lui-meme ne bascule  D-266 */
-.btn[data-lettres]:hover,
-.btn[data-lettres]:focus-visible { border-color: var(--ink); }
-/* LE FILET AU REPOS reste ce qu'il etait : la TRACE du  D-267 */
-.btn::after { inset: auto 0 0 0; z-index: 2; }
-/* LA FLECHE QUI SORT DU CADRE ET REVIENT — V4.  D-269 */
-@keyframes fleche-cran {
-  0%   { transform: translateX(0); }
-  46%  { transform: translateX(220%); }
-  47%  { transform: translateX(-220%); }
-  100% { transform: translateX(0); }
-}
-/* LA FLECHE PART QUAND L'APLAT A FINI SA COURSE, et c'est une  D-270 */
-.btn[data-lettres]:hover .icon,
-.btn[data-lettres]:focus-visible .icon { animation: fleche-cran 300ms var(--e-snap) var(--cran); }
-/* Le bouton primaire n'a plus besoin de changer de fond au survol :
-   l'aplat d'encre le fait. Deux signaux pour un evenement se
-   contredisent des que l'un des deux est en retard d'une image. */
-.btn--primary:hover { background: var(--accent); }
-.btn--primary[data-lettres]:hover { border-color: var(--ink); }
-/* == LES DEUX BOUTONS DU HERO — V4 · CRAN, et la hierarchie est ==  D-271 */
-.hero-cta .btn { --cran: 520ms; }
-.hero-cta .btn--ghost[data-lettres]::before { background: var(--accent); }
-.hero-cta .btn--ghost:hover .l,
-.hero-cta .btn--ghost:focus-visible .l,
-.hero-cta .btn--ghost[data-lettres]:hover .icon,
-.hero-cta .btn--ghost[data-lettres]:focus-visible .icon { color: var(--accent-ink); }
-/* Le cadre suit l'aplat : minium sur le secondaire, encre sur le
-   primaire. Deux boutons, deux matieres, un seul geste. */
-.hero-cta .btn--ghost[data-lettres]:hover,
-.hero-cta .btn--ghost[data-lettres]:focus-visible { border-color: var(--accent); }
-/* Le filet de 2 px est la TRACE de ce remplissage : sur le
-   secondaire il est deja minium, donc il disparait dans son propre
-   aplat. Il passe a l'encre au survol pour rester une arete. */
-.hero-cta .btn--ghost:hover::after,
-.hero-cta .btn--ghost:focus-visible::after {
-  background-image: linear-gradient(90deg, var(--ink) 0 100%);
-}
-/* == LES DEUX BOUTONS DU HERO BASCULENT SANS JAVASCRIPT. ==  D-272 */
-.hero-cta .btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--ink);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--cran) linear;
-  pointer-events: none;
-}
-.hero-cta .btn--ghost::before { background: var(--accent); }
-.hero-cta .btn:hover::before,
-.hero-cta .btn:focus-visible::before { transform: scaleX(1); }
-.hero-cta .btn:not([data-lettres]) {
-  transition:
-    color 0s linear calc(var(--cran) * 0.5),
-    border-color var(--t-2) var(--e-snap);
-}
-.hero-cta .btn--primary:not([data-lettres]):hover,
-.hero-cta .btn--primary:not([data-lettres]):focus-visible {
-  color: var(--ink-inverse);
-  border-color: var(--ink);
-}
-.hero-cta .btn--ghost:not([data-lettres]):hover,
-.hero-cta .btn--ghost:not([data-lettres]):focus-visible {
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-@media (prefers-reduced-motion: reduce) {
-.hero-cta .btn { --cran: 0ms; }
-}
-.hero-cta .btn[disabled]::before,
-.hero-cta .btn[aria-disabled="true"]::before { transform: scaleX(0); }
-/* Un bouton desactive ne bascule pas : il n'y a rien a faire. */
-.btn[disabled][data-lettres]::before,
-.btn[aria-disabled="true"][data-lettres]::before { transform: scaleX(0); }
-.btn[disabled]:hover,
-.btn[aria-disabled="true"]:hover { color: var(--ink); border-color: var(--btn-rule); }
-/* == N1 · LE CURSEUR DU RAIL. ==  D-275 */
-.rail-list { position: relative; }
-.rail-curseur {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--focus-w);
-  height: var(--h, 0px);
-  background: var(--rule-strong);
-  transform: translateY(var(--y, 0px));
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform 320ms var(--e-drive),
-    height 320ms var(--e-drive),
-    opacity var(--t-2) var(--e-snap);
-}
-.rail-curseur b {
-  display: block;
-  width: 100%;
-  height: var(--sec-progress, 0%);
-  background: var(--rule-accent);
-}
-/* L'ancienne marque cede la place. L'entree active garde sa  D-276 */
-.rail-list a[aria-current="true"] {
-  background-image: none;
-  border-left-color: transparent;
-}
-/* == V3 · SOUDER — les separateurs de listes. ==  D-277 */
-/* LA SOUDURE EST UNE TRANSITION CSS, PLUS UNE VARIABLE ANIMEE, ET  D-278 */
-[data-souder] > * { position: relative; }
-[data-souder] > *::before {
-  content: "";
-  position: absolute;
-  inset: calc(var(--rule-w) * -1) 0 auto 0;
-  height: var(--rule-w);
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--rule-strong) 0 2px,
-    transparent 2px 4px
-  );
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition: background-size 380ms var(--e-snap);
-}
-/* == V3 · LES LIENS — le soulignement se trace, puis se RETRACE. ==  D-279 */
-.nav-links a::after { transform-origin: right center; }
-.nav-links a:hover::after,
-.nav-links a:focus-visible::after {
-  transform-origin: left center;
-  transform: scaleX(1);
-}
-.footer-nav a,
-.menu-foot a { position: relative; }
-.footer-nav a::after,
-.menu-foot a::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0.25rem 0;
-  height: var(--rule-w);
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right center;
-  transition: transform var(--t-2) var(--e-snap);
-}
-.footer-nav a:hover::after,
-.footer-nav a:focus-visible::after,
-.menu-foot a:hover::after,
-.menu-foot a:focus-visible::after {
-  transform-origin: left center;
-  transform: scaleX(1);
-}
-/* Le menu plein ecran : le filet superieur de chaque entree se
-   double d'un filet minium qui se trace au survol. Meme geste,
-   autre echelle. */
-.menu-list a { position: relative; }
-.menu-list a::before {
-  content: "";
-  position: absolute;
-  inset: -1px 0 auto 0;
-  height: var(--focus-w);
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: right center;
-  transition: transform var(--t-2) var(--e-snap);
-}
-.menu-list a:hover::before,
-.menu-list a:focus-visible::before {
-  transform-origin: left center;
-  transform: scaleX(1);
-}
-/* == V4 · LA BASCULE DE THEME. ==  D-284 */
-.theme-toggle { overflow: hidden; }
-.theme-toggle .icon { transition: transform var(--t-2) var(--e-drive); }
-/* == MOUVEMENT REDUIT — ce que le bloc global de `base.css` ne ==  D-285 */
-@media (prefers-reduced-motion: reduce) {
-.btn:hover .icon,
-  .btn:focus-visible .icon { animation: none; }
-.btn[data-lettres]:hover .icon,
-  .btn[data-lettres]:focus-visible .icon { transition-delay: 0s; }
-.rail-curseur { transition: none; }
-}
-/* == PHASE 8 — SUITE : LES MICRO-ETATS. ==  D-286 */
-/* V4 · LE BOURGEON, EN DEUX CRANS.  D-287 */
-.burger i {
-  transition:
-    transform var(--t-1) var(--e-snap),
-    width var(--t-1) var(--e-snap);
-}
-.burger[aria-expanded="true"] i:first-child,
-.burger[aria-expanded="true"] i:last-child {
-  transition-delay: 0s, 0s;
-}
-.burger[aria-expanded="true"] i:first-child { transform: translateY(0) rotate(45deg); }
-.burger[aria-expanded="true"] i:last-child { transform: translateY(0) rotate(-45deg); }
-/* Le retour se fait dans l'ordre inverse : on depivote, puis on
-   ecarte. Une fermeture qui rejoue l'ouverture a l'envers est la
-   seule qui se lit comme une fermeture. */
-.burger[aria-expanded="false"] i { transition-delay: 0s; }
-/* V1 · LE POPUP DES CADEAUX.  D-288 */
-@keyframes cadeau-degage {
-  from { clip-path: inset(0 0 100% 0); transform: translateY(-8px); }
-  to   { clip-path: inset(0 0 0% 0);   transform: translateY(0); }
-}
-@keyframes soudure-etat {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-/* == LE BUDGET DE DEGRADATION — la moitie CSS. ==  D-293 */
-/* PALIER 1 — ALLEGE.  D-294 */
-/* 4 · La fleche qui sort du cadre. 300 ms d'animation sur un SVG a  D-295 */
-:root[data-palier="1"] .btn[data-lettres]:hover .icon,
-:root[data-palier="1"] .btn[data-lettres]:focus-visible .icon,
-:root[data-palier="2"] .btn[data-lettres]:hover .icon,
-:root[data-palier="2"] .btn[data-lettres]:focus-visible .icon { animation: none; }
-/* PALIER 2 — MINIMAL.  D-296 */
-/* 7 · La cascade par lettre. UN SEUL NOMBRE la supprime, et c'est  D-297 */
-:root[data-palier="2"] .btn { --cran: 0ms; }

@@ -145,10 +145,10 @@
         for (var i = 0; i < entrees.length; i++) {
           if (!entrees[i].isIntersecting) continue;
           oeil.disconnect();
-          /* Le palier se lit A CE MOMENT-LA, pas au chargement du
-             script : il est pose apres coup et peut avoir monte.  D-718 */
-          var palier = +(doc.documentElement.getAttribute("data-palier") || 0);
-          if (palier >= 2) return;
+          /* Les trois paliers de degradation sont partis avec
+             l'ancienne identite : `veutHd` ci-dessus est le seul
+             frein qui reste, et c'est celui qui compte — le forfait
+             de donnees.  D-718 */
           lancer(true);
           return;
         }
@@ -362,21 +362,11 @@
         b.style.height = p.boite[3] + "%";
         b.addEventListener("click", function () {
           if (racine(visionneur.getScene()) === p.id) return;
-          /* PHASE 10 — LE PASSAGE D'UNE PIECE A L'AUTRE.  D-542 */
-          var t = window.ADEXWEB_TRAME;
-          var doux = t && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          if (!doux) { visionneur.loadScene(p.id, p.pitch, p.yaw, p.hfov); return; }
-          t.couvrir(scene, {
-            nom: "piece-couvre", sens: "droite", graine: 727,
-            duree: 240, vie: 130, maille: 48, z: 6,
-            onFin: function () {
-              visionneur.loadScene(p.id, p.pitch, p.yaw, p.hfov);
-              t.degager(scene, {
-                nom: "piece-degage", sens: "droite", graine: 727,
-                duree: 300, vie: 150, maille: 48, z: 6
-              });
-            }
-          });
+          /* LE PASSAGE D'UNE PIECE A L'AUTRE EST CELUI DE PANNELLUM.
+             La trame qui le recouvrait etait un verbe de l'ancienne
+             identite ; son moteur est parti, et `sceneFadeDuration`
+             fait deja le fondu — sous mouvement reduit il vaut 0. */
+          visionneur.loadScene(p.id, p.pitch, p.yaw, p.hfov);
         });
         pastilles[p.id] = b;
         carte.appendChild(b);

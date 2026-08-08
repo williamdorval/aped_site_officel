@@ -311,7 +311,6 @@
      qui supprime la traduction et le risque qu'elle rate. */
 
   var doc = document;
-  var root = doc.documentElement;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   var isDesktop = window.matchMedia("(min-width: 64em)");
 
@@ -367,14 +366,10 @@
     this.raf = requestAnimationFrame(this.step.bind(this));
   };
 
-  /* == SECTION 03 · L'AVANT / APRES ==  D-394 */
+  /* == L'AVANT / APRES ==  D-394 */
   (function avantApres() {
     var cadres = $$("[data-ba]");
     if (!cadres.length) return;
-
-    function palier() {
-      return doc.documentElement.getAttribute("data-palier") || "0";
-    }
 
     /* --- 1 · LE CURSEUR ---  D-530 */
     /* LA POIGNEE EST UN `input[type=range]` NATIF, ET C'EST TOUT  D-531 */
@@ -584,7 +579,7 @@
 
     /* --- 3 · LA DEMONSTRATION D'OUVERTURE ---  D-534 */
     /* SANS ELLE, LE VISITEUR NE SAIT PAS QUE CA SE GLISSE. La  D-535 */
-    if (reduced.matches || palier() === "2" || !window.IntersectionObserver) return;
+    if (reduced.matches || !window.IntersectionObserver) return;
     var premiere = scenes[0];
     if (!premiere) return;
     var joue = false;
@@ -602,7 +597,8 @@
           if (!t0) t0 = t;
           var p = (t - t0) / DUREE;
           if (p > 1) p = 1;
-          /* Une seule arete, franche, qui balaye : V1 · DEGAGER. */
+          /* La poignee part du bord et ralentit : c'est ce ralenti
+             qui se lit comme un geste, et pas comme un saut. */
           var e = 1 - Math.pow(1 - p, 3);
           var v = 100 - 50 * e;
           premiere.adexweb_poser(v);
@@ -628,10 +624,10 @@
     function poser(i) {
       if (i === courante) return;
       courante = i;
-      /* UN SEUL CRAN ALLUME A LA FOIS. `k <= i` allumait toutes les
-         stations franchies : a six etapes, ca faisait jusqu'a six
-         nodules de minium en meme temps, et le minium ne designait
-         plus rien. L'accent tombe sur l'etape EN COURS, une seule. */
+      /* UNE SEULE ETAPE ALLUMEE A LA FOIS. `k <= i` allumait toutes
+         les stations franchies : a six etapes, ca faisait jusqu'a six
+         accents en meme temps, et l'accent ne designait plus rien.
+         Il tombe sur l'etape EN COURS, une seule. */
       etapes.forEach(function (e, k) { e.classList.toggle("is-on", k === i); });
       /* Le numero se POSE, il ne roule plus : l'odometre etait un
          verbe de l'ancienne identite, et son moteur est parti. */
@@ -1165,7 +1161,8 @@
        un seuil du depot qui exige ZERO erreur de console. L'envoi
        partait quand meme : c'est ce qui l'a rendu invisible. */
     if (!field) return;
-    /* PHASE 8 · V3 — LA SOUDURE NE SE VOIT QUE SUR CE QUI VIENT  D-420 */
+    /* LA MARQUE DE REPARATION NE SE POSE QUE SUR CE QUI ETAIT EN
+       FAUTE : un champ vert qui n'a jamais ete rouge ne dit rien. D-420 */
     if (ok && field.classList.contains("is-invalid")) {
       field.classList.add("is-valid");
       window.setTimeout(function () { field.classList.remove("is-valid"); }, 2400);
@@ -1204,9 +1201,8 @@
        · elle accepte tout ce qui n'y est pas : c'est un champ de
          texte, il le reste.
 
-     LE MOTIF EST V4 · CRAN. La ligne active ne fond pas dans la
-     suivante : elle roule d'un cran, filet de minium a gauche —
-     minium parce que c'est un endroit ou le visiteur peut AGIR.
+     LA LIGNE ACTIVE SE DESIGNE FRANCHEMENT, sans fondu : on doit
+     savoir laquelle la touche Entree va prendre.
      ============================================================ */
   var SUG_MAX = 8;
 
@@ -3566,11 +3562,9 @@
     montrerChamp("prContactPref", !!(tel && String(tel.value).trim()));
   }
 
-  if (projectWizard) {
-    projectWizard.addEventListener("change", appliquerProjet);
-    projectWizard.addEventListener("input", appliquerProjet);
-    appliquerProjet();
-  }
+  projectWizard.addEventListener("change", appliquerProjet);
+  projectWizard.addEventListener("input", appliquerProjet);
+  appliquerProjet();
 
   /* ---- ESTIMATION ---- */
   /* `ESTIM_SAUTS` A DISPARU LE 2026-08-07.  D-776
@@ -3582,8 +3576,7 @@
      liste de numeros tenue a la main aurait fini par designer le
      mauvais ecran des le premier ajout. */
 
-  if (projectWizard) {
-
+  (function () {
     var fileInput = $("#prFiles");
     var dropzone = $(".dropzone", projectWizard);
     fileInput.addEventListener("change", function () {
@@ -3703,7 +3696,9 @@
 
     projectNext.addEventListener("click", advance);
     projectWizard.addEventListener("submit", function (e) { e.preventDefault(); advance(); });
-  }
+  })();
+
+  })();
 
   /* == L'ESTIMATEUR.  D-774 · D-775 · D-776 ==
 
@@ -3718,10 +3713,23 @@
      ecrans ; annoncer quatorze ferait fermer l'onglet.
 
      LE CHIFFRE NE VIENT PAS D'ICI. Le navigateur ne porte plus la
-     grille : il envoie les reponses et lit `reponse.fourchette`. */
-  var wizard = $("#wizard");
-  var wizardBar = $("#wizardBar");
+     grille : il envoie les reponses et lit `reponse.fourchette`.
+
+     CE QUI SORT DE L'IIFE : `resetEstimate` pour `openModal`, et
+     `wizard` · `answers` · `questionsVisibles` · `goEStep` pour la
+     reprise de parcours. Sur une page sans `#wizard`, tout ca reste
+     neutre au lieu de lever.  D-845 */
+  var resetEstimate = function () {};
+  var goEStep = function () {};
+  var questionsVisibles = function () { return []; };
+  var wizard = null;
   var answers = {};
+
+  (function estimateur() {
+  wizard = $("#wizard");
+  if (!wizard) return;
+
+  var wizardBar = $("#wizardBar");
   var E_RESULTAT = 14;
 
   /* La famille d'un type. Tout ce qui n'a pas de prix automatique —
@@ -3744,7 +3752,6 @@
   }
 
   function etapesVisibles(famille) {
-    if (!wizard) return [];
     return $$(".step[data-step]", wizard)
       .filter(function (s) { return convient(s, famille); })
       .map(function (s) { return Number(s.dataset.step); })
@@ -3759,10 +3766,10 @@
   function familleAffichee() { return familleDe(answers.type_de_projet) || "vitrine"; }
 
   /* Les ecrans de QUESTIONS : tous sauf celui du resultat. */
-  function questionsVisibles() {
+  questionsVisibles = function () {
     return etapesVisibles(familleAffichee())
       .filter(function (n) { return n !== E_RESULTAT; });
-  }
+  };
 
   /* LES SOUS-BLOCS D'UN ECRAN SUIVENT LA MEME REGLE. L'ecran 11 pose
      « a quoi ca doit ressembler » a tout le monde, puis une seconde
@@ -3774,8 +3781,7 @@
     });
   }
 
-  function goEStep(n) {
-    if (!wizard) return;
+  goEStep = function (n) {
     var famille = familleDe(answers.type_de_projet);
     var visibles = etapesVisibles(famille);
     if (!visibles.length) return;
@@ -3821,9 +3827,9 @@
       var t = $("button, input, textarea", vu);
       if (t) t.focus({ preventScroll: true });
     }
-  }
+  };
 
-  function resetEstimate() {
+  resetEstimate = function () {
     Object.keys(answers).forEach(function (k) { delete answers[k]; });
     if (wizard) {
       $$("[data-key] button[aria-pressed]", wizard).forEach(function (b) {
@@ -3896,7 +3902,7 @@
        `_sid` de la personne PRECEDENTE — la ligne d'un visiteur
        recevrait la phrase d'un autre. */
     devisEnCours = null;
-  }
+  };
 
   /* LES REPONSES, SOUS LE LIBELLE EXACT QUE LE SERVEUR ATTEND.
 
@@ -3934,7 +3940,7 @@
             answers.echeancier].filter(Boolean);
   }
 
-  if (wizard) {
+  (function () {
     /* --- les reponses a choix unique --- */
     $$(".options[data-key]", wizard).forEach(function (groupe) {
       var cle = groupe.dataset.key;
@@ -4053,9 +4059,9 @@
         });
         /* CE QUI MANQUE SE DIT EN TOUTES LETTRES, ET CA RESTE.
            D-776
-           Le titre passait au minium 1,4 s. Trop court pour etre lu,
-           et de la meme couleur que l'anneau de focus qui entoure
-           deja la premiere option : on voyait du rouge a deux
+           Le titre changeait de couleur 1,4 s. Trop court pour etre
+           lu, et de la meme teinte que l'anneau de focus qui entoure
+           deja la premiere option : on voyait la couleur a deux
            endroits et on n'apprenait rien. La phrase parait sous le
            titre et ne part que quand la reponse arrive. */
         $$(".step-manque", ecran).forEach(function (m) { m.hidden = true; });
@@ -4191,13 +4197,19 @@
         });
       }
     }
-  }
+  })();
 
+  })();
 
-  /* == Calculateur. Le montant alimente aussi l'index de gauche et ==  D-427 */
-  var roiSection = $("#calculateur");
+  /* == LE CALCULATEUR D'ECONOMIES ==  D-427
+     Il ne vit plus que sur la page Automatisation. Le montant
+     s'affiche dans `#roiImpact` et s'annonce dans `#roiAnnounce` —
+     l'ancienne barre et l'ancien rail, qui le recopiaient, sont
+     partis avec la page unique. */
+  (function calculateur() {
+    var roiSection = $("#calculateur");
+    if (!roiSection) return;
 
-  if (roiSection) {
     /* DEUX CURSEURS SONT PARTIS PARCE QU'ILS NE CHANGEAIENT RIEN.  D-699 */
     var inRate = $("#inRate");
     var inAdmin = $("#inAdmin");
@@ -4235,8 +4247,13 @@
       });
     }
 
-    var railValue = $("#railImpactValue");
-    var navValue = $("#navImpactValue");
+    /* `#railImpactValue` ET `#navImpactValue` ONT DISPARU AVEC LA
+       PAGE UNIQUE.  D-847
+       Le montant se recopiait dans l'index de gauche et dans la
+       barre du haut, deux meubles de l'ancienne identite. Il ne
+       vit plus qu'a deux endroits, et le second n'est pas
+       decoratif : `#roiAnnounce[role=status]` EST le chiffre pour
+       qui ne le voit pas. */
     var impactEl = $("#roiImpact");
 
     /* `emp` et `rev` ont quitte les profils avec leurs curseurs.  D-699 */
@@ -4252,25 +4269,9 @@
 
     var lastRoi = {};
 
-    /* LE MONTANT N'EST PAS LE SIEN TANT QU'IL N'A RIEN REGLE.  D-707 */
-    var roiRegle = false;
-
     var impactSpring = new Spring(function (v) {
-      var text = fmtImpact(v);
-      if (impactEl) impactEl.textContent = text;
-      if (!roiRegle) return;
-      if (railValue) railValue.textContent = text;
-      if (navValue) navValue.textContent = text;
+      if (impactEl) impactEl.textContent = fmtImpact(v);
     }, 90, 22);
-
-    /* Le premier geste allume le rail et l'en-tete, une seule fois. */
-    function roiRegler() {
-      if (roiRegle) return;
-      roiRegle = true;
-      var text = fmtImpact(impactSpring.value);
-      if (railValue) { railValue.removeAttribute("data-vide"); railValue.textContent = text; }
-      if (navValue) { navValue.removeAttribute("data-vide"); navValue.textContent = text; }
-    }
 
     function roiUpdate(immediate, depuisMaitre) {
       var rate = Number(inRate.value);
@@ -4320,7 +4321,6 @@
 
     if (inAdmin) {
       inAdmin.addEventListener("input", function () {
-        roiRegler();
         repartir(Number(inAdmin.value));
         roiUpdate(false, true);
       });
@@ -4331,7 +4331,7 @@
          repartit avant de recalculer. Il garde en revanche le meme
          `change`, donc la meme annonce vocale que les autres. */
       if (slider !== inAdmin) {
-        slider.addEventListener("input", function () { roiRegler(); roiUpdate(false); });
+        slider.addEventListener("input", function () { roiUpdate(false); });
       }
       // `change` = fin du geste. Un seul message par reglage.
       slider.addEventListener("change", function () {
@@ -4342,11 +4342,11 @@
     });
 
     var presets = $("#roiPresets");
-    $$("button", presets).forEach(function (btn) {
+    $$("button", presets || roiSection).forEach(function (btn) {
+      if (!btn.dataset.preset) return;
       btn.addEventListener("click", function () {
         var preset = PRESETS[btn.dataset.preset];
         if (!preset) return;
-        roiRegler();
         $$("button", presets).forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
         btn.setAttribute("aria-pressed", "true");
         inRate.value = preset.rate;
@@ -4357,25 +4357,33 @@
 
     /* LE FORMULAIRE DE COURRIEL EST PARTI.  D-636 */
 
-    // Premier calcul immediat : le chiffre est deja la des la section 01.
+    // Premier calcul immediat : le chiffre est deja la a l'arrivee.
     roiUpdate(true);
-  }
+  })();
 
-  /* == Apercu des secteurs == */
-  var preview = $("#sectorPreview");
-  if (preview) {
+  /* == L'APERCU DES SECTEURS ==  D-845
+     Il ne vit que sur la page Realisations. L'ancre est `#mockStage`
+     — la scene ou les maquettes se clonent : sans elle il n'y a rien
+     a montrer, meme si la figure existait. */
+  (function apercuDesSecteurs() {
+    var scene = $("#mockStage");
+    if (!scene) return;
+    var preview = $("#sectorPreview") || scene.closest("figure") || scene.parentNode;
     /* Les treize maquettes sont clonees depuis leur `<template>` une
        fois la page peinte. Le markup n'a donc coute ni style ni mise
        en page pendant le premier rendu. */
     var gabarit = $("#tplSecteurs");
-    var scene = $("#mockStage");
-    if (gabarit && scene && !scene.children.length) {
+    if (gabarit && !scene.children.length) {
       scene.appendChild(gabarit.content.cloneNode(true));
     }
 
     var caption = $("#sectorCaption");
     var mocks = $$(".mock", preview);
-    var pills = $$(".sector-pills button");
+    /* L'ANCRE DES PASTILLES EST `data-sector`, LE NOM DU CONTRAT.
+       `.sector-pills` etait la classe de la page unique ; la page
+       Realisations les range dans `.pastilles`, et un selecteur qui
+       ne trouve rien fait un bloc mort sans le dire.  D-845 */
+    var pills = $$("[data-sector]");
 
     /* UN SEUL CARTOUCHE POUR LES TREIZE.  D-687 */
     var barre = $("#sectorChrome");
@@ -4392,9 +4400,10 @@
       pills.forEach(function (p) {
         var on = p.dataset.sector === key;
         p.classList.toggle("is-on", on);
-        if (on && p.dataset.caption) caption.textContent = p.dataset.caption;
+        if (on && p.dataset.caption && caption) caption.textContent = p.dataset.caption;
       });
-      /* PHASE 8 — LA RECOMPOSITION. Ce fichier ne connait pas GSAP  D-432 */
+      /* L'APERCU VIVANT ECOUTE CET EVENEMENT, plus bas dans ce meme
+         bloc : c'est le seul abonne qui reste. */
       if (key !== secteurCourant) {
         secteurCourant = key;
         doc.dispatchEvent(new CustomEvent("adexweb:secteur", { detail: { cle: key } }));
@@ -4476,15 +4485,11 @@
     };
     var largeMQ = window.matchMedia("(min-width: 64em)");
 
-    function palierPlein() {
-      var p = doc.documentElement.getAttribute("data-palier");
-      /* Les trois valeurs sont ecrites : un test sur la seule valeur
-         « 1 » ne mord plus quand l'attribut passe a « 2 ». Piege 42 */
-      return p !== "1" && p !== "2" && p !== "3";
-    }
+    /* `data-palier` N'EXISTE PLUS : les trois paliers de degradation
+       sont partis avec l'ancienne identite. La condition tombe. */
     function vivantPossible() {
       return !reduced.matches && !coarse.matches && largeMQ.matches &&
-        palierPlein() && "IntersectionObserver" in window;
+        "IntersectionObserver" in window;
     }
 
     var live = null, cadre = null;
@@ -4533,8 +4538,8 @@
       scene.classList.remove("is-vivant");
       window.clearTimeout(minuteurSrc);
       /* La page chargee est LIBEREE : un `<iframe>` laisse en place
-         garde ses images, ses polices et son ScrollTrigger en
-         memoire, et il y en a douze. */
+         garde ses images et ses polices en memoire, et il y en a
+         douze. */
       if (cadre.getAttribute("src")) { cadre.removeAttribute("src"); cleVivante = ""; }
     }
 
@@ -4554,7 +4559,7 @@
       }, 320);
     }
 
-    var grille = preview.closest(".sectors-grid") || preview.parentNode;
+    var grille = preview.closest(".sectors-grid, .secteurs-grille") || preview.parentNode;
     if (grille) {
       grille.addEventListener("pointerenter", function (ev) {
         if (ev.pointerType === "touch") return;
@@ -4576,7 +4581,7 @@
 
     doc.addEventListener("visibilitychange", function () { if (doc.hidden) eteindre(); });
     if (reduced.addEventListener) reduced.addEventListener("change", function () { if (reduced.matches) eteindre(); });
-  }
+  })();
 
   /* ============================================================
      LE LIEN DE REPRISE — revenir exactement où on était.  D-770
@@ -4616,8 +4621,30 @@
     var sid = String(q.get("s") || "").trim().slice(0, 40);
     var etape = Math.max(1, Math.min(20, Number(q.get("e")) || 1));
 
-    /* 1 · la session */
+    /* 1 · LA SESSION D'ABORD, ET AVANT MEME UNE EVENTUELLE
+       REDIRECTION.  D-848
+       Le `_sid` du courriel se repose ici, dans `localStorage` :
+       c'est ce qui fait que la page d'arrivee — celle-ci ou la page
+       de contact — ecrira dans LA MEME ligne. Le poser apres la
+       redirection serait le perdre : la redirection ne revient
+       jamais ici. */
     if (sid) { try { localStorage.setItem("adexweb-sid-" + kind, sid); } catch (e) {} }
+
+    /* 1bis · CETTE PAGE-CI N'A PEUT-ETRE PAS LA MODALE VISEE.  D-848
+       Le courriel de relance pointe sur la racine du site, et
+       l'accueil n'embarque pas forcement les formulaires. Sans ce
+       renvoi, le lien de reprise ouvrait... rien : le visiteur
+       atterrissait sur une page normale et ne comprenait pas
+       pourquoi on l'avait fait cliquer. On l'emmene la ou les sept
+       formulaires vivent, avec ses parametres intacts. */
+    if (!doc.getElementById(MODALES[kind])) {
+      try {
+        window.location.replace("contact.html?reprendre=" + encodeURIComponent(kind)
+          + (sid ? "&s=" + encodeURIComponent(sid) : "")
+          + "&e=" + encodeURIComponent(String(etape)));
+      } catch (e) {}
+      return;
+    }
 
     /* L'ADRESSE SE NETTOIE TOUT DE SUITE, avant même d'ouvrir : si
        ce qui suit lève, on ne veut pas que le rechargement réessaie
@@ -4664,9 +4691,9 @@
       return mis;
     }
 
-    /* On attend que les scripts de la vague 2 soient là : la
-       modale ne s'anime pas avant, et `openModal` n'existe pas
-       encore au tout premier tour de boucle. */
+    /* On laisse la page finir d'arriver avant d'ouvrir : la modale
+       se pose par-dessus, et l'ouvrir pendant que le document se
+       peint encore fait sauter le panneau. */
     window.setTimeout(function () {
       try {
         openModal(MODALES[kind]);
@@ -4742,5 +4769,18 @@
     }, 1400);
   })();
 
+  /* LE TEMOIN DE FIN DE COURSE.  D-849
+
+     LE DANGER QU'IL COUVRE. Ce fichier est un seul IIFE de quatre
+     mille sept cents lignes : une exception au tiers du parcours
+     emporte en silence tous les blocs qui suivent. La page a l'air
+     normale, la console dit peut-etre une ligne que personne ne
+     lit, et c'est le formulaire du bas qui ne part plus.
+
+     Cet attribut se pose a la DERNIERE ligne. Absent, ce n'est pas
+     un detail de style : c'est que le script est mort en chemin, et
+     `tools/pages-console.mjs` arrete la-dessus. Il ne pilote aucun
+     style et ne se lit nulle part ailleurs. */
+  doc.documentElement.setAttribute("data-main-ok", "");
 })();
 

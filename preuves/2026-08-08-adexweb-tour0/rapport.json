@@ -190,33 +190,53 @@
    "page": "automatisation.html",
    "largeur": 320,
    "debord": 0,
-   "hauteur": 7586,
+   "hauteur": 6574,
    "h1": 1,
    "console": 0,
    "tierces": 0,
    "ratees": 0,
    "contraste": 0,
-   "petits": 2,
-   "cibles": 0,
+   "petits": 0,
+   "cibles": 17,
    "sansAlt": 0,
    "detail": {
     "console": [],
     "tierces": [],
     "ratees": [],
     "contraste": [],
-    "petits": [
+    "petits": [],
+    "cibles": [
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 164,
+      "quoi": "Métiers et chantier"
      },
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 187,
+      "quoi": "Garage et mécanique"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 146,
+      "quoi": "Clinique et santé"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     },
+     {
+      "h": 30,
+      "l": 153,
+      "quoi": "Bureau et cabinet"
      }
     ],
-    "cibles": [],
     "sansAlt": []
    }
   },
@@ -224,33 +244,53 @@
    "page": "automatisation.html",
    "largeur": 375,
    "debord": 0,
-   "hauteur": 6974,
+   "hauteur": 6110,
    "h1": 1,
    "console": 0,
    "tierces": 0,
    "ratees": 0,
    "contraste": 0,
-   "petits": 2,
-   "cibles": 0,
+   "petits": 0,
+   "cibles": 17,
    "sansAlt": 0,
    "detail": {
     "console": [],
     "tierces": [],
     "ratees": [],
     "contraste": [],
-    "petits": [
+    "petits": [],
+    "cibles": [
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 164,
+      "quoi": "Métiers et chantier"
      },
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 187,
+      "quoi": "Garage et mécanique"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 146,
+      "quoi": "Clinique et santé"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     },
+     {
+      "h": 30,
+      "l": 153,
+      "quoi": "Bureau et cabinet"
      }
     ],
-    "cibles": [],
     "sansAlt": []
    }
   },
@@ -258,33 +298,53 @@
    "page": "automatisation.html",
    "largeur": 768,
    "debord": 0,
-   "hauteur": 5998,
+   "hauteur": 5339,
    "h1": 1,
    "console": 0,
    "tierces": 0,
    "ratees": 0,
    "contraste": 0,
-   "petits": 2,
-   "cibles": 0,
+   "petits": 0,
+   "cibles": 17,
    "sansAlt": 0,
    "detail": {
     "console": [],
     "tierces": [],
     "ratees": [],
     "contraste": [],
-    "petits": [
+    "petits": [],
+    "cibles": [
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 164,
+      "quoi": "Métiers et chantier"
      },
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 187,
+      "quoi": "Garage et mécanique"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 146,
+      "quoi": "Clinique et santé"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     },
+     {
+      "h": 30,
+      "l": 153,
+      "quoi": "Bureau et cabinet"
      }
     ],
-    "cibles": [],
     "sansAlt": []
    }
   },
@@ -292,33 +352,53 @@
    "page": "automatisation.html",
    "largeur": 1024,
    "debord": 0,
-   "hauteur": 4317,
+   "hauteur": 4989,
    "h1": 1,
    "console": 0,
    "tierces": 0,
    "ratees": 0,
    "contraste": 0,
-   "petits": 2,
-   "cibles": 0,
+   "petits": 0,
+   "cibles": 17,
    "sansAlt": 0,
    "detail": {
     "console": [],
     "tierces": [],
     "ratees": [],
     "contraste": [],
-    "petits": [
+    "petits": [],
+    "cibles": [
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 164,
+      "quoi": "Métiers et chantier"
      },
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 187,
+      "quoi": "Garage et mécanique"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 146,
+      "quoi": "Clinique et santé"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     },
+     {
+      "h": 30,
+      "l": 153,
+      "quoi": "Bureau et cabinet"
      }
     ],
-    "cibles": [],
     "sansAlt": []
    }
   },
@@ -326,33 +406,53 @@
    "page": "automatisation.html",
    "largeur": 1440,
    "debord": 0,
-   "hauteur": 4114,
+   "hauteur": 4897,
    "h1": 1,
    "console": 0,
    "tierces": 0,
    "ratees": 0,
    "contraste": 0,
-   "petits": 2,
-   "cibles": 0,
+   "petits": 0,
+   "cibles": 17,
    "sansAlt": 0,
    "detail": {
     "console": [],
     "tierces": [],
     "ratees": [],
     "contraste": [],
-    "petits": [
+    "petits": [],
+    "cibles": [
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 164,
+      "quoi": "Métiers et chantier"
      },
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 187,
+      "quoi": "Garage et mécanique"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 146,
+      "quoi": "Clinique et santé"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     },
+     {
+      "h": 30,
+      "l": 153,
+      "quoi": "Bureau et cabinet"
      }
     ],
-    "cibles": [],
     "sansAlt": []
    }
   },
@@ -360,33 +460,53 @@
    "page": "automatisation.html",
    "largeur": 1920,
    "debord": 0,
-   "hauteur": 4114,
+   "hauteur": 4897,
    "h1": 1,
    "console": 0,
    "tierces": 0,
    "ratees": 0,
    "contraste": 0,
-   "petits": 2,
-   "cibles": 0,
+   "petits": 0,
+   "cibles": 17,
    "sansAlt": 0,
    "detail": {
     "console": [],
     "tierces": [],
     "ratees": [],
     "contraste": [],
-    "petits": [
+    "petits": [],
+    "cibles": [
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 164,
+      "quoi": "Métiers et chantier"
      },
      {
-      "px": 13,
-      "texte": "ADEXWEB · Guide",
-      "ou": "guide-marque"
+      "h": 30,
+      "l": 187,
+      "quoi": "Garage et mécanique"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 146,
+      "quoi": "Clinique et santé"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     },
+     {
+      "h": 30,
+      "l": 153,
+      "quoi": "Bureau et cabinet"
      }
     ],
-    "cibles": [],
     "sansAlt": []
    }
   },

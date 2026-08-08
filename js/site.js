@@ -103,15 +103,17 @@
     }, { rootMargin: "0px 0px -20% 0px", threshold: 0 });
 
     entrants.forEach(function (el) {
-      // Ce qui est deja a l'ecran au chargement n'attend pas d'etre croise :
-      // sinon le premier ecran reste vide jusqu'au premier defilement.
+      // Ce qui est deja a l'ecran au chargement se pose NET, sans transition :
+      // un fondu de 500 ms sur le premier ecran retarde d'autant le moment ou
+      // le titre est lisible, et le navigateur horodate le LCP a la DERNIERE
+      // peinture. Mesure : 768 ms de LCP pour 204 de FCP.  D-854
       if (el.getBoundingClientRect().top < window.innerHeight) {
-        el.setAttribute("data-vu", "");
+        el.setAttribute("data-vu-net", "");
       } else {
         oeil.observe(el);
       }
     });
   } else {
-    entrants.forEach(function (el) { el.setAttribute("data-vu", ""); });
+    entrants.forEach(function (el) { el.setAttribute("data-vu-net", ""); });
   }
 })();

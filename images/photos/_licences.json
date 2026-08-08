@@ -1,0 +1,90 @@
+[
+ {
+  "fichier": "images/photos/accueil-hero.webp",
+  "emploi": "accueil, premier ecran — l'artisan et la piece de bois debitee, atelier",
+  "source": "url:https://images.pexels.com/photos/5089116/pexels-photo-5089116.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/5089116/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "cottonbro studio"
+ },
+ {
+  "fichier": "images/photos/accueil-hero@2x.webp",
+  "emploi": "accueil, premier ecran — meme prise de vue, ecran a deux fois la densite",
+  "source": "url:https://images.pexels.com/photos/5089116/pexels-photo-5089116.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/5089116/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "cottonbro studio"
+ },
+ {
+  "fichier": "images/photos/services-sites.webp",
+  "emploi": "services 01 — le telephone tenu en main devant l'etabli, atelier de menuiserie",
+  "source": "url:https://images.pexels.com/photos/7480728/pexels-photo-7480728.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/7480728/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "cottonbro studio"
+ },
+ {
+  "fichier": "images/photos/services-automatisation.webp",
+  "emploi": "services 02 — la pile de formulaires agrafes et les lunettes, table de bois",
+  "source": "url:https://images.pexels.com/photos/7054757/pexels-photo-7054757.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/7054757/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "Kindel Media"
+ },
+ {
+  "fichier": "images/photos/services-immobilier.webp",
+  "emploi": "services 03 — interieur residentiel vide, plancher de bois clair, aire ouverte",
+  "source": "url:https://images.pexels.com/photos/36906952/pexels-photo-36906952.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/36906952/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "Curtis Adams"
+ },
+ {
+  "fichier": "images/photos/services-logiciels.webp",
+  "emploi": "services 04 — l'ecran pose sur l'etabli, atelier a bardage de tole",
+  "source": "url:https://images.pexels.com/photos/7479042/pexels-photo-7479042.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/7479042/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "cottonbro studio"
+ },
+ {
+  "fichier": "images/photos/processus-appel.webp",
+  "emploi": "processus 01 — deux paires de mains, des papiers, une table de bois",
+  "source": "url:https://images.pexels.com/photos/7651953/pexels-photo-7651953.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/7651953/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "Kindel Media"
+ },
+ {
+  "fichier": "images/photos/contact-lieu.webp",
+  "emploi": "contact — Vieux-Montreal, pierre calcaire au soleil rasant, fleurdelise",
+  "source": "url:https://images.pexels.com/photos/31423268/pexels-photo-31423268.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/31423268/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "Aymerik Grenier"
+ },
+ {
+  "fichier": "images/photos/reserve-accueil-hero.webp",
+  "emploi": "reserve du hero — le mecanicien a l'etabli, mur de briques peintes",
+  "source": "url:https://images.pexels.com/photos/7565167/pexels-photo-7565167.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/7565167/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "cottonbro studio"
+ },
+ {
+  "fichier": "images/photos/reserve-contact-lieu.webp",
+  "emploi": "reserve du contact — rue de quartier sous la neige, escaliers exterieurs",
+  "source": "url:https://images.pexels.com/photos/11490700/pexels-photo-11490700.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/11490700/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "Benjamin Svobodny"
+ },
+ {
+  "fichier": "images/photos/reserve-services-automatisation.webp",
+  "emploi": "reserve du bloc 02 — la liasse de bons remplis a la main, lumiere rasante",
+  "source": "url:https://images.pexels.com/photos/8382613/pexels-photo-8382613.jpeg?auto=compress&cs=tinysrgb&w=3200",
+  "page": "https://www.pexels.com/photo/8382613/",
+  "licence": "https://www.pexels.com/license/",
+  "auteur": "cottonbro studio"
+ }
+]
