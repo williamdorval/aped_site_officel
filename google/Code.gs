@@ -1781,7 +1781,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 19,
+    version: 20,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
@@ -2987,11 +2987,23 @@ function partiVers(data) {
 }
 
 /* « 3 / 6 », ou « ✓ complète ». Une seule façon de l'écrire. */
+/* UN FORMULAIRE D'UN SEUL ÉCRAN EST COMPLET, ET LA COLONNE DOIT LE
+   DIRE.  D-790
+
+   « Contact simple » et « Urgence » n'ont ni `_sid`, ni `_etape`, ni
+   `_final` : ils arrivent d'un coup. `libelleEtape` rendait donc ""
+   sur les deux, et « Étape » — la SEULE colonne qui réponde à « est-ce
+   fini ? » — restait vide sur deux onglets sur sept. Un lundi matin,
+   une cellule vide se lit « quelque chose n'a pas marché », pas
+   « c'est arrivé entier ».
+
+   RELEVÉ CONTRE LE VRAI SERVICE, pas au banc : le banc posait la même
+   valeur vide et personne ne l'avait regardée. */
 function libelleEtape(data) {
   if (data && data._final) return "✓ complète";
   var e = Number(data && data._etape);
   var t = Number(data && data._etapes);
-  if (!e) return "";
+  if (!e) return (data && data._sid) ? "" : "✓ complète";
   return t ? (e + " / " + t) : String(e);
 }
 

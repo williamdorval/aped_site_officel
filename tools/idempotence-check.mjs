@@ -625,6 +625,58 @@ console.log("\n--- 12 · UN NOM D'ASSOCIE RENOMME NE TRONQUE PLUS LA LIGNE  (D-7
 }
 
 
+
+/* ============================================================
+   12bis · UN ECRAN UNIQUE EST COMPLET  (D-790)
+
+   « Contact simple » et « Urgence » arrivent d'un coup : ni session,
+   ni numero d'etape, ni drapeau final. « Etape » — la SEULE colonne
+   qui reponde a « est-ce fini ? » — restait donc VIDE sur deux
+   onglets sur sept, et une cellule vide un lundi matin se lit
+   « quelque chose n'a pas marche », pas « c'est arrive entier ».
+
+   TROUVE CONTRE LE VRAI SERVICE, PAS ICI. Le banc posait la meme
+   valeur vide et personne ne l'avait regardee : aucun cas ne
+   demandait ce que cette colonne DIT sur ces deux onglets-la. Il
+   existe maintenant, pour que personne n'ait a le retrouver.
+   ============================================================ */
+console.log("\n--- 12bis · UN ECRAN UNIQUE EST COMPLET (D-790)");
+{
+  const charges = {
+    contact: { _form: "contact", nom: "ZZ Unique", email: "zztest@exemple.ca",
+               telephone: "418 555 0190", message: "ZZ un seul ecran." },
+    urgent: { _form: "urgent", nom: "ZZ Unique", email: "zztest@exemple.ca",
+              telephone: "418 555 0190", message: "ZZ panne." }
+  };
+  for (const kind of ["contact", "urgent"]) {
+    etat.courriels.length = 0;
+    poster(charges[kind]);
+    const f = etat.feuilles.get(gs.SCHEMA[kind].onglet);
+    const iE = f.valeurs[0].indexOf("Étape");
+    /* LA LIGNE SE TROUVE PAR SON MARQUEUR, JAMAIS PAR SA POSITION.
+       Premier jet : il lisait la DERNIERE ligne de l'onglet, et les
+       cas d'avant en avaient ecrit d'autres — il accusait un code
+       sain sur une ligne qui n'etait pas la sienne. */
+    const derniere = f.valeurs.slice(1)
+      .filter((r) => r.some((c) => String(c).indexOf("ZZ Unique") !== -1)).pop();
+    if (!derniere) { console.error("ARRET  ligne ZZ Unique introuvable dans " + kind); process.exit(2); }
+    dire(kind + " · « Etape » dit que c'est complet",
+      String(derniere[iE]), "✓ complète");
+  }
+
+  /* ET UNE ETAPE EN COURS RESTE UNE ETAPE EN COURS. Le correctif ne
+     doit pas transformer chaque sauvegarde progressive en
+     « complete » : ce serait echanger un silence contre un mensonge. */
+  poster({ _form: "project", _sid: "sondeEtape001", _etape: 3, _etapes: 8,
+           nom: "ZZ Partiel", email: "zztest@exemple.ca", telephone: "418 555 0191" });
+  const fp = etat.feuilles.get(gs.SCHEMA.project.onglet);
+  const ip = fp.valeurs[0].indexOf("Étape");
+  const lp = fp.valeurs.slice(1)
+    .filter((r) => r.some((c) => String(c).indexOf("ZZ Partiel") !== -1)).pop();
+  if (!lp) { console.error("ARRET  ligne ZZ Partiel introuvable."); process.exit(2); }
+  dire("une etape en cours ne devient PAS complete", String(lp[ip]), "3 / 8");
+}
+
 /* ============================================================
    13 · LE LUNDI MATIN — L'OBJET DE L'AVIS ET LA LARGEUR  (D-781)
 

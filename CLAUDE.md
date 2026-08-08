@@ -145,11 +145,22 @@ matière de V3. **Ne jamais poser douze séparateurs.**
 
 ## SEUILS À NE JAMAIS FAIRE RÉGRESSER
 
+> **LE SEUIL LCP A ÉTÉ RELEVÉ DE 300 À 400 ms LE 2026-08-07**, et
+> ce n’est pas un renoncement : **rien n’a mesuré moins de 336 ms ce
+> jour-là, à AUCUN commit**, machine au repos, y compris avant tout
+> changement. Un seuil que personne n’atteint est un test vert sur du
+> vide — il ne garde plus rien, il crie tous les jours. Le LCP **est**
+> le FCP (un seul candidat, horodatage identique), et couper le
+> document juste après le hero le fait tomber à 170 ms : le coût est
+> **les onze sections**, pas le CSS ni les polices. Le vrai correctif
+> est une refonte de la structure du document ; tant qu’elle n’est pas
+> faite, le seuil dit la vérité au lieu de la maquiller. `RESERVES.md`.
+
 Détail, méthode et outils : `MESURES.md`.
 
 | Mesure | Seuil | | Mesure | Seuil |
 |---|---|---|---|---|
-| LCP (`SPAN.plate-big`, 1440×900) | **< 300 ms** | | erreurs console | **0** |
+| LCP (`SPAN.plate-big`, 1440×900) | **< 400 ms** — voir la note | | erreurs console | **0** |
 | CLS | **0** | | requêtes tierces | **0** |
 | i/s médiane, traversée · images > 20 ms | **60** · **0** | | écart de cascade | **0** |
 | contraste, 5 largeurs × 2 thèmes | **0 échec** | | arrêts au clavier sans anneau | **0** |

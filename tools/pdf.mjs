@@ -23,7 +23,15 @@ import { fileURLToPath } from "node:url";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 const SRC = path.join(RACINE, "documents/src");
-const OUT = path.join(RACINE, "documents");
+/* LES PDF NE SORTENT PLUS DANS L ARBRE SERVI.  D-788
+   Ils tombaient dans `documents/`, donc a la racine du site :
+   `GET /documents/aped-automatisation.pdf` rendait 2 Mo a qui
+   connaissait l adresse, pendant que le popup annoncait « contre vos
+   coordonnees ». Ils vont sous `google/`, avec le code du serveur —
+   un dossier qu on ne televerse jamais. Le rangement fait ce qu une
+   consigne de deploiement ne fait pas : on ne peut plus les publier
+   par distraction. */
+const OUT = path.join(RACINE, "google", "guides");
 
 const DOCS = [
   { id: "aped-automatisation", titre: "Ce que votre entreprise pourrait automatiser" },
