@@ -1,5 +1,5 @@
 /* ============================================================
-   APED AGENCE — LE SERVICE DES FORMULAIRES
+   ADEXWEB — LE SERVICE DES FORMULAIRES
    Web App Apps Script, déployée depuis le compte de l'agence.
 
    CE FICHIER EST LA SEULE PIÈCE SERVEUR DU SITE. Le site est
@@ -323,11 +323,11 @@ var REGLAGES = {
   RELANCE_MAX_PAR_PASSE: 12,
 
   /* Nom du dossier Drive où atterrissent les pièces jointes. */
-  DOSSIER_PIECES: "APED — pièces jointes des formulaires",
+  DOSSIER_PIECES: "ADEXWEB — pièces jointes des formulaires",
 
   /* LES DEUX GUIDES VIVENT DANS DRIVE, PAS SUR LE SITE.  D-788
 
-     Ils etaient servis en statique : `GET /documents/aped-*.pdf`
+     Ils etaient servis en statique : `GET /documents/adexweb-*.pdf`
      rendait 2 Mo de PDF a qui connaissait l'adresse, et l'adresse
      etait EN CLAIR dans `index.html`. Le popup annoncait
      « contre vos coordonnees » et ne gardait rien : le lead magnet
@@ -341,14 +341,14 @@ var REGLAGES = {
 
      LES DEUX FICHIERS SE DEPOSENT UNE FOIS DANS CE DOSSIER, sous
      ces noms exacts. Le script les relit a chaque envoi. */
-  DOSSIER_GUIDES: "APED — guides du lead magnet",
+  DOSSIER_GUIDES: "ADEXWEB — guides du lead magnet",
   GUIDES: [
-    { fichier: "aped-automatisation.pdf", titre: "Ce que votre entreprise pourrait automatiser" },
-    { fichier: "aped-ia-croissance.pdf",  titre: "Comment utiliser l'IA pour faire grossir votre entreprise" }
+    { fichier: "adexweb-automatisation.pdf", titre: "Ce que votre entreprise pourrait automatiser" },
+    { fichier: "adexweb-ia-croissance.pdf",  titre: "Comment utiliser l'IA pour faire grossir votre entreprise" }
   ],
 
   /* Nom du classeur créé par `initialiser()`. */
-  NOM_CLASSEUR: "APED — demandes du site"
+  NOM_CLASSEUR: "ADEXWEB — demandes du site"
 };
 
 /* Les trois associés. Sert aux listes déroulantes de suivi. */
@@ -390,7 +390,7 @@ var MODES = { TEL: "Appel téléphonique", MEET: "Google Meet" };
    LA PLUS RÉCENTE EN TÊTE. C'est celle que le site affiche, et
    l'outil vérifie que les deux s'accordent.
    ============================================================ */
-var CONDITIONS_VERSIONS = ["2026-08-07-b", "2026-08-07"];
+var CONDITIONS_VERSIONS = ["2026-08-08", "2026-08-07-b", "2026-08-07"];
 
 /* CE QU'UNE ÉTAPE SUIVANTE N'A PAS LE DROIT DE RÉÉCRIRE.  D-773
 
@@ -459,7 +459,7 @@ var COLONNES_FIGEES = ["Conditions acceptées", "Acceptées le",
    `tools/retro-estim.mjs` refait les trois attaques à chaque
    lancement et échoue si l'une d'elles redevient payante.
 
-   LA CALIBRATION EST VÉRIFIABLE. Quatre vrais projets d'APED
+   LA CALIBRATION EST VÉRIFIABLE. Quatre vrais projets d'ADEXWEB
    servent de témoins ; la règle est que la valeur réelle tombe
    DANS la fourchette affichée et dans sa MOITIÉ BASSE. Le plancher
    au plus près du vrai prix n'est pas un hasard : Ames & Mason
@@ -1765,7 +1765,7 @@ function doGet(e) {
       return json({ success: false, ferme: true,
         message: "La porte de diagnostic est fermee : aucune cle n'est posee. "
           + "Editeur Apps Script > Parametres du projet > Proprietes du script > "
-          + "ajouter DIAG_CLE, puis la recopier dans .env.local sous APED_DIAG_CLE." });
+          + "ajouter DIAG_CLE, puis la recopier dans .env.local sous ADEXWEB_DIAG_CLE." });
     }
     if (String(donnee) !== String(attendue)) {
       return json({ success: false, ferme: true, message: "Porte fermee." });
@@ -1780,7 +1780,7 @@ function doGet(e) {
 
   return json({
     success: true,
-    service: "APED formulaires",
+    service: "ADEXWEB formulaires",
     version: 20,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
@@ -4120,7 +4120,7 @@ var RELANCES = {
     corps: "Bonjour,\n\n"
       + "Vous avez commencé à nous décrire votre projet. Tout ce que vous avez écrit est enregistré chez nous — rien n’est perdu.\n\n"
       + "Le lien ci-dessous vous ramène à l’écran exact où vous vous êtes arrêté. Si remplir vous ennuie, appelez-nous : on prend les notes à votre place.\n\n"
-      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "%LIEN%\n\n— William, ADEXWEB\n819 523-0871\n\n"
       + "P.S. C’est le seul courriel de ce genre qu’on envoie. Un mot de retour et on efface tout."
   },
   estimate: {
@@ -4128,7 +4128,7 @@ var RELANCES = {
     corps: "Bonjour,\n\n"
       + "Vous avez répondu à quelques questions pour situer votre projet. Elles sont enregistrées — vous n’avez rien à recommencer.\n\n"
       + "Au bout, il y a une fourchette : un ordre de grandeur, pas un devis. Le lien vous remet exactement où vous étiez.\n\n"
-      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "%LIEN%\n\n— William, ADEXWEB\n819 523-0871\n\n"
       + "P.S. Un seul courriel, c’est celui-là. Répondez « non merci » et on ne vous réécrit pas."
   },
   refer: {
@@ -4136,7 +4136,7 @@ var RELANCES = {
     corps: "Bonjour,\n\n"
       + "Merci d’avoir pensé à nous pour une entreprise de votre entourage. Ce que vous avez inscrit est enregistré.\n\n"
       + "Il reste quelques champs pour qu’on sache qui contacter, et comment. Le lien vous ramène à l’écran où vous étiez.\n\n"
-      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "%LIEN%\n\n— William, ADEXWEB\n819 523-0871\n\n"
       + "P.S. On n’envoie que celui-là. Dites-nous « non merci » et votre adresse disparaît."
   },
   booking: {
@@ -4144,7 +4144,7 @@ var RELANCES = {
     corps: "Bonjour,\n\n"
       + "Vous aviez choisi une date et une heure pour qu’on se parle. C’est noté de notre côté — la plage n’est pas encore bloquée, ça se fait avec vos coordonnées.\n\n"
       + "Trente minutes, par téléphone ou sur Google Meet. Si la plage n’est plus libre, on vous en propose une autre.\n\n"
-      + "%LIEN%\n\n— William, APED\n819 523-0871\n\n"
+      + "%LIEN%\n\n— William, ADEXWEB\n819 523-0871\n\n"
       + "P.S. C’est notre seul courriel. Un mot de votre part et on n’insiste plus jamais."
   }
 };
@@ -4425,9 +4425,9 @@ function poserRendezVous(data) {
 
      On lit un titre d'agenda dans une liste, en diagonale, souvent
      depuis un téléphone où il est coupé à trente signes. « Appel
-     APED (téléphone) · Marie Tremblay » commence par quatre mots
+     ADEXWEB (téléphone) · Marie Tremblay » commence par quatre mots
      qui ne servent à rien : tous les événements de cet agenda sont
-     des appels APED. Ce qui manque, c'est QUI et QUOI FAIRE.
+     des appels ADEXWEB. Ce qui manque, c'est QUI et QUOI FAIRE.
 
      Version téléphone :  « ☎ Appeler Marie Tremblay — Garage X »
      Version Meet :       « ▸ Meet · Marie Tremblay — Garage X »
@@ -4457,7 +4457,7 @@ function poserRendezVous(data) {
   lignes.push("Ce dont la personne veut parler :");
   lignes.push(String(data.sujet || "").trim() || "— rien de précisé —");
   lignes.push("");
-  lignes.push("Demande reçue par le site APED · 30 minutes.");
+  lignes.push("Demande reçue par le site ADEXWEB · 30 minutes.");
   var description = lignes.join("\n");
 
   /* LE SERVICE AVANCÉ SERT AUX DEUX MODES, PLUS SEULEMENT AU MEET.
@@ -4588,7 +4588,7 @@ function envoyer(dest, sujet, corps, repondreA, pieces) {
     return false;
   }
   try {
-    var options = { to: dest, subject: sujet, body: corps, name: "APED Agence" };
+    var options = { to: dest, subject: sujet, body: corps, name: "ADEXWEB" };
     /* LES PIECES JOINTES.  D-788  Un tableau vide ne se pose pas :
        MailApp refuse un tableau vide sur certaines versions. */
     if (pieces && pieces.length) options.attachments = pieces;
@@ -4784,7 +4784,7 @@ function objetAvis(kind, data, extra, partiel) {
     etat = "COMMENCÉ" + (ou ? " " + ou : "") + " · ";
   }
 
-  return "[APED] " + etat + tete + (qui ? " · " + qui : "") + " · " + repere;
+  return "[ADEXWEB] " + etat + tete + (qui ? " · " + qui : "") + " · " + repere;
 }
 
 /* LA CONFIRMATION AU VISITEUR — UNE PAR FORMULAIRE.
@@ -4809,7 +4809,7 @@ function objetAvis(kind, data, extra, partiel) {
 function texteVisiteur(kind, data, extra) {
   var nom = String(data.nom || data.votre_nom || "").trim();
   var bonjour = nom ? "Bonjour " + nom + "," : "Bonjour,";
-  var signature = ["", "— APED Agence", "Trois personnes, à Québec."];
+  var signature = ["", "— ADEXWEB", "Trois personnes, à Québec."];
 
   if (kind === "booking") {
     var l = [
@@ -5189,13 +5189,17 @@ var MARQUEURS_ESSAI = ["essai@exemple.ca", "zztest@exemple.ca", "ZZTEST",
 var PREFIXE_TEL  = "☎ Appeler ";
 var PREFIXE_MEET = "▸ Meet · ";
 
-/* Ce titre a-t-il été écrit par le site ? On garde l'ancien préfixe :
-   les rendez-vous posés avant le 2026-08-06 le portent encore, et
-   ils doivent rester nettoyables. */
+/* Ce titre a-t-il été écrit par le site ? On garde les DEUX anciens
+   préfixes : les rendez-vous posés avant le 2026-08-06 portent
+   « Appel APED », et l'ancien nom de l'agence reste dans l'agenda de
+   Google longtemps après avoir disparu du code — renommer la marque
+   ne renomme aucun événement déjà créé. Les retirer rendrait ces
+   rendez-vous impossibles à nettoyer, sans une seule erreur.  D-745 */
 function titreDuSite(titre) {
   var t = String(titre || "");
   return t.indexOf(PREFIXE_TEL) === 0
       || t.indexOf(PREFIXE_MEET) === 0
+      || t.indexOf("Appel ADEXWEB") === 0
       || t.indexOf("Appel APED") === 0;
 }
 
@@ -5271,7 +5275,7 @@ function nettoyerRendezVousEssai() {
 
   var texte = retires.length + " rendez-vous d'essai retiré(s)."
     + (retires.length ? "\n  " + retires.join("\n  ") : "")
-    + "\n\nSeuls les événements dont le titre commence par « Appel APED »"
+    + "\n\nSeuls les événements dont le titre commence par un préfixe du site"
     + "\nET qui portent un marqueur d'essai sont touchés.";
   Logger.log(texte);
   return texte;

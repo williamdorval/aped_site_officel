@@ -165,7 +165,7 @@ complète**, pas un numéro de port.
 | `reference-vue.mjs` | la planche du programme : section fermée, panneau ouvert, les sept écrans du formulaire, le tiroir des conditions, le refus sans case — en 1440×900 et 390×844. **Captures de fenêtre, pas d'élément** : une capture d'élément peint une barre `sticky` à sa position collée et invente un recouvrement qui n'existe pas |
 | `contraste-arret.mjs` | contraste **à l'arrêt**, à N positions de défilement |
 | `contraste-survol.mjs` | contraste **pendant** une transition, image par image, aller ET retour |
-| `palier-check.mjs` | les trois paliers par leur déclencheur réel, palier 2 en **bridant le processeur** (×6 par défaut, `APED_BRIDE` pour changer). Rend **NON MESURÉ**, jamais « échec », quand la machine est trop chargée |
+| `palier-check.mjs` | les trois paliers par leur déclencheur réel, palier 2 en **bridant le processeur** (×6 par défaut, `ADEXWEB_BRIDE` pour changer). Rend **NON MESURÉ**, jamais « échec », quand la machine est trop chargée |
 
 ### Le mouvement
 

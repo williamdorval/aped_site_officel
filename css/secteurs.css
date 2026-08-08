@@ -1,4 +1,4 @@
-/* == APED AGENCE — LES TREIZE APERCUS DE SECTEUR ==  D-299 */
+/* == ADEXWEB — LES TREIZE APERCUS DE SECTEUR ==  D-299 */
 
 /* LES TREIZE APERCUS — construits dans `tools/proto-secteurs.*`  D-300 */
 /* == LES TREIZE APERCUS DE SECTEUR — maquettes de vrais sites. ==  D-301 */
@@ -28,7 +28,7 @@
    Et elle ne prend plus sa taille dans le cadre : `cqw` n'avait plus
    de conteneur depuis qu'elle est sortie de `.mock` (D-687), donc il
    retombait sur la fenetre. Une taille en token, qui ne depend que
-   d'APED — c'est le cartouche d'APED, pas la fenetre du client. */
+   d'ADEXWEB — c'est notre cartouche, pas la fenetre du client. */
 .sec-chrome {
   display: flex;
   align-items: center;

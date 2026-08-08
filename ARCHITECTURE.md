@@ -20,10 +20,10 @@ ni **quelle ligne** (`SECTIONS.md`).
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
 | **Table** | 24 | 303 |
-| **1 · OÙ VAIS-JE ?** | 24 | 1 402 |
+| **1 · OÙ VAIS-JE ?** | 24 | 1 403 |
 | **2 · LES DEUX VAGUES DE SCRIPTS** | 36 | 622 |
 | **3 · index.html** | 12 | 150 |
-| &nbsp;&nbsp;↳ L'ordre du document, par sélecteur | 18 | 512 |
+| &nbsp;&nbsp;↳ L'ordre du document, par sélecteur | 18 | 513 |
 | &nbsp;&nbsp;↳ Les onze seuils, tels qu'ils sont écrits dans le document | 33 | 434 |
 | &nbsp;&nbsp;↳ Ce que index.html ne contient PAS | 15 | 179 |
 | **4 · Les feuilles de style** | 2 | 8 |
@@ -37,9 +37,9 @@ ni **quelle ligne** (`SECTIONS.md`).
 | &nbsp;&nbsp;↳ css/vendor/pannellum.css | 8 | 58 |
 | **5 · Le JavaScript** | 2 | 6 |
 | &nbsp;&nbsp;↳ js/limaille.js — 569 lignes, 22 Ko — vague 1 | 19 | 274 |
-| &nbsp;&nbsp;↳ js/trame.js — 280 lignes, 12 Ko — vague 1 | 20 | 295 |
-| &nbsp;&nbsp;↳ js/main.js — 2 652 lignes, 114 Ko — vague 1 — *s'exécute toujours* | 36 | 617 |
-| &nbsp;&nbsp;↳ js/hero.js — 455 lignes, 19 Ko — vague 1, après limaille.js | 15 | 158 |
+| &nbsp;&nbsp;↳ js/trame.js — 280 lignes, 12 Ko — vague 1 | 20 | 296 |
+| &nbsp;&nbsp;↳ js/main.js — 2 652 lignes, 114 Ko — vague 1 — *s'exécute toujours* | 36 | 619 |
+| &nbsp;&nbsp;↳ js/hero.js — 455 lignes, 19 Ko — vague 1, après limaille.js | 15 | 159 |
 | &nbsp;&nbsp;↳ js/motion.js — 348 lignes, 13 Ko — vague 2, après GSAP | 33 | 455 |
 | &nbsp;&nbsp;↳ js/langue.js — 1 546 lignes, 71 Ko — vague 2, après motion.js | 29 | 476 |
 | &nbsp;&nbsp;↳ js/pointe.js — 157 lignes, 5,6 Ko — vague 2 | 8 | 111 |
@@ -58,7 +58,7 @@ ni **quelle ligne** (`SECTIONS.md`).
 | &nbsp;&nbsp;↳ decisions/ — le pourquoi du code | 6 | 67 |
 | &nbsp;&nbsp;↳ archives/rapports/ — l'historique | 17 | 478 |
 | &nbsp;&nbsp;↳ archives/outils-perimes/ | 8 | 62 |
-| **8 · Le reste** | 18 | 1 106 |
+| **8 · Le reste** | 18 | 1 111 |
 | **9 · Points à surveiller, relevés en dressant cette carte** | 24 | 310 |
 | **AJOUTÉ LE 2026-07-31 — js/sas.js ET LES TROIS SAS** | 42 | 582 |
 | **10 · demos-secteurs/ — LES DOUZE PREMIERS ÉCRANS** | 6 | 60 |
@@ -108,14 +108,14 @@ ni **quelle ligne** (`SECTIONS.md`).
 | **Le style de la visite 360** | `css/tour360.css` | Charge après `css/vendor/pannellum.css`, qu'elle corrige. |
 | **Une animation de chargement** (séquence d'entrée, composition du hero) | markup dans `index.html` sous `#entree` · CSS bloc `11b. SEQUENCE D'ENTREE` et `12. HERO` · JS bloc `SEQUENCE D'ENTREE` de `main.js` | Le rideau se retire par animation CSS `forwards` : il part même si aucun script ne s'exécute. Le JS ne fait qu'**allonger** et permettre de **sauter**. |
 | **Une animation de scroll** | `js/motion.js` (les chorégraphies numérotées) ou `js/langue.js` (les 4 verbes, les 12 frontières) | Les deux s'arrêtent net sous `prefers-reduced-motion` et exigent GSAP. Ils partent en **vague 2**. Ne jamais y mettre d'orientation. |
-| **Le passage entre deux états** (frontière, thème, menu, modale, pièce de visite) | `js/trame.js` — API `APED_TRAME.degager / .couvrir / .inverse / .tout_arreter` | Un seul mécanisme, décliné. Les appelants sont dans `main.js`, `langue.js`, `tour360.js`. |
+| **Le passage entre deux états** (frontière, thème, menu, modale, pièce de visite) | `js/trame.js` — API `ADEXWEB_TRAME.degager / .couvrir / .inverse / .tout_arreter` | Un seul mécanisme, décliné. Les appelants sont dans `main.js`, `langue.js`, `tour360.js`. |
 | **Un état de survol** | `css/app.css` bloc `4. BOUTONS`, puis les blocs `V1`…`V4` des micro-états | Mesurer avec `node tools/contraste-survol.mjs` : `theme-check` ne voit que les états posés, pas les images intermédiaires. |
 | **L'orientation** (compteurs, odomètres, filet de section active, curseur du rail, cran des frontières) | **`js/main.js` uniquement** — blocs `N1 · LE CURSEUR DU RAIL`, `PARCOURS`, `LE CRAN`, `Index collant` | Jamais dans `motion.js` ni `langue.js` : ils ne s'exécutent pas sous mouvement réduit. `main.js` s'exécute toujours et part en vague 1. |
-| **Le thème clair / sombre** | `css/tokens.css` (les jetons) · `js/main.js` bloc `Theme.` · le script en ligne du `<head>` (pose du thème avant le 1ᵉʳ rendu) | La bascule passe par `APED_TRAME`, plus par `startViewTransition` (qui était un fondu). Vérifier avec `node tools/theme-check.mjs`. |
+| **Le thème clair / sombre** | `css/tokens.css` (les jetons) · `js/main.js` bloc `Theme.` · le script en ligne du `<head>` (pose du thème avant le 1ᵉʳ rendu) | La bascule passe par `ADEXWEB_TRAME`, plus par `startViewTransition` (qui était un fondu). Vérifier avec `node tools/theme-check.mjs`. |
 | **Une modale** | les six `#modal-*` de `index.html` · `js/main.js` bloc `Modales` · `css/app.css` bloc `10. MODALES` | Le popup cadeau est à part : `<dialog>` natif, logique dans le bloc `LE CADEAU` de `main.js`, style dans `11c. LE CADEAU`. |
-| **Une mesure / une preuve** | `tools/*.mjs`, catalogués dans `MESURES.md` | `node tools/serve.mjs 8099` d'abord, **et vérifier que le port est libre**. Poser `sessionStorage aped-sans-popup=1` dans tout outil qui clique. |
+| **Une mesure / une preuve** | `tools/*.mjs`, catalogués dans `MESURES.md` | `node tools/serve.mjs 8099` d'abord, **et vérifier que le port est libre**. Poser `sessionStorage adexweb-sans-popup=1` dans tout outil qui clique. |
 | **La logique métier** (prix, formulaires, calculateur) | `js/main.js` | Zéro dépendance. Si GSAP ne charge jamais, tout ça fonctionne quand même. |
-| **Ce que devient une soumission** (classeur, courriels, rendez-vous) | `google/Code.gs` — la **seule** pièce serveur du site | Elle ne s'exécute pas depuis le dépôt : elle vit dans un projet Apps Script du compte `apedagence`. On la modifie ici, on la recolle là-bas, puis **« Gérer les déploiements → crayon → Nouvelle version »**. « Nouveau déploiement » change l'adresse et le site parle dans le vide, sans que rien ne le signale. Guide : `docs/CONFIGURATION-GOOGLE-APED.md`. |
+| **Ce que devient une soumission** (classeur, courriels, rendez-vous) | `google/Code.gs` — la **seule** pièce serveur du site | Elle ne s'exécute pas depuis le dépôt : elle vit dans un projet Apps Script du compte `apedagence`. On la modifie ici, on la recolle là-bas, puis **« Gérer les déploiements → crayon → Nouvelle version »**. « Nouveau déploiement » change l'adresse et le site parle dans le vide, sans que rien ne le signale. Guide : `docs/CONFIGURATION-GOOGLE.md`. |
 | **Les disponibilités de réservation** (jours, heures, durée, tampon, préavis, horizon) | `google/Code.gs`, bloc `DISPONIBILITES` **tout en haut** | Deux couches : la **grille** est là ; les **exceptions** sont dans Google Agenda et nulle part ailleurs. `BOOKING` dans `js/main.js` n'est **plus** une source — c'est le filet quand la porte ne répond pas, et ses valeurs doivent suivre celles de `Code.gs`. Prouver avec `node tools/creneaux-check.mjs` puis `node tools/creneaux-vue.mjs`. |
 | **Le branchement d'un formulaire** | `js/main.js` — un seul point de sortie, `poster()` · le `<form data-form="…">` dans `index.html` · le `SCHEMA` de `Code.gs` | Le `name` d'un champ est le **contrat** entre le site et le classeur : le renommer d'un côté vide la colonne de l'autre, en silence. Le honeypot `_gotcha` est obligatoire sur chaque formulaire. |
 | **Une mesure du service** (sans toucher à Google) | `tools/faux-google.mjs` — il **exécute** le vrai `Code.gs` sous Node | Les bouchons disent toujours oui : ils prouvent l'aiguillage, la validation, le dédoublonnage, le calcul des créneaux et le fuseau. Ils ne prouvent ni un vrai Sheet, ni un vrai Meet, ni un courriel reçu. `RESERVES.md`. |
@@ -175,7 +175,7 @@ La section 09 · Agence (`#apropos`) est partie le 2026-08-03 —
 | Zone | Ce qu'elle porte |
 |---|---|
 | `<head>` | meta, OG, `theme-color` (une seule balise, sans `media`), favicon, préchargement des 3 woff2, puis **trois** feuilles sur le chemin critique : `tokens.css`, `base.css`, `critique.css`. Plus le **seul `<noscript>` du site**, qui supplée `differe.css` pour le cran avant / après |
-| script en ligne du `<head>` | **avant le premier rendu** : pose `html.js`, lit `localStorage aped-theme`, pose `data-theme` + la couleur de barre, pose `reduced-motion`, et **décide de la séquence d'entrée** en lisant `performance.getEntriesByType("navigation")[0].type` |
+| script en ligne du `<head>` | **avant le premier rendu** : pose `html.js`, lit `localStorage adexweb-theme`, pose `data-theme` + la couleur de barre, pose `reduced-motion`, et **décide de la séquence d'entrée** en lisant `performance.getEntriesByType("navigation")[0].type` |
 | `#entree` | **séquence d'entrée** : 15 filets (`--k` = distance au filet du milieu), jauge en deux temps, compteur à crans (`.entree-cran` = fenêtre, `.entree-rouleau` = bande), cadre à 4 équerres, plaque monogramme SVG, mot de sortie. `aria-hidden`, `pointer-events: none` |
 | sprite SVG | icônes en ligne, `display: none`. Aucune requête tierce |
 | `.read-progress` / `#readBar` | barre de lecture |
@@ -405,7 +405,7 @@ zéro nœud du DOM.
 | En-tête : la référence mesurée (`swisspixelreveal`), ce qu'on garde, ce qu'on jette, **quel verbe c'est** (V1 dont l'arête est faite de V3) |
 | Amortissement `sortie(u)` et bruit **déterministe** `grain(graine, x, y)` — une graine, jamais `Math.random`, sinon deux passages successifs scintillent |
 | Un passage : `sens` décide de l'axe, `graine` décide du motif |
-| L'API — `APED_TRAME.degager(el, opts)` · `.couvrir(el, opts)` · `.inverse(sens)` · `.tout_arreter`. Chaque voile porte `data-passage`. |
+| L'API — `ADEXWEB_TRAME.degager(el, opts)` · `.couvrir(el, opts)` · `.inverse(sens)` · `.tout_arreter`. Chaque voile porte `data-passage`. |
 
 **Ne contient pas** : la décision de *quand* passer. Ses appelants sont
 `main.js` (thème , menu , panneau ),
@@ -424,10 +424,10 @@ ici fonctionne. C'est aussi le seul fichier où vit **l'orientation**.
 | **Le barème publié** — et l'explication de ce qui en a été retiré (la vraie grille de prix, qui était lisible dans les outils de développement) |
 | Ressort — sert à l'odomètre du calculateur |
 | **Séquence d'entrée** — ce que le script ajoute : l'**allongement** (`html.entree-attend`, ) jusqu'à `document.fonts.ready` + `#heroPlate.is-live`, plafond 2,5 s ; le **saut** ; la pose de `html.compo-hero`  et son retrait |
-| **Rail des services — orientation N1.** Expose `window.APED_SVC` |
+| **Rail des services — orientation N1.** Expose `window.ADEXWEB_SVC` |
 | Cadres de projet — le site client ne défile pas tout seul |
 | Parcours — compteur d'étape |
-| **Le cadeau** — quand il paraît, la fréquence, et l'interrupteur `sessionStorage aped-sans-popup` réservé aux instruments |
+| **Le cadeau** — quand il paraît, la fréquence, et l'interrupteur `sessionStorage adexweb-sans-popup` réservé aux instruments |
 | **Thème** — jamais animé au chargement. La bascule passe par la **trame** , plus par `startViewTransition` |
 | Menu plein écran + sa réciproque par trame |
 | Panneau « Ajuster en détail » et les autres replis du même type |
@@ -440,7 +440,7 @@ ici fonctionne. C'est aussi le seul fichier où vit **l'orientation**.
 | Estimateur, 8 étapes |
 | Calculateur — le montant alimente aussi l'index de gauche |
 | Aperçu des secteurs — **c'est ici que le `<template>` est posé dans le DOM** |
-| **LE CRAN — V4 du langage de mouvement, et il vit ICI.** Expose `window.APED_ROULER` . C'est le G2 des douze frontières, celui qui ne tombe à aucun palier. |
+| **LE CRAN — V4 du langage de mouvement, et il vit ICI.** Expose `window.ADEXWEB_ROULER` . C'est le G2 des douze frontières, celui qui ne tombe à aucun palier. |
 | **Index collant** — `IntersectionObserver`, jamais d'écouteur `scroll` |
 | **La douzième frontière — la clôture** |
 
@@ -451,7 +451,7 @@ mouvement réduit.
 
 ### `js/hero.js` — 455 lignes, 19 Ko — **vague 1**, après `limaille.js`
 
-La plaque du hero. Deux mots, en permanence : « APED » très gros, « Agence »
+La plaque du hero. Deux mots, en permanence : « ADEXWEB » très gros, « Agence »
 dessous. Aucun carrousel, aucun morph.
 
 | Zone |
@@ -727,10 +727,10 @@ Ils passaient au vert sur du vide : le piège 17.
 | **`.mcp.json`** | Un seul serveur, au niveau projet : `shadcn` via `npx shadcn@latest mcp`. Le serveur `playwright` est configuré au niveau utilisateur, pas ici. |
 | `.gitignore` | Ignore `node_modules/`, **toutes** les sorties de mesure (`refonte-captures/`, `tools/_captures-*`, `tools/_planches`, `tools/_refs`, `tools/_nous`, `8099/`, `*.trace.json`), les fichiers système et les dossiers d'éditeur. |
 | `package-lock.json` | Verrou npm des devDependencies. |
-| `documents/` | Les deux PDF livrés (`aped-automatisation.pdf` 42 p., `aped-ia-croissance.pdf` 49 p.), leur **source HTML** dans `documents/src/` + `print.css`, et `rapport-pdf.json` — le relevé rendu par `tools/pdf.mjs` (pages, Ko, pages qui débordent, erreurs). |
-| `fonts/` | Six `.woff2` auto-hébergés pour **le site APED** : Archivo, Chivo, Martian Mono, chacun en `latin` et `latin-ext`. Déclarés dans `css/tokens.css`, préchargés dans `<head>`. Aucune requête tierce. **`fonts/demos/` est un monde à part** : 66 fichiers, 20 familles SIL OFL, réservés aux douze écrans de secteur — le site APED n'en charge aucun (§ 10). |
+| `documents/` | Les deux PDF livrés (`adexweb-automatisation.pdf` 42 p., `adexweb-ia-croissance.pdf` 49 p.), leur **source HTML** dans `documents/src/` + `print.css`, et `rapport-pdf.json` — le relevé rendu par `tools/pdf.mjs` (pages, Ko, pages qui débordent, erreurs). |
+| `fonts/` | Six `.woff2` auto-hébergés pour **le site ADEXWEB** : Archivo, Chivo, Martian Mono, chacun en `latin` et `latin-ext`. Déclarés dans `css/tokens.css`, préchargés dans `<head>`. Aucune requête tierce. **`fonts/demos/` est un monde à part** : 66 fichiers, 20 familles SIL OFL, réservés aux douze écrans de secteur — le site ADEXWEB n'en charge aucun (§ 10). |
 | `images/` | Favicon SVG, `apple-touch-icon`, `og.png`, sprite `icons.svg`, logos, 5 photos de réalisations, les couvertures de PDF, `images/secteurs/` (les 4 aperçus × hero + vignettes), `images/realisations/` (les captures qui alimentent les aperçus du panneau) et `images/tour/` (les panoramas 2K/4K + affiche). **`images/secteurs-sites/` (8,3 Mo) appartient aux douze écrans de secteur**, licences dans son `_licences.json` (§ 10). Les sous-dossiers `_retire/` et `_ancien/` sont des archives non référencées. |
-| `logo/` | Deux PNG de logo (`LOGO_APED.png`, `LOGO_APED_NOM.png`). Non référencés par le site rendu — le monogramme est un tracé SVG inline dans `index.html`. *À vérifier si on veut les supprimer.* |
+| `logo/` | Deux PNG de logo (`logo_adexweb.png`, `logo_adexweb_nom.png`). Non référencés par le site rendu — le monogramme est un tracé SVG inline dans `index.html`. *À vérifier si on veut les supprimer.* |
 
 ---
 
@@ -818,7 +818,7 @@ question ; elles sont dans `archives/2026-08-01-sites-longs/`.
 
 | Chemin | Rôle | Ce qu'il ne contient PAS |
 |---|---|---|
-| `demos-secteurs/<clé>/index.html` | **Un fichier par métier, autonome.** Tout le style dans un `<style>` en ligne, le script — s'il y en a — dans un `<script>` en ligne ou depuis `../../js/vendor/` | Aucune feuille partagée, aucun gabarit, **aucun morceau de l'identité d'APED** |
+| `demos-secteurs/<clé>/index.html` | **Un fichier par métier, autonome.** Tout le style dans un `<style>` en ligne, le script — s'il y en a — dans un `<script>` en ligne ou depuis `../../js/vendor/` | Aucune feuille partagée, aucun gabarit, **aucun morceau de l'identité d'ADEXWEB** |
 | `demos-secteurs/STANDARD.md` | **La loi.** La règle du côte-à-côte, les quatre références, l'échelle typographique, le mouvement autorisé, les photos, ce qui ne s'écrit jamais, et la chaîne dans l'ordre | Les décisions par métier |
 | `demos-secteurs/plans/<clé>.md` | **Un plan par métier** : les trois références mondiales relevées, ce qu'on leur prend, ce qu'on écarte, puis la direction artistique et le contenu exact, prêt à coller | Du code |
 | `demos-secteurs/DIRECTIONS.md` | Les douze directions artistiques de la **première** fournée. Matière première des plans, pas verdict | Les relevés de références — la première fournée n'en avait aucun, et ça se voyait |

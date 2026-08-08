@@ -27,7 +27,7 @@ for (const L of LARGEURS) {
   const err = [];
   p.on("console", (m) => { if (m.type() === "error") err.push(m.text()); });
   p.on("pageerror", (e) => err.push("pageerror: " + e.message));
-  await p.addInitScript(() => { try { sessionStorage["aped-sans-popup"] = "1"; } catch {} });
+  await p.addInitScript(() => { try { sessionStorage["adexweb-sans-popup"] = "1"; } catch {} });
   await p.goto(`http://localhost:${PORT}/index.html`, { waitUntil: "load" });
   await p.waitForTimeout(1200);
   /* On défile PAR PAS : un `scrollTo` qui saute tue une scène

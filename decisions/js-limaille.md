@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-526 — LIMAILLE — moteur de champ de grains** | 46 | 620 |
+| **D-526 — LIMAILLE — moteur de champ de grains** | 46 | 621 |
 | **D-527 — LE CONTEXTE EST ALPHA, ET C'EST UNE CORRECTION DE BOGUE.** | 15 | 229 |
 | **D-528 — Ressort critiquement amorti. omega est la pulsation propre** | 7 | 86 |
 | **D-529 — Dissipation supplementaire appliquee a la vitesse. Forte au** | 7 | 85 |
@@ -33,7 +33,7 @@
 ============================================================
   LIMAILLE — moteur de champ de grains
   ------------------------------------------------------------
-  LE MOTIF SIGNATURE D'APED, en une phrase :
+  LE MOTIF SIGNATURE D'ADEXWEB, en une phrase :
   une matiere dure qui tient une forme nette sous tension,
   qui s'ecarte sous la pointe, et qui se reprend d'elle-meme.
 

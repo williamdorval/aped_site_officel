@@ -20,7 +20,7 @@ const page = await ctx.newPage();
 const R = { entree: [], sortie: [], erreurs: [] };
 page.on("pageerror", (e) => R.erreurs.push(String(e)));
 page.on("console", (m) => { if (m.type() === "error") R.erreurs.push(m.text()); });
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); } catch (e) {} });
 await page.goto("http://127.0.0.1:8099/", { waitUntil: "load" });
 
 const lire = () => page.evaluate(() => {

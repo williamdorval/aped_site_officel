@@ -35,15 +35,15 @@ const RACINE = path.resolve(ICI, "..");
    Sans elle, on ne peut jamais le voir passer au ROUGE : le seul
    service qu'il sache joindre est le vrai, et casser le vrai
    classeur pour verifier qu'un controle fonctionne n'est pas une
-   option. `APED_WEB_APP_URL=http://127.0.0.1:8098 node …` le pointe
+   option. `ADEXWEB_WEB_APP_URL=http://127.0.0.1:8098 node …` le pointe
    sur `faux-google.mjs`, ou l'on peut poser le defaut a la main.
    `.env.local` reste la source par defaut. */
 const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
-const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
-if (!m && !process.env.APED_WEB_APP_URL) {
-  console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2);
+const m = /^ADEXWEB_WEB_APP_URL=(.+)$/m.exec(env);
+if (!m && !process.env.ADEXWEB_WEB_APP_URL) {
+  console.error("ADEXWEB_WEB_APP_URL absent de .env.local"); process.exit(2);
 }
-const SERVICE = (process.env.APED_WEB_APP_URL || m[1]).trim();
+const SERVICE = (process.env.ADEXWEB_WEB_APP_URL || m[1]).trim();
 
 /* 14 DEPUIS D-778 : avant elle, `reparerValeursListes` n'existe pas,
    donc les cellules qui portent encore « Alan » ou « Elie » sont
@@ -112,8 +112,8 @@ if (!KINDS.length) { console.error("SCHEMA vide : Code.gs n'a pas ete lu."); pro
    Elle rendait le quota d'envoi et les prenoms des associes a qui
    voulait. La cle vit dans les proprietes du script cote Google, et
    dans `.env.local` ici — jamais dans le depot. */
-const mCle = /^APED_DIAG_CLE=(.+)$/m.exec(env);
-const DIAG_CLE = (process.env.APED_DIAG_CLE || (mCle && mCle[1]) || "").trim();
+const mCle = /^ADEXWEB_DIAG_CLE=(.+)$/m.exec(env);
+const DIAG_CLE = (process.env.ADEXWEB_DIAG_CLE || (mCle && mCle[1]) || "").trim();
 
 /* ---- le service ---- */
 const lire = async (q) => {
@@ -144,7 +144,7 @@ if (d && d.ferme) {
   console.error("  " + (d.message || ""));
   console.error(DIAG_CLE
     ? "  La cle d'`.env.local` ne correspond pas a `DIAG_CLE` cote Google."
-    : "  Aucune cle dans `.env.local` : ajoutez-y `APED_DIAG_CLE=...`.");
+    : "  Aucune cle dans `.env.local` : ajoutez-y `ADEXWEB_DIAG_CLE=...`.");
   process.exit(2);
 }
 if (!d || !Array.isArray(d.onglets) || !d.onglets.length) {

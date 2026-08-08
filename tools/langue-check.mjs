@@ -41,7 +41,7 @@ let echecs = 0;
   page.on("pageerror", (e) => erreurs.push("pageerror: " + e.message));
   page.on("request", (r) => { try { hotes.add(new URL(r.url()).host); } catch (e) {} });
 
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.goto(B + "/", { waitUntil: "load" });
   /* La vague 2 attend un geste ou 1,2 s. On donne le geste. */
   await page.mouse.move(700, 400);
@@ -88,7 +88,7 @@ let echecs = 0;
   const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   await page.addInitScript(() => {
-    try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
     window.__f = { n: 0, t0: 0, longues: [] };
     const tic = (t) => {
       if (!window.__f.t0) window.__f.t0 = t;
@@ -187,7 +187,7 @@ let echecs = 0;
 {
   const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.goto(B + "/", { waitUntil: "load" });
   await page.mouse.move(700, 400);
   await page.waitForTimeout(1700);
@@ -231,7 +231,7 @@ let echecs = 0;
   const page = await ctx.newPage();
   const erreurs = [];
   page.on("pageerror", (e) => erreurs.push(e.message));
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.goto(B + "/", { waitUntil: "load" });
   await page.mouse.move(700, 400);
   await page.waitForTimeout(1800);

@@ -31,8 +31,8 @@ async function page(opts) {
   p.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text().slice(0, 160)); });
   p.on("pageerror", (e) => erreurs.push("PAGEERROR " + String(e).slice(0, 160)));
   await p.addInitScript(() => {
-    try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
-    localStorage.setItem("aped-cadeau-vu", "1");
+    try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
+    localStorage.setItem("adexweb-cadeau-vu", "1");
   });
   await p.goto(B + "/", { waitUntil: "load" });
   await p.waitForTimeout(1800);
@@ -42,8 +42,8 @@ async function page(opts) {
 /* --- 1/2/3 · le voile sur une frontiere reelle --- */
 {
   const { c, p, erreurs } = await page();
-  const dispo = await p.evaluate(() => typeof window.APED_TRAME);
-  dire(dispo === "object", "APED_TRAME est charge en vague 1", dispo);
+  const dispo = await p.evaluate(() => typeof window.ADEXWEB_TRAME);
+  dire(dispo === "object", "ADEXWEB_TRAME est charge en vague 1", dispo);
 
   /* On descend par pas jusqu'a la frontiere 02, comme un visiteur :
      un `scrollTo` qui saute ne declenche pas un ScrollTrigger. */
@@ -119,7 +119,7 @@ async function page(opts) {
   const erreurs = [];
   p.on("pageerror", (e) => erreurs.push(String(e).slice(0, 160)));
   await p.route("**/js/trame.js", (r) => r.abort());
-  await p.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await p.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await p.goto(B + "/", { waitUntil: "load" });
   await p.waitForTimeout(1600);
   const av = await p.evaluate(() => document.documentElement.getAttribute("data-theme"));
@@ -184,7 +184,7 @@ async function page(opts) {
   const p = await c.newPage();
   const erreurs = [];
   p.on("pageerror", (e) => erreurs.push(String(e).slice(0, 140)));
-  await p.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); localStorage.setItem("aped-cadeau-vu", "1"); } catch (e) {} });
+  await p.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); localStorage.setItem("adexweb-cadeau-vu", "1"); } catch (e) {} });
   await p.goto(B + "/", { waitUntil: "load" });
   await p.waitForTimeout(1900);
   await p.click("#burger");

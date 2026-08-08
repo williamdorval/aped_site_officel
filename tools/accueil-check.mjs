@@ -33,7 +33,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { decodePNG, diffStats } from "./_png.mjs";
 
-const BASE = process.env.APED_BASE || "http://localhost:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://localhost:8099";
 const RACINE = join(process.cwd(), "refonte-captures", "accueil");
 const dossier = (s) => { const d = join(RACINE, s); mkdirSync(d, { recursive: true }); return d; };
 const nb = (n, l = 2) => String(n).padStart(l, "0");
@@ -88,14 +88,14 @@ async function ouvrir(nav, opt = {}) {
     deviceScaleFactor: 1,
   });
   /* L'INTERRUPTEUR PREVU POUR LES OUTILS DE MESURE.
-     `main.js` lit `aped-sans-popup` et n'ouvre alors jamais le
+     `main.js` lit `adexweb-sans-popup` et n'ouvre alors jamais le
      cadeau. Sans lui, le `<dialog>` s'ouvre entre la 11e et la 20e
      seconde, capture tous les evenements de pointeur de la page, et
      n'importe quel survol de bouton expire en accusant le mauvais
      coupable. Le popup a son propre outil — `cadeau-check.mjs` ;
      ici on mesure autre chose. */
   await page.addInitScript(() => {
-    try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
   });
   const erreurs = [];
   page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
@@ -894,14 +894,14 @@ async function sequences(nav) {
 
   /* --- CINQ RECHARGEMENTS : la sequence doit rejouer a chaque fois.
          C'est le defaut qui a ouvert ce chantier — un seul clic
-         posait `aped-entree-saut` et la composition ne revenait
+         posait `adexweb-entree-saut` et la composition ne revenait
          jamais. On clique EXPRES au premier chargement. --- */
   {
     const page = await ouvrir(nav);
     const releve = () => page.evaluate(() => ({
       cls: document.documentElement.className,
       rideau: !!document.getElementById("entree"),
-      saut: (() => { try { return sessionStorage.getItem("aped-entree-saut"); } catch (e) { return "?"; } })(),
+      saut: (() => { try { return sessionStorage.getItem("adexweb-entree-saut"); } catch (e) { return "?"; } })(),
     }));
     const passes = [];
     await page.goto(BASE + "/index.html", { waitUntil: "commit" });

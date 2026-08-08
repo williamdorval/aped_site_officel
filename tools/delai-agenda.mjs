@@ -32,8 +32,8 @@ const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 
 const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
-const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
-if (!m) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
+const m = /^ADEXWEB_WEB_APP_URL=(.+)$/m.exec(env);
+if (!m) { console.error("ADEXWEB_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = m[1].trim();
 
 const PAS_MS = Number(process.env.PAS_MS || 2000);

@@ -35,8 +35,8 @@ async function ouvrir(base, { reduit = false, sombre = false, lent = false } = {
   const page = await ctx.newPage();
   await page.addInitScript((s) => {
     try {
-      sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1");
-      localStorage.setItem("aped-theme", s ? "dark" : "light");
+      sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1");
+      localStorage.setItem("adexweb-theme", s ? "dark" : "light");
     } catch (e) {}
   }, sombre);
   await page.goto(base + "/", { waitUntil: "load" });

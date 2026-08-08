@@ -76,8 +76,8 @@ for (const vp of LARGEURS) {
     page.on("console", (m) => { if (m.type() === "error") rapport.console.push(`${vp.nom}/${theme} console: ${m.text()}`); });
 
     await page.addInitScript((t) => {
-      try { localStorage.setItem("aped-theme", t); } catch (e) {}
-      try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+      try { localStorage.setItem("adexweb-theme", t); } catch (e) {}
+      try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
     }, theme);
 
     await page.goto(BASE, { waitUntil: "load" });

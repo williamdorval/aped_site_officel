@@ -40,7 +40,7 @@ pourquoi (`DECISIONS.md`) ni comment ça bouge (`ANIMATIONS.md`).
 | **09 · Référence** | 31 | 417 |
 | **10 · Questions** | 24 | 310 |
 | **11 · Contact** | 20 | 251 |
-| **Pied de page** | 108 | 1 682 |
+| **Pied de page** | 108 | 1 683 |
 
 <!-- INDEX:FIN -->
 
@@ -243,7 +243,7 @@ moitié visible au repos est vide), `.ap-fiche`, `.ap-tel`,
 `.ap-bande > .ap-fait`, `.ap-bloc` (+ `.ap-cartes`, `.ap-liste`,
 `.ap-rail`, `.ap-grille`, `.ap-champ`, `.ap-menu`), `.ap-pied`.
 La maquette de 2011 : `div.v11 > table.v11-page[role=presentation]`.
-La maquette APED : `div.ap > .ap-nav + .ap-corps`, composition
+La maquette ADEXWEB : `div.ap > .ap-nav + .ap-corps`, composition
 **différente** pour chacun des trois.
 
 **Le cran est du CSS pur.** Deux `<input type="radio">` natifs et deux
@@ -508,7 +508,7 @@ document**) → `div.footer-legal`.
 | Popup cadeau | `<dialog>` | `11c. LE CADEAU` | `main.js` `LE CADEAU` |
 | 6 modales | `modal-start`, `modal-booking`, `modal-project`, `modal-urgent`, `modal-refer`, `modal-estimate` | `10. MODALES` · `8. CHAMPS` · `11. CALENDRIER` | `main.js` · `langue.js` `9. LES MODALES` |
 | La pointe (curseur) | — | `4b. LA POINTE` · `V4 · L'ETIQUETTE DE LA POINTE` | `pointe.js` (entier) · `langue.js` `8. L'ETIQUETTE DE LA POINTE` |
-| Le passage (trame) | voiles `[data-passage]` créés à la volée | — | `trame.js` : `APED_TRAME.degager()` · `.couvrir()` · `.inverse()` · `.tout_arreter()` |
+| Le passage (trame) | voiles `[data-passage]` créés à la volée | — | `trame.js` : `ADEXWEB_TRAME.degager()` · `.couvrir()` · `.inverse()` · `.tout_arreter()` |
 | Points de rupture | — | `26. POINTS DE RUPTURE` | — |
 | Budget de dégradation | — | `LE BUDGET DE DEGRADATION — la moitie CSS` | `langue.js` `LE BUDGET DE DEGRADATION` (`monterAuPalier()`) |
 

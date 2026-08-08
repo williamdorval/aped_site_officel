@@ -24,7 +24,7 @@ import { fileURLToPath } from "node:url";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 const SORTIE = path.join(RACINE, "preuves", "appel");
-const BASE = process.env.APED_BASE || "http://127.0.0.1:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://127.0.0.1:8099";
 fs.mkdirSync(SORTIE, { recursive: true });
 
 let n = 0, ko = 0;
@@ -74,15 +74,15 @@ await page.route("**script.google.com/**", (r) =>
   r.fulfill({ status: 200, contentType: "application/json",
     body: JSON.stringify({ success: true, compte: true }) }));
 
-/* DEUX CLES, PAS UNE. `aped-sans-popup` empeche la fenetre des
-   guides ; `aped-entree-saut` saute le sas d'entree. Sans la
+/* DEUX CLES, PAS UNE. `adexweb-sans-popup` empeche la fenetre des
+   guides ; `adexweb-entree-saut` saute le sas d'entree. Sans la
    seconde, la page reste verrouillee et la traversee n'avance
    pas — l'outil rendait alors « quelque chose recouvre le lien »
    sur un lien que rien ne recouvre. Piege 18. */
 await page.addInitScript(() => {
   try {
-    sessionStorage.setItem("aped-sans-popup", "1");
-    sessionStorage.setItem("aped-entree-saut", "1");
+    sessionStorage.setItem("adexweb-sans-popup", "1");
+    sessionStorage.setItem("adexweb-entree-saut", "1");
   } catch (e) {}
 });
 await page.goto(BASE + "/index.html", { waitUntil: "load" });

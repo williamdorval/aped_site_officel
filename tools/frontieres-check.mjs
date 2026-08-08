@@ -30,7 +30,7 @@ page.on("console", (m) => { if (m.type() === "error") erreurs.push("console: " +
 /* Le popup cadeau se declenche pendant la traversee et masque les
    frontieres. Ce script mesure des frontieres : on le neutralise. */
 await page.addInitScript(() => {
-  try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
 });
 await page.goto("http://127.0.0.1:8099/", { waitUntil: "load" });
 /* On saute la sequence d'entree : ce script mesure des frontieres. */

@@ -83,8 +83,8 @@ await page.route("**script.google.com/**", (r) =>
    guides recouvre tout. Pièges 18 · 3. */
 await page.addInitScript(() => {
   try {
-    sessionStorage.setItem("aped-sans-popup", "1");
-    sessionStorage.setItem("aped-entree-saut", "1");
+    sessionStorage.setItem("adexweb-sans-popup", "1");
+    sessionStorage.setItem("adexweb-entree-saut", "1");
   } catch (e) {}
 });
 await page.goto(BASE + "/index.html", { waitUntil: "load" });

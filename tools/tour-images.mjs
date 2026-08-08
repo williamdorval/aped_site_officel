@@ -37,7 +37,7 @@ const RACINE = path.resolve(ICI, "..");
 const SORTIE = path.join(RACINE, "images/tour");
 /* Le cache des sources telechargees vit hors du projet : il ne doit
    jamais partir en production ni gonfler une sauvegarde. */
-const CACHE = path.join(os.tmpdir(), "aped-panos");
+const CACHE = path.join(os.tmpdir(), "adexweb-panos");
 /* LE DEPOT. C'est ici qu'on pose ses propres panoramas, en 2:1,
    un fichier par piece, nomme comme l'identifiant de la piece.
    Le dossier est lu tel quel : rien d'autre a configurer. */
@@ -119,7 +119,7 @@ function telecharger(url, dest) {
   return new Promise((ok, non) => {
     if (fs.existsSync(dest)) return ok(false);
     const f = fs.createWriteStream(dest + ".part");
-    const suivre = u => https.get(u, { headers: { "user-agent": "aped-tour-images" } }, r => {
+    const suivre = u => https.get(u, { headers: { "user-agent": "adexweb-tour-images" } }, r => {
       if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) { r.resume(); return suivre(r.headers.location); }
       if (r.statusCode !== 200) { r.resume(); return non(new Error(r.statusCode + " " + u)); }
       r.pipe(f);
@@ -131,7 +131,7 @@ function telecharger(url, dest) {
 
 async function urlTonemap(slug) {
   const j = await new Promise((ok, non) => {
-    https.get("https://api.polyhaven.com/files/" + slug, { headers: { "user-agent": "aped" } }, r => {
+    https.get("https://api.polyhaven.com/files/" + slug, { headers: { "user-agent": "adexweb" } }, r => {
       let d = ""; r.on("data", c => d += c); r.on("end", () => ok(JSON.parse(d)));
     }).on("error", non);
   });

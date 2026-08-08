@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 const B = process.argv[2] || "http://localhost:8099";
 const nav = await chromium.launch();
 const page = await (await nav.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree","1"); } catch(e){} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree","1"); } catch(e){} });
 await page.goto(B + "/", { waitUntil: "load" });
 await page.mouse.move(700, 400);
 await page.waitForTimeout(1700);

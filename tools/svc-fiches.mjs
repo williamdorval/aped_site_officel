@@ -38,7 +38,7 @@ for (const theme of THEMES) {
       colorScheme: theme,
     });
     await ctx.addInitScript(() => {
-      try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+      try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
     });
     const page = await ctx.newPage();
     const erreurs = [];

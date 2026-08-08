@@ -16,7 +16,7 @@ for (const theme of ["light", "dark"]) {
   const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: theme });
   const page = await ctx.newPage();
   await page.addInitScript((t) => {
-    try { localStorage.setItem("aped-theme", t); sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+    try { localStorage.setItem("adexweb-theme", t); sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
   }, theme);
   await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: "load" });
   await page.waitForTimeout(900);

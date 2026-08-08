@@ -414,7 +414,7 @@ titre("10 · CE QU'ON VOIT EN OUVRANT L'ONGLET");
 
    AUCUN TEST NE COUVRAIT CETTE FONCTION, et une mutation l'a
    montre le 2026-08-06 : changer les titres d'evenement de
-   « Appel APED · Nom » a « ☎ Appeler Nom » faisait cesser
+   « Appel ADEXWEB · Nom » a « ☎ Appeler Nom » faisait cesser
    `nettoyerRendezVousEssai` de reconnaitre quoi que ce soit. Elle
    rendait « 0 evenement retire » sans une erreur — indiscernable
    d'un agenda deja propre (piege 30).

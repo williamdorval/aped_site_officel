@@ -71,9 +71,9 @@ for (const theme of ["light", "dark"]) {
   page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
   await page.addInitScript((t) => {
     try {
-      sessionStorage.setItem("aped-entree-saut", "1");
-      sessionStorage.setItem("aped-sans-popup", "1");
-      localStorage.setItem("aped-theme", t);
+      sessionStorage.setItem("adexweb-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      localStorage.setItem("adexweb-theme", t);
     } catch (e) {}
   }, theme);
   await page.goto(BASE, { waitUntil: "load" });

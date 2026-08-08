@@ -277,7 +277,7 @@ const TOUTES = {
 function estimation(sid, extra) {
   return Object.assign({
     _form: "estimate", _sid: sidDe(sid), _etape: 6, _etapes: 7, _final: true,
-    _subject: "Demande d'estimation - site APED",
+    _subject: "Demande d'estimation - site ADEXWEB",
     nom: "ZZTEST Attaque", email: "zz-attaque@exemple.ca", telephone: "418 555 0142",
     type_de_projet: "Une boutique en ligne",
     ampleur: "25 à 250 produits",
@@ -1002,7 +1002,7 @@ const nav = await chromium.launch();
 
 /* `js/config.local.js` EST INTERCEPTÉ, PAS RÉÉCRIT. Écrire le vrai
    fichier depuis un outil de mesure écraserait la configuration de
-   celui qui le lance. Et poser `window.APED_ENVOI` par
+   celui qui le lance. Et poser `window.ADEXWEB_ENVOI` par
    `addInitScript` ne marche PAS : ce script tourne AVANT les
    fichiers de la page, donc `config.local.js`, chargé ensuite,
    écrase la valeur avec la sienne. (D-742) */
@@ -1039,7 +1039,7 @@ async function ouvrir(options) {
 
   await page.route("**/js/config.local.js", (route) => route.fulfill({
     status: 200, contentType: "text/javascript; charset=utf-8",
-    body: "window.APED_ENVOI = " + JSON.stringify(GOOGLE) + ";\n"
+    body: "window.ADEXWEB_ENVOI = " + JSON.stringify(GOOGLE) + ";\n"
   }));
 
   /* `js/main.js` peut être servi DÉSARMÉ, pour prouver qu'une garde
@@ -1062,13 +1062,13 @@ async function ouvrir(options) {
       /* Le popup cadeau s'ouvre en `showModal()` et capture tous les
          événements de pointeur : sans ça chaque clic expire et
          accuse le mauvais coupable. (piège 18) */
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
       /* La retenue s'arme à la FERMETURE d'une modale — c'est-à-dire
          au beau milieu du cas 22 — et son formulaire poste une
          requête de plus. Elle fausserait le comptage sans rien
          apprendre sur l'estimateur. */
-      localStorage.setItem("aped-retenue-vue", "1");
+      localStorage.setItem("adexweb-retenue-vue", "1");
     } catch (e) {}
   });
 
@@ -1089,8 +1089,8 @@ async function ouvrirEstim(page) {
   await page.evaluate(() => {
     document.querySelectorAll(".modal").forEach((m) => { m.hidden = true; });
     ["project", "estimate", "refer", "booking"].forEach((k) => {
-      try { localStorage.removeItem("aped-brouillon-" + k); } catch (e) {}
-      try { localStorage.removeItem("aped-sid-" + k); } catch (e) {}
+      try { localStorage.removeItem("adexweb-brouillon-" + k); } catch (e) {}
+      try { localStorage.removeItem("adexweb-sid-" + k); } catch (e) {}
     });
     const b = document.querySelector('[data-modal-open="modal-estimate"]');
     if (b) b.click();
@@ -1478,7 +1478,7 @@ titre("22 · FERMER LA MODALE AU MILIEU, PUIS ROUVRIR");
   dire("l'écran sans prix est refermé", restes.sansPrixVu, false);
   dire("le compte repart à 1 sur 6", restes.compte + "/" + restes.total, "1/6");
   dire("l'identifiant de session a été oublié après le succès",
-    await page.evaluate(() => localStorage.getItem("aped-sid-estimate")), null,
+    await page.evaluate(() => localStorage.getItem("adexweb-sid-estimate")), null,
     "sinon le visiteur suivant écraserait la ligne du précédent");
 
   /* Le second visiteur finit son parcours : sa ligne doit être une

@@ -231,7 +231,7 @@ encore sans modification, c'est lui le problème.**
 
 <a id="18"></a>
 ### 18 · Le popup cadeau bloque les outils
-Poser `sessionStorage["aped-sans-popup"] = "1"` dans tout outil qui
+Poser `sessionStorage["adexweb-sans-popup"] = "1"` dans tout outil qui
 clique : un `<dialog>` ouvert par `showModal()` capture **tous** les
 événements de pointeur et fait expirer n'importe quel survol en
 accusant le mauvais coupable.

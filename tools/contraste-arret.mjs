@@ -21,7 +21,7 @@ const page = await (await nav.newContext({ viewport: { width: 1440, height: 900 
 /* Le popup parait tout seul a la 11e seconde, a CHAQUE
    chargement. Cet outil mesure autre chose : on le neutralise,
    sinon il mesure une surcouche par-dessus sa cible. */
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 await page.goto(B + "/", { waitUntil: "load" });
 await page.mouse.move(700, 400);
 await page.waitForTimeout(1800);

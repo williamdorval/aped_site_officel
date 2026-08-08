@@ -62,7 +62,7 @@ for (const L of LARGEURS) {
     /* Le popup cadeau capture tous les evenements de pointeur et fait
        expirer n'importe quelle attente : piege 18. */
     await page.addInitScript(() => {
-      try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) { /* navigation privee stricte */ }
+      try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) { /* navigation privee stricte */ }
     });
     await page.goto(BASE, { waitUntil: "networkidle" });
 

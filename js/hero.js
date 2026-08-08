@@ -40,7 +40,7 @@
   if (field.dead) { host.classList.add("is-fallback"); return; }
 
   /* == Composition. Mesuree, jamais devinee. == */
-  var BIG = "APED";
+  var BIG = "ADEXWEB";
   /* AGENCE, pas AGENCY. Le logo dit AGENCE, le site est francais, et un
      seul des deux pouvait rester. Tranche par le client le 2026-07-25. */
   var SMALL = "AGENCE";
@@ -253,7 +253,7 @@
     field.setColors(v("--surface-0", "#dcdedb"), v("--accent", "#c8371b"), v("--ink", "#101211"));
     field.drawFrame();
   }
-  document.addEventListener("aped:theme", recolor);
+  document.addEventListener("adexweb:theme", recolor);
 
   function ready() {
     build();

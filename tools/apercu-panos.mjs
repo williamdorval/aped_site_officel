@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
-const CACHE = path.join(os.tmpdir(), "aped-panos");
+const CACHE = path.join(os.tmpdir(), "adexweb-panos");
 const OUT = path.join(RACINE, "refonte-captures/candidats");
 fs.mkdirSync(CACHE, { recursive: true });
 fs.mkdirSync(OUT, { recursive: true });
@@ -56,7 +56,7 @@ const HFOV = 95, LARG = 720;
 
 function get(u) {
   return new Promise((ok, non) => {
-    https.get(u, { headers: { "user-agent": "aped-apercu" } }, r => {
+    https.get(u, { headers: { "user-agent": "adexweb-apercu" } }, r => {
       if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) { r.resume(); return get(r.headers.location).then(ok, non); }
       let d = ""; r.on("data", c => d += c); r.on("end", () => ok(d));
     }).on("error", non);
@@ -67,7 +67,7 @@ function dl(url, dest) {
   return new Promise((ok, non) => {
     if (fs.existsSync(dest)) return ok(false);
     const f = fs.createWriteStream(dest + ".part");
-    const go = u => https.get(u, { headers: { "user-agent": "aped-apercu" } }, r => {
+    const go = u => https.get(u, { headers: { "user-agent": "adexweb-apercu" } }, r => {
       if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) { r.resume(); return go(r.headers.location); }
       if (r.statusCode !== 200) { r.resume(); return non(new Error(r.statusCode)); }
       r.pipe(f); f.on("finish", () => f.close(() => { fs.renameSync(dest + ".part", dest); ok(true); }));

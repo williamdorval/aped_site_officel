@@ -19,7 +19,7 @@ const LARGEUR = Number(process.argv[3] || 1440);
 const nav = await chromium.launch();
 const ctx = await nav.newContext({ viewport: { width: LARGEUR, height: 900 }, colorScheme: "light" });
 const page = await ctx.newPage();
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 
 const out = [];
 for (const cas of ["direct-hash", "sans-hash-puis-descente"]) {

@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-495 — APED AGENCE - Mouvement** | 11 | 116 |
+| **D-495 — ADEXWEB - Mouvement** | 11 | 114 |
 | **D-496 — 1. Entree du hero.** | 18 | 235 |
 | **D-497 — LE HERO NE S'ANIME PLUS DU TOUT.** | 13 | 177 |
 | **D-498 — 2. Compression du titre.** | 10 | 115 |
@@ -48,10 +48,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-495 — APED AGENCE - Mouvement
+## D-495 — ADEXWEB - Mouvement
 
 ============================================================
-  APED AGENCE - Mouvement
+  ADEXWEB - Mouvement
   Chaque animation ci-dessous a une raison, ecrite au-dessus d'elle.
   Aucune n'est la pour faire joli.
 

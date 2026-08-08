@@ -28,13 +28,13 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | **1 · LE PLUS GROS TROU DE PREUVE** | 44 | 599 |
 | **2 · DÉFAUTS OUVERTS** | 110 | 1 601 |
 | **3 · OUTILS PÉRIMÉS OU FAUX** | 25 | 338 |
-| **4 · CONTENU ET LICENCES** | 41 | 556 |
+| **4 · CONTENU ET LICENCES** | 41 | 557 |
 | **5 · CE QUI N'A JAMAIS ÉTÉ TOUCHÉ DU DOIGT** | 14 | 189 |
 | **Refonte immersive, 2026-07-31** | 24 | 352 |
 | **OUVERTES APRÈS LA MISE EN PRODUCTION — 2026-07-31** | 2 | 15 |
 | &nbsp;&nbsp;↳ Les captures des quatre « après » viennent de serveurs de DÉVELOPPEMENT | 8 | 112 |
 | &nbsp;&nbsp;↳ Deux défauts trouvés DANS les projets sources, non corrigés | 27 | 426 |
-| &nbsp;&nbsp;↳ FERMÉE le 2026-07-31 — les chiffres des sites de démonstration | 13 | 199 |
+| &nbsp;&nbsp;↳ FERMÉE le 2026-07-31 — les chiffres des sites de démonstration | 13 | 201 |
 | &nbsp;&nbsp;↳ Le tracteur du site de déneigement porte une marque réelle | 6 | 66 |
 | &nbsp;&nbsp;↳ FERMÉE le 2026-07-31 — les blocs photo gris des « avant » | 28 | 393 |
 | &nbsp;&nbsp;↳ OUVERTES PAR LE CHANTIER DU CADRE NAVIGABLE — 2026-07-31 | 55 | 839 |
@@ -51,7 +51,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ La réserve qui domine, et elle n'a pas bougé d'un mot | 8 | 96 |
 | **Le chantier du premier écran — 2026-08-01, troisième passe** | 2 | 17 |
 | &nbsp;&nbsp;↳ Ce que je n'ai PAS refait, et pourquoi | 17 | 239 |
-| &nbsp;&nbsp;↳ Ce qui reste ouvert | 24 | 1 458 |
+| &nbsp;&nbsp;↳ Ce qui reste ouvert | 24 | 1 459 |
 | **La passe finale — 2026-08-01, quatrième passe** | 53 | 867 |
 | **Visite 360 et Agence — 2026-08-02** | 64 | 984 |
 | **Le noir de la Visite — 2026-08-03** | 2 | 10 |
@@ -79,7 +79,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 6 | 58 |
 | **Corrections de design — 2026-08-03** | 5 | 36 |
 | &nbsp;&nbsp;↳ Une adresse courriel reste atteignable, et c'est délibéré | 16 | 196 |
-| &nbsp;&nbsp;↳ Les deux PDF publient une grille de prix APED | 14 | 164 |
+| &nbsp;&nbsp;↳ Les deux PDF publient une grille de prix ADEXWEB | 14 | 166 |
 | &nbsp;&nbsp;↳ tools/prix-check.mjs sort en code 2 | 10 | 132 |
 | &nbsp;&nbsp;↳ Le déneigement est présenté comme une entreprise fictive | 13 | 173 |
 | &nbsp;&nbsp;↳ Le masque RBQ ne masque plus rien | 7 | 78 |
@@ -90,33 +90,33 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Aucun formulaire du site ne livre, et maintenant il le dit | 12 | 165 |
 | &nbsp;&nbsp;↳ Les deux états « envoi en cours » et « succès » ne sont pas | 1 | 18 |
 | &nbsp;&nbsp;↳ atteignables sur le site tel qu'il est | 7 | 86 |
-| &nbsp;&nbsp;↳ tools/prix-check.mjs rend toujours le code 2 | 9 | 126 |
+| &nbsp;&nbsp;↳ tools/prix-check.mjs rend toujours le code 2 | 9 | 127 |
 | &nbsp;&nbsp;↳ tools/production-check.mjs rend ECHEC : | 1 | 13 |
 | &nbsp;&nbsp;↳ toutesLesImagesChargent | 9 | 109 |
-| &nbsp;&nbsp;↳ La flèche du carrousel de la reconstitution est à 1,77:1 | 7 | 77 |
+| &nbsp;&nbsp;↳ La flèche du carrousel de la reconstitution est à 1,77:1 | 7 | 78 |
 | &nbsp;&nbsp;↳ Le « après » du déneigement reste un vrai mandat sous une | 1 | 17 |
 | &nbsp;&nbsp;↳ étiquette « entreprises fictives » | 8 | 100 |
 | &nbsp;&nbsp;↳ Les quatre mentions sous les comparaisons ne sont pas accordées | 8 | 102 |
 | &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 9 | 75 |
 | **OUVERTES PAR LE CHANTIER DE LA RÉSERVATION — 2026-08-06** | 2 | 16 |
-| &nbsp;&nbsp;↳ Rien de tout ceci n'a touché le vrai Google | 26 | 353 |
+| &nbsp;&nbsp;↳ Rien de tout ceci n'a touché le vrai Google | 26 | 351 |
 | &nbsp;&nbsp;↳ Le fuseau est prouvé par le calcul, pas par un appel réel | 9 | 123 |
 | &nbsp;&nbsp;↳ Le fuseau du projet Apps Script n'est pas sous contrôle | 13 | 176 |
 | &nbsp;&nbsp;↳ FERMÉE le 2026-08-06 — le repli CalendarApp | 14 | 183 |
 | &nbsp;&nbsp;↳ La deuxième porte est publique, et elle est appelable en boucle | 16 | 214 |
 | &nbsp;&nbsp;↳ js/config.local.js absent = une erreur console, partout | 15 | 184 |
 | &nbsp;&nbsp;↳ palier-check échoue sur trois assertions, avant comme après | 10 | 134 |
-| &nbsp;&nbsp;↳ Dix montants en dollars dorment dans des commentaires | 20 | 261 |
+| &nbsp;&nbsp;↳ Dix montants en dollars dorment dans des commentaires | 20 | 262 |
 | &nbsp;&nbsp;↳ Aucune animation n'a été ajoutée au panneau des créneaux | 13 | 179 |
 | &nbsp;&nbsp;↳ Et celle qui gouverne tout le reste | 11 | 109 |
 | **OUVERTES PAR LE CHANTIER DE STRESS — 2026-08-06** | 2 | 14 |
-| &nbsp;&nbsp;↳ FERMÉE · le secret n'a jamais été poussé | 13 | 161 |
+| &nbsp;&nbsp;↳ FERMÉE · le secret n'a jamais été poussé | 13 | 162 |
 | &nbsp;&nbsp;↳ Le trou du verrou était une liste blanche d'extensions | 11 | 146 |
 | &nbsp;&nbsp;↳ Le vrai service rend HTTP 404 — deux relevés qui ne s'accordent pas | 19 | 221 |
 | &nbsp;&nbsp;↳ Les temps de réponse du vrai service | 16 | 216 |
 | &nbsp;&nbsp;↳ Six envois simultanés : le verrou est resserré, PAS re-mesuré | 21 | 266 |
 | &nbsp;&nbsp;↳ L'injection de formule — les charges sont posées, le verdict attend le redéploiement | 23 | 314 |
-| &nbsp;&nbsp;↳ Le Sheet et le calendrier d'APED n'ont TOUJOURS pas été regardés | 27 | 325 |
+| &nbsp;&nbsp;↳ Le Sheet et le calendrier d'ADEXWEB n'ont TOUJOURS pas été regardés | 27 | 328 |
 | &nbsp;&nbsp;↳ FERMÉE le 2026-08-06 — les cibles tactiles | 25 | 282 |
 | &nbsp;&nbsp;↳ OUVERTES PAR LE CHANTIER DE VALIDATION — 2026-08-06 (soir) | 46 | 602 |
 | &nbsp;&nbsp;↳ Le changement de Code.gs n'est pas déployé | 20 | 241 |
@@ -131,7 +131,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ Le panneau des conditions n'a aucun moyen de s'y retrouver | 15 | 170 |
 | &nbsp;&nbsp;↳ Ce que la skill de goût refuse et que le site fait quand même | 14 | 184 |
 | &nbsp;&nbsp;↳ OUVERTES PAR L'ESTIMATEUR — 2026-08-07 (D-774 · D-775 · D-776) | 2 | 19 |
-| &nbsp;&nbsp;↳ Le solveur retrouve encore la grille à 20-25 % près | 26 | 352 |
+| &nbsp;&nbsp;↳ Le solveur retrouve encore la grille à 20-25 % près | 26 | 353 |
 | &nbsp;&nbsp;↳ Le chiffre paraît après un formulaire, et c'est contraire à ce que Nielsen Norman recommande | 20 | 272 |
 | &nbsp;&nbsp;↳ La promesse « six écrans au plus » se lit avant qu'on sache si elle vaut quatre | 8 | 111 |
 | &nbsp;&nbsp;↳ Le prix des trois catégories sans prix n'a pas été arbitré | 7 | 79 |
@@ -146,7 +146,7 @@ l'oublie et n'écrive à sa place quelque chose qui sonne bien.
 | &nbsp;&nbsp;↳ L'ordre des colonnes du code ne sera pas celui du classeur tant que initialiser() n'aura pas tourné | 26 | 373 |
 | &nbsp;&nbsp;↳ OUVERTE PAR L'AUDIT CLIENT DU 2026-08-07 (D-783) | 2 | 15 |
 | &nbsp;&nbsp;↳ Le site ne montre aucun client réel, et je ne peux pas y remédier | 23 | 309 |
-| &nbsp;&nbsp;↳ L'en-tête sur téléphone vend au mauvais public | 9 | 121 |
+| &nbsp;&nbsp;↳ L'en-tête sur téléphone vend au mauvais public | 9 | 122 |
 | &nbsp;&nbsp;↳ Le LCP tient à 340-380 ms au lieu de 300, et ce n'est ni la machine ni ce chantier | 53 | 712 |
 
 <!-- INDEX:FIN -->
@@ -367,7 +367,7 @@ pour ça. Voir `PIEGES.md` § 29.
 <a id="contenu"></a>
 ## 4 · CONTENU ET LICENCES
 
-**`logo/LOGO_APED*.png` portent un manifeste C2PA signé** —
+**`logo/logo_adexweb*.png` portent un manifeste C2PA signé** —
 `gpt-image` 2.0, OpenAI, `trainedAlgorithmicMedia`, plus un filigrane
 invisible non borné. Les deux fichiers ne sont référencés nulle part
 (la marque affichée est `logo-mark.svg`), mais on ne peut pas en
@@ -489,9 +489,9 @@ restent.** Le raisonnement, et il tient : ce sont des entreprises
 fictives, annoncées comme telles par le sous-titre de la section —
 « Quatre démonstrations, entreprises fictives — pas des mandats
 livrés ». Un chiffre à l'intérieur d'une démonstration étiquetée fait
-partie de la fiction. **Ce n'est pas une affirmation d'APED**, et
-aucune des quatre questions de véracité ne s'y applique : APED
-n'affirme pas que 12 000 véhicules sont passés quelque part, APED
+partie de la fiction. **Ce n'est pas une affirmation d'ADEXWEB**, et
+aucune des quatre questions de véracité ne s'y applique : ADEXWEB
+n'affirme pas que 12 000 véhicules sont passés quelque part, ADEXWEB
 montre à quoi ressemble un site qu'elle sait coder.
 
 ### Le tracteur du site de déneigement porte une marque réelle
@@ -725,7 +725,7 @@ pas finie.
 |---|---|
 | **`paysagement` a été rephotographié pendant sa refonte** | son dépôt ne compilait pas à la première prise de vue ; il compilait à la seconde. La capture montre donc **un chantier en cours**, pas un état livré, et elle vieillira dès la prochaine passe du voisin. À reprendre quand sa refonte sera posée |
 | **Deux des douze rendent une erreur de console** | `restaurant` et `paysagement` : « Hydration failed because the server rendered text didn't match the client ». Elles sont dans les projets voisins, en mode développement, et je n'y ai pas touché. Elles n'affectent pas l'image — mais c'est cette même hydratation défaillante qui a défait le masquage du numéro de téléphone (piège 58) |
-| **Les trois projets réels n'ont pas de `<meta name="aped-instant">`** | ils ne sont pas dessinés autour d'un instant photogénique et sont capturés « posés ». **Trois des douze aperçus ne prouvent donc aucun mouvement** |
+| **Les trois projets réels n'ont pas de `<meta name="adexweb-instant">`** | ils ne sont pas dessinés autour d'un instant photogénique et sont capturés « posés ». **Trois des douze aperçus ne prouvent donc aucun mouvement** |
 | **`06 Garage` et `08 Paysagement` sont la paire la plus proche** | tous deux sombres, tous deux une grosse grotesque blanche en bas à gauche sur un véhicule. Ce sont les deux projets réels ; on ne les redessine pas. La réserve précédente désignait 01/02 — la mesure sur la planche dit 06/08 |
 | **`12 Photographe` se repère au côte-à-côte** | il est le seul sombre de ses trois références, et son image est la moins saisissante des quatre. C'est ce qu'un photographe vend. Le fonds disponible est la limite |
 | **`10 Immobilier` a perdu sa règle « aucun vert »** | le quart bas de la nouvelle photographie est une bande de plantation : **2,58 % de vert et 6,92 % de chaud** mesurés après filtre, contre 0 % pour l'image d'avant. C'est le prix de la seule tranche de 720 × 900 qui montre une maison entière |
@@ -1078,9 +1078,9 @@ Retiré aujourd'hui, il ferait échouer les formulaires **en silence**.
 Il disparaît au branchement vers le Sheet. **C'est la première chose
 à faire au prochain chantier.**
 
-### Les deux PDF publient une grille de prix APED
+### Les deux PDF publient une grille de prix ADEXWEB
 
-`documents/src/aped-automatisation.html`, tableau « Le point mort » :
+`documents/src/adexweb-automatisation.html`, tableau « Le point mort » :
 mise en place de 700 $ à 12 000 $ par type de mandat, abonnements
 annuels, « coût an 1 » jusqu'à 16 300 $, et une note de méthode qui
 valorise « l'entretien à 35 $ l'heure ».
@@ -1176,7 +1176,7 @@ cherche n'existe plus, et l'outil refuse de rendre zéro en silence.
 Vérifié à la main sur le RENDU : les seuls montants affichés sont les
 trois autorisés, plus le **42 $** du calculateur — qui est la valeur
 que **le visiteur règle lui-même** (« Ce que vous coûte une heure de
-main-d'œuvre »), pas un prix d'APED. Antérieur à ce chantier.
+main-d'œuvre »), pas un prix d'ADEXWEB. Antérieur à ce chantier.
 
 ### `tools/production-check.mjs` rend `ECHEC :
 ### toutesLesImagesChargent`
@@ -1192,7 +1192,7 @@ régression. L'outil n'a pas été touché.
 
 `tools/contraste-min.mjs` la relève dans `#realisations`. C'est le
 `›` du carrousel **du mauvais site reconstitué** — un défaut
-représenté, pas un défaut du site d'APED. Antérieur. Le minimum réel
+représenté, pas un défaut du site d'ADEXWEB. Antérieur. Le minimum réel
 du site est 4,7:1.
 
 ### Le « après » du déneigement reste un vrai mandat sous une
@@ -1246,7 +1246,7 @@ passent. Mais :
   projet Apps Script.
 
 Ces cinq-là se ferment en une seule séance, à la main, en suivant
-`docs/CONFIGURATION-GOOGLE-APED.md` étape 8.2. Tant que ce n'est pas
+`docs/CONFIGURATION-GOOGLE.md` étape 8.2. Tant que ce n'est pas
 fait, **aucune session ne doit écrire que la réservation fonctionne.**
 
 ### Le fuseau est prouvé par le calcul, pas par un appel réel
@@ -1343,7 +1343,7 @@ et `js/main.js:2413`.
 
 Aucun n'atteint un visiteur. Mais le dépôt est **public** : ces
 commentaires publient en creux les anciens paliers tarifaires
-d'APED. **Arbitrage du propriétaire** — l'outil les nomme et ne
+d'ADEXWEB. **Arbitrage du propriétaire** — l'outil les nomme et ne
 tranche pas.
 
 ### Aucune animation n'a été ajoutée au panneau des créneaux
@@ -1378,7 +1378,7 @@ intermédiaire, et cessent d'être cliquables. Elles restent lisibles.
 déploiement et l’adresse de l’agence. Vérifié à trois endroits :
 
 - `git log --all -S "<identifiant du déploiement>"` ne rend **rien** ;
-- `origin/main:.env.local.example` porte `APED_WEB_APP_URL=` **vide** ;
+- `origin/main:.env.local.example` porte `ADEXWEB_WEB_APP_URL=` **vide** ;
 - seul le fichier de travail était modifié, jamais commité.
 
 **Aucun redéploiement n'est nécessaire.** L'adresse reste privée.
@@ -1475,7 +1475,7 @@ version 3. Après le redéploiement :
 partis vers le vrai classeur AVANT la correction. Ces lignes portent
 peut-être des formules actives. `nettoyerAutotest` les retire.
 
-### Le Sheet et le calendrier d'APED n'ont TOUJOURS pas été regardés
+### Le Sheet et le calendrier d'ADEXWEB n'ont TOUJOURS pas été regardés
 
 Le propriétaire a partagé le classeur en lecture avec son compte
 personnel le 2026-08-06. **Il reste invisible depuis cette session.**
@@ -1484,12 +1484,12 @@ Quatre recherches, à quarante minutes d'intervalle :
 | Requête Drive | Résultat |
 |---|---|
 | `sharedWithMe = true` | 14 fichiers, aucun d'`apedagence` |
-| `title contains 'APED'` | vide |
+| `title contains 'ADEXWEB'` | vide |
 | `title contains 'demandes du site'` | vide |
 | `owner = 'apedagence@gmail.com'` | vide |
 
 De même, `list_calendars` ne rend que l'agenda personnel et les
-jours fériés — **le calendrier d'APED n'est pas partagé du tout.**
+jours fériés — **le calendrier d'ADEXWEB n'est pas partagé du tout.**
 
 Deux causes possibles, non départagées : un partage **par lien**
 plutôt que par adresse (un fichier partagé ainsi n'entre dans
@@ -1747,7 +1747,7 @@ plus au-delà de N = 100 : c'est l'économie de lot qui le pose, en
 rendant le total non additif. Sans elle, l'erreur tombait à 3 % en
 400 sondages.
 
-**Ce que ça vaut, honnêtement.** 20-25 % d'erreur sur « combien APED
+**Ce que ça vaut, honnêtement.** 20-25 % d'erreur sur « combien ADEXWEB
 charge pour le paiement en ligne » est un ordre de grandeur, pas un
 prix. Un concurrent avec un an de métier le devine aussi bien sans
 sonder. Et chaque sondage lui coûte une ligne au classeur avec un nom,
@@ -1923,7 +1923,7 @@ Un acheteur n'achète pas une méthode, il achète un précédent.
 
 ### L'en-tête sur téléphone vend au mauvais public
 
-Sur 390 px, l'en-tête collant tient `APED · Référez · 5 000 $` et rien
+Sur 390 px, l'en-tête collant tient `ADEXWEB · Référez · 5 000 $` et rien
 d'autre : la place la plus chère du site, visible sur chaque écran,
 parle du programme de parrainage à quelqu'un qui n'a rien acheté. Y
 glisser le numéro ou le CTA d'achat demande de décider **ce qui sort**.

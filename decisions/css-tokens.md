@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-342 — APED AGENCE - Direction ATELIER** | 15 | 190 |
+| **D-342 — ADEXWEB - Direction ATELIER** | 15 | 188 |
 | **D-343 — Couleur. Deux themes a parite complete de hierarchie.** | 8 | 107 |
 | **D-344 — Accent LISIBLE SUR LA SURFACE INVERSE. Il manquait, et** | 7 | 88 |
 | **D-345 — Espace. Base 8. Les respirations de bande sont volontairement** | 7 | 86 |
@@ -23,10 +23,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-342 — APED AGENCE - Direction ATELIER
+## D-342 — ADEXWEB - Direction ATELIER
 
 ============================================================
-  APED AGENCE - Direction ATELIER
+  ADEXWEB - Direction ATELIER
   Systeme de design. Aucune valeur en dur ailleurs que dans ce fichier.
 
   Principes verrouilles :

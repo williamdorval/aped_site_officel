@@ -36,8 +36,8 @@ page.on("pageerror", (e) => erreurs.push("pageerror: " + String(e)));
 page.on("console", (m) => { if (m.type() === "error") erreurs.push("console: " + m.text()); });
 
 await page.addInitScript((sombre) => {
-  try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
-  if (sombre) { try { localStorage.setItem("aped-theme", "dark"); } catch (e) {} }
+  try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
+  if (sombre) { try { localStorage.setItem("adexweb-theme", "dark"); } catch (e) {} }
 }, SOMBRE);
 
 await page.goto("http://127.0.0.1:8099/", { waitUntil: "load" });

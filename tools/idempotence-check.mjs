@@ -270,8 +270,8 @@ console.log("\n--- 8 · REPLY-TO SUR L'AVIS INTERNE");
   etat.courriels.length = 0;
   poster({ _form: "contact", nom: "Ida ReplyTo", email: "ida.replyto@exemple.ca",
            message: "Une demande pour verifier le Reply-To." });
-  const avis = etat.courriels.find((c) => /^\[APED\]/.test(c.subject));
-  const conf = etat.courriels.find((c) => !/^\[APED\]/.test(c.subject));
+  const avis = etat.courriels.find((c) => /^\[ADEXWEB\]/.test(c.subject));
+  const conf = etat.courriels.find((c) => !/^\[ADEXWEB\]/.test(c.subject));
   dire("l'avis interne porte un Reply-To", avis && avis.replyTo, "ida.replyto@exemple.ca");
   dire("il part bien vers la boite de l'agence", avis && avis.to, gs.notifDest());
   dire("le corps annonce que « Repondre » ecrit au client",
@@ -680,7 +680,7 @@ console.log("\n--- 12bis · UN ECRAN UNIQUE EST COMPLET (D-790)");
 /* ============================================================
    13 · LE LUNDI MATIN — L'OBJET DE L'AVIS ET LA LARGEUR  (D-781)
 
-   Vingt avis dans Gmail se ressemblaient tous : « [APED] Nouveau
+   Vingt avis dans Gmail se ressemblaient tous : « [ADEXWEB] Nouveau
    projet · Jean Tremblay · 14 h 30 ». Le corps disait « COMMENCÉ — »
    des sa premiere ligne, mais la LISTE de Gmail ne montre pas le
    corps. Il fallait ouvrir les vingt pour savoir lesquels etaient
@@ -697,13 +697,13 @@ console.log("\n--- 13 · L'OBJET DE L'AVIS ET LA PREMIERE ECRANEE  (D-781)");
   poster({ _form: "project", _sid: "sondeLundi", _etape: 3, _etapes: 8,
            nom: "Jean Tremblay", entreprise: "Garage Tremblay",
            email: "jean@garagetremblay.ca", telephone: "8195230871" });
-  const partiel = etat.courriels.find((c) => /^\[APED\]/.test(c.subject));
+  const partiel = etat.courriels.find((c) => /^\[ADEXWEB\]/.test(c.subject));
   /* SANS AVIS, ON S'ARRETE. Rendre « l'objet ne dit pas COMMENCE »
      sur un courriel qui n'est jamais parti serait un faux verdict
      sur une mesure qui n'a pas eu lieu. */
   if (!partiel) { console.error("ARRET  aucun avis interne apres un envoi partiel."); process.exit(2); }
   dire("un envoi partiel annonce COMMENCE des l'objet",
-    /^\[APED\] COMMENCÉ /.test(partiel.subject), true);
+    /^\[ADEXWEB\] COMMENCÉ /.test(partiel.subject), true);
   dire("et il dit OU la personne s'est arretee",
     /COMMENCÉ \d+\s*\/\s*\d+/.test(partiel.subject), true);
   dire("l'entreprise passe devant la personne",
@@ -717,7 +717,7 @@ console.log("\n--- 13 · L'OBJET DE L'AVIS ET LA PREMIERE ECRANEE  (D-781)");
            nom: "Jean Tremblay", entreprise: "Garage Tremblay",
            email: "jean@garagetremblay.ca", telephone: "8195230871",
            besoins: "ZZ", budget: "ZZ", echeancier: "ZZ", description: "ZZ" });
-  const final = etat.courriels.find((c) => /^\[APED\]/.test(c.subject));
+  const final = etat.courriels.find((c) => /^\[ADEXWEB\]/.test(c.subject));
   if (!final) { console.error("ARRET  aucun avis interne apres l'envoi final."); process.exit(2); }
   dire("une demande finie ne porte PAS la mention",
     /COMMENCÉ/.test(final.subject), false, final.subject);

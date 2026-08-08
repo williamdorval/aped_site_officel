@@ -210,7 +210,7 @@ function decouper(texte, profondeur) {
 const { critique, differe } = decouper(src, 0);
 
 const enTete = (nom, quoi) => `/* ============================================================
-   APED AGENCE — ${nom}
+   ADEXWEB — ${nom}
    ${quoi}
    FABRIQUE PAR \`node tools/css-critique.mjs\` a partir de
    \`css/app.css\`, qui reste la seule source. Ne pas modifier a la

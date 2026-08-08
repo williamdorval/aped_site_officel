@@ -72,7 +72,23 @@
     });
   }
 
-  /* ---- 3 · LE SEUL GESTE D'ENTREE DU SITE ----
+  /* ---- 3 · UNE PORTE QUI N'EXISTE PAS SUR CETTE PAGE MENE A CONTACT ----
+     Les modales ne sont pas embarquees sur toutes les pages : la 404 et la
+     confidentialite s'en passent, et rien ne sert de les alourdir de 1 500
+     lignes de balisage. Un bouton `data-modal-open` dont la modale est
+     absente devient donc un lien vers la page de contact, au lieu de ne
+     rien faire — un bouton mort est pire qu'un lien.  D-844 */
+  doc.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-modal-open]") : null;
+    if (!b) return;
+    var cible = b.getAttribute("data-modal-open");
+    if (doc.getElementById(cible)) return;   // la modale est la : main.js s'en charge
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = "contact.html#" + cible;
+  }, true);
+
+  /* ---- 4 · LE SEUL GESTE D'ENTREE DU SITE ----
      16 px, 500 ms, decalage 60 ms par BLOC. L'etat de repos est la forme
      FINALE : si le script ne tourne pas, tout est deja en place. Une fois
      joue, l'element ne rejoue jamais.  D-829 */

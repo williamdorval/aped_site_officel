@@ -65,7 +65,7 @@ async function releve(entiere, theme) {
   const page = await ctx.newPage();
   /* CE COMPARATEUR MESURE UNE FEUILLE, PAS UN SCENARIO.
      Deux couches en surimpression ont deja fausse ses verdicts :
-     · la sequence d'entree — d'ou `aped-entree-saut` ;
+     · la sequence d'entree — d'ou `adexweb-entree-saut` ;
      · le popup cadeau, qui parait tout seul a la onzieme seconde.
        Une passe le trouvait ouvert, l'autre ferme, et le rapport
        annoncait 77 « ecarts de cascade » sur `.cadeau` : `display`
@@ -77,9 +77,9 @@ async function releve(entiere, theme) {
      ne clignote pas. */
   await page.addInitScript((t) => {
     try {
-      localStorage.setItem("aped-theme", t);
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      localStorage.setItem("adexweb-theme", t);
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
     } catch (e) {}
   }, theme);
 

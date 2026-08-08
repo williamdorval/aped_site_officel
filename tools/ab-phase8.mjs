@@ -38,7 +38,7 @@ for (let p = 0; p < PASSES; p++) {
     const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
     await page.addInitScript(() => {
-      try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+      try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
       window.__m = { lcp: 0, cls: 0, longues: [], f: 0 };
       new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__m.lcp = e.startTime; })
         .observe({ type: "largest-contentful-paint", buffered: true });

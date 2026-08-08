@@ -27,7 +27,7 @@ fs.mkdirSync(SORTIE, { recursive: true });
 
 const nav = await chromium.launch();
 const p = await nav.newPage({ viewport: { width: 1440, height: 900 } });
-await p.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await p.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 
 const erreurs = [];
 const tierces = [];

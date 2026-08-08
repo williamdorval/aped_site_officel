@@ -1,0 +1,1871 @@
+{
+ "tour": "0",
+ "pages": 9,
+ "largeurs": [
+  320,
+  375,
+  768,
+  1024,
+  1440,
+  1920
+ ],
+ "examinees": 54,
+ "echecs": 37,
+ "rapport": [
+  {
+   "page": "404.html",
+   "largeur": 320,
+   "debord": 0,
+   "hauteur": 2920,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 21,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "404.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 2823,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 21,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "404.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 2149,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 24,
+      "l": 145,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "404.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 1829,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 24,
+      "l": 145,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "404.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 1798,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 24,
+      "l": 145,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "404.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 1798,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 24,
+      "l": 145,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "automatisation.html",
+   "largeur": 320,
+   "debord": 0,
+   "hauteur": 7586,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 2,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     },
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     }
+    ],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "automatisation.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 6974,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 2,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     },
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     }
+    ],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "automatisation.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 5998,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 2,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     },
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     }
+    ],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "automatisation.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 4317,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 2,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     },
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     }
+    ],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "automatisation.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 4114,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 2,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     },
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     }
+    ],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "automatisation.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 4114,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 2,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     },
+     {
+      "px": 13,
+      "texte": "ADEXWEB · Guide",
+      "ou": "guide-marque"
+     }
+    ],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "confidentialite.html",
+   "largeur": 320,
+   "debord": 31,
+   "hauteur": 11364,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "confidentialite.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 10231,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "confidentialite.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 6378,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "confidentialite.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 5877,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "confidentialite.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 5816,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "confidentialite.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 5816,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 127,
+      "quoi": "819 523-0871"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "contact.html",
+   "largeur": 320,
+   "debord": 0,
+   "hauteur": 7415,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 4,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "30 minutes · gratuit",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Sans engagement",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Traité en premier",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Jusqu'à 5 000 $",
+      "ou": "carte-etiquette"
+     }
+    ],
+    "cibles": [
+     {
+      "h": 30,
+      "l": 240,
+      "quoi": "INPUT"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "contact.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 7054,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 4,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "30 minutes · gratuit",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Sans engagement",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Traité en premier",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Jusqu'à 5 000 $",
+      "ou": "carte-etiquette"
+     }
+    ],
+    "cibles": [
+     {
+      "h": 30,
+      "l": 240,
+      "quoi": "INPUT"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "contact.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 6201,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 4,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "30 minutes · gratuit",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Sans engagement",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Traité en premier",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Jusqu'à 5 000 $",
+      "ou": "carte-etiquette"
+     }
+    ],
+    "cibles": [
+     {
+      "h": 30,
+      "l": 240,
+      "quoi": "INPUT"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "contact.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 5790,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 4,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "30 minutes · gratuit",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Sans engagement",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Traité en premier",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Jusqu'à 5 000 $",
+      "ou": "carte-etiquette"
+     }
+    ],
+    "cibles": [
+     {
+      "h": 30,
+      "l": 240,
+      "quoi": "INPUT"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "contact.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 5759,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 4,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "30 minutes · gratuit",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Sans engagement",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Traité en premier",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Jusqu'à 5 000 $",
+      "ou": "carte-etiquette"
+     }
+    ],
+    "cibles": [
+     {
+      "h": 30,
+      "l": 240,
+      "quoi": "INPUT"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "contact.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 5759,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 4,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [
+     {
+      "px": 13,
+      "texte": "30 minutes · gratuit",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Sans engagement",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Traité en premier",
+      "ou": "carte-etiquette"
+     },
+     {
+      "px": 13,
+      "texte": "Jusqu'à 5 000 $",
+      "ou": "carte-etiquette"
+     }
+    ],
+    "cibles": [
+     {
+      "h": 30,
+      "l": 240,
+      "quoi": "INPUT"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "index.html",
+   "largeur": 320,
+   "debord": 0,
+   "hauteur": 8656,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "index.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 8268,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "index.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 7913,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 1,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 44,
+      "l": 83,
+      "quoi": "Le détail"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "index.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 5928,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "index.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 5891,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "index.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 5891,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "processus.html",
+   "largeur": 320,
+   "debord": 0,
+   "hauteur": 7571,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "processus.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 7194,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "processus.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 5971,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "processus.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 5531,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "processus.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 5500,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "processus.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 5500,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "realisations.html",
+   "largeur": 320,
+   "debord": 131,
+   "hauteur": 33792,
+   "h1": 2,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 17,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Carrosserie et peinture : glisser "
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Design intérieur : glisser pour co"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Restaurant de quartier : glisser p"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Déneigement et entretien : glisser"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "realisations.html",
+   "largeur": 375,
+   "debord": 76,
+   "hauteur": 33875,
+   "h1": 2,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 17,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Carrosserie et peinture : glisser "
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Design intérieur : glisser pour co"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Restaurant de quartier : glisser p"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Déneigement et entretien : glisser"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "realisations.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 41661,
+   "h1": 2,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 17,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Carrosserie et peinture : glisser "
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Design intérieur : glisser pour co"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Restaurant de quartier : glisser p"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Déneigement et entretien : glisser"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "realisations.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 46076,
+   "h1": 2,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 17,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Carrosserie et peinture : glisser "
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Design intérieur : glisser pour co"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Restaurant de quartier : glisser p"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Déneigement et entretien : glisser"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "realisations.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 47669,
+   "h1": 2,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 17,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Carrosserie et peinture : glisser "
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Design intérieur : glisser pour co"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Restaurant de quartier : glisser p"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Déneigement et entretien : glisser"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "realisations.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 47669,
+   "h1": 2,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 17,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Carrosserie et peinture : glisser "
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Design intérieur : glisser pour co"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Restaurant de quartier : glisser p"
+     },
+     {
+      "h": 16,
+      "l": 129,
+      "quoi": "Déneigement et entretien : glisser"
+     },
+     {
+      "h": 30,
+      "l": 111,
+      "quoi": "Restauration"
+     },
+     {
+      "h": 30,
+      "l": 152,
+      "quoi": "Boutique en ligne"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "reference.html",
+   "largeur": 320,
+   "debord": 0,
+   "hauteur": 12341,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "reference.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 10787,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "reference.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 7554,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "reference.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 6405,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "reference.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 5861,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "reference.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 5861,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 0,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "services.html",
+   "largeur": 320,
+   "debord": 0,
+   "hauteur": 15860,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 5,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 219,
+      "quoi": "01Sites web et boutiques"
+     },
+     {
+      "h": 23,
+      "l": 202,
+      "quoi": "02Automatisation et IA"
+     },
+     {
+      "h": 23,
+      "l": 268,
+      "quoi": "03Immobilier et visibilité locale"
+     },
+     {
+      "h": 23,
+      "l": 230,
+      "quoi": "04Logiciels et applications"
+     },
+     {
+      "h": 23,
+      "l": 232,
+      "quoi": "05Estimation sur votre site"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "services.html",
+   "largeur": 375,
+   "debord": 0,
+   "hauteur": 14699,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 2,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 219,
+      "quoi": "01Sites web et boutiques"
+     },
+     {
+      "h": 23,
+      "l": 202,
+      "quoi": "02Automatisation et IA"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "services.html",
+   "largeur": 768,
+   "debord": 0,
+   "hauteur": 12168,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 4,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 219,
+      "quoi": "01Sites web et boutiques"
+     },
+     {
+      "h": 23,
+      "l": 202,
+      "quoi": "02Automatisation et IA"
+     },
+     {
+      "h": 23,
+      "l": 230,
+      "quoi": "04Logiciels et applications"
+     },
+     {
+      "h": 23,
+      "l": 232,
+      "quoi": "05Estimation sur votre site"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "services.html",
+   "largeur": 1024,
+   "debord": 0,
+   "hauteur": 8941,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 4,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 219,
+      "quoi": "01Sites web et boutiques"
+     },
+     {
+      "h": 23,
+      "l": 202,
+      "quoi": "02Automatisation et IA"
+     },
+     {
+      "h": 23,
+      "l": 268,
+      "quoi": "03Immobilier et visibilité locale"
+     },
+     {
+      "h": 23,
+      "l": 232,
+      "quoi": "05Estimation sur votre site"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "services.html",
+   "largeur": 1440,
+   "debord": 0,
+   "hauteur": 8538,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 4,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 219,
+      "quoi": "01Sites web et boutiques"
+     },
+     {
+      "h": 23,
+      "l": 202,
+      "quoi": "02Automatisation et IA"
+     },
+     {
+      "h": 23,
+      "l": 268,
+      "quoi": "03Immobilier et visibilité locale"
+     },
+     {
+      "h": 23,
+      "l": 230,
+      "quoi": "04Logiciels et applications"
+     }
+    ],
+    "sansAlt": []
+   }
+  },
+  {
+   "page": "services.html",
+   "largeur": 1920,
+   "debord": 0,
+   "hauteur": 8538,
+   "h1": 1,
+   "console": 0,
+   "tierces": 0,
+   "ratees": 0,
+   "contraste": 0,
+   "petits": 0,
+   "cibles": 4,
+   "sansAlt": 0,
+   "detail": {
+    "console": [],
+    "tierces": [],
+    "ratees": [],
+    "contraste": [],
+    "petits": [],
+    "cibles": [
+     {
+      "h": 23,
+      "l": 219,
+      "quoi": "01Sites web et boutiques"
+     },
+     {
+      "h": 23,
+      "l": 202,
+      "quoi": "02Automatisation et IA"
+     },
+     {
+      "h": 23,
+      "l": 268,
+      "quoi": "03Immobilier et visibilité locale"
+     },
+     {
+      "h": 23,
+      "l": 230,
+      "quoi": "04Logiciels et applications"
+     }
+    ],
+    "sansAlt": []
+   }
+  }
+ ]
+}

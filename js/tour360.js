@@ -1,4 +1,4 @@
-/* == APED AGENCE - Visite virtuelle 360 ==  D-538 */
+/* == ADEXWEB - Visite virtuelle 360 ==  D-538 */
 (function () {
   "use strict";
 
@@ -363,7 +363,7 @@
         b.addEventListener("click", function () {
           if (racine(visionneur.getScene()) === p.id) return;
           /* PHASE 10 — LE PASSAGE D'UNE PIECE A L'AUTRE.  D-542 */
-          var t = window.APED_TRAME;
+          var t = window.ADEXWEB_TRAME;
           var doux = t && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
           if (!doux) { visionneur.loadScene(p.id, p.pitch, p.yaw, p.hfov); return; }
           t.couvrir(scene, {

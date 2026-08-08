@@ -39,7 +39,7 @@ function dire(nom, obtenu, attendu, note) {
 }
 function titre(t) { console.log(""); console.log("--- " + t); }
 
-const SITE = "https://exemple-aped.ca";
+const SITE = "https://exemple-adexweb.ca";
 const H = 3600000, J = 86400000;
 
 gs.initialiser();

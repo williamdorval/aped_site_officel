@@ -36,7 +36,7 @@ import { NOYAU } from "./photo-noyau.mjs";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 const SORTIE = path.join(RACINE, "images/secteurs-sites");
-const CACHE = path.join(os.tmpdir(), "aped-secteurs-src");
+const CACHE = path.join(os.tmpdir(), "adexweb-secteurs-src");
 fs.mkdirSync(CACHE, { recursive: true });
 fs.mkdirSync(SORTIE, { recursive: true });
 const FORCER = process.argv.includes("--forcer");
@@ -863,7 +863,7 @@ const PORTRAIT_HAUT = { w: 1080, h: 1800 };
 const PANO = { w: 2400, h: 567 };
 
 const j = (u) => new Promise((ok, no) => {
-  https.get(u, { headers: { "user-agent": "aped-secteurs-sites" } }, (r) => {
+  https.get(u, { headers: { "user-agent": "adexweb-secteurs-sites" } }, (r) => {
     let d = ""; r.on("data", (c) => (d += c)); r.on("end", () => { try { ok(JSON.parse(d)); } catch (e) { no(new Error(d.slice(0, 200))); } });
   }).on("error", no);
 });
@@ -871,7 +871,7 @@ function telecharger(url, dest) {
   return new Promise((ok, non) => {
     if (fs.existsSync(dest)) return ok(false);
     const f = fs.createWriteStream(dest + ".part");
-    const suivre = (u) => https.get(u, { headers: { "user-agent": "Mozilla/5.0 (compatible; aped-secteurs-sites)" } }, (r) => {
+    const suivre = (u) => https.get(u, { headers: { "user-agent": "Mozilla/5.0 (compatible; adexweb-secteurs-sites)" } }, (r) => {
       if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) { r.resume(); return suivre(r.headers.location); }
       if (r.statusCode !== 200) { r.resume(); return non(new Error(r.statusCode + " " + u)); }
       r.pipe(f);

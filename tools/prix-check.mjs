@@ -114,7 +114,7 @@ const CONTEXTES_OK = [
      menu, et c'est precisement ce qui separait ces apercus d'un
      wireframe gris. On les nomme ici pour que la decision soit
      visible dans le rapport plutot que noyee. */
-  { motif: /mock-|mk-|mkx-|ecr-|data-mock/, pourquoi: "prix de demonstration d'un client fictif, pas un tarif APED" },
+  { motif: /mock-|mk-|mkx-|ecr-|data-mock/, pourquoi: "prix de demonstration d'un client fictif, pas un tarif ADEXWEB" },
   /* LA FOURCHETTE REVELEE APRES LE FORMULAIRE.  D-748
      La regle a change, et elle s'est RETRECIE : « aucun prix, nulle
      part » est devenu « aucun prix sur la page publique ». Le bareme
@@ -246,7 +246,7 @@ for (const f of FICHIERS) {
     while ((m = MONTANT.exec(l))) {
       const n = m[1];
       const a = autorise(n) || contexteOk(l) ||
-        (dansDemo(i) ? { pourquoi: "prix de demonstration d'un client fictif, pas un tarif APED" } : null);
+        (dansDemo(i) ? { pourquoi: "prix de demonstration d'un client fictif, pas un tarif ADEXWEB" } : null);
 
       /* Un montant dans un commentaire sort du decompte dur et entre
          dans le sien : il n'atteint aucun visiteur, mais il reste
@@ -366,7 +366,7 @@ for (const rel of SERVIS_GRILLE) {
 const nav = await chromium.launch();
 const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: "load" });
 await page.waitForTimeout(900);
 

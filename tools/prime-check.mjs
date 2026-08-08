@@ -48,7 +48,7 @@ const PORT = portDe(process.argv[2]);
 
    `prime` est ce que la page doit afficher.
    `plancher`, `typique` et `sommet` sont les prix reels d'un mandat
-   de ce type chez APED. Le PLANCHER est le seul qui contraigne : au
+   de ce type chez ADEXWEB. Le PLANCHER est le seul qui contraigne : au
    plancher, la prime pese le plus lourd en pourcentage.
    ------------------------------------------------------------ */
 const PLAFOND_TAUX = 7;      /* jamais au-dessus — les vendeurs internes touchent 10 % */
@@ -163,7 +163,7 @@ const nav = await chromium.launch();
 const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
 await page.addInitScript(() => {
-  try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
 });
 await page.goto("http://127.0.0.1:" + PORT + "/", { waitUntil: "load" });
 await page.waitForTimeout(1200);

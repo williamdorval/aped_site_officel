@@ -9,7 +9,7 @@ const out=[];
 for (const L of [1920,1600,1440,1280,1024,900,600,390,320]) {
   const ctx=await nav.newContext({viewport:{width:L,height:900},colorScheme:"light"});
   const page=await ctx.newPage();
-  await page.addInitScript(()=>{try{sessionStorage.setItem("aped-sans-popup","1")}catch(e){}});
+  await page.addInitScript(()=>{try{sessionStorage.setItem("adexweb-sans-popup","1")}catch(e){}});
   await page.goto(BASE,{waitUntil:"load"});
   await page.waitForTimeout(2000);
   const lire=()=>page.evaluate(()=>[...document.querySelectorAll(".svc-carte")].map(c=>{

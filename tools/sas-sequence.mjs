@@ -115,7 +115,7 @@ const ctx = await nav.newContext({ viewport: VUE });
 const page = await ctx.newPage();
 const erreurs = [];
 page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 await page.goto(BASE, { waitUntil: "load" });
 await page.waitForTimeout(1100);
 await page.mouse.move(4, 4);

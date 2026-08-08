@@ -27,8 +27,8 @@ const page = await nav.newPage({ viewport: { width: 1440, height: 900 } });
 /* Piege 18 : le popup cadeau bloque tout outil qui defile. */
 await page.addInitScript(() => {
   try {
-    sessionStorage.setItem("aped-sans-popup", "1");
-    sessionStorage.setItem("aped-entree-saut", "1");
+    sessionStorage.setItem("adexweb-sans-popup", "1");
+    sessionStorage.setItem("adexweb-entree-saut", "1");
   } catch (e) {}
 });
 
@@ -146,8 +146,8 @@ for (const cas of [
   const p2 = await c2.newPage();
   await p2.addInitScript(() => {
     try {
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
     } catch (e) {}
   });
   await p2.goto(ADRESSE, { waitUntil: "networkidle" });

@@ -467,7 +467,7 @@ titre("9 · LES PAUSES");
 titre("10 · LES DEUX PORTES");
 {
   const vie = JSON.parse(gs.doGet({}).getContent());
-  verifier("doGet sans parametre reste le temoin de vie", vie.service, "APED formulaires");
+  verifier("doGet sans parametre reste le temoin de vie", vie.service, "ADEXWEB formulaires");
   verifier("il annonce savoir rendre des creneaux", vie.creneaux, true);
   verifier("il ne divulgue aucune adresse",
     JSON.stringify(vie).indexOf("@"), -1);

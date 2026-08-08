@@ -117,8 +117,8 @@ async function nouveauContexte(navigateur, opts = {}) {
   });
   /* Le popup cadeau bloque les outils : on le neutralise partout. */
   await ctx.addInitScript(() => {
-    try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
-    try { localStorage.setItem("aped-theme", "light"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
+    try { localStorage.setItem("adexweb-theme", "light"); } catch (e) {}
   });
   if (opts.enregistreur) {
     await ctx.addInitScript(opts.enregistreur.fn, opts.enregistreur.arg);
@@ -246,7 +246,7 @@ const nav = await chromium.launch();
     page.evaluate(() => ({
       cls: document.documentElement.className,
       rideau: !!document.getElementById("entree"),
-      saut: (() => { try { return sessionStorage.getItem("aped-entree-saut"); } catch (e) { return "?"; } })(),
+      saut: (() => { try { return sessionStorage.getItem("adexweb-entree-saut"); } catch (e) { return "?"; } })(),
       navType: (() => { try { const n = performance.getEntriesByType("navigation")[0]; return n ? n.type : null; } catch (e) { return null; } })(),
     }));
 
@@ -289,7 +289,7 @@ const nav = await chromium.launch();
   const ctx3 = await nav.newContext({
     viewport: { width: LARGEUR, height: HAUTEUR }, reducedMotion: "reduce",
   });
-  await ctx3.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await ctx3.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const p3 = await ctx3.newPage();
   await p3.goto(BASE + "#top", { waitUntil: "commit" });
   await p3.waitForTimeout(400);

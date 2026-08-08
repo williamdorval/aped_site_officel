@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 
-const BASE = process.env.APED_BASE || "http://localhost:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://localhost:8099";
 const OUT = path.resolve("refonte-captures/hero");
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -22,7 +22,7 @@ for (const [nom, w, h, theme] of [
   const errs = [];
   page.on("pageerror", e => errs.push(String(e)));
   page.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
-  await page.addInitScript(t => { try { localStorage.setItem("aped-theme", t); } catch (e) {} }, theme);
+  await page.addInitScript(t => { try { localStorage.setItem("adexweb-theme", t); } catch (e) {} }, theme);
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.waitForTimeout(2600);
 

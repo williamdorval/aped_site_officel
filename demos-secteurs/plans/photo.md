@@ -142,7 +142,7 @@ de 34 px ne tient pas sur une case de 440 × 300 qu'on regarde.
 | **Formes** | Aucune. Zéro rayon, zéro ombre, zéro dégradé de fond, **et plus aucun flou nulle part**. Les pastilles sont des rectangles pleins posés à fleur des coins de case : elles marquent les joints de la grille au lieu de flotter dedans |
 | **Traitement photo** | § « L'étalonnage », ci-dessous — c'est le poste le plus travaillé de cette passe |
 | **Le geste** | § « La lumière rasante », ci-dessous |
-| **Ce qu'on ne fait pas** | Aucun titre, aucun caractère au-dessus de 11 px, aucune police d'affichage. Aucune marge, aucune gouttière, aucun fond visible. Aucun monospace (07). Aucun sarcelle d'interface (09), aucune terre cuite d'interface (10), aucun orange, aucun minium, jamais la typographie d'APED. Aucun écran sombre. **Aucune photographie qui ne soit pas de l'architecture** — `photo-14` (céramique), `photo-15` (roses) et `photo-18` (saule) sont sorties ; `photo-1` à `photo-7` (matériel de studio) restent écartées : une planche montre le travail, jamais l'équipement, et quatre portent du lettrage sur des boîtiers. Aucun nom de client, aucune publication, aucun prix, aucun avis, aucune adresse web. Aucune donnée de prise de vue inventée |
+| **Ce qu'on ne fait pas** | Aucun titre, aucun caractère au-dessus de 11 px, aucune police d'affichage. Aucune marge, aucune gouttière, aucun fond visible. Aucun monospace (07). Aucun sarcelle d'interface (09), aucune terre cuite d'interface (10), aucun orange, aucun minium, jamais la typographie d'ADEXWEB. Aucun écran sombre. **Aucune photographie qui ne soit pas de l'architecture** — `photo-14` (céramique), `photo-15` (roses) et `photo-18` (saule) sont sorties ; `photo-1` à `photo-7` (matériel de studio) restent écartées : une planche montre le travail, jamais l'équipement, et quatre portent du lettrage sur des boîtiers. Aucun nom de client, aucune publication, aucun prix, aucun avis, aucune adresse web. Aucune donnée de prise de vue inventée |
 
 ---
 
@@ -309,7 +309,7 @@ APRÈS, donc elles ne font pas partie du fond que le filtre
 échantillonne. Le texte du mur ne se réexpose pas.
 
 **L'instant : 4030 ms** sur 9000, déclaré dans
-`<meta name="aped-instant">`. La bande est alors à `x 540 → 730`,
+`<meta name="adexweb-instant">`. La bande est alors à `x 540 → 730`,
 **à cheval sur la couture verticale du monument et sur la colonne
 B** : elle traverse quatre épreuves et un joint d'encre. Critère de
 recette : sur l'image arrêtée, la bande claire doit être visible

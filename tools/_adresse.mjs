@@ -24,12 +24,12 @@
 const PORT_DEFAUT = 8099;
 
 /* Le port, dans l'ordre : ce qui est passe en argument, puis
-   `APED_PORT`, puis le port de `tools/serve.mjs`.
+   `ADEXWEB_PORT`, puis le port de `tools/serve.mjs`.
    On accepte aussi une adresse complete en argument — plusieurs
    outils se lancent indifferemment avec `8099` ou avec
    `http://localhost:8099`, et les deux doivent marcher. */
 export function port(arg) {
-  const brut = arg ?? process.env.APED_PORT ?? "";
+  const brut = arg ?? process.env.ADEXWEB_PORT ?? "";
   const texte = String(brut).trim();
   if (!texte) return PORT_DEFAUT;
 
@@ -52,7 +52,7 @@ export function port(arg) {
    sur l'IPv6 pendant que `serve.mjs` ecoute en IPv4, et la page ne
    charge jamais. */
 export function adresse(arg) {
-  const brut = arg ?? process.env.APED_BASE ?? "";
+  const brut = arg ?? process.env.ADEXWEB_BASE ?? "";
   const texte = String(brut).trim();
 
   if (/^https?:\/\//i.test(texte)) return texte.replace(/\/+$/, "");

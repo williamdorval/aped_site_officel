@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 
-const BASE = process.env.APED_BASE || "http://localhost:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://localhost:8099";
 const OUT = path.resolve("refonte-captures/secteurs");
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -17,7 +17,7 @@ const page = await ctx.newPage();
    bout de trente secondes en accusant le mauvais coupable. Le
    popup a son propre outil, `cadeau-check.mjs`. */
 await page.addInitScript(() => {
-  try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
 });
 const errs = [];
 page.on("pageerror", e => errs.push(String(e)));

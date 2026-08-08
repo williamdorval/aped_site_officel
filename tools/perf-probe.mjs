@@ -10,7 +10,7 @@ for (const rideau of [true, false]) {
     const c = await b.newContext({ viewport: { width: 1440, height: 900 } });
     const p = await c.newPage();
     await p.addInitScript(r => {
-      if (!r) { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} }
+      if (!r) { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} }
       window.__p = { lcp: 0, el: "", longues: [] };
       new PerformanceObserver(l => { for (const e of l.getEntries()) {
         window.__p.lcp = e.startTime;

@@ -149,8 +149,8 @@ for (const vue of VUES) {
     page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
     await page.addInitScript((t) => {
       try {
-        localStorage.setItem("aped-theme", t);
-        sessionStorage.setItem("aped-sans-popup", "1");
+        localStorage.setItem("adexweb-theme", t);
+        sessionStorage.setItem("adexweb-sans-popup", "1");
       } catch (e) {}
     }, theme);
 

@@ -1,4 +1,4 @@
-﻿/* == APED AGENCE — LA LANGUE DE MOUVEMENT ==  D-443 */
+﻿/* == ADEXWEB — LA LANGUE DE MOUVEMENT ==  D-443 */
 
 (function () {
   "use strict";
@@ -44,7 +44,7 @@
     /* Un voile de trame en vol continue a peindre plusieurs
        centaines de tuiles par image alors qu'on vient justement de
        decider que ca coute trop cher. Il tombe avec le reste. */
-    if (window.APED_TRAME) window.APED_TRAME.tout_arreter();
+    if (window.ADEXWEB_TRAME) window.ADEXWEB_TRAME.tout_arreter();
   }
 
   /* LA MESURE. On n'echantillonne QUE pendant un defilement reel :  D-445 */
@@ -182,7 +182,7 @@
 
     /* PHASE 10 — LA TRAME SUR LES FRONTIERES.  D-450 */
     var trameDispo = function () {
-      return PALIER === 0 && typeof window.APED_TRAME !== "undefined";
+      return PALIER === 0 && typeof window.ADEXWEB_TRAME !== "undefined";
     };
     /* La maille suit la HAUTEUR de ce qu'on degage : une bande de  D-451 */
     function mailleDe(el) {
@@ -217,7 +217,7 @@
         if (trameDispo()) {
           /* La bande d'encre est deja peinte au repos. La trame la  D-456 */
           var st = auFranchissement(seuil, 92, function () {
-            window.APED_TRAME.degager(seuil, {
+            window.ADEXWEB_TRAME.degager(seuil, {
               sens: sens, graine: graine, duree: 420, vie: 190,
               maille: mailleDe(seuil), z: 3, nom: "seuil-" + seuil.getAttribute("data-vers")
             });
@@ -246,7 +246,7 @@
         if (el) {
           if (trameDispo()) {
             var st2 = auFranchissement(el, 90, function () {
-              window.APED_TRAME.degager(el, {
+              window.ADEXWEB_TRAME.degager(el, {
                 sens: sens, graine: graine, duree: 440, vie: 200,
                 maille: mailleDe(el), z: 3, nom: "seuil-" + seuil.getAttribute("data-vers")
               });
@@ -302,14 +302,14 @@
         /* V4 · CRAN, sur le seul argument de la section : un  D-461 */
         auFranchissement(seuil, 74, function () {
           var num = $(cible, section);
-          if (!num || typeof window.APED_ROULER !== "function") return;
+          if (!num || typeof window.ADEXWEB_ROULER !== "function") return;
           var arrivee = num.textContent.trim();
           if (!arrivee) return;
           /* Premier appel : `rouler` pose la structure sans animer.
              Second appel, deux images plus tard : il roule. */
-          window.APED_ROULER(num, "500 $");
+          window.ADEXWEB_ROULER(num, "500 $");
           requestAnimationFrame(function () {
-            requestAnimationFrame(function () { window.APED_ROULER(num, arrivee); });
+            requestAnimationFrame(function () { window.ADEXWEB_ROULER(num, arrivee); });
           });
         });
       }
@@ -582,7 +582,7 @@
       );
     }
 
-    document.addEventListener("aped:secteur", function (e) {
+    document.addEventListener("adexweb:secteur", function (e) {
       recomposer($('.mock[data-mock="' + e.detail.cle + '"]', scene), 0.22, "pile");
     });
 
@@ -673,7 +673,7 @@
   }
 
   /* == 9. LES MODALES — V1. ==  D-491 */
-  document.addEventListener("aped:modal", function (e) {
+  document.addEventListener("adexweb:modal", function (e) {
     var panneau = e.detail && e.detail.panneau;
     if (!panneau) return;
     /* PALIER 2 — la modale apparait. Elle reste piegee au focus,
@@ -685,8 +685,8 @@
       { clipPath: "inset(0 0 0% 0)", y: 0, duration: 0.26, ease: "power3.out", clearProps: "clipPath,transform" }
     );
     /* PHASE 10 — la trame par-dessus l'arete, pas a la place.  D-492 */
-    if (PALIER === 0 && window.APED_TRAME) {
-      window.APED_TRAME.degager(panneau, {
+    if (PALIER === 0 && window.ADEXWEB_TRAME) {
+      window.ADEXWEB_TRAME.degager(panneau, {
         nom: "modale", sens: "bas", graine: 907, duree: 300, vie: 150,
         maille: 40, z: 9, hote: panneau.closest("dialog") || panneau.parentNode
       });
@@ -694,7 +694,7 @@
   });
 
   /* La fermeture est la RECIPROQUE de l'ouverture, pas une seconde  D-493 */
-  document.addEventListener("aped:modal-ferme", function (e) {
+  document.addEventListener("adexweb:modal-ferme", function (e) {
     var panneau = e.detail && e.detail.panneau;
     if (!panneau) return;
     if (PALIER >= 2) return;

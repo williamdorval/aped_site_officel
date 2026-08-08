@@ -52,7 +52,7 @@ export function lireEnv(fichier = ENV) {
    developpeur et a personne d'autre, et le defaut ne se verrait
    qu'en production. */
 export function jugerUrl(url) {
-  if (!url) return "APED_WEB_APP_URL est vide dans .env.local.";
+  if (!url) return "ADEXWEB_WEB_APP_URL est vide dans .env.local.";
   if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(url)) {
     if (url.endsWith("/dev")) {
       return "L’adresse se termine par /dev. Seule une adresse /exec "
@@ -74,7 +74,7 @@ function ecrire(url) {
    Ce fichier est dans le .gitignore : le regenerer suffit toujours.
    Charge en tete de la vague 1, donc avant \`main.js\` qui le lit.
    Vide = rien n'est branche, et les formulaires echouent franchement. */
-window.APED_ENVOI = ${JSON.stringify(url || "")};
+window.ADEXWEB_ENVOI = ${JSON.stringify(url || "")};
 `;
   fs.mkdirSync(path.dirname(SORTIE), { recursive: true });
   fs.writeFileSync(SORTIE, contenu, "utf8");
@@ -82,7 +82,7 @@ window.APED_ENVOI = ${JSON.stringify(url || "")};
 
 function principal() {
   const env = lireEnv();
-  const url = (env.APED_WEB_APP_URL || "").trim();
+  const url = (env.ADEXWEB_WEB_APP_URL || "").trim();
   const faute = jugerUrl(url);
 
   /* PAS D'ADRESSE ? ON ECRIT QUAND MEME, MAIS VIDE.
@@ -103,10 +103,10 @@ function principal() {
     console.warn("  js/config.local.js écrit À VIDE : les formulaires n’enverront rien.");
     console.warn("");
     console.warn("  1. cp .env.local.example .env.local");
-    console.warn("  2. collez l’adresse du déploiement dans APED_WEB_APP_URL");
+    console.warn("  2. collez l’adresse du déploiement dans ADEXWEB_WEB_APP_URL");
     console.warn("  3. relancez `node tools/config-envoi.mjs`");
     console.warn("");
-    console.warn("  Le guide complet : docs/CONFIGURATION-GOOGLE-APED.md");
+    console.warn("  Le guide complet : docs/CONFIGURATION-GOOGLE.md");
     process.exit(process.argv.includes("--strict") ? 1 : 0);
   }
 

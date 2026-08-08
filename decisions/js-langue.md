@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-443 — APED AGENCE — LA LANGUE DE MOUVEMENT** | 51 | 635 |
+| **D-443 — ADEXWEB — LA LANGUE DE MOUVEMENT** | 51 | 633 |
 | **D-444 — LE BUDGET DE DEGRADATION — trois paliers, et l'ordre de chute** | 58 | 731 |
 | **D-445 — LA MESURE. On n'echantillonne QUE pendant un defilement reel :** | 11 | 153 |
 | **D-446 — LE TRAVAIL PREPARATOIRE SE FAIT PENDANT LES TEMPS MORTS.** | 25 | 355 |
@@ -69,10 +69,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-443 — APED AGENCE — LA LANGUE DE MOUVEMENT
+## D-443 — ADEXWEB — LA LANGUE DE MOUVEMENT
 
 ============================================================
-  APED AGENCE — LA LANGUE DE MOUVEMENT
+  ADEXWEB — LA LANGUE DE MOUVEMENT
   ------------------------------------------------------------
   PHASE 8. Ce fichier ne contient pas quarante animations : il
   contient QUATRE VERBES, declines partout.

@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 
-const BASE = process.env.APED_BASE || "http://localhost:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://localhost:8099";
 
 /* IL EST LE SEUL OUTIL DONT LE PREMIER ARGUMENT N'EST PAS UN PORT.  D-779
 
@@ -16,7 +16,7 @@ const BASE = process.env.APED_BASE || "http://localhost:8099";
 if (/^\d{2,5}$/.test(process.argv[2] || "")) {
   console.error("ARRET  « " + process.argv[2] + " » ressemble a un port, pas a un dossier.\n"
     + "       Cet outil-ci prend un DOSSIER DE SORTIE en premier argument.\n"
-    + "       L'adresse se change par APED_BASE=http://127.0.0.1:" + process.argv[2] + " .");
+    + "       L'adresse se change par ADEXWEB_BASE=http://127.0.0.1:" + process.argv[2] + " .");
   process.exit(2);
 }
 const OUT = path.resolve(process.argv[2] || "refonte-captures/audit2");
@@ -115,13 +115,13 @@ async function vue(browser, nom, opts) {
   /* Le popup parait tout seul a la 11e seconde, a CHAQUE
      chargement. Cet outil mesure autre chose : on le neutralise,
      sinon il mesure une surcouche par-dessus sa cible. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const erreurs = [];
   page.on("console", m => { if (m.type() === "error") erreurs.push(m.text()); });
   page.on("pageerror", e => erreurs.push(String(e)));
 
   await page.addInitScript(t => {
-    try { localStorage.setItem("aped-theme", t); } catch (e) {}
+    try { localStorage.setItem("adexweb-theme", t); } catch (e) {}
   }, opts.theme);
 
   await page.goto(BASE + (opts.path || "/"), { waitUntil: "load" });

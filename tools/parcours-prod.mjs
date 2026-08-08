@@ -37,8 +37,8 @@ const RACINE = path.resolve(ICI, "..");
 const AVEC_RDV = process.argv.includes("--rdv");
 
 const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
-const mm = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
-if (!mm) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
+const mm = /^ADEXWEB_WEB_APP_URL=(.+)$/m.exec(env);
+if (!mm) { console.error("ADEXWEB_WEB_APP_URL absent de .env.local"); process.exit(2); }
 const SERVICE = mm[1].trim();
 const VERSION_MINIMALE = 9;
 

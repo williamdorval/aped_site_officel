@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-096 — APED AGENCE - Direction ATELIER** | 7 | 67 |
+| **D-096 — ADEXWEB - Direction ATELIER** | 7 | 64 |
 | **D-097 — 1. GRILLE** | 8 | 76 |
 | **D-098 — La respiration d'une jonction appartient a la section qui ARRIVE, jamais** | 10 | 166 |
 | **D-099 — 1bis. LES DOUZE SEUILS — LES FRONTIERES DE SECTION** | 46 | 663 |
@@ -45,7 +45,7 @@
 | **D-125 — LE REPLI D'ENVOI. Pose par js/main.js quand l'envoi automatique** | 16 | 228 |
 | **D-126 — 9. CURSEURS** | 7 | 61 |
 | **D-127 — 11b. SEQUENCE D'ENTREE** | 14 | 171 |
-| **D-128 — LE SCENARIO, EN QUATRE TEMPS ET 1 420 ms.** | 51 | 777 |
+| **D-128 — LE SCENARIO, EN QUATRE TEMPS ET 1 420 ms.** | 51 | 778 |
 | **D-129 — LA PAUSE. Elle nomme exactement ce qui a le droit d'attendre.** | 27 | 389 |
 | **D-130 — LA COMPOSITION DU HERO ATTEND AVEC LE RESTE. Sans cette ligne,** | 10 | 137 |
 | **D-131 — LA COMPOSITION EST POSEE TOT ET TENUE A L'ARRET.** | 22 | 273 |
@@ -260,10 +260,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-096 — APED AGENCE - Direction ATELIER
+## D-096 — ADEXWEB - Direction ATELIER
 
 ============================================================
-  APED AGENCE - Direction ATELIER
+  ADEXWEB - Direction ATELIER
   Mise en page, composants, sections.
   ============================================================
 
@@ -624,7 +624,7 @@ LE SCENARIO, EN QUATRE TEMPS ET 1 420 ms.
                `seedPositions()` fait partir les grains du hero de
                quinze filets : le rideau part en la matiere meme
                dont le hero se compose.
-  t 700 – 1500 LES GRAINS COMPOSENT APED, declenches par le
+  t 700 – 1500 LES GRAINS COMPOSENT ADEXWEB, declenches par le
                `animationstart` de la bande du milieu, donc cales
                sur le rideau reel et pas sur une horloge parallele.
   Total nominal : 1,50 s, dans la fenetre de 1,2 a 1,8 s du brief.

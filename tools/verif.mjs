@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 
-const BASE = process.env.APED_BASE || "http://localhost:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://localhost:8099";
 const OUT = path.resolve("refonte-captures/verif");
 fs.mkdirSync(OUT, { recursive: true });
 const R = {};
@@ -19,7 +19,7 @@ const browser = await chromium.launch();
   /* Le popup parait tout seul a la 11e seconde, a CHAQUE
      chargement. Cet outil mesure autre chose : on le neutralise,
      sinon il mesure une surcouche par-dessus sa cible. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.addInitScript(() => {
     window.__perf = { lcp: 0, cls: 0, longues: [] };
     new PerformanceObserver(l => { for (const e of l.getEntries()) window.__perf.lcp = e.startTime; })
@@ -84,7 +84,7 @@ const browser = await chromium.launch();
   /* Le popup parait tout seul a la 11e seconde, a CHAQUE
      chargement. Cet outil mesure autre chose : on le neutralise,
      sinon il mesure une surcouche par-dessus sa cible. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.waitForTimeout(1600);
   await page.evaluate(() => document.body.focus());
@@ -172,7 +172,7 @@ const browser = await chromium.launch();
   /* Le popup parait tout seul a la 11e seconde, a CHAQUE
      chargement. Cet outil mesure autre chose : on le neutralise,
      sinon il mesure une surcouche par-dessus sa cible. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.waitForTimeout(1600);
   const h = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
@@ -201,7 +201,7 @@ const browser = await chromium.launch();
   /* Le popup parait tout seul a la 11e seconde, a CHAQUE
      chargement. Cet outil mesure autre chose : on le neutralise,
      sinon il mesure une surcouche par-dessus sa cible. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const errs = [];
   page.on("pageerror", e => errs.push(String(e)));
   page.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
@@ -231,7 +231,7 @@ const browser = await chromium.launch();
   /* Le popup parait tout seul a la 11e seconde, a CHAQUE
      chargement. Cet outil mesure autre chose : on le neutralise,
      sinon il mesure une surcouche par-dessus sa cible. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const errs = [];
   page.on("pageerror", e => errs.push(String(e)));
   page.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
@@ -254,7 +254,7 @@ const browser = await chromium.launch();
   /* Le popup parait tout seul a la 11e seconde, a CHAQUE
      chargement. Cet outil mesure autre chose : on le neutralise,
      sinon il mesure une surcouche par-dessus sa cible. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const errs = [];
   page.on("pageerror", e => errs.push(String(e)));
   /* `pageerror` seul rate les `console.error`.  D-717 */

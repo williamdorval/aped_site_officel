@@ -45,8 +45,10 @@ function agendasEnPlus(liste) {
 const PERSO = "moi@exemple.ca";
 /* Les titres poses par le site. Doivent suivre `PREFIXE_TEL` et
    `PREFIXE_MEET` de Code.gs — c'est ce couple qui autorise
-   `nettoyerRendezVousEssai` a supprimer. */
-const estDuSite = (t) => /^(☎ Appeler |▸ Meet · |Appel APED)/.test(String(t));
+   `nettoyerRendezVousEssai` a supprimer. Les deux anciens prefixes
+   restent reconnus, comme dans `titreDuSite()` : les rendez-vous
+   deja poses dans l'agenda ne se renomment pas tout seuls. */
+const estDuSite = (t) => /^(☎ Appeler |▸ Meet · |Appel ADEXWEB|Appel APED)/.test(String(t));
 let echecs = 0;
 let cas = 0;
 

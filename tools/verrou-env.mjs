@@ -1,5 +1,5 @@
 /* ============================================================
-   LE VERROU — rien ne part en production sans ces sept preuves
+   LE VERROU — rien ne part en production sans ces preuves
    `node tools/verrou-env.mjs`
 
    CE QU'UN VERROU DOIT FAIRE, ET CE QU'IL NE DOIT PAS.
@@ -38,7 +38,7 @@ function verifier(nom, fn) {
 const MOTIF_URL = /https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]{20,}\/(exec|dev)/;
 
 const env = lireEnv();
-const URL_ENVOI = (env.APED_WEB_APP_URL || "").trim();
+const URL_ENVOI = (env.ADEXWEB_WEB_APP_URL || "").trim();
 
 
 /* --- 1 · `.env.local` existe ------------------------------- */
@@ -50,8 +50,26 @@ verifier(".env.local existe", () => {
   return f;
 });
 
+/* --- 1 bis · les cles portent le NOUVEAU nom ---------------
+   L'agence a change de nom le 2026-08-08 : `APED_*` est devenu
+   `ADEXWEB_*` partout dans le code. Un `.env.local` reste sur le
+   disque, git ne le migre pas, et `process.env.ADEXWEB_WEB_APP_URL`
+   vaut alors `undefined` — ce qui se lit comme « cle vide » et non
+   comme « cle mal nommee ». Ce controle rend l'erreur lisible.
+   A RETIRER quand plus aucun `.env.local` ne porte l'ancien nom. */
+verifier(".env.local porte les cles ADEXWEB_*", () => {
+  const vieilles = ["APED_WEB_APP_URL", "APED_COURRIEL", "APED_DIAG_CLE"]
+    .filter((c) => c in env);
+  if (vieilles.length) {
+    throw new Error("CLES A L'ANCIEN NOM dans .env.local : " + vieilles.join(", ")
+      + " — renommez le prefixe `APED_` en `ADEXWEB_`, puis relancez"
+      + " `node tools/config-envoi.mjs`");
+  }
+  return "aucune";
+});
+
 /* --- 2 · l'adresse a la bonne forme ------------------------ */
-verifier("APED_WEB_APP_URL est une adresse /exec", () => {
+verifier("ADEXWEB_WEB_APP_URL est une adresse /exec", () => {
   const faute = jugerUrl(URL_ENVOI);
   if (faute) throw new Error(faute);
   return "… " + URL_ENVOI.slice(-10);
@@ -270,7 +288,7 @@ console.log("\n------------------------------------------------------------");
 if (tombees.length) {
   console.log(`VERDICT : ${tombees.length} vérification(s) en échec. `
     + "Le site N’EST PAS prêt à recevoir des formulaires.");
-  console.log("Le guide : docs/CONFIGURATION-GOOGLE-APED.md");
+  console.log("Le guide : docs/CONFIGURATION-GOOGLE.md");
   process.exit(1);
 }
 /* LE COMPTE SE LIT, IL NE S'ECRIT PAS. « les sept tiennent » etait

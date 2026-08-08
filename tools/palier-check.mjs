@@ -59,7 +59,7 @@ const dire = (ok, t) => { console.log((ok ? "  OK   " : "  ECHEC") + "  " + t); 
    donc au-dessus des 20 ms qui font monter au palier 2, et bien
    en-dessous des 200 ms au-dela desquels le site cesse de compter.
    C'est la seule plage ou ce declencheur est testable. */
-const BRIDE = Number(process.env.APED_BRIDE || 6);
+const BRIDE = Number(process.env.ADEXWEB_BRIDE || 6);
 
 async function sonder(nom, opts = {}) {
   const ctx = await nav.newContext({
@@ -76,13 +76,13 @@ async function sonder(nom, opts = {}) {
       Object.defineProperty(navigator, "deviceMemory", { get: () => 4 });
     });
   }
-  /* `aped-entree-saut` n'existe plus : le drapeau qui memorisait un
+  /* `adexweb-entree-saut` n'existe plus : le drapeau qui memorisait un
      saut a ete supprime le 2026-07-29, parce que n'importe quel clic
      le posait et tuait la composition du hero pour tout l'onglet.
      La sequence joue donc ici comme chez un visiteur.
-     `aped-sans-popup`, lui, reste indispensable : un `<dialog>`
+     `adexweb-sans-popup`, lui, reste indispensable : un `<dialog>`
      ouvert capture tous les evenements de pointeur. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 
   let cdp = null;
   if (opts.bride) {
@@ -298,7 +298,7 @@ console.log("\nPALIER 2 — declencheur mesure, processeur bride x" + BRIDE + ""
     console.log("              `langue.js` en trois essais. Le declencheur du palier 2 n'a donc");
     console.log("              pas pu etre exerce — ce n'est PAS un verdict sur le site.");
     console.log("              Machine trop chargee, ou bridage x" + BRIDE + " trop fort pour elle :");
-    console.log("              baisser `APED_BRIDE` et refaire, machine au repos.");
+    console.log("              baisser `ADEXWEB_BRIDE` et refaire, machine au repos.");
   } else {
   dire(r.palier === "2", `data-palier = ${r.palier} (mesure : ${r.images} i/s)`);
   dire(r.cran === "0ms" && r.cranCta === "0ms" && r.cranGhost === "0ms",
@@ -336,13 +336,13 @@ console.log("\nL'ESCALADE EST A SENS UNIQUE");
 {
   const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
-  /* `aped-entree-saut` n'existe plus : le drapeau qui memorisait un
+  /* `adexweb-entree-saut` n'existe plus : le drapeau qui memorisait un
      saut a ete supprime le 2026-07-29, parce que n'importe quel clic
      le posait et tuait la composition du hero pour tout l'onglet.
      La sequence joue donc ici comme chez un visiteur.
-     `aped-sans-popup`, lui, reste indispensable : un `<dialog>`
+     `adexweb-sans-popup`, lui, reste indispensable : un `<dialog>`
      ouvert capture tous les evenements de pointeur. */
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const cdp = await ctx.newCDPSession(page);
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: BRIDE });
   /* Ce bloc-ci n'est pas dans `sonder()` : `opts` n'y existe pas, et

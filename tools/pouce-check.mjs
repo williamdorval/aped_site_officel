@@ -67,7 +67,7 @@ for (const largeur of LARGEURS) {
   page.on("pageerror", (e) => erreurs.push(String(e)));
   page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
   await page.addInitScript(() => {
-    try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
   });
 
   await page.goto(BASE + "/index.html", { waitUntil: "load" });

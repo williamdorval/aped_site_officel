@@ -69,7 +69,7 @@ const rapport = { date: new Date().toISOString() };
     viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1,
     colorScheme: "light", reducedMotion: "no-preference",
   });
-  await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await ctx.addInitScript(([pas, rideau]) => {
     window.__d = { ech: [], err: null };
     const cibles = pas.map((p) => ({ n: p[0], s: p[1], pseudo: "::after" }))
@@ -164,7 +164,7 @@ const rapport = { date: new Date().toISOString() };
     viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1,
     colorScheme: "light", reducedMotion: "no-preference",
   });
-  await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const page = await ctx.newPage();
   const cdp = await ctx.newCDPSession(page);
   await cdp.send("Animation.enable");
@@ -212,7 +212,7 @@ const rapport = { date: new Date().toISOString() };
       viewport: { width: c.vw, height: 900 }, deviceScaleFactor: 1,
       colorScheme: "light", reducedMotion: c.reduced,
     });
-    await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+    await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
     const page = await ctx.newPage();
     await page.goto(BASE + "#top", { waitUntil: "load" });
     await page.mouse.move(20, 20);

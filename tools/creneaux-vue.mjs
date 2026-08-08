@@ -59,11 +59,11 @@ async function ouvrir(nav) {
   await page.route("**/js/config.local.js", (route) => route.fulfill({
     status: 200,
     contentType: "text/javascript; charset=utf-8",
-    body: `window.APED_ENVOI = ${JSON.stringify(SERVICE)};\n`
+    body: `window.ADEXWEB_ENVOI = ${JSON.stringify(SERVICE)};\n`
   }));
   /* Le popup cadeau capture tous les evenements de pointeur.  (18) */
   await page.addInitScript(() => {
-    try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
   });
   await page.goto(SITE + "/index.html", { waitUntil: "load" });
   await page.waitForTimeout(1500);
@@ -239,11 +239,11 @@ page4.on("pageerror", (e) => page4._erreurs.push(String(e)));
 page4.on("console", (m) => { if (m.type() === "error") page4._erreurs.push(m.text()); });
 await page4.route("**/js/config.local.js", (route) => route.fulfill({
   status: 200, contentType: "text/javascript; charset=utf-8",
-  body: `window.APED_ENVOI = ${JSON.stringify(SERVICE)};\n`
+  body: `window.ADEXWEB_ENVOI = ${JSON.stringify(SERVICE)};\n`
 }));
 await page4.route("**/*action=creneaux*", (route) => route.abort());
 await page4.addInitScript(() => {
-  try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
 });
 await page4.goto(SITE + "/index.html", { waitUntil: "load" });
 await page4.waitForTimeout(1500);

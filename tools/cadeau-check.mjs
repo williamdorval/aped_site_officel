@@ -245,7 +245,7 @@ await page.screenshot({ path: path.join(SORTIE, "02-apres.png") });
   });
   if (src.length < 10000) { console.error("ARRET · js/main.js n'a pas ete relu"); process.exit(2); }
   dire("et aucune adresse de guide dans le script servi",
-    /documents\/aped-[a-z-]+\.pdf/.test(src), false,
+    /documents\/adexweb-[a-z-]+\.pdf/.test(src), false,
     "elles y etaient en clair : il suffisait de lire le fichier");
 }
 
@@ -254,7 +254,7 @@ await page.goto(BASE, { waitUntil: "load" });
 await page.waitForTimeout(3200);
 const memoire = await page.evaluate(() => {
   let marque = null;
-  try { marque = localStorage.getItem("aped-guides-donnes"); } catch (e) {}
+  try { marque = localStorage.getItem("adexweb-guides-donnes"); } catch (e) {}
   return { marque: !!marque };
 });
 dire("la marque du don est posee", memoire.marque, true,

@@ -38,7 +38,7 @@ const ctx = await nav.newContext({ viewport: { width: LARGEUR, height: 900 }, co
 const page = await ctx.newPage();
 const erreurs = [];
 page.on("pageerror", (e) => erreurs.push(String(e)));
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 
 const RELEVE = () => {
   const svc = document.getElementById("svc");

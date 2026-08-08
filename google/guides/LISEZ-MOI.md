@@ -3,7 +3,7 @@
 **Ils ne sont plus dans le site, et c'est le correctif.**  D-788
 
 Ils vivaient dans `documents/`, donc à la racine servie :
-`GET /documents/aped-automatisation.pdf` rendait 2 Mo de PDF à qui
+`GET /documents/adexweb-automatisation.pdf` rendait 2 Mo de PDF à qui
 connaissait l'adresse — et l'adresse était en clair dans `index.html`.
 Le popup annonçait « contre vos coordonnées » et ne gardait rien.
 
@@ -14,7 +14,7 @@ pas : on ne peut plus les publier par distraction.
 
 ## Qui les livre
 
-`Code.gs` les lit dans le dossier Drive `APED — guides du lead magnet`
+`Code.gs` les lit dans le dossier Drive `ADEXWEB — guides du lead magnet`
 et les joint au courriel envoyé au visiteur qui a donné ses
 coordonnées. Apps Script ne sait pas servir d'octets — ni
 `ContentService` ni `HtmlService` ne rendent un PDF — donc la pièce

@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-334 — APED AGENCE - Visite virtuelle 360** | 17 | 225 |
+| **D-334 — ADEXWEB - Visite virtuelle 360** | 17 | 223 |
 | **D-335 — Affiche plate. C'est la seule chose que la section pese avant** | 8 | 107 |
 | **D-336 — LA PLAQUE D'ENTREE — aplat franc, jamais un degrade.** | 14 | 197 |
 | **D-337 — Pannellum impose box-sizing: content-box a tous ses descendants, et** | 8 | 113 |
@@ -27,10 +27,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-334 — APED AGENCE - Visite virtuelle 360
+## D-334 — ADEXWEB - Visite virtuelle 360
 
 ============================================================
-  APED AGENCE - Visite virtuelle 360
+  ADEXWEB - Visite virtuelle 360
   Feuille autonome. Ne redefinit rien du site, ne depend que des
   jetons de tokens.css. A charger APRES css/vendor/pannellum.css
   (elle en corrige plusieurs defauts).

@@ -36,7 +36,7 @@ const nav = await chromium.launch();
 for (const cran of [230, 520]) {
   const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.goto(B + "/", { waitUntil: "load" });
   await page.mouse.move(5, 5);
   await page.waitForTimeout(2200);

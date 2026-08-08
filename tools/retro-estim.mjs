@@ -12,7 +12,7 @@
          faire crier. Un outil qui ne sait pas echouer ne prouve
          rien — trois sondes de ce depot rendaient « 0 » sans
          erreur avant qu'on les regarde.
-     1 · CALIBRATION. Les quatre vrais projets d'APED tombent DANS
+     1 · CALIBRATION. Les quatre vrais projets d'ADEXWEB tombent DANS
          leur fourchette, et dans sa MOITIE BASSE.
      2 · LES ANCRAGES du brief du 2026-08-07.
      3 · MONOTONIE. Ajouter une fonction ne fait JAMAIS baisser le

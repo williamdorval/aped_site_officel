@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-348 — APED AGENCE - Socle** | 7 | 66 |
+| **D-348 — ADEXWEB - Socle** | 7 | 64 |
 | **D-349 — Champs desactives. Aucun champ du site ne l'est aujourd'hui,** | 8 | 97 |
 | **D-350 — Contrastes forces (contraste eleve Windows). Le site n'a que** | 8 | 105 |
 | **D-351 — Primitives de revelation.** | 26 | 325 |
@@ -21,10 +21,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-348 — APED AGENCE - Socle
+## D-348 — ADEXWEB - Socle
 
 ============================================================
-  APED AGENCE - Socle
+  ADEXWEB - Socle
   Remise a zero, typographie, etats de focus, utilitaires.
   ============================================================
 

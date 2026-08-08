@@ -56,7 +56,7 @@ async function page(opts = {}) {
     reducedMotion: opts.reduit ? "reduce" : "no-preference",
     javaScriptEnabled: opts.js !== false,
   });
-  await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const p = await ctx.newPage();
   p.on("console", (m) => { if (m.type() === "error") { echecs++; console.log("  ECHEC  console : " + m.text()); } });
   await p.goto(BASE, { waitUntil: "networkidle" });
@@ -323,7 +323,7 @@ console.log("\n5 · LE DOIGT — le cadre ne piege pas la page");
     isMobile: true,
     colorScheme: "light"
   });
-  await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const p = await ctx.newPage();
   await p.goto(BASE, { waitUntil: "networkidle" });
   await p.waitForTimeout(1200);

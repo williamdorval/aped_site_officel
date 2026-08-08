@@ -98,7 +98,7 @@ CIP, slides, bannières, visuels sociaux — pas du frontend.
 
 | Retiré | Raison |
 |--------|--------|
-| `veltech-debug` | Spécifique au produit « Veltick » (Stripe checkout, pricing page). Rien à voir avec APED. Frontmatter YAML cassé, refusé au parsing par le CLI `skills`. |
+| `veltech-debug` | Spécifique au produit « Veltick » (Stripe checkout, pricing page). Rien à voir avec ADEXWEB. Frontmatter YAML cassé, refusé au parsing par le CLI `skills`. |
 | `start-voix-script` | Scripts pub TTS. Hors sujet. Frontmatter YAML cassé également. |
 
 ---
@@ -141,7 +141,7 @@ qui ne risquent plus d'être chargés à tort.
 
 Le vrai poids n'est plus le design stack : ce sont les **41 skills marketing**
 (`coreyhaines31/marketingskills`) à ~7 130 tok always-on. Ils sont probablement
-délibérés vu l'activité d'APED Agency, donc **non touchés**. S'il faut couper,
+délibérés vu l'activité d'ADEXWEB, donc **non touchés**. S'il faut couper,
 la commande est :
 
 ```bash

@@ -94,8 +94,8 @@ async function neuve(largeur = 390) {
   });
   await page.addInitScript(() => {
     try {
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
     } catch (e) {}
   });
   return { ctx, page, erreurs, reseau, envois };
@@ -269,8 +269,8 @@ titre("5 · DEUX ONGLETS, UNE SEULE LIGNE");
   const ctx = await nav.newContext({ viewport: { width: 390, height: 844 } });
   await ctx.addInitScript(() => {
     try {
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
     } catch (e) {}
   });
   const a = await ctx.newPage(), b = await ctx.newPage();
@@ -328,7 +328,7 @@ titre("6 · LE BOUTON « PAGE PRÉCÉDENTE »");
   const apres = await page.evaluate(() => ({
     url: location.pathname,
     vivant: !!document.getElementById("projectWizard"),
-    brouillon: !!localStorage.getItem("aped-brouillon-project")
+    brouillon: !!localStorage.getItem("adexweb-brouillon-project")
   }));
   dire("la page reste vivante", apres.vivant, true);
   dire("et le brouillon a survécu", apres.brouillon, true,
@@ -354,8 +354,8 @@ titre("7 · LES SEUILS DE CLAUDE.md");
   });
   await page.addInitScript(() => {
     try {
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
     } catch (e) {}
     window.__cls = 0;
     new PerformanceObserver((l) => {
@@ -417,8 +417,8 @@ titre("7bis · AUCUN DÉBORDEMENT, DE 320 À 1920 px");
     const p2 = await c2.newPage();
     await p2.addInitScript(() => {
       try {
-        sessionStorage.setItem("aped-sans-popup", "1");
-        sessionStorage.setItem("aped-entree-saut", "1");
+        sessionStorage.setItem("adexweb-sans-popup", "1");
+        sessionStorage.setItem("adexweb-entree-saut", "1");
       } catch (e) {}
     });
     await p2.goto(BASE + "/index.html", { waitUntil: "load" });

@@ -30,8 +30,8 @@ const L = 560;
 const H = Math.round((L * 11) / 8.5);
 
 const DOCS = [
-  { src: "aped-automatisation.html", out: "doc-automatisation.webp" },
-  { src: "aped-ia-croissance.html", out: "doc-ia.webp" }
+  { src: "adexweb-automatisation.html", out: "doc-automatisation.webp" },
+  { src: "adexweb-ia-croissance.html", out: "doc-ia.webp" }
 ];
 
 const nav = await chromium.launch();

@@ -1,4 +1,4 @@
-﻿/* == APED AGENCE - Logique ==  D-352 */
+﻿/* == ADEXWEB - Logique ==  D-352 */
 
 (function () {
   "use strict";
@@ -34,7 +34,7 @@
      manoeuvre protege, c'est le depot public et l'historique — pas
      la requete. La vraie defense du service est ailleurs : le
      honeypot, la validation serveur, et le verrou d'Apps Script. */
-  var FORM_ENDPOINT = (window.APED_ENVOI || "");
+  var FORM_ENDPOINT = (window.ADEXWEB_ENVOI || "");
 
   /* LES DISPONIBILITES NE SE DECIDENT PLUS ICI.  D-726
 
@@ -70,19 +70,19 @@
   };
 
   var SUBJECTS = {
-    project: "Nouveau projet - site APED",
-    urgent: "URGENCE - site APED",
-    refer: "Nouvelle reference - site APED",
-    estimate: "Demande d'estimation - site APED",
-    booking: "Demande de rendez-vous - site APED",
-    contact: "Message - site APED",
-    cadeau: "Documents demandes - site APED"
+    project: "Nouveau projet - site ADEXWEB",
+    urgent: "URGENCE - site ADEXWEB",
+    refer: "Nouvelle reference - site ADEXWEB",
+    estimate: "Demande d'estimation - site ADEXWEB",
+    booking: "Demande de rendez-vous - site ADEXWEB",
+    contact: "Message - site ADEXWEB",
+    cadeau: "Documents demandes - site ADEXWEB"
   };
 
   /* LE BAREME A QUITTE CE FICHIER LE 2026-08-07.  D-774
 
      IL ETAIT ICI, EN CLAIR. Cinq paliers chiffres et une table de
-     points : la grille tarifaire d'APED, servie a quiconque ouvrait
+     points : la grille tarifaire d'ADEXWEB, servie a quiconque ouvrait
      l'onglet « Sources ». Un concurrent n'avait pas a sonder
      l'estimateur, il n'avait qu'a LIRE. (Les montants d'alors ne se
      recopient pas ici : un commentaire qui cite une grille la
@@ -367,512 +367,6 @@
     this.raf = requestAnimationFrame(this.step.bind(this));
   };
 
-  /* == SEQUENCE D'ENTREE — CE QUE LE SCRIPT AJOUTE, ET CE QU'IL ==  D-356 */
-  var entree = $("#entree");
-  if (entree) {
-    if (!root.classList.contains("entree-on")) {
-      entree.parentNode.removeChild(entree);
-    } else if (reduced.matches) {
-      /* Mouvement reduit : le CSS pose le monogramme, le tient
-         520 ms, puis le fait disparaitre d'un cran. On ne fait que
-         retirer le noeud une fois qu'il n'est plus visible. */
-      window.setTimeout(function () {
-        root.classList.remove("entree-on");
-        if (entree.parentNode) entree.parentNode.removeChild(entree);
-      }, 640);
-    } else {
-      /* LA PLAQUE SE REND A LA PLACE DU HERO.  D-357 */
-      (function viser() {
-        if (performance.now() > 600) return;
-        var plaque = entree.querySelector(".entree-plaque");
-        var cadre = $("#heroPlate");
-        if (!plaque || !cadre) return;
-        var c = cadre.getBoundingClientRect();
-        if (!c.width || !c.height) return;
-        var cx = c.left + c.width / 2;
-        var cy = c.top + c.height / 2;
-        plaque.style.setProperty("--entree-dx", Math.round(cx - window.innerWidth / 2) + "px");
-        plaque.style.setProperty("--entree-dy", Math.round(cy - window.innerHeight / 2) + "px");
-      })();
-
-      /* 2. L'ATTENTE  D-358 */
-      /* LA COMPOSITION DU HERO A SA PROPRE VIE  D-359 */
-      var leve = false;
-      function lever() {
-        if (leve) return;
-        leve = true;
-        root.classList.remove("entree-attend");
-      }
-      root.classList.add("entree-attend");
-      /* LES PLAQUES SONT POSEES TOUT DE SUITE, MAIS A L'ARRET.  D-360 */
-      root.classList.add("compo-hero");
-      root.classList.add("compo-attend");
-
-      var restent = 2;
-      function pret() { if (--restent <= 0) lever(); }
-
-      /* Les polices. `document.fonts.ready` se resout quand toutes  D-361 */
-      if (doc.fonts && doc.fonts.ready && typeof doc.fonts.ready.then === "function") {
-        doc.fonts.ready.then(pret, pret);
-      } else { pret(); }
-
-      /* La limaille du hero. `hero.js` pose `is-live` sur l'hote une  D-362 */
-      (function attendreLimaille() {
-        var hote = $("#heroPlate");
-        if (!hote) { pret(); return; }
-        if (hote.classList.contains("is-live") || hote.classList.contains("is-fallback")) { pret(); return; }
-        var obs = new MutationObserver(function () {
-          if (hote.classList.contains("is-live") || hote.classList.contains("is-fallback")) {
-            obs.disconnect();
-            pret();
-          }
-        });
-        obs.observe(hote, { attributes: true, attributeFilter: ["class"] });
-        /* L'observateur n'est pas un contrat : si la classe
-           n'arrive jamais, le garde-fou general tranche. */
-      })();
-
-      /* LE GARDE-FOU  D-363 */
-      window.setTimeout(lever, Math.max(0, 2500 - performance.now()));
-
-      /* 3. LE SAUT  D-364 */
-      function sauter() {
-        if (root.classList.contains("entree-saut")) return;
-        lever();
-        root.classList.add("entree-saut");
-        window.setTimeout(finir, 200);
-      }
-      var opts = { capture: true, passive: true, once: true };
-      window.addEventListener("pointerdown", sauter, opts);
-      window.addEventListener("keydown", sauter, opts);
-
-      /* LA FIN, ET LE DEPART DE LA COMPOSITION  D-365 */
-      var fini = false;
-      function finir() {
-        root.classList.remove("entree-on");
-        root.classList.remove("entree-attend");
-        if (entree.parentNode) entree.parentNode.removeChild(entree);
-        if (fini) return;
-        fini = true;
-        /* LE DEPART. La pause tombe, les onze horloges partent
-           ensemble, et `--e:0` veut dire « maintenant ». */
-        root.classList.remove("compo-attend");
-        /* 3,2 s de budget. Le dernier geste est la soudure du filet  D-366 */
-        window.setTimeout(function () {
-          root.classList.remove("compo-hero");
-          root.classList.remove("compo-attend");
-          root.classList.remove("entree-saut");
-        }, 3200);
-      }
-      entree.addEventListener("animationend", function (e) {
-        if (!e.target.hasAttribute || !e.target.hasAttribute("data-entree-fin")) return;
-        finir();
-      });
-      /* Filet de securite : si l'animation ne se declenche pas du  D-367 */
-      window.setTimeout(finir, Math.max(1800, 2500 - performance.now() + 700));
-    }
-  }
-
-  /* == SECTION 02 · LA PISTE, LE RAIL ET LE PANNEAU ==  D-368 */
-
-  /* LA FICHE DE SERVICE N'EST PAS UNE `.modal` — c'est un  D-369 */
-  var ficheOuverte = null;
-  var fermerFiche = function () {};
-
-  (function svcRail() {
-    var piste = $("[data-svc-piste]");
-    var scene = $("[data-svc-scene]");
-    var rail = $("[data-svc-rail]");
-    if (!piste || !scene || !rail) return;
-
-    var vitre = rail.parentNode;
-    var plans = $$(".svc-plan", rail);
-    var compte = $("[data-svc-compte]");
-    var n = plans.length;
-    if (n < 2) return;
-
-    /* LE DERNIER ITEM DU RAIL N'EST PAS UN SERVICE : c'est le panneau  D-481 */
-    var nSvc = 0;
-    for (var z = 0; z < n; z++) if (!plans[z].classList.contains("svc-plan--fin")) nSvc++;
-
-    /* EST-CE QUE LE RAIL EXISTE ? LA REPONSE EST DANS LE CSS.  D-370 */
-    var estActif = false;
-    var course = 0;     /* distance verticale de la piste, en px */
-    var collant = 0;    /* le `top` effectif du `position: sticky` */
-    var cibles = [];    /* scrollLeft de REPOS, un par item */
-
-    var premierArmement = true;
-
-    /* LA POSITION DE REPOS D'UN CHANTIER — ET C'EST ICI QUE LES DEUX  D-482 */
-    function mesurer() {
-      cibles = [];
-      /* LA MARGE DU RAIL SE MESURE SUR LE TEXTE, ELLE NE SE RECALCULE  D-493 */
-      var ref = scene.querySelector(".svc-pied > .wrap") || scene.querySelector(".svc-tete .wrap");
-      if (ref) {
-        var m = Math.round(ref.getBoundingClientRect().left - vitre.getBoundingClientRect().left);
-        if (m >= 0 && m < 600) rail.style.paddingInline = m + "px";
-      }
-      /* LA MARGE DE FIN N'EST PAS CELLE DU TEXTE.  D-598 */
-      var derniere = plans[n - 1];
-      if (derniere) {
-        /* `ceil` plus deux pixels : au pixel pres, le bornage de la
-           cible mordait encore de 6 px et la derniere carte
-           s'arretait a cote des autres. On reserve un cheveu de
-           trop — la reserve ne se voit pas, le decalage si. */
-        var reste = vitre.clientWidth - derniere.getBoundingClientRect().width;
-        if (reste > 0) rail.style.paddingInlineEnd = (Math.ceil(reste / 2) + 2) + "px";
-      }
-      var W = vitre.clientWidth;
-      var max = Math.max(0, vitre.scrollWidth - W);
-      if (W <= 0) return;
-      var base = vitre.scrollLeft;
-      var vb = vitre.getBoundingClientRect();
-      for (var i = 0; i < n; i++) {
-        var pb = plans[i].getBoundingClientRect();
-        /* La position DANS LE CONTENU, relue par rectangles : elle ne
-           depend d'aucun `offsetParent`, donc d'aucun `position` pose
-           ailleurs dans la section. */
-        var gauche = pb.left - vb.left + base;
-        var c = gauche + pb.width / 2 - W / 2;
-        if (c < 0) c = 0; else if (c > max) c = max;
-        cibles.push(c);
-      }
-    }
-
-    function relire() {
-      var st = getComputedStyle(scene);
-      var etait = estActif;
-      estActif = st.position === "sticky";
-      collant = parseFloat(st.top) || 0;
-      course = Math.max(0, piste.offsetHeight - scene.offsetHeight);
-      /* Toute relecture de geometrie invalide la position ecrite. */
-      figer();
-      if (!estActif) {
-        rail.removeAttribute("data-degage");
-        vitre.scrollLeft = 0;
-        cibles = [];
-      } else {
-        mesurer();
-        /* LA PREMIERE IMAGE NE DOIT DEPENDRE DE PERSONNE.  D-372 */
-        var r0 = piste.getBoundingClientRect();
-        var h0 = window.innerHeight;
-        if (r0.bottom > -h0 * 0.5 && r0.top < h0 * 1.5) enVue = true;
-      }
-      image();
-      /* L'ARRIVEE PAR ANCRE SE JOUE ICI, ET NULLE PART AILLEURS.  D-373 */
-      if (estActif && (!etait || premierArmement)) {
-        premierArmement = false;
-        surAncre();
-      }
-    }
-
-    /* LA CARTE DE PROGRESSION — V2 · S'ALIGNER, arretee d'un  D-374 */
-    /* LA ZONE MORTE PASSE DE 18 % A 10 %.  D-597 */
-    var MORT = 0.10;
-
-    function lisser(t) { return t * t * (3 - 2 * t); }
-
-    var actuel = -1;
-
-    /* L'ODOMETRE — V4 · CRAN. Deux cases, une fenetre d'une ligne :  D-483 */
-    var bascule = false;
-
-    function deuxChiffres(k) { return (k < 10 ? "0" : "") + k; }
-
-    function poserCompte(k) {
-      if (!compte || compte.children.length < 2) return;
-      var txt = deuxChiffres(Math.min(k + 1, nSvc));
-      var idx = bascule ? 0 : 1;
-      if (compte.children[idx].textContent === txt) return;
-      compte.children[idx].textContent = txt;
-      compte.style.transform = bascule ? "translateY(0)" : "translateY(-50%)";
-      bascule = !bascule;
-    }
-
-    function marquer(k) {
-      if (k === actuel) return;
-      actuel = k;
-      /* LE VOILE DES NOMS NAIT AVEC LE PREMIER MARQUAGE, PAS AVANT.  D-375 */
-      rail.setAttribute("data-degage", "");
-      for (var i = 0; i < plans.length; i++) {
-        if (i === k) plans[i].setAttribute("data-actif", "");
-        else plans[i].removeAttribute("data-actif");
-        /* `data-vu` NE SE RETIRE JAMAIS. Le degagement du nom est  D-376 */
-        /* `k + 1` ET NON `k` : le chantier SUIVANT deborde toujours  D-492 */
-        if (i <= k + 1) plans[i].setAttribute("data-vu", "");
-      }
-      poserCompte(k);
-    }
-
-    /* UNE SEULE LECTURE DE MISE EN PAGE PAR IMAGE, ET ELLE VIENT  D-377 */
-    function image() {
-      if (!estActif || !enVue) return;
-      /* LE FILET DE SECURITE. Une geometrie degeneree — course nulle  D-378 */
-      if (course <= 0 || cibles.length !== n) { marquer(n - 1); return; }
-      var haut = piste.getBoundingClientRect().top;
-      var p = (collant - haut) / course;
-      if (p < 0) p = 0; else if (p > 1) p = 1;
-
-      var u = p * (n - 1);
-      var i = Math.floor(u);
-      if (i > n - 2) i = n - 2;
-      var f = u - i;
-      var g = (f - MORT) / (1 - 2 * MORT);
-      if (g < 0) g = 0; else if (g > 1) g = 1;
-      var t = lisser(g);
-
-      /* `scrollLeft` ET NON `transform` — voir l'argument en tete du  D-379 */
-      vise = cibles[i] + (cibles[i + 1] - cibles[i]) * t;
-      marquer(t >= 0.5 ? i + 1 : i);
-      ecrire();
-    }
-
-    /* == LE RATTRAPAGE — LE CORRECTIF DE « CA NE GLISSE PAS ».  D-599 */
-    var vise = null;
-    var pose = null;
-    var boucle = 0;
-
-    function ecrire() {
-      if (vise === null) return;
-      if (pose === null) { pose = vise; vitre.scrollLeft = vise; return; }
-      if (!boucle) boucle = requestAnimationFrame(rattraper);
-    }
-
-    function rattraper() {
-      boucle = 0;
-      if (vise === null || pose === null) return;
-      var d = vise - pose;
-      if (d < 0.5 && d > -0.5) { pose = vise; vitre.scrollLeft = vise; return; }
-      pose += d * 0.22;
-      vitre.scrollLeft = pose;
-      boucle = requestAnimationFrame(rattraper);
-    }
-
-    /* Un recalcul de geometrie invalide la position ecrite : on
-       reprend au pixel, sans rattrapage, sinon le rail glisserait
-       tout seul apres un redimensionnement ou une arrivee par
-       ancre. */
-    function figer() {
-      pose = null;
-      if (boucle) { cancelAnimationFrame(boucle); boucle = 0; }
-    }
-
-    /* LE PILOTE. Un ecouteur `scroll` passif, une seule image  D-380 */
-    var enVue = false;
-    var attend = false;
-
-    function surDefilement() {
-      if (attend) return;
-      attend = true;
-      requestAnimationFrame(function () { attend = false; image(); });
-    }
-
-    if (window.IntersectionObserver) {
-      new IntersectionObserver(function (entrees) {
-        enVue = entrees[0].isIntersecting;
-        image();
-        /* LA MARGE EST GENEREUSE, ET C'EST DELIBERE. A 120 px, une  D-381 */
-      }, { rootMargin: "50% 0px" }).observe(piste);
-    } else {
-      enVue = true;
-    }
-
-    window.addEventListener("scroll", surDefilement, { passive: true });
-
-    /* Le redimensionnement change la course, les cibles et la hauteur  D-382 */
-    var attendR = false;
-    window.addEventListener("resize", function () {
-      if (attendR) return;
-      attendR = true;
-      requestAnimationFrame(function () { attendR = false; relire(); });
-    }, { passive: true });
-
-    /* `differe.css` est injecte APRES le premier rendu : au moment  D-383 */
-    /* L'ARMEMENT — on ESSAIE jusqu'a ce que la feuille differee soit  D-384 */
-    var essais = 0;
-    (function armer() {
-      relire();
-      if (!estActif && essais++ < 40) window.setTimeout(armer, 50);
-    })();
-    window.addEventListener("load", relire);
-    /* `bfcache` rejoue `pageshow` sans rejouer le script. */
-    window.addEventListener("pageshow", relire);
-    /* LES POLICES CHANGENT LA LARGEUR DES NOMS, DONC LES CIBLES.  D-484 */
-    if (doc.fonts && doc.fonts.ready && doc.fonts.ready.then) {
-      doc.fonts.ready.then(function () { if (estActif) { mesurer(); image(); } });
-    }
-
-    /* LA VITRE NE DEFILE QUE SUR L'AXE QU'ON PILOTE.  D-385 */
-    vitre.addEventListener("scroll", function () {
-      if (vitre.scrollTop !== 0) vitre.scrollTop = 0;
-    }, { passive: true });
-
-    /* ALLER A UN CHANTIER — on defile la PAGE, et rien d'autre.  D-386 */
-    function allerA(k, doux) {
-      if (!estActif || course <= 0) return;
-      var haut = piste.getBoundingClientRect().top;
-      var y = window.scrollY + haut - collant + (k / (n - 1)) * course;
-      y = Math.round(y);
-      if (doux && !reduced.matches && window.scrollTo) {
-        window.scrollTo({ top: y, behavior: "smooth" });
-      } else {
-        window.scrollTo(0, y);
-      }
-    }
-
-    /* L'ARRIVEE PAR ANCRE.  D-388 */
-    /* ON VERIFIE L'ATTERRISSAGE, ON NE LE SUPPOSE PAS.  D-389 */
-    var libre = false;
-    ["wheel", "touchstart", "keydown", "pointerdown"].forEach(function (nom) {
-      window.addEventListener(nom, function () { libre = true; }, { passive: true, once: true });
-    });
-
-    function viser(k) {
-      var essais2 = 0;
-      (function poser() {
-        if (libre || !estActif || course <= 0 || essais2++ > 30) return;
-        var haut = piste.getBoundingClientRect().top;
-        var y = Math.round(window.scrollY + haut - collant + (k / (n - 1)) * course);
-        if (Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y);
-        requestAnimationFrame(poser);
-      })();
-    }
-
-    function surAncre() {
-      var h = location.hash;
-      if (h && h.indexOf("#svc-fiche-") === 0) { ouvrirParId(h.slice(1), null); return; }
-      if (!h || h.indexOf("#svc-0") !== 0) return;
-      for (var i = 0; i < plans.length; i++) {
-        if ("#" + plans[i].id === h) { viser(i); return; }
-      }
-    }
-    window.addEventListener("hashchange", surAncre);
-
-    /* LE FOCUS NE DESYNCHRONISE RIEN.  D-390 */
-    rail.addEventListener("focusin", function (e) {
-      if (!estActif) return;
-      var plan = e.target.closest ? e.target.closest(".svc-plan") : null;
-      if (!plan) return;
-      var k = plans.indexOf(plan);
-      if (k < 0) return;
-      var vb = vitre.getBoundingClientRect();
-      var pb = plan.getBoundingClientRect();
-      if (pb.left >= vb.left - 2 && pb.right <= vb.right + 2) return;
-      allerA(k, false);
-    });
-
-    /* == LE PANNEAU DE DETAIL ==  D-392 */
-    /* IL VIT HORS DU RAIL. C'EST LA CAUSE DU PANNEAU COUPE, ET LA  D-485 */
-    var boite = $("[data-svc-fiches]");
-    var fiches = $$(".svc-fiche");
-    var retour = null;
-
-    function parId(id) {
-      for (var i = 0; i < fiches.length; i++) if (fiches[i].id === id) return fiches[i];
-      return null;
-    }
-
-    function ouvrir(f, declencheur) {
-      if (!f || ficheOuverte === f) return;
-      if (ficheOuverte) fermer(ficheOuverte, true);
-      retour = declencheur || null;
-      f.setAttribute("data-ouvert", "");
-      /* LE ROLE N'EXISTE QUE QUAND LE PANNEAU EST UN CALQUE.  D-486 */
-      f.setAttribute("role", "dialog");
-      f.setAttribute("aria-modal", "true");
-      ficheOuverte = f;
-      lockScroll();
-      try { f.focus({ preventScroll: true }); } catch (e) {}
-      try { history.pushState({ aped: "svc-fiche" }, "", "#" + f.id); } catch (e) {}
-    }
-
-    function ouvrirParId(id, declencheur) { ouvrir(parId(id), declencheur); }
-
-    function fermer(f, net) {
-      if (!f || !f.hasAttribute("data-ouvert")) return;
-      var brut = net || reduced.matches || doc.documentElement.getAttribute("data-palier") === "2";
-      var fini = function () {
-        f.removeAttribute("data-ouvert");
-        f.removeAttribute("data-sortant");
-        f.removeAttribute("role");
-        f.removeAttribute("aria-modal");
-        if (ficheOuverte === f) ficheOuverte = null;
-        unlockScroll();
-        /* ON REVIENT EXACTEMENT OU ON ETAIT : le verrou n'a jamais  D-487 */
-        if (retour) {
-          try { retour.focus({ preventScroll: true }); } catch (e) {}
-          retour = null;
-        }
-      };
-      if (brut) { fini(); return; }
-      f.setAttribute("data-sortant", "");
-      window.setTimeout(fini, 300);
-    }
-
-    /* Toutes les routes de fermeture passent par ici : c'est ce qui
-       garantit que le bouton Precedent et la touche Echap laissent
-       l'historique dans le meme etat. */
-    fermerFiche = function () {
-      if (!ficheOuverte) return;
-      if (history.state && history.state.aped === "svc-fiche") history.back();
-      else fermer(ficheOuverte);
-    };
-    window.addEventListener("popstate", function () {
-      if (ficheOuverte) fermer(ficheOuverte);
-    });
-
-    var portes = $$("[data-svc-ouvre]");
-    for (var q = 0; q < portes.length; q++) {
-      (function (a) {
-        a.addEventListener("click", function (e) {
-          var f = parId(a.getAttribute("data-svc-ouvre"));
-          /* SANS CIBLE, L'ANCRE FAIT SON TRAVAIL. Le lien reste un
-             lien : c'est lui, et pas le script, qui rend la fiche
-             atteignable quand le script n'a pas tourne. */
-          if (!f) return;
-          e.preventDefault();
-          ouvrir(f, a);
-        });
-      })(portes[q]);
-    }
-
-    var croix = $$("[data-svc-ferme]");
-    for (var c = 0; c < croix.length; c++) {
-      croix[c].addEventListener("click", function () { fermerFiche(); });
-    }
-
-    /* LES PORTES DU PIED FERMENT AVANT DE SAUTER : sinon le visiteur  D-488 */
-    var sauts = $$("[data-svc-ferme-vers]");
-    for (var s2 = 0; s2 < sauts.length; s2++) {
-      sauts[s2].addEventListener("click", function (e) {
-        if (ficheOuverte) fermer(ficheOuverte, true);
-        if (e.currentTarget.hasAttribute("data-lance-visite")) lancerLaVisite();
-      });
-    }
-
-    /* == OUVRIR LA VISITE DEPUIS LE PANNEAU 03.  D-607 */
-    function lancerLaVisite() {
-      var debut = Date.now();
-      (function guetter() {
-        var bloc = $("[data-tour]");
-        var bouton = $("[data-tour-start]");
-        if (bloc && bouton && bloc.hasAttribute("data-tour-pret")) {
-          if (!bloc.classList.contains("is-loading")) bouton.click();
-          return;
-        }
-        if (Date.now() - debut > 4000) return;
-        window.setTimeout(guetter, 120);
-      })();
-    }
-
-    /* LE CLIC A L'EXTERIEUR. Le voile est le `::before` de la boite :  D-489 */
-    if (boite) {
-      boite.addEventListener("click", function (e) {
-        if (e.target === boite && ficheOuverte) fermerFiche();
-      });
-    }
-  })();
-
   /* == SECTION 03 · L'AVANT / APRES ==  D-394 */
   (function avantApres() {
     var cadres = $$("[data-ba]");
@@ -1081,8 +575,8 @@
           poser(Number(curseur.value));
         });
         poser(Number(curseur.value));
-        scene.aped_poser = poser;
-        scene.aped_curseur = curseur;
+        scene.adexweb_poser = poser;
+        scene.adexweb_curseur = curseur;
       })(cadres[i]);
     }
 
@@ -1102,17 +596,17 @@
       window.setTimeout(function () {
         if (touche) return;
         var t0 = 0, DUREE = 760;
-        premiere.aped_poser(100);
+        premiere.adexweb_poser(100);
         (function pas(t) {
-          if (touche) { premiere.aped_poser(50); premiere.aped_curseur.value = 50; return; }
+          if (touche) { premiere.adexweb_poser(50); premiere.adexweb_curseur.value = 50; return; }
           if (!t0) t0 = t;
           var p = (t - t0) / DUREE;
           if (p > 1) p = 1;
           /* Une seule arete, franche, qui balaye : V1 · DEGAGER. */
           var e = 1 - Math.pow(1 - p, 3);
           var v = 100 - 50 * e;
-          premiere.aped_poser(v);
-          premiere.aped_curseur.value = Math.round(v);
+          premiere.adexweb_poser(v);
+          premiere.adexweb_curseur.value = Math.round(v);
           if (p < 1) requestAnimationFrame(pas);
         })(0);
       }, 700);
@@ -1122,7 +616,9 @@
 
   /* == PARCOURS — compteur d'etape. ==  D-399 */
   (function parcours() {
-    var etapes = $$(".parc-etape");
+    /* L'ANCRE EST `data-parc`, PAS UNE CLASSE : c'est elle que le
+       contrat de plomberie nomme, et elle porte deja le libelle. */
+    var etapes = $$("[data-parc]");
     if (!etapes.length) return;
     var num = $("#parcNum");
     var nom = $("#parcNom");
@@ -1137,8 +633,9 @@
          nodules de minium en meme temps, et le minium ne designait
          plus rien. L'accent tombe sur l'etape EN COURS, une seule. */
       etapes.forEach(function (e, k) { e.classList.toggle("is-on", k === i); });
-      /* PHASE 8 · V4 — l'etape roule d'un cran. */
-      if (num) rouler(num, ("0" + (i + 1)).slice(-2));
+      /* Le numero se POSE, il ne roule plus : l'odometre etait un
+         verbe de l'ancienne identite, et son moteur est parti. */
+      if (num) num.textContent = ("0" + (i + 1)).slice(-2);
       if (nom) nom.textContent = etapes[i].getAttribute("data-parc") || "";
       if (reste) {
         var r = etapes.length - 1 - i;
@@ -1164,7 +661,19 @@
   /* == LE CADEAU — QUAND IL PARAIT, ET POURQUOI CE N'EST PLUS CE QUE ==  D-400 */
   (function cadeau() {
     var boite = $("#cadeau");
-    if (!boite || typeof boite.showModal !== "function") return;
+    /* CETTE PAGE N'EMBARQUE PAS LE POPUP — 404 et confidentialite
+       n'ont pas les modales, et le pied y offre quand meme les deux
+       guides. Un bouton mort est pire qu'un lien : il mene a la page
+       qui, elle, porte la boite.  D-844 */
+    if (!boite || typeof boite.showModal !== "function") {
+      $$("[data-cadeau-ouvrir]").forEach(function (b) {
+        b.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "contact.html#cadeau";
+        });
+      });
+      return;
+    }
 
     /* LA MEMOIRE EST DE RETOUR, ET ELLE A UN SENS MAINTENANT.  D-401
        Elle avait ete abolie quand les guides etaient offerts sans
@@ -1173,13 +682,13 @@
        deja donne est une faute — on lui redemande ce qu'on a deja.
        Une seule cle, et elle ne contient rien de personnel : la date
        du don suffit a savoir qu'il a eu lieu. */
-    var CLE_DONNE = "aped-guides-donnes";
+    var CLE_DONNE = "adexweb-guides-donnes";
     var deja = false;
     try { deja = !!localStorage.getItem(CLE_DONNE); } catch (e) {}
 
     /* L'INTERRUPTEUR DES OUTILS DE MESURE. Voir l'en-tete. */
     var vu = false;
-    try { vu = sessionStorage.getItem("aped-sans-popup") === "1"; } catch (e) {}
+    try { vu = sessionStorage.getItem("adexweb-sans-popup") === "1"; } catch (e) {}
 
     var declencheur = null;
     var ouvert = false;
@@ -1199,7 +708,10 @@
       if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return true;
       if (performance.now() - derniereAction < 2000) return true;
       if ($(".modal:not([hidden])")) return true;
-      if (menu && !menu.hidden) return true;
+      /* Le menu plein ecran vit dans `js/site.js` maintenant : on le
+         relit dans le DOM plutot que de partager une variable. */
+      var plein = doc.getElementById("menu");
+      if (plein && !plein.hidden) return true;
       return false;
     }
 
@@ -1259,7 +771,7 @@
     /* LES GUIDES NE SONT PLUS DANS LE SITE.  D-788
 
        Ils etaient servis en statique, et leurs adresses etaient EN
-       CLAIR ici meme : `GET /documents/aped-*.pdf` rendait 2 Mo de
+       CLAIR ici meme : `GET /documents/adexweb-*.pdf` rendait 2 Mo de
        PDF a qui les lisait dans ce fichier. Le popup annoncait
        « contre vos coordonnees » et ne gardait rien.
 
@@ -1453,154 +965,6 @@
     }, SORTIE);
   })();
 
-  /* == Theme. Le basculement est anime, mais jamais au chargement. == */
-  var themeToggle = $("#themeToggle");
-
-  function labelTheme(next) {
-    if (!themeToggle) return;
-    themeToggle.setAttribute("aria-label", next === "dark" ? "Basculer en thème clair" : "Basculer en thème sombre");
-  }
-  labelTheme(root.getAttribute("data-theme"));
-
-  // La barre du navigateur doit suivre la bascule manuelle. Avec des
-  // balises `theme-color` en `media`, elle restait sur la preference
-  // systeme et contredisait la page.
-  var metaThemeColor = $("#metaThemeColor");
-
-  /* LA BASCULE EST UN CRAN.  D-635 */
-  function applyTheme(next) {
-    root.setAttribute("data-theme", next);
-    labelTheme(next);
-    if (metaThemeColor) metaThemeColor.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
-    try { localStorage.setItem("aped-theme", next); } catch (e) {}
-    /* Tout ce qui peint hors CSS doit etre prevenu. Le canvas du hero  D-408 */
-    doc.dispatchEvent(new CustomEvent("aped:theme", { detail: { theme: next } }));
-  }
-
-  /* Le theme systeme peut changer PENDANT la visite (coucher de  D-409 */
-  (function suivreSysteme() {
-    var mq = window.matchMedia("(prefers-color-scheme: dark)");
-    var choisi = null;
-    try { choisi = localStorage.getItem("aped-theme"); } catch (e) {}
-    if (choisi) return;
-    var onChange = function (e) {
-      var encoreLibre = null;
-      try { encoreLibre = localStorage.getItem("aped-theme"); } catch (err) {}
-      if (encoreLibre) return;
-      var next = e.matches ? "dark" : "light";
-      root.setAttribute("data-theme", next);
-      labelTheme(next);
-      if (metaThemeColor) metaThemeColor.setAttribute("content", next === "dark" ? "#101211" : "#dcdedb");
-      doc.dispatchEvent(new CustomEvent("aped:theme", { detail: { theme: next } }));
-    };
-    if (mq.addEventListener) mq.addEventListener("change", onChange);
-    else if (mq.addListener) mq.addListener(onChange);
-  })();
-
-  /* PHASE 10 — LA BASCULE PASSE PAR UNE TRAME, PLUS PAR UN FONDU.  D-410 */
-  function couleurSurface(theme) {
-    return theme === "dark" ? "#101211" : "#dcdedb";
-  }
-
-  function basculerTheme(next) {
-    var trame = window.APED_TRAME;
-    if (!trame || reduced.matches) { applyTheme(next); return; }
-
-    /* La cible est l'element racine : `trame.js` sait que la boite
-       d'une racine est la FENETRE, pas les trente mille pixels du
-       document. */
-    var scene = doc.documentElement;
-    var teinte = couleurSurface(next);
-
-    trame.couvrir(scene, {
-      nom: "theme-couvre", sens: "droite", graine: 613, maille: 56, z: 2147483000,
-      couleur: teinte, duree: 220, vie: 120,
-      onFin: function () {
-        applyTheme(next);
-        trame.degager(scene, {
-          nom: "theme-degage", sens: "droite", graine: 613, maille: 56, z: 2147483000,
-          couleur: teinte, duree: 260, vie: 140
-        });
-      }
-    });
-  }
-
-  if (themeToggle) {
-    themeToggle.addEventListener("click", function () {
-      basculerTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
-    });
-  }
-
-  /* == Menu plein ecran == */
-  var burger = $("#burger");
-  var menu = $("#menu");
-
-  function closeMenu() {
-    if (!menu || menu.hidden) return;
-    menu.classList.remove("is-open");
-    burger.setAttribute("aria-expanded", "false");
-    burger.setAttribute("aria-label", "Ouvrir le menu");
-    /* La fermeture est la RECIPROQUE : l'arete repasse par ou elle  D-411 */
-    if (window.APED_TRAME && !reduced.matches) {
-      window.APED_TRAME.couvrir(menu, {
-        nom: "menu-ferme", sens: window.APED_TRAME.inverse("bas"), graine: 331,
-        duree: 300, vie: 150, maille: 52, z: 2147483000
-      });
-    }
-    window.setTimeout(function () { menu.hidden = true; }, reduced.matches ? 0 : 380);
-    if (!activeModal) unlockScroll();
-    // Le focus revient sur le bourgeon, jamais sur le body.
-    if (!activeModal && burger.offsetParent !== null) burger.focus({ preventScroll: true });
-  }
-
-  function openMenu() {
-    if (!menu) return;
-    menu.hidden = false;
-    lockScroll();
-    requestAnimationFrame(function () { menu.classList.add("is-open"); });
-    burger.setAttribute("aria-expanded", "true");
-    burger.setAttribute("aria-label", "Fermer le menu");
-    /* PHASE 10 — le menu est un PANNEAU : il se lit de haut en bas,  D-412 */
-    if (window.APED_TRAME && !reduced.matches) {
-      window.APED_TRAME.degager(menu, {
-        nom: "menu-ouvre", sens: "bas", graine: 331, duree: 340, vie: 170,
-        maille: 52, z: 2147483000
-      });
-    }
-    // Le menu est un calque plein ecran : le focus doit y entrer, sinon la
-    // premiere tabulation part dans le contenu couvert derriere.
-    var first = focusablesIn(menu)[0];
-    if (first) window.setTimeout(function () { first.focus({ preventScroll: true }); }, 60);
-  }
-
-  if (burger && menu) {
-    burger.addEventListener("click", function () {
-      if (menu.hidden) openMenu(); else closeMenu();
-    });
-    $$("a, button", menu).forEach(function (el) {
-      el.addEventListener("click", closeMenu);
-    });
-    // La signature est une destination comme les autres : elle referme.
-    var wordmark = $(".nav .wordmark");
-    if (wordmark) wordmark.addEventListener("click", closeMenu);
-  }
-
-  /* == PHASE 10 — LE PANNEAU « AJUSTER EN DETAIL », ET LES AUTRES ==  D-413 */
-  $$("details.roi-details").forEach(function (repli) {
-    repli.addEventListener("toggle", function () {
-      if (!repli.open || !window.APED_TRAME || reduced.matches) return;
-      /* La cible est le CONTENU, pas le `<details>` entier : degager
-         le tout recouvrirait le resume, donc le bouton que le
-         visiteur vient de cliquer. */
-      var contenu = repli.querySelector("summary") ? repli.querySelector("summary").nextElementSibling : null;
-      if (!contenu) return;
-      window.APED_TRAME.degager(contenu, {
-        nom: "repli-" + (repli.id || "detail"), sens: "bas", graine: 449,
-        duree: 320, vie: 160, maille: 36, z: 3
-      });
-    });
-  });
-
   /* == Verrou de defilement. La largeur de la barre est compensee, ==  D-414 */
   var scrollLocks = 0;
 
@@ -1631,15 +995,12 @@
     });
   }
 
-  /* Deux calques peuvent capturer le focus : une modale, et le menu plein  D-415 */
+  /* UN SEUL CALQUE PIEGE LE FOCUS ICI : la modale.  D-415
+     Le menu plein ecran a le sien dans `js/site.js`, et la fiche de
+     service est partie avec la course horizontale. Deux pieges qui
+     se disputent la meme touche `Tab` en font un qui ne marche pas. */
   function trapList() {
     if (activeModal) return focusablesIn(activeModal);
-    /* La fiche de service est un calque au meme titre qu'une  D-416 */
-    if (ficheOuverte) return focusablesIn(ficheOuverte);
-    if (menu && !menu.hidden) {
-      var nav = $(".nav");
-      return (nav ? focusablesIn(nav) : []).concat(focusablesIn(menu));
-    }
     return null;
   }
 
@@ -1665,12 +1026,7 @@
     activeModal = modal;
     modal.hidden = false;
     lockScroll();
-    requestAnimationFrame(function () {
-      modal.classList.add("is-open");
-      /* PHASE 8 · V1 — le panneau se DEGAGE du haut sous une arete  D-417 */
-      var panneau = modal.querySelector(".modal-panel");
-      if (panneau) doc.dispatchEvent(new CustomEvent("aped:modal", { detail: { panneau: panneau } }));
-    });
+    requestAnimationFrame(function () { modal.classList.add("is-open"); });
 
     if (id === "modal-estimate") resetEstimate();
     if (id === "modal-project") resetProject();
@@ -1690,7 +1046,7 @@
       el.focus({ preventScroll: true });
       return;
     }
-    var fallbacks = [$("#burger"), $(".nav .nav-cta"), $(".wordmark")];
+    var fallbacks = [$("#burger"), $("[data-barre] .btn--primaire"), $("[data-barre] .logo")];
     for (var i = 0; i < fallbacks.length; i++) {
       if (fallbacks[i] && fallbacks[i].offsetParent !== null) {
         fallbacks[i].focus({ preventScroll: true });
@@ -1705,11 +1061,6 @@
     modal.classList.remove("is-open");
     activeModal = null;
     unlockScroll();
-    /* PHASE 8 · V1 — le panneau se referme par ou il s'est ouvert.  D-418 */
-    var sortant = modal.querySelector(".modal-panel");
-    if (sortant && !reduced.matches) {
-      doc.dispatchEvent(new CustomEvent("aped:modal-ferme", { detail: { panneau: sortant } }));
-    }
     window.setTimeout(function () { modal.hidden = true; }, reduced.matches ? 0 : 380);
     restoreFocus();
 
@@ -1734,37 +1085,70 @@
     openModal(id, true);
   }
 
-  doc.addEventListener("click", function (e) {
-    var open = e.target.closest("[data-modal-open]");
-    if (open) { openModal(open.getAttribute("data-modal-open")); return; }
-    var swap = e.target.closest("[data-modal-switch]");
-    if (swap) {
-      /* CELUI QUI PREND LE RENDEZ-VOUS N'A PLUS RIEN A RETENIR.  D-780
-         Vrai des deux cotes : le bouton « Oui, on en parle » de
-         l'ecran du resultat, et celui de la retenue elle-meme. Sans
-         ca, elle se reposerait a la fermeture du calendrier sur
-         quelqu'un qui vient d'accepter. */
-      if (typeof retenueFinie === "function") retenueFinie();
-      if (typeof fermerRetenue === "function") fermerRetenue();
-      switchModal(swap.getAttribute("data-modal-switch"));
-      return;
-    }
-    var close = e.target.closest("[data-modal-close]");
-    if (close) { closeModal(); }
-  });
+  /* LES ECOUTEURS NE S'ARMENT QUE LA OU IL Y A UN CALQUE.  D-845
+     `openModal` et ses voisines restent au premier niveau : dix blocs
+     les appellent. Ce qui se garde, c'est l'ARMEMENT — une page sans
+     modale (404, confidentialite) n'a rien a pieger, et `js/site.js`
+     y renvoie deja les portes vers `contact.html`. */
+  (function portesDesModales() {
+    if (!doc.querySelector(".modal, dialog#cadeau")) return;
 
-  doc.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      if (activeModal) closeModal();
-      /* La fiche vient AVANT le menu et APRES la modale : une
-         modale peut s'ouvrir depuis la fiche (« Démarrer ce
-         chantier »), donc c'est elle qui doit partir la premiere. */
-      else if (ficheOuverte) fermerFiche();
-      else closeMenu();
-      return;
-    }
-    trapFocus(e);
-  });
+    doc.addEventListener("click", function (e) {
+      var open = e.target.closest("[data-modal-open]");
+      if (open) { openModal(open.getAttribute("data-modal-open")); return; }
+      var swap = e.target.closest("[data-modal-switch]");
+      if (swap) {
+        /* CELUI QUI PREND LE RENDEZ-VOUS N'A PLUS RIEN A RETENIR.  D-780
+           Vrai des deux cotes : le bouton « Oui, on en parle » de
+           l'ecran du resultat, et celui de la retenue elle-meme. Sans
+           ca, elle se reposerait a la fermeture du calendrier sur
+           quelqu'un qui vient d'accepter. */
+        retenueFinie();
+        fermerRetenue();
+        switchModal(swap.getAttribute("data-modal-switch"));
+        return;
+      }
+      var close = e.target.closest("[data-modal-close]");
+      if (close) { closeModal(); }
+    });
+
+    doc.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        if (activeModal) closeModal();
+        return;
+      }
+      trapFocus(e);
+    });
+
+    /* ============================================================
+       LA MODALE NOMMEE DANS L'ADRESSE S'OUVRE A L'ARRIVEE.  D-846
+
+       `js/site.js` renvoie vers `contact.html#<id>` toute porte dont
+       la modale est absente de la page ou on a clique. Sans ce
+       bloc-ci, la personne atterrit sur la page de contact et la
+       modale reste fermee : la porte mene a une piece close, ce qui
+       est exactement le bouton mort qu'on voulait supprimer.
+
+       SORTIE HATIVE SI LE HACHAGE NE NOMME RIEN : les ancres
+       ordinaires (`#questions`, `#immobilier`) doivent continuer de
+       ne rien declencher.
+       ============================================================ */
+    (function ouvrirParLAdresse() {
+      var h = String(location.hash || "").slice(1);
+      if (!h) return;
+      var cible = doc.getElementById(h);
+      if (!cible) return;
+      /* Le popup des guides est un `<dialog>`, pas une `.modal` : sa
+         porte d'entree est `[data-cadeau-ouvrir]`, on la declenche. */
+      if (h === "cadeau") {
+        var porte = $("[data-cadeau-ouvrir]");
+        if (porte) window.setTimeout(function () { porte.click(); }, 120);
+        return;
+      }
+      if (!cible.classList.contains("modal")) return;
+      window.setTimeout(function () { openModal(h); }, 120);
+    })();
+  })();
 
   /* == Validation. Le focus se pose sur le premier champ en erreur, ==  D-419 */
   function markField(field, ok) {
@@ -2311,7 +1695,7 @@
   function sendJson(kind, data) {
     var charge = Object.assign({}, data, {
       _form: kind,
-      _subject: SUBJECTS[kind] || "Message - site APED"
+      _subject: SUBJECTS[kind] || "Message - site ADEXWEB"
     });
     if (charge._sid) {
       var j = jetonDe(kind);
@@ -2348,7 +1732,7 @@
      etape — celle qui compte — a son propre traitement d'erreur.
      ============================================================ */
 
-  var CLE_SESSION = "aped-sid-";
+  var CLE_SESSION = "adexweb-sid-";
 
   /* `crypto.randomUUID` n'existe pas partout ; le repli n'a pas
      besoin d'etre cryptographique, seulement unique par visiteur.
@@ -2388,7 +1772,7 @@
      dans la ligne existante et le visiteur repart d'une ligne
      neuve. C'est le comportement voulu — mieux vaut une ligne de
      trop qu'une ligne ecrasee par quelqu'un d'autre. */
-  var CLE_JETON = "aped-jeton-";
+  var CLE_JETON = "adexweb-jeton-";
 
   function jetonDe(kind) {
     try { return localStorage.getItem(CLE_JETON + kind) || ""; } catch (e) { return ""; }
@@ -2455,7 +1839,7 @@
      réponses — il promet de ramener au bon endroit, ce qui est vrai
      partout.
      ============================================================ */
-  var CLE_BROUILLON = "aped-brouillon-";
+  var CLE_BROUILLON = "adexweb-brouillon-";
 
   function garderBrouillon(kind, data, etape, total) {
     try {
@@ -2523,7 +1907,7 @@
     try {
       var charge = Object.assign({}, data, {
         _form: kind,
-        _subject: SUBJECTS[kind] || "Message - site APED"
+        _subject: SUBJECTS[kind] || "Message - site ADEXWEB"
       });
       /* LE DERNIER ENVOI PORTE LE JETON, LUI AUSSI.  D-786
          C'est le SECOND chemin vers le service, et il part au pire
@@ -2664,7 +2048,7 @@
     return Promise.all(fichiers.map(lireFichier)).then(function (pieces) {
       return poster(Object.assign({}, data, {
         _form: kind,
-        _subject: SUBJECTS[kind] || "Message - site APED",
+        _subject: SUBJECTS[kind] || "Message - site ADEXWEB",
         _fichiers: pieces
       }));
     });
@@ -2848,7 +2232,7 @@
      ouvre puis referme une modale sans rien taper n'a rien a
      perdre, et lui montrer un rappel serait absurde.
      ============================================================ */
-  var CLE_RETENUE = "aped-retenue-vue";
+  var CLE_RETENUE = "adexweb-retenue-vue";
   var retenue = $("#retenue");
   var retenueEtat = null;   /* { kind, quoi, perte } quand un formulaire est en cours */
 
@@ -2861,7 +2245,7 @@
      marque commune faisait qu’un visiteur ayant vu la retenue à
      l’étape 2 ne voyait jamais celle d’après-fourchette, qui est la
      seule des deux à valoir de l’argent. Plafond à VIE : deux. */
-  var CLE_RETENUE_APRES = "aped-retenue-apres-vue";
+  var CLE_RETENUE_APRES = "adexweb-retenue-apres-vue";
   function marqueRetenue() {
     return (retenueEtat && retenueEtat.apres) ? CLE_RETENUE_APRES : CLE_RETENUE;
   }
@@ -3086,7 +2470,12 @@
     if (retenue) retenue.hidden = true;
   }
 
-  if (retenue) {
+  /* L'ARMEMENT DE LA RETENUE, ET LUI SEUL, DEPEND DE LA PAGE.  D-845
+     Les cinq fonctions au-dessus restent au premier niveau : six
+     blocs les appellent — `closeModal`, `enregistrerDiscret`, les
+     quatre assistants — et sans marquage elles ne font rien. */
+  (function armerLaRetenue() {
+    if (!retenue) return;
     $("#retenueSuite").addEventListener("click", fermerRetenue);
     retenue.addEventListener("click", function (e) {
       if (e.target === retenue) fermerRetenue();
@@ -3148,7 +2537,7 @@
       if (e.relatedTarget || e.clientY > 0) return;
       ouvrirRetenue();
     });
-  }
+  })();
 
   /* Les formulaires declarent qu'ils sont commences. Appele au
      premier enregistrement d'etape : avant ca, il n'y a rien a
@@ -3221,16 +2610,24 @@
      Le moteur est le meme que celui de l'assistant de projet, en
      plus court : ce formulaire n'a ni fichiers, ni fourchette.
      ============================================================ */
-  var referForm = $('form[data-form="refer"]');
-  if (referForm) {
-    var R_TOTAL = 8;
+  /* CE QUE LA REPRISE DE PARCOURS APPELLE DE L'EXTERIEUR. Le reste
+     de l'assistant vit dans l'IIFE ci-dessous : sur une page sans
+     `modal-refer`, il ne s'execute pas, et ces trois-la restent des
+     valeurs neutres au lieu de lever.  D-845 */
+  var referForm = null;
+  var R_TOTAL = 8;
+  var goRStep = function () {};
+
+  (function assistantReference() {
+    referForm = $('form[data-form="refer"]');
+    if (!referForm) return;
     var rStep = 1;
     var referBar = $("#referBar");
     var referBack = $("#referBack");
     var referNext = $("#referNext");
     var referNav = $("#referNav");
 
-    var goRStep = function (n) {
+    goRStep = function (n) {
       rStep = n;
       $$(".step[data-rstep]", referForm).forEach(function (s) {
         s.hidden = Number(s.dataset.rstep) !== n;
@@ -3299,7 +2696,7 @@
     });
 
     goRStep(1);
-  }
+  })();
 
   /* `refer` a quitte cette liste : il a son propre assistant. */
   $$('form[data-form="urgent"], form[data-form="contact"]').forEach(function (form) {
@@ -3346,7 +2743,20 @@
     });
   });
 
-  /* == Calendrier == */
+  /* == LE CALENDRIER ET LA RESERVATION ==  D-845
+     Tout ce bloc vit dans un IIFE : sans `#modal-booking`, aucune de
+     ses trente fonctions n'a de sens, et le prechargement des
+     creneaux irait sonner chez Google pour rien. Les trois seules
+     choses que le reste du fichier lui demande — `resetBooking` a
+     l'ouverture, `goBStep` et `bookingForm` a la reprise — sont
+     declarees dehors et remplies dedans. */
+  var resetBooking = function () {};
+  var goBStep = function () {};
+  var bookingForm = null;
+
+  (function reservation() {
+  if (!$("#modal-booking")) return;
+
   var calMonth = $("#calMonth");
   var calDays = $("#calDays");
   var calPrev = $("#calPrev");
@@ -3495,12 +2905,12 @@
 
   var calView = premierJourOuvrable();
 
-  function goBStep(n) {
+  goBStep = function (n) {
     if (!bookingModal) return;
     $$(".step[data-bstep]", bookingModal).forEach(function (s) {
       s.hidden = Number(s.dataset.bstep) !== n;
     });
-  }
+  };
 
   function renderCalendar() {
     if (!calDays) return;
@@ -3693,7 +3103,7 @@
     });
   }
 
-  function resetBooking() {
+  resetBooking = function () {
     /* Et ICI aussi : c'est la remise a zero qui s'execute a chaque
        ouverture de la modale, donc c'est elle qui decide du mois
        affiche. La poser a `new Date()` ramenait le calendrier sur le
@@ -3728,7 +3138,7 @@
       var note = $("#bkModeNote");
       if (note) note.textContent = "";
     }
-  }
+  };
 
   if (calPrev && calNext) {
     calPrev.addEventListener("click", function () {
@@ -3784,7 +3194,7 @@
     doc.addEventListener("pointerdown", amorce, true);
   })();
 
-  var bookingForm = $('form[data-form="booking"]');
+  bookingForm = $('form[data-form="booking"]');
   if (bookingForm) {
     /* ============================================================
        LA RÉSERVATION N'ENREGISTRAIT RIEN AVANT L'ENVOI.  D-769
@@ -3898,20 +3308,33 @@
       });
     });
   }
+  })();
 
-  /* == Formulaire projet, 7 etapes == */
-  var projectWizard = $("#projectWizard");
+  /* == L'ASSISTANT DE PROJET, HUIT ECRANS ==  D-845
+     Meme montage que la reservation : tout dans un IIFE, et les
+     quatre poignees que `openModal` et la reprise attrapent de
+     l'exterieur declarees ici. */
+  var resetProject = function () {};
+  var goPStep = function () {};
+  var projectWizard = null;
+  /* Huit depuis D-749 : deux ecrans de plus pour l ampleur, le design,
+     les fonctions et le contenu — les quatre reponses qui font varier
+     un prix. */
+  var P_TOTAL = 8;
+
+  (function assistantProjet() {
+  projectWizard = $("#projectWizard");
+  if (!projectWizard) return;
+
   var projectBar = $("#projectBar");
   var projectBack = $("#projectBack");
   var projectNext = $("#projectNext");
   var projectNav = $("#projectNav");
-  /* Six, depuis que les fichiers ont rejoint la description.  D-703 */
-  var P_TOTAL = 8;   /* Huit depuis D-749 : deux ecrans de plus pour l ampleur, le design, les fonctions et le contenu — les quatre reponses qui font varier un prix. */
   var pStep = 1;
   var pickedFiles = [];
   var MAX_BYTES = 10 * 1024 * 1024;
 
-  function goPStep(n) {
+  goPStep = function (n) {
     /* Les écrans 4 et 5 portent l'ampleur, le design, le contenu et
        les fonctions. Voir `projetSauteLeBareme`. */
     var sens = n >= pStep ? 1 : -1;
@@ -3937,7 +3360,7 @@
       var focusTarget = $("input:not([type=hidden]):not([type=file]), select, textarea, button", visible);
       if (focusTarget && isDesktop.matches) focusTarget.focus({ preventScroll: true });
     }
-  }
+  };
 
   function renderFiles() {
     var list = $("#prFileList");
@@ -3980,8 +3403,7 @@
     }
   }
 
-  function resetProject() {
-    if (!projectWizard) return;
+  resetProject = function () {
     projectWizard.reset();
     pickedFiles = [];
     renderFiles();
@@ -3995,7 +3417,14 @@
     say($(".form-status", projectWizard), "");
     setLoading(projectNext, false);
     goPStep(1);
-  }
+  };
+
+  /* LES TROIS BLOCS QUI SUIVENT VOYAGENT AVEC L'ASSISTANT, ET C'EST
+     EXACT PLUTOT QUE COMMODE : les `.choices`, les questions
+     conditionnelles et le mode de l'appel vivent tous dans
+     `partiels/modales.html`, le meme partiel que `#projectWizard`.
+     Une page qui n'a pas l'assistant n'a ni rangee de choix, ni
+     champ conditionnel, ni bouton de mode.  D-845 */
 
   /* LES CHOIX A DEUX BOUTONS SERVENT MAINTENANT A DEUX ENDROITS.  D-725
      Ce bloc etait enferme dans `if (projectWizard)` et ne voyait que
@@ -4968,7 +4397,7 @@
       /* PHASE 8 — LA RECOMPOSITION. Ce fichier ne connait pas GSAP  D-432 */
       if (key !== secteurCourant) {
         secteurCourant = key;
-        doc.dispatchEvent(new CustomEvent("aped:secteur", { detail: { cle: key } }));
+        doc.dispatchEvent(new CustomEvent("adexweb:secteur", { detail: { cle: key } }));
       }
     };
 
@@ -5137,7 +4566,7 @@
          si on le laissait pendant qu'on tabule, le visiteur au clavier
          mettrait son anneau de focus sur une planche invisible. */
       grille.addEventListener("focusin", function () { survole = false; eteindre(); });
-      doc.addEventListener("aped:secteur", function (ev) { allumer(ev.detail && ev.detail.cle); });
+      doc.addEventListener("adexweb:secteur", function (ev) { allumer(ev.detail && ev.detail.cle); });
     }
 
     new IntersectionObserver(function (es) {
@@ -5148,311 +4577,6 @@
     doc.addEventListener("visibilitychange", function () { if (doc.hidden) eteindre(); });
     if (reduced.addEventListener) reduced.addEventListener("change", function () { if (reduced.matches) eteindre(); });
   }
-
-  /* == LE CRAN — V4 du langage de mouvement, et il vit ICI. ==  D-434 */
-  function rouler(el, texte) {
-    if (!el) return;
-    texte = String(texte);
-    if (el.dataset.cran === texte) return;
-
-    if (reduced.matches) {
-      el.dataset.cran = texte;
-      el.textContent = texte;
-      return;
-    }
-
-    var avant = el.dataset.cran;
-    el.dataset.cran = texte;
-
-    /* Premier passage : on pose la structure sans rien animer.
-       Un compteur qui roule des l'arrivee raconte un changement
-       qui n'a pas eu lieu. */
-    if (avant === undefined) {
-      el.classList.add("odo");
-      el.textContent = "";
-      for (var k = 0; k < texte.length; k++) el.appendChild(caseCran(texte[k]));
-      return;
-    }
-
-    var cases = Array.prototype.slice.call(el.children);
-    /* La longueur peut changer — « 9 sections restantes » devient
-       « 10 ». On ajuste le nombre de boites AVANT de rouler, sinon
-       le dernier caractere n'a nulle part ou aller. */
-    while (cases.length < texte.length) {
-      var neuve = caseCran(" ");
-      el.appendChild(neuve);
-      cases.push(neuve);
-    }
-    while (cases.length > texte.length) el.removeChild(cases.pop());
-
-    for (var i = 0; i < texte.length; i++) {
-      var boite = cases[i];
-      /* La valeur COURANTE est celle du DERNIER glyphe, pas du
-         premier : pendant un roulement la boite en contient deux,
-         le fantome qui sort et la valeur qui arrive. */
-      var actuel = boite.lastChild ? boite.lastChild.textContent : "";
-      if (actuel === texte[i]) continue;
-      rouleUn(boite, texte[i], i);
-    }
-  }
-
-  /* Termine un roulement en cours, sur-le-champ.  D-435 */
-  function finirRoulement(boite) {
-    if (boite._t) { window.clearTimeout(boite._t); boite._t = 0; }
-    boite.classList.remove("is-roule");
-    boite.style.removeProperty("--r");
-    while (boite.children.length > 1) boite.removeChild(boite.firstChild);
-    var b = boite.firstChild;
-    if (b) { b.classList.remove("is-entrant"); b.removeAttribute("data-c"); }
-  }
-
-  function caseCran(c) {
-    var boite = doc.createElement("i");
-    boite.className = "odo-c";
-    var b = doc.createElement("b");
-    b.textContent = c;
-    boite.appendChild(b);
-    return boite;
-  }
-
-  function rouleUn(boite, cible, rang) {
-    finirRoulement(boite);
-    var sortant = boite.firstChild;
-
-    /* LE SORTANT DEVIENT UN FANTOME, ET C'EST UNE CORRECTION DE  D-436 */
-    if (sortant) {
-      sortant.setAttribute("data-c", sortant.textContent);
-      sortant.textContent = "";
-    }
-
-    var entrant = doc.createElement("b");
-    entrant.textContent = cible;
-    entrant.className = "is-entrant";
-    boite.appendChild(entrant);
-    /* Le decalage par rang fait rouler les caracteres de gauche a  D-437 */
-    boite.style.setProperty("--r", Math.min(rang, 6));
-    /* Une image d'attente : sans elle, l'element entrant est ajoute
-       et anime dans la meme image, donc le navigateur n'a pas d'etat
-       de depart a interpoler et le roulement ne se voit pas. */
-    requestAnimationFrame(function () {
-      if (entrant.parentNode !== boite) return;
-      boite.classList.add("is-roule");
-      boite._t = window.setTimeout(function () {
-        boite._t = 0;
-        finirRoulement(boite);
-      }, 320 + Math.min(rang, 6) * 34);
-    });
-  }
-
-  window.APED_ROULER = rouler;
-
-  /* == Index collant. IntersectionObserver, jamais d'ecouteur scroll. == */
-  var railLinks = $$("#railList a");
-  if (railLinks.length && "IntersectionObserver" in window) {
-    var byId = {};
-    railLinks.forEach(function (a) { byId[a.dataset.rail] = a; });
-
-    var railLeftNum = $("#railLeftNum");
-    var railLeft = $("#railLeft");
-    var currentId = null;
-
-    /* N1 · LE CURSEUR DU RAIL — PHASE 8.  D-438 */
-    var railCurseur = doc.createElement("i");
-    railCurseur.className = "rail-curseur";
-    railCurseur.setAttribute("aria-hidden", "true");
-    railCurseur.appendChild(doc.createElement("b"));
-    var railList = $("#railList");
-    if (railList) railList.appendChild(railCurseur);
-
-    var setCurrent = function (id) {
-      currentId = id;
-      var idx = 0;
-      var actif = null;
-      railLinks.forEach(function (a, i) {
-        var on = a.dataset.rail === id;
-        a.setAttribute("aria-current", on ? "true" : "false");
-        if (on) { idx = i; actif = a; }
-      });
-      if (actif && railList) {
-        railCurseur.style.setProperty("--y", actif.offsetTop + "px");
-        railCurseur.style.setProperty("--h", actif.offsetHeight + "px");
-        railCurseur.classList.add("is-on");
-      }
-      /* Trois seuils vivent dans un SAS, hors de leur section : le  D-578
-         reperage passe par data-vers, jamais par la parente. */
-      var numDe = {};
-      railLinks.forEach(function (a, i) {
-        numDe[a.dataset.rail] = (i + 1 < 10 ? "0" : "") + (i + 1);
-      });
-      function seuilVers(idSec) {
-        var sec2 = doc.getElementById(idSec);
-        var dedans = sec2 && $("[data-seuil]", sec2);
-        if (dedans) return dedans;
-        var v = numDe[idSec];
-        return v ? $('[data-seuil][data-vers="' + v + '"]') : null;
-      }
-
-      $$("section, .hero").forEach(function (s) {
-        var propre = $("[data-section-rule]", s);
-        if (!propre && s.id) {
-          var sl = seuilVers(s.id);
-          propre = sl && $("[data-section-rule]", sl);
-        }
-        if (propre) propre.classList.toggle("is-current", s.id === id);
-      });
-
-      /* G2 · LE CRAN DE LA FRONTIERE — V4, et il vit ICI, pas dans  D-439 */
-      if (actif) {
-        var seuil = seuilVers(id);
-        if (seuil && seuil.getAttribute("data-cran") !== "fait" && !seuil._cran) {
-          seuil._cran = true;
-          seuil.setAttribute("data-cran", "pose");
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () { seuil.setAttribute("data-cran", "fait"); });
-          });
-        }
-      }
-      /* CE QUI VIENT, PAS CE QUI RESTE.  D-787
-
-         Il disait « 10 sections restantes ». A dix-neuf ecrans de
-         page, annoncer a quelqu'un combien il lui reste a endurer
-         est un decompte de corvee : le chiffre le plus visible du
-         rail mesurait la fatigue a venir.
-
-         Il NOMME maintenant la suivante. Une promesse concrete se
-         suit ; un inventaire se referme. Le numero roule toujours
-         d'un cran — c'est le meme V4, sur une autre information.
-
-         LE NOM SORT DU RAIL LUI-MEME, jamais d'une liste recopiee :
-         une seconde liste de onze titres finirait par mentir le jour
-         ou une section change de nom. */
-      var suivant = railLinks[idx + 1];
-      if (suivant) {
-        var num = suivant.querySelector("em");
-        rouler(railLeftNum, num ? num.textContent.trim() : String(idx + 2));
-        if (railLeft) {
-          var titre = String(suivant.textContent || "").replace(/^\s*\d+\s*/, "").trim();
-          railLeft.lastChild.textContent = " " + titre + ", ensuite";
-        }
-      } else {
-        rouler(railLeftNum, "11");
-        if (railLeft) railLeft.lastChild.textContent = " vous avez tout vu";
-      }
-    };
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) setCurrent(entry.target.id);
-      });
-    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
-
-    Object.keys(byId).forEach(function (id) {
-      var target = doc.getElementById(id);
-      if (target) observer.observe(target);
-    });
-
-    /* N1 · progression de lecture, et progression DANS la section  D-440 */
-    var readBar = $("#readBar");
-    var ticking = false;
-
-    var measure = function () {
-      ticking = false;
-      var de = doc.documentElement;
-      var max = de.scrollHeight - window.innerHeight;
-      var p = max > 0 ? (window.scrollY / max) * 100 : 0;
-      if (readBar) readBar.style.setProperty("--read", p.toFixed(2) + "%");
-
-      if (currentId) {
-        var sec = doc.getElementById(currentId);
-        var link = byId[currentId];
-        if (sec && link) {
-          /* Fraction de la section REELLEMENT parcourue.  D-441 */
-          var r = sec.getBoundingClientRect();
-          var haut = r.top + window.scrollY;
-          var course = Math.max(1, sec.offsetHeight - window.innerHeight);
-          var seen = Math.min(1, Math.max(0, (window.scrollY - haut) / course));
-          link.style.setProperty("--sec-progress", (seen * 100).toFixed(1) + "%");
-          /* Le curseur porte la meme fraction : c'est LUI qui la
-             montre depuis la phase 8, l'entree ne la garde que pour
-             le repli sans script. */
-          railCurseur.style.setProperty("--sec-progress", (seen * 100).toFixed(1) + "%");
-          /* Les autres entrees repartent a zero, sinon un filet reste
-             rempli derriere nous. */
-          railLinks.forEach(function (a) {
-            if (a !== link) a.style.setProperty("--sec-progress", "0%");
-          });
-        }
-      }
-    };
-
-    window.addEventListener("scroll", function () {
-      if (!ticking) { ticking = true; window.requestAnimationFrame(measure); }
-    }, { passive: true });
-    measure();
-  }
-
-  /* == VISER L'ANCRE — `content-visibility` fait mentir les arrivees ==  D-583 */
-  /* Le navigateur saute vers une position calculee sur des hauteurs
-     RESERVEES ; les vraies hauteurs arrivent en rendant, et la cible
-     s'est deplacee. Defaut anterieur au chantier des sas, mesure a
-     2 474 px d'ecart sur #visite. On re-mesure SUR PLACE, en petites
-     iterations, et on abandonne des que le visiteur reprend la main. */
-  (function viserLesAncres() {
-    var mainReprise = false;
-    ["wheel", "touchstart", "keydown"].forEach(function (g) {
-      window.addEventListener(g, function () { mainReprise = true; }, { passive: true });
-    });
-
-    function viser(hash, essai) {
-      if (mainReprise) return;
-      var el = hash && hash.length > 1 && doc.getElementById(hash.slice(1));
-      if (!el) return;
-      var pad = parseFloat(getComputedStyle(doc.documentElement).scrollPaddingTop) || 0;
-      var d = el.getBoundingClientRect().top - pad;
-      if (Math.abs(d) < 2 || (essai || 0) > 6) return;
-      window.scrollBy({ top: d, left: 0, behavior: "instant" });
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { viser(hash, (essai || 0) + 1); });
-      });
-    }
-
-    /* Les ancres du rail des Services ont leur propre visee, au
-       chargement comme au clic — la doubler l'a fait atterrir sur le
-       mauvais chantier, 10 fois sur 10. */
-    if (location.hash && location.hash.length > 1 &&
-      location.hash.indexOf("#svc-") !== 0) {
-      var re = function () { mainReprise = false; viser(location.hash, 0); };
-      if (doc.readyState === "complete") setTimeout(re, 120);
-      else window.addEventListener("load", function () { setTimeout(re, 120); }, { once: true });
-      /* Une seconde passe : la cascade de rendu `content-visibility`
-         peut encore deplacer la cible apres la premiere. */
-      window.setTimeout(function () { viser(location.hash, 0); }, 900);
-    }
-
-    doc.addEventListener("click", function (e) {
-      var a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
-      if (!a) return;
-      var hash = a.getAttribute("href");
-      /* Les ancres du rail des Services ont leur propre visee,
-         prouvee 10/10 — on ne double pas un mecanisme qui marche. */
-      if (!hash || hash === "#" || hash.indexOf("#svc-") === 0) return;
-      mainReprise = false;
-      var fait = false;
-      var corriger = function () {
-        if (fait) return;
-        fait = true;
-        viser(hash, 0);
-      };
-      /* Le defilement natif est doux (scroll-behavior: smooth) : on
-         corrige a sa FIN, jamais pendant. */
-      if ("onscrollend" in window) {
-        window.addEventListener("scrollend", corriger, { once: true });
-        window.setTimeout(corriger, 1100);
-      } else {
-        window.setTimeout(corriger, 750);
-      }
-    }, true);
-  })();
 
   /* ============================================================
      LE LIEN DE REPRISE — revenir exactement où on était.  D-770
@@ -5493,7 +4617,7 @@
     var etape = Math.max(1, Math.min(20, Number(q.get("e")) || 1));
 
     /* 1 · la session */
-    if (sid) { try { localStorage.setItem("aped-sid-" + kind, sid); } catch (e) {} }
+    if (sid) { try { localStorage.setItem("adexweb-sid-" + kind, sid); } catch (e) {} }
 
     /* L'ADRESSE SE NETTOIE TOUT DE SUITE, avant même d'ouvrir : si
        ce qui suit lève, on ne veut pas que le rechargement réessaie
@@ -5616,24 +4740,6 @@
         console.warn("reprise « " + kind + " » : " + e);
       }
     }, 1400);
-  })();
-
-  /* == LA DOUZIEME FRONTIERE — LA CLOTURE. ==  D-442 */
-  (function cloture() {
-    var seuil = $(".seuil--pied");
-    if (!seuil || !("IntersectionObserver" in window)) return;
-    var obs = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (e) {
-        if (!e.isIntersecting || seuil._cran) return;
-        seuil._cran = true;
-        obs.disconnect();
-        seuil.setAttribute("data-cran", "pose");
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () { seuil.setAttribute("data-cran", "fait"); });
-        });
-      });
-    }, { rootMargin: "0px 0px -30% 0px", threshold: 0 });
-    obs.observe(seuil);
   })();
 
 })();

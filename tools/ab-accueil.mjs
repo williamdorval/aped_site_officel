@@ -16,8 +16,8 @@
       NOMBRE, qui s'additionnent au lieu de se remplacer.
 
    Usage : node tools/serve.mjs 8099
-           git worktree add ../_aped-avant HEAD --detach
-           node tools/serve.mjs 8098   (depuis ../_aped-avant)
+           git worktree add ../_adexweb-avant HEAD --detach
+           node tools/serve.mjs 8098   (depuis ../_adexweb-avant)
            node tools/ab-accueil.mjs [passes]
    ============================================================ */
 import { chromium } from "playwright";
@@ -33,7 +33,7 @@ const med = (a) => { const t = a.slice().sort((x, y) => x - y); return t.length 
 async function mesurer(nav, base) {
   const page = await nav.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: "light", deviceScaleFactor: 1 });
   await page.addInitScript(() => {
-    try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
     window.__lcp = 0; window.__lcpEl = ""; window.__cls = 0; window.__long = [];
     new PerformanceObserver((l) => { const e = l.getEntries(); const d = e[e.length - 1]; window.__lcp = d.startTime; window.__lcpEl = d.element ? (d.element.tagName + "." + String(d.element.className).slice(0, 30)) : ""; }).observe({ type: "largest-contentful-paint", buffered: true });
     new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: "layout-shift", buffered: true });

@@ -1,0 +1,884 @@
+/* == ADEXWEB - LES MODALES, LES ASSISTANTS, L'AGENDA, LA FOURCHETTE ==  D-843
+      A FUSIONNER dans `css/app.css`, puis `node tools/css-critique.mjs` et
+      `node tools/cascade-check.mjs`. Ce fichier se pose APRES les sections
+      existantes : il complete `.champ`, `.saisie`, `.refus` et `.btn`, il ne
+      les remplace pas.
+
+      DEUX NOMS POUR UNE MEME BOITE, ET C'EST VOULU. Le balisage porte
+      `class="champ field"` et `class="refus field-error"` : `champ` et
+      `refus` sont le systeme ADEXWEB, `field` et `field-error` sont les
+      crochets que `js/main.js` interroge (`closest(".field")`,
+      `$(".field-error", field)`, `.field.is-invalid`). Renommer l'un des
+      deux casse la validation sans une erreur.
+      `refonte-adexweb/INVENTAIRE-PLOMBERIE.md § 11`. */
+
+/* ===================================================================
+   1 · `hidden` DOIT GAGNER SUR TOUT `display` POSE PAR UNE CLASSE
+   Sans ces lignes, un bouton « Retour » marque `hidden` reste visible :
+   `.btn { display: inline-flex }` bat l'attribut.  D-844
+   =================================================================== */
+
+.modal[hidden], .step[hidden], .step-second[hidden], .champ[hidden],
+.btn[hidden], .devis[hidden], .devis-suite[hidden], .devis-petit[hidden],
+.devis-question[hidden], .retenue[hidden], .retenue-champ[hidden],
+.cadeau-avant[hidden], .cadeau-suite[hidden], .cadeau-deja[hidden],
+.cond-texte[hidden], .step-manque[hidden], .empty[hidden],
+.step-nav[hidden], .form-portes[hidden], .booking[hidden] { display: none; }
+
+/* ===================================================================
+   2 · LE VOILE ET LE PANNEAU
+   Un seul panneau a l'ecran, cadre a 92 % de la hauteur : c'est le corps
+   qui defile, jamais la page derriere.  D-845
+   =================================================================== */
+
+.modal {
+  position: fixed; inset: 0; z-index: var(--z-modal);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0;
+}
+@media (min-width: 48em) {
+  .modal { align-items: center; padding: var(--e-5) var(--e-3); }
+}
+
+.modal-scrim {
+  position: absolute; inset: 0;
+  background: var(--scrim);
+  border: 0;
+}
+
+.modal-panel {
+  position: relative;
+  display: flex; flex-direction: column;
+  width: 100%; max-width: 38rem;
+  max-height: 94vh;
+  background: var(--pearl);
+  border-radius: var(--rayon-large) var(--rayon-large) 0 0;
+  box-shadow: var(--ombre-levee);
+  overflow: hidden;
+}
+.modal-panel--large { max-width: 60rem; }
+@media (min-width: 48em) {
+  .modal-panel { max-height: 88vh; border-radius: var(--rayon-large); }
+}
+
+/* L'en-tete ne defile pas : la croix reste sous le pouce, et le titre
+   reste lisible au vingtieme ecran d'un assistant. */
+.modal-head {
+  flex: 0 0 auto;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--e-3);
+  padding: var(--e-4) var(--e-4) var(--e-3);
+  border-bottom: var(--filet) solid var(--line);
+  background: var(--pearl);
+}
+.modal-titre {
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+}
+.modal-sub {
+  color: var(--text-soft);
+  margin-top: var(--e-1);
+  max-width: 54ch;
+}
+.modal-corps {
+  flex: 1 1 auto;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--e-4);
+}
+@media (min-width: 48em) {
+  .modal-head { padding: var(--e-5) var(--e-5) var(--e-3); }
+  .modal-corps { padding: var(--e-5); }
+}
+
+/* Le bouton-icone : 44 px de cible, aucun fond au repos. Le script en
+   fabrique aussi (retirer un fichier) — la classe doit tenir seule. */
+.btn-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto;
+  width: var(--cible-min); height: var(--cible-min);
+  border-radius: var(--rayon);
+  color: var(--navy-dark);
+  transition: background-color var(--t-etat), color var(--t-etat);
+}
+.btn-icon:hover { background: var(--marble); }
+.btn-icon:disabled { color: var(--text-muted); cursor: not-allowed; }
+.btn-icon:disabled:hover { background: none; }
+.btn-icon svg { width: 1.375rem; height: 1.375rem; }
+
+/* ===================================================================
+   3 · LES DEUX NOMS DE BOUTON QUE LE SCRIPT FABRIQUE
+   `js/main.js` cree des boutons `btn--primary` et `btn--ghost` (repli
+   d'envoi, actions du popup). Sans ces alias, ils sortent NUS.  D-846
+   =================================================================== */
+
+.btn--primary {
+  background: var(--navy); color: var(--pearl);
+  box-shadow: var(--ombre-pose);
+}
+.btn--primary:hover { background: var(--navy-dark); box-shadow: var(--ombre-levee); }
+.btn--ghost {
+  background: var(--pearl); color: var(--navy-dark);
+  border: var(--filet) solid var(--line-strong);
+}
+.btn--ghost:hover { border-color: var(--navy-light); background: var(--marble); }
+
+.btn--bloc { width: 100%; }
+/* Un envoi en cours ne se reclique pas, et ca se VOIT. */
+.btn.is-loading { opacity: 0.62; cursor: progress; pointer-events: none; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Les `<svg>` fabriques par le script portent `class="icon"` et aucune
+   dimension : sans ceci ils sortent a 300 x 150. */
+.icon { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
+
+.form-actes { display: flex; flex-wrap: wrap; gap: var(--e-2); margin-top: var(--e-6); }
+
+/* ===================================================================
+   4 · LES ECRANS D'ASSISTANT
+   =================================================================== */
+
+.step { display: block; }
+.step + .step-nav { margin-top: var(--e-6); }
+
+/* « Étape 3 sur 7 » se lit, la barre ne se lit pas. Les deux, jamais la
+   barre seule.  D-847 */
+.step-compte,
+.progress-compte {
+  font-size: var(--t-00); font-weight: 600;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: var(--e-2);
+}
+.progress-compte { margin-bottom: 0; white-space: nowrap; }
+.progress-compte b { color: var(--navy-dark); }
+
+.step-q {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  margin-bottom: var(--e-3);
+  max-width: 34ch;
+}
+.step-q--second { font-size: var(--t-1); margin-top: var(--e-6); }
+/* Un ecran qui refuse d'avancer dit LEQUEL des deux choix manque. */
+.step-q--manque { color: var(--danger); }
+.step-aide { color: var(--text-soft); margin: calc(var(--e-3) * -1) 0 var(--e-3); max-width: 58ch; }
+.step-manque {
+  display: flex; align-items: center; gap: var(--e-1);
+  font-size: var(--t-00); font-weight: 600; color: var(--danger);
+  margin-bottom: var(--e-2);
+}
+
+.step-second { margin-top: var(--e-6); padding-top: var(--e-5); border-top: var(--filet) solid var(--line); }
+
+.step-nav {
+  display: flex; align-items: center; gap: var(--e-2);
+  margin-top: var(--e-6); padding-top: var(--e-4);
+  border-top: var(--filet) solid var(--line);
+}
+/* Le bouton d'avancement est toujours a droite, meme quand « Retour »
+   n'est pas la : la cible ne bouge pas d'un ecran a l'autre. */
+.step-nav > :last-child { margin-left: auto; }
+
+/* L'ecran de fin. Une seule chose y est vraie : c'est parti. */
+.step-reussi .modal-titre { margin-top: var(--e-1); }
+.step-reussi > .modal-sub { margin-bottom: var(--e-2); }
+
+.progress-ligne {
+  display: flex; align-items: center; gap: var(--e-3);
+  margin-bottom: var(--e-5);
+}
+.progress {
+  flex: 1 1 auto;
+  height: 6px;
+  background: var(--marble);
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+.progress i {
+  display: block; height: 100%; width: 14%;
+  background: var(--navy);
+  border-radius: var(--rayon);
+  transition: width var(--t-panneau) var(--m-courbe);
+}
+#projectWizard > .progress,
+.modal-corps > .progress { margin-bottom: var(--e-5); }
+
+/* ===================================================================
+   5 · LES LISTES DE CHOIX
+   Un groupe de choix est un `<fieldset>` : sans lui, un lecteur d'ecran
+   entend six boutons sans savoir a quelle question ils repondent.
+   =================================================================== */
+
+.bloc-choix {
+  display: block;
+  border: 0; padding: 0; margin: 0; min-width: 0;
+}
+.bloc-choix > legend { display: block; width: 100%; padding: 0; }
+.bloc-choix > legend.etiquette { margin-bottom: var(--e-1); }
+
+/* 5.1 · LES GRANDES CARTES DE L'ESTIMATEUR */
+.options { display: grid; gap: var(--e-2); }
+.options--serre { gap: var(--e-1); }
+.options button {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr 1.25rem;
+  align-items: center; gap: var(--e-3);
+  width: 100%;
+  min-height: var(--cible);
+  padding: var(--e-2) var(--e-3);
+  text-align: left;
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  color: var(--text);
+  transition: border-color var(--t-etat), background-color var(--t-etat),
+              box-shadow var(--t-etat);
+}
+.options button:hover { border-color: var(--navy-light); box-shadow: var(--ombre-pose); }
+.options button strong { display: block; font-weight: 600; line-height: var(--lh-1); }
+.options button small {
+  display: block;
+  font-size: var(--t-00); line-height: 1.5;
+  color: var(--text-soft);
+  margin-top: 0.15rem;
+}
+.options button > svg { width: 1.25rem; height: 1.25rem; color: var(--navy-light); }
+/* Le numero est du TEXTE : il tient 4,5:1, donc jamais en champagne. */
+.o-num {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette);
+  color: var(--text-muted);
+}
+/* CHOISI : le fond champagne clair porte du navy a 9,41:1, et la barre
+   navy a gauche dit la meme chose sans la couleur.  D-848 */
+.options button.is-on {
+  background: var(--champagne-light);
+  border-color: var(--champagne-dark);
+  box-shadow: inset 3px 0 0 var(--navy);
+}
+.options button.is-on small { color: var(--text-soft); }
+.options button.is-on .o-num { color: var(--navy-dark); }
+
+/* 5.2 · LES CHOIX A DEUX OU TROIS BOUTONS */
+.choices { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+.choices--empile { flex-direction: column; align-items: stretch; }
+.choices button {
+  flex: 1 1 12rem;
+  min-height: var(--cible);
+  padding: 0 var(--e-3);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  transition: border-color var(--t-etat), background-color var(--t-etat), color var(--t-etat);
+}
+.choices button:hover { border-color: var(--navy-light); background: var(--marble); }
+.choices button.is-on { background: var(--navy); border-color: var(--navy); color: var(--pearl); }
+
+/* 5.3 · LES CASES A COCHER */
+/* Meme motif que `.deux-portes` : c'est la largeur du PANNEAU qui decide,
+   pas celle de la fenetre.  D-852 */
+.check-grid { display: grid; gap: var(--e-2); grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+
+.check {
+  display: flex; align-items: flex-start; gap: var(--e-2);
+  min-height: var(--cible);
+  padding: var(--e-2) var(--e-3);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  cursor: pointer;
+  transition: border-color var(--t-etat), background-color var(--t-etat);
+}
+.check:hover { border-color: var(--navy-light); }
+.check--bloc { align-items: flex-start; }
+/* La case est dessinee ici : `base.css` remet `background` et `border` a
+   zero sur tout `input`, ce qui efface la case native.  D-849 */
+.check input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 1.375rem; height: 1.375rem;
+  margin-top: 0.28rem;
+  background: var(--pearl);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--rayon);
+  display: grid; place-content: center;
+  transition: background-color var(--t-vif), border-color var(--t-vif);
+}
+.check input[type="checkbox"]:checked { background: var(--navy); border-color: var(--navy); }
+.check input[type="checkbox"]:checked::after {
+  content: "";
+  width: 0.7rem; height: 0.35rem;
+  border-left: 2px solid var(--pearl);
+  border-bottom: 2px solid var(--pearl);
+  transform: rotate(-45deg) translate(1px, -2px);
+}
+.check:has(input:checked) { border-color: var(--navy); background: var(--champagne-light); }
+.check span strong { display: block; font-weight: 600; line-height: var(--lh-1); }
+.check span small {
+  display: block;
+  font-size: var(--t-00); line-height: 1.5;
+  color: var(--text-soft);
+  margin-top: 0.15rem;
+}
+
+/* ===================================================================
+   6 · LES CHAMPS — CE QUE LE SYSTEME N'A PAS ENCORE
+   =================================================================== */
+
+/* Dans une modale, l'etiquette d'un champ est du texte a LIRE avant de
+   repondre : elle passe au corps, pas a la mention.  D-850 */
+.modal .etiquette,
+.cadeau .etiquette { font-size: var(--t-0); line-height: var(--lh-1); }
+
+/* Le message de refus ne parait que quand le champ est refuse. Le script
+   pose `.is-invalid` sur le `.field` et lie le texte par
+   `aria-describedby` : la classe et l'attribut disent la meme chose. */
+.field .refus,
+.champ .refus { display: none; }
+.field.is-invalid .refus,
+.champ[data-refus] .refus { display: flex; }
+.field.is-invalid .saisie {
+  border-color: var(--danger);
+  border-bottom-width: 3px;
+  background: var(--danger-wash);
+}
+/* Un champ qui vient d'etre corrige le dit une fois, puis se tait. */
+.field.is-valid .saisie { border-color: var(--ok); }
+
+.field-note, .field-aide { max-width: 58ch; }
+.field-aide--avant { margin-top: var(--e-4); }
+/* `.opt` est l'ancien nom de `.facultatif` ; le script reecrit un libelle
+   entier avec, il faut donc que les deux rendent pareil. */
+.opt { font-weight: 400; color: var(--text-muted); }
+/* Sur un fond silk ou champagne, `--text-muted` tombe sous 4,5:1. */
+.devis .opt, .devis .facultatif,
+.cond .opt, .cond .facultatif,
+.porte .opt, .porte .facultatif { color: var(--text-soft); }
+
+.form-note {
+  margin-top: var(--e-3);
+  font-size: var(--t-00); color: var(--text-soft);
+  max-width: 58ch;
+}
+
+/* L'etat d'un envoi. Vide, il ne prend aucune place — un cadre vide sous
+   chaque bouton est du bruit permanent. */
+.form-status {
+  margin-top: var(--e-2);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--text-soft);
+}
+.form-status:empty { display: none; }
+.form-status.is-err {
+  color: var(--danger);
+  background: var(--danger-wash);
+  padding: var(--e-2); border-radius: var(--rayon);
+}
+.form-status.is-ok {
+  color: var(--ok);
+  background: var(--ok-wash);
+  padding: var(--e-2); border-radius: var(--rayon);
+}
+
+.form-legal { margin-top: var(--e-3); }
+
+/* La porte de secours : le numero, la ou l'envie de decrocher est la plus
+   forte. Elle vit HORS des ecrans, donc elle parait a tous.  D-783 */
+.form-appel {
+  margin-top: var(--e-4);
+  font-size: var(--t-00); color: var(--text-soft);
+}
+.form-appel--pied {
+  margin-top: var(--e-5); padding-top: var(--e-3);
+  border-top: var(--filet) solid var(--line);
+}
+.appel-num {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.appel-num:hover { text-decoration: underline; text-decoration-color: var(--champagne-dark); text-underline-offset: 0.24em; }
+
+/* Les deux chemins plus courts, sous la barre de navigation.  D-764 */
+.form-portes {
+  margin-top: var(--e-5); padding: var(--e-4);
+  background: var(--marble);
+  border-radius: var(--rayon-large);
+}
+.form-portes-quoi {
+  font-size: var(--t-00); font-weight: 600;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: var(--e-2);
+}
+.form-portes-choix { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+.form-portes-note { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+
+/* Le repli d'envoi, fabrique par le script quand la porte ne repond pas. */
+.form-repli {
+  margin-top: var(--e-3); padding: var(--e-3);
+  background: var(--silk);
+  border-radius: var(--rayon);
+  display: grid; gap: var(--e-2);
+}
+
+/* ===================================================================
+   7 · LE CALENDRIER ET LES PLAGES
+   =================================================================== */
+
+.booking { display: grid; gap: var(--e-5); }
+@media (min-width: 48em) {
+  .booking { grid-template-columns: 1fr 15rem; gap: var(--e-6); }
+}
+
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: var(--e-2); }
+.cal-mois {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  text-transform: capitalize;
+}
+.cal-week {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  margin-top: var(--e-3);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--text-soft);
+  text-align: center;
+}
+.cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: var(--e-1); }
+.cal-day {
+  display: flex; align-items: center; justify-content: center;
+  min-height: var(--cible-min);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  border: var(--filet) solid transparent;
+  transition: background-color var(--t-vif), color var(--t-vif), border-color var(--t-vif);
+}
+.cal-day:hover:not(:disabled) { background: var(--marble); }
+.cal-day:disabled { color: var(--text-muted); cursor: not-allowed; }
+.cal-day.is-blank { pointer-events: none; }
+/* Aujourd'hui se marque par un filet, pas par une couleur : un jour
+   marque en couleur se lit comme un jour CHOISI. */
+.cal-day.is-today { border-color: var(--champagne-dark); }
+.cal-day.is-on { background: var(--navy); color: var(--pearl); border-color: var(--navy); }
+.cal-long { display: none; }
+
+/* SOUS 30em LA GRILLE LACHE. Sept colonnes dans un panneau de 288 px
+   donnent des cases de 40 px, sous le seuil de 44 : se tromper de case
+   ne rate pas un clic, ca reserve le mauvais jour.  D-740 */
+@media (max-width: 29.99em) {
+  .cal-week { display: none; }
+  .cal-days { display: flex; flex-direction: column; gap: var(--e-1); }
+  .cal-day:disabled, .cal-day.is-blank { display: none; }
+  .cal-day {
+    justify-content: flex-start;
+    min-height: var(--cible);
+    padding-inline: var(--e-3);
+    border-color: var(--line);
+  }
+  .cal-num { display: none; }
+  .cal-long { display: block; text-transform: capitalize; }
+}
+
+.slots { display: flex; flex-direction: column; }
+.slots-title {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: var(--e-2);
+}
+.slots-list { display: grid; gap: var(--e-1); }
+/* LE CRAN DE L'ATTENTE. Les plages restent lisibles, elles ne se
+   cliquent plus. */
+.slots-list.is-attente { opacity: 0.55; pointer-events: none; }
+.slot {
+  min-height: var(--cible);
+  padding: 0 var(--e-3);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  font-size: var(--t-00); font-weight: 600;
+  color: var(--navy-dark);
+  transition: border-color var(--t-etat), background-color var(--t-etat), color var(--t-etat);
+}
+.slot:hover { background: var(--navy); border-color: var(--navy); color: var(--pearl); }
+.slot.is-on { background: var(--navy); border-color: var(--navy); color: var(--pearl); }
+
+/* La note dit D'OU viennent les heures. Trois etats, jamais de silence :
+   un visiteur qui ne sait pas si les plages sont a jour n'ose pas
+   reserver.  D-726 */
+.slots-note { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+.slots-note.is-filet {
+  padding: var(--e-2);
+  background: var(--silk);
+  border-left: 3px solid var(--champagne-dark);
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+}
+.slots-note.is-attente { color: var(--text-soft); font-style: italic; }
+
+.empty { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+
+.recap {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--e-2);
+  margin-bottom: var(--e-5); padding: var(--e-2) var(--e-3);
+  background: var(--silk);
+  border-radius: var(--rayon);
+  font-weight: 600; color: var(--text);
+}
+
+/* ===================================================================
+   8 · LE DEPOT DE FICHIERS
+   =================================================================== */
+
+.dropzone {
+  display: grid; justify-items: center; gap: var(--e-1);
+  padding: var(--e-5) var(--e-3);
+  text-align: center;
+  background: var(--pearl);
+  border: 2px dashed var(--line-strong);
+  border-radius: var(--rayon-large);
+  cursor: pointer;
+  transition: border-color var(--t-etat), background-color var(--t-etat);
+}
+.dropzone:hover { border-color: var(--navy-light); }
+.dropzone.is-over { border-color: var(--navy); background: var(--champagne-light); }
+.dropzone > svg { width: 2rem; height: 2rem; color: var(--navy-light); }
+.dropzone strong { font-weight: 600; }
+.dropzone > span { font-size: var(--t-00); color: var(--text-soft); }
+
+.file-list { display: grid; gap: var(--e-1); margin-top: var(--e-2); }
+.file-list li {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--e-2);
+  min-height: var(--cible-min);
+  padding: var(--e-1) var(--e-1) var(--e-1) var(--e-2);
+  background: var(--silk);
+  border-radius: var(--rayon);
+  font-size: var(--t-00);
+}
+.file-list li.is-warn {
+  background: var(--danger-wash);
+  color: var(--danger);
+  font-weight: 600;
+  padding: var(--e-2);
+}
+
+/* ===================================================================
+   9 · LA FOURCHETTE
+   Elle ne parait qu'apres un formulaire complete, et le texte dit ce
+   qu'elle vaut : « ordre de grandeur, pas un devis ».  D-748
+   =================================================================== */
+
+.devis {
+  margin-top: var(--e-4);
+  padding: var(--e-4);
+  background: var(--silk);
+  border-radius: var(--rayon-large);
+}
+.devis-quoi { color: var(--text-soft); max-width: 44ch; }
+.devis-montant {
+  font-family: var(--font-titre);
+  font-size: var(--t-4); line-height: 1.05; letter-spacing: var(--ls-4);
+  color: var(--navy-dark);
+  margin-top: var(--e-2);
+}
+.devis-montant--petit { font-size: var(--t-3); letter-spacing: var(--ls-3); }
+.devis-sur { margin-top: var(--e-1); font-size: var(--t-00); color: var(--text-soft); }
+
+/* LA NOTE VIENT AVEC LE CHIFFRE, PAS PLUS BAS. Elle porte son propre
+   titre et elle est sur son propre fond : elle doit etre LUE. Une
+   reserve enterree en petits caracteres ne protege personne.  D-784 */
+.devis-note {
+  margin-top: var(--e-4); padding: var(--e-3);
+  background: var(--pearl);
+  border-left: 3px solid var(--champagne-dark);
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+}
+.devis-note-t {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+  margin-bottom: var(--e-2);
+}
+.devis-note p { color: var(--text); }
+
+.devis-question, .devis-suite, .devis-petit {
+  margin-top: var(--e-4); padding-top: var(--e-4);
+  border-top: var(--filet) solid var(--line-strong);
+}
+.devis-demande { font-weight: 600; margin-bottom: var(--e-2); }
+.devis-mise { color: var(--text-soft); margin-bottom: var(--e-3); max-width: 56ch; }
+.devis-retire { display: grid; gap: var(--e-1); margin: var(--e-2) 0 var(--e-3); }
+.devis-retire li {
+  position: relative; padding-left: var(--e-2);
+  font-size: var(--t-00); color: var(--text);
+}
+.devis-retire li::before {
+  content: "·"; position: absolute; left: 0;
+  color: var(--champagne-dark); font-weight: 700;
+}
+.devis--sansprix .devis-quoi {
+  font-family: var(--font-titre);
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+}
+
+.estim-resume {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  margin-bottom: var(--e-3);
+}
+.estim-note { margin-top: var(--e-4); font-size: var(--t-00); color: var(--text-soft); }
+
+/* ===================================================================
+   10 · LES CONDITIONS DU PROGRAMME DE REFERENCE
+   LE TEXTE EST ICI, PAS AU BOUT D'UN LIEN : un lien qui ouvre une autre
+   page fait perdre cinq ecrans de saisie a celui qui le suit.  D-773
+   =================================================================== */
+
+.cond-puces { display: grid; gap: var(--e-2); margin-bottom: var(--e-4); }
+/* LA PUCE EST POSEE, PAS EMPILEE. En `display: flex`, le `<b>` de tete
+   devient un ELEMENT FLEX et la fin de la phrase un autre : « Votre prime
+   depend du type de projet signe » se retrouvait a gauche et « , pas de
+   son prix » a droite, avec un trou entre les deux. Vu a l'image.  D-851 */
+.cond-puces li {
+  position: relative;
+  padding-left: var(--e-3);
+  color: var(--text-soft);
+}
+.cond-puces li::before {
+  content: ""; position: absolute; left: 0; top: 0.62rem;
+  width: 0.5rem; height: 0.5rem;
+  background: var(--champagne-dark);
+  border-radius: var(--rayon);
+}
+.cond-puces b { color: var(--text); }
+
+.cond-tiroir { margin-bottom: var(--e-5); }
+.btn--tiroir { justify-content: space-between; text-align: left; }
+.btn--tiroir .icon--moins { display: none; }
+.btn--tiroir[aria-expanded="true"] .icon--plus { display: none; }
+.btn--tiroir[aria-expanded="true"] .icon--moins { display: block; }
+
+.cond {
+  margin-top: var(--e-2);
+  padding: var(--e-4);
+  max-height: 26rem; overflow-y: auto; overscroll-behavior: contain;
+  background: var(--silk);
+  border-radius: var(--rayon-large);
+  font-size: var(--t-00); line-height: 1.6;
+  color: var(--text);
+}
+.cond-t {
+  font-family: var(--font-titre);
+  font-size: var(--t-1); line-height: var(--lh-1); letter-spacing: var(--ls-1);
+  color: var(--navy-dark);
+  margin: var(--e-4) 0 var(--e-2);
+}
+.cond-t:first-child { margin-top: 0; }
+.cond p + p { margin-top: var(--e-2); }
+.cond-grille {
+  width: 100%; margin: var(--e-3) 0;
+  border-collapse: collapse;
+  background: var(--pearl);
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+.cond-grille th, .cond-grille td {
+  padding: var(--e-2);
+  text-align: left;
+  border-bottom: var(--filet) solid var(--line);
+}
+.cond-grille th {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+}
+.cond-grille tr:last-child td { border-bottom: 0; }
+.cond-prime { text-align: right; white-space: nowrap; color: var(--navy-dark); }
+.cond-version { margin-top: var(--e-4); color: var(--text-soft); }
+
+/* ===================================================================
+   11 · LES DEUX PORTES DE L'URGENCE
+   Une vraie urgence n'ecrit pas : elle appelle. Le numero passe donc
+   DEVANT, en gros, et c'est un vrai lien `tel:`.  D-751
+   =================================================================== */
+
+/* `auto-fit`, PAS UNE REQUETE DE MEDIA. Une requete de media mesure la
+   FENETRE ; ici ce qui compte est la largeur du PANNEAU, qui plafonne a
+   38 rem quelle que soit la fenetre. A 1440 px les deux portes tombaient
+   donc en deux colonnes de 240 px, et le numero de 38 px n'y tenait
+   plus.  D-852 */
+.deux-portes {
+  display: grid; gap: var(--e-2); margin-bottom: var(--e-6);
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+}
+
+.porte {
+  padding: var(--e-4);
+  background: var(--marble);
+  border-radius: var(--rayon-large);
+}
+/* Le champagne clair porte du navy a 9,41:1 : il peut etre un FOND. */
+.porte--forte { background: var(--champagne-light); }
+.porte-quand {
+  font-size: var(--t-00); font-weight: 700;
+  letter-spacing: var(--ls-etiquette); text-transform: uppercase;
+  color: var(--navy-dark);
+  margin-bottom: var(--e-2);
+}
+.porte-tel {
+  display: inline-flex; align-items: center; gap: var(--e-1);
+  min-height: var(--cible);
+  font-family: var(--font-titre);
+  font-size: var(--t-2); line-height: 1; letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* Sans `flex: 0 0 auto`, l'icone se comprime a zero des que le numero
+   remplit la carte : elle disparaissait sans qu'aucun test ne le voie. */
+.porte-tel svg { width: 1.5rem; height: 1.5rem; flex: 0 0 auto; }
+.porte-tel:hover { text-decoration: underline; text-underline-offset: 0.16em; }
+.porte-note, .porte-texte { margin-top: var(--e-2); font-size: var(--t-00); color: var(--text-soft); }
+
+/* ===================================================================
+   12 · LA RETENUE
+   Elle ne bloque rien : Echap la ferme, le fond aussi, et « Je continue »
+   rend la main au formulaire exactement ou il en etait.  D-753
+   =================================================================== */
+
+.retenue {
+  position: fixed; inset: auto 0 0 0; z-index: calc(var(--z-modal) + 1);
+  display: flex; justify-content: flex-end;
+  padding: var(--e-2);
+  pointer-events: none;
+}
+@media (min-width: 48em) { .retenue { padding: var(--e-4); } }
+
+.retenue-in {
+  pointer-events: auto;
+  width: 100%; max-width: 26rem;
+  padding: var(--e-4);
+  background: var(--pearl);
+  border: var(--filet) solid var(--line);
+  border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-levee);
+}
+/* `.sur-titre` accroche un filet en `::after` : sur deux lignes il reste
+   colle a la PREMIERE et flotte dans le vide. Ces deux libelles-la sont
+   ecrits par le script, longueur inconnue — le filet saute.  D-853 */
+.retenue-quoi::after, .cadeau-eyebrow::after { display: none; }
+
+.retenue-titre {
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+  margin-bottom: var(--e-2);
+}
+.retenue-texte { font-size: var(--t-00); color: var(--text-soft); }
+.retenue-champ { display: grid; gap: var(--e-2); margin-top: var(--e-4); }
+.retenue-champ .btn { width: 100%; }
+.retenue-suite { margin-top: var(--e-3); }
+
+/* ===================================================================
+   13 · LE CADEAU — `<dialog>` natif, `showModal()`
+   Ce n'est pas un cadeau, c'est un echange, et le balisage le dit.  D-083
+   =================================================================== */
+
+.cadeau {
+  width: min(100% - 2rem, 58rem);
+  max-height: 92vh;
+  margin: auto;
+  padding: 0;
+  background: var(--pearl);
+  border: 0;
+  border-radius: var(--rayon-large);
+  box-shadow: var(--ombre-levee);
+  color: var(--text);
+  overflow: hidden;
+}
+.cadeau::backdrop { background: var(--scrim); }
+.cadeau-in { position: relative; display: grid; max-height: 92vh; overflow-y: auto; }
+@media (min-width: 52em) {
+  .cadeau-in { grid-template-columns: 0.85fr 1fr; overflow: hidden; }
+}
+.cadeau-x { position: absolute; top: var(--e-1); right: var(--e-1); z-index: 2; background: var(--pearl); }
+
+.cadeau-vue {
+  display: none;
+  position: relative;
+  background: var(--silk);
+  padding: var(--e-7) var(--e-5);
+}
+@media (min-width: 52em) { .cadeau-vue { display: block; } }
+.cadeau-couv {
+  position: absolute;
+  width: 58%; height: auto;
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-levee);
+}
+.cadeau-couv--1 { top: 12%; left: 10%; transform: rotate(-4deg); }
+.cadeau-couv--2 { top: 24%; left: 32%; transform: rotate(3deg); }
+
+.cadeau-dire { padding: var(--e-5) var(--e-4) var(--e-4); overflow-y: auto; }
+@media (min-width: 52em) { .cadeau-dire { padding: var(--e-6) var(--e-5); } }
+.cadeau-titre {
+  font-size: var(--t-3); line-height: var(--lh-3); letter-spacing: var(--ls-3);
+  margin-bottom: var(--e-3);
+}
+/* Les trois chiffres. Le premier porte la valeur, « 91 pages » vient en
+   dernier : un patron de 55 ans lit « 91 pages » comme « je ne lirai
+   jamais ca ».  D-782 */
+.cadeau-fiche {
+  display: flex; flex-wrap: wrap; gap: var(--e-3);
+  padding: var(--e-2) 0;
+  border-block: var(--filet) solid var(--line);
+  margin-bottom: var(--e-3);
+}
+.cadeau-fiche span {
+  display: flex; align-items: baseline; gap: 0.35rem;
+  font-size: var(--t-00); color: var(--text-soft);
+}
+.cadeau-fiche b {
+  font-family: var(--font-titre);
+  font-size: var(--t-2); letter-spacing: var(--ls-2);
+  color: var(--navy-dark);
+}
+.cadeau-lead { color: var(--text-soft); margin-bottom: var(--e-4); }
+.cadeau-lead b { color: var(--text); }
+.cadeau-go { margin-top: var(--e-4); }
+.cadeau-fin { margin-top: var(--e-3); font-size: var(--t-00); color: var(--text-muted); }
+.cadeau-actes { display: grid; gap: var(--e-2); margin-top: var(--e-4); }
+.cadeau-liens { margin-top: var(--e-3); font-size: var(--t-00); color: var(--text-soft); }
+.cadeau-non { margin-top: var(--e-3); }
+
+/* ===================================================================
+   14 · LES SUGGESTIONS DE VILLE ET DE DOMAINE
+   Le champ garde son `<datalist>` : c'est le repli sans JavaScript. Le
+   panneau fabrique par le script se pose par-dessus.  D-759
+   =================================================================== */
+
+.champ { position: relative; }
+.sug {
+  position: absolute; z-index: 3; left: 0; right: 0;
+  max-height: 18rem; overflow-y: auto;
+  background: var(--pearl);
+  border: var(--filet) solid var(--line-strong);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-levee);
+}
+.sug-o {
+  display: flex; align-items: center;
+  width: 100%;
+  min-height: var(--cible-min);
+  padding: 0 var(--e-2);
+  text-align: left;
+  font-size: var(--t-00);
+  color: var(--text);
+  border-left: 3px solid transparent;
+}
+.sug-o:hover, .sug-o.is-on { background: var(--champagne-light); border-left-color: var(--navy); }
+.sug-o b { font-weight: 700; color: var(--navy-dark); }

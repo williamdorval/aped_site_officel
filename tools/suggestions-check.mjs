@@ -26,7 +26,7 @@ import { fileURLToPath } from "node:url";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 const SORTIE = path.join(RACINE, "preuves", "suggestions");
-const BASE = process.env.APED_BASE || "http://127.0.0.1:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://127.0.0.1:8099";
 
 fs.mkdirSync(SORTIE, { recursive: true });
 
@@ -81,7 +81,7 @@ page.on("pageerror", (e) => erreurs.push("pageerror: " + String(e)));
 
 /* LE POPUP CADEAU BLOQUE TOUT OUTIL QUI CLIQUE. Piege 18. */
 await page.addInitScript(() => {
-  try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
 });
 
 await page.goto(BASE + "/index.html", { waitUntil: "load" });

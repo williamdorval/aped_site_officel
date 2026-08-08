@@ -1,6 +1,6 @@
 /* Qui déborde ? `node tools/debord.mjs [largeur]` */
 import { chromium } from "playwright";
-const BASE = process.env.APED_BASE || "http://localhost:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://localhost:8099";
 const W = Number(process.argv[2] || 390);
 
 const browser = await chromium.launch();

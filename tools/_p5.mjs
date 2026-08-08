@@ -2,7 +2,7 @@ import { poster, ligneDe, val, dire, titre, etat, bilan } from "./prod-parcours.
 import fs from "node:fs";
 
 const env = fs.readFileSync(".env.local", "utf8");
-const SERVICE = (/^APED_WEB_APP_URL=(.+)$/m.exec(env))[1].trim();
+const SERVICE = (/^ADEXWEB_WEB_APP_URL=(.+)$/m.exec(env))[1].trim();
 const pause = (ms) => new Promise((s) => setTimeout(s, ms));
 
 async function creneaux() {

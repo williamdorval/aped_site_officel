@@ -46,14 +46,14 @@ for (const theme of THEMES) {
        attend doit le desarmer. Piege 18. */
     await ctx.addInitScript(() => {
       try {
-        sessionStorage.setItem("aped-sans-popup", "1");
-        localStorage.setItem("aped-theme", window.__apedTheme || "light");
+        sessionStorage.setItem("adexweb-sans-popup", "1");
+        localStorage.setItem("adexweb-theme", window.__adexwebTheme || "light");
       } catch (e) {}
     });
     const page = await ctx.newPage();
     if (theme === "sombre") {
       await page.addInitScript(() => {
-        try { localStorage.setItem("aped-theme", "dark"); } catch (e) {}
+        try { localStorage.setItem("adexweb-theme", "dark"); } catch (e) {}
       });
     }
     await page.goto(BASE + "/index.html", { waitUntil: "load" });

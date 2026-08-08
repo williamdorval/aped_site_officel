@@ -87,14 +87,25 @@
 }
 
 .barre-dedans {
-  display: flex; align-items: center; gap: var(--e-4);
+  display: flex; align-items: center; gap: var(--e-2);
   height: var(--nav-h);
   max-width: var(--page-max); margin-inline: auto;
   padding-inline: var(--gouttiere);
 }
+@media (min-width: 62em) { .barre-dedans { gap: var(--e-4); } }
 
-.logo { display: flex; align-items: center; flex: 0 0 auto; text-decoration: none; }
-.logo img, .logo svg { height: 1.75rem; width: auto; }
+/* Le logotype se mesure en HAUTEUR, et sa largeur suit : a 40 px de haut il
+   fait 187 px de large, et sur un ecran de 320 il ne restait plus rien pour
+   le bouton et le menu — la barre debordait de 54 px et le site devenait
+   innavigable. Il descend a 22 px sous 480.  D-846 */
+/* Le lien du logotype ne faisait que 28 px de haut, sous le plancher de
+   44 px : il etait la premiere cible de chaque page, et la plus difficile
+   a viser au pouce.  D-850 */
+.logo { display: flex; align-items: center; flex: 0 0 auto; text-decoration: none;
+        min-width: 0; min-height: var(--cible-min); }
+.logo img, .logo svg { height: 1.375rem; width: auto; }
+@media (min-width: 30em) { .logo img, .logo svg { height: 1.625rem; } }
+@media (min-width: 48em) { .logo img, .logo svg { height: 1.75rem; } }
 .logo-mot {
   font-family: var(--font-texte);
   font-size: 1.0625rem; font-weight: 700;
@@ -131,10 +142,37 @@
 }
 .barre-tel svg { width: 1.0625rem; height: 1.0625rem; }
 
+/* Sous 48em, le bouton de la barre disparait : il est deja en tete du menu
+   plein ecran, et sur telephone la porte la plus courte est le NUMERO, pas
+   un formulaire. Ce qui reste : le logo, un appel, un menu.  D-847 */
+.barre-appel {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--cible-min); height: var(--cible-min);
+  border-radius: var(--rayon);
+  color: var(--navy-dark);
+}
+.barre-appel:hover { background: var(--marble); }
+.barre-appel svg { width: 1.25rem; height: 1.25rem; }
+@media (min-width: 48em) { .barre-appel { display: none; } }
+@media (max-width: 47.99em) { .barre-actes .btn--primaire { display: none; } }
+
+/* A 1024, la barre pesait 1 044 px pour 864 de place : logo 187 + cinq
+   liens 519 + numero 120 + bouton 170. Elle debordait de 23 px, et un
+   debordement d'en-tete ne se voit pas — il pousse simplement le menu hors
+   de l'ecran. Deux mesures, dans cet ordre : la barre reprend une gouttiere
+   etroite entre 62 et 75em, et le NUMERO n'y parait qu'a partir de 75em. Il
+   reste joignable partout ailleurs : l'icone du telephone sous 48em, le
+   menu, le pied, et la page de contact.  D-849 */
 @media (min-width: 62em) {
   .nav-liens { display: flex; }
-  .barre-tel { display: inline-flex; }
   .barre-actes { margin-left: 0; }
+  .barre-dedans { padding-inline: var(--e-4); }
+  .nav-lien { padding: 0 var(--e-1); }
+}
+@media (min-width: 75em) {
+  .barre-tel { display: inline-flex; }
+  .barre-dedans { padding-inline: var(--gouttiere); }
+  .nav-lien { padding: 0 var(--e-2); }
 }
 
 /* Le bouton du menu ne parait que sous 62em, ou les liens sont caches. */
@@ -297,7 +335,7 @@
   font-family: var(--font-texte);
   font-size: var(--t-00); font-weight: 700;
   letter-spacing: var(--ls-etiquette);
-  color: var(--text-muted);
+  color: var(--text-soft);
 }
 .service-nom {
   font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
@@ -306,7 +344,7 @@
    la section faisait 2 864 px pour cinq entrees. */
 .service-dit { color: var(--text-soft); max-width: 58ch; }
 .service-delai {
-  font-size: var(--t-00); color: var(--text-muted);
+  font-size: var(--t-00); color: var(--text-soft);
   display: flex; align-items: center; gap: var(--e-1);
 }
 .service-lien {
@@ -407,7 +445,7 @@ button.carte { text-align: left; width: 100%; font: inherit; }
    visiteur ne sait plus ce qu'il remplit. C'est le defaut de formulaire le
    plus documente, et Cuberto le commet.  D-827 */
 .etiquette { font-size: var(--t-00); font-weight: 600; color: var(--text); }
-.etiquette .facultatif { font-weight: 400; color: var(--text-muted); }
+.etiquette .facultatif { font-weight: 400; color: var(--text-soft); }
 .aide { font-size: var(--t-00); color: var(--text-soft); }
 
 .saisie,
@@ -453,9 +491,100 @@ select.saisie {
   width: 1px; height: 1px; overflow: hidden;
 }
 
+/* `--text-muted` fait 3,88:1 sur silk et 3,83 sur marble. Une mention se
+   pose sur n'importe quel fond : elle prend donc le gris qui tient partout,
+   a 6,12:1 au pire.  D-851 */
 .mention {
-  font-size: var(--t-00); color: var(--text-muted);
+  font-size: var(--t-00); color: var(--text-soft);
   max-width: 52ch;
+}
+
+/* ===================================================================
+   8bis · LES PAGES INTERIEURES
+   Le `--t-5` est reserve a l'accueil : une page interieure ne crie pas
+   aussi fort que la porte d'entree.  D-843
+   =================================================================== */
+
+.titre-page {
+  font-size: var(--t-4);
+  line-height: var(--lh-4);
+  letter-spacing: var(--ls-4);
+  font-weight: 450;
+  max-width: 18ch;
+}
+
+/* La page 404 : six portes, pas un jeu de piste. */
+.liste-404 {
+  margin-top: var(--e-6);
+  display: grid; gap: var(--e-1);
+  max-width: 34rem;
+}
+.liste-404 a {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--e-3);
+  min-height: var(--cible);
+  padding-inline: var(--e-3);
+  border: var(--filet) solid var(--line);
+  border-radius: var(--rayon);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color var(--t-etat), background-color var(--t-etat);
+}
+.liste-404 a:hover { border-color: var(--navy-light); background: var(--marble); }
+.liste-404 svg { width: 1.125rem; height: 1.125rem; color: var(--navy); }
+
+.lien-tel {
+  font-family: var(--font-titre);
+  font-size: var(--t-1);
+  color: var(--navy-dark);
+  text-decoration-color: var(--champagne-dark);
+  text-underline-offset: 0.24em;
+  white-space: nowrap;
+}
+
+/* La page de confidentialite. Une colonne, un seul filet entre les
+   articles, aucune carte : c'est un texte de loi, il se lit en descendant. */
+.legal .chapo, .legal p, .legal li { max-width: var(--colonne-texte); }
+.legal .mention { margin-top: var(--e-2); }
+.legal-sec { margin-top: var(--e-7); padding-top: var(--e-5); border-top: var(--filet) solid var(--line); }
+.legal-sec h2 {
+  font-size: var(--t-2); line-height: var(--lh-2); letter-spacing: var(--ls-2);
+  margin-bottom: var(--e-2);
+  max-width: 24ch;
+}
+.legal-sec h3 {
+  font-family: var(--font-texte);
+  font-size: var(--t-0); font-weight: 700;
+  color: var(--text);
+  margin-top: var(--e-4); margin-bottom: var(--e-1);
+}
+.legal-sec ul { margin-top: var(--e-2); display: grid; gap: var(--e-1); }
+.legal-sec ul li { padding-left: var(--e-3); position: relative; color: var(--text-soft); }
+.legal-sec ul li::before {
+  content: ""; position: absolute; left: 0; top: 0.72em;
+  width: 8px; height: 1px; background: var(--champagne-dark);
+}
+.legal-sec strong, .legal-sec b { font-weight: 700; color: var(--text); }
+
+/* Un tableau ne se comprime pas : a 320 px il debordait de 31, et c'est la
+   PAGE qui partait de travers. Il roule dans son propre cadre.  D-853 */
+.table-roule { overflow-x: auto; margin-top: var(--e-3); max-width: 100%; }
+.legal-table { border-collapse: collapse; min-width: 30rem; font-size: var(--t-00); }
+.legal-table th, .legal-table td {
+  text-align: left; padding: var(--e-2) var(--e-3) var(--e-2) 0;
+  border-bottom: var(--filet) solid var(--line);
+  vertical-align: top;
+}
+.legal-table th { font-weight: 700; color: var(--text); }
+.legal-table td { color: var(--text-soft); }
+
+/* `.appel-num` vient de l'ancienne page : un numero de telephone est une
+   cible, pas un mot dans une phrase. */
+.appel-num {
+  display: inline-flex; align-items: center;
+  min-height: var(--cible-min);
+  font-weight: 600; color: var(--navy-dark);
+  text-decoration-color: var(--champagne-dark); text-underline-offset: 0.24em;
+  white-space: nowrap;
 }
 
 /* ===================================================================
@@ -468,6 +597,15 @@ select.saisie {
   padding-block: var(--e-9) var(--e-6);
 }
 .pied a { color: var(--champagne-light); }
+/* `.btn--nu` porte `color: var(--navy-dark)` — sur le pied, c'est du
+   navy sur navy : 1,00:1, trois boutons purement invisibles. Le fond
+   change, la couleur du texte doit changer avec lui.  D-848 */
+.pied .btn--nu {
+  color: var(--champagne-light);
+  text-decoration-color: var(--champagne-dark);
+}
+.pied .btn--nu:hover { color: var(--pearl); text-decoration-color: var(--pearl); }
+.bande--navy .btn--nu { color: var(--champagne-light); text-decoration-color: var(--champagne-dark); }
 .pied-haut { display: grid; gap: var(--e-7); }
 .pied-appel h2 {
   color: var(--pearl);
@@ -479,7 +617,8 @@ select.saisie {
 .pied-colonne h3 {
   color: var(--champagne);
   font-family: var(--font-texte);
-  font-size: 0.8125rem; font-weight: 700;
+  /* 13 px etait sous le plancher de lisibilite qu'on s'impose. */
+  font-size: var(--t-00); font-weight: 700;
   letter-spacing: var(--ls-etiquette); text-transform: uppercase;
   margin-bottom: var(--e-2);
 }
@@ -492,6 +631,8 @@ select.saisie {
 }
 .pied-colonne a:hover { text-decoration: underline; text-underline-offset: 0.24em; }
 .pied-tel {
+  display: inline-flex; align-items: center;
+  min-height: var(--cible-min);
   font-family: var(--font-titre);
   font-size: var(--t-1); letter-spacing: var(--ls-1);
   color: var(--pearl) !important; text-decoration: none;
@@ -499,9 +640,10 @@ select.saisie {
 .pied-bas {
   margin-top: var(--e-7); padding-top: var(--e-3);
   border-top: var(--filet) solid rgb(253 255 255 / 0.16);
-  display: flex; flex-wrap: wrap; gap: var(--e-1) var(--e-4);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--e-1) var(--e-4);
   font-size: var(--t-00); color: var(--champagne-light);
 }
+.pied-bas a { display: inline-flex; align-items: center; min-height: var(--cible-min); }
 
 @media (min-width: 48em) {
   .pied-colonnes { grid-template-columns: repeat(3, 1fr); }

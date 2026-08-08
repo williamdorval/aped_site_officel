@@ -192,5 +192,5 @@
     actifs: function () { return actifs.length; }
   };
 
-  root.APED_TRAME = API;
+  root.ADEXWEB_TRAME = API;
 })(window);

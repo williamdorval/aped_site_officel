@@ -165,7 +165,7 @@ silence. Les trois sont maintenant `brzozowski, alice, ambrosi`.
 
 ## Le geste, et l'instant
 
-**Instant de capture : `<meta name="aped-instant" content="1500">`.**
+**Instant de capture : `<meta name="adexweb-instant" content="1500">`.**
 
 **Ce qu'on photographie en mouvement : le filet de tête de la page
 texte.** Sous le bandeau d'une une court un filet lourd. Ici il fait

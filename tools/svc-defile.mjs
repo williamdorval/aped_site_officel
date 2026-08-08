@@ -37,8 +37,8 @@ async function page(ctxOpts = {}) {
   const ctx = await nav.newContext({ viewport: { width: W, height: 900 }, deviceScaleFactor: 1, ...ctxOpts });
   await ctx.addInitScript((t) => {
     try {
-      sessionStorage.setItem("aped-sans-popup", "1");
-      localStorage.setItem("aped-theme", t === "sombre" ? "dark" : "light");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      localStorage.setItem("adexweb-theme", t === "sombre" ? "dark" : "light");
     } catch (e) {}
   }, THEME);
   const p = await ctx.newPage();

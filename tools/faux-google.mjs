@@ -26,7 +26,7 @@
    · qu'un courriel ARRIVE dans une boite ;
    · que les autorisations OAuth passent.
    Ces quatre-la se verifient une seule fois, a la main, en suivant
-   `docs/CONFIGURATION-GOOGLE-APED.md`. Tout le reste est ici.
+   `docs/CONFIGURATION-GOOGLE.md`. Tout le reste est ici.
    ============================================================ */
 import fs from "node:fs";
 import http from "node:http";

@@ -19,7 +19,7 @@
       RETOURNE LE 2026-07-29, et c'est la deuxieme fois que ce test
       verrouille exactement le defaut qu'il devait attraper. Il
       affirmait « un saut vaut pour la session ». Or l'ecouteur qui
-      posait `sessionStorage["aped-entree-saut"]` voyait N'IMPORTE
+      posait `sessionStorage["adexweb-entree-saut"]` voyait N'IMPORTE
       QUEL `pointerdown` et N'IMPORTE QUEL `keydown` : un clic sur un
       bouton du site, ou la touche F5 elle-meme. Autrement dit la
       garantie 2 — « elle REJOUE au rechargement » — etait annulee
@@ -137,7 +137,7 @@ for (let i = 1; i <= 2; i++) {
     classes: apres.classes,
     rejoue: apres.classes.includes("entree-on"),
     composition: apres.classes.includes("compo-hero"),
-    drapeau: await page2.evaluate(() => { try { return sessionStorage.getItem("aped-entree-saut"); } catch (e) { return "?"; } }),
+    drapeau: await page2.evaluate(() => { try { return sessionStorage.getItem("adexweb-entree-saut"); } catch (e) { return "?"; } }),
   });
 }
 R.saut.remiseApresUnSaut = R.saut.rechargementsApresSaut.every((p) => p.rejoue && p.composition);

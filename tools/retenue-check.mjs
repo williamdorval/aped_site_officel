@@ -107,21 +107,21 @@ await page.route("**script.google.com/**", (r) => {
 
 await page.addInitScript(() => {
   try {
-    sessionStorage.setItem("aped-sans-popup", "1");
-    sessionStorage.setItem("aped-entree-saut", "1");
+    sessionStorage.setItem("adexweb-sans-popup", "1");
+    sessionStorage.setItem("adexweb-entree-saut", "1");
   } catch (e) {}
 });
 await page.goto(BASE + "/index.html", { waitUntil: "load" });
 await page.waitForTimeout(2800);
 console.log("data-palier : " + await page.getAttribute("html", "data-palier"));
 
-/* La retenue ne s'ouvre qu'UNE fois par navigateur : `aped-retenue-vue`
+/* La retenue ne s'ouvre qu'UNE fois par navigateur : `adexweb-retenue-vue`
    la verrouille. Chaque cas la deverrouille, sinon seul le premier
    mesure quelque chose et les autres rendent « rien n'a change » —
    ce qui ressemble trait pour trait a une reussite. */
 /* ON PILOTE LES VRAIS FORMULAIRES.
 
-   Premiere version : elle envoyait un evenement `aped:test-retenue`
+   Premiere version : elle envoyait un evenement `adexweb:test-retenue`
    qui n'existe nulle part, et il aurait fallu poser un crochet dans
    le code de production pour qu'il existe. Un banc qui se fait
    ouvrir une porte derobee ne mesure plus le site, il mesure la
@@ -136,7 +136,7 @@ const OUVREURS = {
 
 async function fermerTout() {
   await page.evaluate(() => {
-    try { localStorage.removeItem("aped-retenue-vue"); } catch (e) {}
+    try { localStorage.removeItem("adexweb-retenue-vue"); } catch (e) {}
     const r = document.getElementById("retenue");
     if (r) r.hidden = true;
     document.querySelectorAll(".modal").forEach((m) => {
@@ -311,7 +311,7 @@ async function provoquer() {
 
 async function armer(kind, etape) {
   await page.evaluate(() => {
-    try { localStorage.removeItem("aped-retenue-vue"); } catch (e) {}
+    try { localStorage.removeItem("adexweb-retenue-vue"); } catch (e) {}
     const r = document.getElementById("retenue");
     if (r) r.hidden = true;
   });
@@ -439,7 +439,7 @@ titre("3 · REVENIR CORRIGER NE DÉGRADE PAS LE TEXTE");
     await page.click("#projectBack");
     await page.waitForTimeout(220);
   }
-  await page.evaluate(() => { try { localStorage.removeItem("aped-retenue-vue"); } catch (e) {} });
+  await page.evaluate(() => { try { localStorage.removeItem("adexweb-retenue-vue"); } catch (e) {} });
   await provoquer();
   const v = await lu();
   dire("on lui parle encore de ce qu'il a VRAIMENT rempli",
@@ -454,7 +454,7 @@ titre("4 · LA RÉSERVATION ENREGISTRE EN CHEMIN  (D-769)");
 {
   await page.evaluate(() => {
     document.querySelectorAll(".modal").forEach((m) => { m.hidden = true; });
-    try { localStorage.removeItem("aped-sid-booking"); } catch (e) {}
+    try { localStorage.removeItem("adexweb-sid-booking"); } catch (e) {}
   });
   /* MEME CHEMIN QU'EN SECTION 1 : jour, puis plage, puis champs.
      Une deuxieme version du meme parcours ecrite a la main finit
@@ -501,7 +501,7 @@ titre("4 · LA RÉSERVATION ENREGISTRE EN CHEMIN  (D-769)");
 titre("5 · L'ENVOI FINAL COMPLÈTE LA MÊME LIGNE");
 {
   const sidEtape = await page.evaluate(() => {
-    try { return localStorage.getItem("aped-sid-booking"); } catch (e) { return null; }
+    try { return localStorage.getItem("adexweb-sid-booking"); } catch (e) { return null; }
   });
   dire("la session est retenue entre les deux", !!sidEtape, true);
 
@@ -554,8 +554,8 @@ titre("6 · LES DEUX FORMULAIRES D'UN SEUL ECRAN  (D-780)");
     await page.goto(BASE, { waitUntil: "load" });
     await page.evaluate(() => {
       try {
-        localStorage.removeItem("aped-retenue-vue");
-        localStorage.removeItem("aped-retenue-apres-vue");
+        localStorage.removeItem("adexweb-retenue-vue");
+        localStorage.removeItem("adexweb-retenue-apres-vue");
       } catch (e) {}
     });
     /* 3 s : `data-palier` et les scripts de la deuxieme vague
@@ -675,7 +675,7 @@ titre("7 · APRÈS LA FOURCHETTE  (D-780)");
     process.exit(2);
   }
   dire("la marque d'après-fourchette est distincte de l'autre",
-    /aped-retenue-apres-vue/.test(src) && /aped-retenue-vue/.test(src), true,
+    /adexweb-retenue-apres-vue/.test(src) && /adexweb-retenue-vue/.test(src), true,
     "une seule marque ferait qu'une retenue vue a l'etape 2 tuerait celle d'apres");
   dire("les deux fourchettes arment l'après, pas la fin",
     (src.match(/retenueApres\("(project|estimate)"\)/g) || []).length, 2,

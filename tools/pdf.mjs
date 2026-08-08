@@ -25,7 +25,7 @@ const RACINE = path.resolve(ICI, "..");
 const SRC = path.join(RACINE, "documents/src");
 /* LES PDF NE SORTENT PLUS DANS L ARBRE SERVI.  D-788
    Ils tombaient dans `documents/`, donc a la racine du site :
-   `GET /documents/aped-automatisation.pdf` rendait 2 Mo a qui
+   `GET /documents/adexweb-automatisation.pdf` rendait 2 Mo a qui
    connaissait l adresse, pendant que le popup annoncait « contre vos
    coordonnees ». Ils vont sous `google/`, avec le code du serveur —
    un dossier qu on ne televerse jamais. Le rangement fait ce qu une
@@ -34,8 +34,8 @@ const SRC = path.join(RACINE, "documents/src");
 const OUT = path.join(RACINE, "google", "guides");
 
 const DOCS = [
-  { id: "aped-automatisation", titre: "Ce que votre entreprise pourrait automatiser" },
-  { id: "aped-ia-croissance", titre: "Comment utiliser l'IA pour faire grossir votre entreprise" }
+  { id: "adexweb-automatisation", titre: "Ce que votre entreprise pourrait automatiser" },
+  { id: "adexweb-ia-croissance", titre: "Comment utiliser l'IA pour faire grossir votre entreprise" }
 ];
 
 const filtre = process.argv[2];

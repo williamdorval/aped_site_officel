@@ -8,7 +8,7 @@ const nav = await chromium.launch();
 const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
 await page.addInitScript(() => {
-  try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
   window.__s = [];
   new PerformanceObserver((l) => {
     for (const e of l.getEntries()) {

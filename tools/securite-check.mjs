@@ -581,7 +581,7 @@ titre("8 · L'AVIS INTERNE NE SE CASSE PAS SUR UN CHAMP TORDU");
     nom: "ZZTEST Ligne\r\nBcc: espion@exemple.ca\r\nSubject: autre chose",
     email: "zztest@exemple.ca", message: "message ordinaire" });
 
-  const av = etat.courriels.find((c) => /APED/.test(c.subject || c.sujet || ""));
+  const av = etat.courriels.find((c) => /ADEXWEB/.test(c.subject || c.sujet || ""));
   const objet = String(av ? (av.subject || av.sujet) : "");
   dire("un avis est parti", !!av, true);
   dire("l'objet ne porte aucun retour de ligne", /[\r\n]/.test(objet), false,

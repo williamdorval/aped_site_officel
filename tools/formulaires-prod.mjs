@@ -42,9 +42,9 @@ const REEL = process.argv.includes("--reel");
 let SERVICE;
 if (REEL) {
   const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
-  const m = /^APED_WEB_APP_URL=(.+)$/m.exec(env);
+  const m = /^ADEXWEB_WEB_APP_URL=(.+)$/m.exec(env);
   if (!m) {
-    console.error("APED_WEB_APP_URL absent de .env.local — rien a viser.");
+    console.error("ADEXWEB_WEB_APP_URL absent de .env.local — rien a viser.");
     process.exit(1);
   }
   SERVICE = m[1].trim();
@@ -77,7 +77,7 @@ const rapport = { service: null, formulaires: [], classeur: null };
    configuration de la personne qui le lance, et elle ne s'en
    apercevrait qu'a la prochaine mise en ligne.
 
-   LA PREMIERE VERSION POSAIT `window.APED_ENVOI` PAR
+   LA PREMIERE VERSION POSAIT `window.ADEXWEB_ENVOI` PAR
    `addInitScript`, ET C'ETAIT FAUX : le script s'execute AVANT les
    fichiers de la page, donc `config.local.js` — charge ensuite —
    ecrasait la valeur avec la sienne. Les huit formulaires
@@ -113,13 +113,13 @@ async function ouvrir(nav) {
   await page.route("**/js/config.local.js", (route) => route.fulfill({
     status: 200,
     contentType: "text/javascript; charset=utf-8",
-    body: `window.APED_ENVOI = ${JSON.stringify(SERVICE)};\n`
+    body: `window.ADEXWEB_ENVOI = ${JSON.stringify(SERVICE)};\n`
   }));
   await page.addInitScript(() => {
     /* Le popup cadeau ouvert en `showModal()` capture tous les
        evenements de pointeur : sans ca chaque clic expire et
        accuse le mauvais coupable. */
-    try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
   });
   await page.goto(BASE + "/index.html", { waitUntil: "load" });
   await page.waitForTimeout(1500);
@@ -187,7 +187,7 @@ async function stable(page, sel) {
     if (!n) return false;
     const r = n.getBoundingClientRect();
     const cle = [r.x, r.y, r.width, r.height].map(Math.round).join(",");
-    const memoire = window.__apedStable || (window.__apedStable = {});
+    const memoire = window.__adexwebStable || (window.__adexwebStable = {});
     const pareil = memoire[s] === cle;
     memoire[s] = cle;
     return pareil;

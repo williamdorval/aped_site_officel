@@ -217,7 +217,7 @@ l'arête.
 | | |
 |---|---|
 | **Course** | 900 → 1900 ms, `linear`, `forwards` |
-| **INSTANT DE CAPTURE** | **`<meta name="aped-instant" content="1560">`** — 66,0 % |
+| **INSTANT DE CAPTURE** | **`<meta name="adexweb-instant" content="1560">`** — 66,0 % |
 | **Ce qu'on voit** | un aplat bordeaux de **328 × 153 px**, arête franche et horizontale à **y = 762** ; **au-dessus**, `PRENDRE RENDEZ-VOUS` en parchemin sur bordeaux ; **en dessous**, `000 000-0000` en bordeaux sur parchemin |
 | **Dégagement** | 131 px sous le libellé, 28 px au-dessus des chiffres. **Aucun glyphe à cheval.** |
 | **Piège 71** | 153 px de course et 328 px de large à 1440 : les deux seuils (12 px de masse, 40 px de course) sont passés d'un ordre de grandeur |
@@ -284,7 +284,7 @@ aucune balance, aucun marteau, aucune colonnade · **aucun nom
 d'avocat, aucun barreau, aucune cause, aucun jugement, aucun taux de
 réussite** · aucun prix, aucune note, aucun avis · **aucune manchette
 qui invente une affaire** — elle parle de la méthode du cabinet ·
-aucune adresse web · aucune identité APED.
+aucune adresse web · aucune identité ADEXWEB.
 
 ## Les mesures
 

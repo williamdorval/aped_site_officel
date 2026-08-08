@@ -9,7 +9,7 @@ const dy = Number(process.argv[5] || 0);
 const b = await chromium.launch();
 const c = await b.newContext({ viewport: { width: W, height: Math.round(W * 0.625) }, colorScheme: theme });
 const p = await c.newPage();
-await p.addInitScript(t => { try { localStorage.setItem("aped-theme", t); } catch (e) {} }, theme);
+await p.addInitScript(t => { try { localStorage.setItem("adexweb-theme", t); } catch (e) {} }, theme);
 await p.goto(BASE + "/", { waitUntil: "load" });
 await p.waitForTimeout(1500);
 await p.evaluate(([s, d]) => {

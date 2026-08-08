@@ -30,7 +30,7 @@ const total = {};
 for (const w of VUES) {
   const ctx = await nav.newContext({ viewport: { width: w, height: w < 700 ? 844 : 900 } });
   const page = await ctx.newPage();
-  await page.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await page.goto(BASE, { waitUntil: "load" });
   await page.waitForTimeout(700);
 

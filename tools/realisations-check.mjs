@@ -53,7 +53,7 @@ const erreurs = [];
 page.on("pageerror", (e) => erreurs.push(String(e)));
 page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
 await page.addInitScript(() => {
-  try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
 });
 await page.goto(BASE, { waitUntil: "load" });
 await page.waitForTimeout(1600);

@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-538 — APED AGENCE - Visite virtuelle 360** | 29 | 363 |
+| **D-538 — ADEXWEB - Visite virtuelle 360** | 29 | 361 |
 | **D-539 — Plan : repere 240 x 140. Les rectangles ci-dessous et les murs du** | 30 | 425 |
 | **D-540 — UNE SEULE PROPRIETE — Lythwood Lodge, Lidgetton, KwaZulu-Natal.** | 39 | 566 |
 | **D-541 — Derive lente pendant l'inactivite : elle dit « c'est un 360 »** | 7 | 85 |
@@ -23,10 +23,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-538 — APED AGENCE - Visite virtuelle 360
+## D-538 — ADEXWEB - Visite virtuelle 360
 
 ============================================================
-  APED AGENCE - Visite virtuelle 360
+  ADEXWEB - Visite virtuelle 360
   Module autonome. Aucune dependance, aucun module ES, aucune
   requete tierce. Le moteur (Pannellum 2.5.7, MIT) est auto-heberge.
 

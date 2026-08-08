@@ -13,19 +13,19 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-543 — HERO — la plaque de limaille** | 16 | 193 |
-| **D-544 — Politique d'accent — tranchee et documentee.** | 24 | 314 |
-| **D-545 — MESURE DU 2026-07-25 : a 0,72 le petit mot recevait 28 % de grains** | 11 | 163 |
+| **D-543 — HERO — la plaque de limaille** | 16 | 196 |
+| **D-544 — Politique d'accent — tranchee et documentee.** | 24 | 315 |
+| **D-545 — MESURE DU 2026-07-25 : a 0,72 le petit mot recevait 28 % de grains** | 11 | 164 |
 | **D-546 — HAUTEUR REELLEMENT OCCUPEE, ROTATION COMPRISE.** | 20 | 274 |
-| **D-547 — Le grand mot occupe presque toute la largeur, moins la marge** | 9 | 122 |
-| **D-548 — ALIGNEMENT DU PETIT MOT — mesure, puis tranche.** | 11 | 147 |
+| **D-547 — Le grand mot occupe presque toute la largeur, moins la marge** | 9 | 123 |
+| **D-548 — ALIGNEMENT DU PETIT MOT — mesure, puis tranche.** | 11 | 148 |
 | **D-549 — Sur ecran etroit le petit mot doit remonter en taille** | 7 | 77 |
-| **D-550 — Le petit mot etait a 0,215 : sa hauteur de capitale tombait a** | 8 | 105 |
+| **D-550 — Le petit mot etait a 0,215 : sa hauteur de capitale tombait a** | 8 | 106 |
 | **D-551 — Composition qui RENTRE, mesuree et non esperee. Deux passes** | 7 | 90 |
 | **D-552 — DENSITE PAR LIGNE — c'est le reglage decisif.** | 14 | 188 |
 | **D-553 — La decision « premiere visite de la session » est prise UNE** | 8 | 106 |
-| **D-554 — Les grains partent des QUINZE filets horizontaux, exactement** | 16 | 228 |
-| **D-555 — Filet de securite : onglet ouvert en arriere-plan, rideau** | 12 | 169 |
+| **D-554 — Les grains partent des QUINZE filets horizontaux, exactement** | 16 | 229 |
+| **D-555 — Filet de securite : onglet ouvert en arriere-plan, rideau** | 12 | 170 |
 | **D-556 — RECOLORATION A LA BASCULE DE THEME.** | 20 | 261 |
 
 <!-- INDEX:FIN -->
@@ -36,12 +36,12 @@
   HERO — la plaque de limaille
   ------------------------------------------------------------
   DEUX MOTS, EN PERMANENCE, QUI NE CHANGENT JAMAIS.
-  « APED » en tres gros, « AGENCY » dessous, nettement plus
+  « ADEXWEB » en tres gros, « AGENCY » dessous, nettement plus
   petit, justifie sur la largeur du mot du haut, la plaque posee
   de travers de quelques degres.
 
   Aucun carrousel de lettres, aucun morph d'un glyphe vers un
-  autre, aucun bouton de selection : le mot APED reste APED du
+  autre, aucun bouton de selection : le mot ADEXWEB reste ADEXWEB du
   debut a la fin de la visite. La technique emprunte a la
   reference sa MATIERE, pas son scenario.
   ============================================================
@@ -56,7 +56,7 @@
     Un hero en minium plein la casse.
 
     REGLE REECRITE, et elle est plus forte que l'ancienne :
-    « Le minium est la MATIERE dont APED est fait. Il apparait une
+    « Le minium est la MATIERE dont ADEXWEB est fait. Il apparait une
     fois en pleine masse, au hero, comme le bloc de matiere brute.
     Ensuite il ne revient que la ou le visiteur peut agir sur cette
     matiere : le CTA primaire, l'index actif, le chiffre du
@@ -78,7 +78,7 @@ MESURE DU 2026-07-25 : a 0,72 le petit mot recevait 28 % de grains
     lettres paraissent floues alors que la couverture est pleine. Ce
     n'etait donc pas un probleme de densite mais de DITHERING a deux
     tons sur un fut de 12 px. A 0,96 il reste juste assez de grains
-    d'accent pour que la matiere soit la meme que celle d'APED, et le
+    d'accent pour que la matiere soit la meme que celle d'ADEXWEB, et le
     mot se lit d'un coup.
 
 ## D-546 — HAUTEUR REELLEMENT OCCUPEE, ROTATION COMPRISE.
@@ -108,12 +108,12 @@ Le grand mot occupe presque toute la largeur, moins la marge
       1000 px de large deborde de 1000*sin(2,2°) ≈ 38 px en
       hauteur et il faut lui laisser cette place. Sur ecran etroit
       la taille est RECALCULEE pour le format, on ne rétrécit pas
-      betement, donc APED ne deborde jamais.
+      betement, donc ADEXWEB ne deborde jamais.
 
 ## D-548 — ALIGNEMENT DU PETIT MOT — mesure, puis tranche.
 
 ALIGNEMENT DU PETIT MOT — mesure, puis tranche.
-      Justifie sur la largeur exacte d'APED, l'interlettrage
+      Justifie sur la largeur exacte d'ADEXWEB, l'interlettrage
       necessaire monte a 2,3 em : AGENCY explose en six lettres
       sans lien et cesse d'etre un mot. Mesure a 1440 : 135 px
       entre chaque lettre pour un corps de 59.
@@ -132,7 +132,7 @@ Sur ecran etroit le petit mot doit remonter en taille
 
 Le petit mot etait a 0,215 : sa hauteur de capitale tombait a
       46 px pour un grand mot a 216, soit un rapport de 4,7. A cette
-      echelle AGENCE ne soutient pas la comparaison avec APED et le
+      echelle AGENCE ne soutient pas la comparaison avec ADEXWEB et le
       visiteur doit deviner. Porte a 0,26 : rapport 3,8, hauteur de
       capitale 56 px, futs de 15 px.
 
@@ -171,7 +171,7 @@ Les grains partent des QUINZE filets horizontaux, exactement
       ceux dont le rideau est fait. Ils y sont poses tout de suite,
       mais ils ne partent qu'au moment ou la premiere bande du
       rideau s'ouvre : le rideau se disperse en filets et les grains
-      composent APED dans la meme seconde, avec la meme matiere.
+      composent ADEXWEB dans la meme seconde, avec la meme matiere.
 
       LE DECLENCHEUR EST L'ANIMATION REELLE, pas une horloge.
       Un `setTimeout` cale sur `performance.now()` mesure depuis la
@@ -190,7 +190,7 @@ Filet de securite : onglet ouvert en arriere-plan, rideau
         part. Depuis que la sequence peut s'ALLONGER pour couvrir un
         chargement lent, un delai fixe de 1,4 s partait avant que le
         rideau ait commence a s'ouvrir : les grains composaient
-        APED derriere un rideau encore ferme, et le relais — qui est
+        ADEXWEB derriere un rideau encore ferme, et le relais — qui est
         tout l'interet du geste — ne se voyait pas.
 
 ## D-556 — RECOLORATION A LA BASCULE DE THEME.

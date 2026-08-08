@@ -47,9 +47,9 @@ for (const e of ECRANS) {
   page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
   await page.addInitScript(() => {
     try {
-      sessionStorage.setItem("aped-entree-saut", "1");
-      sessionStorage.setItem("aped-sans-popup", "1");
-      localStorage.setItem("aped-retenue-vue", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      localStorage.setItem("adexweb-retenue-vue", "1");
     } catch (x) {}
   });
   await page.goto("http://127.0.0.1:" + PORT + "/", { waitUntil: "load" });

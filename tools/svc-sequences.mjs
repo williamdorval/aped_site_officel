@@ -54,7 +54,7 @@ const ETIRE = `
 async function suite(nom, verbe, prep, geste, cible, n = 6, pas = 420) {
   const ctx = await nav.newContext({ viewport: { width: LARGEUR, height: 900 }, colorScheme: "light" });
   const p = await ctx.newPage();
-  await p.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await p.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   await p.goto(BASE, { waitUntil: "load" });
   await p.waitForTimeout(2200);
   await prep(p);

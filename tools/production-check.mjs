@@ -58,7 +58,7 @@ page.on("request", (r) => {
   if (/^https?:\/\//.test(u) && !u.startsWith(BASE)) tierces.push(u.slice(0, 120));
 });
 await page.addInitScript(() => {
-  try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+  try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
 });
 await page.goto(BASE + "/", { waitUntil: "load" });
 await page.waitForTimeout(1800);
@@ -216,7 +216,7 @@ const releve = await page.evaluate((mots) => {
   for (const b of restants) {
     const p2 = await ctx.newPage();
     await p2.addInitScript(() => {
-      try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+      try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
     });
     await p2.goto(BASE + "/", { waitUntil: "load" });
     await p2.waitForTimeout(1500);

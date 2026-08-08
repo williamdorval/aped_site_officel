@@ -24,7 +24,7 @@ le seul qui compte — restait à 5 sur 10. Les neuf pages sont dans
 |---|---|
 | **La géométrie** | à 1440 × 900, le document tient **exactement** dans la fenêtre. Aucune barre de défilement verticale. `scrollHeight <= 900` |
 | **Le mouvement** | un geste, un seul, et **il doit se voir sur l'image arrêtée** — sinon il n'existe pas. § 2 |
-| **L'instant** | l'écran déclare le sien : `<meta name="aped-instant" content="NNN">`. L'outil de capture met toutes les animations en pause et pose leur temps local à cette valeur. Deux passes rendent **la même image** |
+| **L'instant** | l'écran déclare le sien : `<meta name="adexweb-instant" content="NNN">`. L'outil de capture met toutes les animations en pause et pose leur temps local à cette valeur. Deux passes rendent **la même image** |
 | **La prise de vue** | `node tools/ecrans-secteurs.mjs <clé>` — 1440 × 900, densité 2, refus d'une capture plate mesurée par tranches |
 | **L'échelle du panneau** | la capture est réduite à **0,29** dans un cadre de 421 px. Le texte courant tombe sous 5 px, et **c'est voulu** : c'est à ça que ressemble un moniteur posé à trois mètres. D-683 |
 
@@ -36,7 +36,7 @@ côte-à-côte (§ 0), la barre relevée à l'image (§ 1), les polices
 
 ## 0 · LA RÈGLE QUI GOUVERNE TOUTES LES AUTRES
 
-> **AUCUN SITE DE SECTEUR NE PORTE L'IDENTITÉ D'APED.**
+> **AUCUN SITE DE SECTEUR NE PORTE L'IDENTITÉ D'ADEXWEB.**
 > Ni sa palette, ni sa typographie, ni ses formes, ni son langage de
 > mouvement.
 
@@ -47,7 +47,7 @@ qu'on le recolle partout. C'est l'accusation qu'on veut éviter, et on
 se l'était infligée tout seuls : le 2026-08-01, les neuf sites écrits
 ici étaient le même document en neuf couleurs — encre, minium,
 grotesque condensée, micro-libellés mono, sections numérotées `01`
-à `10`, filets de 1 px, angles vifs. L'identité d'APED avec d'autres
+à `10`, filets de 1 px, angles vifs. L'identité d'ADEXWEB avec d'autres
 mots.
 
 **Ce qui en découle, et qui n'est pas négociable :**
@@ -57,7 +57,7 @@ mots.
 | **Le minium et le ciment sont interdits** | sauf si le métier les appelle vraiment. Trois des douze sont des projets réels et portent déjà de l'orange — **aucun des neuf autres n'a droit à une couleur orange** |
 | **Palette propre à chaque métier** | choisie pour lui, pas héritée |
 | **Pairing typographique propre** | l'affichage d'un site ne se retrouve dans aucun autre |
-| **Langage de formes propre** | certains ont des coins arrondis, des ombres, des dégradés, du flou. **Les interdits d'APED ne s'appliquent PAS à l'intérieur d'un site de secteur** — ils sont là pour montrer notre étendue. Le site APED, lui, les garde |
+| **Langage de formes propre** | certains ont des coins arrondis, des ombres, des dégradés, du flou. **Les interdits d'ADEXWEB ne s'appliquent PAS à l'intérieur d'un site de secteur** — ils sont là pour montrer notre étendue. Le site ADEXWEB, lui, les garde |
 | **Langage de mouvement propre** | ce qui bouge, comment, et dans quel sens |
 
 ### Le test du côte-à-côte, et il est le seul qui compte
@@ -144,7 +144,7 @@ demande Chrome 116 quand `animation-timeline` demande 115, et le
 | **GSAP et ScrollTrigger sont autorisés** | **auto-hébergés**, jamais un CDN : `../../js/vendor/gsap.min.js` et `../../js/vendor/ScrollTrigger.min.js` sont déjà dans le dépôt |
 | **Ce qui ne bouge pas** | **zéro requête tierce**, **zéro erreur console**. Un script qui plante est pire que pas de script |
 | **Ce qui ne bouge pas non plus** | rien de nécessaire à la LECTURE ni à l'USAGE ne dépend du script. Le texte, les images, les liens et les formulaires marchent sans lui |
-| **Le site APED, lui, ne change pas** | ses interdits tiennent tous |
+| **Le site ADEXWEB, lui, ne change pas** | ses interdits tiennent tous |
 
 **Le CSS pur reste le bon outil quand il suffit** — une révélation, un
 survol, une bascule `:target`. On ne charge pas 113 ko de GSAP pour

@@ -59,7 +59,7 @@ for (let p = 0; p < PASSES; p++) {
       });
     }
     await page.addInitScript(() => {
-      try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
+      try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
       window.__t = { longues: [], f: 0 };
       new PerformanceObserver((l) => {
         for (const e of l.getEntries()) window.__t.longues.push(Math.round(e.duration));

@@ -350,11 +350,16 @@ try {
        défaut.
 
        L'ÉCRAN DÉCLARE SON PROPRE INSTANT, dans son `<head>` :
-           <meta name="aped-instant" content="940">
+           <meta name="adexweb-instant" content="940">
        Un registre séparé dériverait du fichier qu'il décrit. Sans la
        balise, on prend le défaut du registre et on le DIT. */
+    /* Les deux noms, le temps que les neuf ecrans passent au nouveau :
+       sans la balise, l'outil retombe sur le defaut du registre et
+       photographie a un autre instant, sans echouer.  A RETIRER des
+       qu'aucun `index.html` de `demos-secteurs` ne porte plus
+       `aped-instant`. */
     const instant = await page.evaluate(() => {
-      const m = document.querySelector('meta[name="aped-instant"]');
+      const m = document.querySelector('meta[name="adexweb-instant"], meta[name="aped-instant"]');
       const v = m ? Number(m.content) : NaN;
       return Number.isFinite(v) && v >= 0 ? v : null;
     });
@@ -425,7 +430,7 @@ try {
       console.log(`  la capture reste dans ${path.relative(RACINE, fPng)} pour être REGARDÉE ; rien n'est écrit en WebP`);
     } else {
       ko = Math.round((await versWebp(utilitaire, fPng, fWebp)) / 1024);
-      console.log(`✓ ${cle.padEnd(13)} ${LARG}×${HAUT}  ${String(ko).padStart(3)} ko  images ${img.chargees}/${img.dans}  ${gelees} anim. gelées à ${t} ms${instant === null ? " (défaut — pas de <meta name=\"aped-instant\">)" : ""}  bandes ${JSON.stringify(plat.bandes)}${erreurs.length ? `  ⚠ ${erreurs.length} erreur(s) console` : ""}${remplaces ? `  ${remplaces} nœud(s) masqué(s)` : ""}`);
+      console.log(`✓ ${cle.padEnd(13)} ${LARG}×${HAUT}  ${String(ko).padStart(3)} ko  images ${img.chargees}/${img.dans}  ${gelees} anim. gelées à ${t} ms${instant === null ? " (défaut — pas de <meta name=\"adexweb-instant\">)" : ""}  bandes ${JSON.stringify(plat.bandes)}${erreurs.length ? `  ⚠ ${erreurs.length} erreur(s) console` : ""}${remplaces ? `  ${remplaces} nœud(s) masqué(s)` : ""}`);
     }
     if (erreurs.length) {
       echecs++;

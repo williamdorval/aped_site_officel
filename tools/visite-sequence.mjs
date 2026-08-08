@@ -303,7 +303,7 @@ async function passe() {
   page.on("pageerror", (e) => erreurs.push("PAGEERROR " + e.message));
   page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
   await page.addInitScript(() => {
-    try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) { /* navigation privee */ }
+    try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) { /* navigation privee */ }
   });
   await page.goto(BASE, { waitUntil: "networkidle" });
   await page.addStyleTag({

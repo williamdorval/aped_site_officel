@@ -31,10 +31,10 @@ import { fileURLToPath } from "node:url";
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
 const env = fs.readFileSync(path.join(RACINE, ".env.local"), "utf8");
-const URL_SERVICE = (/^APED_WEB_APP_URL=(.+)$/m.exec(env) || [])[1];
-const CLE = ((/^APED_DIAG_CLE=(.+)$/m.exec(env) || [])[1] || "").trim();
-if (!URL_SERVICE) { console.error("APED_WEB_APP_URL absent de .env.local"); process.exit(2); }
-if (!CLE) { console.error("APED_DIAG_CLE absent de .env.local"); process.exit(2); }
+const URL_SERVICE = (/^ADEXWEB_WEB_APP_URL=(.+)$/m.exec(env) || [])[1];
+const CLE = ((/^ADEXWEB_DIAG_CLE=(.+)$/m.exec(env) || [])[1] || "").trim();
+if (!URL_SERVICE) { console.error("ADEXWEB_WEB_APP_URL absent de .env.local"); process.exit(2); }
+if (!CLE) { console.error("ADEXWEB_DIAG_CLE absent de .env.local"); process.exit(2); }
 const SERVICE = URL_SERVICE.trim();
 
 let n = 0, ko = 0;

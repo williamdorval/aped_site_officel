@@ -51,7 +51,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const RACINE = path.resolve(ICI, "..");
-const BASE = process.env.APED_BASE || "http://127.0.0.1:8099";
+const BASE = process.env.ADEXWEB_BASE || "http://127.0.0.1:8099";
 
 /* ============================================================
    L'INSTRUMENT
@@ -161,7 +161,7 @@ const sidDe = (nom) => (nom + "0123456789abcdefghijklmnop").replace(/[^A-Za-z0-9
 function reference(sid, extra) {
   return Object.assign({
     _form: "refer", _sid: sidDe(sid), _etape: 7, _etapes: 8, _final: true,
-    _subject: "Nouvelle reference - site APED",
+    _subject: "Nouvelle reference - site ADEXWEB",
     entreprise_referee: "ZZ Garage Tremblay",
     contact_reference: "Marie Lavoie, 418 555 0142",
     domaine: "Mécanique", taille: "2 à 10 employés", besoin: "Site web",
@@ -191,7 +191,7 @@ try {
    `js/config.local.js` EST INTERCEPTÉ, PAS RÉÉCRIT. Écrire le vrai
    fichier depuis un outil de mesure écraserait la configuration de
    celui qui le lance, et il ne s'en apercevrait qu'à la prochaine
-   mise en ligne. Et poser `window.APED_ENVOI` par `addInitScript`
+   mise en ligne. Et poser `window.ADEXWEB_ENVOI` par `addInitScript`
    ne marche PAS : ce script tourne AVANT les fichiers de la page,
    donc `config.local.js`, chargé ensuite, écrase la valeur avec la
    sienne — les envois partiraient vers le vrai Google. (D-742)
@@ -230,7 +230,7 @@ async function ouvrir(options) {
 
   await page.route("**/js/config.local.js", (route) => route.fulfill({
     status: 200, contentType: "text/javascript; charset=utf-8",
-    body: `window.APED_ENVOI = ${JSON.stringify(GOOGLE)};\n`
+    body: `window.ADEXWEB_ENVOI = ${JSON.stringify(GOOGLE)};\n`
   }));
 
   /* `js/main.js` peut être servi DÉSARMÉ, pour prouver qu'une garde
@@ -253,15 +253,15 @@ async function ouvrir(options) {
       /* Le popup cadeau s'ouvre en `showModal()` et capture tous les
          événements de pointeur : sans ça chaque clic expire et
          accuse le mauvais coupable. (piège 18) */
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
       /* LA RETENUE EST MISE HORS-JEU, ET IL FAUT LE DIRE. Elle
          s'ouvre à la FERMETURE d'une modale — c'est-à-dire au beau
          milieu du cas 7 — et son formulaire poste une requête de
          plus, avec le MÊME `_sid`. Elle fausserait le comptage sans
          rien apprendre sur la référence. Ce n'est pas elle qu'on
          attaque ici ; `retenue-check.mjs` s'en charge. */
-      localStorage.setItem("aped-retenue-vue", "1");
+      localStorage.setItem("adexweb-retenue-vue", "1");
     } catch (e) {}
   });
 
@@ -773,7 +773,7 @@ titre("7a · ÉCRAN 1, ON FERME LA MODALE, ON ROUVRE, ON FINIT");
   await page.waitForTimeout(800);
   dire("l'écran 1 a ouvert une ligne", nbLignes(), 1);
   dire("un identifiant de session est posé",
-    !!(await page.evaluate(() => localStorage.getItem("aped-sid-refer"))), true);
+    !!(await page.evaluate(() => localStorage.getItem("adexweb-sid-refer"))), true);
 
   await fermerRefer(page);
   dire("la modale est bien fermée",
@@ -789,7 +789,7 @@ titre("7a · ÉCRAN 1, ON FERME LA MODALE, ON ROUVRE, ON FINIT");
   dire("UNE SEULE LIGNE AU CLASSEUR", nbLignes(), 1,
     "deux lignes pour un visiteur = un lead compté deux fois et rappelé deux fois");
   dire("la session est oubliée après le succès",
-    await page.evaluate(() => localStorage.getItem("aped-sid-refer")), null,
+    await page.evaluate(() => localStorage.getItem("adexweb-sid-refer")), null,
     "sinon le visiteur suivant sur le même appareil écraserait cette ligne-là");
   dire("aucune erreur console", erreurs.length, 0, erreurs.slice(0, 2).join(" | "));
   await ctx.close();
@@ -804,12 +804,12 @@ titre("7b · ÉCRAN 1, ON RECHARGE L'ONGLET, ON REVIENT, ON FINIT");
   await cliquer(page, "#referNext");
   await page.waitForTimeout(800);
   dire("l'écran 1 a ouvert une ligne", nbLignes(), 1);
-  const sid1 = await page.evaluate(() => localStorage.getItem("aped-sid-refer"));
+  const sid1 = await page.evaluate(() => localStorage.getItem("adexweb-sid-refer"));
 
   await page.reload({ waitUntil: "load" });
   await pret(page);
   dire("l'identifiant survit au rechargement",
-    await page.evaluate(() => localStorage.getItem("aped-sid-refer")), sid1,
+    await page.evaluate(() => localStorage.getItem("adexweb-sid-refer")), sid1,
     "c'est tout son intérêt : il vit dans `localStorage`, pas en mémoire");
 
   await ouvrirRefer(page);

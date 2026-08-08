@@ -12,13 +12,43 @@ ce qui est marqué FAIT et commité.
 
 | № | Étape | État |
 |---|---|---|
-| 0 | Inventaire + réécriture de la mémoire projet | **FAIT** — `01796ef` |
-| 1 | Analyse des références, direction retenue | en cours |
-| 2 | Le nom et le logo ADEXWEB partout | à faire |
-| 3 | La nouvelle palette et le système de jetons | à faire |
-| 4 | Le design complet, architecture multi-pages | à faire |
-| 5 | La boucle trois rôles, trois tours minimum | à faire |
+| 0 | Inventaire + réécriture de la mémoire projet | **FAIT** — `01796ef`, `ee0e435` |
+| 1 | Analyse des références, direction retenue | **FAIT** — `ANALYSE-REFERENCES.md`, 912 l. |
+| 2 | Le nom et le logo ADEXWEB partout | **FAIT** — ~620 occurrences, 156 fichiers |
+| 3 | La nouvelle palette et le système de jetons | **FAIT** — `aa200f6` |
+| 4 | Le design complet, architecture multi-pages | en cours |
+| 5 | La boucle trois rôles, trois tours minimum | banc écrit, tour 0 relevé |
 | — | Livrable | à faire |
+
+## L'ARCHITECTURE DES PAGES — argumentée
+
+On passe d'un document de 5 122 lignes portant onze sections à **sept pages
+de contenu plus deux pages de service**. Chaque page répond à **une** question
+que se pose un patron de PME, dans l'ordre où il se la pose.
+
+| Page | La question à laquelle elle répond | Ce qu'elle porte |
+|---|---|---|
+| `index.html` | *C'est quoi, et est-ce que ça me parle ?* | Hero, les cinq services en liste plate, une preuve avant/après, le temps perdu, trois étapes, la référence |
+| `services.html` | *Faites-vous ce dont j'ai besoin ?* | Les cinq services développés, un bloc chacun, avec délai |
+| `realisations.html` | *Ça ressemble à quoi ?* | Quatre comparateurs, treize secteurs, la visite 360, les neuf démos |
+| `automatisation.html` | *Combien je perds à faire ça à la main ?* | Le calculateur, le comparatif, les deux guides |
+| `processus.html` | *Comment ça se passe avec vous ?* | Les six étapes, les huit questions |
+| `contact.html` | *Comment je vous rejoins ?* | Le numéro, cinq portes, les quatre garanties, le formulaire simple |
+| `reference.html` | *Je ne suis pas client, mais je connais quelqu'un.* | La grille, les conditions, le formulaire |
+| `404.html` · `confidentialite.html` | service | — |
+
+**Pourquoi la navigation ne compte que cinq entrées** et pas sept : `reference`
+s'adresse à un **autre visiteur** — quelqu'un qui n'achètera pas. Le mettre
+dans la barre volerait de l'attention au parcours d'achat. Il vit dans le pied
+et dans une bande de l'accueil.
+
+**Pourquoi « Comment ça marche » et pas « Processus »** : le second est un mot
+d'agence. La règle Q4 tranche — un patron de garage comprend le premier en
+trois secondes.
+
+**Pourquoi le découpage règle la cause du LCP** : les onze sections tenaient
+dans un seul document ; couper juste après le hero faisait tomber la mesure de
+336 à 170 ms. Ce n'est plus une hypothèse à contourner, c'est la structure.
 
 ---
 

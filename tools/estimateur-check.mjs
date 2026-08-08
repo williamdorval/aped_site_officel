@@ -99,12 +99,12 @@ async function nouvellePage(largeur, hauteur) {
      configuration de la personne qui le lance. */
   await page.route("**/js/config.local.js", (r) => r.fulfill({
     status: 200, contentType: "text/javascript; charset=utf-8",
-    body: "window.APED_ENVOI = " + JSON.stringify(SERVICE) + ";\n"
+    body: "window.ADEXWEB_ENVOI = " + JSON.stringify(SERVICE) + ";\n"
   }));
   await page.addInitScript(() => {
     try {
-      sessionStorage.setItem("aped-sans-popup", "1");
-      sessionStorage.setItem("aped-entree-saut", "1");
+      sessionStorage.setItem("adexweb-sans-popup", "1");
+      sessionStorage.setItem("adexweb-entree-saut", "1");
     } catch (e) {}
   });
   await page.goto(BASE + "/index.html", { waitUntil: "load" });
@@ -120,8 +120,8 @@ async function ouvrirEstimateur(page) {
   await page.evaluate(() => {
     document.querySelectorAll(".modal").forEach((m) => { m.hidden = true; });
     ["project", "estimate", "refer", "booking"].forEach((k) => {
-      try { localStorage.removeItem("aped-brouillon-" + k); } catch (e) {}
-      try { localStorage.removeItem("aped-sid-" + k); } catch (e) {}
+      try { localStorage.removeItem("adexweb-brouillon-" + k); } catch (e) {}
+      try { localStorage.removeItem("adexweb-sid-" + k); } catch (e) {}
     });
   });
   const b = await page.$('[data-modal-open="modal-estimate"]');

@@ -37,7 +37,7 @@ console.log("LE DOIGT SUR LA PRISE — une page neuve par comparaison");
 
 for (const id of CARTES) {
   const ctx = await nav.newContext({ viewport: { width: 1440, height: 1000 }, hasTouch: true, colorScheme: "light" });
-  await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const p = await ctx.newPage();
   p.on("console", (m) => { if (m.type() === "error") { echecs++; console.log("  ECHEC  console : " + m.text()); } });
   await p.goto(BASE, { waitUntil: "networkidle" });

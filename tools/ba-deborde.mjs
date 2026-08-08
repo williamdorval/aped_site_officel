@@ -24,7 +24,7 @@ fs.mkdirSync(OUT, { recursive: true });
 
 const nav = await chromium.launch();
 const ctx = await nav.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 });
-await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 const p = await ctx.newPage();
 await p.goto(`http://localhost:${PORT}/index.html`, { waitUntil: "networkidle" });
 await p.waitForTimeout(1400);

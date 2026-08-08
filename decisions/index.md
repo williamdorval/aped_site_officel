@@ -17,8 +17,8 @@
 | **D-002 — TROIS FEUILLES SUR LE CHEMIN CRITIQUE, PAS QUATRE.** | 24 | 318 |
 | **D-003 — LE SEUL BLOC <noscript> DU SITE, ET IL FERME UN DEFAUT** | 31 | 432 |
 | **D-004 — Le prechargement d'image du hero de Services a saute avec les** | 7 | 85 |
-| **D-005 — SEQUENCE D'ENTREE — la decision se prend AVANT le premier** | 44 | 674 |
-| **D-006 — SEQUENCE D'ENTREE** | 16 | 215 |
+| **D-005 — SEQUENCE D'ENTREE — la decision se prend AVANT le premier** | 44 | 676 |
+| **D-006 — SEQUENCE D'ENTREE** | 16 | 216 |
 | **D-007 — LE RIDEAU EST FAIT DE QUINZE FILETS, et le nombre n'est pas** | 8 | 108 |
 | **D-008 — Les bandes s'ouvrent DEPUIS LE CENTRE : --k est la distance** | 8 | 109 |
 | **D-009 — LA JAUGE. C'est la sequence de chargement, et elle ne compte** | 22 | 316 |
@@ -138,10 +138,10 @@
 | **D-777 · Ce que l'estimateur laissait passer** | 95 | 1 521 |
 | **D-778 · Les trois associés s'appellent William, Allen et Eli** | 61 | 898 |
 | **D-779 · Une prime par entreprise référée, et elle se lit avant de référer** | 80 | 1 217 |
-| **D-780 · La retenue après la fourchette, et sur les deux formulaires d'un seul écran** | 98 | 1 448 |
+| **D-780 · La retenue après la fourchette, et sur les deux formulaires d'un seul écran** | 98 | 1 450 |
 | **D-781 · Le classeur et les avis, vus un lundi matin avec vingt demandes** | 79 | 1 164 |
 | **D-782 · Le popup des guides : la valeur devant le coût, et le plus petit pas d'abord** | 84 | 1 158 |
-| **D-783 · Le numéro, et la seule question à laquelle le site refusait de répondre** | 72 | 1 025 |
+| **D-783 · Le numéro, et la seule question à laquelle le site refusait de répondre** | 72 | 1 026 |
 
 <!-- INDEX:FIN -->
 
@@ -229,10 +229,10 @@ SEQUENCE D'ENTREE — la decision se prend AVANT le premier
         CE QUI LA DECLENCHE — ET IL N'Y A PLUS AUCUN DRAPEAU.
 
         Historique, parce qu'il explique la regle actuelle.
-        · Version 1 : `aped-entree` pose au premier chargement, lu
+        · Version 1 : `adexweb-entree` pose au premier chargement, lu
           ensuite. Un rechargement ne rejouait RIEN.
         · Version 2 : on lisait le TYPE DE NAVIGATION, mais on
-          gardait un drapeau `aped-entree-saut` pour ne pas remettre
+          gardait un drapeau `adexweb-entree-saut` pour ne pas remettre
           la sequence a qui l'avait sautee. Or ce drapeau etait pose
           par N'IMPORTE QUEL `pointerdown` ou `keydown` — donc par un
           clic sur un bouton du site, ou par la touche F5 elle-meme.
@@ -264,7 +264,7 @@ SEQUENCE D'ENTREE — la decision se prend AVANT le premier
 ===================== SEQUENCE D'ENTREE =====================
     N2 · SIGNATURE. Le rideau porte le monogramme, ses quatre filets
     se posent, puis il se retire vers le haut et la limaille du hero
-    compose APED dans la foulee : c'est la MEME matiere qui arrive.
+    compose ADEXWEB dans la foulee : c'est la MEME matiere qui arrive.
     Contraintes tenues :
     · aucune ressource supplementaire, le monogramme est deja inline ;
     · `pointer-events: none` en permanence, elle ne bloque jamais un
@@ -2616,8 +2616,8 @@ redire la même chose à la même personne. Ce sont deux conversations
 différentes, et celle d'après ne peut pas se produire sans que la
 demande soit partie. Une marque commune faisait qu'un visiteur ayant
 vu la retenue à l'étape 2 ne voyait **jamais** celle d'après-fourchette
-— la seule des deux qui vaut de l'argent. `aped-retenue-vue` et
-`aped-retenue-apres-vue`. **Plafond à vie : deux.**
+— la seule des deux qui vaut de l'argent. `adexweb-retenue-vue` et
+`adexweb-retenue-apres-vue`. **Plafond à vie : deux.**
 
 **QUI PREND LE RENDEZ-VOUS N'A PLUS RIEN À RETENIR.** Tout
 `[data-modal-switch]` désarme et ferme la retenue, des deux côtés : le
@@ -2659,7 +2659,7 @@ rendu est prouvé en capture.
 Deux questions, et le code répondait mal aux deux.
 
 **« LEQUEL DE CES VINGT AVIS EST UNE VRAIE DEMANDE ? »** L'objet
-disait `[APED] Nouveau projet · Jean Tremblay · 14 h 30`, qu'il
+disait `[ADEXWEB] Nouveau projet · Jean Tremblay · 14 h 30`, qu'il
 s'agisse d'une demande complète ou d'une sauvegarde en cours. Le corps,
 lui, le disait dès sa première ligne — `COMMENCÉ — ` (D-744). Mais **la
 liste de Gmail ne montre pas le corps** : il fallait ouvrir les vingt
@@ -2853,7 +2853,7 @@ raison. Une porte de secours qui ne paraît qu'à la fin n'en est pas une.
 Elle est sous `#projectNav`, hors des étapes. **36 / 36.**
 
 **L'EN-TÊTE N'A PAS BOUGÉ, ET C'EST DÉLIBÉRÉ.** Sur téléphone il tient
-`APED · Référez · 5 000 $` et rien d'autre : la place la plus chère du
+`ADEXWEB · Référez · 5 000 $` et rien d'autre : la place la plus chère du
 site vend au mauvais public. Y glisser un numéro demande de décider ce
 qui sort — le bouton de référence, ou le CTA d'achat. C'est un
 arbitrage qui coûte de l'argent dans un sens comme dans l'autre, et il

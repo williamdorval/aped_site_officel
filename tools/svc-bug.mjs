@@ -51,7 +51,7 @@ page.on("console", (m) => { if (m.type() === "error") erreurs.push("console: " +
 
 /* Piege 18 : un `<dialog>` ouvert par `showModal()` capture tous les
    evenements de pointeur et fait expirer n'importe quel survol. */
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 
 /* La vague 2 n'arrive qu'au premier geste ou a 1,2 s. On attend
    vraiment, sinon on mesure une page sans ScrollTrigger. */

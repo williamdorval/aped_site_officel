@@ -36,7 +36,7 @@ const page = await ctx.newPage();
 const erreurs = [];
 page.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });
 page.on("pageerror", (e) => erreurs.push(String(e)));
-await page.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+await page.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
 await page.goto(BASE, { waitUntil: "load" });
 await page.waitForTimeout(1200);
 await page.mouse.move(4, 4);

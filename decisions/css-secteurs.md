@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-299 — APED AGENCE — LES TREIZE APERCUS DE SECTEUR** | 15 | 204 |
+| **D-299 — ADEXWEB — LES TREIZE APERCUS DE SECTEUR** | 15 | 202 |
 | **D-300 — LES TREIZE APERCUS — construits dans tools/proto-secteurs.*** | 11 | 153 |
 | **D-301 — LES TREIZE APERCUS DE SECTEUR — maquettes de vrais sites.** | 35 | 471 |
 | **D-302 — Le cadre devient CONTENEUR : toute l'echelle interne se lit en** | 7 | 90 |
@@ -51,10 +51,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-299 — APED AGENCE — LES TREIZE APERCUS DE SECTEUR
+## D-299 — ADEXWEB — LES TREIZE APERCUS DE SECTEUR
 
 ============================================================
-  APED AGENCE — LES TREIZE APERCUS DE SECTEUR
+  ADEXWEB — LES TREIZE APERCUS DE SECTEUR
 
   Feuille HORS DU CHEMIN CRITIQUE, injectee par le bloc en ligne de
   `index.html` en meme temps que les scripts.

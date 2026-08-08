@@ -44,8 +44,8 @@ async function neuve(opts) {
   p.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text().slice(0, 140)); });
   p.on("pageerror", (e) => erreurs.push("PAGEERROR " + String(e).slice(0, 140)));
   await p.addInitScript(() => {
-    try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {}
-    try { localStorage.setItem("aped-cadeau-vu", "1"); } catch (e) {}
+    try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {}
+    try { localStorage.setItem("adexweb-cadeau-vu", "1"); } catch (e) {}
   });
   await p.addInitScript(RELEVEUR);
   await p.goto(B + "/", { waitUntil: "load" });
@@ -211,7 +211,7 @@ if (QUOI === "menu" || QUOI === "tout") {
   const p = await c.newPage();
   const erreurs = [];
   p.on("pageerror", (e) => erreurs.push(String(e).slice(0, 140)));
-  await p.addInitScript(() => { try { sessionStorage.setItem("aped-entree-saut", "1"); sessionStorage.setItem("aped-sans-popup", "1"); localStorage.setItem("aped-cadeau-vu", "1"); } catch (e) {} });
+  await p.addInitScript(() => { try { sessionStorage.setItem("adexweb-entree-saut", "1"); sessionStorage.setItem("adexweb-sans-popup", "1"); localStorage.setItem("adexweb-cadeau-vu", "1"); } catch (e) {} });
   await p.goto(B + "/", { waitUntil: "load" });
   await p.waitForTimeout(1900);
   const imgs = await filmer(p, 900, async () => { await p.click("#burger"); });

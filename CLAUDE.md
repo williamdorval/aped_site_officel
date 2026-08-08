@@ -31,7 +31,7 @@ verbes** DÉGAGER · S'ALIGNER · SOUDER · CRAN et leur règle d'admission ·
 la **limaille**, la **trame**, les **sas**, les **paliers**, la **plaque**
 du hero, la **chambre noire**, le **rideau d'entrée** · `js/limaille.js`,
 `js/trame.js`, `js/langue.js`, `js/hero.js`, `js/pointe.js`,
-`window.APED_TRAME`, `window.APED_ROULER`, `data-verbe`, `sas-ok`,
+`window.ADEXWEB_TRAME`, `window.ADEXWEB_ROULER`, `data-verbe`, `sas-ok`,
 `data-palier` · **le mode sombre et son bouton** : le site est clair, point.
 
 Les lignes exactes : `refonte-adexweb/INVENTAIRE-ANCIENNE-IDENTITE.md`.

@@ -43,7 +43,7 @@ const nav = await chromium.launch();
 
 async function ouvrir(w = 1440, h = 1000) {
   const ctx = await nav.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, colorScheme: "light" });
-  await ctx.addInitScript(() => { try { sessionStorage.setItem("aped-sans-popup", "1"); } catch (e) {} });
+  await ctx.addInitScript(() => { try { sessionStorage.setItem("adexweb-sans-popup", "1"); } catch (e) {} });
   const p = await ctx.newPage();
   const erreurs = [];
   p.on("console", (m) => { if (m.type() === "error") erreurs.push(m.text()); });

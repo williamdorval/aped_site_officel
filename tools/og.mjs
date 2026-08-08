@@ -17,8 +17,8 @@ const nav = await chromium.launch();
 const page = await nav.newPage({ viewport: { width: 1440, height: 900 } });
 await page.addInitScript(() => {
   try {
-    sessionStorage.setItem("aped-sans-popup", "1");
-    sessionStorage.setItem("aped-entree-saut", "1");
+    sessionStorage.setItem("adexweb-sans-popup", "1");
+    sessionStorage.setItem("adexweb-entree-saut", "1");
   } catch (e) {}
 });
 await page.goto(ADRESSE, { waitUntil: "networkidle" });
@@ -41,7 +41,7 @@ body {
   font-family: "Archivo", sans-serif; overflow: hidden; position: relative;
   padding: 48px 56px;
 }
-/* Pas d'etiquette « APED » : la plaque EST le nom, une etiquette le
+/* Pas d'etiquette « ADEXWEB » : la plaque EST le nom, une etiquette le
    repeterait. Seul le lieu s'ecrit. */
 .haut { display: flex; justify-content: flex-end; }
 .haut span { font-family: "Martian Mono", monospace; font-size: 13px; letter-spacing: 0.14em; color: #565a57; }

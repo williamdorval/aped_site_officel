@@ -13,7 +13,7 @@
 
 | Partie | Lignes | Jetons ~ |
 |---|---:|---:|
-| **D-352 — APED AGENCE - Logique** | 9 | 93 |
+| **D-352 — ADEXWEB - Logique** | 9 | 91 |
 | **D-353 — LE BAREME PUBLIE — et ce qui a disparu d'ici.** | 40 | 560 |
 | **D-354 — B7 · LA FAUSSE PRECISION INVITE EXACTEMENT LA CONTESTATION** | 11 | 164 |
 | **D-355 — Ressort. Sert a l'odometre du calculateur : le chiffre a une** | 7 | 86 |
@@ -25,7 +25,7 @@
 | **D-361 — Les polices. document.fonts.ready se resout quand toutes** | 7 | 89 |
 | **D-362 — La limaille du hero. hero.js pose is-live sur l'hote une** | 8 | 103 |
 | **D-363 — LE GARDE-FOU** | 8 | 87 |
-| **D-364 — 3. LE SAUT** | 25 | 374 |
+| **D-364 — 3. LE SAUT** | 25 | 375 |
 | **D-365 — LA FIN, ET LE DEPART DE LA COMPOSITION** | 32 | 463 |
 | **D-366 — 3,2 s de budget. Le dernier geste est la soudure du filet** | 10 | 144 |
 | **D-367 — Filet de securite : si l'animation ne se declenche pas du** | 8 | 101 |
@@ -55,13 +55,13 @@
 | **D-391 — LE CLAVIER — par crans, comme le defilement.** | 12 | 146 |
 | **D-392 — LE PANNEAU DE DETAIL** | 18 | 216 |
 | **D-393 — LE VOILE EST UN PSEUDO-ELEMENT DE .svc-porte, pas du** | 8 | 105 |
-| **D-394 — SECTION 03 · L'AVANT / APRES** | 51 | 678 |
+| **D-394 — SECTION 03 · L'AVANT / APRES** | 51 | 679 |
 | **D-395 — Une graine FIXE par carte et par sens : Math.random()** | 7 | 78 |
 | **D-396 — 520 / 240 et non 420 / 190 : releve du 2026-07-30,** | 10 | 133 |
 | **D-397 — 900 ms : le temps que la carte soit franchement dans** | 8 | 101 |
 | **D-398 — checked par script n'emet AUCUN evenement : le passage** | 8 | 96 |
 | **D-399 — PARCOURS — compteur d'etape.** | 13 | 153 |
-| **D-400 — LE CADEAU — QUAND IL PARAIT, ET POURQUOI CE N'EST PLUS CE QUE** | 84 | 1 204 |
+| **D-400 — LE CADEAU — QUAND IL PARAIT, ET POURQUOI CE N'EST PLUS CE QUE** | 84 | 1 206 |
 | **D-401 — Les deux marqueurs de l'ancienne regle sont effaces a chaque** | 7 | 84 |
 | **D-402 — On REPORTE au lieu d'abandonner : c'est la difference entre** | 7 | 82 |
 | **D-403 — LA SORTIE EST LA RECIPROQUE DE L'ENTREE. On pose la classe,** | 7 | 91 |
@@ -133,10 +133,10 @@
 
 <!-- INDEX:FIN -->
 
-## D-352 — APED AGENCE - Logique
+## D-352 — ADEXWEB - Logique
 
 ============================================================
-  APED AGENCE - Logique
+  ADEXWEB - Logique
   Aucune dependance. GSAP n'intervient que dans motion.js : si le
   CDN tombe, les formulaires, les modales et le calculateur
   fonctionnent quand meme.
@@ -236,7 +236,7 @@ LA PLAQUE SE REND A LA PLACE DU HERO.
         l'ecran, le hero la tient dans son cadre. On mesure donc le
         cadre reel et on donne a la plaque le vecteur exact pour s'y
         rendre. Elle s'efface une fois arrivee, pendant que les
-        grains, eux, sont deja en train de composer APED dessous :
+        grains, eux, sont deja en train de composer ADEXWEB dessous :
         le relais se fait sur la matiere, pas sur un fondu.
 
         GARDE-FOU : la remise part a 640 ms. Si ce script arrive
@@ -335,7 +335,7 @@ La limaille du hero. `hero.js` pose `is-live` sur l'hote une
         savait ce qu'il visait, le contenu etait deja peint dessous.
 
         LE SAUT NE SE MEMORISE PLUS, et c'est un defaut corrige.
-        On ecrivait `sessionStorage["aped-entree-saut"] = "1"` ici.
+        On ecrivait `sessionStorage["adexweb-entree-saut"] = "1"` ici.
         Or cet ecouteur voit N'IMPORTE QUEL `pointerdown` et
         N'IMPORTE QUEL `keydown` — donc un clic sur un bouton du
         site, et la touche F5 elle-meme. Un seul geste pendant la
@@ -840,7 +840,7 @@ LE VOILE EST UN PSEUDO-ELEMENT DE `.svc-porte`, pas du
     n'ajoute que deux choses, et AUCUNE des deux ne porte
     d'information.
 
-    1 · LE PASSAGE. `APED_TRAME.degager` — le mecanisme de passage
+    1 · LE PASSAGE. `ADEXWEB_TRAME.degager` — le mecanisme de passage
         unique du site : une grille de tuiles en aplat recouvre la
         vue DEJA PEINTE, puis chaque tuile retrecit sur son centre.
         C'est V1 · DEGAGER dont l'arete est faite de la matiere de
@@ -993,13 +993,13 @@ Une graine FIXE par carte et par sens : `Math.random()`
     · JAMAIS PAR-DESSUS UNE AUTRE COUCHE. Deux surcouches d'un coup
       et le visiteur ferme les deux sans lire.
 
-    LES ANCIENNES CLES SONT EFFACEES, PAS IGNOREES. `aped-cadeau`
-    et `aped-cadeau-donne` ne veulent plus rien dire : les laisser
+    LES ANCIENNES CLES SONT EFFACEES, PAS IGNOREES. `adexweb-cadeau`
+    et `adexweb-cadeau-donne` ne veulent plus rien dire : les laisser
     dans le stockage des visiteurs, c'est preparer le prochain
     malentendu — on vient d'en payer un.
 
     LE SEUL SUPPRESSEUR EST UN INSTRUMENT, ET IL PORTE SON NOM.
-    `sessionStorage["aped-sans-popup"]` n'est pas une regle
+    `sessionStorage["adexweb-sans-popup"]` n'est pas une regle
     produit : c'est l'interrupteur des trente outils de mesure, qui
     mesurent autre chose que le popup et ne peuvent pas travailler
     sous une surcouche. Il s'appelle « sans-popup » et pas
