@@ -118,6 +118,10 @@ const SONDE = () => {
   document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])').forEach((el) => {
     if (el.closest('[hidden], template') || el.disabled) return;
     if (el.closest('.ba-vue--avant, .v11, [class^="gab"], [class*=" gab"], .mock, [data-mock], #tplSecteurs')) return;
+    // Le piege a robots est sorti du cadre EXPRES : ce n'est pas une cible,
+    // c'est un appat. L'agrandir a 44 px le rendrait plus facile a viser
+    // pour un humain, ce qui est exactement le contraire du but.
+    if (el.closest('.piege')) return;
     const r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) return;
     // Un lien AU FIL DU TEXTE n'a pas de taille de cible imposee : la regle

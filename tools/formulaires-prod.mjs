@@ -479,15 +479,34 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
 }
 
 /* ============================================================
-   5 · PROJET — six etapes
+   5 · PROJET — huit ecrans depuis D-749
+
+   L'OUTIL EN COMPTAIT SIX, ET C'EST POURQUOI IL MENTAIT AU VERT.
+   Il cliquait cinq fois « Continuer » puis declarait « livre » des
+   que `.step[data-pstep="6"]` etait visible — l'ecran 6 est une
+   QUESTION, pas la confirmation. La demande n'etait jamais envoyee,
+   le classeur restait vide, et le verdict disait oui. Piege 17 en
+   entier : le test verrouillait le defaut.
+
+   On avance maintenant TANT QUE l'ecran visible n'est pas le
+   dernier, en remplissant celui qu'on a sous les yeux — les ecrans
+   4 et 5 se sautent tout seuls selon les besoins coches, un compte
+   ecrit en dur ne peut pas le savoir.
    ============================================================ */
 {
   const page = await ouvrir(nav);
   const nom = "PROJET";
+  const P_FIN = 8;   /* l'ecran de confirmation, cf. `P_TOTAL` dans main.js */
   try {
     await page.evaluate(() => document.querySelector('[data-modal-open="modal-project"]').click());
     await page.waitForTimeout(700);
-    for (let pas = 1; pas <= 5; pas++) {
+    for (let tour = 0; tour < 12; tour++) {
+      const ici = await page.evaluate(() => {
+        const v = [...document.querySelectorAll('#projectWizard .step[data-pstep]')].find((s) => !s.hidden);
+        return v ? Number(v.dataset.pstep) : 0;
+      });
+      if (!ici) throw new Error("aucun ecran visible dans l'assistant de projet");
+      if (ici >= P_FIN - 1) break;   /* l'avant-dernier : le clic suivant ENVOIE */
       await page.evaluate(([p, v]) => {
         const etape = document.querySelector(`.step[data-pstep="${p}"]`);
         if (!etape) return;
@@ -505,17 +524,35 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
         });
         const choix = etape.querySelector(".choices button");
         if (choix && !etape.querySelector('[aria-pressed="true"]')) choix.click();
-      }, [pas, T]);
+      }, [ici, T]);
       await page.waitForTimeout(220);
       await cliquer(page, "#projectNext");
       await page.waitForTimeout(450);
     }
-    await page.waitForTimeout(2600);
-    const vu = await page.evaluate(() => ({
-      final: !document.querySelector('#projectWizard .step[data-pstep="6"]').hidden,
+    /* LE DERNIER CLIC EST CELUI QUI ENVOIE : « Envoyer ma demande ». */
+    await page.evaluate(([p, v]) => {
+      const etape = document.querySelector(`.step[data-pstep="${p}"]`);
+      if (!etape) return;
+      etape.querySelectorAll(".field").forEach((f) => {
+        if (f.hidden || f.closest("[hidden]")) return;
+        const e = f.querySelector("input:not([type=hidden]):not([type=file]), select, textarea");
+        if (!e || e.value) return;
+        e.value = e.type === "email" ? v.courriel : e.type === "tel" ? v.tel
+          : e.tagName === "TEXTAREA" ? v.message : v.nom;
+        e.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    }, [P_FIN - 1, T]);
+    await page.waitForTimeout(250);
+    await cliquer(page, "#projectNext");
+    console.log(`    (reponse en ${await attendreReponse(page, "#projectWizard")} ms)`);
+    await page.waitForTimeout(1200);
+    const vu = await page.evaluate((fin) => ({
+      final: !document.querySelector(`#projectWizard .step[data-pstep="${fin}"]`).hidden,
       etat: (document.querySelector("#projectWizard .form-status") || {}).textContent || ""
-    }));
-    verdict(nom, true, vu.final, { etat: vu.etat, reponse: page._reponses.slice(-1)[0] });
+    }), P_FIN);
+    const repP = page._reponses.slice(-1)[0];
+    verdict(nom, true, !!(vu.final && repP && /"success":true/.test(repP.corps)),
+      { etat: vu.etat, reponse: repP, ecranFinal: vu.final });
   } catch (e) {
     verdict(nom, true, false, { etat: "ERREUR D’OUTIL : " + String(e).slice(0, 200) });
   }
@@ -532,34 +569,73 @@ for (const [rang, mode] of [[0, "Google Meet"], [1, "Appel téléphonique"]]) {
   try {
     await page.evaluate(() => document.querySelector('[data-modal-open="modal-estimate"]').click());
     await page.waitForTimeout(700);
-    /* HUIT QUESTIONS DEPUIS D-749 — ampleur, fonctions et contenu se
-       sont ajoutees. On clique la premiere option de CHAQUE groupe
-       present, plutot que de compter jusqu'a un nombre ecrit en
-       dur : ce nombre changera encore, et l'outil rendrait « ne
-       livre pas » sur un formulaire intact. */
-    const groupes = await page.evaluate(() =>
-      [...document.querySelectorAll("#modal-estimate .options[data-key]")]
-        .map((g) => Number(g.closest(".step").dataset.step)));
-    for (const k of groupes) {
-      await page.evaluate((s) => {
-        const e = document.querySelector(`#modal-estimate .step[data-step="${s}"]`);
-        const b = e && e.querySelector(".options button");
-        if (b) b.click();
-      }, k);
-      await page.waitForTimeout(260);
+    /* ON REPOND A L'ECRAN VISIBLE, ON NE CLIQUE PLUS UNE LISTE.
+
+       LE DEFAUT DE L'OUTIL, ET IL ACCUSAIT UN FORMULAIRE INTACT.
+       Il ramassait les quatorze groupes `.options[data-key]` du
+       balisage et cliquait le premier bouton de chacun, dans
+       l'ordre du DOM. Quatre ecrans portent `ampleur` — un par
+       famille — et cliquer celui de la boutique APRES celui de la
+       vitrine renvoie `goEStep` en ARRIERE, parce qu'il deduit son
+       sens de l'ecran visible. Le parcours retombait sur l'ecran 2
+       et n'atteignait jamais le 13 : `page.fill("#esName")`
+       expirait a 30 s sur des coordonnees jamais affichees.
+
+       On fait maintenant ce que fait un visiteur : on regarde
+       l'ecran VISIBLE, on repond a ce qu'il pose — options, cases a
+       cocher — puis on clique « Continuer » s'il y en a un. Les
+       ecrans qui n'ont pas de « Continuer » avancent tout seuls au
+       clic. Aucun numero n'est ecrit en dur : la garde est un
+       nombre de tours. */
+    const E_COORD = 13;
+    for (let tour = 0; tour < 20; tour++) {
+      const fini = await page.evaluate((cible) => {
+        const vu = [...document.querySelectorAll('#wizard .step[data-step]')]
+          .find((s) => !s.hidden);
+        if (!vu) return "aucun ecran visible";
+        if (Number(vu.dataset.step) >= cible) return true;
+        vu.querySelectorAll(".options[data-key]").forEach((g) => {
+          const bloc = g.closest(".step-second");
+          if (bloc && bloc.hidden) return;
+          const b = g.querySelector("button");
+          if (b) b.click();
+        });
+        vu.querySelectorAll('[data-checks] input[type="checkbox"]').forEach((c, i) => {
+          if (i === 0 && !c.checked) {
+            c.checked = true;
+            c.dispatchEvent(new Event("change", { bubbles: true }));
+          }
+        });
+        const suite = vu.querySelector("[data-esuivant]");
+        if (suite) suite.click();
+        return false;
+      }, E_COORD);
+      if (fini === true) break;
+      if (typeof fini === "string") throw new Error("estimateur : " + fini);
+      await page.waitForTimeout(280);
     }
+    /* SI L'ECRAN DES COORDONNEES N'EST PAS LA, ON S'ARRETE ICI et on
+       le DIT : `page.fill` sur un champ jamais atteint rendrait une
+       expiration de 30 s qui ressemble a une panne du site. */
+    const arrive = await page.evaluate((cible) => {
+      const vu = [...document.querySelectorAll('#wizard .step[data-step]')].find((s) => !s.hidden);
+      return vu ? Number(vu.dataset.step) : 0;
+    }, E_COORD);
+    if (arrive !== E_COORD) throw new Error("le parcours s'arrete a l'ecran " + arrive + " au lieu de " + E_COORD);
     await page.fill("#esName", T.nom);
     await page.fill("#esEmail", T.courriel);
     await page.click("#modal-estimate [data-submit]");
     await page.waitForTimeout(2600);
     const vu = await page.evaluate(() => ({
-      etape8: !document.querySelector('#modal-estimate .step[data-step="8"]').hidden,
+      /* L'ecran du RESULTAT est le 14e, pas le 8e : le 8 datait du
+         questionnaire d'avant D-776. */
+      resultat: !document.querySelector('#modal-estimate .step[data-step="14"]').hidden,
       etat: (document.querySelector("#estimateStatus") || {}).textContent || ""
     }));
     /* L'etape 8 parait TOUJOURS, meme en echec (D-426) : le vrai
        juge ici est la reponse du service, pas l'ecran. */
     const rep = page._reponses.slice(-1)[0];
-    verdict(nom, true, !!(rep && /"success":true/.test(rep.corps)), { etat: vu.etat, reponse: rep, etape8: vu.etape8 });
+    verdict(nom, true, !!(rep && /"success":true/.test(rep.corps)), { etat: vu.etat, reponse: rep, resultat: vu.resultat });
   } catch (e) {
     verdict(nom, true, false, { etat: "ERREUR D’OUTIL : " + String(e).slice(0, 200) });
   }

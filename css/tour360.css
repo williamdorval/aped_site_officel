@@ -307,8 +307,20 @@
   border: var(--rule-w) solid var(--rule-strong);
 }
 
-@media (max-width: 30em) {
-  .tour-map { width: 10rem; }
+/* SOUS 48em, LE PLAN NE RETRECIT PAS : IL PREND TOUTE LA LARGEUR ET IL
+   PASSE SOUS LA SCENE. A 10 rem, ses trois pieces mesuraient 34, 42 et
+   42 px de haut — sous le plancher de 44 px, donc invisables au pouce sur
+   le seul appareil ou l'on vise au pouce. Le plan est une aide de
+   navigation : le rendre plus petit la ou l'ecran est plus petit etait
+   exactement le mauvais sens.  D-863 */
+@media (max-width: 61.99em) {
+  .tour-map {
+    position: static;
+    width: 100%;
+    max-width: 22rem;
+    margin: var(--s-3) auto 0;
+    aspect-ratio: 240 / 116;
+  }
 }
 
 .tour-map-plan {

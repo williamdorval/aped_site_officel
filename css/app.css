@@ -432,7 +432,7 @@ button.carte { text-align: left; width: 100%; font: inherit; }
 
 .carte-etiquette {
   justify-self: start;
-  font-size: 0.8125rem; font-weight: 700;
+  font-size: var(--t-00); font-weight: 700;
   letter-spacing: var(--ls-etiquette); text-transform: uppercase;
   color: var(--navy-dark);
   background: var(--champagne-light);
@@ -540,6 +540,8 @@ select.saisie {
 .liste-404 svg { width: 1.125rem; height: 1.125rem; color: var(--navy); }
 
 .lien-tel {
+  display: inline-flex; align-items: center;
+  min-height: var(--cible-min);
   font-family: var(--font-titre);
   font-size: var(--t-1);
   color: var(--navy-dark);
@@ -2143,7 +2145,7 @@ select.saisie {
   display: inline-flex; align-items: center;
   padding: 0.3rem 0.6rem;
   margin-bottom: var(--e-4);
-  font-size: 0.8125rem; font-weight: 700;
+  font-size: var(--t-00); font-weight: 700;
   letter-spacing: var(--ls-etiquette); text-transform: uppercase;
   color: var(--navy-dark);
   background: var(--champagne-light);
@@ -2758,7 +2760,7 @@ html:not(.js) .ba-sans { display: block; }
   box-shadow: var(--ombre-levee);
 }
 .guide-couv .guide-marque {
-  font-size: 0.8125rem; font-weight: 700;
+  font-size: var(--t-00); font-weight: 700;
   letter-spacing: var(--ls-etiquette); text-transform: uppercase;
   color: var(--champagne-light);
 }
@@ -4289,18 +4291,17 @@ html:not(.js) .ba-sans { display: block; }
   width: 100%; height: clamp(15rem, 34vw, 26rem);
   object-fit: cover; display: block;
 }
-.bande-lieu::after {
-  content: ""; position: absolute; inset: 0;
-  background: rgb(24 33 61 / 0.62);
-  z-index: 1;
-}
 .bande-lieu-mot {
-  position: absolute; inset: auto 0 0 0; z-index: 2;
-  max-width: var(--page-max); margin-inline: auto;
-  padding: var(--e-6) var(--gouttiere);
+  background: var(--navy-dark);
+  color: var(--pearl);
+  margin: 0;
+  padding: var(--e-5) var(--gouttiere);
   font-family: var(--font-titre);
   font-size: var(--t-3); line-height: var(--lh-3); letter-spacing: var(--ls-3);
-  color: var(--pearl);
+}
+.bande-lieu-mot span {
+  display: block;
+  max-width: var(--page-max); margin-inline: auto;
 }
 
 /* La figure et la carte « ce qui est inclus » tiennent dans la MEME colonne.
