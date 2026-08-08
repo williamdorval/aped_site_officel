@@ -47,20 +47,21 @@ s'inspirer.**
 |---|---|---|
 | `--pearl` | `#FDFFFF` | **le fond principal, en majorité** |
 | `--silk` · `--marble` | `#EEE5D9` · `#E8E4E0` | sections secondaires, cartes · bordures, fonds légers |
-| `--navy` | `#222D52` | titres, boutons principaux, en-tête — 13,2:1 sur pearl |
-| `--navy-dark` · `--navy-light` | `#18213D` · `#35446F` | appuis |
+| `--navy` | `#222D52` | titres, boutons principaux, en-tête — 13,37:1 sur pearl |
+| `--navy-dark` · `--navy-light` | `#18213D` · `#35446F` | appuis — 15,81 · 9,48 |
 | `--champagne` | `#D2B68A` | **accents, traits, détails — JAMAIS du texte** |
 | `--champagne-dark` · `-light` | `#B99B6B` · `#E7D7BC` | appuis |
-| `--text` | `#161A24` | tout le texte qui compte — 17,5:1 sur pearl |
-| `--text-soft` | `#4F5261` | texte secondaire courant — 7,7:1 sur pearl |
-| `--text-muted` | `#6E7180` | **pearl seulement**, étiquettes et légendes — 4,9:1 |
+| `--text` | `#161A24` | tout le texte qui compte — 17,33:1 sur pearl |
+| `--text-soft` | `#4F5261` | texte secondaire courant — 7,72:1 sur pearl |
+| `--text-muted` | `#6E7180` | **pearl seulement**, étiquettes et légendes — 4,82:1 |
 
-> **`--text-muted` tombe à 3,9:1 sur silk et sur marble : il y est
+> **`--text-muted` tombe à 3,88:1 sur silk et 3,83:1 sur marble : il y est
 > INTERDIT.** Sur ces deux fonds, le secondaire est `--text-soft`.
 > **Le champagne ne porte ni texte ni information** : le plus foncé
-> plafonne à 2,65:1 sur pearl, il échoue même au 3:1 d'une icône porteuse
+> plafonne à 2,63:1 sur pearl, il échoue même au 3:1 d'une icône porteuse
 > de sens. Une icône ou une bordure qui **dit quelque chose** est en
-> `--navy` ou en `--text`.
+> `--navy` ou en `--text`. `node tools/palette-check.mjs` relit
+> `css/tokens.css` et arrête si un de ces chiffres ment.
 
 ### Polices — auto-hébergées, `fonts/`, licence OFL
 

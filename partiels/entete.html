@@ -1,0 +1,50 @@
+<header class="barre" data-barre>
+  <div class="barre-dedans">
+    <a class="logo" href="index.html" aria-label="ADEXWEB, retour à l'accueil">
+      <img src="images/logo/logo-complet-bi-80.png" srcset="images/logo/logo-complet-bi-80.png 1x, images/logo/logo-complet-bi-160.png 2x" width="187" height="40" alt="ADEXWEB — agence web" decoding="async">
+    </a>
+
+    <nav class="nav-liens" aria-label="Navigation principale">
+      <a class="nav-lien" href="services.html" data-page="services">Services</a>
+      <a class="nav-lien" href="realisations.html" data-page="realisations">Réalisations</a>
+      <a class="nav-lien" href="automatisation.html" data-page="automatisation">Automatisation</a>
+      <a class="nav-lien" href="processus.html" data-page="processus">Comment ça marche</a>
+      <a class="nav-lien" href="contact.html" data-page="contact">Nous joindre</a>
+    </nav>
+
+    <div class="barre-actes">
+      <a class="barre-tel" href="tel:+18195230871" data-appel="entete" aria-label="Appeler ADEXWEB au 819 523-0871">
+        <svg aria-hidden="true"><use href="#i-telephone"></use></svg>819 523-0871
+      </a>
+      <button class="btn btn--primaire" type="button" data-modal-open="modal-booking">Réserver un appel</button>
+      <button class="menu-btn" type="button" id="burger" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu">
+        <svg width="24" height="24" aria-hidden="true"><use href="#i-menu"></use></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="menu-tete">
+    <span class="logo" aria-hidden="true">
+      <img src="images/logo/logo-complet-bi-80.png" width="187" height="40" alt="" decoding="async">
+    </span>
+    <button class="menu-btn" type="button" data-menu-ferme aria-label="Fermer le menu">
+      <svg width="24" height="24" aria-hidden="true"><use href="#i-croix"></use></svg>
+    </button>
+  </div>
+  <nav class="menu-liste" aria-label="Menu">
+    <a href="index.html" data-page="accueil">Accueil</a>
+    <a href="services.html" data-page="services">Services</a>
+    <a href="realisations.html" data-page="realisations">Réalisations</a>
+    <a href="automatisation.html" data-page="automatisation">Automatisation</a>
+    <a href="processus.html" data-page="processus">Comment ça marche</a>
+    <a href="contact.html" data-page="contact">Nous joindre</a>
+  </nav>
+  <div class="menu-pied">
+    <button class="btn btn--primaire btn--large" type="button" data-modal-open="modal-booking">Réserver un appel</button>
+    <a class="btn btn--second btn--large" href="tel:+18195230871" data-appel="menu">
+      <svg aria-hidden="true"><use href="#i-telephone"></use></svg>819 523-0871
+    </a>
+  </div>
+</div>
