@@ -108,9 +108,17 @@ if (!KINDS.length) { console.error("SCHEMA vide : Code.gs n'a pas ete lu."); pro
   console.log("COLONNES FIGEES : " + figees.join(" · ") + "  (toutes presentes au schema)");
 }
 
+/* LA PORTE DE DIAGNOSTIC EST FERMEE A CLE DEPUIS D-785.
+   Elle rendait le quota d'envoi et les prenoms des associes a qui
+   voulait. La cle vit dans les proprietes du script cote Google, et
+   dans `.env.local` ici — jamais dans le depot. */
+const mCle = /^APED_DIAG_CLE=(.+)$/m.exec(env);
+const DIAG_CLE = (process.env.APED_DIAG_CLE || (mCle && mCle[1]) || "").trim();
+
 /* ---- le service ---- */
 const lire = async (q) => {
-  const r = await fetch(SERVICE + (q ? "?" + q : ""), { redirect: "follow" });
+  const url = SERVICE + (q ? "?" + q + (DIAG_CLE ? "&cle=" + encodeURIComponent(DIAG_CLE) : "") : "");
+  const r = await fetch(url, { redirect: "follow" });
   const t = await r.text();
   try { return JSON.parse(t); }
   catch { console.error("Le service n'a pas rendu de JSON (" + t.length + " octets de HTML).\n"
@@ -127,6 +135,18 @@ if (!(Number(vie.version) >= VERSION_MINIMALE)) {
 }
 
 const d = await lire("action=diag");
+/* UNE PORTE FERMEE N'EST PAS UN CLASSEUR SAIN.  D-785
+   Sans ce garde-fou, `d.onglets` serait `undefined`, la boucle ne
+   tournerait sur rien, et l'outil rendrait « 0 defaut » sur un
+   classeur qu'il n'a jamais vu — exactement le piege 30. */
+if (d && d.ferme) {
+  console.error("\nARRET — la porte de diagnostic a refuse.");
+  console.error("  " + (d.message || ""));
+  console.error(DIAG_CLE
+    ? "  La cle d'`.env.local` ne correspond pas a `DIAG_CLE` cote Google."
+    : "  Aucune cle dans `.env.local` : ajoutez-y `APED_DIAG_CLE=...`.");
+  process.exit(2);
+}
 if (!d || !Array.isArray(d.onglets) || !d.onglets.length) {
   console.error("La porte de diagnostic n'a rendu aucun onglet."); process.exit(2);
 }

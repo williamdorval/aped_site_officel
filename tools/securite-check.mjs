@@ -297,6 +297,96 @@ titre("5 · CE QUI ENTRE DANS LE DRIVE DE L'AGENCE (D-758)");
 
 
 /* ============================================================
+   5bis · L'OCTET NUL, LE SVG, ET LA PORTE DE DIAGNOSTIC  (D-785)
+   ============================================================ */
+titre("5bis · CE QUI PASSAIT ENCORE (D-785)");
+{
+  remise(); viderDebit();
+  const b64 = "QUJD";
+  const projet = (pieces, sid) => poster({
+    _form: "project", _sid: sid, _final: true,
+    nom: "ZZTEST Nul", email: "zztest@exemple.ca", telephone: "418 555 0177",
+    entreprise: "ZZTEST inc", ville: "Levis", budget: "10 000 $ et plus",
+    description: "des fichiers", _fichiers: pieces
+  });
+
+  /* L'OCTET NUL COUPE LE NOM EN DEUX. L'extension jugee est celle
+     d'APRES le NUL — « png » — mais tout consommateur qui tronque a
+     \0 lit « evil.svg ». Le filtre etait contourne par un caractere
+     invisible. */
+  const avNul = etat.fichiersDrive.length;
+  projet([{ nom: "evil.svg .png", base64: b64, type: "image/png" }], "ZZTESTnul00001");
+  dire("un nom a octet NUL est refuse", etat.fichiersDrive.length, avNul,
+    "dernier retenu : " + JSON.stringify((etat.fichiersDrive[etat.fichiersDrive.length - 1] || {}).nom));
+
+  /* ET LES AUTRES CARACTERES DE CONTROLE AVEC LUI. */
+  const avEsc = etat.fichiersDrive.length;
+  projet([{ nom: "logo[2J.png", base64: b64, type: "image/png" }], "ZZTESTnul00002");
+  dire("un nom a caractere d'echappement est refuse", etat.fichiersDrive.length, avEsc);
+
+  /* MAIS PAS LE SAUT DE LIGNE : un nom colle depuis un courriel en
+     porte, et le refuser ferait perdre une piece legitime. Il se
+     nettoie, comme avant. */
+  const avSaut = etat.fichiersDrive.length;
+  projet([{ nom: "logo\nBcc: x@y.ca.png", base64: b64, type: "image/png" }], "ZZTESTnul00003");
+  dire("un nom a saut de ligne passe, assaini", etat.fichiersDrive.length, avSaut + 1);
+
+  /* LE SVG EST UN DOCUMENT, PAS UNE IMAGE. Il peut porter un
+     `<script>` qui s'execute quand Drive en fait l'apercu. */
+  const avSvg = etat.fichiersDrive.length;
+  projet([{ nom: "logo.svg", base64: b64, type: "image/svg+xml" }], "ZZTESTnul00004");
+  dire("un SVG est refuse", etat.fichiersDrive.length, avSvg,
+    "il peut contenir un script, et Drive l'ouvre dans un navigateur");
+  dire("il n'est plus dans la liste des extensions",
+    gs.REGLAGES.PIECES_EXTENSIONS.indexOf("svg"), -1);
+
+  /* ET CE QUI DOIT PASSER PASSE ENCORE. Un correctif de securite
+     qui ferme la porte aux clients est un correctif rate. */
+  const avOk = etat.fichiersDrive.length;
+  projet([{ nom: "logo.png", base64: b64, type: "image/png" }], "ZZTESTnul00005");
+  dire("un PNG normal passe toujours", etat.fichiersDrive.length, avOk + 1);
+}
+
+/* ============================================================
+   5ter · LA PORTE DE DIAGNOSTIC  (D-785)
+   ============================================================ */
+titre("5ter · LA PORTE DE DIAGNOSTIC EST FERMEE A CLE (D-785)");
+{
+  const lire = (p) => {
+    const r = gs.doGet({ parameter: p });
+    try { return JSON.parse(r.getContent()); } catch (e) { return { erreurLecture: String(e) }; }
+  };
+
+  /* SANS CLE POSEE, ELLE REFUSE — et elle ne rend pas une version
+     allegee : un diagnostic partiel qu'un outil prendrait pour un
+     diagnostic complet est le « vert sur du vide » qu'on chasse. */
+  delete etat.proprietes.DIAG_CLE;
+  const sans = lire({ action: "diag" });
+  dire("sans cle posee, elle refuse", sans.success, false);
+  dire("et elle dit comment en poser une", /DIAG_CLE/.test(sans.message || ""), true);
+  dire("elle ne rend NI quota NI onglets", "quota" in sans || "onglets" in sans, false,
+    JSON.stringify(Object.keys(sans)));
+
+  etat.proprietes.DIAG_CLE = "ZZ-cle-d-essai";
+  const fausse = lire({ action: "diag", cle: "pas-la-bonne" });
+  dire("avec une mauvaise cle, elle refuse", fausse.success, false);
+  dire("et elle ne fuit toujours rien", "quota" in fausse || "onglets" in fausse, false);
+
+  const sansCle = lire({ action: "diag" });
+  dire("cle posee mais absente de la requete, elle refuse", sansCle.success, false);
+
+  const bonne = lire({ action: "diag", cle: "ZZ-cle-d-essai" });
+  dire("avec la bonne cle, elle repond", bonne.success, true);
+  dire("et elle rend bien les onglets", Array.isArray(bonne.onglets), true);
+
+  /* LA PORTE DES CRENEAUX, ELLE, RESTE OUVERTE — le site en a
+     besoin a chaque visite, et elle ne rend que des heures libres. */
+  const cr = gs.doGet({ parameter: { action: "creneaux" } });
+  dire("la porte des creneaux reste ouverte", !!cr.getContent(), true);
+}
+
+
+/* ============================================================
    6 · UNE RESERVATION FORGEE
    ============================================================ */
 titre("6 · CE QU'UNE REQUETE FORGEE NE PEUT PAS RESERVER");

@@ -209,8 +209,21 @@ var REGLAGES = {
      se redemande par courriel, ce qui est plus lent pour nous et
      beaucoup moins grave. */
   PIECES_MAX_NOMBRE: 12,
+  /* `svg` EST SORTI DE LA LISTE LE 2026-08-07.  D-785
+
+     UN SVG EST UN DOCUMENT, PAS UNE IMAGE. Il peut contenir un
+     `<script>`, et il s'exécute quand on l'ouvre dans un navigateur
+     — ce que fait Drive quand un associé clique « aperçu ». Le
+     visiteur qui envoie son logo ne perd rien : `png`, `jpg`,
+     `webp`, `pdf`, `ai` et `eps` restent, et un logo vectoriel
+     s'envoie en `pdf` ou en `ai`.
+
+     ON LE REFUSE PLUTÔT QUE DE LE NEUTRALISER. Neutraliser veut
+     dire réécrire le fichier de quelqu'un d'autre en espérant
+     n'avoir rien manqué ; le refus, lui, se voit dans l'avis et le
+     visiteur peut renvoyer autre chose. */
   PIECES_EXTENSIONS: [
-    "pdf", "png", "jpg", "jpeg", "gif", "webp", "avif", "svg", "heic",
+    "pdf", "png", "jpg", "jpeg", "gif", "webp", "avif", "heic",
     "doc", "docx", "odt", "rtf", "txt", "csv", "xls", "xlsx", "ods",
     "ppt", "pptx", "ai", "eps", "psd", "zip"
   ],
@@ -1706,7 +1719,35 @@ function doGet(e) {
     }
   }
 
+  /* LA PORTE DE DIAGNOSTIC SE FERME A CLE.  D-785
+
+     ELLE ETAIT OUVERTE A TOUT LE MONDE, et elle rendait le quota
+     d'envoi restant — de quoi savoir combien de courriels il faut
+     pour l'epuiser — et les valeurs des listes deroulantes,
+     c'est-a-dire les PRENOMS des trois associes. Aucune donnee de
+     client n'en sortait, mais une porte de maintenance n'a rien a
+     dire a un inconnu.
+
+     LA CLE VIT DANS LES PROPRIETES DU SCRIPT, jamais dans le code :
+     `DIAG_CLE`. Le depot la lit dans `.env.local`, qui est dans le
+     `.gitignore` depuis toujours.
+
+     SANS CLE POSEE, LA PORTE REFUSE. Elle ne rend pas une version
+     allegee : un diagnostic partiel qu'un outil prendrait pour un
+     diagnostic complet est exactement le « vert sur du vide » que
+     ce projet passe son temps a chasser. Elle dit quoi faire. */
   if (action === "diag") {
+    var attendue = PropertiesService.getScriptProperties().getProperty("DIAG_CLE");
+    var donnee = (e && e.parameter && e.parameter.cle) || "";
+    if (!attendue) {
+      return json({ success: false, ferme: true,
+        message: "La porte de diagnostic est fermee : aucune cle n'est posee. "
+          + "Editeur Apps Script > Parametres du projet > Proprietes du script > "
+          + "ajouter DIAG_CLE, puis la recopier dans .env.local sous APED_DIAG_CLE." });
+    }
+    if (String(donnee) !== String(attendue)) {
+      return json({ success: false, ferme: true, message: "Porte fermee." });
+    }
     try {
       return json(diagnostic());
     } catch (err) {
@@ -1718,7 +1759,7 @@ function doGet(e) {
   return json({
     success: true,
     service: "APED formulaires",
-    version: 16,
+    version: 17,
     conditions: CONDITIONS_VERSIONS[0],
     calendrier: typeof Calendar !== "undefined",
     calendriers: listeCalendriers(),
@@ -3128,6 +3169,15 @@ function rangerPieces(data) {
          elle qui décidera de ce que Windows fait du fichier quand
          un associé le téléchargera — c'est donc celle-là qu'il faut
          juger. */
+      /* LE NOM BRUT SE JUGE AVANT D'ETRE NETTOYE.  D-785
+         Un caractere de controle dans un nom de fichier n'est pas
+         une faute de frappe : c'est une tentative de couper le nom
+         en deux pour que l'extension jugee ne soit pas celle qui
+         sera lue. On refuse le fichier entier. */
+      if (nomSuspect(p.nom)) {
+        refuses.push(nomDePiece(p.nom));
+        return;
+      }
       var nom = nomDePiece(p.nom);
       var ext = (nom.split(".").pop() || "").toLowerCase();
       if (nom.indexOf(".") === -1 || REGLAGES.PIECES_EXTENSIONS.indexOf(ext) === -1) {
@@ -3158,9 +3208,29 @@ function rangerPieces(data) {
    craindre — mais le nom se retrouve dans un courriel et dans une
    colonne du classeur. Un retour à la ligne y casse la mise en
    page, et un nom de 900 signes rend la cellule illisible. */
+/* UN NOM DE PIECE QUI PORTE UN CARACTERE DE CONTROLE SE REFUSE.  D-785
+
+   L'ancienne version en retirait trois — \r \n \t — et laissait
+   passer l'OCTET NUL. « evil.svg.png » etait donc accepte :
+   l'extension jugee est celle d'APRES le NUL, « png », mais tout
+   consommateur qui tronque a \0 lit « evil.svg ». L'allow-list
+   etait contournee par un caractere invisible, et le NUL entrait
+   dans le classeur et dans l'avis par courriel.
+
+   ON REFUSE PLUTOT QUE DE NETTOYER EN SILENCE. Un nom de fichier
+   qui contient  n'est pas une faute de frappe d'un client
+   presse : c'est une tentative, et la nettoyer sans le dire ferait
+   entrer dans Drive un fichier que personne n'a voulu envoyer.
+   `nomDePiece` continue de nettoyer ce qui est innocent — un nom
+   colle depuis un courriel porte de vrais retours a la ligne —
+   mais `nomSuspect` tranche AVANT, sur le brut. */
+function nomSuspect(brut) {
+  return /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/.test(String(brut == null ? "" : brut));
+}
+
 function nomDePiece(brut) {
   var nom = String(brut == null ? "" : brut)
-    .replace(/[\r\n\t]+/g, " ")
+    .replace(/[\u0000-\u001F\u007F]+/g, " ")
     .replace(/[\/\\]/g, "-")
     .trim();
   if (nom.length > 120) {

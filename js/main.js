@@ -47,7 +47,7 @@
      Les vraies plages viennent maintenant de la DEUXIEME PORTE du
      meme Apps Script : `?action=creneaux`. Elle calcule la grille a
      partir de `DISPONIBILITES` dans `Code.gs`, en retire tout ce que
-     le calendrier d'apedagence occupe, et rend des heures DEJA
+     le calendrier de l'agence occupe, et rend des heures DEJA
      ECRITES EN FRANCAIS, DEJA CALCULEES A TORONTO.
 
      CE QUI RESTE ICI N'EST PLUS UNE SOURCE, C'EST UN FILET. Quand la

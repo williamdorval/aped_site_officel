@@ -1,3 +1,6 @@
+/* LA PORTE DE DIAGNOSTIC EST FERMEE A CLE DEPUIS D-785 : le banc
+   pose la sienne, comme le fera le vrai deploiement. */
+const CLE_DIAG_BANC = "ZZ-cle-de-banc";
 /* ============================================================
    LA SAUVEGARDE PROGRESSIVE — UNE SEULE LIGNE, QUI SE COMPLETE
    `node tools/etapes-check.mjs`
@@ -351,7 +354,7 @@ titre("10 · CE QU'ON VOIT EN OUVRANT L'ONGLET");
   poster({ _form: "project", _sid: S, _etape: 2, _etapes: 6,
            email: "zztest@exemple.ca", nom: "ZZTEST Vue" });
 
-  const d = JSON.parse(gs.doGet({ parameter: { action: "diag" } }).getContent());
+  const d = JSON.parse((etat.proprietes.DIAG_CLE = CLE_DIAG_BANC, gs.doGet({ parameter: { action: "diag", cle: CLE_DIAG_BANC } })).getContent());
   const o = d.onglets.find((x) => x.onglet === "Démarrer un projet");
   /* « Notes internes » A QUITTE LA TETE.  D-759
      Elle etait cinquieme et large de 340 px : les six colonnes de

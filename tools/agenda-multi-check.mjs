@@ -1,3 +1,6 @@
+/* LA PORTE DE DIAGNOSTIC EST FERMEE A CLE DEPUIS D-785 : le banc
+   pose la sienne, comme le fera le vrai deploiement. */
+const CLE_DIAG_BANC = "ZZ-cle-de-banc";
 /* ============================================================
    PLUSIEURS AGENDAS, LA TROISIEME PORTE, ET LE VERROU RESSERRE
    `node tools/agenda-multi-check.mjs`
@@ -284,7 +287,7 @@ titre("4 · LA TROISIEME PORTE — CE QU'ELLE MONTRE ET CE QU'ELLE TAIT");
     telephone: "418 555 0100", message: "=1+1"
   });
 
-  const d = JSON.parse(gs.doGet({ parameter: { action: "diag" } }).getContent());
+  const d = JSON.parse((etat.proprietes.DIAG_CLE = CLE_DIAG_BANC, gs.doGet({ parameter: { action: "diag", cle: CLE_DIAG_BANC } })).getContent());
   const onglet = d.onglets.find((o) => o.onglet === "Contact simple");
 
   verifier("la porte repond", d.success, true);
@@ -341,7 +344,7 @@ titre("5 · UN COURRIEL QUI TOMBE NE PERD PLUS LA DEMANDE");
   verifier("le visiteur recoit un succes", r.success, true);
   verifier("la ligne porte un numero", r.ligne > 1, true, "ligne " + r.ligne);
 
-  const d = JSON.parse(gs.doGet({ parameter: { action: "diag" } }).getContent());
+  const d = JSON.parse((etat.proprietes.DIAG_CLE = CLE_DIAG_BANC, gs.doGet({ parameter: { action: "diag", cle: CLE_DIAG_BANC } })).getContent());
   const o = d.onglets.find((x) => x.onglet === "Contact simple");
   verifier("la demande est bien au classeur", o.lignesEssai.length, 1);
 
