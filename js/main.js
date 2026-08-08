@@ -5001,12 +5001,34 @@
         if (minuteur) { window.clearInterval(minuteur); minuteur = 0; }
       };
 
+      /* LA PREMIERE TAPE MONTRE, LA SECONDE OUVRE.  D-789
+
+         Les pastilles portent `data-modal-open="modal-start"`. Au
+         survol, la souris revele l'apercu et le clic ouvre le
+         formulaire : deux gestes, deux effets. Au tactile il n'y a
+         qu'un geste, et il faisait LES DEUX A LA FOIS — on tapait
+         « Garage et mecanique » pour voir son metier, et on se
+         retrouvait devant un menu de formulaires sans avoir rien vu.
+         La section dit « Survolez ou tabulez pour voir » ; le
+         visiteur au doigt n'avait aucune facon de voir.
+
+         Une pastille deja revelee garde son clic : celui qui a vu
+         son metier et tape une seconde fois VEUT la suite. */
+      var revelee = null;
       pills.forEach(function (pill) {
         pill.addEventListener("pointerdown", function () {
           fige = true;
           arreter();
           showSector(pill.dataset.sector);
         }, { passive: true });
+
+        pill.addEventListener("click", function (e) {
+          if (revelee === pill) return;          /* deuxieme tape : on ouvre */
+          revelee = pill;
+          e.preventDefault();
+          e.stopPropagation();
+          showSector(pill.dataset.sector);
+        }, true);
       });
 
       new IntersectionObserver(function (es) {

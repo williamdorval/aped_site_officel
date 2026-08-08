@@ -179,14 +179,24 @@
 <!-- ===================== MENU PLEIN ÉCRAN ===================== -->
 <div class="menu" id="menu" hidden>
   <nav class="menu-list" aria-label="Menu principal">
-    <a href="#services"><em>01</em>Services</a>
-    <a href="#realisations"><em>02</em>Démonstrations</a>
-    <a href="#demos"><em>03</em>Secteurs</a>
-    <a href="#visite"><em>04</em>Visite 360</a>
-    <a href="#calculateur"><em>05</em>Calculateur</a>
-    <a href="#processus"><em>06</em>Processus</a>
-    <a href="#faq"><em>07</em>Questions</a>
-    <a href="#contact"><em>08</em>Contact</a>
+    <!-- LES MEMES NUMEROS QUE LE RAIL, ET IL N’Y EN A PLUS QU’UN JEU.
+         D-789  Le menu numerotait 01 a 08 en sautant le Comparatif et
+         la Reference ; le rail numerote 01 a 11 en comptant l’Accueil.
+         « Calculateur » etait donc 05 dans le menu, 06 dans le rail et
+         06 sur la 404. Les numeros sont l’ossature visuelle du site :
+         trois versions du meme repere ne veulent plus rien dire. Le
+         menu suit le rail, entrees comprises. -->
+    <a href="#top"><em>01</em>Accueil</a>
+    <a href="#services"><em>02</em>Services</a>
+    <a href="#realisations"><em>03</em>Démonstrations</a>
+    <a href="#demos"><em>04</em>Secteurs</a>
+    <a href="#visite"><em>05</em>Visite 360</a>
+    <a href="#calculateur"><em>06</em>Calculateur</a>
+    <a href="#comparatif"><em>07</em>Comparatif</a>
+    <a href="#processus"><em>08</em>Processus</a>
+    <a href="#reference"><em>09</em>Référence</a>
+    <a href="#faq"><em>10</em>Questions</a>
+    <a href="#contact"><em>11</em>Contact</a>
   </nav>
   <div class="menu-actions">
     <button class="btn btn--primary btn--block" type="button" data-modal-open="modal-project">
@@ -929,7 +939,19 @@
       <div class="head" style="margin-top: var(--s-6);">
         <h2>Avant. Après.</h2>
         <!-- L'HONNETETE EST LA LIGNE, PAS UNE NOTE DE BAS DE PAGE.  D-039 -->
-        <p>Glissez la poignée. Quatre démonstrations, entreprises fictives&nbsp;— pas des mandats livrés.</p>
+        <!-- L’AVEU SE FAIT UNE FOIS, ICI, ET IL COUVRE LES TROIS.  D-789
+             Trois sections d’affilee le repetaient : « entreprises
+             fictives », « il n’y a pas de site a visiter derriere »,
+             « ce ne sont pas nos prises de vue ». Chacune etait vraie
+             et bien intentionnee ; les trois ensemble se lisaient
+             comme « on n’a jamais rien livre ». Une reserve dite trois
+             fois n’est pas trois fois plus honnete, elle est trois
+             fois plus inquietante.
+             Elle est donc dite UNE fois, en tete de la serie qu’elle
+             couvre, et les deux autres endroits portent une etiquette
+             neutre au lieu d’une confession. Q2 : ce qui les soutient
+             est ici meme, trois ecrans plus haut. -->
+        <p>Glissez la poignée. <b>Tout ce qui suit est une démonstration</b>&nbsp;— ici, les douze métiers, et la visite 360&nbsp;: entreprises inventées, écrans montés pour montrer le travail, panoramas qui ne sont pas les nôtres. On aime mieux le dire une fois, en clair, que de vous le laisser deviner.</p>
       </div>
     </div>
 
@@ -1818,7 +1840,7 @@
       <div class="head" style="margin-top: var(--s-6);">
         <h2>Le style change selon le métier.</h2>
         <!-- B2 · LE COMPTE ETAIT FAUX DE UN, ET C'EST LE TREIZIEME QUI  D-049 -->
-        <p>Douze métiers, douze aperçus — et le vôtre s’ajoute. Chacun montre la fonction qui fait la différence dans ce métier-là. Survolez ou tabulez pour voir.</p>
+        <p>Douze métiers, douze aperçus — et le vôtre s’ajoute. Chacun montre la fonction qui fait la différence dans ce métier-là. Touchez le vôtre, ou survolez-le.</p>
       </div>
 
       <div class="sectors-grid">
@@ -1875,7 +1897,7 @@
                   <a href="#ba-renovation"><span>Paysagement et déneigement</span><b>Avant / après<svg class="icon" aria-hidden="true"><use href="#i-arrow-right" /></svg></b></a></li>
                 <i class="section-rule draw fiche-rule" data-section-rule></i>
               </ul>
-              <p class="demos-mot">Les autres métiers n’ont qu’un aperçu&nbsp;: le premier écran, monté pour montrer le style. Il n’y a pas de site à visiter derrière.</p>
+              <p class="demos-mot">Les autres métiers n’ont qu’un aperçu&nbsp;: le premier écran, monté pour montrer le style.</p>
             </div>
           </div>
 
@@ -2091,7 +2113,7 @@
            Le detail — la licence des panoramas, le moteur, sa version —
            est vrai et reste ecrit, mais dans CREDITS.md : c'est une
            mention de conformite, pas un argument de vente. -->
-      <p class="fine tour-source">Panoramas de démonstration&nbsp;: ce ne sont pas nos prises de vue.</p>
+      <p class="fine tour-source">Panoramas de démonstration.</p>
     </div>
   </div>
 </section>

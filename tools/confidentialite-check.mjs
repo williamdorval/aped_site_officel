@@ -71,7 +71,19 @@ const EXIGE = [
   [/rectif/i, "le droit de rectification"],
   [/retirer votre consentement|retrait/i, "le droit de retirer son consentement"],
   [/Commission d’acc[èe]s|Commission d'acc[èe]s/i, "le recours a la CAI"],
-  [/plus haute autorit[ée]/i, "qui est responsable"],
+  /* UN NOM, PAS UNE FONCTION.  D-789
+     Le motif cherchait « la personne exercant la plus haute
+     autorite » — la formule par defaut de la Loi 25 quand personne
+     n'a ete designe. Elle est valable et inutile : le visiteur ne
+     sait pas a qui il parle. Le motif cherche donc un NOM, ce qui
+     interdit de revenir a la formule generique sans que l'outil le
+     dise. */
+  /* LE MOTIF LIT DU TEXTE RENDU, PAS DU BALISAGE. Un premier jet
+     cherchait `<b>` : `innerText` n'en contient jamais, et l'outil
+     accusait une page juste. Il exige donc DEUX MOTS CAPITALISES
+     apres « est » — un prenom et un nom. */
+  [/responsable de la protection[\s\S]{0,90}?est\s+[A-ZÀ-Þ][\wÀ-ÿ'’-]+\s+[A-ZÀ-Þ][\wÀ-ÿ'’-]+/u,
+    "qui est responsable, par son nom"],
   [/Derni[èe]re mise à jour/i, "quand elle a ete modifiee"],
   [/vendre?|vend/i, "qu'on ne vend rien"]
 ];
